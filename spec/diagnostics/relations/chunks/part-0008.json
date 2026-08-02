@@ -10,5 +10,65 @@
     "predicate_id": "EffectRowSubsumes",
     "diagnostic_id": "EFFECT_ROW_VARIABLE_UNBOUND",
     "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmitted:identity_or_initializer_graph_invalid",
+    "predicate_id": "ClosureCaptureDescriptorAdmitted",
+    "diagnostic_id": "RESOLVER_SCOPE_TREE_INVALID",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmitted:ownership_mode_or_evidence_failure",
+    "predicate_id": "ClosureCaptureDescriptorAdmitted",
+    "diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmitted:borrow_escape",
+    "predicate_id": "ClosureCaptureDescriptorAdmitted",
+    "diagnostic_id": "BORROW_ESCAPE_OWNER_REGION",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmitted:inout_profile_missing",
+    "predicate_id": "ClosureCaptureDescriptorAdmitted",
+    "diagnostic_id": "CLOSURE_INOUT_CAPTURE_REQUIRES_SCOPED_MUT",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmitted:inout_alias_conflict",
+    "predicate_id": "ClosureCaptureDescriptorAdmitted",
+    "diagnostic_id": "INOUT_ALIAS_CONFLICT",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmittedCurrentGate:deep_nonactivatable",
+    "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "diagnostic_id": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+    "relation": "primary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmittedCurrentGate:concur_async_noncopy",
+    "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "diagnostic_id": "CONCUR_LOCAL_ASYNC_CAPTURE_NOT_ADMITTED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmittedCurrentGate:generator_borrow",
+    "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "diagnostic_id": "GENERATOR_BORROW_CAPTURE_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmittedCurrentGate:generator_inout",
+    "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "diagnostic_id": "GENERATOR_INOUT_CAPTURE_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ClosureCaptureDescriptorAdmittedCurrentGate:pure_mutable_capture",
+    "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "diagnostic_id": "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN",
+    "relation": "secondary"
   }
 ]

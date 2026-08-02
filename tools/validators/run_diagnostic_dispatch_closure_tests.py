@@ -85,8 +85,17 @@ EXPECTED_INPUT_DESCRIPTOR_OVERRIDE_IDS = [
     "BorrowEscapeAdmitted",
     "BoxOwnershipAdmitted",
     "OwnershipModeAdmitted",
+    "PlainValueAdmissible",
+    "ShareableObservationSafe",
+    "TransferableAcrossIsolation",
+    "CopyValueAdmissible",
     *REASONS,
     "ActorProtocolGateAdmitted",
+    "ClosureCaptureDescriptorAdmitted",
+    "ClosureCaptureDescriptorAdmittedCurrentGate",
+    "SingleActionDeferAdmitted",
+    "CleanupBudgetEnvelopeAdmitted",
+    "SharedMutexPayloadAdmitted",
 ]
 
 PRIMARY_DIAGNOSTICS = {
@@ -842,7 +851,7 @@ def main():
   for z in ("spec/types/predicates/chunks/part-0001.json","spec/types/predicates/chunks/part-0004.json"):rows+=load(z)
   q={x["predicate_id"]:x for x in rows};m=load("spec/types/predicates/catalog-metadata.json");overrides=m["input_descriptor_overrides"];assert list(overrides)==EXPECTED_INPUT_DESCRIPTOR_OVERRIDE_IDS and m["override_count"]==len(EXPECTED_INPUT_DESCRIPTOR_OVERRIDE_IDS) and overrides["ActorProtocolGateAdmitted"]=={"input_descriptor":"ActorProtocolDirectConformanceDescriptorR1","input_descriptor_schema":"schemas/language/actor-protocol-direct-conformance-descriptor.schema.json"}
   for p,r in REASONS.items():assert q[p]["input_descriptor"]=="DiagnosticDispatchClosureInputR1" and q[p]["diagnostic_dispatch"]==dict(r) and q[p]["active_primary_diagnostic"]==PRIMARY_DIAGNOSTICS[p] and q[p]["secondary_diagnostics"]==SECONDARY_DIAGNOSTICS[p]
-  return "three typed rows; exact seven R41 overrides"
+  return "three dispatch rows; exact sixteen R47 descriptor overrides"
  ck(IDS[7],c7)
  def c8():
   g=c["governance"];assert(g["semantic_p0_after_candidate"],g["canonical_feature_p1_open"],g["separate_m13_actions_open"])==(0,22,4) and g["product_lanes"]["count"]==15 and g["product_lanes"]["status"]=="NOT_RUN" and g["canonical_source_mutation"]==g["github_mutation"]==0;return "P0=0 P1=22 M13=4 product=15/15 NOT_RUN"

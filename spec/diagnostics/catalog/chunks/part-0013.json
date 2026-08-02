@@ -440,10 +440,10 @@
     "feature_refs": [
       "inout_borrow_move_modes"
     ],
-    "fixit_hint": "shorten the borrow, remove overlap/escape, or perform an explicit admitted ownership transfer",
+    "fixit_hint": "remove the conflicting qualifier or mode, shorten the view, or perform one explicit admitted ownership transfer",
     "fixit_kind": "suggestion",
-    "fixit_policy": "shorten the borrow, remove overlap/escape, or perform an explicit admitted ownership transfer",
-    "message": "The borrow/inout/move mode violates exclusivity, lifetime, escape, suspension, or transfer responsibility.",
+    "fixit_policy": "remove the conflicting qualifier or mode, shorten the view, or perform one explicit admitted ownership transfer",
+    "message": "The ownership qualifier or borrow/inout/move mode violates composition, context, exclusivity, lifetime, escape, suspension, or transfer responsibility.",
     "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -763,7 +763,7 @@
     "fixit_hint": "remove annotation and satisfy checker law",
     "fixit_kind": "suggestion",
     "fixit_policy": "remove annotation and satisfy checker law",
-    "message": "Annotation cannot create Plain admissibility. Use Plain boundary type or satisfies Plain candidate.",
+    "message": "Annotation cannot create Plain admissibility. Use a type admitted by the sealed Plain registry rule.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

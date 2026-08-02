@@ -4,85 +4,101 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ClosureCaptureDescriptorAdmitted",
     "source_name": "CaptureDescriptor closure MSP",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "R31 closed deterministic typed closure capture plan algorithm; product checker NOT_RUN.",
+    "input_descriptor": "ClosureCapturePlanInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
+      "capture_list_state",
+      "owner_kind",
+      "callable_profile",
+      "escaping",
+      "capture_items",
+      "lexical_dependencies",
+      "r30_dependency_state"
     ],
     "feature_refs": [
       "closure_capture_descriptor_msp"
     ],
     "diagnostic_refs": [
-      "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE"
+      "RESOLVER_SCOPE_TREE_INVALID",
+      "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "BORROW_ESCAPE_OWNER_REGION",
+      "CLOSURE_INOUT_CAPTURE_REQUIRES_SCOPED_MUT",
+      "INOUT_ALIAS_CONFLICT"
     ],
-    "design_seed_diagnostic_refs": [
-      "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "current in R48",
-      "capture list visible",
-      "escaping closure preserves throws/effects"
+      "capture items have contiguous source ordinals and unique field/place identities",
+      "initializer expressions resolve in the enclosing scope without self or forward capture references",
+      "each mode has exact owner, loan, responsibility and cleanup disposition",
+      "all failure-capable preparation precedes one environment commit"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/closure-capture-plan-r1.json",
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
+      "capture_list_state",
+      "owner_kind",
+      "callable_profile",
+      "escaping",
+      "capture_items",
+      "lexical_dependencies",
+      "r30_dependency_state"
     ],
     "formal_judgment_id": "J-ClosureCaptureDescriptorAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/closure-capture-plan-input-r1.schema.json",
     "preconditions": [
-      "current in R48",
-      "capture list visible",
-      "escaping closure preserves throws/effects"
+      "capture items have contiguous source ordinals and unique field/place identities",
+      "initializer expressions resolve in the enclosing scope without self or forward capture references",
+      "each mode has exact owner, loan, responsibility and cleanup disposition",
+      "all failure-capable preparation precedes one environment commit"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "preserve capture-list state, normalize bare items to BORROW, assign contiguous ordinals and stable CaptureFieldId values, and keep initializer scope outside all capture binders",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ClosureCaptureDescriptorAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "preflight the closed binder/source-place graph without evaluating an item",
+      "apply ownership, lifetime, call-right, suspension and evidence predicates",
+      "prepare every item left-to-right exactly once and record one rollback disposition",
+      "on failure clean only the prepared prefix in reverse order; otherwise commit one environment and create one closure"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
-    "secondary_diagnostics": [],
+    "termination_metric": "finite source-ordered capture list plus finite dependency predicates",
+    "success_result": "one sealed CapturePlan or reject(diagnostic_id, reason_key)",
+    "active_primary_diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED",
+    "secondary_diagnostics": [
+      "RESOLVER_SCOPE_TREE_INVALID",
+      "BORROW_ESCAPE_OWNER_REGION",
+      "CLOSURE_INOUT_CAPTURE_REQUIRES_SCOPED_MUT",
+      "INOUT_ALIAS_CONFLICT"
+    ],
     "positive_fixture_ids": [
       "PF-ClosureCaptureDescriptorAdmitted-POS"
     ],
     "negative_fixture_ids": [
       "PF-ClosureCaptureDescriptorAdmitted-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "evaluation_order": "identity graph -> owner/profile gate -> source-ordered preparation -> reverse rollback or one environment commit",
+    "dependency_predicates": [
+      "OwnershipModeAdmitted",
+      "BorrowEscapeAdmitted",
+      "ScopedCallableAdmitted",
+      "CopyValueAdmissible",
+      "WitnessResolution"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_dispatch",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "3d111dbe63db0f1cfe1d766949c5ca381b6586eba6e04650446aadaf058ad0fd",
       "disposition": "superseded_by_current_r51a1_row"
+    },
+    "diagnostic_dispatch": {
+      "identity_or_initializer_graph_invalid": "RESOLVER_SCOPE_TREE_INVALID",
+      "ownership_mode_or_evidence_failure": "OWNERSHIP_MODE_ADMISSION_FAILED",
+      "borrow_escape": "BORROW_ESCAPE_OWNER_REGION",
+      "inout_profile_missing": "CLOSURE_INOUT_CAPTURE_REQUIRES_SCOPED_MUT",
+      "inout_alias_conflict": "INOUT_ALIAS_CONFLICT"
     }
   },
   {
@@ -90,75 +106,97 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ClosureCaptureDescriptorAdmittedCurrentGate",
     "source_name": "CaptureDescriptor closure current gate",
-    "summary": "R51a1 Stable closure capture descriptor admission design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "R31 closed current-profile gate for the typed closure capture plan; product checker NOT_RUN.",
+    "input_descriptor": "ClosureCapturePlanInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "source_role",
-      "element_types"
+      "capture_list_state",
+      "owner_kind",
+      "callable_profile",
+      "escaping",
+      "capture_items",
+      "lexical_dependencies",
+      "r30_dependency_state"
     ],
     "feature_refs": [
       "closure_capture_descriptor_msp"
     ],
     "diagnostic_refs": [
-      "SOURCE_TRUTH_PROJECTION_CONFLICT"
+      "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+      "CONCUR_LOCAL_ASYNC_CAPTURE_NOT_ADMITTED",
+      "GENERATOR_BORROW_CAPTURE_FORBIDDEN",
+      "GENERATOR_INOUT_CAPTURE_FORBIDDEN",
+      "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN"
     ],
-    "design_seed_diagnostic_refs": [
-      "SOURCE_TRUTH_PROJECTION_CONFLICT"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "explicit capture modes",
-      "capture diagnostics preserved"
+      "ClosureCaptureDescriptorAdmitted succeeds",
+      "DEEP remains Preview Design nonactivatable",
+      "bounded concur-local async is empty or reusable COPY-only",
+      "generator and pure callable exclusions are applied before preparation"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/closure-capture-plan-r1.json",
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "source_role",
-      "element_types"
+      "capture_list_state",
+      "owner_kind",
+      "callable_profile",
+      "escaping",
+      "capture_items",
+      "lexical_dependencies",
+      "r30_dependency_state"
     ],
     "formal_judgment_id": "J-ClosureCaptureDescriptorAdmittedCurrentGate",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/closure-capture-plan-input-r1.schema.json",
     "preconditions": [
-      "explicit capture modes",
-      "capture diagnostics preserved"
+      "ClosureCaptureDescriptorAdmitted succeeds",
+      "DEEP remains Preview Design nonactivatable",
+      "bounded concur-local async is empty or reusable COPY-only",
+      "generator and pure callable exclusions are applied before preparation"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "preserve capture-list state, normalize bare items to BORROW, assign contiguous ordinals and stable CaptureFieldId values, and keep initializer scope outside all capture binders",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ClosureCaptureDescriptorAdmittedCurrentGate requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "delegate structural and ownership admission to ClosureCaptureDescriptorAdmitted",
+      "reject DEEP and owner/profile combinations excluded by the current source profile",
+      "retain exact current diagnostics without enabling a product checker",
+      "admit only after every current gate succeeds"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "SOURCE_TRUTH_PROJECTION_CONFLICT",
-    "secondary_diagnostics": [],
+    "termination_metric": "finite source-ordered capture list plus finite dependency predicates",
+    "success_result": "one sealed CapturePlan or reject(diagnostic_id, reason_key)",
+    "active_primary_diagnostic": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+    "secondary_diagnostics": [
+      "CONCUR_LOCAL_ASYNC_CAPTURE_NOT_ADMITTED",
+      "GENERATOR_BORROW_CAPTURE_FORBIDDEN",
+      "GENERATOR_INOUT_CAPTURE_FORBIDDEN",
+      "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN"
+    ],
     "positive_fixture_ids": [
       "PF-ClosureCaptureDescriptorAdmittedCurrentGate-POS"
     ],
     "negative_fixture_ids": [
       "PF-ClosureCaptureDescriptorAdmittedCurrentGate-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "evaluation_order": "identity graph -> owner/profile gate -> source-ordered preparation -> reverse rollback or one environment commit",
+    "dependency_predicates": [
+      "ClosureCaptureDescriptorAdmitted"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_dispatch",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "dced8fd366fdd5362cc6e5d3d7fbefefbd0b762df46f181957403dc7a3f88271",
       "disposition": "superseded_by_current_r51a1_row"
+    },
+    "diagnostic_dispatch": {
+      "deep_nonactivatable": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+      "concur_async_noncopy": "CONCUR_LOCAL_ASYNC_CAPTURE_NOT_ADMITTED",
+      "generator_borrow": "GENERATOR_BORROW_CAPTURE_FORBIDDEN",
+      "generator_inout": "GENERATOR_INOUT_CAPTURE_FORBIDDEN",
+      "pure_mutable_capture": "PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN"
     }
   },
   {

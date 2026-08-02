@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://deeplus-lang.org/schema/r11/integrated/deeplus-mir-r1.schema.json",
-  "title": "Deeplus backend-neutral MIR R11 construction-lifecycle successor",
-  "description": "R11 integrated design schema for Verified<DeeplusMirR1>. It extends the closed R10 machine with backend-neutral nominal construction and cleanup transitions while admitting no target projection, XBC slot, CLIF value, native register, machine address, ABI layout, object layout, product execution, or MIR-X1 authority.",
+  "$id": "https://deeplus-lang.org/schema/r31/closure-capture-plan/deeplus-mir-r1.schema.json",
+  "title": "Deeplus backend-neutral MIR R31 closure-capture-plan successor",
+  "description": "R31 bounded design schema for Verified<DeeplusMirR1>. It adds a backend-neutral closure-environment plan table and enriches CLOSURE_MAKE while adding no operation or terminator kind and admitting no target projection, machine layout, API-visible value identity, product execution, or MIR-X1 authority.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -15,12 +15,15 @@
     "mir_machine_registry_digest",
     "type_table",
     "static_identity_table",
+    "responsibility_evidence_table",
     "constant_table",
+    "closure_environment_plan_table",
     "bodies",
     "semantic_provenance",
     "responsibility_axis_contract",
     "target_identity_fence",
-    "canonicalization"
+    "canonicalization",
+    "cleanup_budget_envelope_table"
   ],
   "properties": {
     "schema": {
@@ -56,10 +59,24 @@
         "$ref": "#/$defs/staticIdentityEntry"
       }
     },
+    "responsibility_evidence_table": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/responsibilityEvidenceDescriptor"
+      }
+    },
     "constant_table": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/constantEntry"
+      }
+    },
+    "closure_environment_plan_table": {
+      "type": "array",
+      "uniqueItems": true,
+      "x-deeplus-unique-by": "closure_environment_plan_id",
+      "items": {
+        "$ref": "#/$defs/closureEnvironmentPlan"
       }
     },
     "bodies": {
@@ -79,6 +96,14 @@
     },
     "canonicalization": {
       "$ref": "#/$defs/canonicalization"
+    },
+    "cleanup_budget_envelope_table": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/typeHeaderCleanupBudgetDecl"
+      },
+      "x-deeplus-unique-key": "cleanup_budget_id",
+      "x-deeplus-secondary-unique-key": "owner_type_id"
     }
   },
   "$defs": {
@@ -184,7 +209,13 @@
         "FOREIGN_FUNCTION",
         "FOREIGN_CONSTANT",
         "PROVIDER_VERSION",
-        "REPLAY_PROFILE"
+        "REPLAY_PROFILE",
+        "RESPONSIBILITY_RULE",
+        "RESPONSIBILITY_EVIDENCE",
+        "ERROR_SET",
+        "EFFECT_ROW",
+        "RESULT_ACQUISITION_PLAN",
+        "CLEANUP_PLAN"
       ]
     },
     "typeEntry": {
@@ -212,7 +243,20 @@
         {
           "properties": {
             "canonical_kind": {
-              "enum": ["UNIT", "BOOL", "INTEGER", "FLOAT32", "FLOAT64", "CHAR", "STRING", "BYTES", "RATIONAL", "COMPLEX", "NEVER", "DYNAMIC"]
+              "enum": [
+                "UNIT",
+                "BOOL",
+                "INTEGER",
+                "FLOAT32",
+                "FLOAT64",
+                "CHAR",
+                "STRING",
+                "BYTES",
+                "RATIONAL",
+                "COMPLEX",
+                "NEVER",
+                "DYNAMIC"
+              ]
             },
             "canonical_payload": {
               "$ref": "#/$defs/emptyTypePayload"
@@ -221,140 +265,242 @@
         },
         {
           "properties": {
-            "canonical_kind": {"const": "TUPLE"},
-            "canonical_payload": {"$ref": "#/$defs/tupleTypePayload"}
+            "canonical_kind": {
+              "const": "TUPLE"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/tupleTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "RECORD"},
-            "canonical_payload": {"$ref": "#/$defs/recordTypePayload"}
+            "canonical_kind": {
+              "const": "RECORD"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/recordTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "ENUM"},
-            "canonical_payload": {"$ref": "#/$defs/enumTypePayload"}
+            "canonical_kind": {
+              "const": "ENUM"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/enumTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"enum": ["LIST", "SET", "OPTION"]},
-            "canonical_payload": {"$ref": "#/$defs/elementTypePayload"}
+            "canonical_kind": {
+              "enum": [
+                "LIST",
+                "SET",
+                "OPTION"
+              ]
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/elementTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "MAP"},
-            "canonical_payload": {"$ref": "#/$defs/mapTypePayload"}
+            "canonical_kind": {
+              "const": "MAP"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/mapTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "RESULT"},
-            "canonical_payload": {"$ref": "#/$defs/resultTypePayload"}
+            "canonical_kind": {
+              "const": "RESULT"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/resultTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "FUNCTION"},
-            "canonical_payload": {"$ref": "#/$defs/functionTypePayload"}
+            "canonical_kind": {
+              "const": "FUNCTION"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/functionTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "CLOSURE"},
-            "canonical_payload": {"$ref": "#/$defs/closureTypePayload"}
+            "canonical_kind": {
+              "const": "CLOSURE"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/closureTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "REFERENCE"},
-            "canonical_payload": {"$ref": "#/$defs/referenceTypePayload"}
+            "canonical_kind": {
+              "const": "REFERENCE"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/referenceTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"enum": ["BORROWED_REFERENCE", "INOUT_REFERENCE"]},
-            "canonical_payload": {"$ref": "#/$defs/regionReferenceTypePayload"}
+            "canonical_kind": {
+              "enum": [
+                "BORROWED_REFERENCE",
+                "INOUT_REFERENCE"
+              ]
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/regionReferenceTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "ACTOR"},
-            "canonical_payload": {"$ref": "#/$defs/actorTypePayload"}
+            "canonical_kind": {
+              "const": "ACTOR"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/actorTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "PROVIDER"},
-            "canonical_payload": {"$ref": "#/$defs/providerTypePayload"}
+            "canonical_kind": {
+              "const": "PROVIDER"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/providerTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "AUTHORITY"},
-            "canonical_payload": {"$ref": "#/$defs/authorityTypePayload"}
+            "canonical_kind": {
+              "const": "AUTHORITY"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/authorityTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "WITNESS"},
-            "canonical_payload": {"$ref": "#/$defs/witnessTypePayload"}
+            "canonical_kind": {
+              "const": "WITNESS"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/witnessTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "NOMINAL"},
-            "canonical_payload": {"$ref": "#/$defs/nominalTypePayload"}
+            "canonical_kind": {
+              "const": "NOMINAL"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/nominalTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "GENERIC_PARAM"},
-            "canonical_payload": {"$ref": "#/$defs/genericParamTypePayload"}
+            "canonical_kind": {
+              "const": "GENERIC_PARAM"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/genericParamTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "TYPE_APPLICATION"},
-            "canonical_payload": {"$ref": "#/$defs/typeApplicationPayload"}
+            "canonical_kind": {
+              "const": "TYPE_APPLICATION"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/typeApplicationPayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"enum": ["UNION", "INTERSECTION"]},
-            "canonical_payload": {"$ref": "#/$defs/typeMemberSetPayload"}
+            "canonical_kind": {
+              "enum": [
+                "UNION",
+                "INTERSECTION"
+              ]
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/typeMemberSetPayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "ARRAY"},
-            "canonical_payload": {"$ref": "#/$defs/arrayTypePayload"}
+            "canonical_kind": {
+              "const": "ARRAY"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/arrayTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "NUMERIC_ARRAY"},
-            "canonical_payload": {"$ref": "#/$defs/numericArrayTypePayload"}
+            "canonical_kind": {
+              "const": "NUMERIC_ARRAY"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/numericArrayTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "FACET"},
-            "canonical_payload": {"$ref": "#/$defs/facetTypePayload"}
+            "canonical_kind": {
+              "const": "FACET"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/facetTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "MEASURE"},
-            "canonical_payload": {"$ref": "#/$defs/measureTypePayload"}
+            "canonical_kind": {
+              "const": "MEASURE"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/measureTypePayload"
+            }
           }
         },
         {
           "properties": {
-            "canonical_kind": {"const": "FOREIGN"},
-            "canonical_payload": {"$ref": "#/$defs/foreignTypePayload"}
+            "canonical_kind": {
+              "const": "FOREIGN"
+            },
+            "canonical_payload": {
+              "$ref": "#/$defs/foreignTypePayload"
+            }
           }
         }
       ]
@@ -379,6 +525,83 @@
         }
       }
     },
+    "responsibilityEvidenceKind": {
+      "enum": [
+        "INTRINSIC_PREDICATE_PROOF",
+        "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+        "EXACT_SELECTED_TRAIT_WITNESS",
+        "NONACTIVATABLE_RESERVED_IDENTITY"
+      ]
+    },
+    "responsibilityEvidenceDescriptor": {
+      "description": "Exact backend-neutral value-level responsibility proof selected in typed HIR. It is disjoint from the callable responsibility_id profile.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "responsibility_rule_id",
+        "responsibility_evidence_id",
+        "type_id",
+        "evidence_kind",
+        "registry_revision",
+        "derivation_digest",
+        "trait_witness_id_or_null",
+        "error_set_id_or_null",
+        "effect_row_id_or_null",
+        "result_acquisition_plan_id_or_null",
+        "cleanup_plan_id_or_null",
+        "owner_id_or_null",
+        "region_id_or_null",
+        "destination_isolation_domain_id_or_null",
+        "source_origin_id"
+      ],
+      "properties": {
+        "responsibility_rule_id": {
+          "$ref": "#/$defs/id"
+        },
+        "responsibility_evidence_id": {
+          "$ref": "#/$defs/id"
+        },
+        "type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "evidence_kind": {
+          "$ref": "#/$defs/responsibilityEvidenceKind"
+        },
+        "registry_revision": {
+          "$ref": "#/$defs/id"
+        },
+        "derivation_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "trait_witness_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "error_set_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "effect_row_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "result_acquisition_plan_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "cleanup_plan_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "owner_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "region_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "destination_isolation_domain_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
     "emptyTypePayload": {
       "type": "object",
       "additionalProperties": false
@@ -386,225 +609,742 @@
     "tupleTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["element_type_ids"],
+      "required": [
+        "element_type_ids"
+      ],
       "properties": {
         "element_type_ids": {
           "type": "array",
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         }
       }
     },
     "recordFieldType": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["field_identity_id", "type_id"],
+      "required": [
+        "field_identity_id",
+        "type_id"
+      ],
       "properties": {
-        "field_identity_id": {"$ref": "#/$defs/id"},
-        "type_id": {"$ref": "#/$defs/id"}
+        "field_identity_id": {
+          "$ref": "#/$defs/id"
+        },
+        "type_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "recordTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["ordered_fields"],
+      "required": [
+        "ordered_fields"
+      ],
       "properties": {
         "ordered_fields": {
           "type": "array",
-          "items": {"$ref": "#/$defs/recordFieldType"}
+          "items": {
+            "$ref": "#/$defs/recordFieldType"
+          }
         }
       }
     },
     "enumTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["enum_identity_id"],
+      "required": [
+        "enum_identity_id"
+      ],
       "properties": {
-        "enum_identity_id": {"$ref": "#/$defs/id"}
+        "enum_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "elementTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["element_type_id"],
+      "required": [
+        "element_type_id"
+      ],
       "properties": {
-        "element_type_id": {"$ref": "#/$defs/id"}
+        "element_type_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "mapTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["key_type_id", "value_type_id"],
+      "required": [
+        "key_type_id",
+        "value_type_id"
+      ],
       "properties": {
-        "key_type_id": {"$ref": "#/$defs/id"},
-        "value_type_id": {"$ref": "#/$defs/id"}
+        "key_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "value_type_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "resultTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["success_type_id", "error_type_id"],
+      "required": [
+        "success_type_id",
+        "error_type_id"
+      ],
       "properties": {
-        "success_type_id": {"$ref": "#/$defs/id"},
-        "error_type_id": {"$ref": "#/$defs/id"}
+        "success_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "error_type_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "functionTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["parameter_type_ids", "result_type_id", "responsibility_id"],
+      "required": [
+        "parameter_type_ids",
+        "result_type_id",
+        "responsibility_id"
+      ],
       "properties": {
         "parameter_type_ids": {
           "type": "array",
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
-        "result_type_id": {"$ref": "#/$defs/id"},
-        "responsibility_id": {"$ref": "#/$defs/id"}
+        "result_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "responsibility_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "closureTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["signature_type_id", "capture_environment_type_id"],
+      "required": [
+        "signature_type_id",
+        "capture_environment_type_id"
+      ],
       "properties": {
-        "signature_type_id": {"$ref": "#/$defs/id"},
-        "capture_environment_type_id": {"$ref": "#/$defs/id"}
+        "signature_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "capture_environment_type_id": {
+          "$ref": "#/$defs/id"
+        }
       }
+    },
+    "closureResidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "region_id_or_null"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "FrameIndependent",
+            "RegionBound"
+          ]
+        },
+        "region_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "FrameIndependent"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "properties": {
+              "region_id_or_null": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "region_id_or_null": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "closureLexicalDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ancestor_callable_body_id",
+        "ancestor_place_id",
+        "ancestor_depth",
+        "region_id",
+        "access",
+        "required_state",
+        "use_source_origin_ids"
+      ],
+      "properties": {
+        "ancestor_callable_body_id": {
+          "$ref": "#/$defs/id"
+        },
+        "ancestor_place_id": {
+          "$ref": "#/$defs/id"
+        },
+        "ancestor_depth": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "region_id": {
+          "$ref": "#/$defs/id"
+        },
+        "access": {
+          "const": "Read"
+        },
+        "required_state": {
+          "const": "LiveReadable"
+        },
+        "use_source_origin_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      }
+    },
+    "closureReferenceCaptureField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_kind",
+        "capture_field_id",
+        "source_ordinal",
+        "normalized_type_id",
+        "source_place_id",
+        "capture_mode",
+        "responsibility_id"
+      ],
+      "properties": {
+        "capture_kind": {
+          "const": "ReferenceCapture"
+        },
+        "capture_field_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "source_ordinal": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "normalized_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_place_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "capture_mode": {
+          "enum": [
+            "BORROW",
+            "INOUT",
+            "MOVE",
+            "COPY",
+            "CLONE",
+            "DEEP",
+            "ONCE"
+          ]
+        },
+        "responsibility_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "closureInitializerCaptureField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_kind",
+        "capture_field_id",
+        "source_ordinal",
+        "normalized_type_id",
+        "initializer_binding_kind",
+        "initializer_value_id",
+        "responsibility_id"
+      ],
+      "properties": {
+        "capture_kind": {
+          "const": "InitializerCapture"
+        },
+        "capture_field_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "source_ordinal": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "normalized_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "initializer_binding_kind": {
+          "enum": [
+            "LET",
+            "VAR"
+          ]
+        },
+        "initializer_value_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "responsibility_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "closureCaptureField": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/closureReferenceCaptureField"
+        },
+        {
+          "$ref": "#/$defs/closureInitializerCaptureField"
+        }
+      ]
+    },
+    "closureEnvironmentPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "closure_environment_plan_id",
+        "hir_capture_plan_id",
+        "closure_id",
+        "closure_body_callable_id",
+        "capture_environment_type_id",
+        "capture_list_state",
+        "captures_in_source_order",
+        "residence",
+        "closed_ancestor_frame_assertion",
+        "lexical_dependencies",
+        "evaluation_order",
+        "rollback_order",
+        "commit_order",
+        "closure_make_after_commit",
+        "publication"
+      ],
+      "properties": {
+        "closure_environment_plan_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "hir_capture_plan_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "closure_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "closure_body_callable_id": {
+          "$ref": "#/$defs/id"
+        },
+        "capture_environment_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "capture_list_state": {
+          "enum": [
+            "ABSENT",
+            "PRESENT_EMPTY",
+            "PRESENT_NONEMPTY"
+          ]
+        },
+        "captures_in_source_order": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/closureCaptureField"
+          }
+        },
+        "residence": {
+          "$ref": "#/$defs/closureResidence"
+        },
+        "closed_ancestor_frame_assertion": {
+          "type": "boolean"
+        },
+        "lexical_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/closureLexicalDependency"
+          }
+        },
+        "evaluation_order": {
+          "const": "LEFT_TO_RIGHT_EXACTLY_ONCE"
+        },
+        "rollback_order": {
+          "const": "REVERSE_ACQUISITION_ORDER"
+        },
+        "commit_order": {
+          "const": "BUILDER_COMMIT_BEFORE_CLOSURE_MAKE"
+        },
+        "closure_make_after_commit": {
+          "const": "INFALLIBLE"
+        },
+        "publication": {
+          "const": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "capture_list_state": {
+                "const": "PRESENT_EMPTY"
+              }
+            },
+            "required": [
+              "capture_list_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "captures_in_source_order": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "capture_list_state": {
+                "const": "PRESENT_NONEMPTY"
+              }
+            },
+            "required": [
+              "capture_list_state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "captures_in_source_order": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "residence": {
+                "properties": {
+                  "kind": {
+                    "const": "FrameIndependent"
+                  }
+                },
+                "required": [
+                  "kind"
+                ]
+              }
+            },
+            "required": [
+              "residence"
+            ]
+          },
+          "then": {
+            "properties": {
+              "lexical_dependencies": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "closed_ancestor_frame_assertion": {
+                "const": true
+              }
+            },
+            "required": [
+              "closed_ancestor_frame_assertion"
+            ]
+          },
+          "then": {
+            "properties": {
+              "lexical_dependencies": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "lexical_dependencies": {
+                "minItems": 1
+              }
+            },
+            "required": [
+              "lexical_dependencies"
+            ]
+          },
+          "then": {
+            "properties": {
+              "residence": {
+                "properties": {
+                  "kind": {
+                    "const": "RegionBound"
+                  }
+                }
+              },
+              "closed_ancestor_frame_assertion": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
     },
     "referenceTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["referent_type_id"],
+      "required": [
+        "referent_type_id"
+      ],
       "properties": {
-        "referent_type_id": {"$ref": "#/$defs/id"}
+        "referent_type_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "regionReferenceTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["referent_type_id", "region_profile_id"],
+      "required": [
+        "referent_type_id",
+        "region_profile_id"
+      ],
       "properties": {
-        "referent_type_id": {"$ref": "#/$defs/id"},
-        "region_profile_id": {"$ref": "#/$defs/id"}
+        "referent_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "region_profile_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "actorTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["actor_identity_id"],
+      "required": [
+        "actor_identity_id"
+      ],
       "properties": {
-        "actor_identity_id": {"$ref": "#/$defs/id"}
+        "actor_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "providerTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["provider_identity_id"],
+      "required": [
+        "provider_identity_id"
+      ],
       "properties": {
-        "provider_identity_id": {"$ref": "#/$defs/id"}
+        "provider_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "authorityTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["authority_identity_id"],
+      "required": [
+        "authority_identity_id"
+      ],
       "properties": {
-        "authority_identity_id": {"$ref": "#/$defs/id"}
+        "authority_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "witnessTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["witness_identity_id"],
+      "required": [
+        "witness_identity_id"
+      ],
       "properties": {
-        "witness_identity_id": {"$ref": "#/$defs/id"}
+        "witness_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "nominalTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["declaration_identity_id"],
+      "required": [
+        "declaration_identity_id"
+      ],
       "properties": {
-        "declaration_identity_id": {"$ref": "#/$defs/id"}
+        "declaration_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "genericParamTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["binder_identity_id", "parameter_index"],
+      "required": [
+        "binder_identity_id",
+        "parameter_index"
+      ],
       "properties": {
-        "binder_identity_id": {"$ref": "#/$defs/id"},
-        "parameter_index": {"$ref": "#/$defs/nonnegativeInteger"}
+        "binder_identity_id": {
+          "$ref": "#/$defs/id"
+        },
+        "parameter_index": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        }
       }
     },
     "typeApplicationPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["constructor_type_id", "argument_type_ids"],
+      "required": [
+        "constructor_type_id",
+        "argument_type_ids"
+      ],
       "properties": {
-        "constructor_type_id": {"$ref": "#/$defs/id"},
+        "constructor_type_id": {
+          "$ref": "#/$defs/id"
+        },
         "argument_type_ids": {
           "type": "array",
           "minItems": 1,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         }
       }
     },
     "typeMemberSetPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["member_type_ids"],
+      "required": [
+        "member_type_ids"
+      ],
       "properties": {
         "member_type_ids": {
           "type": "array",
           "minItems": 2,
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         }
       }
     },
     "arrayTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["element_type_id", "extent_identity_id"],
+      "required": [
+        "element_type_id",
+        "extent_identity_id"
+      ],
       "properties": {
-        "element_type_id": {"$ref": "#/$defs/id"},
-        "extent_identity_id": {"$ref": "#/$defs/id"}
+        "element_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "extent_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "numericArrayTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["element_type_id", "shape_identity_id"],
+      "required": [
+        "element_type_id",
+        "shape_identity_id"
+      ],
       "properties": {
-        "element_type_id": {"$ref": "#/$defs/id"},
-        "shape_identity_id": {"$ref": "#/$defs/id"}
+        "element_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "shape_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "facetTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["base_type_id", "facet_identity_id"],
+      "required": [
+        "base_type_id",
+        "facet_identity_id"
+      ],
       "properties": {
-        "base_type_id": {"$ref": "#/$defs/id"},
-        "facet_identity_id": {"$ref": "#/$defs/id"}
+        "base_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "facet_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "measureTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["numeric_type_id", "measure_identity_id"],
+      "required": [
+        "numeric_type_id",
+        "measure_identity_id"
+      ],
       "properties": {
-        "numeric_type_id": {"$ref": "#/$defs/id"},
-        "measure_identity_id": {"$ref": "#/$defs/id"}
+        "numeric_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "measure_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "foreignTypePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["foreign_type_identity_id", "foreign_contract_identity_id"],
+      "required": [
+        "foreign_type_identity_id",
+        "foreign_contract_identity_id"
+      ],
       "properties": {
-        "foreign_type_identity_id": {"$ref": "#/$defs/id"},
-        "foreign_contract_identity_id": {"$ref": "#/$defs/id"}
+        "foreign_type_identity_id": {
+          "$ref": "#/$defs/id"
+        },
+        "foreign_contract_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "signedMagnitude": {
@@ -1261,7 +2001,10 @@
         "base_kind",
         "base_id",
         "projection_identity_id",
-        "region_id"
+        "region_id",
+        "parent_loan_id_or_null",
+        "begin_operation_id",
+        "end_operation_ids"
       ],
       "properties": {
         "loan_id": {
@@ -1287,6 +2030,20 @@
         },
         "region_id": {
           "$ref": "#/$defs/id"
+        },
+        "parent_loan_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "begin_operation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "end_operation_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         }
       }
     },
@@ -1334,6 +2091,272 @@
           "const": false
         },
         "cancellation_admitted": {
+          "const": false
+        }
+      },
+      "description": "The two admitted flags constrain execution of a cleanup action itself. They do not forbid the owning cleanup scope from surviving SUSPEND or being drained by a terminal CANCEL leave."
+    },
+    "deferredCallOperandSlot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operand_id",
+        "evaluation_ordinal",
+        "role",
+        "argument_kind_or_null",
+        "formal_binding_id_or_null",
+        "prepared_value_id",
+        "normalized_type_id",
+        "responsibility_profile_id",
+        "acquisition_kind",
+        "source_place_id_or_null",
+        "owner_id_or_null",
+        "region_id_or_null",
+        "loan_id_or_null",
+        "reservation_id_or_null",
+        "cleanup_obligation_id_or_null",
+        "owner_transfer_at_seal",
+        "evaluation_count"
+      ],
+      "properties": {
+        "operand_id": {
+          "$ref": "#/$defs/id"
+        },
+        "evaluation_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "role": {
+          "enum": [
+            "CALLEE_OR_RECEIVER",
+            "EXPLICIT_ARGUMENT",
+            "DEFAULT_ARGUMENT"
+          ]
+        },
+        "argument_kind_or_null": {
+          "oneOf": [
+            {
+              "enum": [
+                "POSITIONAL",
+                "NAMED",
+                "POSITIONAL_UNFOLD",
+                "NAMED_UNFOLD",
+                "CONTEXT"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "formal_binding_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "prepared_value_id": {
+          "$ref": "#/$defs/id"
+        },
+        "normalized_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "responsibility_profile_id": {
+          "$ref": "#/$defs/id"
+        },
+        "acquisition_kind": {
+          "enum": [
+            "SNAPSHOT_VALUE",
+            "SHARED_LOAN",
+            "EXCLUSIVE_LOAN",
+            "MOVE_INTO_PLAN",
+            "OWNED_TEMPORARY",
+            "PINNED_PLACE_RESERVATION"
+          ]
+        },
+        "source_place_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "owner_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "region_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "loan_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "reservation_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "cleanup_obligation_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "owner_transfer_at_seal": {
+          "enum": [
+            "NOT_APPLICABLE",
+            "RESERVATION_CONSUMED_INTO_PLAN"
+          ]
+        },
+        "evaluation_count": {
+          "const": 1
+        }
+      }
+    },
+    "deferredCallStaticEvidenceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "formal_binding_id",
+        "evidence_id",
+        "responsibility_profile_id",
+        "evaluation_count"
+      ],
+      "properties": {
+        "formal_binding_id": {
+          "$ref": "#/$defs/id"
+        },
+        "evidence_id": {
+          "$ref": "#/$defs/id"
+        },
+        "responsibility_profile_id": {
+          "$ref": "#/$defs/id"
+        },
+        "evaluation_count": {
+          "const": 0
+        }
+      }
+    },
+    "deferredCallRegistrationDecl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cleanup_registration_id",
+        "deferred_call_plan_id",
+        "cleanup_region_id",
+        "source_registration_ordinal",
+        "selected_call_plan_id",
+        "dynamic_operand_slots_in_evaluation_order",
+        "static_evidence_bindings",
+        "registration_responsibility_profile_id",
+        "execution_responsibility_profile_id",
+        "result_responsibility_profile_id",
+        "registration_error_set_id",
+        "registration_effect_row_id",
+        "execution_error_set_id",
+        "execution_effect_row_id",
+        "result_disposition",
+        "result_cleanup_obligation_id_or_null",
+        "publication_sequence",
+        "rollback_sequence",
+        "sealed_state",
+        "suspension_disposition",
+        "execution_count",
+        "external_effect_rollback_claim"
+      ],
+      "properties": {
+        "cleanup_registration_id": {
+          "$ref": "#/$defs/id"
+        },
+        "deferred_call_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "cleanup_region_id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_registration_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "selected_call_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "dynamic_operand_slots_in_evaluation_order": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/deferredCallOperandSlot"
+          }
+        },
+        "static_evidence_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/deferredCallStaticEvidenceBinding"
+          }
+        },
+        "registration_responsibility_profile_id": {
+          "$ref": "#/$defs/id"
+        },
+        "execution_responsibility_profile_id": {
+          "$ref": "#/$defs/id"
+        },
+        "result_responsibility_profile_id": {
+          "$ref": "#/$defs/id"
+        },
+        "registration_error_set_id": {
+          "$ref": "#/$defs/id"
+        },
+        "registration_effect_row_id": {
+          "$ref": "#/$defs/id"
+        },
+        "execution_error_set_id": {
+          "$ref": "#/$defs/id"
+        },
+        "execution_effect_row_id": {
+          "$ref": "#/$defs/id"
+        },
+        "result_disposition": {
+          "enum": [
+            "UNIT_NO_VALUE",
+            "DISCARD_CLEANUP_FREE_VALUE",
+            "CLEAN_OWNED_TEMPORARY"
+          ]
+        },
+        "result_cleanup_obligation_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "publication_sequence": {
+          "prefixItems": [
+            {
+              "const": "CLEANUP_REGISTER"
+            },
+            {
+              "const": "CLEANUP_PIN_ZERO_OR_MORE"
+            },
+            {
+              "const": "CLEANUP_SEAL"
+            }
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "rollback_sequence": {
+          "prefixItems": [
+            {
+              "const": "CLEANUP_DISARM"
+            },
+            {
+              "const": "LOAN_END_REVERSE_ACQUISITION_ORDER"
+            },
+            {
+              "const": "MOVE_CANCEL_REVERSE_ACQUISITION_ORDER"
+            },
+            {
+              "const": "OWNED_TEMPORARY_CLEANUP_REVERSE_ACQUISITION_ORDER"
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "sealed_state": {
+          "const": "SEALED_IMMUTABLE"
+        },
+        "suspension_disposition": {
+          "const": "PRESERVE_REGISTERED_PLAN_NO_EXECUTION"
+        },
+        "execution_count": {
+          "const": 1
+        },
+        "external_effect_rollback_claim": {
           "const": false
         }
       }
@@ -1674,20 +2697,75 @@
         "frame_slot_id_or_null"
       ],
       "properties": {
-        "source_place_id": {"$ref": "#/$defs/id"},
-        "normalized_type_id": {"$ref": "#/$defs/id"},
-        "disposition": {"enum": ["NOT_LIVE_AFTER_SUSPEND", "REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]},
-        "materializes_frame_slot": {"type": "boolean"},
-        "frame_slot_id_or_null": {"$ref": "#/$defs/nullableId"}
+        "source_place_id": {
+          "$ref": "#/$defs/id"
+        },
+        "normalized_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "disposition": {
+          "enum": [
+            "NOT_LIVE_AFTER_SUSPEND",
+            "REUSABLE_COPY",
+            "OWNED_TRANSFER",
+            "STATIC_SHARED_BORROW"
+          ]
+        },
+        "materializes_frame_slot": {
+          "type": "boolean"
+        },
+        "frame_slot_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        }
       },
       "allOf": [
         {
-          "if": {"properties": {"disposition": {"const": "NOT_LIVE_AFTER_SUSPEND"}}, "required": ["disposition"]},
-          "then": {"properties": {"materializes_frame_slot": {"const": false}, "frame_slot_id_or_null": {"type": "null"}}}
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "NOT_LIVE_AFTER_SUSPEND"
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "materializes_frame_slot": {
+                "const": false
+              },
+              "frame_slot_id_or_null": {
+                "type": "null"
+              }
+            }
+          }
         },
         {
-          "if": {"properties": {"disposition": {"enum": ["REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]}}, "required": ["disposition"]},
-          "then": {"properties": {"materializes_frame_slot": {"const": true}, "frame_slot_id_or_null": {"$ref": "#/$defs/id"}}}
+          "if": {
+            "properties": {
+              "disposition": {
+                "enum": [
+                  "REUSABLE_COPY",
+                  "OWNED_TRANSFER",
+                  "STATIC_SHARED_BORROW"
+                ]
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "materializes_frame_slot": {
+                "const": true
+              },
+              "frame_slot_id_or_null": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          }
         }
       ]
     },
@@ -1706,42 +2784,138 @@
         "root_projection_ids"
       ],
       "properties": {
-        "frame_slot_id": {"$ref": "#/$defs/id"},
-        "source_place_id": {"$ref": "#/$defs/id"},
-        "normalized_type_id": {"$ref": "#/$defs/id"},
-        "disposition": {"enum": ["REUSABLE_COPY", "OWNED_TRANSFER", "STATIC_SHARED_BORROW"]},
-        "init_state": {"const": "Live"},
-        "owner_id_or_null": {"$ref": "#/$defs/nullableId"},
-        "loan_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "frame_slot_id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_place_id": {
+          "$ref": "#/$defs/id"
+        },
+        "normalized_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "disposition": {
+          "enum": [
+            "REUSABLE_COPY",
+            "OWNED_TRANSFER",
+            "STATIC_SHARED_BORROW"
+          ]
+        },
+        "init_state": {
+          "const": "Live"
+        },
+        "owner_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "loan_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
         "cleanup_token_bindings": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["cleanup_token_id", "owner_id", "cleanup_region_id", "cleanup_region_rank", "registration_rank"],
+            "required": [
+              "cleanup_token_id",
+              "owner_id",
+              "cleanup_region_id",
+              "cleanup_region_rank",
+              "registration_rank"
+            ],
             "properties": {
-              "cleanup_token_id": {"$ref": "#/$defs/id"},
-              "owner_id": {"$ref": "#/$defs/id"},
-              "cleanup_region_id": {"$ref": "#/$defs/id"},
-              "cleanup_region_rank": {"type": "integer", "minimum": 0},
-              "registration_rank": {"type": "integer", "minimum": 0}
+              "cleanup_token_id": {
+                "$ref": "#/$defs/id"
+              },
+              "owner_id": {
+                "$ref": "#/$defs/id"
+              },
+              "cleanup_region_id": {
+                "$ref": "#/$defs/id"
+              },
+              "cleanup_region_rank": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "registration_rank": {
+                "type": "integer",
+                "minimum": 0
+              }
             }
           }
         },
-        "root_projection_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+        "root_projection_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
       },
       "allOf": [
         {
-          "if": {"properties": {"disposition": {"const": "OWNED_TRANSFER"}}, "required": ["disposition"]},
-          "then": {"properties": {"owner_id_or_null": {"$ref": "#/$defs/id"}}}
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "OWNED_TRANSFER"
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "owner_id_or_null": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          }
         },
         {
-          "if": {"properties": {"disposition": {"enum": ["REUSABLE_COPY", "STATIC_SHARED_BORROW"]}}, "required": ["disposition"]},
-          "then": {"properties": {"owner_id_or_null": {"type": "null"}, "cleanup_token_bindings": {"maxItems": 0}}}
+          "if": {
+            "properties": {
+              "disposition": {
+                "enum": [
+                  "REUSABLE_COPY",
+                  "STATIC_SHARED_BORROW"
+                ]
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "owner_id_or_null": {
+                "type": "null"
+              },
+              "cleanup_token_bindings": {
+                "maxItems": 0
+              }
+            }
+          }
         },
         {
-          "if": {"properties": {"disposition": {"const": "STATIC_SHARED_BORROW"}}, "required": ["disposition"]},
-          "then": {"properties": {"loan_id_or_null": {"$ref": "#/$defs/id"}, "root_projection_ids": {"minItems": 1}}}
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "STATIC_SHARED_BORROW"
+              }
+            },
+            "required": [
+              "disposition"
+            ]
+          },
+          "then": {
+            "properties": {
+              "loan_id_or_null": {
+                "$ref": "#/$defs/id"
+              },
+              "root_projection_ids": {
+                "minItems": 1
+              }
+            }
+          }
         }
       ]
     },
@@ -1765,20 +2939,76 @@
         "root_rebind_policy"
       ],
       "properties": {
-        "continuation_frame_plan_id": {"$ref": "#/$defs/id"},
-        "continuation_interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
-        "continuation_interface_digest": {"$ref": "#/$defs/sha256"},
-        "place_dispositions": {"type": "array", "items": {"$ref": "#/$defs/continuationPlaceDispositionDecl"}},
-        "frame_slots": {"type": "array", "items": {"$ref": "#/$defs/continuationFrameSlotDecl"}},
-        "suspension_point_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
-        "authority_token_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
-        "cancellation_id_or_null": {"$ref": "#/$defs/nullableId"},
-        "frame_states": {"const": ["RUNNING", "SUSPENDED", "CLEANING", "TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]},
-        "epoch_states": {"const": ["PREPARING", "COMMITTED", "RESUME_WON", "CANCEL_WON", "DISCHARGED"]},
-        "epoch_policy": {"const": "FRESH_MONOTONIC_PER_FRAME"},
-        "cleanup_order": {"const": "REVERSE_REGISTRATION_WITHIN_REVERSE_NESTED_CLEANUP_REGION"},
-        "partition_policy": {"const": "EXACT_DISJOINT_OWNER_LOAN_CLEANUP_ROOT_AUTHORITY_UNION"},
-        "root_rebind_policy": {"const": "BIJECTIVE_STORAGE_LOCATION_REBIND"}
+        "continuation_frame_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "continuation_interface_identity": {
+          "const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
+        },
+        "continuation_interface_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "place_dispositions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/continuationPlaceDispositionDecl"
+          }
+        },
+        "frame_slots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/continuationFrameSlotDecl"
+          }
+        },
+        "suspension_point_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "authority_token_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "cancellation_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "frame_states": {
+          "const": [
+            "RUNNING",
+            "SUSPENDED",
+            "CLEANING",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED",
+            "TERMINAL_CANCELLED"
+          ]
+        },
+        "epoch_states": {
+          "const": [
+            "PREPARING",
+            "COMMITTED",
+            "RESUME_WON",
+            "CANCEL_WON",
+            "DISCHARGED"
+          ]
+        },
+        "epoch_policy": {
+          "const": "FRESH_MONOTONIC_PER_FRAME"
+        },
+        "cleanup_order": {
+          "const": "REVERSE_REGISTRATION_WITHIN_REVERSE_NESTED_CLEANUP_REGION"
+        },
+        "partition_policy": {
+          "const": "EXACT_DISJOINT_OWNER_LOAN_CLEANUP_ROOT_AUTHORITY_UNION"
+        },
+        "root_rebind_policy": {
+          "const": "BIJECTIVE_STORAGE_LOCATION_REBIND"
+        }
       }
     },
     "suspensionSiteDecl": {
@@ -1802,9 +3032,19 @@
         "suspend_site_id": {
           "$ref": "#/$defs/id"
         },
-        "continuation_frame_plan_id": {"$ref": "#/$defs/id"},
-        "frame_slot_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
-        "epoch_policy": {"const": "FRESH_MONOTONIC_PER_FRAME"},
+        "continuation_frame_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "frame_slot_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "epoch_policy": {
+          "const": "FRESH_MONOTONIC_PER_FRAME"
+        },
         "kind": {
           "enum": [
             "AWAIT",
@@ -1996,78 +3236,162 @@
       "minProperties": 1,
       "maxProperties": 1,
       "properties": {
-        "constant_id": {"$ref": "#/$defs/id"},
-        "static_identity_id": {"$ref": "#/$defs/id"},
-        "intrinsic_identity_id": {"$ref": "#/$defs/id"},
-        "projection_identity_id": {"$ref": "#/$defs/id"},
-        "context_adaptation_plan_id": {"$ref": "#/$defs/id"},
-        "aggregate_kind_id": {"$ref": "#/$defs/id"},
-        "place_id": {"$ref": "#/$defs/id"},
-        "reservation_id": {"$ref": "#/$defs/id"},
-        "loan_id": {"$ref": "#/$defs/id"},
-        "cleanup_region_id": {"$ref": "#/$defs/id"},
-        "cleanup_registration_id": {"$ref": "#/$defs/id"},
-        "construction_id": {"$ref": "#/$defs/id"},
-        "pattern_attempt_id": {"$ref": "#/$defs/id"},
-        "closure_id": {"$ref": "#/$defs/id"},
-        "concur_id": {"$ref": "#/$defs/id"},
-        "actor_envelope_id": {"$ref": "#/$defs/id"}
+        "constant_id": {
+          "$ref": "#/$defs/id"
+        },
+        "static_identity_id": {
+          "$ref": "#/$defs/id"
+        },
+        "intrinsic_identity_id": {
+          "$ref": "#/$defs/id"
+        },
+        "projection_identity_id": {
+          "$ref": "#/$defs/id"
+        },
+        "context_adaptation_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "aggregate_kind_id": {
+          "$ref": "#/$defs/id"
+        },
+        "place_id": {
+          "$ref": "#/$defs/id"
+        },
+        "reservation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "loan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "cleanup_region_id": {
+          "$ref": "#/$defs/id"
+        },
+        "cleanup_registration_id": {
+          "$ref": "#/$defs/id"
+        },
+        "construction_id": {
+          "$ref": "#/$defs/id"
+        },
+        "pattern_attempt_id": {
+          "$ref": "#/$defs/id"
+        },
+        "closure_id": {
+          "$ref": "#/$defs/id"
+        },
+        "concur_id": {
+          "$ref": "#/$defs/id"
+        },
+        "actor_envelope_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "aggregateInjectPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["aggregate_kind_id", "variant_identity_id"],
+      "required": [
+        "aggregate_kind_id",
+        "variant_identity_id"
+      ],
       "properties": {
-        "aggregate_kind_id": {"$ref": "#/$defs/id"},
-        "variant_identity_id": {"$ref": "#/$defs/id"}
+        "aggregate_kind_id": {
+          "$ref": "#/$defs/id"
+        },
+        "variant_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "moveReservePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["reservation_id", "place_id"],
+      "required": [
+        "reservation_id",
+        "place_id"
+      ],
       "properties": {
-        "reservation_id": {"$ref": "#/$defs/id"},
-        "place_id": {"$ref": "#/$defs/id"}
+        "reservation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "place_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "loanBeginPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["loan_id", "base_kind", "base_id", "region_id"],
+      "required": [
+        "loan_id",
+        "base_kind",
+        "base_id",
+        "region_id"
+      ],
       "properties": {
-        "loan_id": {"$ref": "#/$defs/id"},
-        "base_kind": {"enum": ["PLACE", "VALUE"]},
-        "base_id": {"$ref": "#/$defs/id"},
-        "region_id": {"$ref": "#/$defs/id"}
+        "loan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "base_kind": {
+          "enum": [
+            "PLACE",
+            "VALUE"
+          ]
+        },
+        "base_id": {
+          "$ref": "#/$defs/id"
+        },
+        "region_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "reborrowPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["loan_id", "parent_loan_id", "region_id"],
+      "required": [
+        "loan_id",
+        "parent_loan_id",
+        "region_id"
+      ],
       "properties": {
-        "loan_id": {"$ref": "#/$defs/id"},
-        "parent_loan_id": {"$ref": "#/$defs/id"},
-        "region_id": {"$ref": "#/$defs/id"}
+        "loan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "parent_loan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "region_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "cleanupRegisterPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["cleanup_registration_id", "cleanup_region_id"],
+      "required": [
+        "cleanup_registration_id",
+        "cleanup_region_id"
+      ],
       "properties": {
-        "cleanup_registration_id": {"$ref": "#/$defs/id"},
-        "cleanup_region_id": {"$ref": "#/$defs/id"}
+        "cleanup_registration_id": {
+          "$ref": "#/$defs/id"
+        },
+        "cleanup_region_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "cleanupDisarmPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["cleanup_registration_id", "discharge_kind"],
+      "required": [
+        "cleanup_registration_id",
+        "discharge_kind"
+      ],
       "properties": {
-        "cleanup_registration_id": {"$ref": "#/$defs/id"},
+        "cleanup_registration_id": {
+          "$ref": "#/$defs/id"
+        },
         "discharge_kind": {
           "enum": [
             "CONSTRUCTION_COMMITTED",
@@ -2080,17 +3404,68 @@
     "builderStagePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["construction_id", "stage_index"],
+      "required": [
+        "construction_id",
+        "stage_index"
+      ],
       "properties": {
-        "construction_id": {"$ref": "#/$defs/id"},
-        "stage_index": {"$ref": "#/$defs/nonnegativeInteger"}
+        "construction_id": {
+          "$ref": "#/$defs/id"
+        },
+        "stage_index": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        }
       }
+    },
+    "closureMakePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "closure_id",
+        "closure_body_callable_id",
+        "closure_environment_plan_id",
+        "committed_construction_id",
+        "environment_value_id",
+        "capture_field_ids_in_source_order"
+      ],
+      "properties": {
+        "closure_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "closure_body_callable_id": {
+          "$ref": "#/$defs/id"
+        },
+        "closure_environment_plan_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "committed_construction_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "environment_value_id": {
+          "$ref": "#/$defs/id",
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+        },
+        "capture_field_ids_in_source_order": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_IDS"
+        }
+      },
+      "x-deeplus-precondition": "committed_construction_id names the BUILDER_COMMIT-complete environment for closure_environment_plan_id",
+      "x-deeplus-effect": "INFALLIBLE_CLOSURE_VALUE_CREATION_WITH_NO_PARTIAL_PUBLICATION"
     },
     "constructionLifecyclePayload": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "construction_session_id",
+        "cleanup_budget_id",
         "phase_before",
         "phase_after",
         "mask_digest_before",
@@ -2103,35 +3478,63 @@
         "hir_provenance"
       ],
       "properties": {
-        "construction_session_id": {"$ref": "#/$defs/id"},
-        "phase_before": {"$ref": "#/$defs/id"},
-        "phase_after": {"$ref": "#/$defs/id"},
-        "mask_digest_before": {"$ref": "#/$defs/sha256"},
-        "mask_digest_after": {"$ref": "#/$defs/sha256"},
+        "construction_session_id": {
+          "$ref": "#/$defs/id"
+        },
+        "cleanup_budget_id": {
+          "$ref": "#/$defs/id"
+        },
+        "phase_before": {
+          "$ref": "#/$defs/id"
+        },
+        "phase_after": {
+          "$ref": "#/$defs/id"
+        },
+        "mask_digest_before": {
+          "$ref": "#/$defs/sha256"
+        },
+        "mask_digest_after": {
+          "$ref": "#/$defs/sha256"
+        },
         "consumed_owner_ids": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
         "produced_owner_ids": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
         "consumed_cleanup_token_ids": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
         "produced_cleanup_token_ids": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
         "outcome_edge": {
-          "enum": ["NORMAL", "ERROR", "DEFECT", "CANCELLATION"]
+          "enum": [
+            "NORMAL",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ]
         },
-        "hir_provenance": {"$ref": "#/$defs/id"}
+        "hir_provenance": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "frameOperationPayloadCommon": {
@@ -2156,158 +3559,399 @@
         "hir_provenance"
       ],
       "properties": {
-        "continuation_interface_identity": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
-        "continuation_interface_digest": {"$ref": "#/$defs/sha256"},
-        "continuation_receipt_id_or_null": {"$ref": "#/$defs/nullableId"},
-        "continuation_frame_plan_id": {"$ref": "#/$defs/id"},
-        "frame_id": {"$ref": "#/$defs/id"},
-        "suspension_point_id_or_null": {"$ref": "#/$defs/nullableId"},
-        "epoch_id_or_null": {"$ref": "#/$defs/nullableId"},
-        "partition_digest": {"$ref": "#/$defs/sha256"},
-        "cleanup_token_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "continuation_interface_identity": {
+          "const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
+        },
+        "continuation_interface_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "continuation_receipt_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "continuation_frame_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "frame_id": {
+          "$ref": "#/$defs/id"
+        },
+        "suspension_point_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "epoch_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "partition_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "cleanup_token_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
         "terminal_state_or_null": {
           "oneOf": [
-            {"enum": ["TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]},
-            {"type": "null"}
+            {
+              "enum": [
+                "TERMINAL_COMPLETED",
+                "TERMINAL_FAILED",
+                "TERMINAL_CANCELLED"
+              ]
+            },
+            {
+              "type": "null"
+            }
           ]
         },
-        "frame_state_before": {"enum": ["ABSENT", "RUNNING", "SUSPENDED", "CLEANING"]},
-        "frame_state_after": {"enum": ["RUNNING", "SUSPENDED", "CLEANING", "TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]},
+        "frame_state_before": {
+          "enum": [
+            "ABSENT",
+            "RUNNING",
+            "SUSPENDED",
+            "CLEANING"
+          ]
+        },
+        "frame_state_after": {
+          "enum": [
+            "RUNNING",
+            "SUSPENDED",
+            "CLEANING",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED",
+            "TERMINAL_CANCELLED"
+          ]
+        },
         "epoch_state_before_or_null": {
           "oneOf": [
-            {"enum": ["PREPARING", "COMMITTED", "CANCEL_WON"]},
-            {"type": "null"}
+            {
+              "enum": [
+                "PREPARING",
+                "COMMITTED",
+                "CANCEL_WON"
+              ]
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "epoch_state_after_or_null": {
           "oneOf": [
-            {"enum": ["COMMITTED", "CANCEL_WON", "DISCHARGED"]},
-            {"type": "null"}
+            {
+              "enum": [
+                "COMMITTED",
+                "CANCEL_WON",
+                "DISCHARGED"
+              ]
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "winner_witness_or_null": {
           "oneOf": [
-            {"enum": ["RESUME_WON", "CANCEL_WON"]},
-            {"type": "null"}
+            {
+              "enum": [
+                "RESUME_WON",
+                "CANCEL_WON"
+              ]
+            },
+            {
+              "type": "null"
+            }
           ]
         },
-        "hir_provenance": {"$ref": "#/$defs/id"}
+        "hir_provenance": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "frameCreatePayload": {
       "allOf": [
-        {"$ref": "#/$defs/frameOperationPayloadCommon"},
-        {"properties": {
-          "continuation_receipt_id_or_null": {"type": "null"},
-          "suspension_point_id_or_null": {"type": "null"},
-          "epoch_id_or_null": {"type": "null"},
-          "cleanup_token_id_or_null": {"type": "null"},
-          "terminal_state_or_null": {"type": "null"},
-          "frame_state_before": {"const": "ABSENT"},
-          "frame_state_after": {"const": "RUNNING"},
-          "epoch_state_before_or_null": {"type": "null"},
-          "epoch_state_after_or_null": {"type": "null"},
-          "winner_witness_or_null": {"type": "null"}
-        }}
+        {
+          "$ref": "#/$defs/frameOperationPayloadCommon"
+        },
+        {
+          "properties": {
+            "continuation_receipt_id_or_null": {
+              "type": "null"
+            },
+            "suspension_point_id_or_null": {
+              "type": "null"
+            },
+            "epoch_id_or_null": {
+              "type": "null"
+            },
+            "cleanup_token_id_or_null": {
+              "type": "null"
+            },
+            "terminal_state_or_null": {
+              "type": "null"
+            },
+            "frame_state_before": {
+              "const": "ABSENT"
+            },
+            "frame_state_after": {
+              "const": "RUNNING"
+            },
+            "epoch_state_before_or_null": {
+              "type": "null"
+            },
+            "epoch_state_after_or_null": {
+              "type": "null"
+            },
+            "winner_witness_or_null": {
+              "type": "null"
+            }
+          }
+        }
       ]
     },
     "frameSuspendCommitPayload": {
       "allOf": [
-        {"$ref": "#/$defs/frameOperationPayloadCommon"},
-        {"properties": {
-          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
-          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
-          "epoch_id_or_null": {"$ref": "#/$defs/id"},
-          "cleanup_token_id_or_null": {"type": "null"},
-          "terminal_state_or_null": {"type": "null"},
-          "frame_state_before": {"const": "RUNNING"},
-          "frame_state_after": {"const": "SUSPENDED"},
-          "epoch_state_before_or_null": {"const": "PREPARING"},
-          "epoch_state_after_or_null": {"const": "COMMITTED"},
-          "winner_witness_or_null": {"type": "null"}
-        }}
+        {
+          "$ref": "#/$defs/frameOperationPayloadCommon"
+        },
+        {
+          "properties": {
+            "continuation_receipt_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "suspension_point_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "epoch_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "cleanup_token_id_or_null": {
+              "type": "null"
+            },
+            "terminal_state_or_null": {
+              "type": "null"
+            },
+            "frame_state_before": {
+              "const": "RUNNING"
+            },
+            "frame_state_after": {
+              "const": "SUSPENDED"
+            },
+            "epoch_state_before_or_null": {
+              "const": "PREPARING"
+            },
+            "epoch_state_after_or_null": {
+              "const": "COMMITTED"
+            },
+            "winner_witness_or_null": {
+              "type": "null"
+            }
+          }
+        }
       ]
     },
     "frameResumeCommitPayload": {
       "allOf": [
-        {"$ref": "#/$defs/frameOperationPayloadCommon"},
-        {"properties": {
-          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
-          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
-          "epoch_id_or_null": {"$ref": "#/$defs/id"},
-          "cleanup_token_id_or_null": {"type": "null"},
-          "terminal_state_or_null": {"type": "null"},
-          "frame_state_before": {"const": "SUSPENDED"},
-          "frame_state_after": {"const": "RUNNING"},
-          "epoch_state_before_or_null": {"const": "COMMITTED"},
-          "epoch_state_after_or_null": {"const": "DISCHARGED"},
-          "winner_witness_or_null": {"const": "RESUME_WON"}
-        }}
+        {
+          "$ref": "#/$defs/frameOperationPayloadCommon"
+        },
+        {
+          "properties": {
+            "continuation_receipt_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "suspension_point_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "epoch_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "cleanup_token_id_or_null": {
+              "type": "null"
+            },
+            "terminal_state_or_null": {
+              "type": "null"
+            },
+            "frame_state_before": {
+              "const": "SUSPENDED"
+            },
+            "frame_state_after": {
+              "const": "RUNNING"
+            },
+            "epoch_state_before_or_null": {
+              "const": "COMMITTED"
+            },
+            "epoch_state_after_or_null": {
+              "const": "DISCHARGED"
+            },
+            "winner_witness_or_null": {
+              "const": "RESUME_WON"
+            }
+          }
+        }
       ]
     },
     "frameCancelCommitPayload": {
       "allOf": [
-        {"$ref": "#/$defs/frameOperationPayloadCommon"},
-        {"properties": {
-          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
-          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
-          "epoch_id_or_null": {"$ref": "#/$defs/id"},
-          "cleanup_token_id_or_null": {"type": "null"},
-          "terminal_state_or_null": {"type": "null"},
-          "frame_state_before": {"const": "SUSPENDED"},
-          "frame_state_after": {"const": "CLEANING"},
-          "epoch_state_before_or_null": {"const": "COMMITTED"},
-          "epoch_state_after_or_null": {"const": "CANCEL_WON"},
-          "winner_witness_or_null": {"const": "CANCEL_WON"}
-        }}
+        {
+          "$ref": "#/$defs/frameOperationPayloadCommon"
+        },
+        {
+          "properties": {
+            "continuation_receipt_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "suspension_point_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "epoch_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "cleanup_token_id_or_null": {
+              "type": "null"
+            },
+            "terminal_state_or_null": {
+              "type": "null"
+            },
+            "frame_state_before": {
+              "const": "SUSPENDED"
+            },
+            "frame_state_after": {
+              "const": "CLEANING"
+            },
+            "epoch_state_before_or_null": {
+              "const": "COMMITTED"
+            },
+            "epoch_state_after_or_null": {
+              "const": "CANCEL_WON"
+            },
+            "winner_witness_or_null": {
+              "const": "CANCEL_WON"
+            }
+          }
+        }
       ]
     },
     "frameCleanupStepPayload": {
       "allOf": [
-        {"$ref": "#/$defs/frameOperationPayloadCommon"},
-        {"properties": {
-          "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
-          "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
-          "epoch_id_or_null": {"$ref": "#/$defs/id"},
-          "cleanup_token_id_or_null": {"$ref": "#/$defs/id"},
-          "terminal_state_or_null": {"type": "null"},
-          "frame_state_before": {"const": "CLEANING"},
-          "frame_state_after": {"const": "CLEANING"},
-          "epoch_state_before_or_null": {"const": "CANCEL_WON"},
-          "epoch_state_after_or_null": {"const": "CANCEL_WON"},
-          "winner_witness_or_null": {"type": "null"}
-        }}
+        {
+          "$ref": "#/$defs/frameOperationPayloadCommon"
+        },
+        {
+          "properties": {
+            "continuation_receipt_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "suspension_point_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "epoch_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "cleanup_token_id_or_null": {
+              "$ref": "#/$defs/id"
+            },
+            "terminal_state_or_null": {
+              "type": "null"
+            },
+            "frame_state_before": {
+              "const": "CLEANING"
+            },
+            "frame_state_after": {
+              "const": "CLEANING"
+            },
+            "epoch_state_before_or_null": {
+              "const": "CANCEL_WON"
+            },
+            "epoch_state_after_or_null": {
+              "const": "CANCEL_WON"
+            },
+            "winner_witness_or_null": {
+              "type": "null"
+            }
+          }
+        }
       ]
     },
     "frameTerminatePayload": {
       "allOf": [
-        {"$ref": "#/$defs/frameOperationPayloadCommon"},
-        {"oneOf": [
-          {"properties": {
-            "continuation_receipt_id_or_null": {"type": "null"},
-            "suspension_point_id_or_null": {"type": "null"},
-            "epoch_id_or_null": {"type": "null"},
-            "cleanup_token_id_or_null": {"type": "null"},
-            "terminal_state_or_null": {"enum": ["TERMINAL_COMPLETED", "TERMINAL_FAILED"]},
-            "frame_state_before": {"const": "RUNNING"},
-            "frame_state_after": {"enum": ["TERMINAL_COMPLETED", "TERMINAL_FAILED"]},
-            "epoch_state_before_or_null": {"type": "null"},
-            "epoch_state_after_or_null": {"type": "null"},
-            "winner_witness_or_null": {"type": "null"}
-          }},
-          {"properties": {
-            "continuation_receipt_id_or_null": {"$ref": "#/$defs/id"},
-            "suspension_point_id_or_null": {"$ref": "#/$defs/id"},
-            "epoch_id_or_null": {"$ref": "#/$defs/id"},
-            "cleanup_token_id_or_null": {"type": "null"},
-            "terminal_state_or_null": {"const": "TERMINAL_CANCELLED"},
-            "frame_state_before": {"const": "CLEANING"},
-            "frame_state_after": {"const": "TERMINAL_CANCELLED"},
-            "epoch_state_before_or_null": {"const": "CANCEL_WON"},
-            "epoch_state_after_or_null": {"const": "DISCHARGED"},
-            "winner_witness_or_null": {"type": "null"}
-          }}
-        ]}
+        {
+          "$ref": "#/$defs/frameOperationPayloadCommon"
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "continuation_receipt_id_or_null": {
+                  "type": "null"
+                },
+                "suspension_point_id_or_null": {
+                  "type": "null"
+                },
+                "epoch_id_or_null": {
+                  "type": "null"
+                },
+                "cleanup_token_id_or_null": {
+                  "type": "null"
+                },
+                "terminal_state_or_null": {
+                  "enum": [
+                    "TERMINAL_COMPLETED",
+                    "TERMINAL_FAILED"
+                  ]
+                },
+                "frame_state_before": {
+                  "const": "RUNNING"
+                },
+                "frame_state_after": {
+                  "enum": [
+                    "TERMINAL_COMPLETED",
+                    "TERMINAL_FAILED"
+                  ]
+                },
+                "epoch_state_before_or_null": {
+                  "type": "null"
+                },
+                "epoch_state_after_or_null": {
+                  "type": "null"
+                },
+                "winner_witness_or_null": {
+                  "type": "null"
+                }
+              }
+            },
+            {
+              "properties": {
+                "continuation_receipt_id_or_null": {
+                  "$ref": "#/$defs/id"
+                },
+                "suspension_point_id_or_null": {
+                  "$ref": "#/$defs/id"
+                },
+                "epoch_id_or_null": {
+                  "$ref": "#/$defs/id"
+                },
+                "cleanup_token_id_or_null": {
+                  "type": "null"
+                },
+                "terminal_state_or_null": {
+                  "const": "TERMINAL_CANCELLED"
+                },
+                "frame_state_before": {
+                  "const": "CLEANING"
+                },
+                "frame_state_after": {
+                  "const": "TERMINAL_CANCELLED"
+                },
+                "epoch_state_before_or_null": {
+                  "const": "CANCEL_WON"
+                },
+                "epoch_state_after_or_null": {
+                  "const": "DISCHARGED"
+                },
+                "winner_witness_or_null": {
+                  "type": "null"
+                }
+              }
+            }
+          ]
+        }
       ]
     },
     "operationKind": {
@@ -2429,152 +4073,1066 @@
         "payload"
       ],
       "properties": {
-        "operation_id": {"$ref": "#/$defs/id"},
-        "kind": {"$ref": "#/$defs/operationKind"},
-        "semantic_operation_id": {"$ref": "#/$defs/semanticOperationId"},
-        "source_origin_id": {"$ref": "#/$defs/id"},
+        "operation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "$ref": "#/$defs/operationKind"
+        },
+        "semantic_operation_id": {
+          "$ref": "#/$defs/semanticOperationId"
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/id"
+        },
         "inputs": {
           "type": "array",
-          "items": {"$ref": "#/$defs/valueUse"}
+          "items": {
+            "$ref": "#/$defs/valueUse"
+          }
         },
         "outputs": {
           "type": "array",
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
-        "token_flow": {"$ref": "#/$defs/tokenFlow"},
-        "responsibility_id": {"$ref": "#/$defs/id"},
+        "token_flow": {
+          "$ref": "#/$defs/tokenFlow"
+        },
+        "responsibility_id": {
+          "$ref": "#/$defs/id"
+        },
         "payload": {}
       },
       "oneOf": [
-        {"$ref": "#/$defs/opConst"},
-        {"$ref": "#/$defs/opStaticRef"},
-        {"$ref": "#/$defs/opPureIntrinsic"},
-        {"$ref": "#/$defs/opTotalProjection"},
-        {"$ref": "#/$defs/opContextAdapt"},
-        {"$ref": "#/$defs/opAggregateInject"},
-        {"$ref": "#/$defs/opAggregateAssemble"},
-        {"$ref": "#/$defs/opPlaceLoad"},
-        {"$ref": "#/$defs/opPlaceStoreInit"},
-        {"$ref": "#/$defs/opPlaceMove"},
-        {"$ref": "#/$defs/opMoveReserve"},
-        {"$ref": "#/$defs/opMoveCancel"},
-        {"$ref": "#/$defs/opLoanBeginShared"},
-        {"$ref": "#/$defs/opLoanBeginExclusive"},
-        {"$ref": "#/$defs/opLoanBeginReborrow"},
-        {"$ref": "#/$defs/opLoanEnd"},
-        {"$ref": "#/$defs/opCleanupRegionEnter"},
-        {"$ref": "#/$defs/opCleanupRegister"},
-        {"$ref": "#/$defs/opCleanupPin"},
-        {"$ref": "#/$defs/opCleanupSeal"},
-        {"$ref": "#/$defs/opCleanupDisarm"},
-        {"$ref": "#/$defs/opBuilderBegin"},
-        {"$ref": "#/$defs/opBuilderStage"},
-        {"$ref": "#/$defs/opBuilderCommit"},
-        {"$ref": "#/$defs/opPatternProbe"},
-        {"$ref": "#/$defs/opBindingCommit"},
-        {"$ref": "#/$defs/opClosureMake"},
-        {"$ref": "#/$defs/opConcurEnter"},
-        {"$ref": "#/$defs/opActorEnvelopePrepare"},
-        {"$ref": "#/$defs/opFrameCreate"},
-        {"$ref": "#/$defs/opFrameSuspendCommit"},
-        {"$ref": "#/$defs/opFrameResumeCommit"},
-        {"$ref": "#/$defs/opFrameCancelCommit"},
-        {"$ref": "#/$defs/opFrameCleanupStep"},
-        {"$ref": "#/$defs/opFrameTerminate"},
-        {"$ref": "#/$defs/opObjectConstructionBegin"},
-        {"$ref": "#/$defs/opBaseSegmentBegin"},
-        {"$ref": "#/$defs/opBaseSegmentCommit"},
-        {"$ref": "#/$defs/opFieldInitCommit"},
-        {"$ref": "#/$defs/opConstructionFieldMoveTransfer"},
-        {"$ref": "#/$defs/opConstructionPostInitGuard"},
-        {"$ref": "#/$defs/opObjectConstructionCommit"},
-        {"$ref": "#/$defs/opObjectConstructionAbort"},
-        {"$ref": "#/$defs/opObjectCleanupBegin"},
-        {"$ref": "#/$defs/opObjectCleanupHook"},
-        {"$ref": "#/$defs/opObjectFieldCleanup"},
-        {"$ref": "#/$defs/opObjectBaseCleanup"},
-        {"$ref": "#/$defs/opObjectCleanupEnd"}
+        {
+          "$ref": "#/$defs/opConst"
+        },
+        {
+          "$ref": "#/$defs/opStaticRef"
+        },
+        {
+          "$ref": "#/$defs/opPureIntrinsic"
+        },
+        {
+          "$ref": "#/$defs/opTotalProjection"
+        },
+        {
+          "$ref": "#/$defs/opContextAdapt"
+        },
+        {
+          "$ref": "#/$defs/opAggregateInject"
+        },
+        {
+          "$ref": "#/$defs/opAggregateAssemble"
+        },
+        {
+          "$ref": "#/$defs/opPlaceLoad"
+        },
+        {
+          "$ref": "#/$defs/opPlaceStoreInit"
+        },
+        {
+          "$ref": "#/$defs/opPlaceMove"
+        },
+        {
+          "$ref": "#/$defs/opMoveReserve"
+        },
+        {
+          "$ref": "#/$defs/opMoveCancel"
+        },
+        {
+          "$ref": "#/$defs/opLoanBeginShared"
+        },
+        {
+          "$ref": "#/$defs/opLoanBeginExclusive"
+        },
+        {
+          "$ref": "#/$defs/opLoanBeginReborrow"
+        },
+        {
+          "$ref": "#/$defs/opLoanEnd"
+        },
+        {
+          "$ref": "#/$defs/opCleanupRegionEnter"
+        },
+        {
+          "$ref": "#/$defs/opCleanupRegister"
+        },
+        {
+          "$ref": "#/$defs/opCleanupPin"
+        },
+        {
+          "$ref": "#/$defs/opCleanupSeal"
+        },
+        {
+          "$ref": "#/$defs/opCleanupDisarm"
+        },
+        {
+          "$ref": "#/$defs/opBuilderBegin"
+        },
+        {
+          "$ref": "#/$defs/opBuilderStage"
+        },
+        {
+          "$ref": "#/$defs/opBuilderCommit"
+        },
+        {
+          "$ref": "#/$defs/opPatternProbe"
+        },
+        {
+          "$ref": "#/$defs/opBindingCommit"
+        },
+        {
+          "$ref": "#/$defs/opClosureMake"
+        },
+        {
+          "$ref": "#/$defs/opConcurEnter"
+        },
+        {
+          "$ref": "#/$defs/opActorEnvelopePrepare"
+        },
+        {
+          "$ref": "#/$defs/opFrameCreate"
+        },
+        {
+          "$ref": "#/$defs/opFrameSuspendCommit"
+        },
+        {
+          "$ref": "#/$defs/opFrameResumeCommit"
+        },
+        {
+          "$ref": "#/$defs/opFrameCancelCommit"
+        },
+        {
+          "$ref": "#/$defs/opFrameCleanupStep"
+        },
+        {
+          "$ref": "#/$defs/opFrameTerminate"
+        },
+        {
+          "$ref": "#/$defs/opObjectConstructionBegin"
+        },
+        {
+          "$ref": "#/$defs/opBaseSegmentBegin"
+        },
+        {
+          "$ref": "#/$defs/opBaseSegmentCommit"
+        },
+        {
+          "$ref": "#/$defs/opFieldInitCommit"
+        },
+        {
+          "$ref": "#/$defs/opConstructionFieldMoveTransfer"
+        },
+        {
+          "$ref": "#/$defs/opConstructionPostInitGuard"
+        },
+        {
+          "$ref": "#/$defs/opObjectConstructionCommit"
+        },
+        {
+          "$ref": "#/$defs/opObjectConstructionAbort"
+        },
+        {
+          "$ref": "#/$defs/opObjectCleanupBegin"
+        },
+        {
+          "$ref": "#/$defs/opObjectCleanupHook"
+        },
+        {
+          "$ref": "#/$defs/opObjectFieldCleanup"
+        },
+        {
+          "$ref": "#/$defs/opObjectBaseCleanup"
+        },
+        {
+          "$ref": "#/$defs/opObjectCleanupEnd"
+        }
       ]
     },
-    "opConst": {"properties": {"kind": {"const": "CONST"}, "semantic_operation_id": {"const": "DM-SEMOP-CONST-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["constant_id"]}]}}},
-    "opStaticRef": {"properties": {"kind": {"const": "STATIC_REF"}, "semantic_operation_id": {"const": "DM-SEMOP-STATIC-REF-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["static_identity_id"]}]}}},
-    "opPureIntrinsic": {"properties": {"kind": {"const": "PURE_INTRINSIC"}, "semantic_operation_id": {"const": "DM-SEMOP-PURE-INTRINSIC-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["intrinsic_identity_id"]}]}}},
-    "opTotalProjection": {"properties": {"kind": {"const": "TOTAL_PROJECTION"}, "semantic_operation_id": {"const": "DM-SEMOP-TOTAL-PROJECTION-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["projection_identity_id"]}]}}},
-    "opContextAdapt": {"properties": {"kind": {"const": "CONTEXT_ADAPT"}, "semantic_operation_id": {"const": "DM-SEMOP-CONTEXT-ADAPT-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["context_adaptation_plan_id"]}]}}},
-    "opAggregateInject": {"properties": {"kind": {"const": "AGGREGATE_INJECT"}, "semantic_operation_id": {"const": "DM-SEMOP-AGGREGATE-INJECT-R1"}, "payload": {"$ref": "#/$defs/aggregateInjectPayload"}}},
-    "opAggregateAssemble": {"properties": {"kind": {"const": "AGGREGATE_ASSEMBLE"}, "semantic_operation_id": {"const": "DM-SEMOP-AGGREGATE-ASSEMBLE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["aggregate_kind_id"]}]}}},
-    "opPlaceLoad": {"properties": {"kind": {"const": "PLACE_LOAD"}, "semantic_operation_id": {"const": "DM-SEMOP-PLACE-LOAD-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["place_id"]}]}}},
-    "opPlaceStoreInit": {"properties": {"kind": {"const": "PLACE_STORE_INIT"}, "semantic_operation_id": {"const": "DM-SEMOP-PLACE-STORE-INIT-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["place_id"]}]}}},
-    "opPlaceMove": {"properties": {"kind": {"const": "PLACE_MOVE"}, "semantic_operation_id": {"const": "DM-SEMOP-PLACE-MOVE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["place_id"]}]}}},
-    "opMoveReserve": {"properties": {"kind": {"const": "MOVE_RESERVE"}, "semantic_operation_id": {"const": "DM-SEMOP-MOVE-RESERVE-R1"}, "payload": {"$ref": "#/$defs/moveReservePayload"}}},
-    "opMoveCancel": {"properties": {"kind": {"const": "MOVE_CANCEL"}, "semantic_operation_id": {"const": "DM-SEMOP-MOVE-CANCEL-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["reservation_id"]}]}}},
-    "opLoanBeginShared": {"properties": {"kind": {"const": "LOAN_BEGIN_SHARED"}, "semantic_operation_id": {"const": "DM-SEMOP-LOAN-BEGIN-SHARED-R1"}, "payload": {"$ref": "#/$defs/loanBeginPayload"}}},
-    "opLoanBeginExclusive": {"properties": {"kind": {"const": "LOAN_BEGIN_EXCLUSIVE"}, "semantic_operation_id": {"const": "DM-SEMOP-LOAN-BEGIN-EXCLUSIVE-R1"}, "payload": {"$ref": "#/$defs/loanBeginPayload"}}},
-    "opLoanBeginReborrow": {"properties": {"kind": {"const": "LOAN_BEGIN_REBORROW"}, "semantic_operation_id": {"const": "DM-SEMOP-LOAN-BEGIN-REBORROW-R1"}, "payload": {"$ref": "#/$defs/reborrowPayload"}}},
-    "opLoanEnd": {"properties": {"kind": {"const": "LOAN_END"}, "semantic_operation_id": {"const": "DM-SEMOP-LOAN-END-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["loan_id"]}]}}},
-    "opCleanupRegionEnter": {"properties": {"kind": {"const": "CLEANUP_REGION_ENTER"}, "semantic_operation_id": {"const": "DM-SEMOP-CLEANUP-REGION-ENTER-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["cleanup_region_id"]}]}}},
-    "opCleanupRegister": {"properties": {"kind": {"const": "CLEANUP_REGISTER"}, "semantic_operation_id": {"const": "DM-SEMOP-CLEANUP-REGISTER-R1"}, "payload": {"$ref": "#/$defs/cleanupRegisterPayload"}}},
-    "opCleanupPin": {"properties": {"kind": {"const": "CLEANUP_PIN"}, "semantic_operation_id": {"const": "DM-SEMOP-CLEANUP-PIN-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["cleanup_registration_id"]}]}}},
-    "opCleanupSeal": {"properties": {"kind": {"const": "CLEANUP_SEAL"}, "semantic_operation_id": {"const": "DM-SEMOP-CLEANUP-SEAL-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["cleanup_registration_id"]}]}}},
-    "opCleanupDisarm": {"properties": {"kind": {"const": "CLEANUP_DISARM"}, "semantic_operation_id": {"const": "DM-SEMOP-CLEANUP-DISARM-R1"}, "payload": {"$ref": "#/$defs/cleanupDisarmPayload"}}},
-    "opBuilderBegin": {"properties": {"kind": {"const": "BUILDER_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-BUILDER-BEGIN-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["construction_id"]}]}}},
-    "opBuilderStage": {"properties": {"kind": {"const": "BUILDER_STAGE"}, "semantic_operation_id": {"const": "DM-SEMOP-BUILDER-STAGE-R1"}, "payload": {"$ref": "#/$defs/builderStagePayload"}}},
-    "opBuilderCommit": {"properties": {"kind": {"const": "BUILDER_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-BUILDER-COMMIT-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["construction_id"]}]}}},
-    "opPatternProbe": {"properties": {"kind": {"const": "PATTERN_PROBE"}, "semantic_operation_id": {"const": "DM-SEMOP-PATTERN-PROBE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["pattern_attempt_id"]}]}}},
-    "opBindingCommit": {"properties": {"kind": {"const": "BINDING_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-BINDING-COMMIT-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["pattern_attempt_id"]}]}}},
-    "opClosureMake": {"properties": {"kind": {"const": "CLOSURE_MAKE"}, "semantic_operation_id": {"const": "DM-SEMOP-CLOSURE-MAKE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["closure_id"]}]}}},
-    "opConcurEnter": {"properties": {"kind": {"const": "CONCUR_ENTER"}, "semantic_operation_id": {"const": "DM-SEMOP-CONCUR-ENTER-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["concur_id"]}]}}},
-    "opActorEnvelopePrepare": {"properties": {"kind": {"const": "ACTOR_ENVELOPE_PREPARE"}, "semantic_operation_id": {"const": "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"}, "payload": {"allOf": [{"$ref": "#/$defs/oneIdPayload"}, {"required": ["actor_envelope_id"]}]}}},
-    "opFrameCreate": {"properties": {"kind": {"const": "FRAME_CREATE"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-CREATE-R1"}, "payload": {"$ref": "#/$defs/frameCreatePayload"}}},
-    "opFrameSuspendCommit": {"properties": {"kind": {"const": "FRAME_SUSPEND_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1"}, "payload": {"$ref": "#/$defs/frameSuspendCommitPayload"}}},
-    "opFrameResumeCommit": {"properties": {"kind": {"const": "FRAME_RESUME_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-RESUME-COMMIT-R1"}, "payload": {"$ref": "#/$defs/frameResumeCommitPayload"}}},
-    "opFrameCancelCommit": {"properties": {"kind": {"const": "FRAME_CANCEL_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-CANCEL-COMMIT-R1"}, "payload": {"$ref": "#/$defs/frameCancelCommitPayload"}}},
-    "opFrameCleanupStep": {"properties": {"kind": {"const": "FRAME_CLEANUP_STEP"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-CLEANUP-STEP-R1"}, "payload": {"$ref": "#/$defs/frameCleanupStepPayload"}}},
-    "opFrameTerminate": {"properties": {"kind": {"const": "FRAME_TERMINATE"}, "semantic_operation_id": {"const": "DM-SEMOP-FRAME-TERMINATE-R1"}, "payload": {"$ref": "#/$defs/frameTerminatePayload"}}},
-    "opObjectConstructionBegin": {"properties": {"kind": {"const": "OBJECT_CONSTRUCTION_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opBaseSegmentBegin": {"properties": {"kind": {"const": "BASE_SEGMENT_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-BASE-SEGMENT-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opBaseSegmentCommit": {"properties": {"kind": {"const": "BASE_SEGMENT_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-BASE-SEGMENT-COMMIT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opFieldInitCommit": {"properties": {"kind": {"const": "FIELD_INIT_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-FIELD-INIT-COMMIT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opConstructionFieldMoveTransfer": {"properties": {"kind": {"const": "CONSTRUCTION_FIELD_MOVE_TRANSFER"}, "semantic_operation_id": {"const": "DM-SEMOP-CONSTRUCTION-FIELD-MOVE-TRANSFER-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opConstructionPostInitGuard": {"properties": {"kind": {"const": "CONSTRUCTION_POST_INIT_GUARD"}, "semantic_operation_id": {"const": "DM-SEMOP-CONSTRUCTION-POST-INIT-GUARD-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opObjectConstructionCommit": {"properties": {"kind": {"const": "OBJECT_CONSTRUCTION_COMMIT"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CONSTRUCTION-COMMIT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opObjectConstructionAbort": {"properties": {"kind": {"const": "OBJECT_CONSTRUCTION_ABORT"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CONSTRUCTION-ABORT-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opObjectCleanupBegin": {"properties": {"kind": {"const": "OBJECT_CLEANUP_BEGIN"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CLEANUP-BEGIN-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opObjectCleanupHook": {"properties": {"kind": {"const": "OBJECT_CLEANUP_HOOK"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CLEANUP-HOOK-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opObjectFieldCleanup": {"properties": {"kind": {"const": "OBJECT_FIELD_CLEANUP"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-FIELD-CLEANUP-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opObjectBaseCleanup": {"properties": {"kind": {"const": "OBJECT_BASE_CLEANUP"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-BASE-CLEANUP-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
-    "opObjectCleanupEnd": {"properties": {"kind": {"const": "OBJECT_CLEANUP_END"}, "semantic_operation_id": {"const": "DM-SEMOP-OBJECT-CLEANUP-END-R1"}, "payload": {"$ref": "#/$defs/constructionLifecyclePayload"}}},
+    "opConst": {
+      "properties": {
+        "kind": {
+          "const": "CONST"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CONST-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "constant_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opStaticRef": {
+      "properties": {
+        "kind": {
+          "const": "STATIC_REF"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-STATIC-REF-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "static_identity_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opPureIntrinsic": {
+      "properties": {
+        "kind": {
+          "const": "PURE_INTRINSIC"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-PURE-INTRINSIC-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "intrinsic_identity_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opTotalProjection": {
+      "properties": {
+        "kind": {
+          "const": "TOTAL_PROJECTION"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-TOTAL-PROJECTION-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "projection_identity_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opContextAdapt": {
+      "properties": {
+        "kind": {
+          "const": "CONTEXT_ADAPT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CONTEXT-ADAPT-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "context_adaptation_plan_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opAggregateInject": {
+      "properties": {
+        "kind": {
+          "const": "AGGREGATE_INJECT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-AGGREGATE-INJECT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/aggregateInjectPayload"
+        }
+      }
+    },
+    "opAggregateAssemble": {
+      "properties": {
+        "kind": {
+          "const": "AGGREGATE_ASSEMBLE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-AGGREGATE-ASSEMBLE-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "aggregate_kind_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opPlaceLoad": {
+      "properties": {
+        "kind": {
+          "const": "PLACE_LOAD"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-PLACE-LOAD-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "place_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opPlaceStoreInit": {
+      "properties": {
+        "kind": {
+          "const": "PLACE_STORE_INIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-PLACE-STORE-INIT-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "place_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opPlaceMove": {
+      "properties": {
+        "kind": {
+          "const": "PLACE_MOVE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-PLACE-MOVE-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "place_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opMoveReserve": {
+      "properties": {
+        "kind": {
+          "const": "MOVE_RESERVE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-MOVE-RESERVE-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/moveReservePayload"
+        }
+      }
+    },
+    "opMoveCancel": {
+      "properties": {
+        "kind": {
+          "const": "MOVE_CANCEL"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-MOVE-CANCEL-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "reservation_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opLoanBeginShared": {
+      "properties": {
+        "kind": {
+          "const": "LOAN_BEGIN_SHARED"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-LOAN-BEGIN-SHARED-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/loanBeginPayload"
+        }
+      }
+    },
+    "opLoanBeginExclusive": {
+      "properties": {
+        "kind": {
+          "const": "LOAN_BEGIN_EXCLUSIVE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-LOAN-BEGIN-EXCLUSIVE-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/loanBeginPayload"
+        }
+      }
+    },
+    "opLoanBeginReborrow": {
+      "properties": {
+        "kind": {
+          "const": "LOAN_BEGIN_REBORROW"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-LOAN-BEGIN-REBORROW-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/reborrowPayload"
+        }
+      }
+    },
+    "opLoanEnd": {
+      "properties": {
+        "kind": {
+          "const": "LOAN_END"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-LOAN-END-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "loan_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opCleanupRegionEnter": {
+      "properties": {
+        "kind": {
+          "const": "CLEANUP_REGION_ENTER"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CLEANUP-REGION-ENTER-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "cleanup_region_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opCleanupRegister": {
+      "properties": {
+        "kind": {
+          "const": "CLEANUP_REGISTER"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CLEANUP-REGISTER-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/cleanupRegisterPayload"
+        }
+      }
+    },
+    "opCleanupPin": {
+      "properties": {
+        "kind": {
+          "const": "CLEANUP_PIN"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CLEANUP-PIN-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "cleanup_registration_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opCleanupSeal": {
+      "properties": {
+        "kind": {
+          "const": "CLEANUP_SEAL"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CLEANUP-SEAL-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "cleanup_registration_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opCleanupDisarm": {
+      "properties": {
+        "kind": {
+          "const": "CLEANUP_DISARM"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CLEANUP-DISARM-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/cleanupDisarmPayload"
+        }
+      }
+    },
+    "opBuilderBegin": {
+      "properties": {
+        "kind": {
+          "const": "BUILDER_BEGIN"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-BUILDER-BEGIN-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "construction_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opBuilderStage": {
+      "properties": {
+        "kind": {
+          "const": "BUILDER_STAGE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-BUILDER-STAGE-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/builderStagePayload"
+        }
+      }
+    },
+    "opBuilderCommit": {
+      "properties": {
+        "kind": {
+          "const": "BUILDER_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-BUILDER-COMMIT-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "construction_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opPatternProbe": {
+      "properties": {
+        "kind": {
+          "const": "PATTERN_PROBE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-PATTERN-PROBE-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "pattern_attempt_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opBindingCommit": {
+      "properties": {
+        "kind": {
+          "const": "BINDING_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-BINDING-COMMIT-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "pattern_attempt_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opClosureMake": {
+      "properties": {
+        "kind": {
+          "const": "CLOSURE_MAKE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CLOSURE-MAKE-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/closureMakePayload"
+        }
+      }
+    },
+    "opConcurEnter": {
+      "properties": {
+        "kind": {
+          "const": "CONCUR_ENTER"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CONCUR-ENTER-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "concur_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opActorEnvelopePrepare": {
+      "properties": {
+        "kind": {
+          "const": "ACTOR_ENVELOPE_PREPARE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-ACTOR-ENVELOPE-PREPARE-R1"
+        },
+        "payload": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/oneIdPayload"
+            },
+            {
+              "required": [
+                "actor_envelope_id"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "opFrameCreate": {
+      "properties": {
+        "kind": {
+          "const": "FRAME_CREATE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-FRAME-CREATE-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/frameCreatePayload"
+        }
+      }
+    },
+    "opFrameSuspendCommit": {
+      "properties": {
+        "kind": {
+          "const": "FRAME_SUSPEND_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-FRAME-SUSPEND-COMMIT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/frameSuspendCommitPayload"
+        }
+      }
+    },
+    "opFrameResumeCommit": {
+      "properties": {
+        "kind": {
+          "const": "FRAME_RESUME_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-FRAME-RESUME-COMMIT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/frameResumeCommitPayload"
+        }
+      }
+    },
+    "opFrameCancelCommit": {
+      "properties": {
+        "kind": {
+          "const": "FRAME_CANCEL_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-FRAME-CANCEL-COMMIT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/frameCancelCommitPayload"
+        }
+      }
+    },
+    "opFrameCleanupStep": {
+      "properties": {
+        "kind": {
+          "const": "FRAME_CLEANUP_STEP"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-FRAME-CLEANUP-STEP-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/frameCleanupStepPayload"
+        }
+      }
+    },
+    "opFrameTerminate": {
+      "properties": {
+        "kind": {
+          "const": "FRAME_TERMINATE"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-FRAME-TERMINATE-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/frameTerminatePayload"
+        }
+      }
+    },
+    "opObjectConstructionBegin": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_CONSTRUCTION_BEGIN"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-CONSTRUCTION-BEGIN-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opBaseSegmentBegin": {
+      "properties": {
+        "kind": {
+          "const": "BASE_SEGMENT_BEGIN"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-BASE-SEGMENT-BEGIN-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opBaseSegmentCommit": {
+      "properties": {
+        "kind": {
+          "const": "BASE_SEGMENT_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-BASE-SEGMENT-COMMIT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opFieldInitCommit": {
+      "properties": {
+        "kind": {
+          "const": "FIELD_INIT_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-FIELD-INIT-COMMIT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opConstructionFieldMoveTransfer": {
+      "properties": {
+        "kind": {
+          "const": "CONSTRUCTION_FIELD_MOVE_TRANSFER"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CONSTRUCTION-FIELD-MOVE-TRANSFER-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opConstructionPostInitGuard": {
+      "properties": {
+        "kind": {
+          "const": "CONSTRUCTION_POST_INIT_GUARD"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-CONSTRUCTION-POST-INIT-GUARD-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opObjectConstructionCommit": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_CONSTRUCTION_COMMIT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-CONSTRUCTION-COMMIT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opObjectConstructionAbort": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_CONSTRUCTION_ABORT"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-CONSTRUCTION-ABORT-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opObjectCleanupBegin": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_CLEANUP_BEGIN"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-CLEANUP-BEGIN-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opObjectCleanupHook": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_CLEANUP_HOOK"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-CLEANUP-HOOK-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opObjectFieldCleanup": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_FIELD_CLEANUP"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-FIELD-CLEANUP-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opObjectBaseCleanup": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_BASE_CLEANUP"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-BASE-CLEANUP-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
+    "opObjectCleanupEnd": {
+      "properties": {
+        "kind": {
+          "const": "OBJECT_CLEANUP_END"
+        },
+        "semantic_operation_id": {
+          "const": "DM-SEMOP-OBJECT-CLEANUP-END-R1"
+        },
+        "payload": {
+          "$ref": "#/$defs/constructionLifecyclePayload"
+        }
+      }
+    },
     "edgeArgument": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["value_id", "transfer"],
+      "required": [
+        "value_id",
+        "transfer"
+      ],
       "properties": {
-        "value_id": {"$ref": "#/$defs/id"},
-        "transfer": {"enum": ["COPY", "CONSUME", "FORWARD_VIEW"]}
+        "value_id": {
+          "$ref": "#/$defs/id"
+        },
+        "transfer": {
+          "enum": [
+            "COPY",
+            "CONSUME",
+            "FORWARD_VIEW"
+          ]
+        }
       }
     },
     "outcomeFamily": {
-      "enum": ["NORMAL", "ERROR", "DEFECT", "CANCELLATION"]
+      "enum": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ]
     },
     "successor": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["role", "case_identity_or_null", "target_block_id", "arguments", "outcome_family_or_null"],
+      "required": [
+        "role",
+        "case_identity_or_null",
+        "target_block_id",
+        "arguments",
+        "outcome_family_or_null"
+      ],
       "properties": {
         "role": {
-          "enum": ["BRANCH", "TRUE", "FALSE", "ENUM_CASE", "INT_CASE", "DEFAULT", "SUCCESS", "ERROR", "DEFECT", "CANCEL", "RESUME", "REJECTED", "JOIN"]
+          "enum": [
+            "BRANCH",
+            "TRUE",
+            "FALSE",
+            "ENUM_CASE",
+            "INT_CASE",
+            "DEFAULT",
+            "SUCCESS",
+            "ERROR",
+            "DEFECT",
+            "CANCEL",
+            "RESUME",
+            "REJECTED",
+            "JOIN"
+          ]
         },
-        "case_identity_or_null": {"$ref": "#/$defs/nullableId"},
-        "target_block_id": {"$ref": "#/$defs/id"},
+        "case_identity_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
+        "target_block_id": {
+          "$ref": "#/$defs/id"
+        },
         "arguments": {
           "type": "array",
-          "items": {"$ref": "#/$defs/edgeArgument"}
+          "items": {
+            "$ref": "#/$defs/edgeArgument"
+          }
         },
         "outcome_family_or_null": {
           "oneOf": [
-            {"$ref": "#/$defs/outcomeFamily"},
-            {"type": "null"}
+            {
+              "$ref": "#/$defs/outcomeFamily"
+            },
+            {
+              "type": "null"
+            }
           ]
         }
       }
@@ -2586,304 +5144,913 @@
     "conditionPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["condition_value_id"],
-      "properties": {"condition_value_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "condition_value_id"
+      ],
+      "properties": {
+        "condition_value_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "discriminantPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["discriminant_value_id"],
-      "properties": {"discriminant_value_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "discriminant_value_id"
+      ],
+      "properties": {
+        "discriminant_value_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "callPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["call_plan_id"],
-      "properties": {"call_plan_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "call_plan_id"
+      ],
+      "properties": {
+        "call_plan_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "checkedPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["checked_semantic_operation_id"],
-      "properties": {"checked_semantic_operation_id": {"$ref": "#/$defs/semanticOperationId"}}
+      "required": [
+        "checked_semantic_operation_id"
+      ],
+      "properties": {
+        "checked_semantic_operation_id": {
+          "$ref": "#/$defs/semanticOperationId"
+        }
+      }
     },
     "replacePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["destination_place_id", "reservation_id"],
+      "required": [
+        "destination_place_id",
+        "reservation_id"
+      ],
       "properties": {
-        "destination_place_id": {"$ref": "#/$defs/id"},
-        "reservation_id": {"$ref": "#/$defs/id"}
+        "destination_place_id": {
+          "$ref": "#/$defs/id"
+        },
+        "reservation_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "leavePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["leave_plan_id"],
-      "properties": {"leave_plan_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "leave_plan_id"
+      ],
+      "properties": {
+        "leave_plan_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "suspendPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["suspend_site_id"],
-      "properties": {"suspend_site_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "suspend_site_id"
+      ],
+      "properties": {
+        "suspend_site_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "cancelCheckPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["cancellation_id"],
-      "properties": {"cancellation_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "cancellation_id"
+      ],
+      "properties": {
+        "cancellation_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "runOpPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["run_operation", "run_plan_id"],
+      "required": [
+        "run_operation",
+        "run_plan_id"
+      ],
       "properties": {
-        "run_operation": {"enum": ["SPAWN", "AWAIT", "JOIN", "CANCEL_THEN_JOIN", "EXIT"]},
-        "run_plan_id": {"$ref": "#/$defs/id"}
+        "run_operation": {
+          "enum": [
+            "SPAWN",
+            "AWAIT",
+            "JOIN",
+            "CANCEL_THEN_JOIN",
+            "EXIT"
+          ]
+        },
+        "run_plan_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "actorOpPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["actor_operation", "actor_plan_id"],
+      "required": [
+        "actor_operation",
+        "actor_plan_id"
+      ],
       "properties": {
-        "actor_operation": {"enum": ["SEND", "REQUEST", "AWAIT_REPLY", "DEQUEUE", "TURN_BEGIN", "TURN_END", "REPLY"]},
-        "actor_plan_id": {"$ref": "#/$defs/id"}
+        "actor_operation": {
+          "enum": [
+            "SEND",
+            "REQUEST",
+            "AWAIT_REPLY",
+            "DEQUEUE",
+            "TURN_BEGIN",
+            "TURN_END",
+            "REPLY"
+          ]
+        },
+        "actor_plan_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "providerOpPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["provider_operation_identity_id"],
-      "properties": {"provider_operation_identity_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "provider_operation_identity_id"
+      ],
+      "properties": {
+        "provider_operation_identity_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "onceOpPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["once_operation", "once_identity_id"],
+      "required": [
+        "once_operation",
+        "once_identity_id"
+      ],
       "properties": {
-        "once_operation": {"enum": ["FUNCTION_STATIC_ENSURE", "LAZY_FORCE"]},
-        "once_identity_id": {"$ref": "#/$defs/id"}
+        "once_operation": {
+          "enum": [
+            "FUNCTION_STATIC_ENSURE",
+            "LAZY_FORCE"
+          ]
+        },
+        "once_identity_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "syncOpPayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sync_operation", "sync_plan_id"],
+      "required": [
+        "sync_operation",
+        "sync_plan_id"
+      ],
       "properties": {
-        "sync_operation": {"enum": ["OBSERVE_BEGIN", "OBSERVE_END", "REPLACE_COMMIT", "LOCK_ACQUIRE", "LOCK_RELEASE"]},
-        "sync_plan_id": {"$ref": "#/$defs/id"}
+        "sync_operation": {
+          "enum": [
+            "OBSERVE_BEGIN",
+            "OBSERVE_END",
+            "REPLACE_COMMIT",
+            "LOCK_ACQUIRE",
+            "LOCK_RELEASE"
+          ]
+        },
+        "sync_plan_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    },
+    "sharedMutexWithLockPlan": {
+      "title": "SharedMutexWithLockPlan",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sync_plan_id",
+        "kind",
+        "receiver_kind",
+        "receiver_id",
+        "payload_type_id",
+        "payload_predicate_id",
+        "payload_predicate_contract_sha256",
+        "callback_region_id",
+        "exclusive_loan_id",
+        "unlock_cleanup_region_id",
+        "unlock_cleanup_registration_id",
+        "reentrancy_policy",
+        "terminal_outcomes",
+        "unlock_failure_admitted",
+        "product_support"
+      ],
+      "properties": {
+        "sync_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "SHARED_MUTEX_WITH_LOCK"
+        },
+        "receiver_kind": {
+          "enum": [
+            "PLACE",
+            "VALUE"
+          ]
+        },
+        "receiver_id": {
+          "$ref": "#/$defs/id"
+        },
+        "payload_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "payload_predicate_id": {
+          "const": "SharedMutexPayloadAdmitted"
+        },
+        "payload_predicate_contract_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "callback_region_id": {
+          "$ref": "#/$defs/id"
+        },
+        "exclusive_loan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "unlock_cleanup_region_id": {
+          "$ref": "#/$defs/id"
+        },
+        "unlock_cleanup_registration_id": {
+          "$ref": "#/$defs/id"
+        },
+        "reentrancy_policy": {
+          "const": "REJECT_SAME_ACTIVE_MUTEX_BEFORE_CALLBACK"
+        },
+        "terminal_outcomes": {
+          "const": [
+            "NORMAL",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ]
+        },
+        "unlock_failure_admitted": {
+          "const": false
+        },
+        "product_support": {
+          "const": "NOT_RUN"
+        }
       }
     },
     "completePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["completion_kind"],
+      "required": [
+        "completion_kind"
+      ],
       "properties": {
-        "completion_kind": {"enum": ["RETURN", "ERROR", "DEFECT", "CANCELLATION"]}
+        "completion_kind": {
+          "enum": [
+            "RETURN",
+            "ERROR",
+            "DEFECT",
+            "CANCELLATION"
+          ]
+        }
       }
     },
     "unreachablePayload": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["proof_id"],
-      "properties": {"proof_id": {"$ref": "#/$defs/id"}}
+      "required": [
+        "proof_id"
+      ],
+      "properties": {
+        "proof_id": {
+          "$ref": "#/$defs/id"
+        }
+      }
     },
     "terminatorKind": {
-      "enum": ["BR", "COND_BR", "SWITCH_ENUM", "SWITCH_INT", "INVOKE", "CHECKED", "PLACE_REPLACE", "LEAVE", "SUSPEND", "CANCEL_CHECK", "RUN_OP", "ACTOR_OP", "PROVIDER_OP", "ONCE_OP", "SYNC_OP", "COMPLETE", "UNREACHABLE_PROVEN"]
+      "enum": [
+        "BR",
+        "COND_BR",
+        "SWITCH_ENUM",
+        "SWITCH_INT",
+        "INVOKE",
+        "CHECKED",
+        "PLACE_REPLACE",
+        "LEAVE",
+        "SUSPEND",
+        "CANCEL_CHECK",
+        "RUN_OP",
+        "ACTOR_OP",
+        "PROVIDER_OP",
+        "ONCE_OP",
+        "SYNC_OP",
+        "COMPLETE",
+        "UNREACHABLE_PROVEN"
+      ]
     },
     "mirTerminator": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["terminator_id", "kind", "source_origin_id", "inputs", "successors", "token_flow", "responsibility_id", "payload"],
+      "required": [
+        "terminator_id",
+        "kind",
+        "source_origin_id",
+        "inputs",
+        "successors",
+        "token_flow",
+        "responsibility_id",
+        "payload"
+      ],
       "properties": {
-        "terminator_id": {"$ref": "#/$defs/id"},
-        "kind": {"$ref": "#/$defs/terminatorKind"},
-        "source_origin_id": {"$ref": "#/$defs/id"},
+        "terminator_id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "$ref": "#/$defs/terminatorKind"
+        },
+        "source_origin_id": {
+          "$ref": "#/$defs/id"
+        },
         "inputs": {
           "type": "array",
-          "items": {"$ref": "#/$defs/valueUse"}
+          "items": {
+            "$ref": "#/$defs/valueUse"
+          }
         },
         "successors": {
           "type": "array",
-          "items": {"$ref": "#/$defs/successor"}
+          "items": {
+            "$ref": "#/$defs/successor"
+          }
         },
-        "token_flow": {"$ref": "#/$defs/tokenFlow"},
-        "responsibility_id": {"$ref": "#/$defs/id"},
+        "token_flow": {
+          "$ref": "#/$defs/tokenFlow"
+        },
+        "responsibility_id": {
+          "$ref": "#/$defs/id"
+        },
         "payload": {}
       },
       "oneOf": [
-        {"properties": {"kind": {"const": "BR"}, "payload": {"$ref": "#/$defs/emptyPayload"}, "successors": {"minItems": 1, "maxItems": 1}}},
-        {"properties": {"kind": {"const": "COND_BR"}, "payload": {"$ref": "#/$defs/conditionPayload"}, "successors": {"minItems": 2, "maxItems": 2}}},
-        {"properties": {"kind": {"const": "SWITCH_ENUM"}, "payload": {"$ref": "#/$defs/discriminantPayload"}, "successors": {"minItems": 1}}},
-        {"properties": {"kind": {"const": "SWITCH_INT"}, "payload": {"$ref": "#/$defs/discriminantPayload"}, "successors": {"minItems": 1}}},
-        {"properties": {"kind": {"const": "INVOKE"}, "payload": {"$ref": "#/$defs/callPayload"}, "successors": {"minItems": 1, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "CHECKED"}, "payload": {"$ref": "#/$defs/checkedPayload"}, "successors": {"minItems": 2, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "PLACE_REPLACE"}, "payload": {"$ref": "#/$defs/replacePayload"}, "successors": {"minItems": 2, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "LEAVE"}, "payload": {"$ref": "#/$defs/leavePayload"}, "successors": {"minItems": 1, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "SUSPEND"}, "payload": {"$ref": "#/$defs/suspendPayload"}, "successors": {"minItems": 1, "maxItems": 2}}},
-        {"properties": {"kind": {"const": "CANCEL_CHECK"}, "payload": {"$ref": "#/$defs/cancelCheckPayload"}, "successors": {"minItems": 2, "maxItems": 2}}},
-        {"properties": {"kind": {"const": "RUN_OP"}, "payload": {"$ref": "#/$defs/runOpPayload"}, "successors": {"minItems": 1, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "ACTOR_OP"}, "payload": {"$ref": "#/$defs/actorOpPayload"}, "successors": {"minItems": 1, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "PROVIDER_OP"}, "payload": {"$ref": "#/$defs/providerOpPayload"}, "successors": {"minItems": 1, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "ONCE_OP"}, "payload": {"$ref": "#/$defs/onceOpPayload"}, "successors": {"minItems": 1, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "SYNC_OP"}, "payload": {"$ref": "#/$defs/syncOpPayload"}, "successors": {"minItems": 1, "maxItems": 4}}},
-        {"properties": {"kind": {"const": "COMPLETE"}, "payload": {"$ref": "#/$defs/completePayload"}, "successors": {"maxItems": 0}}},
-        {"properties": {"kind": {"const": "UNREACHABLE_PROVEN"}, "payload": {"$ref": "#/$defs/unreachablePayload"}, "successors": {"maxItems": 0}}}
+        {
+          "properties": {
+            "kind": {
+              "const": "BR"
+            },
+            "payload": {
+              "$ref": "#/$defs/emptyPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "COND_BR"
+            },
+            "payload": {
+              "$ref": "#/$defs/conditionPayload"
+            },
+            "successors": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "SWITCH_ENUM"
+            },
+            "payload": {
+              "$ref": "#/$defs/discriminantPayload"
+            },
+            "successors": {
+              "minItems": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "SWITCH_INT"
+            },
+            "payload": {
+              "$ref": "#/$defs/discriminantPayload"
+            },
+            "successors": {
+              "minItems": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "INVOKE"
+            },
+            "payload": {
+              "$ref": "#/$defs/callPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "CHECKED"
+            },
+            "payload": {
+              "$ref": "#/$defs/checkedPayload"
+            },
+            "successors": {
+              "minItems": 2,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "PLACE_REPLACE"
+            },
+            "payload": {
+              "$ref": "#/$defs/replacePayload"
+            },
+            "successors": {
+              "minItems": 2,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "LEAVE"
+            },
+            "payload": {
+              "$ref": "#/$defs/leavePayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "SUSPEND"
+            },
+            "payload": {
+              "$ref": "#/$defs/suspendPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "CANCEL_CHECK"
+            },
+            "payload": {
+              "$ref": "#/$defs/cancelCheckPayload"
+            },
+            "successors": {
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "RUN_OP"
+            },
+            "payload": {
+              "$ref": "#/$defs/runOpPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "ACTOR_OP"
+            },
+            "payload": {
+              "$ref": "#/$defs/actorOpPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "PROVIDER_OP"
+            },
+            "payload": {
+              "$ref": "#/$defs/providerOpPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "ONCE_OP"
+            },
+            "payload": {
+              "$ref": "#/$defs/onceOpPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "SYNC_OP"
+            },
+            "payload": {
+              "$ref": "#/$defs/syncOpPayload"
+            },
+            "successors": {
+              "minItems": 1,
+              "maxItems": 4
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "COMPLETE"
+            },
+            "payload": {
+              "$ref": "#/$defs/completePayload"
+            },
+            "successors": {
+              "maxItems": 0
+            }
+          }
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "UNREACHABLE_PROVEN"
+            },
+            "payload": {
+              "$ref": "#/$defs/unreachablePayload"
+            },
+            "successors": {
+              "maxItems": 0
+            }
+          }
+        }
       ]
     },
     "neverTypeProof": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["proof_id", "kind", "value_id", "never_type_id"],
+      "required": [
+        "proof_id",
+        "kind",
+        "value_id",
+        "never_type_id"
+      ],
       "properties": {
-        "proof_id": {"$ref": "#/$defs/id"},
-        "kind": {"const": "NEVER_TYPE"},
-        "value_id": {"$ref": "#/$defs/id"},
-        "never_type_id": {"$ref": "#/$defs/id"}
+        "proof_id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "NEVER_TYPE"
+        },
+        "value_id": {
+          "$ref": "#/$defs/id"
+        },
+        "never_type_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "exhaustivePartitionProof": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["proof_id", "kind", "discriminant_value_id", "partition_identity_ids", "exhaustiveness_digest"],
+      "required": [
+        "proof_id",
+        "kind",
+        "discriminant_value_id",
+        "partition_identity_ids",
+        "exhaustiveness_digest"
+      ],
       "properties": {
-        "proof_id": {"$ref": "#/$defs/id"},
-        "kind": {"const": "EXHAUSTIVE_PARTITION"},
-        "discriminant_value_id": {"$ref": "#/$defs/id"},
+        "proof_id": {
+          "$ref": "#/$defs/id"
+        },
+        "kind": {
+          "const": "EXHAUSTIVE_PARTITION"
+        },
+        "discriminant_value_id": {
+          "$ref": "#/$defs/id"
+        },
         "partition_identity_ids": {
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
-        "exhaustiveness_digest": {"$ref": "#/$defs/sha256"}
+        "exhaustiveness_digest": {
+          "$ref": "#/$defs/sha256"
+        }
       }
     },
     "proofRecord": {
       "oneOf": [
-        {"$ref": "#/$defs/neverTypeProof"},
-        {"$ref": "#/$defs/exhaustivePartitionProof"}
+        {
+          "$ref": "#/$defs/neverTypeProof"
+        },
+        {
+          "$ref": "#/$defs/exhaustivePartitionProof"
+        }
       ]
     },
     "blockParameter": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["value_id", "type_id", "ownership_mode"],
+      "required": [
+        "value_id",
+        "type_id",
+        "ownership_mode"
+      ],
       "properties": {
-        "value_id": {"$ref": "#/$defs/id"},
-        "type_id": {"$ref": "#/$defs/id"},
-        "ownership_mode": {"enum": ["REUSABLE", "OWNED", "BORROWED", "INOUT"]}
+        "value_id": {
+          "$ref": "#/$defs/id"
+        },
+        "type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "ownership_mode": {
+          "enum": [
+            "REUSABLE",
+            "OWNED",
+            "BORROWED",
+            "INOUT"
+          ]
+        }
       }
     },
     "mirBlock": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["block_id", "typed_parameters", "operations", "terminator"],
+      "required": [
+        "block_id",
+        "typed_parameters",
+        "operations",
+        "terminator"
+      ],
       "properties": {
-        "block_id": {"$ref": "#/$defs/id"},
+        "block_id": {
+          "$ref": "#/$defs/id"
+        },
         "typed_parameters": {
           "type": "array",
-          "items": {"$ref": "#/$defs/blockParameter"}
+          "items": {
+            "$ref": "#/$defs/blockParameter"
+          }
         },
         "operations": {
           "type": "array",
-          "items": {"$ref": "#/$defs/mirOperation"}
+          "items": {
+            "$ref": "#/$defs/mirOperation"
+          }
         },
-        "terminator": {"$ref": "#/$defs/mirTerminator"}
+        "terminator": {
+          "$ref": "#/$defs/mirTerminator"
+        }
       }
     },
     "leavePlan": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["leave_plan_id", "target_cleanup_region_id_or_null", "outcome_families", "continuation_block_ids"],
+      "required": [
+        "leave_plan_id",
+        "target_cleanup_region_id_or_null",
+        "outcome_families",
+        "continuation_block_ids"
+      ],
       "properties": {
-        "leave_plan_id": {"$ref": "#/$defs/id"},
-        "target_cleanup_region_id_or_null": {"$ref": "#/$defs/nullableId"},
+        "leave_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "target_cleanup_region_id_or_null": {
+          "$ref": "#/$defs/nullableId"
+        },
         "outcome_families": {
           "type": "array",
           "minItems": 1,
           "maxItems": 4,
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/outcomeFamily"}
+          "items": {
+            "$ref": "#/$defs/outcomeFamily"
+          }
         },
         "continuation_block_ids": {
           "type": "array",
           "minItems": 1,
           "maxItems": 4,
           "uniqueItems": true,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         }
       }
     },
     "sourceOrigin": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["source_origin_id", "source_unit_id", "start", "end"],
+      "required": [
+        "source_origin_id",
+        "source_unit_id",
+        "start",
+        "end"
+      ],
       "properties": {
-        "source_origin_id": {"$ref": "#/$defs/id"},
-        "source_unit_id": {"$ref": "#/$defs/id"},
-        "start": {"$ref": "#/$defs/nonnegativeInteger"},
-        "end": {"$ref": "#/$defs/nonnegativeInteger"}
+        "source_origin_id": {
+          "$ref": "#/$defs/id"
+        },
+        "source_unit_id": {
+          "$ref": "#/$defs/id"
+        },
+        "start": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "end": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        }
       }
     },
     "nodeProjection": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["hir_body_id", "hir_node_id", "lowering_rule_id", "ordered_mir_node_ids", "responsibility_id"],
+      "required": [
+        "hir_body_id",
+        "hir_node_id",
+        "lowering_rule_id",
+        "ordered_mir_node_ids",
+        "responsibility_id"
+      ],
       "properties": {
-        "hir_body_id": {"$ref": "#/$defs/id"},
-        "hir_node_id": {"$ref": "#/$defs/id"},
-        "lowering_rule_id": {"$ref": "#/$defs/id"},
+        "hir_body_id": {
+          "$ref": "#/$defs/id"
+        },
+        "hir_node_id": {
+          "$ref": "#/$defs/id"
+        },
+        "lowering_rule_id": {
+          "$ref": "#/$defs/id"
+        },
         "ordered_mir_node_ids": {
           "type": "array",
           "minItems": 1,
-          "items": {"$ref": "#/$defs/id"}
+          "items": {
+            "$ref": "#/$defs/id"
+          }
         },
-        "responsibility_id": {"$ref": "#/$defs/id"}
+        "responsibility_id": {
+          "$ref": "#/$defs/id"
+        }
       }
     },
     "moduleProvenance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["hir_semantic_digest", "lowering_registry_digest", "source_origins", "node_projections", "semantic_digest", "api_digest", "debug_digest", "provenance_digest"],
+      "required": [
+        "hir_semantic_digest",
+        "lowering_registry_digest",
+        "source_origins",
+        "node_projections",
+        "semantic_digest",
+        "api_digest",
+        "debug_digest",
+        "provenance_digest"
+      ],
       "properties": {
-        "hir_semantic_digest": {"$ref": "#/$defs/sha256"},
-        "lowering_registry_digest": {"$ref": "#/$defs/sha256"},
+        "hir_semantic_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "lowering_registry_digest": {
+          "$ref": "#/$defs/sha256"
+        },
         "source_origins": {
           "type": "array",
-          "items": {"$ref": "#/$defs/sourceOrigin"}
+          "items": {
+            "$ref": "#/$defs/sourceOrigin"
+          }
         },
         "node_projections": {
           "type": "array",
-          "items": {"$ref": "#/$defs/nodeProjection"}
+          "items": {
+            "$ref": "#/$defs/nodeProjection"
+          }
         },
-        "semantic_digest": {"$ref": "#/$defs/sha256"},
-        "api_digest": {"$ref": "#/$defs/sha256"},
-        "debug_digest": {"$ref": "#/$defs/sha256"},
-        "provenance_digest": {"$ref": "#/$defs/sha256"}
+        "semantic_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "api_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "debug_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "provenance_digest": {
+          "$ref": "#/$defs/sha256"
+        }
       }
     },
     "responsibilityAxisContract": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["ordered_axis_ids", "axis_property_mapping"],
+      "required": [
+        "ordered_axis_ids",
+        "axis_property_mapping"
+      ],
       "properties": {
         "ordered_axis_ids": {
           "type": "array",
           "prefixItems": [
-            {"const": "value_mode"},
-            {"const": "resource"},
-            {"const": "place_access"},
-            {"const": "effects"},
-            {"const": "recoverable_errors"},
-            {"const": "defects"},
-            {"const": "cancellation"},
-            {"const": "suspension"},
-            {"const": "isolation"},
-            {"const": "authority"},
-            {"const": "cleanup"}
+            {
+              "const": "value_mode"
+            },
+            {
+              "const": "resource"
+            },
+            {
+              "const": "place_access"
+            },
+            {
+              "const": "effects"
+            },
+            {
+              "const": "recoverable_errors"
+            },
+            {
+              "const": "defects"
+            },
+            {
+              "const": "cancellation"
+            },
+            {
+              "const": "suspension"
+            },
+            {
+              "const": "isolation"
+            },
+            {
+              "const": "authority"
+            },
+            {
+              "const": "cleanup"
+            }
           ],
           "items": false,
           "minItems": 11,
@@ -2892,19 +6059,53 @@
         "axis_property_mapping": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["value_mode", "resource", "place_access", "effects", "recoverable_errors", "defects", "cancellation", "suspension", "isolation", "authority", "cleanup"],
+          "required": [
+            "value_mode",
+            "resource",
+            "place_access",
+            "effects",
+            "recoverable_errors",
+            "defects",
+            "cancellation",
+            "suspension",
+            "isolation",
+            "authority",
+            "cleanup"
+          ],
           "properties": {
-            "value_mode": {"const": "value_mode"},
-            "resource": {"const": "resource_profile_id_or_null"},
-            "place_access": {"const": "place_access"},
-            "effects": {"const": "effect_ids"},
-            "recoverable_errors": {"const": "recoverable_error_ids"},
-            "defects": {"const": "defect_ids"},
-            "cancellation": {"const": "cancellation_profile_id"},
-            "suspension": {"const": "suspension_profile_id"},
-            "isolation": {"const": "isolation_profile_id"},
-            "authority": {"const": "authority_ids"},
-            "cleanup": {"const": "cleanup_obligation_ids"}
+            "value_mode": {
+              "const": "value_mode"
+            },
+            "resource": {
+              "const": "resource_profile_id_or_null"
+            },
+            "place_access": {
+              "const": "place_access"
+            },
+            "effects": {
+              "const": "effect_ids"
+            },
+            "recoverable_errors": {
+              "const": "recoverable_error_ids"
+            },
+            "defects": {
+              "const": "defect_ids"
+            },
+            "cancellation": {
+              "const": "cancellation_profile_id"
+            },
+            "suspension": {
+              "const": "suspension_profile_id"
+            },
+            "isolation": {
+              "const": "isolation_profile_id"
+            },
+            "authority": {
+              "const": "authority_ids"
+            },
+            "cleanup": {
+              "const": "cleanup_obligation_ids"
+            }
           }
         }
       }
@@ -2912,10 +6113,18 @@
     "targetIdentityFence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["backend_neutral", "target_specific_identity_count", "projection_capability_ids"],
+      "required": [
+        "backend_neutral",
+        "target_specific_identity_count",
+        "projection_capability_ids"
+      ],
       "properties": {
-        "backend_neutral": {"const": true},
-        "target_specific_identity_count": {"const": 0},
+        "backend_neutral": {
+          "const": true
+        },
+        "target_specific_identity_count": {
+          "const": 0
+        },
         "projection_capability_ids": {
           "type": "array",
           "maxItems": 0
@@ -2925,43 +6134,380 @@
     "canonicalization": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["encoding", "definite_lengths", "shortest_encodings", "canonical_map_key_order", "semantic_array_order_preserved", "decode_reencode_byte_equality", "semantic_digest_rule"],
+      "required": [
+        "encoding",
+        "definite_lengths",
+        "shortest_encodings",
+        "canonical_map_key_order",
+        "semantic_array_order_preserved",
+        "decode_reencode_byte_equality",
+        "semantic_digest_rule"
+      ],
       "properties": {
-        "encoding": {"const": "RFC8949_DETERMINISTIC_CBOR"},
-        "definite_lengths": {"const": true},
-        "shortest_encodings": {"const": true},
-        "canonical_map_key_order": {"const": true},
-        "semantic_array_order_preserved": {"const": true},
-        "decode_reencode_byte_equality": {"const": true},
-        "semantic_digest_rule": {"const": "SHA256_OF_RFC8949_DETERMINISTIC_CBOR_SEMANTIC_PROJECTION"}
+        "encoding": {
+          "const": "RFC8949_DETERMINISTIC_CBOR"
+        },
+        "definite_lengths": {
+          "const": true
+        },
+        "shortest_encodings": {
+          "const": true
+        },
+        "canonical_map_key_order": {
+          "const": true
+        },
+        "semantic_array_order_preserved": {
+          "const": true
+        },
+        "decode_reencode_byte_equality": {
+          "const": true
+        },
+        "semantic_digest_rule": {
+          "const": "SHA256_OF_RFC8949_DETERMINISTIC_CBOR_SEMANTIC_PROJECTION"
+        }
       }
     },
     "mirBody": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["body_id", "function_id", "signature", "entry_block_id", "value_table", "place_table", "move_path_table", "region_table", "loan_table", "cleanup_region_table", "linear_token_table", "continuation_frame_plan_table", "suspension_site_table", "responsibility_table", "leave_plan_table", "proof_table", "blocks"],
+      "required": [
+        "body_id",
+        "function_id",
+        "signature",
+        "entry_block_id",
+        "value_table",
+        "place_table",
+        "move_path_table",
+        "region_table",
+        "loan_table",
+        "cleanup_region_table",
+        "linear_token_table",
+        "continuation_frame_plan_table",
+        "suspension_site_table",
+        "responsibility_table",
+        "leave_plan_table",
+        "proof_table",
+        "blocks",
+        "deferred_call_registration_table",
+        "sync_plan_table"
+      ],
       "properties": {
-        "body_id": {"$ref": "#/$defs/id"},
-        "function_id": {"$ref": "#/$defs/id"},
-        "signature": {"$ref": "#/$defs/mirSignature"},
-        "entry_block_id": {"$ref": "#/$defs/id"},
-        "value_table": {"type": "array", "items": {"$ref": "#/$defs/valueDecl"}},
-        "place_table": {"type": "array", "items": {"$ref": "#/$defs/placeDecl"}},
-        "move_path_table": {"type": "array", "items": {"$ref": "#/$defs/movePathDecl"}},
-        "region_table": {"type": "array", "items": {"$ref": "#/$defs/regionDecl"}},
-        "loan_table": {"type": "array", "items": {"$ref": "#/$defs/loanDecl"}},
-        "cleanup_region_table": {"type": "array", "items": {"$ref": "#/$defs/cleanupRegionDecl"}},
-        "linear_token_table": {"type": "array", "items": {"$ref": "#/$defs/linearTokenDecl"}},
-        "continuation_frame_plan_table": {"type": "array", "items": {"$ref": "#/$defs/continuationFramePlanDecl"}},
-        "suspension_site_table": {"type": "array", "items": {"$ref": "#/$defs/suspensionSiteDecl"}},
-        "responsibility_table": {"type": "array", "items": {"$ref": "#/$defs/responsibilitySummary"}},
-        "leave_plan_table": {"type": "array", "items": {"$ref": "#/$defs/leavePlan"}},
-        "proof_table": {"type": "array", "items": {"$ref": "#/$defs/proofRecord"}},
+        "body_id": {
+          "$ref": "#/$defs/id"
+        },
+        "function_id": {
+          "$ref": "#/$defs/id"
+        },
+        "signature": {
+          "$ref": "#/$defs/mirSignature"
+        },
+        "entry_block_id": {
+          "$ref": "#/$defs/id"
+        },
+        "value_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/valueDecl"
+          }
+        },
+        "place_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/placeDecl"
+          }
+        },
+        "move_path_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/movePathDecl"
+          }
+        },
+        "region_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/regionDecl"
+          }
+        },
+        "loan_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/loanDecl"
+          }
+        },
+        "cleanup_region_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cleanupRegionDecl"
+          }
+        },
+        "deferred_call_registration_table": {
+          "type": "array",
+          "x-deeplus-unique-by": "cleanup_registration_id",
+          "items": {
+            "$ref": "#/$defs/deferredCallRegistrationDecl"
+          }
+        },
+        "linear_token_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/linearTokenDecl"
+          }
+        },
+        "continuation_frame_plan_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/continuationFramePlanDecl"
+          }
+        },
+        "suspension_site_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/suspensionSiteDecl"
+          }
+        },
+        "responsibility_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/responsibilitySummary"
+          }
+        },
+        "leave_plan_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/leavePlan"
+          }
+        },
+        "sync_plan_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sharedMutexWithLockPlan"
+          }
+        },
+        "proof_table": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/proofRecord"
+          }
+        },
         "blocks": {
           "type": "array",
           "minItems": 1,
-          "items": {"$ref": "#/$defs/mirBlock"}
+          "items": {
+            "$ref": "#/$defs/mirBlock"
+          }
         }
+      }
+    },
+    "typeHeaderCleanupEnvelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recoverable_error_ids",
+        "effect_ids"
+      ],
+      "properties": {
+        "recoverable_error_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "x-deeplus-canonical-order": "SORTED_UNIQUE_BY_ID"
+        },
+        "effect_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "x-deeplus-canonical-order": "SORTED_UNIQUE_BY_ID"
+        }
+      }
+    },
+    "typeHeaderCleanupContribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_ordinal",
+        "source_kind",
+        "source_owner_id",
+        "cleanup_plan_id",
+        "normalized_envelope"
+      ],
+      "properties": {
+        "source_ordinal": {
+          "$ref": "#/$defs/nonnegativeInteger"
+        },
+        "source_kind": {
+          "enum": [
+            "BASE_OWNER",
+            "FIELD_OWNER",
+            "OWNER_DEF_CLEANUP"
+          ]
+        },
+        "source_owner_id": {
+          "$ref": "#/$defs/id"
+        },
+        "cleanup_plan_id": {
+          "$ref": "#/$defs/id"
+        },
+        "normalized_envelope": {
+          "$ref": "#/$defs/typeHeaderCleanupEnvelope"
+        }
+      }
+    },
+    "typeHeaderCleanupCompatibilityProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relation",
+        "missing_recoverable_error_ids",
+        "missing_effect_ids",
+        "result",
+        "proof_digest"
+      ],
+      "properties": {
+        "relation": {
+          "const": "COMPUTED_SUBSET_OF_EFFECTIVE"
+        },
+        "missing_recoverable_error_ids": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "missing_effect_ids": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "result": {
+          "const": "COMPATIBLE"
+        },
+        "proof_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "typeHeaderCleanupFamilySubsetProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relation",
+        "missing_recoverable_error_ids",
+        "missing_effect_ids",
+        "result",
+        "proof_digest"
+      ],
+      "properties": {
+        "relation": {
+          "const": "EFFECTIVE_SUBSET_OF_FAMILY_ROOT"
+        },
+        "missing_recoverable_error_ids": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "missing_effect_ids": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "result": {
+          "const": "COMPATIBLE"
+        },
+        "proof_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "typeHeaderCleanupBudgetDecl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cleanup_budget_id",
+        "owner_type_id",
+        "declaration_mode",
+        "family_root_type_id",
+        "declared_envelope",
+        "effective_envelope",
+        "transitive_contributions_in_trace_order",
+        "computed_envelope",
+        "local_compatibility_proof",
+        "family_subset_proof_or_null",
+        "semantic_digest"
+      ],
+      "properties": {
+        "cleanup_budget_id": {
+          "$ref": "#/$defs/id"
+        },
+        "owner_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "declaration_mode": {
+          "enum": [
+            "IMPLICIT_EXACT_ROOT",
+            "EXPLICIT_HEADER",
+            "INHERITED_SEALED_ROOT"
+          ]
+        },
+        "family_root_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "declared_envelope": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/typeHeaderCleanupEnvelope"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "effective_envelope": {
+          "$ref": "#/$defs/typeHeaderCleanupEnvelope"
+        },
+        "transitive_contributions_in_trace_order": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/typeHeaderCleanupContribution"
+          }
+        },
+        "computed_envelope": {
+          "$ref": "#/$defs/typeHeaderCleanupEnvelope"
+        },
+        "local_compatibility_proof": {
+          "$ref": "#/$defs/typeHeaderCleanupCompatibilityProof"
+        },
+        "family_subset_proof_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/typeHeaderCleanupFamilySubsetProof"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "semantic_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "x-deeplus-cross-field-contract": {
+        "projection": "EXACT_HIR_TYPE_HEADER_CLEANUP_BUDGET_RECORD",
+        "declared_envelope_nullability": "declared_envelope is null exactly for IMPLICIT_EXACT_ROOT and INHERITED_SEALED_ROOT and non-null exactly for EXPLICIT_HEADER",
+        "computed_envelope": "normalized sorted-unique union of the exact transitive contributions",
+        "local_compatibility": "computed_envelope is a subset of effective_envelope on both axes",
+        "family_subset": "every child effective envelope is a subset of its family-root effective envelope",
+        "contribution_trace_order": "BASE_OWNER, then FIELD_OWNER in declaration order, then OWNER_DEF_CLEANUP; diagnostic/trace order only",
+        "runtime_cleanup_order_unchanged": "OWNER_DEF_CLEANUP, then own fields in reverse successful acquisition order, then BASE_OWNER",
+        "allowed_contribution_sources": [
+          "BASE_OWNER",
+          "FIELD_OWNER",
+          "OWNER_DEF_CLEANUP"
+        ],
+        "failure_priority": [
+          "CLEANUP_BUDGET_DUPLICATE",
+          "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+          "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT",
+          "CLEANUP_BUDGET_EXCEEDED"
+        ],
+        "p1_022_decision": "EXCLUDED"
       }
     }
   },
@@ -2974,8 +6520,10 @@
     "constant_kind_count": 9,
     "proof_kind_count": 2,
     "canonical_type_kind_count": 39,
-    "static_identity_domain_count": 27,
-    "machine_registry_id": "deeplus.mir-machine-registry/r1"
+    "static_identity_domain_count": 33,
+    "machine_registry_id": "deeplus.mir-machine-registry/r1",
+    "closure_environment_plan_table_count": "MODULE_LOCAL_ZERO_OR_MORE",
+    "new_operation_kind_count_for_closure_capture_plan": 0
   },
   "x-deeplus-verifier-contract": {
     "machine_registry_digest_resolution": "RESOLVE_EXACT_REGISTRY_BYTES_AND_VERIFY_RFC8949_CBOR_DIGEST",
@@ -2992,20 +6540,64 @@
     "cfg_reachability_and_single_terminator": "RECOMPUTE",
     "ssa_dominance_and_edge_transfer": "RECOMPUTE",
     "place_move_loan_and_reservation_state": "RECOMPUTE_FROM_R8_CONTRACT",
+    "closure_environment_plan": "RECOMPUTE_UNIQUE_PLAN_AND_CAPTURE_FIELD_IDENTITIES_CONTIGUOUS_SOURCE_ORDINALS_EXACT_NORMALIZED_TYPES_LIST_STATE_RESIDENCE_CLOSED_ASSERTION_AND_SORTED_UNIQUE_LEXICAL_DEPENDENCIES",
+    "closure_capture_transaction": "RECOMPUTE_LEFT_TO_RIGHT_EXACTLY_ONCE_REVERSE_ROLLBACK_BUILDER_COMMIT_BEFORE_INFALLIBLE_CLOSURE_MAKE_AND_NO_PARTIAL_PUBLICATION_USING_ONLY_EXISTING_OPERATION_AND_TERMINATOR_KINDS",
+    "closure_make_payload": "REQUIRE_EXACT_PLAN_COMMITTED_CONSTRUCTION_ENVIRONMENT_VALUE_BODY_AND_SOURCE_ORDERED_CAPTURE_FIELD_BINDING",
+    "module_api_value_identity_fence": "REJECT_EXPORT_OF_CAPTURE_PLAN_CAPTURE_FIELD_EVAL_VALUE_PLACE_REGION_LOAN_RESERVATION_CLEANUP_CONSTRUCTION_OR_CLOSURE_IDENTITIES",
     "linear_token_balance": "RECOMPUTE_PATH_SENSITIVE_EXACTLY_ONCE",
     "cleanup_lifo_and_suppression": "RECOMPUTE",
+    "deferred_call_registration_table": "RECOMPUTE_UNIQUE_REGISTRATION_ID_CONTIGUOUS_ORDINALS_EXACT_OPERAND_ORDER_AND_THREE_PHASE_PUBLICATION",
+    "deferred_call_move_commit": "RECOMPUTE_MOVE_RESERVATION_CONSUMED_EXACTLY_AT_CLEANUP_SEAL_AND_SOURCE_OWNER_DEAD_AFTER_SEAL",
+    "deferred_call_suspend_cancel": "SUSPEND_PRESERVES_ACTIVE_PLAN_WITHOUT_EXECUTION; TERMINAL_CANCEL_DRAINS_IT_THROUGH_LEAVE",
     "suspension_live_set_and_root_map": "RECOMPUTE",
     "continuation_frame_owner_token_root_partition": "RECOMPUTE_EXACT_DISJOINT_UNION",
     "continuation_frame_epoch_single_winner": "RECOMPUTE_EXACTLY_ONE_RESUME_OR_CANCEL",
     "continuation_frame_cleanup_balance": "RECOMPUTE_EXACTLY_ONCE_LIFO",
     "managed_memory_plan": "RECOMPUTE_AND_BIND_DEEPLUS_MANAGED_MEMORY_PLAN_R1_WHEN_DM_CAP_SAFEPOINT_ROOTMAP_R1_IS_REQUIRED",
     "responsibility_projection": "RECOMPUTE_ALL_11_AXES_IN_EXACT_ORDER_AND_PROPERTY_MAPPING",
+    "responsibility_evidence_projection": "REQUIRE_STRICT_RESPONSIBILITY_EVIDENCE_ID_ORDER_AND_UNIQUENESS_RESOLVE_EXACT_RULE_EVIDENCE_AND_HELPER_DOMAINS_AND_COMPARE_TYPED_HIR_DESCRIPTOR_WITHOUT_RUNTIME_OR_BACKEND_RELOOKUP",
     "target_identity_fence": "REJECT_XBC_CLIF_NATIVE_ADDRESS_ABI_OBJECT_LAYOUT_AND_TARGET_PROJECTION_DOMAINS",
     "deterministic_serialization": "RFC8949_DECODE_REENCODE_BYTE_EQUALITY",
-    "product_execution": "NOT_RUN"
+    "product_execution": "NOT_RUN",
+    "cleanup_budget_envelope_table": "RECOMPUTE_EXACT_HIR_PROJECTION_SORTED_UNIQUE_ENVELOPES_CLOSED_CONTRIBUTIONS_AND_SUBSET_PROOF",
+    "loan_close_path_balance": "RECOMPUTE_FROM_LOAN_CLOSE_OPERATION_R1",
+    "sync_plan_resolution": "EACH_SYNC_OP_SYNC_PLAN_ID_RESOLVES_EXACTLY_ONCE_IN_THE_ENCLOSING_BODY_SYNC_PLAN_TABLE",
+    "shared_mutex_payload_predicate_binding": "RECOMPUTE_SHARED_MUTEX_PAYLOAD_ADMITTED_FROM_SHARED_MUTEX_PAYLOAD_DESCRIPTOR_R1_AND_MATCH_EXACT_PREDICATE_CONTRACT_DIGEST",
+    "shared_mutex_terminal_release_balance": "RECOMPUTE_LOCK_ACQUIRE_TO_EXCLUSIVE_LOAN_TO_CALLBACK_TO_LOAN_END_TO_LOCK_RELEASE_ON_NORMAL_ERROR_DEFECT_AND_CANCELLATION"
+  },
+  "x-deeplus-shared-mutex-with-lock-contract": {
+    "plan_schema": "SharedMutexWithLockPlan",
+    "plan_kind": "SHARED_MUTEX_WITH_LOCK",
+    "public_payload_bound": "SharedMutexPayload",
+    "payload_predicate_id": "SharedMutexPayloadAdmitted",
+    "ordered_runtime_steps": [
+      "LOCK_ACQUIRE",
+      "LOAN_BEGIN_EXCLUSIVE",
+      "CALLBACK_INVOKE",
+      "LOAN_END",
+      "LOCK_RELEASE"
+    ],
+    "terminal_outcomes": [
+      "NORMAL",
+      "ERROR",
+      "DEFECT",
+      "CANCELLATION"
+    ],
+    "token_contract": {
+      "LOCK_ACQUIRE_outputs": [
+        "exclusive_ACCESS_token",
+        "unlock_CLEANUP_token"
+      ],
+      "LOAN_END_discharges": "exclusive_ACCESS_token",
+      "LOCK_RELEASE_discharges": "unlock_CLEANUP_token"
+    },
+    "wrapper_unlock_excluded_from_payload_predicate": true,
+    "unlock_failure_admitted": false,
+    "new_operation_or_terminator_kind_count": 0,
+    "product_support": "NOT_RUN"
   },
   "x-deeplus-status-fence": {
-    "schema_materialization": "R11_INTEGRATED_DESIGN",
+    "schema_materialization": "R31_CLOSURE_CAPTURE_PLAN_DESIGN",
     "design_contract_only": true,
     "product_lanes": "15_OF_15_NOT_RUN",
     "product_execution": "NOT_RUN",

@@ -62,6 +62,54 @@ NominalConformanceRoute ::= ConformanceViaClause
 ClassBody             ::= "{" MemberDecl* "}"
 ```
 
+#### Class header의 `cleanup budget`
+
+`cleanup budget`은 member가 아니라 Class header의 마지막 선택 절이다.
+현행 철자는 다음과 같으며 `effects io`처럼 중괄호를 생략하지 않는다.
+
+```ebnf
+CleanupBudgetClause ::= "cleanup" "budget" "{" CleanupBudgetItem* "}"
+CleanupBudgetItem   ::= EffectsBudget | ErrorsBudget
+EffectsBudget       ::= "effects" "{" IdentifierList? "}"
+ErrorsBudget        ::= "errors" TypeRef
+```
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/language.md -->
+```deeplus
+private data class Tracked
+cleanup budget {
+    effects { audit, io }
+    errors CloseError | FlushError
+}
+{
+    def#cleanup()
+        throws CloseError
+        effects audit
+        effects io
+    = {
+        auditHandle()
+        closeHandle()
+    }
+}
+```
+
+하나의 block에서 `effects`와 `errors`는 각각 최대 한 번만 쓴다. block이
+있는데 한 축을 쓰지 않으면 그 축은 빈 집합이다. 즉 `effects` 생략은
+`{}`, `errors` 생략은 `Never`이고, `cleanup budget {}`은 두 축 모두가
+빈 명시적 상한이다. 반대로 상속하지 않는 Class가 block 전체를
+생략하면 checker가 base, 소유 field, `def#cleanup`의 책임을 합쳐 정확한
+envelope을 추론한다. 두 생략은 서로 다른 의미다.
+
+cleanup-bearing base, field와 hook의 ErrorSet/EffectRow를 정규화한 합집합은
+Class의 유효 envelope 안에 있어야 한다. Defect, Cancellation, suspension,
+authority는 이 두 집합의 원소가 아니다. 이 검사는 cleanup 실행 순서를
+바꾸지 않는다.
+
+Stable resource 상속은 같은 module의 sealed root에 한정한다. root는
+명시적 budget을 가져야 하며, 그 값이 family의 공개 상한이다. header를
+생략한 child는 root 상한을 그대로 상속한다. 명시한 child는 자기의 모든
+정리 책임을 포함하면서 root보다 같거나 좁힐 수 있지만 넓힐 수 없다.
+
 Class의 직접 base는 물리 줄 경계에서 시작하는 `derives Base` 하나만
 허용한다. Trait 관계는 별도 줄의 `conforms Trait`를 반복한다. 각
 관계 줄의 `where`는 그 줄에만 결합한다. `:`는 상속 표면이 아니다.

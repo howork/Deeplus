@@ -1,0 +1,150 @@
+{
+  "schema": "deeplus.ownership-type-qualifier-fixtures/r1",
+  "contract": "spec/contracts/ownership-type-qualifier-r1.json",
+  "revision": "R29-LOCAL-CANDIDATE-R1",
+  "status": "DESIGN_STATIC_NOT_RUN",
+  "gap_id": "IR-OWN-P1-018",
+  "baseline_commit": "87115776365fcbe8870d2f631050db3e23194c9b",
+  "baseline_tree": "2452f0a6be1e1391b3678dafa86987059b115ec7",
+  "acceptance_rows": [
+    {
+      "test_id": "OWN-GAP-P-018",
+      "kind": "POSITIVE",
+      "scenario": "direct invocation-bound borrowed Bytes keeps one owner region",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "BORROWED", "context": "CALLABLE_PARAMETER_TYPE", "region_binding": true},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "BORROWED", "diagnostic": null}
+    },
+    {
+      "test_id": "R29-OTQ-P-002",
+      "kind": "POSITIVE",
+      "scenario": "owned field preserves exclusive owner and cleanup responsibility",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "OWNED", "context": "STORED_FIELD"},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "OWNED", "diagnostic": null}
+    },
+    {
+      "test_id": "R29-OTQ-P-003",
+      "kind": "POSITIVE",
+      "scenario": "root-connected scoped function item borrow T is a channel mode",
+      "input": {"surface_form": "FUNCTION_TYPE_DIRECT", "leading_token": "borrow", "context": "FUNCTION_TYPE_ITEM", "region_binding": true, "nonescaping": true},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "BORROW", "type_ownership_qualifier": "UNQUALIFIED", "diagnostic": null}
+    },
+    {
+      "test_id": "R29-OTQ-P-004",
+      "kind": "POSITIVE",
+      "scenario": "inner grouped mut type in a function item remains a type qualifier",
+      "input": {"surface_form": "FUNCTION_TYPE_GROUPED_TYPE", "leading_token": "mut", "context": "FUNCTION_TYPE_ITEM", "uniqueness_proof": true},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "MUT", "diagnostic": null}
+    },
+    {
+      "test_id": "OWN-GAP-B-018",
+      "kind": "BOUNDARY",
+      "scenario": "mut parameter mode and mut type qualifier remain distinct fields",
+      "input": {"surface_form": "NAMED_PARAMETER", "parameter_mode": "MUT_LOCAL", "qualifier": "MUT", "context": "CALLABLE_PARAMETER_TYPE", "uniqueness_proof": true},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "MUT_LOCAL", "type_ownership_qualifier": "MUT", "diagnostic": null}
+    },
+    {
+      "test_id": "R29-OTQ-B-006",
+      "kind": "BOUNDARY",
+      "scenario": "direct scoped function item inout T is channel mode after arrow commit",
+      "input": {"surface_form": "FUNCTION_TYPE_DIRECT", "leading_token": "inout", "context": "FUNCTION_TYPE_ITEM", "region_binding": true, "nonescaping": true},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "INOUT", "type_ownership_qualifier": "UNQUALIFIED", "diagnostic": null}
+    },
+    {
+      "test_id": "R29-OTQ-B-007",
+      "kind": "BOUNDARY",
+      "scenario": "non-function parenthesized inout T remains a type qualifier",
+      "input": {"surface_form": "PARENTHESIZED_NON_FUNCTION_TYPE", "leading_token": "inout", "context": "LOCAL_BINDING", "region_binding": true, "nonescaping": true},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "INOUT", "diagnostic": null}
+    },
+    {
+      "test_id": "R29-OTQ-B-008",
+      "kind": "BOUNDARY",
+      "scenario": "transparent alias expansion leaves exactly one borrowed qualifier",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "BORROWED", "context": "OPTIONAL_TYPE", "region_binding": true, "effective_qualifier_count": 1, "alias_expanded": true},
+      "expected": {"verdict": "ACCEPT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "BORROWED", "diagnostic": null}
+    },
+    {
+      "test_id": "R29-OTQ-N-009",
+      "kind": "NEGATIVE",
+      "scenario": "nested qualifier after alias expansion is rejected even when identical",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "OWNED", "context": "LOCAL_BINDING", "effective_qualifier_count": 2},
+      "expected": {"verdict": "REJECT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "OWNED", "diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED"}
+    },
+    {
+      "test_id": "R29-OTQ-N-010",
+      "kind": "NEGATIVE",
+      "scenario": "borrowed view cannot become stored field",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "BORROWED", "context": "STORED_FIELD", "region_binding": true},
+      "expected": {"verdict": "REJECT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "BORROWED", "diagnostic": "BORROW_ESCAPE_OWNER_REGION"}
+    },
+    {
+      "test_id": "OWN-GAP-N-018",
+      "kind": "NEGATIVE",
+      "scenario": "public borrowed return without declared origin relation is rejected",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "BORROWED", "context": "RETURN_TYPE", "region_binding": true, "declared_origin_relation": false},
+      "expected": {"verdict": "REJECT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "BORROWED", "diagnostic": "BORROW_ESCAPE_OWNER_REGION"}
+    },
+    {
+      "test_id": "R29-OTQ-N-012",
+      "kind": "NEGATIVE",
+      "scenario": "inout view cannot become stored field",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "INOUT", "context": "STORED_FIELD", "region_binding": true, "nonescaping": true},
+      "expected": {"verdict": "REJECT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "INOUT", "diagnostic": "BORROW_ESCAPE_OWNER_REGION"}
+    },
+    {
+      "test_id": "R29-OTQ-N-013",
+      "kind": "NEGATIVE",
+      "scenario": "inout optional wrapper is not an admitted value type",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "INOUT", "context": "OPTIONAL_TYPE", "region_binding": true, "nonescaping": true},
+      "expected": {"verdict": "REJECT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "INOUT", "diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED"}
+    },
+    {
+      "test_id": "R29-OTQ-N-014",
+      "kind": "NEGATIVE",
+      "scenario": "qualified type is not distributed into a union member",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "MUT", "context": "UNION_OR_INTERSECTION_MEMBER", "uniqueness_proof": true},
+      "expected": {"verdict": "REJECT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "MUT", "diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED"}
+    },
+    {
+      "test_id": "R29-OTQ-N-015",
+      "kind": "NEGATIVE",
+      "scenario": "implicit qualifier covariance or erasure is rejected",
+      "input": {"surface_form": "TYPE_REF", "qualifier": "OWNED", "context": "EXPORTED_API", "api_residue": true, "implicit_qualifier_conversion": true},
+      "expected": {"verdict": "REJECT", "parameter_mode": "ORDINARY", "type_ownership_qualifier": "OWNED", "diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED"}
+    },
+    {
+      "test_id": "R29-OTQ-N-016",
+      "kind": "NEGATIVE",
+      "scenario": "direct function item borrow T without region proof is rejected",
+      "input": {"surface_form": "FUNCTION_TYPE_DIRECT", "leading_token": "borrow", "context": "FUNCTION_TYPE_ITEM", "region_binding": false, "nonescaping": true},
+      "expected": {"verdict": "REJECT", "parameter_mode": "BORROW", "type_ownership_qualifier": "UNQUALIFIED", "diagnostic": "BORROW_ESCAPE_OWNER_REGION"}
+    }
+  ],
+  "expected_acceptance_counts": {
+    "total": 16,
+    "POSITIVE": 4,
+    "BOUNDARY": 4,
+    "NEGATIVE": 8
+  },
+  "mutation_rows": [
+    {"mutation_id": "R29-OTQ-M-001", "operation": "replace", "pointer": "/source_surface/exact_qualifier_spellings/3", "value": "lent", "expected_check_id": "R29_OTQ_SURFACE_EXACT"},
+    {"mutation_id": "R29-OTQ-M-002", "operation": "replace", "pointer": "/identity_separation/implicit_conversion_between_domains", "value": true, "expected_check_id": "R29_OTQ_IDENTITY_SEPARATION"},
+    {"mutation_id": "R29-OTQ-M-003", "operation": "replace", "pointer": "/normalization/alias_expansion_precedes_uniqueness_check", "value": false, "expected_check_id": "R29_OTQ_NORMALIZATION"},
+    {"mutation_id": "R29-OTQ-M-004", "operation": "replace", "pointer": "/normalization/duplicate_same_qualifier_is_idempotent", "value": true, "expected_check_id": "R29_OTQ_NORMALIZATION"},
+    {"mutation_id": "R29-OTQ-M-005", "operation": "replace", "pointer": "/qualifier_semantics/2/variance", "value": "COVARIANT", "expected_check_id": "R29_OTQ_VARIANCE"},
+    {"mutation_id": "R29-OTQ-M-006", "operation": "replace", "pointer": "/context_legality/rows/4/admission/STORED_FIELD", "value": "ACCEPT", "expected_check_id": "R29_OTQ_CONTEXT"},
+    {"mutation_id": "R29-OTQ-M-007", "operation": "replace", "pointer": "/api_residue/public_qualifier_erasure_allowed", "value": true, "expected_check_id": "R29_OTQ_API_RESIDUE"},
+    {"mutation_id": "R29-OTQ-M-008", "operation": "replace", "pointer": "/mir_mapping/rows/3/ownership_mode", "value": "INOUT", "expected_check_id": "R29_OTQ_MIR_MAPPING"},
+    {"mutation_id": "R29-OTQ-M-009", "operation": "replace", "pointer": "/diagnostic_dispatch/borrowed_or_inout_unbound_escape", "value": "OWNERSHIP_MODE_ADMISSION_FAILED", "expected_check_id": "R29_OTQ_DIAGNOSTICS"},
+    {"mutation_id": "R29-OTQ-M-010", "operation": "replace", "pointer": "/identity_separation/function_type_disambiguation/direct_channel_normalization/2", "value": "ORDINARY", "expected_check_id": "R29_OTQ_FUNCTION_TYPE_DISAMBIGUATION"}
+  ],
+  "expected_mutation_count": 10,
+  "status_fence": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN",
+    "github_mutation": 0
+  }
+}

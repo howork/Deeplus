@@ -269,6 +269,64 @@
       "ACTOR_MESSAGE::ACTOR_TRANSPORT"
     ]
   },
+  "deferred_call_plan_contract": {
+    "status": "CURRENT_STABLE_DESIGN_MACHINE_SCHEMA_NOT_PRODUCT_EXECUTION",
+    "hir_location": "CleanupScopePlan.registrations_in_source_order[*].deferred_call_plan",
+    "mir_location": "MirBody.deferred_call_registration_table keyed by cleanup_registration_id",
+    "admitted_call_mode_target_pairs": [
+      "ORDINARY::DIRECT_IMPLEMENTATION",
+      "ORDINARY::VIRTUAL_SLOT",
+      "ORDINARY::TRAIT_WITNESS",
+      "ORDINARY::EXTENSION_STATIC",
+      "MESSAGE::DIRECT_IMPLEMENTATION",
+      "MESSAGE::VIRTUAL_SLOT",
+      "MESSAGE::TRAIT_WITNESS",
+      "MESSAGE::EXTENSION_STATIC",
+      "MESSAGE::RESERVED_OPERATION"
+    ],
+    "forbidden_pair": "ACTOR_MESSAGE::ACTOR_TRANSPORT",
+    "selection_time": "STATIC_PREFLIGHT_BEFORE_OPERAND_EVALUATION",
+    "dynamic_operand_order": [
+      "callee_or_receiver",
+      "explicit_arguments_in_source_order_including_context",
+      "selected_defaults_in_ordinary_default_evaluation_order"
+    ],
+    "static_evidence_evaluation_count": 0,
+    "default_body_binding": "DefaultValueRef.body_semantic_digest",
+    "responsibility_profiles": [
+      "registration_responsibility_profile_id",
+      "execution_responsibility_profile_id",
+      "result_responsibility_profile_id",
+      "one responsibility_profile_id per dynamic operand",
+      "one responsibility_profile_id per static evidence binding"
+    ],
+    "responsibility_axis_count": 11,
+    "publication_sequence": [
+      "CLEANUP_REGISTER",
+      "CLEANUP_PIN_ZERO_OR_MORE",
+      "CLEANUP_SEAL"
+    ],
+    "move_into_plan_commit": "MOVE_RESERVATION_CONSUMED_AT_CLEANUP_SEAL_SOURCE_OWNER_DEAD_AFTER_SEAL",
+    "preseal_rollback": [
+      "CLEANUP_DISARM",
+      "LOAN_END_REVERSE_ACQUISITION_ORDER",
+      "MOVE_CANCEL_REVERSE_ACQUISITION_ORDER",
+      "OWNED_TEMPORARY_CLEANUP_REVERSE_ACQUISITION_ORDER"
+    ],
+    "external_effect_rollback_claim": false,
+    "suspension": "PRESERVE_REGISTERED_PLAN_NO_EXECUTION",
+    "terminal_leave_roles": [
+      "SUCCESS",
+      "ERROR",
+      "DEFECT",
+      "CANCEL"
+    ],
+    "cleanup_execution": "INTERNAL_TO_LEAVE_STRICT_LIFO_EXACTLY_ONCE",
+    "cleanup_register_payload_expansion_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "module_api_value_level_residue_count": 0,
+    "product_support": "NOT_RUN"
+  },
   "power_plan_contract": {
     "node": "HirPowerPlan",
     "owner": "HirIntrinsicPlan",
@@ -483,6 +541,98 @@
     "new_observable_mir_event_count": 0,
     "product_support": "NOT_RUN"
   },
+  "closure_capture_plan_contract": {
+    "status": "STABLE_DESIGN_MACHINE_PROJECTION",
+    "hir_schema_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
+    "capture_sum": {
+      "discriminator": "capture_kind",
+      "variants": [
+        "ReferenceCapture",
+        "InitializerCapture"
+      ],
+      "common_required_fields": [
+        "capture_field_id",
+        "source_ordinal",
+        "normalized_type_id",
+        "responsibility_profile_id"
+      ],
+      "reference_capture": "ResolvedRef plus BORROW, INOUT, MOVE, COPY, CLONE, DEEP, or ONCE mode and its ordered preparation/evidence residue",
+      "initializer_capture": "one owning initializer_expr_id tagged with initializer_binding_kind LET or VAR and one result_eval_id"
+    },
+    "plan_identity_and_state": {
+      "capture_plan_id": "BODY_LOCAL_UNIQUE_CAPTURE_PLAN_ID",
+      "capture_field_id": "BODY_LOCAL_UNIQUE_CAPTURE_FIELD_ID",
+      "source_ordinal": "ZERO_BASED_CONTIGUOUS_EXACT_SOURCE_ORDER",
+      "capture_list_state": [
+        "ABSENT",
+        "PRESENT_EMPTY",
+        "PRESENT_NONEMPTY"
+      ],
+      "normalized_type": "EXACT_CLOSED_FIELD_NORMALIZED_TYPE"
+    },
+    "residence_and_lexical_dependency": {
+      "residence": "FrameIndependent | RegionBound(RegionId)",
+      "closed_ancestor_frame_assertion": "bool",
+      "lexical_dependencies": "SORTED_UNIQUE_ANCESTOR_BODY_PLACE_DEPTH_REGION_READ_LIVE_READABLE_ROWS",
+      "frame_independent_dependency_count": 0,
+      "closed_assertion_dependency_count": 0,
+      "nonempty_dependencies_require": "REGION_BOUND_AND_NOT_CLOSED"
+    },
+    "mir_projection": {
+      "table": "closure_environment_plan_table",
+      "new_mir_operation_kind_count": 0,
+      "reused_operation_kinds": [
+        "BUILDER_BEGIN",
+        "BUILDER_STAGE",
+        "BUILDER_COMMIT",
+        "PLACE_MOVE",
+        "MOVE_RESERVE",
+        "MOVE_CANCEL",
+        "LOAN_BEGIN_SHARED",
+        "LOAN_BEGIN_EXCLUSIVE",
+        "LOAN_END",
+        "CLEANUP_REGION_ENTER",
+        "CLEANUP_REGISTER",
+        "CLEANUP_DISARM"
+      ],
+      "reused_terminator_kinds": [
+        "CHECKED",
+        "LEAVE"
+      ],
+      "closure_make_payload": [
+        "closure_id",
+        "closure_environment_plan_id",
+        "committed_construction_id",
+        "environment_value_id",
+        "capture_field_ids_in_source_order"
+      ]
+    },
+    "transaction": {
+      "evaluation": "LEFT_TO_RIGHT_EXACTLY_ONCE",
+      "failure_before_commit": "CHECKED_OR_LEAVE_TO_REVERSE_ACQUISITION_ROLLBACK",
+      "commit": "BUILDER_COMMIT_PRECEDES_CLOSURE_MAKE",
+      "closure_make_after_commit": "INFALLIBLE",
+      "publication": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
+    },
+    "api_fence": {
+      "public_residue": "CALLABLE_SIGNATURE_NORMALIZED_TYPE_AND_RESPONSIBILITY_ONLY",
+      "value_level_identity_export_count": 0,
+      "forbidden": [
+        "CapturePlanId",
+        "CaptureFieldId",
+        "EvalId",
+        "MirValueId",
+        "MirPlaceId",
+        "RegionId",
+        "LoanId",
+        "MoveReservationId",
+        "CleanupRegistrationId",
+        "ConstructionId",
+        "ClosureId"
+      ]
+    },
+    "product_support": "NOT_RUN"
+  },
   "concise_responsibility_preview_bridge": {
     "status": "PREVIEW_DESIGN_NONACTIVATABLE",
     "lossless_clause_presence_reaches_mir": false,
@@ -536,7 +686,7 @@
     "schema": "schemas/language/suspension-frame-responsibility.schema.json",
     "continuation_interface_contract": "spec/contracts/continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "continuation_interface_digest": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
     "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
     "hir_structural_plan": "ContinuationFramePlan",
     "static_identity_count": 3,
@@ -577,7 +727,10 @@
     "digest_only_pair_acceptance": false,
     "executable_mir_without_verified_pair": false,
     "current_machine_schema": "deeplus.mir/r1",
-    "current_output_type": "Verified<DeeplusMirR1>"
+    "current_output_type": "Verified<DeeplusMirR1>",
+    "deferred_call_plan_projection": "CleanupRegistrationId resolves one exact deferred_call_registration_table row; CLEANUP_REGISTER payload remains the existing two-ID payload",
+    "deferred_call_plan_reselection_count": 0,
+    "deferred_call_plan_payload_expansion_count": 0
   },
   "backend_authority": {
     "current": [
@@ -724,8 +877,8 @@
     "active_conditional_managed_helper_count": 3,
     "runtime_callback_count": 0,
     "external_ffi_included": false,
-    "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
-    "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "managed_reference_profile_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7",
+    "continuation_interface_digest_or_null": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
     "canonical_promotion_ready": true,
     "release_verifier_diagnostic_count": 12,
     "product_support": "NOT_RUN",
@@ -735,7 +888,7 @@
     {
       "rule_id": "H1MB-R001",
       "title": "machine schemas are current Stable design without product activation",
-      "contract": "The eight R10 HIR/MIR machine schemas and registries are current Stable-design authorities. They create no source activation, canonical instance, implementation, execution, backend switch, P1 closure, or product support."
+      "contract": "The bounded HIR/MIR machine schemas and registries, including the R31 closure-capture projection, are current Stable-design authorities. They create no source activation, canonical instance, implementation, execution, backend switch, P1 closure, or product support."
     },
     {
       "rule_id": "H1MB-R002",
@@ -836,6 +989,16 @@
       "rule_id": "H1MB-R021",
       "title": "suspension frames preserve responsibility atomically",
       "contract": "Every suspension point binds one closed ContinuationFramePlan and exact ContinuationInterfaceId/digest. Suspension commit atomically transfers the owner, admitted-loan, cleanup-token, and retained-authority partition; managed storage-location roots are bijectively rebound to fresh destination RootIds before source removal. A fresh epoch admits exactly one resume-or-cancel winner, and every terminal path has zero responsibility balance."
+    },
+    {
+      "rule_id": "H1MB-R019",
+      "title": "the bridge observes current backend authority without reselecting it",
+      "contract": "The externally ratified current backend path is xVM initial execution, Cranelift ObjectModule AOT, and Cranelift JITModule. This HIR bridge adds no backend-specific HIR field and cannot select xVM-only, restore a superseded native path, or claim product execution."
+    },
+    {
+      "rule_id": "H1MB-R021",
+      "title": "closure capture construction is transactional without new MIR operations",
+      "contract": "Tagged ReferenceCapture and InitializerCapture fields evaluate left-to-right exactly once into a private builder, failure uses CHECKED or LEAVE and reverse rollback through existing move, loan, and cleanup machinery, BUILDER_COMMIT precedes infallible CLOSURE_MAKE, partial publication is forbidden, and no capture/value identity enters module API bytes."
     }
   ],
   "machine_acceptance": {
@@ -871,6 +1034,7 @@
     "mir_operation_count": 48,
     "mir_terminator_count": 17,
     "mir_linear_token_kind_count": 12,
+    "new_mir_operation_kind_count": 0,
     "responsibility_axis_count": 11,
     "design_capability_count": 26,
     "valid_call_mode_target_pair_count": 10,

@@ -77,5 +77,248 @@
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
     "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "StableComprehensionScopedUseMembershipAdmitted",
+    "source_name": "Stable comprehension, scoped-use, and membership family",
+    "summary": "Design-static checker seed for comprehension, scoped activation and membership; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "element_types"
+    ],
+    "feature_refs": [
+      "list_comprehension",
+      "comprehension_unfold",
+      "membership_in_operator_candidate",
+      "scoped_extension_activation_use"
+    ],
+    "diagnostic_refs": [
+      "MEMBERSHIP_IN_PROTOCOL_NOT_SATISFIED",
+      "SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY"
+    ],
+    "design_seed_diagnostic_refs": [
+      "MEMBERSHIP_IN_PROTOCOL_NOT_SATISFIED",
+      "SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "ordinary source admitted without feature gate",
+      "lexical use order is not priority"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "lookup_domain",
+      "extension_member_id",
+      "source_role",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-StableComprehensionScopedUseMembershipAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "ordinary source admitted without feature gate",
+      "lexical use order is not priority"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record StableComprehensionScopedUseMembershipAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "MEMBERSHIP_IN_PROTOCOL_NOT_SATISFIED",
+    "secondary_diagnostics": [
+      "SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY"
+    ],
+    "positive_fixture_ids": [
+      "PF-StableComprehensionScopedUseMembershipAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-StableComprehensionScopedUseMembershipAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "10c310013218eb18261698a24bfc5d8d42300d4f1b1bd337569a178e832a37af",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  },
+  {
+    "predicate_id": "ClosedAnonymousUnionAdmitted",
+    "formal_judgment_id": "J-ClosedAnonymousUnionAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "alternative_count >= 2 and finite",
+      "alternatives are normalized, unique, pairwise non-overlapping",
+      "direct operation requires narrowing"
+    ],
+    "normalization": "normalize aliases, ownership/regions, static labels, evidence identities, and policy enums before decision",
+    "decision_procedure": [
+      "validate the closed RCTSDescriptorV5 and native conditional constraints",
+      "evaluate dependency predicates left-to-right and propagate their selected diagnostic",
+      "check alternative_count >= 2 and finite",
+      "check alternatives are normalized, unique, pairwise non-overlapping",
+      "check direct operation requires narrowing",
+      "emit the first declared diagnostic on failure; otherwise return the normalized success contract"
+    ],
+    "requires": [
+      "alternative_count >= 2 and finite",
+      "alternatives are normalized, unique, pairwise non-overlapping",
+      "direct operation requires narrowing"
+    ],
+    "termination_metric": "finite descriptor size and a strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "UNION_VALUE_REQUIRES_NARROWING",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-ClosedAnonymousUnionAdmitted-POS",
+      "PF-ClosedAnonymousUnionAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ClosedAnonymousUnionAdmitted-NEG"
+    ],
+    "evaluation_order": "schema -> normalization -> dependencies -> ordered local conditions -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "source_name": "ClosedAnonymousUnionAdmitted",
+    "summary": "Admits a finite closed tagged union of pairwise-disjoint normalized alternatives.",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "call_shape",
+      "product_evidence"
+    ],
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "call_shape",
+      "product_evidence"
+    ],
+    "feature_refs": [
+      "closed_anonymous_union_type_msp"
+    ],
+    "diagnostic_refs": [
+      "UNION_VALUE_REQUIRES_NARROWING"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_dispatch": {
+      "first_failed_condition": "UNION_VALUE_REQUIRES_NARROWING"
+    },
+    "diagnostic_disposition": "active_primary"
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "SharedMutexPayloadAdmitted",
+    "source_name": "SharedMutexPayload",
+    "summary": "Admit the sealed SharedMutex payload bound only for a closed normalized owned-component graph with no resource lifecycle, cleanup responsibility, borrowed view, or unresolved generic residue.",
+    "input_descriptor": "SharedMutexPayloadDescriptorR1",
+    "descriptor_axes": [
+      "normalized_type",
+      "ownership",
+      "cleanup",
+      "error_set",
+      "effect_row",
+      "suspension",
+      "cancellation",
+      "authority",
+      "element_types"
+    ],
+    "feature_refs": [
+      "shared_mutex_no_drop_minimum_profile"
+    ],
+    "diagnostic_refs": [
+      "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "resolve the sealed compiler-known SharedMutexPayload ResponsibilityRuleId; it is not a Trait and direct conformance or annotation cannot create evidence",
+      "normalize transparent aliases and traverse the finite owner-closed stored-component graph in canonical field-path order with memoized SCC states",
+      "require every reachable component to be Reusable or Affine with cleanup none, empty cleanup error/effect/authority rows, no cleanup suspension or cancellation, and no borrowed/inout view region",
+      "require every generic component to carry the exact SharedMutexPayload bound and reject opaque or incomplete proof state",
+      "exclude the SharedMutex wrapper-owned unlock obligation from payload admission while preserving its infallible exactly-once law",
+      "perform admission before the SharedMutex::new move commit so rejection retains the source owner"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/shared-mutex-payload-bound-r1.json",
+    "rule_facets": [
+      "normalized_type",
+      "ownership",
+      "cleanup",
+      "error_set",
+      "effect_row",
+      "suspension",
+      "cancellation",
+      "authority",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-SharedMutexPayloadAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/shared-mutex-payload-bound-fixtures-r1.schema.json#/$defs/payloadDescriptor",
+    "preconditions": [
+      "the public generic bound resolves to the exact SharedMutexPayload ResponsibilityRuleId",
+      "the normalized payload graph and all generic substitutions are closed",
+      "the wrapper-owned lock cleanup is not part of the payload descriptor"
+    ],
+    "normalization": "expand transparent aliases, bind exact TypeId and ResponsibilityRuleId, canonical-sort stored field paths, then solve the finite owner-closed component graph with memoized SCC states",
+    "decision_procedure": [
+      "resolve the exact sealed SharedMutexPayload identity and validate the dedicated descriptor",
+      "reject incomplete, opaque, or unbounded generic proof before inspecting ordinary call arguments",
+      "walk canonical field paths and select the first resource, cleanup, view-region, or cleanup-row violation",
+      "on success retain one digest-bound predicate bound in typed HIR and module API before committing the moved constructor argument",
+      "on failure emit exactly SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD and commit no move"
+    ],
+    "termination_metric": "finite normalized owner-closed type graph plus memoized SCC state",
+    "success_result": "one digest-bound SharedMutexPayload ResponsibilityEvidenceDescriptor",
+    "active_primary_diagnostic": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "PF-SharedMutexPayloadAdmitted-POS",
+      "PF-SharedMutexPayloadAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-SharedMutexPayloadAdmitted-NEG"
+    ],
+    "evaluation_order": "identity -> descriptor normalization -> proof completeness -> canonical component path -> ordinary call compatibility -> move commit",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "input_adapter": null
   }
 ]

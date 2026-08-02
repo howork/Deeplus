@@ -26,7 +26,12 @@
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public resource class FileSession {
+public resource class FileSession
+cleanup budget {
+    effects { io }
+    errors CloseError
+}
+{
     -let handle: Handle
 
     +def! new(handle: Handle)
@@ -50,6 +55,11 @@ public resource class FileSession {
     }
 }
 ```
+
+`FileSession`의 명시적 envelope은 `def#cleanup`과 handle field의 정리
+책임을 모두 포함해야 한다. 이 lab에서는 `{CloseError}`와 `{io}`가 그
+상한이다. 이 표기는 I/O 권한을 부여하지 않으며 실제 filesystem 실행은
+여전히 `NOT_RUN`이다.
 
 constructor가 성공해야 session owner가 publish된다. cleanup responsibility는
 그 owner에 붙는다.

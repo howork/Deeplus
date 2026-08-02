@@ -74,5 +74,100 @@
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
     "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "CopyValueAdmissible",
+    "source_name": "internal CopyValue / copy capture",
+    "summary": "R30 closed deterministic admission algorithm for cleanup-free same-type semantic value duplication; production checker remains NOT_RUN.",
+    "input_descriptor": "ResponsibilityIdentityInputR1",
+    "descriptor_axes": [
+      "normalized_type_id",
+      "lifecycle",
+      "cleanup_token_ids",
+      "raw_or_provenance",
+      "copy_rule_id_or_null",
+      "copy_source_remains_live",
+      "copy_result_same_type",
+      "copy_error_set_id_or_null",
+      "copy_effect_row_id_or_null",
+      "copy_creates_cleanup_obligation",
+      "direct_user_conformance",
+      "ordered_component_type_ids",
+      "registered_law_ids"
+    ],
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "diagnostic_refs": [
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "resolve the sealed internal CopyValue ResponsibilityRuleId without a public Copy Trait or source conformance",
+      "the normalized type is Reusable and carries no cleanup, borrow, raw pointer, provenance, callable environment, shared-handle, or authority responsibility",
+      "one registered owner-closed copy law preserves the source and produces an independent result of the exact same type",
+      "the copy operation has no error row, effect row, suspension, cancellation, or new cleanup obligation"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/responsibility-identity-registry-r1.json",
+    "rule_facets": [
+      "normalized_type_id",
+      "lifecycle",
+      "cleanup_token_ids",
+      "raw_or_provenance",
+      "copy_rule_id_or_null",
+      "copy_source_remains_live",
+      "copy_result_same_type",
+      "copy_error_set_id_or_null",
+      "copy_effect_row_id_or_null",
+      "copy_creates_cleanup_obligation",
+      "direct_user_conformance",
+      "ordered_component_type_ids",
+      "registered_law_ids"
+    ],
+    "formal_judgment_id": "J-CopyValueAdmissible",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/responsibility-identity-input-r1.schema.json",
+    "preconditions": [
+      "resolve the exact internal CopyValue ResponsibilityRuleId",
+      "reject source spelling, direct conformance, and public Copy Trait lookup",
+      "require a finite owner-closed normalized component graph and registered copy laws"
+    ],
+    "normalization": "expand transparent type aliases, resolve the exact internal ResponsibilityRuleId and TypeId, preserve ordered components, then evaluate the finite owner-closed copy-law graph",
+    "decision_procedure": [
+      "reject unknown, stale, forged, or source-spelled identity with RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "reject Resource or Affine cleanup, live borrow, shared handle, raw/provenance, callable environment, authority, or direct conformance with RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+      "require one registered copy law for the owner and every ordered component; evaluate the finite memoized graph without provider or runtime search",
+      "require source-remains-live and exact-same-TypeId result while error/effect rows and new cleanup obligations remain empty",
+      "emit one digest-bound intrinsic ResponsibilityEvidenceDescriptor before the capture environment commit"
+    ],
+    "termination_metric": "finite normalized type graph plus finite registered copy-law table and memoized SCC state",
+    "success_result": "one digest-bound ResponsibilityEvidenceDescriptor",
+    "active_primary_diagnostic": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+    "secondary_diagnostics": [
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED"
+    ],
+    "positive_fixture_ids": [
+      "PF-CopyValueAdmissible-POS",
+      "PF-CopyValueAdmissible-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-CopyValueAdmissible-NEG"
+    ],
+    "evaluation_order": "identity -> alias normalization -> negative gates -> finite copy-law derivation -> source/result preservation -> evidence digest -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "unknown_or_stale_identity": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "known_identity_evidence_failure": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE"
+    }
   }
 ]

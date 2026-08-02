@@ -241,5 +241,93 @@
     "stage": "checker",
     "diagnostic_class": "source",
     "emission_domain": "compiler"
+  },
+  {
+    "diagnostic_id": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The responsibility name is unknown, removed, stale, or used in the wrong identity domain; no compatibility alias or inferred replacement is created.",
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "diagnostic_id": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "The known responsibility identity has no exact admissible compiler derivation or selected Trait witness for this normalized type and context.",
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "related_feature_refs": [],
+    "stage": "checker",
+    "severity": "error",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "COMPARISON_CHAIN_MIXED_DIRECTION_REQUIRES_EXPLICIT_AND",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "ordered_comparison_chain_msp"
+    ],
+    "fixit_hint": "none",
+    "fixit_kind": "none",
+    "fixit_policy": "none",
+    "message": "Mixed-direction comparison chains require explicit `and`.",
+    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / MIR / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MIR_LOAN_UNBALANCED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design",
+      "region_lifetime_model_phase_a"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it; repair MIR loan declaration, ACCESS-token flow, close frontier, child order, suspension proof, owner barrier, join, or terminal balance.",
+    "message": "A MIR loan activation is not closed exactly once on every reachable path.",
+    "notes": "Internal release-verifier identity. Existing source borrow, alias, escape, and suspension diagnostics remain primary; product emission receipt NOT_RUN.",
+    "primary_source": "spec/mir/semantics.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "release_verifier",
+    "emission_domain": "release_verifier"
   }
 ]

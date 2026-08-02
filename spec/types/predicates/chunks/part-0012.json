@@ -644,73 +644,88 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ShareableObservationSafe",
     "source_name": "Shareable",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "R30 closed deterministic admission algorithm for Shareable; production checker remains NOT_RUN.",
+    "input_descriptor": "ResponsibilityIdentityInputR1",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "isolation",
-      "source_role",
-      "element_types"
+      "normalized_type_id",
+      "lifecycle",
+      "observation_mutability",
+      "synchronization_law_id_or_null",
+      "authority",
+      "ordered_component_type_ids"
     ],
     "feature_refs": [
-      "shareable_observation_safety"
+      "shareable_observation_safety",
+      "responsibility_identity_registry_r1"
     ],
     "diagnostic_refs": [
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
       "SHAREABLE_DOES_NOT_CREATE_ALIAS"
     ],
-    "design_seed_diagnostic_refs": [
-      "SHAREABLE_DOES_NOT_CREATE_ALIAS"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "alias observation safe",
-      "does not create alias permission"
+      "resolve the sealed Shareable ResponsibilityRuleId",
+      "direct source conformance and annotation synthesis are forbidden",
+      "every reachable observation is immutable or governed by one registered synchronization law",
+      "no alias or Transferable evidence is created"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/responsibility-identity-registry-r1.json",
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "isolation",
-      "source_role",
-      "element_types"
+      "normalized_type_id",
+      "lifecycle",
+      "observation_mutability",
+      "synchronization_law_id_or_null",
+      "authority",
+      "ordered_component_type_ids"
     ],
     "formal_judgment_id": "J-ShareableObservationSafe",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/responsibility-identity-input-r1.schema.json",
     "preconditions": [
-      "alias observation safe",
-      "does not create alias permission"
+      "resolve the sealed Shareable ResponsibilityRuleId",
+      "direct source conformance and annotation synthesis are forbidden",
+      "every reachable observation is immutable or governed by one registered synchronization law",
+      "no alias or Transferable evidence is created"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "expand transparent type aliases, resolve one exact ResponsibilityRuleId and TypeId, then evaluate the finite owner-closed type graph",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ShareableObservationSafe requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "resolve the exact Shareable ResponsibilityRuleId",
+      "evaluate immutable observation or exact registered wrapper-handle law",
+      "reject payload, wrapper, annotation, import-order, or layout synthesis",
+      "emit one digest-bound observation evidence row"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "SHAREABLE_DOES_NOT_CREATE_ALIAS",
-    "secondary_diagnostics": [],
+    "termination_metric": "finite normalized type graph plus finite registered law table and memoized SCC state",
+    "success_result": "one digest-bound ResponsibilityEvidenceDescriptor",
+    "active_primary_diagnostic": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+    "secondary_diagnostics": [
+      "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "SHAREABLE_DOES_NOT_CREATE_ALIAS"
+    ],
     "positive_fixture_ids": [
-      "PF-ShareableObservationSafe-POS"
+      "PF-ShareableObservationSafe-POS",
+      "PF-ShareableObservationSafe-BOUNDARY"
     ],
     "negative_fixture_ids": [
       "PF-ShareableObservationSafe-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "evaluation_order": "identity -> alias normalization -> negative gates -> finite derivation -> evidence digest -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "0f89a552423fb4bc6bba22f52c225613a414dd53d99b9bb2ea71fc95c53d3881",
       "disposition": "superseded_by_current_r51a1_row"
+    },
+    "diagnostic_dispatch": {
+      "unknown_or_stale_identity": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "known_identity_evidence_failure": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE"
     }
   },
   {
@@ -783,33 +798,38 @@
   {
     "predicate_id": "SingleActionDeferAdmitted",
     "formal_judgment_id": "J-SingleActionDeferAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor": "RCTSDescriptorV5",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "algorithm_owner": "source_frontend_then_parser_then_integrated_checker",
+    "input_descriptor": "DeferredCallPlanInputR1",
+    "input_descriptor_schema": "schemas/language/deferred-call-plan-input-r1.schema.json",
     "preconditions": [
-      "invocation_count == 1",
-      "block, callable literal, control expression, await, and guard are false",
-      "reserved places are not moved/rebound"
+      "the input is exactly SOURCE_REJECTION or TYPED_PLAN",
+      "a TYPED_PLAN contains one statically selected direct or message cleanup call",
+      "dynamic operands evaluate exactly once at registration in contiguous source order",
+      "a published plan is sealed, immutable, and retained across suspension until terminal scope exit"
     ],
-    "normalization": "normalize aliases, ownership/regions, static labels, evidence identities, and policy enums before decision",
+    "normalization": "normalize the admitted call identity, formal bindings, defaults, evidence identities, operand order, ownership acquisitions, rollback order, scope identity, and result disposition before registration",
     "decision_procedure": [
-      "validate the closed RCTSDescriptorV5 and native conditional constraints",
-      "evaluate dependency predicates left-to-right and propagate their selected diagnostic",
-      "check invocation_count == 1",
-      "check block, callable literal, control expression, await, and guard are false",
-      "check reserved places are not moved/rebound",
-      "emit the first declared diagnostic on failure; otherwise return the normalized success contract"
+      "validate the closed DeferredCallPlanInputR1 union and reject an invalid variant without constructing a plan",
+      "for SOURCE_REJECTION select an exact defer-block probe first, an exact actor-transport probe second, and the generic single-invocation rejection third",
+      "for TYPED_PLAN require one admitted direct or message surface and one statically fixed call target with zero exit-time reselection",
+      "evaluate the callee or receiver, explicit arguments, selected defaults, and runtime context operands exactly once in contiguous registration order while binding static evidence without evaluation",
+      "prepare loans, reservations, moved values, snapshots, and owned temporaries without hidden clone; on failure roll back only the prepared prefix in strict reverse order and publish zero plans",
+      "publish one sealed immutable plan only after successful preparation, preserve it without execution across suspension, and consume it exactly once in LIFO order on terminal scope exit",
+      "reject move, rebind, or owner replacement of a pinned deferred place with DEFER_CLEANUP_RESERVED_PLACE_MOVED",
+      "emit only the first diagnostic in the declared precedence; otherwise return the normalized typed plan contract"
     ],
     "requires": [
-      "invocation_count == 1",
-      "block, callable literal, control expression, await, and guard are false",
-      "reserved places are not moved/rebound"
+      "source rejection produces no current AST or typed deferred plan",
+      "typed call selection and all dynamic registration operands are fixed before publication",
+      "registration failure has zero partial publication and reverse prepared-prefix rollback",
+      "reserved places are not moved, rebound, or owner-replaced before discharge"
     ],
-    "termination_metric": "finite descriptor size and a strictly decreasing dependency DAG rank",
+    "termination_metric": "finite union input size, finite operand order, and finite prepared-prefix rollback",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "DEFER_REQUIRES_SINGLE_INVOCATION",
     "secondary_diagnostics": [
       "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+      "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
       "DEFER_CLEANUP_RESERVED_PLACE_MOVED"
     ],
     "positive_fixture_ids": [
@@ -819,7 +839,7 @@
     "negative_fixture_ids": [
       "PF-SingleActionDeferAdmitted-NEG"
     ],
-    "evaluation_order": "schema -> normalization -> dependencies -> ordered local conditions -> diagnostic",
+    "evaluation_order": "schema -> exact pre-AST source probes -> static call selection -> registration operands -> ownership preparation -> atomic publication -> post-registration place actions",
     "dependency_predicates": [],
     "execution_receipt": null,
     "product_support": "NOT_RUN",
@@ -829,22 +849,27 @@
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "source_name": "SingleActionDeferAdmitted",
-    "summary": "Admits exactly one non-suspending cleanup invocation and reserves captured cleanup places until scope exit.",
+    "summary": "Admits one statically selected cleanup invocation, constructs its sealed typed plan at registration, and preserves that plan across suspension until terminal scope exit.",
     "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "product_evidence"
+      "variant",
+      "surface",
+      "selected_call",
+      "dynamic_operands_in_evaluation_order",
+      "static_evidence_bindings",
+      "registration_transaction",
+      "execution_policy",
+      "scope_profile",
+      "post_registration_place_actions"
     ],
     "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "call_shape",
-      "product_evidence"
+      "source_rejection_precedence",
+      "static_call_selection",
+      "registration_time_evaluation",
+      "ownership_acquisition",
+      "failure_atomicity",
+      "sealed_plan_execution",
+      "suspension_preservation",
+      "pinned_place_protection"
     ],
     "feature_refs": [
       "single_action_defer_msp",
@@ -853,13 +878,19 @@
     "diagnostic_refs": [
       "DEFER_REQUIRES_SINGLE_INVOCATION",
       "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+      "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
       "DEFER_CLEANUP_RESERVED_PLACE_MOVED"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "diagnostic_dispatch": {
-      "first_failed_condition": "DEFER_REQUIRES_SINGLE_INVOCATION"
+      "1_exact_defer_block_probe": "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+      "2_exact_actor_transport_probe": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+      "3_other_non_single_surface": "DEFER_REQUIRES_SINGLE_INVOCATION",
+      "4_call_resolution_or_binding": "propagate the selected ordinary call diagnostic",
+      "5_registration_ownership_preparation": "propagate the selected ordinary ownership diagnostic",
+      "6_pinned_place_move_rebind_or_owner_replacement": "DEFER_CLEANUP_RESERVED_PLACE_MOVED"
     },
     "diagnostic_disposition": "active_primary"
   },
@@ -1322,89 +1353,6 @@
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "a946cf08661635755fabc4c458201a8bd668794e61f72df2be7139ebd0946988",
-      "disposition": "superseded_by_current_r51a1_row"
-    }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "StableComprehensionScopedUseMembershipAdmitted",
-    "source_name": "Stable comprehension, scoped-use, and membership family",
-    "summary": "Design-static checker seed for comprehension, scoped activation and membership; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "lookup_domain",
-      "extension_member_id",
-      "source_role",
-      "element_types"
-    ],
-    "feature_refs": [
-      "list_comprehension",
-      "comprehension_unfold",
-      "membership_in_operator_candidate",
-      "scoped_extension_activation_use"
-    ],
-    "diagnostic_refs": [
-      "MEMBERSHIP_IN_PROTOCOL_NOT_SATISFIED",
-      "SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY"
-    ],
-    "design_seed_diagnostic_refs": [
-      "MEMBERSHIP_IN_PROTOCOL_NOT_SATISFIED",
-      "SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY"
-    ],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "ordinary source admitted without feature gate",
-      "lexical use order is not priority"
-    ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "lookup_domain",
-      "extension_member_id",
-      "source_role",
-      "element_types"
-    ],
-    "formal_judgment_id": "J-StableComprehensionScopedUseMembershipAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "ordinary source admitted without feature gate",
-      "lexical use order is not priority"
-    ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
-    "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record StableComprehensionScopedUseMembershipAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
-    ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "MEMBERSHIP_IN_PROTOCOL_NOT_SATISFIED",
-    "secondary_diagnostics": [
-      "SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY"
-    ],
-    "positive_fixture_ids": [
-      "PF-StableComprehensionScopedUseMembershipAdmitted-POS"
-    ],
-    "negative_fixture_ids": [
-      "PF-StableComprehensionScopedUseMembershipAdmitted-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
-    "predecessor_identity": {
-      "baseline": "0.1.2-baseline.r50",
-      "sha256": "10c310013218eb18261698a24bfc5d8d42300d4f1b1bd337569a178e832a37af",
       "disposition": "superseded_by_current_r51a1_row"
     }
   }

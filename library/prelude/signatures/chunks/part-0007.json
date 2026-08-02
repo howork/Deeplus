@@ -1,0 +1,137 @@
+[
+  {
+    "entry_id": "plain_plainvalue_responsibility",
+    "symbol": "Plain / PlainValue",
+    "kind": "intrinsic_responsibility",
+    "status": "stable_design",
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "signatures": [
+      "prelude intrinsic sealed responsibility PlainValue; public alias Plain = PlainValue"
+    ],
+    "responsibility": "reusable deterministic immutable semantic projection without lifecycle, cleanup, view, callable, shared-handle, raw/provenance, meta-authority, provider, actor-owner, layout, ABI, JSON, Dyn, Copy, Shareable, or Transferable inference",
+    "notes": "Direct source conformance and annotation synthesis are forbidden; Plain and PlainValue resolve to one ResponsibilityId.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic sealed responsibility PlainValue; public alias Plain = PlainValue",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "3869d799233c1e716d420866f99866dba487087d02dace62275f008759d01e23"
+  },
+  {
+    "entry_id": "shareable_responsibility",
+    "symbol": "Shareable",
+    "kind": "intrinsic_responsibility",
+    "status": "stable_design",
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "signatures": [
+      "prelude intrinsic sealed responsibility Trait Shareable supports auto"
+    ],
+    "responsibility": "observation safety under admitted aliases only; creates no alias and implies no transfer, ownership, lifecycle, layout, or payload fact",
+    "notes": "Only the registered closed compiler policy may derive evidence; direct source conformance is forbidden.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic sealed responsibility Trait Shareable supports auto",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "622b8a7c5fc4044cab5e383129d59aebf9bfc98d40410b4f1c169325ba762ff2"
+  },
+  {
+    "entry_id": "transferable_responsibility",
+    "symbol": "Transferable",
+    "kind": "intrinsic_responsibility",
+    "status": "stable_design",
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "signatures": [
+      "prelude intrinsic sealed responsibility Trait Transferable supports auto"
+    ],
+    "responsibility": "one owned move across one exact isolation boundary with independent authority delegation and cleanup transfer proof",
+    "notes": "Only the registered closed compiler policy may derive evidence; shared wrappers and annotations do not synthesize it.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic sealed responsibility Trait Transferable supports auto",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "a0f8d2c3c7bc08a6ee794fba7ba7f4b07ce1f7eb8b396cefddfa9957cdcfc475"
+  },
+  {
+    "entry_id": "clone_responsibility_trait",
+    "symbol": "Clone",
+    "kind": "responsibility_trait",
+    "status": "stable_design",
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "signatures": [
+      "public trait Clone { +def clone.() -> Self throws AllocationError effects allocate }"
+    ],
+    "responsibility": "borrowed-source, same-type independent-result behavioral witness; no suspension or cancellation; implementation throws/effects may be narrower",
+    "notes": "One exact TraitWitnessId is selected statically and preserved with its normalized error/effect/acquisition/cleanup residue; runtime relookup is forbidden.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait Clone { +def clone.() -> Self throws AllocationError effects allocate }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "4a91f0315422d94eed9795f4fbc9db2d5d7eaa2e7515e2aa1fd72d290b58d736"
+  },
+  {
+    "entry_id": "deepclone_responsibility_trait",
+    "symbol": "DeepClone",
+    "kind": "responsibility_trait",
+    "status": "preview_design",
+    "feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "signatures": [
+      "prelude preview-design trait DeepClone { +def deepClone.() -> Self throws AllocationError effects allocate }"
+    ],
+    "responsibility": "separate deep graph-copy responsibility identity; never falls back to Clone",
+    "notes": "NONACTIVATABLE until graph identity, alias preservation, shared subgraphs, cycles, traversal, rollback and cleanup are closed.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude preview-design trait DeepClone { +def deepClone.() -> Self throws AllocationError effects allocate }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "a622e2152bfed993db85e9c3ac751446d969644b03d728a526301659d01922b9"
+  }
+]

@@ -231,8 +231,18 @@ def main(root: Path = ROOT) -> None:
     predicates = load("spec/types/predicates/chunks/part-0001.json")
     predicate_fixtures = load("tests/conformance/checker-predicates/chunks/part-0001.json")
     predicate_fixtures += load("tests/conformance/checker-predicates/chunks/part-0031.json")
-    diagnostic_rows = load("spec/diagnostics/catalog/chunks/part-0029.json")
-    relations = load("spec/diagnostics/relations/chunks/part-0009.json")
+    diagnostic_rows = []
+    for path in sorted((ROOT / "spec/diagnostics/catalog/chunks").glob("part-*.json")):
+        diagnostic_rows.extend(json.loads(path.read_text(encoding="utf-8")))
+    diagnostic_rows = [
+        row for row in diagnostic_rows if row.get("diagnostic_id") in DIAGNOSTICS
+    ]
+    relations = []
+    for path in sorted((ROOT / "spec/diagnostics/relations/chunks").glob("part-*.json")):
+        relations.extend(json.loads(path.read_text(encoding="utf-8")))
+    relations = [
+        row for row in relations if row.get("predicate_id") == "ActorProtocolGateAdmitted"
+    ]
     feature_rows = load("spec/features/catalog/chunks/part-0001.json")
     bridge = load("spec/contracts/hir-h1-current-mir-bridge.json")
     lowering = load("spec/contracts/hir-mir-lowering-registry.json")

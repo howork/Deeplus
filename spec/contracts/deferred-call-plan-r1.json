@@ -1,0 +1,184 @@
+{
+  "schema": "deeplus.deferred-call-plan/r1",
+  "revision": "R32-DEFERRED-CALL-PLAN-R1",
+  "status": "CURRENT_DESIGN_STATIC_CONTRACT_LOCAL_CANDIDATE",
+  "authority": "CODEX_DESIGN_R32_DEFERRED_CALL_PLAN",
+  "baseline": {
+    "commit": "87115776365fcbe8870d2f631050db3e23194c9b",
+    "tree": "2452f0a6be1e1391b3678dafa86987059b115ec7"
+  },
+  "gap": {
+    "gap_id": "IR-OWN-P1-020",
+    "resolution": "BOUNDED_REGISTRATION_TIME_TYPED_DEFERRED_CALL_PLAN",
+    "semantic_p0_created": 0
+  },
+  "scope_fence": {
+    "cleanup_budget_gap": "IR-OWN-P1-021_FUSED_SEPARATELY_IN_R47",
+    "general_loan_close_gap": "IR-OWN-P1-022_FUSED_SEPARATELY_IN_R47",
+    "suspension_frame_gap": "IR-OWN-P0-017_BOUND_BY_R46_DEPENDENCY",
+    "grammar_change_count": 0,
+    "new_diagnostic_id_count": 0,
+    "new_mir_operation_kind_count": 0
+  },
+  "surface": {
+    "admitted_forms": ["DIRECT_CALL", "MESSAGE_CALL"],
+    "forbidden_forms": [
+      "BLOCK",
+      "INLINE_CALLABLE",
+      "TRAILING_CLOSURE",
+      "GUARD",
+      "AWAIT",
+      "SPAWN",
+      "ACTOR_TRANSPORT"
+    ],
+    "invocation_count": 1,
+    "result_dispositions": [
+      "UNIT_NO_VALUE",
+      "DISCARD_CLEANUP_FREE_VALUE",
+      "CLEAN_OWNED_TEMPORARY"
+    ],
+    "actor_result_disposition": "FORBIDDEN",
+    "untyped_result_drop_count": 0
+  },
+  "identity_model": {
+    "plan_identity": "DeferredCallPlanId(CleanupScopeId, source_registration_ordinal)",
+    "registration_identity": "CleanupRegistrationId(DeferredCallPlanId)",
+    "operand_identity": "DeferredOperandId(DeferredCallPlanId, evaluation_ordinal)",
+    "source_registration_order": "contiguous zero-based",
+    "operand_evaluation_order": "contiguous zero-based",
+    "plan_mutable_after_publish": false
+  },
+  "call_selection": {
+    "selection_time": "STATIC_PREFLIGHT_BEFORE_OPERAND_EVALUATION",
+    "fixed_identities": [
+      "CallModeTargetPair",
+      "CallableDeclId",
+      "CallableImplementationIdOrVirtualSlotId",
+      "CanonicalCallShapeId",
+      "FormalBindingIds",
+      "DefaultProviderIds",
+      "SelectedEvidenceIds"
+    ],
+    "virtual_dispatch_law": "slot and call shape are fixed; ordinary slot lookup on the stored receiver remains runtime behavior",
+    "exit_time_overload_or_extension_or_witness_selection_count": 0
+  },
+  "registration_algorithm": {
+    "preflight": [
+      "select one admitted ordinary direct or message call",
+      "bind all formal channels, defaults, context and evidence",
+      "reject actor transport and forbidden surface forms",
+      "validate types, ownership, regions and cleanup responsibility without evaluation"
+    ],
+    "dynamic_order": [
+      "callee_or_receiver",
+      "explicit_runtime_call_arguments_in_source_order_including_context",
+      "selected_defaults_under_normal_call_order",
+      "static_evidence_identity_bindings_with_zero_evaluation",
+      "ownership_and_cleanup_preparation"
+    ],
+    "dynamic_operand_evaluation_count": 1,
+    "static_evidence_evaluation_count": 0,
+    "failure_atomicity": {
+      "rollback_scope": "prepared prefix only",
+      "rollback_order": "strict reverse acquisition order",
+      "loan_end_count": "exactly once per prepared live loan",
+      "move_reservation_cancel_count": "exactly once per uncommitted reservation",
+      "owned_temporary_cleanup_count": "exactly once",
+      "external_effect_rollback_claim": false,
+      "partial_registration_publication_count": 0
+    },
+    "commit_sequence": [
+      "CLEANUP_REGISTER",
+      "CLEANUP_PIN",
+      "CLEANUP_SEAL"
+    ],
+    "commit_interval": "NONBRANCHING_NONSUSPENDING"
+  },
+  "acquisition_modes": {
+    "SNAPSHOT_VALUE": "store one already-evaluated reusable value",
+    "SHARED_LOAN": "begin and retain one exact shared loan until discharge",
+    "EXCLUSIVE_LOAN": "begin and retain one exact exclusive loan until discharge",
+    "MOVE_INTO_PLAN": "reserve during preparation and atomically move the owner into the sealed plan at registration commit",
+    "OWNED_TEMPORARY": "transfer one registration-time temporary into the plan",
+    "PINNED_PLACE_RESERVATION": "retain an exact borrowed or cleanup-owned place identity until discharge",
+    "STATIC_EVIDENCE": "out-of-band identity binding; not a dynamic operand"
+  },
+  "execution_algorithm": {
+    "registration_order": "source order",
+    "execution_order": "strict reverse registration order",
+    "execution_count_per_plan": 1,
+    "terminal_paths": [
+      "FALLTHROUGH",
+      "RETURN",
+      "EXITING_BREAK",
+      "EXITING_CONTINUE",
+      "ERROR",
+      "DEFECT",
+      "CANCELLATION"
+    ],
+    "suspension": "does not exit or execute; retain the plan on the active cleanup scope",
+    "execution_steps": [
+      "load sealed stored operands and dispatch route",
+      "perform the remaining ordinary callable input admission",
+      "invoke selected cleanup once",
+      "apply the sealed ordinary expression-statement result disposition",
+      "record cleanup outcome without retry",
+      "discharge loans, reservations, inputs, result temporary and cleanup token exactly once"
+    ],
+    "body_failure_precedence": "pre-existing body failure remains primary",
+    "normal_body_cleanup_failure": "first failing cleanup becomes primary",
+    "later_cleanup_failures": "suppressed in actual LIFO execution order",
+    "defect_or_cancellation_reclassified_as_error": false
+  },
+  "machine_projection": {
+    "new_mir_operation_kind_count": 0,
+    "required_operations": [
+      "MOVE_RESERVE",
+      "MOVE_CANCEL",
+      "PLACE_MOVE",
+      "LOAN_BEGIN_SHARED",
+      "LOAN_BEGIN_EXCLUSIVE",
+      "LOAN_END",
+      "CLEANUP_REGISTER",
+      "CLEANUP_PIN",
+      "CLEANUP_SEAL",
+      "CLEANUP_DISARM"
+    ],
+    "failure_terminators": ["CHECKED", "INVOKE", "LEAVE"],
+    "backend_reselection_count": 0,
+    "runtime_retry_count": 0,
+    "cleanup_register_payload_expansion_count": 0,
+    "registration_id_indexes_typed_plan_table": true,
+    "terminator_successor_roles": ["SUCCESS", "ERROR", "DEFECT", "CANCEL"],
+    "cleanup_is_internal_to_leave": true
+  },
+  "api_fence": {
+    "value_level_deferred_plan_identity_export_count": 0,
+    "value_level_registration_operand_eval_place_owner_loan_reservation_export_count": 0,
+    "public_signature_error_effect_residue_preserved": true
+  },
+  "diagnostic_policy": {
+    "surface_shape": [
+      "DEFER_REQUIRES_SINGLE_INVOCATION",
+      "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL"
+    ],
+    "actor_transport": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+    "reserved_place_mutation": "DEFER_CLEANUP_RESERVED_PLACE_MOVED",
+    "ordinary_call_failures": "reuse exact already-selected call/resolution/ownership diagnostic",
+    "cleanup_budget_seed_activation_count": 0
+  },
+  "acceptance": {
+    "schema": "schemas/language/deferred-call-plan-input-r1.schema.json",
+    "fixtures": "tests/fixtures/current/deferred-call-plan-r1.json",
+    "validator": "tools/validators/validate_deferred_call_plan.py",
+    "check_count": 14,
+    "mutation_count": 12
+  },
+  "global_fences": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "separate_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

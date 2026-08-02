@@ -204,15 +204,19 @@
   },
   "identifier_model": {
     "predeclared_language_or_prelude_bindings": [
+      "Clone",
       "EffectRow",
       "ErrorSet",
       "ExitCode",
       "Facet",
       "Never",
+      "Plain",
       "Record",
       "Sequence",
+      "Shareable",
       "StaticInt",
       "String",
+      "Transferable",
       "Unit"
     ],
     "ordinary_identifier_regression_seeds": [
@@ -221,7 +225,24 @@
     ],
     "regression_seed_token_kind": "IDENTIFIER",
     "regression_seed_special_role_count": 0,
-    "classification_law": "array and case are ordinary user-spellable identifiers and are absent from every hard-keyword, contextual-word, sigil-role, intrinsic-token, parser-hook, resolver-namespace, checker-intrinsic, and formatter-special-case list"
+    "classification_law": "array and case are ordinary user-spellable identifiers and are absent from every hard-keyword, contextual-word, sigil-role, intrinsic-token, parser-hook, resolver-namespace, checker-intrinsic, and formatter-special-case list",
+    "responsibility_identity_registry": {
+      "contract": "spec/contracts/responsibility-identity-registry-r1.json",
+      "predeclared_public_names": [
+        "Plain",
+        "Shareable",
+        "Transferable",
+        "Clone"
+      ],
+      "internal_non_source_names": [
+        "CopyValue"
+      ],
+      "preview_nonactivatable_names": [
+        "DeepClone"
+      ],
+      "stale_name_alias_count": 0,
+      "runtime_lookup_count": 0
+    }
   },
   "package_module_model": {
     "package": {
@@ -938,7 +959,41 @@
         "value",
         "resource",
         "data"
-      ]
+      ],
+      "cleanup_budget": {
+        "owner": "CLASS_HEADER",
+        "grammar_change_count": 0,
+        "axis_item_cardinality": {
+          "effects": "ZERO_OR_ONE",
+          "errors": "ZERO_OR_ONE"
+        },
+        "present_block_missing_axis": {
+          "effects": "EMPTY_EFFECT_ROW",
+          "errors": "NEVER_EMPTY_ERROR_SET"
+        },
+        "whole_header_absence": {
+          "non_inheritance_class": "IMPLICIT_EXACT_ROOT",
+          "sealed_resource_root": "FORBIDDEN_REQUIRES_EXPLICIT_HEADER",
+          "sealed_resource_child": "INHERITED_SEALED_ROOT"
+        },
+        "normalization": {
+          "effect_ids": "RESOLVE_ALIAS_CANONICALIZE_REJECT_DUPLICATE_SORT",
+          "recoverable_error_ids": "REQUIRE_ERROR_SET_EXPAND_ALIAS_CANONICALIZE_REJECT_DUPLICATE_SORT",
+          "defect_cancellation_suspension_authority_members": false
+        },
+        "contribution_trace_order": [
+          "BASE_SEGMENT_TRANSITIVE_COMPUTED_OBLIGATION_IF_PRESENT",
+          "OWNED_FIELD_EFFECTIVE_ENVELOPES_IN_DECLARATION_ORDER",
+          "OWNER_DEF_CLEANUP_IF_PRESENT"
+        ],
+        "admission": {
+          "predicate": "CleanupBudgetEnvelopeAdmitted",
+          "computed_rows_subset_effective_rows": true,
+          "explicit_child_subset_family_root": true,
+          "runtime_evaluation_count": 0
+        },
+        "product_support": "NOT_RUN"
+      }
     },
     "body": {
       "general_block_final": [
@@ -1019,8 +1074,48 @@
         "await",
         "spawn",
         "guard",
-        "block"
-      ]
+        "block",
+        "actor transport"
+      ],
+      "selection": "exact callable implementation, normalized substitutions, formal bindings, result responsibility, and cleanup effect/error budget close before registration",
+      "static_preflight_failure": "zero runtime operand evaluation and zero registration publication",
+      "registration_evaluation_order": [
+        "runtime callee or receiver when present",
+        "explicit runtime CallArguments including context in source order",
+        "omitted-formal default expressions in formal declaration order"
+      ],
+      "zero_runtime_evaluation": [
+        "statically bound direct or type-side callee identity",
+        "using Witness or Conformance evidence"
+      ],
+      "operand_acquisition": [
+        "SNAPSHOT_VALUE",
+        "SHARED_LOAN",
+        "EXCLUSIVE_LOAN",
+        "MOVE_INTO_PLAN",
+        "OWNED_TEMPORARY",
+        "PINNED_PLACE_RESERVATION",
+        "STATIC_EVIDENCE_ZERO_EVALUATION"
+      ],
+      "consume_commit": "CONSUME moves an affine owner into the deferred-call plan only at the single registration seal",
+      "preseal_failure": "reverse-unwind acquired temporaries and reversible reservations, publish zero registration, retain already-observed external effects, and do not retry",
+      "exit_paths": [
+        "normal fallthrough",
+        "return",
+        "break",
+        "continue",
+        "recoverable Error propagation",
+        "Defect",
+        "Cancellation"
+      ],
+      "execution_order": "inner cleanup regions before outer regions; reverse dynamic registration order inside one region; exactly once",
+      "suspension": "not an exit; executes no defer action and preserves proven live ownership, borrow, reservation, isolation, and cleanup obligations",
+      "result_disposition": [
+        "UNIT_NO_VALUE",
+        "DISCARD_CLEANUP_FREE_VALUE",
+        "CLEAN_OWNED_TEMPORARY"
+      ],
+      "result_responsibility": "ordinary ExprStmt responsibility checking; no blanket Unit requirement and no silent discard of an unhandled responsibility"
     },
     "type_parameter_kinds": [
       "type",
@@ -2115,7 +2210,7 @@
     "contract": "spec/contracts/frontend-cst-boundary-recovery-contract.json",
     "schema": "deeplus.frontend-cst-boundary-recovery-contract/r1",
     "grammar_disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
-    "grammar_production_count": 643,
+    "grammar_production_count": 644,
     "parser_boundary_contract": "spec/contracts/parser-boundary-match-arm-contract-r1.json",
     "recovery_contract": "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json",
     "canonical_ast_recovery_node_count": 0,
@@ -2410,14 +2505,14 @@
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 539,
+    "STABLE": 540,
     "PREVIEW": 13
   },
   "grammar_topology_closure": {
     "contract": "spec/contracts/grammar-topology-closure-r1.json",
     "disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
     "source_root_count": 6,
-    "production_count": 643,
+    "production_count": 644,
     "closed_external_symbol_count": 40,
     "unowned_orphan_count": 0,
     "illegal_cross_profile_edge_count": 0,
@@ -3596,6 +3691,62 @@
     ],
     "product_support": "NOT_RUN"
   },
+  "ownership_type_qualifier_frontend_contract": {
+    "status": "STABLE_DESIGN_IMPLEMENTATION_READINESS_CANDIDATE",
+    "candidate_class": "LOCAL_NONCANONICAL_NONACTIVATABLE",
+    "gap_id": "IR-OWN-P1-018",
+    "source_activation": "none",
+    "surface_tokens": [
+      "owned",
+      "borrowed",
+      "mut",
+      "inout"
+    ],
+    "cst_owner": "OwnershipQualifier",
+    "normalized_ast": {
+      "node": "OwnershipQualifiedType",
+      "fields": [
+        "qualifier_token",
+        "qualified_type"
+      ],
+      "maximum_qualifier_depth_after_alias_expansion": 1,
+      "stacked_or_mixed_qualifier": "REJECT_OWNERSHIP_MODE_ADMISSION_FAILED"
+    },
+    "identity_separation": {
+      "parameter_mode_field": "ParameterMode | ORDINARY",
+      "type_ownership_qualifier_field": "TypeOwnershipQualifier | UNQUALIFIED",
+      "same_spelling_implies_same_field": false,
+      "example": "mut value: T and value: mut T preserve different CST, AST, HIR, API-residue, and lowering axes"
+    },
+    "function_type_item_commitment": {
+      "owner": "ParenTypeSyntax",
+      "commit_condition": "the same outer parenthesis owner observes FunctionTypeTail after the closing parenthesis",
+      "direct_item_leading_parameter_mode": "normalize to FunctionTypeParameter.channel_mode plus the following TypeRef",
+      "non_function_parenthesized_owner": "never admits FunctionTypeModeItem",
+      "qualified_mut_or_inout_function_input": "use one nested parenthesized TypeRef, for example ((mut T)) -> R",
+      "borrow_T_root_reachable_as_function_mode": true,
+      "inout_T_misclassified_as_type_qualifier_count": 0,
+      "backtracking_owner_count": 0
+    },
+    "pratt_binding": {
+      "prefix_rbp": 30,
+      "optional_postfix_lbp": 40,
+      "intersection_lbp": 20,
+      "union_lbp": 10,
+      "borrowed_A_optional": "OwnershipQualifiedType(BORROWED, OptionalType(A))",
+      "borrowed_A_union_B": "UnionType(OwnershipQualifiedType(BORROWED, A), B)"
+    },
+    "formatter_lsp": {
+      "canonical_spacing": "one ASCII space after qualifier token",
+      "parse_format_parse_identity": "REQUIRED",
+      "second_pass_edit_count": 0,
+      "mode_qualifier_rewrite_count": 0,
+      "qualifier_reorder_or_erasure_count": 0,
+      "region_id_exposed_as_source_syntax_count": 0
+    },
+    "checker_contract": "spec/contracts/ownership-type-qualifier-r1.json",
+    "product_support": "NOT_RUN"
+  },
   "function_static_namespace_preview_frontend_contract": {
     "status": "PREVIEW_DESIGN_NONACTIVATABLE",
     "current_binding": false,
@@ -4460,6 +4611,71 @@
     },
     "product_support": "NOT_RUN"
   },
+  "shared_mutex_payload_bound_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "contract": "spec/contracts/shared-state-coherence.json",
+    "public_bound_identity": "SharedMutexPayload",
+    "internal_predicate_id": "SharedMutexPayloadAdmitted",
+    "canonical_bound_spelling": "SharedMutex<T: SharedMutexPayload>",
+    "identity_classification": {
+      "is_trait": false,
+      "admits_user_conformance": false,
+      "admits_witness_or_synthesis": false,
+      "is_sealed_context_specific_constraint": true
+    },
+    "normalized_predicate": {
+      "descriptor": "SharedMutexPayloadDescriptorR1",
+      "input": "dedicated normalized root plus transitive owner-closed stored-field graph projection",
+      "rcts_descriptor_v5_is_sufficient": false,
+      "admitted_value_modes": [
+        "Reusable",
+        "Affine(move)"
+      ],
+      "required_cleanup_profile": "None",
+      "rejected_residue": [
+        "Resource_or_DropExactlyOnce",
+        "borrow_or_inout_or_ViewRelease",
+        "cleanup_plan_or_cleanup_token_or_finalizer",
+        "cleanup_effect_or_cleanup_error",
+        "authority_or_suspension_or_cancellation_responsibility",
+        "opaque_or_unbounded_generic_component"
+      ],
+      "evidence_not_created": [
+        "Plain",
+        "Copy",
+        "Clone",
+        "Shared",
+        "Shareable",
+        "Transferable",
+        "serialization",
+        "layout",
+        "ABI"
+      ]
+    },
+    "api_residue": {
+      "field": "type_parameter_predicate_bounds",
+      "row_fields": [
+        "parameter_id",
+        "predicate_id",
+        "predicate_contract_sha256"
+      ],
+      "canonical_order": "strict ascending Unicode scalar order by (parameter_id,predicate_id)",
+      "required_on_generic_public_api_when_otherwise_unproven": true
+    },
+    "with_lock_call_plan": {
+      "source_surface": "mutex ~ withLock { inout state => body }",
+      "call_mode": "MESSAGE",
+      "call_target": "RESERVED_OPERATION",
+      "reserved_operation_identity": "SharedMutex::withLock",
+      "mir_plan": "SharedMutexWithLockPlan",
+      "callback_nonsuspending": true,
+      "callback_view_non_escaping": true,
+      "same_active_mutex_reentry": "REJECT_BEFORE_CALLBACK"
+    },
+    "grammar_change": false,
+    "wrapper_unlock_excluded_from_payload_predicate": true,
+    "product_support": "NOT_RUN"
+  },
   "hir_mir_machine_contract": {
     "revision": "r51f3-current-hir-mir-machine-contract-r1",
     "canonical_hir_schema": "deeplus.canonical-hir-h1/r1",
@@ -4467,6 +4683,54 @@
     "capability_receipt_schema": "deeplus.mir-capability-receipt/r1",
     "source_syntax_added": false,
     "source_profile_activated": false,
+    "product_support": "NOT_RUN"
+  },
+  "closure_capture_plan_frontend_contract": {
+    "status": "STABLE_DESIGN_PRODUCT_NOT_RUN",
+    "contract": "spec/contracts/closure-capture-plan-r1.json",
+    "capture_list_states": [
+      "ABSENT",
+      "PRESENT_EMPTY",
+      "PRESENT_NONEMPTY"
+    ],
+    "reference_capture_modes": [
+      "BORROW",
+      "INOUT",
+      "MOVE",
+      "COPY",
+      "CLONE",
+      "DEEP",
+      "ONCE"
+    ],
+    "initializer_capture_modes": [
+      "INIT_LET",
+      "INIT_VAR"
+    ],
+    "bare_capture_normalizes_to": "BORROW",
+    "capture_once_requires_explicit_callable_once": true,
+    "preparation": "LEFT_TO_RIGHT_EXACTLY_ONCE",
+    "rollback": "PREPARED_PREFIX_REVERSE_ORDER",
+    "partial_publication_count": 0,
+    "product_support": "NOT_RUN"
+  },
+  "loan_close_frontier_contract": {
+    "status": "CURRENT_DESIGN_STATIC_CONTRACT_LOCAL_CANDIDATE",
+    "contract": "spec/contracts/loan-close-operation-r1.json",
+    "source_syntax_added": false,
+    "hir_expression_identity_added": false,
+    "loan_id_created_in_hir": false,
+    "loan_id_created_by_mir_lowering": true,
+    "inputs": [
+      "HirPlacePlan",
+      "HirRegionConstraint",
+      "OwnershipDecisionInputR1.LoanDef",
+      "complete MIR CFG"
+    ],
+    "output": "one closed MIR loan-table row plus explicit path-sensitive LOAN_BEGIN_* and LOAN_END operations",
+    "close_frontier": "earliest post-use frontier before owner invalidation, region exit, or unadmitted suspension",
+    "dynamic_end_count_per_begin_per_path": 1,
+    "new_mir_operation_kind_count": 0,
+    "new_runtime_observable_event_count": 0,
     "product_support": "NOT_RUN"
   }
 }

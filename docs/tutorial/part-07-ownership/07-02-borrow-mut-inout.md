@@ -34,8 +34,57 @@ caller place를 직접 갱신해야 하면 복사본을 바꾸어서는 안 된�
 | `inout x: T` | caller exact place의 exclusive access | 같은 place에 commit |
 | `move x: T` | transferred owner | source는 성공 뒤 moved |
 
-`mut T` type qualifier는 unique mutable owner/view 책임이다. `inout`
+`mut T` type qualifier는 unique mutable owner 책임이다. `inout`
 parameter의 다른 철자가 아니다.
+
+### type qualifier를 별도 축으로 읽기
+
+type 위치에는 `owned T`, `borrowed T`, `mut T`, `inout T`가 올 수 있다.
+각각 명시적 owner, shared read view, mutable owner, exclusive mutable
+view를 뜻한다. 접두사가 없는 `T`도 별도 상태이며 자동으로 `owned T`가
+되지 않는다. `borrowed`와 `inout` view에는 checker가 추적하는 owner
+region이 필요하지만, 사용자가 존재하지 않는 lifetime 이름을 문법에
+만들어 적지는 않는다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+let owner: owned Box<Node> = Box!(Node!(value: 1))
+let writable: mut Buffer = Buffer!()
+let view: borrowed Bytes = borrow bytes
+```
+
+`var value: T`는 binding을 다시 대입할 수 있다는 뜻이고 `value: mut T`는
+그 값이 unique mutable owner라는 뜻이다. 같은 이유로 다음 두 parameter는
+같지 않다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+private def localCopy(mut value: Buffer) -> Unit = {
+    value = normalize(value)
+}
+
+private def receiveMutableOwner(value: mut Buffer) -> Unit = {
+    value ~ normalizeInPlace
+}
+```
+
+첫 함수의 `mut`는 callee local channel mode다. 둘째 함수의 parameter
+mode는 ordinary이고 `mut`는 value type qualifier다. formatter는 두
+표면을 서로 바꾸지 않는다.
+
+함수 타입 안에서는 바깥 `)` 다음의 `->`가 보일 때만 직접 선행하는
+`borrow`, `mut`, `move`, `inout`를 anonymous channel mode로 읽는다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+let inspect: #scoped (borrow Bytes) -> Int = #scoped{ borrow data => data.length }
+let edit: #scoped (inout Buffer) -> Unit = #scoped{ inout data => data ~ clear }
+let takeMutableOwner: ((mut Buffer)) -> Unit = { value: mut Buffer => value ~ clear }
+```
+
+마지막 예제의 안쪽 괄호는 `mut`를 channel mode가 아니라 type qualifier로
+유지한다. qualifier를 겹쳐 쓰거나 unbound borrowed result를 반환하거나
+`inout T`를 field/static/escaping capture에 저장하는 코드는 거부된다.
 
 ## 6. 단계별 예제
 
@@ -191,6 +240,17 @@ borrow가 run, Actor, return, storage 또는 escaping closure를 건너려면
 
 
 <!-- IR-OWN-R8-TUTORIAL-07-02 -->
+<!-- IR-OWN-R34-LOAN-CLOSE -->
+### borrow는 언제 끝나는가
+
+소스에는 borrow를 닫는 별도 문장이 없다. compiler는 마지막 허용 사용과
+region 제약을 이용해 각 실행 경로의 close frontier를 정하고 MIR에
+`LOAN_END`를 남긴다. view에서 값을 먼저 복사한 뒤 `await`하면 ordinary
+loan은 `await` 직전에 끝날 수 있고 복사된 값은 계속 쓸 수 있다.
+반대로 `await` 뒤에 view를 다시 사용하면 close를 앞당길 수 없으므로 기존
+borrow/suspension 진단으로 거부된다. 중첩 borrow는 가장 안쪽 view부터
+닫으며 owner cleanup은 겹치는 모든 loan이 끝난 뒤 시작한다.
+
 ### `borrow`를 소유권 철자로 기억하기
 
 공유 소유권 borrow는 `borrow value`로 쓴다. `&value`는 borrow의 축약이

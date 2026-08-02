@@ -93,6 +93,7 @@ EXPECTED_STATUS_FENCE = {
     "canonical_source_mutation": 0,
     "github_mutation": 0,
 }
+R31_LOWERING_REVISION = "R31-CLOSURE-CAPTURE-PLAN-R1"
 
 PREVIEW_PATTERNS = {
     "PK-AND",
@@ -521,13 +522,19 @@ def check_schema_and_bindings(
         "lowering_rules_revision",
         "profile_contract",
         "coverage_contract",
+        "loan_close_projection_contract",
         "semantic_operation_mapping",
         "nominal_construction_lifecycle_mapping",
         "continuation_frame_mapping",
         "capability_gate_contract",
+        "ownership_type_qualifier_projection",
         "rows",
         "status_fence",
         "actor_protocol_binding_contract",
+        "closure_capture_plan_lowering_contract",
+        "deferred_call_plan_projection_contract",
+        "type_header_cleanup_budget_projection_contract",
+        "shared_mutex_with_lock_projection_contract",
     }
     report.require(
         set(registry) == expected_top_keys,
@@ -542,11 +549,11 @@ def check_schema_and_bindings(
         "lowering registry schema ID is not r1",
     )
     report.require(
-        registry.get("draft_revision") == "R11-INTEGRATED-R1"
-        and registry.get("lowering_rules_revision") == "R11-INTEGRATED-R1",
+        registry.get("draft_revision") == R31_LOWERING_REVISION
+        and registry.get("lowering_rules_revision") == R31_LOWERING_REVISION,
         1,
         "JSON_SCHEMA_VALIDATION_FAILURE",
-        "lowering registry revisions are not the integrated R2 revision",
+        "lowering registry revisions are not the R31 bounded extension",
     )
 
     expected_bindings = {
@@ -1112,6 +1119,28 @@ def check_mir_registry(
 
         for capability_id in graph:
             closure(capability_id)
+
+    shared_mutex = registry.get("shared_mutex_with_lock_contract", {})
+    report.require(
+        isinstance(shared_mutex, dict)
+        and shared_mutex.get("plan_schema") == "SharedMutexWithLockPlan"
+        and shared_mutex.get("payload_predicate_id")
+        == "SharedMutexPayloadAdmitted"
+        and shared_mutex.get("ordered_machine_steps")
+        == [
+            "SYNC_OP:LOCK_ACQUIRE",
+            "LOAN_BEGIN_EXCLUSIVE",
+            "INVOKE:CALLBACK",
+            "LOAN_END",
+            "SYNC_OP:LOCK_RELEASE",
+        ]
+        and shared_mutex.get("wrapper_unlock_excluded_from_payload_predicate")
+        is True
+        and shared_mutex.get("product_execution") == "NOT_RUN",
+        2,
+        "R10_HM_VARIANT_REGISTRY_MISMATCH",
+        "SharedMutexWithLockPlan is not bound to the exact existing MIR machine sequence",
+    )
     return (
         operation_map,
         terminator_set,
@@ -1158,17 +1187,12 @@ TOP_SEMANTIC_PLANS: dict[str, tuple[list[str], list[str], str]] = {
         ["CHECKED"],
         "LOWER",
     ),
-    "CLOSURE": (["CLOSURE_MAKE"], [], "LOWER"),
-    "CLEANUP_SCOPE": (
-        [
-            "CLEANUP_REGION_ENTER",
-            "CLEANUP_PIN",
-            "CLEANUP_SEAL",
-            "CLEANUP_DISARM",
-        ],
-        ["LEAVE"],
+    "CLOSURE": (
+        ["BUILDER_BEGIN", "BUILDER_STAGE", "BUILDER_COMMIT", "CLOSURE_MAKE"],
+        ["CHECKED", "LEAVE"],
         "LOWER",
     ),
+    "CLEANUP_SCOPE": (["CLEANUP_REGION_ENTER"], ["LEAVE"], "LOWER"),
     "AWAIT": (["FRAME_SUSPEND_COMMIT", "FRAME_RESUME_COMMIT", "FRAME_CANCEL_COMMIT"], ["SUSPEND"], "LOWER"),
     "YIELD": (["FRAME_SUSPEND_COMMIT", "FRAME_RESUME_COMMIT", "FRAME_CANCEL_COMMIT"], ["SUSPEND"], "LOWER"),
     "CONCUR": (["CONCUR_ENTER"], ["RUN_OP"], "LOWER"),
@@ -1181,7 +1205,18 @@ TOP_SEMANTIC_PLANS: dict[str, tuple[list[str], list[str], str]] = {
     "CANCEL_PROPAGATE": ([], ["LEAVE"], "LOWER"),
     "EVALUATE": ([], [], "NO_RUNTIME_EMISSION"),
     "LOCAL_INIT": (["PLACE_STORE_INIT"], [], "LOWER"),
-    "REGISTER_CLEANUP": (["CLEANUP_REGISTER"], [], "LOWER"),
+    "REGISTER_CLEANUP": (
+        [
+            "CLEANUP_REGISTER",
+            "CLEANUP_PIN",
+            "CLEANUP_SEAL",
+            "CLEANUP_DISARM",
+            "LOAN_END",
+            "MOVE_CANCEL",
+        ],
+        [],
+        "LOWER",
+    ),
     "NESTED_ITEM": ([], [], "NO_RUNTIME_EMISSION"),
 }
 
@@ -1234,6 +1269,17 @@ def expected_semantic_plan(
             "LOWER",
         )
     if kind == "CALL_ARGUMENT":
+        if dispatch["identity_id"] == "TRAILING_CLOSURE":
+            return (
+                [
+                    "BUILDER_BEGIN",
+                    "BUILDER_STAGE",
+                    "BUILDER_COMMIT",
+                    "CLOSURE_MAKE",
+                ],
+                ["CHECKED", "LEAVE"],
+                "LOWER",
+            )
         return [ARGUMENT_OPERATION[dispatch["identity_id"]]], [], "LOWER"
     if kind == "INTRINSIC_OPERATION":
         terminators = (
@@ -1332,10 +1378,10 @@ def check_rows(
             f"{label} schema digest tuple does not bind current HIR/MIR bytes",
         )
         report.require(
-            row.get("lowering_rules_revision") == "R11-INTEGRATED-R1",
+            row.get("lowering_rules_revision") == R31_LOWERING_REVISION,
             1,
             "JSON_SCHEMA_VALIDATION_FAILURE",
-            f"{label} lowering revision is not integrated R2",
+            f"{label} lowering revision is not the R31 bounded extension",
         )
         identities = row.get("hir_identity_ids", [])
         unknown_identities = [
@@ -1708,6 +1754,32 @@ def check_rows(
         2,
         "R10_HM_VARIANT_REGISTRY_MISMATCH",
         "capability insufficiency is not fenced exclusively at ExecutableHirH1",
+    )
+
+    shared_mutex_projection = registry.get(
+        "shared_mutex_with_lock_projection_contract", {}
+    )
+    report.require(
+        isinstance(shared_mutex_projection, dict)
+        and shared_mutex_projection.get("refines_row_id") == "HM-LR-CALL-009"
+        and shared_mutex_projection.get("selected_reserved_operation_identity")
+        == "SharedMutex::withLock"
+        and shared_mutex_projection.get("evaluation_order")
+        == [
+            "EVALUATE_RECEIVER_ONCE",
+            "EVALUATE_CALLBACK_ONCE",
+            "SYNC_OP:LOCK_ACQUIRE",
+            "LOAN_BEGIN_EXCLUSIVE",
+            "INVOKE:CALLBACK",
+            "LOAN_END",
+            "SYNC_OP:LOCK_RELEASE",
+        ]
+        and shared_mutex_projection.get("wrapper_unlock_excluded_from_payload_predicate")
+        is True
+        and shared_mutex_projection.get("product_support") == "NOT_RUN",
+        2,
+        "R10_HM_VARIANT_REGISTRY_MISMATCH",
+        "SharedMutex::withLock projection does not refine HM-LR-CALL-009 exactly",
     )
 
     template_groups: defaultdict[str, list[str]] = defaultdict(list)
@@ -2169,7 +2241,14 @@ def check_status_fence(
 ) -> None:
     if "registry" in docs:
         registry = docs["registry"]
-        expected = {**EXPECTED_STATUS_FENCE, "product_execution": "NOT_RUN"}
+        expected = {
+            **EXPECTED_STATUS_FENCE,
+            "product_execution": "NOT_RUN",
+            "r31_closure_capture_plan_projection": "DESIGN_ONLY_NOT_RUN",
+            "r32_deferred_call_plan_projection": "DESIGN_ONLY_NOT_RUN",
+            "new_mir_operation_kind_count": 0,
+            "module_api_value_level_identity_export_count": 0,
+        }
         report.require(
             registry.get("status")
             == "DESIGN_REGISTRY_NOT_IMPLEMENTATION_OR_EXECUTION_EVIDENCE"

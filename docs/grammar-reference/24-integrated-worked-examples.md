@@ -1472,12 +1472,14 @@ capacity 0이나 동적 expression은
 counter는 receiver-bound mutex scope에서만 변경한다.
 
 이 사례는 core syntax 추가가 아니라 Prelude/library profile을 사용한다.
-`SharedCell<T>`와 `SharedMutex<T>`의 API contract가 활성화된 target을
+`SharedCell<T>`와 `SharedMutex<T: SharedMutexPayload>`의 API contract가 활성화된 target을
 전제로 한다.
 
 요구사항은 다음과 같다.
 
 - `SharedCell<T>` payload는 normalized Plain이다.
+- `SharedMutex<T>` payload는 exact `SharedMutexPayload` bound를 만족하며,
+  이 bound는 Plain이나 Transferable을 합성하지 않는다.
 - observation borrow는 scope 밖으로 escape/suspend하지 않는다.
 - `replace`는 새 owner를 한 번 commit하고 이전 owner를 반환한다.
 - mutex access는 non-reentrant, nonsuspending `inout` scope다.
@@ -1518,7 +1520,9 @@ private def refresh(
 
 1. **type capability**
    `Config`가 SharedCell payload에 필요한 Plain 책임을 만족하는지
-   확인한다.
+   확인하고, `Int`가 SharedMutex의 sealed `SharedMutexPayload` predicate를
+   만족하는지 확인한다. generic payload라면 같은 bound가 public API에
+   명시되어야 한다.
 
 2. **call resolution**
    `withValue`, `withLock`, `replace`를 library profile의 named API로

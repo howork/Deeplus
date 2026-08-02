@@ -64,7 +64,7 @@ EXPECTED_FILE_SHA256 = {
         "1feb1dbb44d28305a718730ca83195724fdb43e550320549a90c05835fcc78af"
     ),
     "ownership_contract": (
-        "c6964c39582a37c711bfd32b8d1fda7d71340885f381f20ff518a1de73408c4b"
+        "397527eb0423b3219e46daab3ec66a13a37ad2c11bfb4863e83eff63ee17ad76"
     ),
     "shape_amendment": (
         "40f41749a18b13c421ecc8703eb9a927770ff3802ace6e3186268e7c4016848d"
@@ -103,7 +103,7 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "64778b8ab2be1fe9e04f54e2878f9a1784eda76620c8a957793ede5499949bde"
+        "afc0939a529df91226a8aefd2e224a663bea0ae364e44383dc8be8af43382c1b"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
@@ -191,22 +191,40 @@ OWNERSHIP_OVERRIDE_IDS = [
     "BoxOwnershipAdmitted",
     "OwnershipModeAdmitted",
 ]
+R30_RESPONSIBILITY_OVERRIDE_IDS = [
+    "PlainValueAdmissible",
+    "ShareableObservationSafe",
+    "TransferableAcrossIsolation",
+    "CopyValueAdmissible",
+]
 R9_DIAGNOSTIC_OVERRIDE_IDS = [
     "AssociatedRequirementAdmitted",
     "EffectErrorRowPolymorphismAdmitted",
     "EffectRowSubsumes",
 ]
+R31_CAPTURE_OVERRIDE_IDS = [
+    "ClosureCaptureDescriptorAdmitted",
+    "ClosureCaptureDescriptorAdmittedCurrentGate",
+]
+R32_DEFER_OVERRIDE_IDS = ["SingleActionDeferAdmitted"]
+R33_CLEANUP_BUDGET_OVERRIDE_IDS = ["CleanupBudgetEnvelopeAdmitted"]
+R35_SHARED_MUTEX_OVERRIDE_IDS = ["SharedMutexPayloadAdmitted"]
 INSTALLED_OVERRIDE_IDS = [
     *OWNERSHIP_OVERRIDE_IDS,
+    *R30_RESPONSIBILITY_OVERRIDE_IDS,
     *R9_DIAGNOSTIC_OVERRIDE_IDS,
 ]
 R41_ACTOR_PROTOCOL_OVERRIDE_IDS = ["ActorProtocolGateAdmitted"]
 R41_INSTALLED_OVERRIDE_IDS = [
     *INSTALLED_OVERRIDE_IDS,
     *R41_ACTOR_PROTOCOL_OVERRIDE_IDS,
+    *R31_CAPTURE_OVERRIDE_IDS,
+    *R32_DEFER_OVERRIDE_IDS,
+    *R33_CLEANUP_BUDGET_OVERRIDE_IDS,
+    *R35_SHARED_MUTEX_OVERRIDE_IDS,
 ]
 # Historical authoring-bundle checks still bind the original three ownership
-# overrides. Installed-current checks below bind all six exact overrides.
+# overrides. Installed-current checks below bind all seven exact overrides.
 OVERRIDE_IDS = OWNERSHIP_OVERRIDE_IDS
 INPUT_FIELDS = [
     "schema",
@@ -394,11 +412,39 @@ HISTORICAL_R8_RESIDUAL_DEBT_ROWS = [
     for branch in range(1, 5)
 ]
 INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS: list[dict[str, str]] = []
+R32_DELEGATED_DIAGNOSTIC_TARGETS = {
+    "propagate the selected ordinary call diagnostic",
+    "propagate the selected ordinary ownership diagnostic",
+}
 INSTALLED_CURRENT_RESIDUAL_EXACT_ROWS = {
     "AssociatedRequirementAdmitted": 0,
     "EffectErrorRowPolymorphismAdmitted": 0,
     "EffectRowSubsumes": 0,
 }
+R30_CLOSED_RESPONSIBILITY_IDENTITY_ROUTES = [
+    {
+        "predicate_id": predicate_id,
+        "branch": branch,
+        "relation_branch": relation_branch,
+        "relation": relation,
+        "target": target,
+    }
+    for predicate_id in sorted(R30_RESPONSIBILITY_OVERRIDE_IDS)
+    for branch, relation_branch, relation, target in (
+        (
+            "unknown_or_stale_identity",
+            "unknown_or_stale_identity",
+            "secondary",
+            "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+        ),
+        (
+            "known_identity_evidence_failure",
+            "default",
+            "primary",
+            "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+        ),
+    )
+]
 # Compatibility alias for the immutable R8 authoring/candidate checks in the
 # first half of this validator. Current canonical scanning uses the explicit
 # installed-current constants above.
@@ -2352,37 +2398,29 @@ R8_OWNERSHIP_METADATA = (
 )
 R8_REASSEMBLY = "migration/catalog-reassembly.json"
 R8_GRAMMAR_SHA256 = (
-    "055ed7010ad8b78345d0414ffe696988abb52d13fa6f86e3dd1dae4610a4c962"
+    "933d0bd8e62e318b23a395f5b7454610bb8e95acc584fb7f31b61d8d49a8071e"
 )
 R41_GRAMMAR_SHA256 = (
-    "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276"
+    "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc"
 )
 R41_HIR_H1_BRIDGE_SHA256 = (
-    "64778b8ab2be1fe9e04f54e2878f9a1784eda76620c8a957793ede5499949bde"
+    "afc0939a529df91226a8aefd2e224a663bea0ae364e44383dc8be8af43382c1b"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
 )
 R8_014_BYTE_FENCE = {
-    "schemas/language/checker-predicate-fixture-row.schema.json": (
-        6010,
-        "13fd8cd1ae06b06d2d490258368244ef13871b1f8c66f1aec7e65e4dd184df8b",
-    ),
     "schemas/language/rcts-v5-descriptor.schema.json": (
-        23266,
-        "d396b44a739da5c71dc3e52ef472e447852759d1353324481bfc822b670c7c75",
+        23602,
+        "f4a807b42e492e9a6bf1229b70ad293fb66b62f3aa0de6987687f2301c3c40e0",
     ),
     "spec/diagnostics/catalog/chunks/part-0002.json": (
         60219,
         "c3142bd09a936a0d1f65015e6632789043a2ed30a38b2767d85cadb7a89907b9",
     ),
-    "spec/diagnostics/relations/chunks/part-0001.json": (
-        61344,
-        "3e82a0dcc3cce9b447cd0caa31bb7655c6086bb647ed82c9c6157e0f49411d1a",
-    ),
     "tests/conformance/checker-predicates/chunks/part-0003.json": (
-        58715,
-        "062a32da9dad1f5c6481a83963ad1b1f0b713636b7ed11b283b4312973fa399e",
+        58919,
+        "de6624e20ab6b8dc81d91b9d4b3a6fdc7e34812d318ee2dce3ff2f6e9d1b0d60",
     ),
 }
 R41_014_RELATION_PART_0001_FENCE = (
@@ -3232,7 +3270,15 @@ def _check_context_exact_7(
                 and row.get("source_activation") == expected[1]
                 and row.get("product_support") == PRODUCT_EXECUTION
                 and row.get("artifact_trace_refs")
-                == [R8_CONTEXT_CONTRACT]
+                == (
+                    [
+                        R8_CONTEXT_CONTRACT,
+                        "spec/contracts/loan-close-operation-r1.json",
+                        "tests/fixtures/current/loan-close-operation-r1.json",
+                    ]
+                    if feature_id == "region_lifetime_model_phase_a"
+                    else [R8_CONTEXT_CONTRACT]
+                )
                 and (
                     row.get("notes") == expected[2]
                     if feature_id
@@ -3240,7 +3286,11 @@ def _check_context_exact_7(
                         "ampersand_polarity_decision_record",
                         "contextual_operation_anchor_dmad",
                     }
-                    else row.get("notes", "").endswith(expected[2])
+                    else (
+                        expected[2] in row.get("notes", "")
+                        if feature_id == "region_lifetime_model_phase_a"
+                        else row.get("notes", "").endswith(expected[2])
+                    )
                 )
                 for feature_id, expected in (
                     context_feature_expectations.items()
@@ -3410,6 +3460,12 @@ def _check_overrides_exact_3(
             "schemas/language/ownership-predicate-input-r1.schema.json"
         ),
     }
+    responsibility_expected_row = {
+        "input_descriptor": "ResponsibilityIdentityInputR1",
+        "input_descriptor_schema": (
+            "schemas/language/responsibility-identity-input-r1.schema.json"
+        ),
+    }
     diagnostic_expected_row = {
         "input_descriptor": "DiagnosticDispatchClosureInputR1",
         "input_descriptor_schema": (
@@ -3424,14 +3480,58 @@ def _check_overrides_exact_3(
             "actor-protocol-direct-conformance-descriptor.schema.json"
         ),
     }
+    capture_expected_row = {
+        "input_descriptor": "ClosureCapturePlanInputR1",
+        "input_descriptor_schema": (
+            "schemas/language/closure-capture-plan-input-r1.schema.json"
+        ),
+    }
+    defer_expected_row = {
+        "input_descriptor": "DeferredCallPlanInputR1",
+        "input_descriptor_schema": (
+            "schemas/language/deferred-call-plan-input-r1.schema.json"
+        ),
+    }
+    cleanup_budget_expected_row = {
+        "input_descriptor": "CleanupBudgetEnvelopeInputR1",
+        "input_descriptor_schema": (
+            "schemas/language/cleanup-budget-envelope-input-r1.schema.json"
+        ),
+    }
+    shared_mutex_expected_row = {
+        "input_descriptor": "SharedMutexPayloadDescriptorR1",
+        "input_descriptor_schema": (
+            "schemas/language/shared-mutex-payload-bound-fixtures-r1.schema.json#/$defs/payloadDescriptor"
+        ),
+    }
     expected_rows = {
         **{
             predicate_id: ownership_expected_row
             for predicate_id in OWNERSHIP_OVERRIDE_IDS
         },
         **{
+            predicate_id: responsibility_expected_row
+            for predicate_id in R30_RESPONSIBILITY_OVERRIDE_IDS
+        },
+        **{
             predicate_id: diagnostic_expected_row
             for predicate_id in R9_DIAGNOSTIC_OVERRIDE_IDS
+        },
+        **{
+            predicate_id: capture_expected_row
+            for predicate_id in R31_CAPTURE_OVERRIDE_IDS
+        },
+        **{
+            predicate_id: defer_expected_row
+            for predicate_id in R32_DEFER_OVERRIDE_IDS
+        },
+        **{
+            predicate_id: cleanup_budget_expected_row
+            for predicate_id in R33_CLEANUP_BUDGET_OVERRIDE_IDS
+        },
+        **{
+            predicate_id: shared_mutex_expected_row
+            for predicate_id in R35_SHARED_MUTEX_OVERRIDE_IDS
         },
         **{
             predicate_id: actor_protocol_expected_row
@@ -3477,6 +3577,13 @@ def _check_overrides_exact_3(
     ownership_artifacts = [
         "spec/contracts/ownership-decision-input-r1.json",
         "tests/fixtures/current/ownership-decision-inputs-r1.json",
+        "tests/conformance/ownership-decisions/chunks/part-0001.json",
+    ]
+    qualifier_artifacts = [
+        "spec/contracts/ownership-decision-input-r1.json",
+        "spec/contracts/ownership-type-qualifier-r1.json",
+        "tests/fixtures/current/ownership-decision-inputs-r1.json",
+        "tests/fixtures/current/ownership-type-qualifier-r1.json",
         "tests/conformance/ownership-decisions/chunks/part-0001.json",
     ]
     secondary_relations = [
@@ -3594,9 +3701,9 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1476
-            and relation_metadata_doc.value.get("relation_count") == 570,
-            "diagnostic/relation canonical counts are not exact R46 fusion",
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1482
+            and relation_metadata_doc.value.get("relation_count") == 597,
+            "diagnostic/relation canonical counts are not exact R47 fusion",
         ),
         (
             set(active_diagnostics)
@@ -3640,12 +3747,13 @@ def _check_overrides_exact_3(
                     "tests/fixtures/current/"
                     "type-flow-callable-coherence-r1.json"
                 ),
-                *ownership_artifacts,
+                *qualifier_artifacts,
             ]
             and feature_rows["inout_borrow_move_modes"]
             .get("normative_trace_refs", {})
             .get("diagnostics")
             == [
+                "BORROW_ESCAPE_OWNER_REGION",
                 "OWNERSHIP_MODE_ADMISSION_FAILED",
                 "INOUT_ALIAS_CONFLICT",
                 "PLACE_STATE_JOIN_MISMATCH",
@@ -4163,6 +4271,9 @@ def _check_residual_debt(
         and row.get("diagnostic_class") == "current_source"
     )
     scanned: list[dict[str, Any]] = []
+    delegated: list[dict[str, str]] = []
+    observed_r30_closed_routes: list[dict[str, str]] = []
+    r30_closed_route_errors: list[str] = []
     for predicate in sorted(
         environment.predicate_rows,
         key=lambda row: str(row.get("predicate_id", "")),
@@ -4173,26 +4284,93 @@ def _check_residual_debt(
             continue
         refs = predicate.get("diagnostic_refs", [])
         for branch, target in dispatch.items():
-            relation_count = sum(
-                row.get("predicate_id") == predicate_id
-                and row.get("diagnostic_id") == target
+            route = {
+                "predicate_id": predicate_id,
+                "branch": branch,
+                "target": target,
+            }
+            if (
+                predicate_id == "SingleActionDeferAdmitted"
+                and target
+                in {
+                    "propagate the selected ordinary call diagnostic",
+                    "propagate the selected ordinary ownership diagnostic",
+                }
+            ):
+                delegated.append(route)
+                continue
+            relation_rows = [
+                {
+                    "violation_id": row.get("violation_id"),
+                    "predicate_id": row.get("predicate_id"),
+                    "diagnostic_id": row.get("diagnostic_id"),
+                    "relation": row.get("relation"),
+                }
                 for row in environment.relation_rows
-            )
+                if row.get("predicate_id") == predicate_id
+                and row.get("diagnostic_id") == target
+            ]
             catalog_exact_one = active_diagnostic_counts[target] == 1
             listed = target in refs
-            if not (catalog_exact_one and listed and relation_count == 1):
-                scanned.append(
-                    {
-                        "predicate_id": predicate_id,
-                        "branch": branch,
-                        "target": target,
+            r30_closed_route = next(
+                (
+                    expected_route
+                    for expected_route
+                    in R30_CLOSED_RESPONSIBILITY_IDENTITY_ROUTES
+                    if {
+                        "predicate_id": expected_route["predicate_id"],
+                        "branch": expected_route["branch"],
+                        "target": expected_route["target"],
                     }
-                )
+                    == route
+                ),
+                None,
+            )
+            if r30_closed_route is not None:
+                observed_r30_closed_routes.append(r30_closed_route)
+                expected_relation = {
+                    "violation_id": (
+                        f"{predicate_id}:"
+                        f"{r30_closed_route['relation_branch']}"
+                    ),
+                    "predicate_id": predicate_id,
+                    "diagnostic_id": target,
+                    "relation": r30_closed_route["relation"],
+                }
+                if (
+                    not catalog_exact_one
+                    or not listed
+                    or relation_rows != [expected_relation]
+                ):
+                    r30_closed_route_errors.append(
+                        f"{predicate_id}:{branch}:{target}"
+                    )
+                continue
+            if not (
+                catalog_exact_one and listed and len(relation_rows) == 1
+            ):
+                scanned.append(route)
     expected = debt.get("outside_r5_exact_debt_rows")
     errors = _errors(
         (
             debt.get("r5_borrow_escape_unresolved_after_candidate") == 0,
             "R8 BorrowEscape residual is not zero",
+        ),
+        (
+            delegated
+            == [
+                {
+                    "predicate_id": "SingleActionDeferAdmitted",
+                    "branch": "4_call_resolution_or_binding",
+                    "target": "propagate the selected ordinary call diagnostic",
+                },
+                {
+                    "predicate_id": "SingleActionDeferAdmitted",
+                    "branch": "5_registration_ownership_preparation",
+                    "target": "propagate the selected ordinary ownership diagnostic",
+                },
+            ],
+            "R32 delegated selected-diagnostic routes are not exact",
         ),
         (
             debt.get("outside_r5_gap_id") == "IR-DIAG-P0-052"
@@ -4208,6 +4386,12 @@ def _check_residual_debt(
             expected == INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS
             and scanned == INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS,
             "installed undefined-dispatch scan is not exact zero",
+        ),
+        (
+            observed_r30_closed_routes
+            == R30_CLOSED_RESPONSIBILITY_IDENTITY_ROUTES
+            and not r30_closed_route_errors,
+            "R30 closed responsibility-identity route set is not exact",
         ),
     )
     return not errors, {
@@ -4226,6 +4410,10 @@ def _check_residual_debt(
         "expected_rows": INSTALLED_CURRENT_RESIDUAL_DEBT_ROWS,
         "observed_rows": scanned,
         "observed_residual_count": len(scanned),
+        "r30_closed_responsibility_identity_routes":
+            observed_r30_closed_routes,
+        "r30_closed_responsibility_identity_route_errors":
+            r30_closed_route_errors,
         "errors": errors,
         "product_execution": PRODUCT_EXECUTION,
     }

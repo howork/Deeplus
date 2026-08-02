@@ -115,6 +115,93 @@
       "CHECKER"
     ],
     "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CLEANUP_BUDGET_DUPLICATE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "cleanup_budget_algebra",
+      "header_cleanup_budget_surface"
+    ],
+    "fixit_hint": "remove the repeated cleanup-budget axis or normalized identity",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "remove only the repeated axis or identity after canonical resolution",
+    "message": "A cleanup budget repeats an effects/errors axis or a normalized effect/error identity.",
+    "notes": "Current design-static diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "cleanup_budget_algebra",
+      "header_cleanup_budget_surface"
+    ],
+    "fixit_hint": "name a normalized ErrorSet type after errors",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "replace the target only after selecting the intended recoverable ErrorSet",
+    "message": "The errors item of a cleanup budget must resolve to an ErrorSet type.",
+    "notes": "Current design-static diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CLEANUP_BUDGET_EXCEEDED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "cleanup_budget_algebra",
+      "header_cleanup_budget_surface",
+      "resource_inheritance"
+    ],
+    "fixit_hint": "widen the local budget within the family ceiling or reduce the cleanup obligation",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "preserve public substitutability and do not widen a child beyond its sealed family root",
+    "message": "A normalized cleanup obligation or child envelope is not a subset of the selected effective cleanup budget.",
+    "notes": "Current design-static diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "CALL_ARGUMENT_SEPARATOR_REQUIRED",
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
@@ -1594,33 +1681,6 @@
     "fixit_policy": "manual",
     "message": "Column-vector semicolon form must follow the current profile orientation law: `#[a,b]` is rank-1 `#N[T]`; `#[a;b]` is column `#N,1[T]`; explicit row matrix is `#1,N[...]`.",
     "notes": "Current source diagnostic contract; product lexer/parser/checker emission receipt remains NOT_RUN.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "related_feature_refs": [],
-    "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "error",
-    "stage": "checker",
-    "diagnostic_class": "current_source",
-    "emission_domain": "source"
-  },
-  {
-    "authority": "LANGUAGE / OFFICIAL_TOOLING",
-    "authority_set": [
-      "LANGUAGE",
-      "OFFICIAL_TOOLING"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "COMPARISON_CHAIN_MIXED_DIRECTION_REQUIRES_EXPLICIT_AND",
-    "diagnostic_maturity": "active",
-    "diagnostic_status": "active",
-    "feature_refs": [
-      "ordered_comparison_chain_msp"
-    ],
-    "fixit_hint": "none",
-    "fixit_kind": "none",
-    "fixit_policy": "none",
-    "message": "Mixed-direction comparison chains require explicit `and`.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],

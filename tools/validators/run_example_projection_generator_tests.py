@@ -73,7 +73,10 @@ def copy_fixture(source: Path, target: Path) -> None:
 
 def git_output(*args: str) -> bytes:
     result = subprocess.run(
-        ["git", *args], cwd=ROOT, check=True, capture_output=True
+        ["git", "-c", f"safe.directory={ROOT}", *args],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
     )
     return result.stdout
 

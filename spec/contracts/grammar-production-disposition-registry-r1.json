@@ -10,9 +10,9 @@
   },
   "grammar": {
     "path": "spec/grammar/deeplus.ebnf",
-    "bytes": 67229,
-    "sha256": "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276",
-    "production_count": 643,
+    "bytes": 67902,
+    "sha256": "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc",
+    "production_count": 644,
     "external_symbol_count": 40
   },
   "disposition_domain": [
@@ -735,18 +735,18 @@
   ],
   "disposition_counts": {
     "ast_node": 204,
-    "cst_only": 410,
+    "cst_only": 411,
     "external_parser_entry": 19,
     "normalize_to": 10
   },
   "profile_counts": {
     "LEXICAL": 91,
-    "STABLE": 539,
+    "STABLE": 540,
     "PREVIEW": 13
   },
   "reachability_owner_counts": {
     "CURRENT_SOURCE_GRAPH": 436,
-    "HANDWRITTEN_PARSER_REGISTRY": 103,
+    "HANDWRITTEN_PARSER_REGISTRY": 104,
     "PREVIEW_PROFILE_GRAPH": 13,
     "SCANNER": 91
   },
@@ -6435,14 +6435,6 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "reachability_owner": "CURRENT_SOURCE_GRAPH",
-      "disposition": "ast_node",
-      "cst_shape": "PRODUCTION_NODE",
-      "cst_kind": "CST/ActorProtocolConformanceClause",
-      "cst_owner_rule": "this production emits the named CST kind",
-      "ast_target": "AST/ActorProtocolConformanceRef",
-      "ast_output_cardinality": "EXACTLY_ONE",
-      "invalid_or_recovery_ast_count": 0,
       "ordinal": 291,
       "production_id": "ActorProtocolConformanceClause",
       "profile": "STABLE",
@@ -6453,7 +6445,15 @@
         "LineBreakBoundary",
         "QualifiedTypeReference",
         "WhereClause"
-      ]
+      ],
+      "reachability_owner": "CURRENT_SOURCE_GRAPH",
+      "disposition": "ast_node",
+      "cst_shape": "PRODUCTION_NODE",
+      "cst_kind": "CST/ActorProtocolConformanceClause",
+      "cst_owner_rule": "this production emits the named CST kind",
+      "ast_target": "AST/ActorProtocolConformanceRef",
+      "ast_output_cardinality": "EXACTLY_ONE",
+      "invalid_or_recovery_ast_count": 0
     },
     {
       "ordinal": 292,
@@ -6478,14 +6478,6 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "reachability_owner": "CURRENT_SOURCE_GRAPH",
-      "disposition": "cst_only",
-      "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
-      "cst_kind": null,
-      "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
-      "ast_target": null,
-      "ast_output_cardinality": "ZERO",
-      "invalid_or_recovery_ast_count": 0,
       "ordinal": 293,
       "production_id": "ActorMemberDecl",
       "profile": "STABLE",
@@ -6501,7 +6493,15 @@
         "MemberFunctionDecl",
         "TypeSideFieldDecl",
         "TypeSideMemberFunctionDecl"
-      ]
+      ],
+      "reachability_owner": "CURRENT_SOURCE_GRAPH",
+      "disposition": "cst_only",
+      "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+      "cst_kind": null,
+      "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
+      "ast_target": null,
+      "ast_output_cardinality": "ZERO",
+      "invalid_or_recovery_ast_count": 0
     },
     {
       "ordinal": 294,
@@ -6553,14 +6553,6 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "reachability_owner": "CURRENT_SOURCE_GRAPH",
-      "disposition": "ast_node",
-      "cst_shape": "PRODUCTION_NODE",
-      "cst_kind": "CST/ActorProtocolConformBlock",
-      "cst_owner_rule": "this production emits the named CST kind",
-      "ast_target": "AST/ActorProtocolConformGroup",
-      "ast_output_cardinality": "EXACTLY_ONE",
-      "invalid_or_recovery_ast_count": 0,
       "ordinal": 296,
       "production_id": "ActorProtocolConformBlock",
       "profile": "STABLE",
@@ -6570,17 +6562,17 @@
       "referenced_productions": [
         "ActorProtocolConformanceBody",
         "QualifiedTypeReference"
-      ]
+      ],
+      "reachability_owner": "CURRENT_SOURCE_GRAPH",
+      "disposition": "ast_node",
+      "cst_shape": "PRODUCTION_NODE",
+      "cst_kind": "CST/ActorProtocolConformBlock",
+      "cst_owner_rule": "this production emits the named CST kind",
+      "ast_target": "AST/ActorProtocolConformGroup",
+      "ast_output_cardinality": "EXACTLY_ONE",
+      "invalid_or_recovery_ast_count": 0
     },
     {
-      "reachability_owner": "CURRENT_SOURCE_GRAPH",
-      "disposition": "cst_only",
-      "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
-      "cst_kind": null,
-      "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
-      "ast_target": null,
-      "ast_output_cardinality": "ZERO",
-      "invalid_or_recovery_ast_count": 0,
       "ordinal": 297,
       "production_id": "ActorProtocolConformanceBody",
       "profile": "STABLE",
@@ -6589,9 +6581,7 @@
       "rhs_sha256": "604ee2c90bba4f587d1b66e748fba4178ea3965abae5afdbbe3870d7e19c7049",
       "referenced_productions": [
         "ActorProtocolConformanceItem"
-      ]
-    },
-    {
+      ],
       "reachability_owner": "CURRENT_SOURCE_GRAPH",
       "disposition": "cst_only",
       "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
@@ -6599,7 +6589,9 @@
       "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
       "ast_target": null,
       "ast_output_cardinality": "ZERO",
-      "invalid_or_recovery_ast_count": 0,
+      "invalid_or_recovery_ast_count": 0
+    },
+    {
       "ordinal": 298,
       "production_id": "ActorProtocolConformanceItem",
       "profile": "STABLE",
@@ -6609,7 +6601,15 @@
       "referenced_productions": [
         "ActorOnDecl",
         "ActorRequestDecl"
-      ]
+      ],
+      "reachability_owner": "CURRENT_SOURCE_GRAPH",
+      "disposition": "cst_only",
+      "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+      "cst_kind": null,
+      "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
+      "ast_target": null,
+      "ast_output_cardinality": "ZERO",
+      "invalid_or_recovery_ast_count": 0
     },
     {
       "ordinal": 299,
@@ -7484,7 +7484,7 @@
       "ordinal": 342,
       "production_id": "ParenTypeSyntax",
       "profile": "STABLE",
-      "source_line": 682,
+      "source_line": 686,
       "normalized_rhs": "HashTag* \"(\" ParenTypeItemList? \")\" FunctionTypeTail?",
       "rhs_sha256": "dbd75f74674a35f34e9a3b59b75666b0df10125ed45b3fe151bf81f2f4b31d26",
       "referenced_productions": [
@@ -7505,7 +7505,7 @@
       "ordinal": 343,
       "production_id": "ParenTypeItemList",
       "profile": "STABLE",
-      "source_line": 683,
+      "source_line": 687,
       "normalized_rhs": "ParenTypeItem (\",\" ParenTypeItem)* \",\"?",
       "rhs_sha256": "1bbec32d8756607e4656dccf111de5bc0c2aac88f8f3410bf02d1145e1764c83",
       "referenced_productions": [
@@ -7524,10 +7524,11 @@
       "ordinal": 344,
       "production_id": "ParenTypeItem",
       "profile": "STABLE",
-      "source_line": 684,
-      "normalized_rhs": "TypeRef | TypeRef \"...\" | TypeRef \"***\"",
-      "rhs_sha256": "ccf4e03a902eff231f6a3e002ffeca15de31eff026a1833804c691e08c2fa5e2",
+      "source_line": 688,
+      "normalized_rhs": "FunctionTypeModeItem | TypeRef | TypeRef \"...\" | TypeRef \"***\"",
+      "rhs_sha256": "ab9a7bf62b4eea2411616e7c0c5f3c3d9fc2528747e661f41f9525c0ab726959",
       "referenced_productions": [
+        "FunctionTypeModeItem",
         "TypeRef"
       ],
       "reachability_owner": "HANDWRITTEN_PARSER_REGISTRY",
@@ -7541,9 +7542,29 @@
     },
     {
       "ordinal": 345,
+      "production_id": "FunctionTypeModeItem",
+      "profile": "STABLE",
+      "source_line": 689,
+      "normalized_rhs": "ParameterMode TypeRef",
+      "rhs_sha256": "5b591eb471728411777399ab4148aace7c27271d53039fe424eb44b813c5ba6c",
+      "referenced_productions": [
+        "ParameterMode",
+        "TypeRef"
+      ],
+      "reachability_owner": "HANDWRITTEN_PARSER_REGISTRY",
+      "disposition": "cst_only",
+      "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+      "cst_kind": null,
+      "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
+      "ast_target": null,
+      "ast_output_cardinality": "ZERO",
+      "invalid_or_recovery_ast_count": 0
+    },
+    {
+      "ordinal": 346,
       "production_id": "FunctionTypeTail",
       "profile": "STABLE",
-      "source_line": 685,
+      "source_line": 690,
       "normalized_rhs": "\"->\" ReturnTypeSurface ThrowsClause* EffectsClause*",
       "rhs_sha256": "b4ac0d8e5953e3e34cdc19e2a5bc30ad6945b8ebe25add31569b0ce663f5eb25",
       "referenced_productions": [
@@ -7561,10 +7582,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 346,
+      "ordinal": 347,
       "production_id": "SharpShapeType",
       "profile": "STABLE",
-      "source_line": 687,
+      "source_line": 692,
       "normalized_rhs": "\"#\" StaticDimensionList \"[\" TypeRef \"]\"",
       "rhs_sha256": "895da4fdb4ed5de400b8fcc1ff0c963dcca78ddc21f433830537eecbf75b1c1e",
       "referenced_productions": [
@@ -7581,10 +7602,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 347,
+      "ordinal": 348,
       "production_id": "StaticDimensionList",
       "profile": "STABLE",
-      "source_line": 688,
+      "source_line": 693,
       "normalized_rhs": "StaticIntLiteral (\",\" StaticIntLiteral)*",
       "rhs_sha256": "c02eb68bc4da2f2d1407523445a3e0a8589a40a31eab5c67c7e87c03d4c9d500",
       "referenced_productions": [
@@ -7600,10 +7621,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 348,
+      "ordinal": 349,
       "production_id": "ExistentialType",
       "profile": "STABLE",
-      "source_line": 690,
+      "source_line": 695,
       "normalized_rhs": "\"any\" QualifiedTypeReference AssociatedTypeConstraintList?",
       "rhs_sha256": "d63974ebefdcdff9315e55bdc27f41cb0d218c5925c76de07470969b34736186",
       "referenced_productions": [
@@ -7620,10 +7641,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 349,
+      "ordinal": 350,
       "production_id": "OpaqueType",
       "profile": "STABLE",
-      "source_line": 691,
+      "source_line": 696,
       "normalized_rhs": "\"some\" QualifiedTypeReference AssociatedTypeConstraintList?",
       "rhs_sha256": "39668af1052e61011086259599e5a4ecfc0e3ee4ebe95a2bcc4bb8a9445f43a2",
       "referenced_productions": [
@@ -7640,10 +7661,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 350,
+      "ordinal": 351,
       "production_id": "TypeofType",
       "profile": "STABLE",
-      "source_line": 692,
+      "source_line": 697,
       "normalized_rhs": "\"typeof\" TypeofStaticSampleOperand",
       "rhs_sha256": "9598506ced2c7a12c1b1dfb115ff9b1d79c99bbbacd45d79240215e8faaf35e7",
       "referenced_productions": [
@@ -7659,10 +7680,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 351,
+      "ordinal": 352,
       "production_id": "AssociatedProjection",
       "profile": "STABLE",
-      "source_line": 693,
+      "source_line": 698,
       "normalized_rhs": "\"<\" TypeRef \"as\" QualifiedTypeReference \">\" \"::\" Identifier",
       "rhs_sha256": "11018068e81ede138aa162e0ad2c1065b6e5778a41d94f8ca28fae8cc2e6675c",
       "referenced_productions": [
@@ -7680,10 +7701,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 352,
+      "ordinal": 353,
       "production_id": "TypeofStaticSampleOperand",
       "profile": "STABLE",
-      "source_line": 696,
+      "source_line": 701,
       "normalized_rhs": "Literal | ListLiteral | StaticPrefixedCollectionSample | NumericArrayLiteral | MeasureLiteralExpr",
       "rhs_sha256": "e4b5ae30095879f2b6eb18cb049261cb8049f80ff918e25f460a89301ce77fd3",
       "referenced_productions": [
@@ -7703,10 +7724,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 353,
+      "ordinal": 354,
       "production_id": "StaticPrefixedCollectionSample",
       "profile": "STABLE",
-      "source_line": 701,
+      "source_line": 706,
       "normalized_rhs": "MapLiteral | SetLiteral | MutListLiteral",
       "rhs_sha256": "3d4e4a47cb2985f7a7d497e39dd4a81b3945e27e8a54cd75e39a71ec897b3870",
       "referenced_productions": [
@@ -7724,10 +7745,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 354,
+      "ordinal": 355,
       "production_id": "PrattType",
       "profile": "STABLE",
-      "source_line": 704,
+      "source_line": 709,
       "normalized_rhs": "TYPE_PRATT_ENTRY",
       "rhs_sha256": "a9126f020fd01466af61cf9586698c493eb1af06439ab46f65dfaaeffb3bb5ad",
       "referenced_productions": [],
@@ -7741,10 +7762,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 355,
+      "ordinal": 356,
       "production_id": "PrattNonFunctionType",
       "profile": "STABLE",
-      "source_line": 705,
+      "source_line": 710,
       "normalized_rhs": "NON_FUNCTION_TYPE_PRATT_ENTRY",
       "rhs_sha256": "fca69c5673c28414562a28eff6f9f6ef3ff6e97875747d17056e3056395199d9",
       "referenced_productions": [],
@@ -7758,10 +7779,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 356,
+      "ordinal": 357,
       "production_id": "Pattern",
       "profile": "STABLE",
-      "source_line": 713,
+      "source_line": 718,
       "normalized_rhs": "OrPattern",
       "rhs_sha256": "d71b12ee1f5effbe3fa28288f494b9f4c408480d994307d9bab1662f718f8d14",
       "referenced_productions": [
@@ -7777,10 +7798,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 357,
+      "ordinal": 358,
       "production_id": "OrPattern",
       "profile": "STABLE",
-      "source_line": 714,
+      "source_line": 719,
       "normalized_rhs": "AliasPattern (\"|\" AliasPattern)*",
       "rhs_sha256": "05684924890aee4b3fe40329f2104023f5366a7a090eb28dd22803157623a529",
       "referenced_productions": [
@@ -7796,10 +7817,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 358,
+      "ordinal": 359,
       "production_id": "AliasPattern",
       "profile": "STABLE",
-      "source_line": 715,
+      "source_line": 720,
       "normalized_rhs": "MovePattern (\"as\" Identifier)?",
       "rhs_sha256": "f510e8819d64015c426ef2d3ecffbc29e7d81ca5f93dc9be7f74366a5997561d",
       "referenced_productions": [
@@ -7816,10 +7837,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 359,
+      "ordinal": 360,
       "production_id": "MovePattern",
       "profile": "STABLE",
-      "source_line": 716,
+      "source_line": 721,
       "normalized_rhs": "\"move\"? PatternPrimary",
       "rhs_sha256": "175d99ecba64226cc3f2cd67e38cffdbeccb6f10896d4dc1fbf3c9340fdaf86a",
       "referenced_productions": [
@@ -7835,10 +7856,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 360,
+      "ordinal": 361,
       "production_id": "PatternPrimary",
       "profile": "STABLE",
-      "source_line": 718,
+      "source_line": 723,
       "normalized_rhs": "TypedBindingPattern | Identifier | PinPattern | RangePattern | RelationalPattern | TuplePattern | RecordPattern | ListPattern | MapPattern | VariantPattern | NominalPattern | \"_\" | UnitSyntax | Literal | ParenthesizedPattern",
       "rhs_sha256": "a6415fba02e25b59a08c1c9b4c85cedbae325e1ee61b9b467ea8108208e2567e",
       "referenced_productions": [
@@ -7867,10 +7888,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 361,
+      "ordinal": 362,
       "production_id": "TypedBindingPattern",
       "profile": "STABLE",
-      "source_line": 734,
+      "source_line": 739,
       "normalized_rhs": "Identifier \":\" TypeRef",
       "rhs_sha256": "1dfa630551a89d12018988e65aad7b4aa655021e2805803054164e1adc89625c",
       "referenced_productions": [
@@ -7887,10 +7908,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 362,
+      "ordinal": 363,
       "production_id": "ParenthesizedPattern",
       "profile": "STABLE",
-      "source_line": 735,
+      "source_line": 740,
       "normalized_rhs": "\"(\" Pattern \")\"",
       "rhs_sha256": "36ef88fcf90918253083277cfc12693038d6fc5a91ea54c14d28124212764457",
       "referenced_productions": [
@@ -7906,10 +7927,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 363,
+      "ordinal": 364,
       "production_id": "PinPattern",
       "profile": "STABLE",
-      "source_line": 736,
+      "source_line": 741,
       "normalized_rhs": "\"^\" StablePatternValue",
       "rhs_sha256": "e1ffc5fbac706376f9cb50db8b8b4165c406dfbb6727f54a57bdf2b2b7331908",
       "referenced_productions": [
@@ -7925,10 +7946,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 364,
+      "ordinal": 365,
       "production_id": "StablePatternValue",
       "profile": "STABLE",
-      "source_line": 737,
+      "source_line": 742,
       "normalized_rhs": "Identifier | QualifiedStaticExpr | Literal",
       "rhs_sha256": "17c09fda239b29bc7304d4ed8a9f116358ec91df9c9c7842a435621e839042c6",
       "referenced_productions": [
@@ -7946,10 +7967,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 365,
+      "ordinal": 366,
       "production_id": "RangePattern",
       "profile": "STABLE",
-      "source_line": 738,
+      "source_line": 743,
       "normalized_rhs": "PatternBound (\"..\" | \"..<\") PatternBound",
       "rhs_sha256": "5601b84e96a04a5adc36c77a3928a34640009ddfaeebe3143a72c55bea269e33",
       "referenced_productions": [
@@ -7965,10 +7986,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 366,
+      "ordinal": 367,
       "production_id": "RelationalPattern",
       "profile": "STABLE",
-      "source_line": 739,
+      "source_line": 744,
       "normalized_rhs": "(\"<\" | \"<=\" | \">\" | \">=\") PatternBound",
       "rhs_sha256": "ac53ede934b2d225771baddabd83b7e1ab0ae8a50b36b0e19a76b53a1576f637",
       "referenced_productions": [
@@ -7984,10 +8005,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 367,
+      "ordinal": 368,
       "production_id": "PatternBound",
       "profile": "STABLE",
-      "source_line": 740,
+      "source_line": 745,
       "normalized_rhs": "Literal | PinPattern",
       "rhs_sha256": "82b590b401e307d71e1533921503a3d426b9694a9ab8a8ca4625bb9d52db3172",
       "referenced_productions": [
@@ -8004,10 +8025,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 368,
+      "ordinal": 369,
       "production_id": "TuplePattern",
       "profile": "STABLE",
-      "source_line": 744,
+      "source_line": 749,
       "normalized_rhs": "\"(\" TuplePatternItems \")\"",
       "rhs_sha256": "f7b3bdc9ddbb7547d81f2a02725e3711abf1412bd60a8b1b2eca9a229f5c2dcf",
       "referenced_productions": [
@@ -8023,10 +8044,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 369,
+      "ordinal": 370,
       "production_id": "TuplePatternItems",
       "profile": "STABLE",
-      "source_line": 745,
+      "source_line": 750,
       "normalized_rhs": "Pattern \",\" | Pattern \",\" Pattern (\",\" Pattern)* \",\"?",
       "rhs_sha256": "f95311e364f5c35ef09a1507d3243f3cc95091b6e007b1a1576b3f7420a41bc2",
       "referenced_productions": [
@@ -8042,10 +8063,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 370,
+      "ordinal": 371,
       "production_id": "BindingPattern",
       "profile": "STABLE",
-      "source_line": 757,
+      "source_line": 762,
       "normalized_rhs": "BindingOrPattern TypeAnnotation?",
       "rhs_sha256": "6dcb1414bed1c7575abec1449cc4309af2d73066762f7a9c297a94a00f117efc",
       "referenced_productions": [
@@ -8062,10 +8083,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 371,
+      "ordinal": 372,
       "production_id": "BindingOrPattern",
       "profile": "STABLE",
-      "source_line": 758,
+      "source_line": 763,
       "normalized_rhs": "BindingAliasPattern (\"|\" BindingAliasPattern)*",
       "rhs_sha256": "3eb3d61536c14e8f5f17178ef0bce37784e6cd98b41648f0722b9ccec81b595a",
       "referenced_productions": [
@@ -8081,10 +8102,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 372,
+      "ordinal": 373,
       "production_id": "BindingAliasPattern",
       "profile": "STABLE",
-      "source_line": 759,
+      "source_line": 764,
       "normalized_rhs": "BindingMovePattern (\"as\" Identifier)?",
       "rhs_sha256": "a58c108836b00d4a091142004895ca4c27f502b943185c92cff813f70c0e195b",
       "referenced_productions": [
@@ -8101,10 +8122,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 373,
+      "ordinal": 374,
       "production_id": "BindingMovePattern",
       "profile": "STABLE",
-      "source_line": 760,
+      "source_line": 765,
       "normalized_rhs": "\"move\"? BindingPatternPrimary",
       "rhs_sha256": "6650158de29d5ea08a907534f00ba76c20d767ea1ac36e5cdcb1b3457a50ed80",
       "referenced_productions": [
@@ -8120,10 +8141,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 374,
+      "ordinal": 375,
       "production_id": "BindingPatternPrimary",
       "profile": "STABLE",
-      "source_line": 761,
+      "source_line": 766,
       "normalized_rhs": "Identifier | PinPattern | RangePattern | RelationalPattern | TuplePattern | RecordPattern | ListPattern | MapPattern | VariantPattern | NominalPattern | \"_\" | UnitSyntax | Literal | ParenthesizedPattern",
       "rhs_sha256": "59d312cb70c2c867ab9870b4915687cb32c52c05c4ce95461f338ca6b905b10a",
       "referenced_productions": [
@@ -8151,10 +8172,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 375,
+      "ordinal": 376,
       "production_id": "RecordPattern",
       "profile": "STABLE",
-      "source_line": 780,
+      "source_line": 785,
       "normalized_rhs": "\"${\" RecordPatternEntries? \"}\"",
       "rhs_sha256": "cb6a2b9da555238065cc6d92525fedaece1ae634a8705695f135dde4c1643daf",
       "referenced_productions": [
@@ -8170,10 +8191,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 376,
+      "ordinal": 377,
       "production_id": "RecordPatternEntries",
       "profile": "STABLE",
-      "source_line": 781,
+      "source_line": 786,
       "normalized_rhs": "RecordPatternEntry (PatternEntrySeparator RecordPatternEntry)* PatternEntrySeparator?",
       "rhs_sha256": "0842e76e57d505fe44ca6a829fb771fb0f656266e48cd798b0b3cfc6df2a5c27",
       "referenced_productions": [
@@ -8190,10 +8211,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 377,
+      "ordinal": 378,
       "production_id": "RecordPatternEntry",
       "profile": "STABLE",
-      "source_line": 783,
+      "source_line": 788,
       "normalized_rhs": "Identifier | RecordDestination \":\" Identifier | RecordRestPattern",
       "rhs_sha256": "09a1a19781426d4e540559ed512984817f4cd7b0f3228fc78f3545f6a7ee0214",
       "referenced_productions": [
@@ -8211,10 +8232,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 378,
+      "ordinal": 379,
       "production_id": "RecordDestination",
       "profile": "STABLE",
-      "source_line": 784,
+      "source_line": 789,
       "normalized_rhs": "Pattern",
       "rhs_sha256": "4288ade73ff9d32824e931c858f11acab4e0a323e6b1da9bfbe124473a13ac5a",
       "referenced_productions": [
@@ -8230,10 +8251,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 379,
+      "ordinal": 380,
       "production_id": "RecordRestPattern",
       "profile": "STABLE",
-      "source_line": 785,
+      "source_line": 790,
       "normalized_rhs": "\"..\" RestBinder",
       "rhs_sha256": "7d31f555570f0346674e6319a19fdf1d9072f4ca4842b52e7f9128a3260c876b",
       "referenced_productions": [
@@ -8249,10 +8270,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 380,
+      "ordinal": 381,
       "production_id": "MapPattern",
       "profile": "STABLE",
-      "source_line": 787,
+      "source_line": 792,
       "normalized_rhs": "\"#\" \"map\" \"{\" MapPatternEntries? \"}\"",
       "rhs_sha256": "39697b718d25355e90ddc519f557c1efa5689ad9d399b47514d77194aec9a7c1",
       "referenced_productions": [
@@ -8268,10 +8289,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 381,
+      "ordinal": 382,
       "production_id": "MapPatternEntries",
       "profile": "STABLE",
-      "source_line": 788,
+      "source_line": 793,
       "normalized_rhs": "MapPatternEntry (PatternEntrySeparator MapPatternEntry)* PatternEntrySeparator?",
       "rhs_sha256": "bfc98790fa0169e35432f5b9ac58f84350d97d4358ec6239e59f2a9ed6fa07f8",
       "referenced_productions": [
@@ -8288,10 +8309,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 382,
+      "ordinal": 383,
       "production_id": "MapPatternEntry",
       "profile": "STABLE",
-      "source_line": 790,
+      "source_line": 795,
       "normalized_rhs": "MapDestination \":\" MapKeyPattern | MapRestPattern",
       "rhs_sha256": "0fec7d3033c2b00b61ea8ceabb139d8ed56edea91f93f41d259aa6674ed5723c",
       "referenced_productions": [
@@ -8309,10 +8330,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 383,
+      "ordinal": 384,
       "production_id": "MapDestination",
       "profile": "STABLE",
-      "source_line": 791,
+      "source_line": 796,
       "normalized_rhs": "Pattern",
       "rhs_sha256": "4288ade73ff9d32824e931c858f11acab4e0a323e6b1da9bfbe124473a13ac5a",
       "referenced_productions": [
@@ -8328,10 +8349,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 384,
+      "ordinal": 385,
       "production_id": "MapKeyPattern",
       "profile": "STABLE",
-      "source_line": 792,
+      "source_line": 797,
       "normalized_rhs": "Literal | PinPattern",
       "rhs_sha256": "82b590b401e307d71e1533921503a3d426b9694a9ab8a8ca4625bb9d52db3172",
       "referenced_productions": [
@@ -8348,10 +8369,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 385,
+      "ordinal": 386,
       "production_id": "MapRestPattern",
       "profile": "STABLE",
-      "source_line": 793,
+      "source_line": 798,
       "normalized_rhs": "\"..\" RestBinder",
       "rhs_sha256": "7d31f555570f0346674e6319a19fdf1d9072f4ca4842b52e7f9128a3260c876b",
       "referenced_productions": [
@@ -8367,10 +8388,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 386,
+      "ordinal": 387,
       "production_id": "PatternEntrySeparator",
       "profile": "STABLE",
-      "source_line": 794,
+      "source_line": 799,
       "normalized_rhs": "\",\" LineBreakBoundary? | LineBreakBoundary",
       "rhs_sha256": "a2ae6f682586d290cfc684fe00d98c60fec8b2563beff329f23e2edf0463c4f6",
       "referenced_productions": [
@@ -8386,10 +8407,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 387,
+      "ordinal": 388,
       "production_id": "ListPattern",
       "profile": "STABLE",
-      "source_line": 800,
+      "source_line": 805,
       "normalized_rhs": "\"[\" ListPatternBody? \"]\"",
       "rhs_sha256": "6e785d153d2aebf12b6c4182becb9331fcb5f2e87460ce4438dd6689b4565206",
       "referenced_productions": [
@@ -8405,10 +8426,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 388,
+      "ordinal": 389,
       "production_id": "ListPatternBody",
       "profile": "STABLE",
-      "source_line": 801,
+      "source_line": 806,
       "normalized_rhs": "IgnoredAllListRest | ExactListPattern | PrefixRestListPattern | SuffixRestListPattern | MiddleRestListPattern",
       "rhs_sha256": "50a140bae33ac344832f03b12ae5d2633b916dd94255ec78b224f7e0f6db62b7",
       "referenced_productions": [
@@ -8428,10 +8449,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 389,
+      "ordinal": 390,
       "production_id": "ExactListPattern",
       "profile": "STABLE",
-      "source_line": 806,
+      "source_line": 811,
       "normalized_rhs": "Pattern (\",\" Pattern)* \",\"?",
       "rhs_sha256": "50e2ce2b6bbf4e3548aa9d47a1fb8657d08a0460e9e91534d02b67c9f8644fd6",
       "referenced_productions": [
@@ -8447,10 +8468,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 390,
+      "ordinal": 391,
       "production_id": "PrefixRestListPattern",
       "profile": "STABLE",
-      "source_line": 807,
+      "source_line": 812,
       "normalized_rhs": "PrefixListRest \",\" Pattern (\",\" Pattern)* \",\"?",
       "rhs_sha256": "d91912611096c0f40a5da2d730177c57a86ee1a4e725e7e46ce37aa40fb9227a",
       "referenced_productions": [
@@ -8467,10 +8488,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 391,
+      "ordinal": 392,
       "production_id": "SuffixRestListPattern",
       "profile": "STABLE",
-      "source_line": 808,
+      "source_line": 813,
       "normalized_rhs": "Pattern (\",\" Pattern)* \",\" SuffixListRest \",\"?",
       "rhs_sha256": "06733c00a24cd3ebfbdc92e297a4614e156608b3dd492949e6aefb3b2388b50a",
       "referenced_productions": [
@@ -8487,10 +8508,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 392,
+      "ordinal": 393,
       "production_id": "MiddleRestListPattern",
       "profile": "STABLE",
-      "source_line": 809,
+      "source_line": 814,
       "normalized_rhs": "Pattern (\",\" Pattern)* \",\" MiddleListRest \",\" Pattern (\",\" Pattern)* \",\"?",
       "rhs_sha256": "d49f0d9230e991e088ae7132bd50db4120350b7a607e412044e87531fc159034",
       "referenced_productions": [
@@ -8507,10 +8528,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 393,
+      "ordinal": 394,
       "production_id": "PrefixListRest",
       "profile": "STABLE",
-      "source_line": 811,
+      "source_line": 816,
       "normalized_rhs": "RestBinder \"..\"",
       "rhs_sha256": "0777013fd513efb80605e19ba8ca3c793f59c2e1eb5fbb777bdf096166f9a89d",
       "referenced_productions": [
@@ -8526,10 +8547,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 394,
+      "ordinal": 395,
       "production_id": "SuffixListRest",
       "profile": "STABLE",
-      "source_line": 812,
+      "source_line": 817,
       "normalized_rhs": "\"..\" RestBinder",
       "rhs_sha256": "7d31f555570f0346674e6319a19fdf1d9072f4ca4842b52e7f9128a3260c876b",
       "referenced_productions": [
@@ -8545,10 +8566,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 395,
+      "ordinal": 396,
       "production_id": "MiddleListRest",
       "profile": "STABLE",
-      "source_line": 813,
+      "source_line": 818,
       "normalized_rhs": "\"..\" RestBinder \"..\"",
       "rhs_sha256": "7e84555a3c1898fb465539a5695e570b2aa7ec25bb5b457e9705abaa5a0e3de9",
       "referenced_productions": [
@@ -8564,10 +8585,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 396,
+      "ordinal": 397,
       "production_id": "IgnoredAllListRest",
       "profile": "STABLE",
-      "source_line": 814,
+      "source_line": 819,
       "normalized_rhs": "\"..\" \"_\" \",\"?",
       "rhs_sha256": "8e99f862dacbd3048320217140e87350ce39144d62afe28e252d30410238d75c",
       "referenced_productions": [],
@@ -8581,10 +8602,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 397,
+      "ordinal": 398,
       "production_id": "RestBinder",
       "profile": "STABLE",
-      "source_line": 815,
+      "source_line": 820,
       "normalized_rhs": "Identifier | \"_\"",
       "rhs_sha256": "fb3a364f3cb60e11d2b829673e78789c8a32b39bf32d6863b1431ec8d077c752",
       "referenced_productions": [
@@ -8600,10 +8621,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 398,
+      "ordinal": 399,
       "production_id": "VariantPattern",
       "profile": "STABLE",
-      "source_line": 817,
+      "source_line": 822,
       "normalized_rhs": "VariantQualifier Identifier VariantPatternPayload?",
       "rhs_sha256": "12e682c6a9057eb2a0d0252ae8e3f4354b420db23335635dfc33e880e5977a58",
       "referenced_productions": [
@@ -8621,10 +8642,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 399,
+      "ordinal": 400,
       "production_id": "VariantQualifier",
       "profile": "STABLE",
-      "source_line": 818,
+      "source_line": 823,
       "normalized_rhs": "TypeRef \"::\" | \"::\"",
       "rhs_sha256": "864624f5b6e8184de832a806589d9f44d07dbdd36ea883f186b4a412f19b0a44",
       "referenced_productions": [
@@ -8640,10 +8661,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 400,
+      "ordinal": 401,
       "production_id": "VariantPatternPayload",
       "profile": "STABLE",
-      "source_line": 819,
+      "source_line": 824,
       "normalized_rhs": "VariantPositionalPatternPayload | RecordPattern",
       "rhs_sha256": "779533e21e08cf3d6b90b980c0f3bc65cca539bdc34feb48c1bf4622b76191a6",
       "referenced_productions": [
@@ -8660,10 +8681,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 401,
+      "ordinal": 402,
       "production_id": "VariantPositionalPatternPayload",
       "profile": "STABLE",
-      "source_line": 820,
+      "source_line": 825,
       "normalized_rhs": "\"(\" PatternList? \")\"",
       "rhs_sha256": "26a5a0d98a9428212788af32ba09efad4f3a539610783a98d5a649331b1d0d5c",
       "referenced_productions": [
@@ -8679,10 +8700,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 402,
+      "ordinal": 403,
       "production_id": "NominalPattern",
       "profile": "STABLE",
-      "source_line": 825,
+      "source_line": 830,
       "normalized_rhs": "TypeRef RecordPattern",
       "rhs_sha256": "e86d127982460918ad1622e8edfe981e830af49ef3fb2d44bac730aa46ab0ed7",
       "referenced_productions": [
@@ -8699,10 +8720,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 403,
+      "ordinal": 404,
       "production_id": "Stmt",
       "profile": "STABLE",
-      "source_line": 833,
+      "source_line": 838,
       "normalized_rhs": "ForLoop | WhileLoop | RepeatLoop | AsyncForLoop | MatchStatement | IfStmt | LocalBindingStmt | AssertiveBindingStmt | PatternAssignmentStmt | ParallelAssignmentStmt | ControlTransferStmt | TryStmt | DeferStmt | ScopedUseStmt | ExprStmt | ScopedImportStmt",
       "rhs_sha256": "bc928eb8c6bb83ff5c3192f0f423aef55e4d205c1377805d755e645efd54b58f",
       "referenced_productions": [
@@ -8733,10 +8754,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 404,
+      "ordinal": 405,
       "production_id": "ExprStmt",
       "profile": "STABLE",
-      "source_line": 850,
+      "source_line": 855,
       "normalized_rhs": "Expr StatementBoundary",
       "rhs_sha256": "14071845c7fcbd1c79283343938d2371a282040c280bf912de43a91a556884b7",
       "referenced_productions": [
@@ -8753,10 +8774,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 405,
+      "ordinal": 406,
       "production_id": "Block",
       "profile": "STABLE",
-      "source_line": 852,
+      "source_line": 857,
       "normalized_rhs": "\"{\" BlockPrologue? BlockSequence \"}\"",
       "rhs_sha256": "904d9f8d5f6f48e52a4b5f39411122cbe5b2d491459b52a3500428c27c7f581c",
       "referenced_productions": [
@@ -8773,10 +8794,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 406,
+      "ordinal": 407,
       "production_id": "BlockPrologue",
       "profile": "STABLE",
-      "source_line": 853,
+      "source_line": 858,
       "normalized_rhs": "(UseDecl | ImportDecl)+",
       "rhs_sha256": "6fd3c7f3dc1a1688f296e40e8f2addddb042fb36ae8ed03bf033199395139034",
       "referenced_productions": [
@@ -8793,10 +8814,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 407,
+      "ordinal": 408,
       "production_id": "BlockSequence",
       "profile": "STABLE",
-      "source_line": 854,
+      "source_line": 859,
       "normalized_rhs": "BlockItem* BlockFinalItem?",
       "rhs_sha256": "3caab190bfd0138379dcc1069a76f6364896fe258fc2067fc761a2101aa9f56a",
       "referenced_productions": [
@@ -8813,10 +8834,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 408,
+      "ordinal": 409,
       "production_id": "BlockItem",
       "profile": "STABLE",
-      "source_line": 855,
+      "source_line": 860,
       "normalized_rhs": "LocalFunctionDecl | Stmt",
       "rhs_sha256": "10e84960f871f1e0a5d259724c6c1d52669145e7539da3b7b1b489a2778e3f28",
       "referenced_productions": [
@@ -8833,10 +8854,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 409,
+      "ordinal": 410,
       "production_id": "BlockFinalItem",
       "profile": "STABLE",
-      "source_line": 858,
+      "source_line": 863,
       "normalized_rhs": "ControlTransfer | BindingCore | Expr",
       "rhs_sha256": "fb8069f63b5ea6a643592f8be2ad2210ac05d75c6ca40e3aa8b2173a9abed0ec",
       "referenced_productions": [
@@ -8854,10 +8875,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 410,
+      "ordinal": 411,
       "production_id": "ValueBody",
       "profile": "STABLE",
-      "source_line": 861,
+      "source_line": 866,
       "normalized_rhs": "SingleExpressionValueBody | ExplicitRetValueBody",
       "rhs_sha256": "69106025d7277491b36c5c7a4f839e03ceb5c7702da73f42fc8293183064898a",
       "referenced_productions": [
@@ -8874,10 +8895,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 411,
+      "ordinal": 412,
       "production_id": "SingleExpressionValueBody",
       "profile": "STABLE",
-      "source_line": 862,
+      "source_line": 867,
       "normalized_rhs": "\"{\" ReturnValueSurface \"}\"",
       "rhs_sha256": "ae17b18e82622fec4838cec58aa164498f07af687bae9f69d19c9ee73b00d01f",
       "referenced_productions": [
@@ -8893,10 +8914,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 412,
+      "ordinal": 413,
       "production_id": "ExplicitRetValueBody",
       "profile": "STABLE",
-      "source_line": 863,
+      "source_line": 868,
       "normalized_rhs": "\"{\" BlockItem* RetTransfer \"}\"",
       "rhs_sha256": "43558dba7dd95468a50fed478ca392dc1b6624a0a9506b324e18cba33f850aa0",
       "referenced_productions": [
@@ -8913,10 +8934,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 413,
+      "ordinal": 414,
       "production_id": "RetTransfer",
       "profile": "STABLE",
-      "source_line": 864,
+      "source_line": 869,
       "normalized_rhs": "\"ret\" ReturnValueSurface? GuardClause?",
       "rhs_sha256": "266bdbf6f426a93475df295479170dd0f77d2e99cf949de6f7a5ba867c3aa38b",
       "referenced_productions": [
@@ -8933,10 +8954,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 414,
+      "ordinal": 415,
       "production_id": "BindingCore",
       "profile": "STABLE",
-      "source_line": 869,
+      "source_line": 874,
       "normalized_rhs": "(\"let\" | \"var\") BindingHead \"=\" BindingValueSurface",
       "rhs_sha256": "e83c40a4a59bc1638a7f0061971ed5040b2a831fb556eb5375ec922ff963d101",
       "referenced_productions": [
@@ -8953,10 +8974,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 415,
+      "ordinal": 416,
       "production_id": "BindingHead",
       "profile": "STABLE",
-      "source_line": 870,
+      "source_line": 875,
       "normalized_rhs": "BindingPattern | BareTupleBindingSurface",
       "rhs_sha256": "674970a162102b0baeeda4c7b22ffe2dfd56b6849ee78b8c7eaedf07cb9a1bdf",
       "referenced_productions": [
@@ -8973,10 +8994,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 416,
+      "ordinal": 417,
       "production_id": "BareTupleBindingSurface",
       "profile": "STABLE",
-      "source_line": 871,
+      "source_line": 876,
       "normalized_rhs": "BindingPattern \",\" BindingPattern (\",\" BindingPattern)*",
       "rhs_sha256": "e4df6e30093f0552db843282f6b28e831deb303f73e010154968756e5324424d",
       "referenced_productions": [
@@ -8992,30 +9013,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 417,
+      "ordinal": 418,
       "production_id": "BindingValueSurface",
       "profile": "STABLE",
-      "source_line": 872,
-      "normalized_rhs": "Expr | BareTupleValueSurface",
-      "rhs_sha256": "465f9caaf3b811632c1bf61cb1bfb1368316d8028be447b8c8f649216fcf42ea",
-      "referenced_productions": [
-        "BareTupleValueSurface",
-        "Expr"
-      ],
-      "reachability_owner": "CURRENT_SOURCE_GRAPH",
-      "disposition": "cst_only",
-      "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
-      "cst_kind": null,
-      "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
-      "ast_target": null,
-      "ast_output_cardinality": "ZERO",
-      "invalid_or_recovery_ast_count": 0
-    },
-    {
-      "ordinal": 418,
-      "production_id": "ReturnValueSurface",
-      "profile": "STABLE",
-      "source_line": 873,
+      "source_line": 877,
       "normalized_rhs": "Expr | BareTupleValueSurface",
       "rhs_sha256": "465f9caaf3b811632c1bf61cb1bfb1368316d8028be447b8c8f649216fcf42ea",
       "referenced_productions": [
@@ -9033,9 +9034,29 @@
     },
     {
       "ordinal": 419,
+      "production_id": "ReturnValueSurface",
+      "profile": "STABLE",
+      "source_line": 878,
+      "normalized_rhs": "Expr | BareTupleValueSurface",
+      "rhs_sha256": "465f9caaf3b811632c1bf61cb1bfb1368316d8028be447b8c8f649216fcf42ea",
+      "referenced_productions": [
+        "BareTupleValueSurface",
+        "Expr"
+      ],
+      "reachability_owner": "CURRENT_SOURCE_GRAPH",
+      "disposition": "cst_only",
+      "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+      "cst_kind": null,
+      "cst_owner_rule": "nearest enclosing production node retains the exact child tokens and order",
+      "ast_target": null,
+      "ast_output_cardinality": "ZERO",
+      "invalid_or_recovery_ast_count": 0
+    },
+    {
+      "ordinal": 420,
       "production_id": "BareTupleValueSurface",
       "profile": "STABLE",
-      "source_line": 874,
+      "source_line": 879,
       "normalized_rhs": "Expr \",\" Expr (\",\" Expr)*",
       "rhs_sha256": "a5a488a654ccf713d47df4a525c88aad2239aece7b12814c27a06128776b39f5",
       "referenced_productions": [
@@ -9051,10 +9072,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 420,
+      "ordinal": 421,
       "production_id": "LocalBindingStmt",
       "profile": "STABLE",
-      "source_line": 875,
+      "source_line": 880,
       "normalized_rhs": "BindingCore StatementBoundary | RightwardLocalBindingSurface | LazyBindingStmt | GuardedBindingStmt",
       "rhs_sha256": "dc16b497d2a4a813f4303301209c5744cfb1f6971b3110a46b27bfc29abc146e",
       "referenced_productions": [
@@ -9074,10 +9095,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 421,
+      "ordinal": 422,
       "production_id": "LazyBindingStmt",
       "profile": "STABLE",
-      "source_line": 876,
+      "source_line": 881,
       "normalized_rhs": "\"let\" HashTag Identifier TypeAnnotation? \"=\" Expr StatementBoundary",
       "rhs_sha256": "6e9cfc8e46e897a814dbf09182f2ff0f9eb88ef8cce092c75dfa0aadbce7c27f",
       "referenced_productions": [
@@ -9097,10 +9118,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 422,
+      "ordinal": 423,
       "production_id": "GuardedBindingStmt",
       "profile": "STABLE",
-      "source_line": 877,
+      "source_line": 882,
       "normalized_rhs": "(\"let\" | \"var\") BindingPattern \"=\" Expr \"else\" GuardedBindingFailure StatementBoundary?",
       "rhs_sha256": "735e1348e3d9eb993bccbb95ea3f56667b4d7365afb641ad737b5a3b0e618b1c",
       "referenced_productions": [
@@ -9119,10 +9140,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 423,
+      "ordinal": 424,
       "production_id": "AssertiveBindingStmt",
       "profile": "STABLE",
-      "source_line": 878,
+      "source_line": 883,
       "normalized_rhs": "(\"let\" | \"var\") \"!\" BindingPattern \"=\" Expr StatementBoundary",
       "rhs_sha256": "3e678623a617da21b70e02d7b4c14ae899f1bd3af8cf239604bba63b5140408c",
       "referenced_productions": [
@@ -9140,10 +9161,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 424,
+      "ordinal": 425,
       "production_id": "GuardedBindingFailure",
       "profile": "STABLE",
-      "source_line": 880,
+      "source_line": 885,
       "normalized_rhs": "GuardedBindingExit | Pattern \"=>\" GuardedBindingExit",
       "rhs_sha256": "4666219246e70e0e4d2c4d45f5fab6b164acadb7d10405689fdd5454c0e159cc",
       "referenced_productions": [
@@ -9160,10 +9181,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 425,
+      "ordinal": 426,
       "production_id": "GuardedBindingExit",
       "profile": "STABLE",
-      "source_line": 881,
+      "source_line": 886,
       "normalized_rhs": "GuardedReturnExit | GuardedThrowExit | GuardedBreakExit | GuardedContinueExit",
       "rhs_sha256": "baf311399f0a0f0f6f0b111748df4f1d49fa5bc54ccf2ae13fe3a74ae456d9fc",
       "referenced_productions": [
@@ -9182,10 +9203,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 426,
+      "ordinal": 427,
       "production_id": "GuardedReturnExit",
       "profile": "STABLE",
-      "source_line": 882,
+      "source_line": 887,
       "normalized_rhs": "\"return\" Expr?",
       "rhs_sha256": "49ff51f99b1840be0daef5e8287120da460243f6d7b0f2519372a2f723cfe070",
       "referenced_productions": [
@@ -9201,10 +9222,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 427,
+      "ordinal": 428,
       "production_id": "GuardedThrowExit",
       "profile": "STABLE",
-      "source_line": 883,
+      "source_line": 888,
       "normalized_rhs": "\"throw\" Expr",
       "rhs_sha256": "7e1d6c303d7c8059069f0c51db2f7ab1ab5ff62773d9b3c90f84d4fa7e4e8647",
       "referenced_productions": [
@@ -9220,10 +9241,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 428,
+      "ordinal": 429,
       "production_id": "GuardedBreakExit",
       "profile": "STABLE",
-      "source_line": 884,
+      "source_line": 889,
       "normalized_rhs": "(\"break\")+ Expr?",
       "rhs_sha256": "a6b725918e8ce716325f9d3f9a7a7aaa69baf017e34b3c933a5803792d293d9b",
       "referenced_productions": [
@@ -9239,10 +9260,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 429,
+      "ordinal": 430,
       "production_id": "GuardedContinueExit",
       "profile": "STABLE",
-      "source_line": 885,
+      "source_line": 890,
       "normalized_rhs": "(\"break\")* \"continue\"",
       "rhs_sha256": "28c01335e4db5a257f64dc1df71a550472f5b62877e7191a8ce69bc8f4727da8",
       "referenced_productions": [],
@@ -9256,10 +9277,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 430,
+      "ordinal": 431,
       "production_id": "ControlTransferStmt",
       "profile": "STABLE",
-      "source_line": 888,
+      "source_line": 893,
       "normalized_rhs": "ControlTransfer StatementBoundary",
       "rhs_sha256": "a84a7b8bdee6397423af0c39d17fb74bd5103f1a77847ea79fa12c281f2a21ed",
       "referenced_productions": [
@@ -9276,10 +9297,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 431,
+      "ordinal": 432,
       "production_id": "ControlTransfer",
       "profile": "STABLE",
-      "source_line": 889,
+      "source_line": 894,
       "normalized_rhs": "ReturnTransfer | ThrowTransfer | BreakTransfer | ContinueTransfer | YieldTransfer",
       "rhs_sha256": "69bbbd75827144aaaede76ec0c10d4a7a8a5ea82e5a19dd63a4016e252267252",
       "referenced_productions": [
@@ -9299,10 +9320,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 432,
+      "ordinal": 433,
       "production_id": "ReturnTransfer",
       "profile": "STABLE",
-      "source_line": 890,
+      "source_line": 895,
       "normalized_rhs": "\"return\" ReturnValueSurface? GuardClause?",
       "rhs_sha256": "c9cd7c5dd635e5aa77caf7b5a54098a3e0aabca16825301a7bb0e08670668861",
       "referenced_productions": [
@@ -9319,10 +9340,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 433,
+      "ordinal": 434,
       "production_id": "ThrowTransfer",
       "profile": "STABLE",
-      "source_line": 891,
+      "source_line": 896,
       "normalized_rhs": "\"throw\" Expr GuardClause?",
       "rhs_sha256": "33f007a2c3ff6974998ee32de88d0df5e5c3d9023dd3a0eeab6b3f80a7cd165e",
       "referenced_productions": [
@@ -9339,10 +9360,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 434,
+      "ordinal": 435,
       "production_id": "BreakTransfer",
       "profile": "STABLE",
-      "source_line": 892,
+      "source_line": 897,
       "normalized_rhs": "(\"break\")+ Expr? GuardClause?",
       "rhs_sha256": "f6da5a3c4f64beecbdf8645355c1f498f0443c9232f6730bcfd2b95b0548e800",
       "referenced_productions": [
@@ -9359,10 +9380,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 435,
+      "ordinal": 436,
       "production_id": "ContinueTransfer",
       "profile": "STABLE",
-      "source_line": 893,
+      "source_line": 898,
       "normalized_rhs": "(\"break\")* \"continue\" GuardClause?",
       "rhs_sha256": "2cf1c511380b74f94ce76aa2b58432d07d4ba3162b4ed724e3de79dfc9135f37",
       "referenced_productions": [
@@ -9378,10 +9399,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 436,
+      "ordinal": 437,
       "production_id": "YieldTransfer",
       "profile": "STABLE",
-      "source_line": 894,
+      "source_line": 899,
       "normalized_rhs": "\"yield\" Expr? (GuardClause | YieldResponseBinding)?",
       "rhs_sha256": "259980a49e94f481a04cc3966f30d48a61575d0ea42bcc8e0e5f9d4ffbc0a73b",
       "referenced_productions": [
@@ -9399,10 +9420,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 437,
+      "ordinal": 438,
       "production_id": "YieldResponseBinding",
       "profile": "STABLE",
-      "source_line": 895,
+      "source_line": 900,
       "normalized_rhs": "\"->\" DollarLocalBinding",
       "rhs_sha256": "a96b08dfd395af89da56307fd0b8576d3a6b595fd5e204f6859deea395d99e52",
       "referenced_productions": [
@@ -9418,10 +9439,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 438,
+      "ordinal": 439,
       "production_id": "DollarLocalBinding",
       "profile": "STABLE",
-      "source_line": 896,
+      "source_line": 901,
       "normalized_rhs": "\"$\" Identifier TypeAnnotation? | \"$$\" Identifier TypeAnnotation?",
       "rhs_sha256": "58b84ce29a6d570d1396d8843fc549ebe9087e09387811795a324656878e6b13",
       "referenced_productions": [
@@ -9438,10 +9459,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 439,
+      "ordinal": 440,
       "production_id": "GuardClause",
       "profile": "STABLE",
-      "source_line": 898,
+      "source_line": 903,
       "normalized_rhs": "PositiveGuard | NegativeGuard",
       "rhs_sha256": "2c01c1b6ed937c616a023ee41085f96c53db14abbad7473c5270eb870d6e6a1a",
       "referenced_productions": [
@@ -9458,10 +9479,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 440,
+      "ordinal": 441,
       "production_id": "PositiveGuard",
       "profile": "STABLE",
-      "source_line": 899,
+      "source_line": 904,
       "normalized_rhs": "\"if\" Expr",
       "rhs_sha256": "9784416085db116131c114c794558ba201781fcc0963429fb8b26626d7c8e8ee",
       "referenced_productions": [
@@ -9477,10 +9498,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 441,
+      "ordinal": 442,
       "production_id": "NegativeGuard",
       "profile": "STABLE",
-      "source_line": 900,
+      "source_line": 905,
       "normalized_rhs": "\"!\" \"if\" Expr",
       "rhs_sha256": "afca588a8278b5ceff2152f36edd071b0e62b482411f9708ffc37783c6f91156",
       "referenced_productions": [
@@ -9496,10 +9517,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 442,
+      "ordinal": 443,
       "production_id": "IfStmt",
       "profile": "STABLE",
-      "source_line": 902,
+      "source_line": 907,
       "normalized_rhs": "\"if\" PatternConditionChain Block (\"else\" (IfStmt | Block))?",
       "rhs_sha256": "9a0aadf6fd5cc68a4055a590e0303633bf0044331d7ccd7593bdf16d1b0995ab",
       "referenced_productions": [
@@ -9517,10 +9538,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 443,
+      "ordinal": 444,
       "production_id": "PatternConditionChain",
       "profile": "STABLE",
-      "source_line": 905,
+      "source_line": 910,
       "normalized_rhs": "PatternControlCondition (\"and\" \"then\" PatternControlCondition)*",
       "rhs_sha256": "61b92f96b3eb7faa59a6817f785fb21b1b4a187ad2922d60001c6bb9a958c0a4",
       "referenced_productions": [
@@ -9536,10 +9557,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 444,
+      "ordinal": 445,
       "production_id": "PatternControlCondition",
       "profile": "STABLE",
-      "source_line": 907,
+      "source_line": 912,
       "normalized_rhs": "Expr | \"let\" Pattern \"=\" Expr",
       "rhs_sha256": "82ff00d14abeb87d4a0f23e46cf00f2e3ca359a10c9e5ac86a4813f45eab3829",
       "referenced_productions": [
@@ -9556,10 +9577,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 445,
+      "ordinal": 446,
       "production_id": "ForLoop",
       "profile": "STABLE",
-      "source_line": 911,
+      "source_line": 916,
       "normalized_rhs": "\"for\" (\"let\" Pattern | Pattern) \"in\" Expr GuardClause? Block MatchStatement?",
       "rhs_sha256": "37a85b05208c78e233dafbdf8aca64961e571ed2b0ad70d4b8da3bb3e536e9b2",
       "referenced_productions": [
@@ -9579,10 +9600,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 446,
+      "ordinal": 447,
       "production_id": "WhileLoop",
       "profile": "STABLE",
-      "source_line": 912,
+      "source_line": 917,
       "normalized_rhs": "\"while\" PatternConditionChain Block MatchStatement?",
       "rhs_sha256": "1472c06584de98bf9688d3ab1227e2b746a557201d30e5bd225d73105fafa5c7",
       "referenced_productions": [
@@ -9600,10 +9621,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 447,
+      "ordinal": 448,
       "production_id": "RepeatLoop",
       "profile": "STABLE",
-      "source_line": 913,
+      "source_line": 918,
       "normalized_rhs": "\"repeat\" Block \"while\" Expr MatchStatement?",
       "rhs_sha256": "c589e57e3dd80577bf458c190664982d3eeeb419392466d7fb4b09ae4925a1d1",
       "referenced_productions": [
@@ -9621,10 +9642,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 448,
+      "ordinal": 449,
       "production_id": "AsyncForLoop",
       "profile": "STABLE",
-      "source_line": 917,
+      "source_line": 922,
       "normalized_rhs": "\"for\" ForAwaitRole (\"let\" Pattern | Pattern) \"in\" Expr GuardClause? Block",
       "rhs_sha256": "e95cf45d7fcbb1625a343634fd213b62e0ba163577e249086267bfb153b8299c",
       "referenced_productions": [
@@ -9644,10 +9665,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 449,
+      "ordinal": 450,
       "production_id": "ForAwaitRole",
       "profile": "STABLE",
-      "source_line": 918,
+      "source_line": 923,
       "normalized_rhs": "\"#\" \"await\"",
       "rhs_sha256": "402cf52497ce258ead8f15901b9c89b075fb0c54da2dcfa8b50c50db549f7e89",
       "referenced_productions": [],
@@ -9661,10 +9682,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 450,
+      "ordinal": 451,
       "production_id": "MatchStatement",
       "profile": "STABLE",
-      "source_line": 920,
+      "source_line": 925,
       "normalized_rhs": "\"match\" MatchCore",
       "rhs_sha256": "f6eb1a1300836e6f9dfa556638a214d469ca06debdcc6f177822c2dd5281d6ea",
       "referenced_productions": [
@@ -9680,10 +9701,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 451,
+      "ordinal": 452,
       "production_id": "MatchCore",
       "profile": "STABLE",
-      "source_line": 921,
+      "source_line": 926,
       "normalized_rhs": "MatchSubjectSlot MatchBody",
       "rhs_sha256": "9340efb9f0335f006f1d5d735fee6d88077d55a8448ca7e526985749dcadf06e",
       "referenced_productions": [
@@ -9700,10 +9721,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 452,
+      "ordinal": 453,
       "production_id": "MatchSubjectSlot",
       "profile": "STABLE",
-      "source_line": 922,
+      "source_line": 927,
       "normalized_rhs": "MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY",
       "rhs_sha256": "ce8caa4d7b95c2a8a9afc46ed1c76505122038b5cc7801e19dc0d126b6f035a4",
       "referenced_productions": [],
@@ -9717,10 +9738,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 453,
+      "ordinal": 454,
       "production_id": "MatchBody",
       "profile": "STABLE",
-      "source_line": 923,
+      "source_line": 928,
       "normalized_rhs": "\"{\" LineBreakBoundary? MatchArmSequence \"}\"",
       "rhs_sha256": "50eb22d0811e623aab93eed31ee0bd41ca09f4f044fea245577b30a9b1d44ac0",
       "referenced_productions": [
@@ -9737,10 +9758,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 454,
+      "ordinal": 455,
       "production_id": "MatchArmSequence",
       "profile": "STABLE",
-      "source_line": 924,
+      "source_line": 929,
       "normalized_rhs": "MatchArm (MatchArmSeparator MatchArm)* MatchArmSeparator?",
       "rhs_sha256": "5031361cc0a4c34e6ceb6fafe8b94394caf15c2c8c080e6b55be4d10c186ff42",
       "referenced_productions": [
@@ -9757,10 +9778,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 455,
+      "ordinal": 456,
       "production_id": "MatchArm",
       "profile": "STABLE",
-      "source_line": 925,
+      "source_line": 930,
       "normalized_rhs": "MatchHead GuardClause? \"=>\" MatchArmBodySlot",
       "rhs_sha256": "1d6c825f1d08205e46701388d1a0ca9573dd7771a3c9e72262c171ea535e863c",
       "referenced_productions": [
@@ -9778,10 +9799,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 456,
+      "ordinal": 457,
       "production_id": "MatchHead",
       "profile": "STABLE",
-      "source_line": 926,
+      "source_line": 931,
       "normalized_rhs": "BoundedBinderPattern | Pattern | \"otherwise\"",
       "rhs_sha256": "69c654656f41ae8c0c51b1e1c5f68176ff958bf356ad85f75365bcdd5a39159f",
       "referenced_productions": [
@@ -9798,10 +9819,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 457,
+      "ordinal": 458,
       "production_id": "BoundedBinderPattern",
       "profile": "STABLE",
-      "source_line": 932,
+      "source_line": 937,
       "normalized_rhs": "PatternBound OrderedComparisonOperator Identifier OrderedComparisonOperator PatternBound",
       "rhs_sha256": "4e2cf4b50b8ea5c1a4a5783b22aa9c7882223a454fff6dd61a2faabf532ef6c9",
       "referenced_productions": [
@@ -9819,10 +9840,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 458,
+      "ordinal": 459,
       "production_id": "MatchArmSeparator",
       "profile": "STABLE",
-      "source_line": 934,
+      "source_line": 939,
       "normalized_rhs": "MATCH_ARM_SEPARATOR_BY_CONTEXT",
       "rhs_sha256": "4e85c82faedb64fc420ca32dbad55aab5cf6dc99235295daa3b1a2a89b6b4715",
       "referenced_productions": [],
@@ -9836,10 +9857,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 459,
+      "ordinal": 460,
       "production_id": "MatchArmBodySlot",
       "profile": "STABLE",
-      "source_line": 935,
+      "source_line": 940,
       "normalized_rhs": "MATCH_ARM_BODY_BY_CONTEXT",
       "rhs_sha256": "8639b44f82c3fcaa1af2a499dee2768f232b9637669c2c61b4f19d70fec27152",
       "referenced_productions": [],
@@ -9853,10 +9874,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 460,
+      "ordinal": 461,
       "production_id": "TryStmt",
       "profile": "STABLE",
-      "source_line": 939,
+      "source_line": 944,
       "normalized_rhs": "\"try\" Block (CatchClause+ FinallyClause? | FinallyClause)",
       "rhs_sha256": "2f5401234e31d8975c52a10ca1e12e3514998449df2706054df1b7bb26a204db",
       "referenced_productions": [
@@ -9874,10 +9895,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 461,
+      "ordinal": 462,
       "production_id": "CatchClause",
       "profile": "STABLE",
-      "source_line": 940,
+      "source_line": 945,
       "normalized_rhs": "\"catch\" Pattern? GuardClause? Block",
       "rhs_sha256": "55e8943e66a60ee19e2bce6ee5013ab2f2b8aa100feff7ac03f6de6e4170cb32",
       "referenced_productions": [
@@ -9895,10 +9916,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 462,
+      "ordinal": 463,
       "production_id": "ValueCatchClause",
       "profile": "STABLE",
-      "source_line": 941,
+      "source_line": 946,
       "normalized_rhs": "\"catch\" Pattern? GuardClause? ValueBody",
       "rhs_sha256": "13b1dc467e0972480ec7fefaa487ad28324aa0a38617d7cafa1741e455493618",
       "referenced_productions": [
@@ -9916,10 +9937,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 463,
+      "ordinal": 464,
       "production_id": "FinallyClause",
       "profile": "STABLE",
-      "source_line": 942,
+      "source_line": 947,
       "normalized_rhs": "\"finally\" Block",
       "rhs_sha256": "6dd7820c5f96bb7953223c270f701c3198926a6c19f3046bc8c0db93b7792de1",
       "referenced_productions": [
@@ -9935,10 +9956,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 464,
+      "ordinal": 465,
       "production_id": "DeferStmt",
       "profile": "STABLE",
-      "source_line": 944,
+      "source_line": 949,
       "normalized_rhs": "\"defer\" DeferredCleanupInvocation StatementBoundary",
       "rhs_sha256": "77c194b9ee9d037ef7d226e35d92212e4f43d9af7fd5c3ba7855cc1cc2dcf1f0",
       "referenced_productions": [
@@ -9955,10 +9976,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 465,
+      "ordinal": 466,
       "production_id": "DeferredCleanupInvocation",
       "profile": "STABLE",
-      "source_line": 947,
+      "source_line": 952,
       "normalized_rhs": "DeferredDirectCall | DeferredMessageCall",
       "rhs_sha256": "d3a3d95a3595586195df39dc34955d190885396f769bc0701d7a74f3438fbae2",
       "referenced_productions": [
@@ -9975,10 +9996,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 466,
+      "ordinal": 467,
       "production_id": "DeferredDirectCall",
       "profile": "STABLE",
-      "source_line": 948,
+      "source_line": 953,
       "normalized_rhs": "DeferredReceiver ArgumentList",
       "rhs_sha256": "7c62a7f45e3fe2673db6c6aa5ab55d4742359f6bd46b005123b6216af78fff1e",
       "referenced_productions": [
@@ -9995,10 +10016,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 467,
+      "ordinal": 468,
       "production_id": "DeferredMessageCall",
       "profile": "STABLE",
-      "source_line": 949,
+      "source_line": 954,
       "normalized_rhs": "DeferredReceiver \"~\" MessageSelector TildeArgumentSequence?",
       "rhs_sha256": "476c3cf994cab286cb9927fcf0859027c4ced7cf1d91b2a6185cd77013502f15",
       "referenced_productions": [
@@ -10016,10 +10037,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 468,
+      "ordinal": 469,
       "production_id": "DeferredReceiver",
       "profile": "STABLE",
-      "source_line": 950,
+      "source_line": 955,
       "normalized_rhs": "DeferredPrimary DeferTargetSuffix*",
       "rhs_sha256": "aecb536bf3241f41d5d27f2950311066aa79de1330e4a8542452afec04dacda3",
       "referenced_productions": [
@@ -10036,10 +10057,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 469,
+      "ordinal": 470,
       "production_id": "DeferredPrimary",
       "profile": "STABLE",
-      "source_line": 951,
+      "source_line": 956,
       "normalized_rhs": "Identifier | QualifiedStaticExpr",
       "rhs_sha256": "2fab46c37d2ff4a625262939a252c172aeee8afdc9fe5e8e1263905eecba50ac",
       "referenced_productions": [
@@ -10056,10 +10077,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 470,
+      "ordinal": 471,
       "production_id": "DeferTargetSuffix",
       "profile": "STABLE",
-      "source_line": 952,
+      "source_line": 957,
       "normalized_rhs": "IndexSuffix | MemberSuffix",
       "rhs_sha256": "13f463dc14b34909393ef46d8d350574ca05e27c5061de5a81ddc6fb424de01c",
       "referenced_productions": [
@@ -10076,10 +10097,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 471,
+      "ordinal": 472,
       "production_id": "RightwardLocalBindingSurface",
       "profile": "STABLE",
-      "source_line": 956,
+      "source_line": 961,
       "normalized_rhs": "Expr \"->\" DollarLocalBinding StatementBoundary",
       "rhs_sha256": "d159054f8c981203eb644b8699fbb4dd3b3486fab17b771cad53345debbf31d8",
       "referenced_productions": [
@@ -10097,10 +10118,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 472,
+      "ordinal": 473,
       "production_id": "PatternAssignmentStmt",
       "profile": "STABLE",
-      "source_line": 960,
+      "source_line": 965,
       "normalized_rhs": "AssigneePattern \"=\" Expr StatementBoundary",
       "rhs_sha256": "fb982280d3d85487fc61575da67d43c9dd4eb70f5e0724397dacef926ecf58d8",
       "referenced_productions": [
@@ -10118,10 +10139,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 473,
+      "ordinal": 474,
       "production_id": "AssigneePattern",
       "profile": "STABLE",
-      "source_line": 961,
+      "source_line": 966,
       "normalized_rhs": "AssigneeTuplePattern | AssigneeListPattern | AssigneeRecordPattern | AssigneeNominalPattern",
       "rhs_sha256": "15e9915002be922d453a8b8863e0bd2dabe86d7df486640f92ffddbf80a8f707",
       "referenced_productions": [
@@ -10140,10 +10161,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 474,
+      "ordinal": 475,
       "production_id": "AssigneePrimary",
       "profile": "STABLE",
-      "source_line": 965,
+      "source_line": 970,
       "normalized_rhs": "Identifier | \"_\"",
       "rhs_sha256": "fb3a364f3cb60e11d2b829673e78789c8a32b39bf32d6863b1431ec8d077c752",
       "referenced_productions": [
@@ -10159,10 +10180,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 475,
+      "ordinal": 476,
       "production_id": "AssigneeTuplePattern",
       "profile": "STABLE",
-      "source_line": 966,
+      "source_line": 971,
       "normalized_rhs": "\"(\" AssigneeTupleItems \")\"",
       "rhs_sha256": "24d9dc56639cb3cb9173af9f6bb4d4a2a916d0839e4c957c24faff30583a6587",
       "referenced_productions": [
@@ -10178,10 +10199,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 476,
+      "ordinal": 477,
       "production_id": "AssigneeTupleItems",
       "profile": "STABLE",
-      "source_line": 967,
+      "source_line": 972,
       "normalized_rhs": "AssigneePatternItem \",\" | AssigneePatternItem \",\" AssigneePatternItem (\",\" AssigneePatternItem)* \",\"?",
       "rhs_sha256": "623d4ba15b21755e28e43ea0e1f27a08989293e633ea8d2e0e2977e7cd97e973",
       "referenced_productions": [
@@ -10197,10 +10218,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 477,
+      "ordinal": 478,
       "production_id": "AssigneePatternItem",
       "profile": "STABLE",
-      "source_line": 970,
+      "source_line": 975,
       "normalized_rhs": "AssigneePrimary | AssigneeTuplePattern | AssigneeListPattern | AssigneeRecordPattern",
       "rhs_sha256": "24edb905c43bcf82435605581a3b5698731eec4b947c41660b079c2b07d46b19",
       "referenced_productions": [
@@ -10219,10 +10240,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 478,
+      "ordinal": 479,
       "production_id": "AssigneeListPattern",
       "profile": "STABLE",
-      "source_line": 974,
+      "source_line": 979,
       "normalized_rhs": "\"[\" AssigneeListBody? \"]\"",
       "rhs_sha256": "55fad86ff55b4426bab4c18377f7e30268884341b81af35db70e77567b3b4584",
       "referenced_productions": [
@@ -10238,10 +10259,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 479,
+      "ordinal": 480,
       "production_id": "AssigneeListBody",
       "profile": "STABLE",
-      "source_line": 975,
+      "source_line": 980,
       "normalized_rhs": "AssigneeIgnoredAllRest | AssigneeExactList | AssigneePrefixRestList | AssigneeSuffixRestList | AssigneeMiddleRestList",
       "rhs_sha256": "18c30b0f0590dbd9655835a0b455ea502b4ba7c889d3d2cd62777108034e3aab",
       "referenced_productions": [
@@ -10261,10 +10282,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 480,
+      "ordinal": 481,
       "production_id": "AssigneeExactList",
       "profile": "STABLE",
-      "source_line": 980,
+      "source_line": 985,
       "normalized_rhs": "AssigneePatternItem (\",\" AssigneePatternItem)* \",\"?",
       "rhs_sha256": "65658bf81935914d560c4e8519078d167d5ee288b483062561429b1e8104e3e4",
       "referenced_productions": [
@@ -10280,10 +10301,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 481,
+      "ordinal": 482,
       "production_id": "AssigneePrefixRestList",
       "profile": "STABLE",
-      "source_line": 981,
+      "source_line": 986,
       "normalized_rhs": "Identifier \"..\" \",\" AssigneeExactList",
       "rhs_sha256": "1da7f2753798f7c49a38cf26c42102998e646410b3eb14155f28bcc843687163",
       "referenced_productions": [
@@ -10300,10 +10321,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 482,
+      "ordinal": 483,
       "production_id": "AssigneeSuffixRestList",
       "profile": "STABLE",
-      "source_line": 982,
+      "source_line": 987,
       "normalized_rhs": "AssigneeExactList \",\" \"..\" Identifier \",\"?",
       "rhs_sha256": "74117b207b9ffac0c9c1c4fc4877e43964f5bdd87e93595b8e79ab3a4426a83c",
       "referenced_productions": [
@@ -10320,10 +10341,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 483,
+      "ordinal": 484,
       "production_id": "AssigneeMiddleRestList",
       "profile": "STABLE",
-      "source_line": 983,
+      "source_line": 988,
       "normalized_rhs": "AssigneeExactList \",\" \"..\" Identifier \"..\" \",\" AssigneeExactList",
       "rhs_sha256": "403136b7a7b09c2443b22006a00d64659cdd73773a2d34a400174bd24dce4a18",
       "referenced_productions": [
@@ -10340,10 +10361,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 484,
+      "ordinal": 485,
       "production_id": "AssigneeIgnoredAllRest",
       "profile": "STABLE",
-      "source_line": 985,
+      "source_line": 990,
       "normalized_rhs": "\"..\" \"_\" \",\"?",
       "rhs_sha256": "8e99f862dacbd3048320217140e87350ce39144d62afe28e252d30410238d75c",
       "referenced_productions": [],
@@ -10357,10 +10378,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 485,
+      "ordinal": 486,
       "production_id": "AssigneeRestPattern",
       "profile": "STABLE",
-      "source_line": 986,
+      "source_line": 991,
       "normalized_rhs": "\"..\" (\"_\" | Identifier)",
       "rhs_sha256": "b17da214929833f5ca65ac9830431fae5ad470c0d34cc5f3273c5a3904d646ea",
       "referenced_productions": [
@@ -10376,10 +10397,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 486,
+      "ordinal": 487,
       "production_id": "AssigneeRecordPattern",
       "profile": "STABLE",
-      "source_line": 987,
+      "source_line": 992,
       "normalized_rhs": "\"${\" AssigneeRecordEntries? \"}\"",
       "rhs_sha256": "f780f44aaa6ddf933b1b42a7014434bfca535a9ae5e7a098bff758ecb7a6a49f",
       "referenced_productions": [
@@ -10395,10 +10416,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 487,
+      "ordinal": 488,
       "production_id": "AssigneeRecordEntries",
       "profile": "STABLE",
-      "source_line": 988,
+      "source_line": 993,
       "normalized_rhs": "AssigneeRecordEntry (PatternEntrySeparator AssigneeRecordEntry)* PatternEntrySeparator?",
       "rhs_sha256": "25745148044f539b9acec8e7cb9ab2db5e7db2f7d24e4ee4465fe2dd923ff9bd",
       "referenced_productions": [
@@ -10415,10 +10436,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 488,
+      "ordinal": 489,
       "production_id": "AssigneeRecordEntry",
       "profile": "STABLE",
-      "source_line": 991,
+      "source_line": 996,
       "normalized_rhs": "Identifier | AssigneePrimary \":\" Identifier | AssigneeRestPattern",
       "rhs_sha256": "773cb9dd92b2a3b3fd03ea71adeba8c0e1bfeaa6f5f8941938b4329859fc44eb",
       "referenced_productions": [
@@ -10436,10 +10457,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 489,
+      "ordinal": 490,
       "production_id": "AssigneeNominalPattern",
       "profile": "STABLE",
-      "source_line": 992,
+      "source_line": 997,
       "normalized_rhs": "TypeRef AssigneeRecordPattern",
       "rhs_sha256": "904f88dbad814a8126e7c7b4e940e81736c29e5268a61f2e8388befb3d7e278a",
       "referenced_productions": [
@@ -10456,10 +10477,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 490,
+      "ordinal": 491,
       "production_id": "ParallelAssignmentStmt",
       "profile": "STABLE",
-      "source_line": 993,
+      "source_line": 998,
       "normalized_rhs": "BareTuplePlaceSurface \"=\" AssignmentValueSurface StatementBoundary",
       "rhs_sha256": "440ef92fa559330d96e2297d6de545e020857a45ce45fb7523557ea510b6e84b",
       "referenced_productions": [
@@ -10477,10 +10498,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 491,
+      "ordinal": 492,
       "production_id": "BareTuplePlaceSurface",
       "profile": "STABLE",
-      "source_line": 994,
+      "source_line": 999,
       "normalized_rhs": "Identifier \",\" Identifier (\",\" Identifier)*",
       "rhs_sha256": "d412d7cdfad217abce398c81ee8597150942c859f90f308ebeb10fd36229f4ac",
       "referenced_productions": [
@@ -10496,10 +10517,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 492,
+      "ordinal": 493,
       "production_id": "AssignmentValueSurface",
       "profile": "STABLE",
-      "source_line": 995,
+      "source_line": 1000,
       "normalized_rhs": "Expr | BareTupleValueSurface",
       "rhs_sha256": "465f9caaf3b811632c1bf61cb1bfb1368316d8028be447b8c8f649216fcf42ea",
       "referenced_productions": [
@@ -10516,10 +10537,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 493,
+      "ordinal": 494,
       "production_id": "ScopedUseStmt",
       "profile": "STABLE",
-      "source_line": 996,
+      "source_line": 1001,
       "normalized_rhs": "\"use\" ScopedPathList \"in\" Block",
       "rhs_sha256": "1bc6c4a25a8c52e5a4a0fb05142d5a491a48ed59c94d60feaef21307ae6212bc",
       "referenced_productions": [
@@ -10536,10 +10557,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 494,
+      "ordinal": 495,
       "production_id": "ScopedImportStmt",
       "profile": "STABLE",
-      "source_line": 997,
+      "source_line": 1002,
       "normalized_rhs": "\"import\" ScopedPathList \"in\" Block",
       "rhs_sha256": "ed6d1d59e8ca2f4d9892d42801131632edaad29a5ab5bdae653d7d7e28b8a784",
       "referenced_productions": [
@@ -10556,10 +10577,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 495,
+      "ordinal": 496,
       "production_id": "ScopedPathList",
       "profile": "STABLE",
-      "source_line": 998,
+      "source_line": 1003,
       "normalized_rhs": "QualifiedPath (\",\" QualifiedPath)*",
       "rhs_sha256": "aa45292437ba48c1834f2d9a9c0cdb478409ed6139ea1ce64f987229ce351ae8",
       "referenced_productions": [
@@ -10575,10 +10596,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 496,
+      "ordinal": 497,
       "production_id": "Expr",
       "profile": "STABLE",
-      "source_line": 1006,
+      "source_line": 1011,
       "normalized_rhs": "PrattExpr",
       "rhs_sha256": "30f33f9e39702d48454c55689c6473c2b63aabb32b74e52351c4030748bcf67d",
       "referenced_productions": [
@@ -10594,10 +10615,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 497,
+      "ordinal": 498,
       "production_id": "PredicateExpr",
       "profile": "STABLE",
-      "source_line": 1007,
+      "source_line": 1012,
       "normalized_rhs": "PrattPredicateExpr",
       "rhs_sha256": "9e3b271f8386a7c39eca41419c8f81b1b25f08ffd86195ada974e5dd0c622808",
       "referenced_productions": [
@@ -10613,10 +10634,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 498,
+      "ordinal": 499,
       "production_id": "SliceIndexExpr",
       "profile": "STABLE",
-      "source_line": 1008,
+      "source_line": 1013,
       "normalized_rhs": "PrattSliceIndexExpr",
       "rhs_sha256": "d0851c158b22d4ee2d8edacef21eed62b41f9de1d7b1a0a1a08f104941d9fed8",
       "referenced_productions": [
@@ -10632,10 +10653,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 499,
+      "ordinal": 500,
       "production_id": "ExpressionPrefixParselet",
       "profile": "STABLE",
-      "source_line": 1014,
+      "source_line": 1019,
       "normalized_rhs": "\"+\" | \"-\" | \"not\" | \"~~\" | \"move\" | \"borrow\" | \"&\" | \"await\"",
       "rhs_sha256": "2b626a23e67bc2e4c2b45b909f67922f2dace0971de4536e06c39bf91134bd18",
       "referenced_productions": [],
@@ -10649,10 +10670,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 500,
+      "ordinal": 501,
       "production_id": "ExpressionPostfixParselet",
       "profile": "STABLE",
-      "source_line": 1016,
+      "source_line": 1021,
       "normalized_rhs": "CallSuffix | TildeCallLed | TupleOrdinalSuffix | IndexSuffix | MemberSuffix | NumericArrayTransposeSuffix | ConstructorCallSuffix | NamedConstructorCallSuffix | PrototypeDerivationSuffix | CastSuffix",
       "rhs_sha256": "d846db132fab0a674f335b495416bd660c197e2a91e6d210e68126ca471ca9b9",
       "referenced_productions": [
@@ -10677,10 +10698,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 501,
+      "ordinal": 502,
       "production_id": "PrimaryExpr",
       "profile": "STABLE",
-      "source_line": 1027,
+      "source_line": 1032,
       "normalized_rhs": "Literal | Identifier | ImplicitAtExpr | ParenExprSyntax | ListLiteral | BoundedListLiteral | ComprehensionExpr | MaterializationBody | TypedMaterializationExpr | MapLiteral | SetLiteral | MutListLiteral | MapComprehensionExpr | SetComprehensionExpr | NumericArrayLiteral | MeasureLiteralExpr | QualifiedStaticExpr | ExpectedVariantExpr | AtControlExpr | MatchExpr | ClosureExpr | GeneratorExpr | SpawnExpr | ConcurExpr | UnsafeBlockExpr | FacetExpr",
       "rhs_sha256": "750c02aca4b3ff0062a1c75e3fa395f15fad4c91369a320bac54dd11f30748da",
       "referenced_productions": [
@@ -10721,10 +10742,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 502,
+      "ordinal": 503,
       "production_id": "ParenExprSyntax",
       "profile": "STABLE",
-      "source_line": 1055,
+      "source_line": 1060,
       "normalized_rhs": "\"(\" ParenExprContent? \")\"",
       "rhs_sha256": "d315adb39ce7a4a5d43371dbc7bafedd4f7981f77fa5754039a2567caa970125",
       "referenced_productions": [
@@ -10740,10 +10761,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 503,
+      "ordinal": 504,
       "production_id": "ParenExprContent",
       "profile": "STABLE",
-      "source_line": 1056,
+      "source_line": 1061,
       "normalized_rhs": "Expr ParenExprTail?",
       "rhs_sha256": "d3943f6b85345c1e4c63013037ae0fb7d306c370a51740d0e6beebbf8a515ba9",
       "referenced_productions": [
@@ -10760,10 +10781,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 504,
+      "ordinal": 505,
       "production_id": "ParenExprTail",
       "profile": "STABLE",
-      "source_line": 1057,
+      "source_line": 1062,
       "normalized_rhs": "\",\" | \",\" Expr (\",\" Expr)* \",\"?",
       "rhs_sha256": "c7fac3157a9dca74635b94fc5904f974c7c6b33272da227ed57734a7ab2b43b2",
       "referenced_productions": [
@@ -10779,10 +10800,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 505,
+      "ordinal": 506,
       "production_id": "ImplicitAtExpr",
       "profile": "STABLE",
-      "source_line": 1058,
+      "source_line": 1063,
       "normalized_rhs": "\"@\"",
       "rhs_sha256": "2f7a37a63ead3743c2213ecd5c22e5ffbbde2570159274e7bc0a97c6ba52b0b6",
       "referenced_productions": [],
@@ -10796,10 +10817,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 506,
+      "ordinal": 507,
       "production_id": "ExpectedVariantExpr",
       "profile": "STABLE",
-      "source_line": 1059,
+      "source_line": 1064,
       "normalized_rhs": "\"::\" Identifier",
       "rhs_sha256": "e4d8ee149080a6c4c585aeecb47dcea7f5516552fecb551793a72b7407dbd512",
       "referenced_productions": [
@@ -10815,10 +10836,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 507,
+      "ordinal": 508,
       "production_id": "CallSuffix",
       "profile": "STABLE",
-      "source_line": 1063,
+      "source_line": 1068,
       "normalized_rhs": "ArgumentList TrailingClosureGroup? | AtomicCallArgument TrailingClosureGroup",
       "rhs_sha256": "e94c2017fe4654f9dd5a7ce1c50c90acbd2984bd7b1cfd6d006f3cbc38bcd90e",
       "referenced_productions": [
@@ -10836,10 +10857,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 508,
+      "ordinal": 509,
       "production_id": "ArgumentList",
       "profile": "STABLE",
-      "source_line": 1066,
+      "source_line": 1071,
       "normalized_rhs": "\"(\" \")\" | \"(\" CommaArgumentSequence \")\" | \"(\" LayoutArgumentSequence \")\"",
       "rhs_sha256": "b24b55c06953c00c92a78d454e31e58de779326f8a06ebf01892688cac08f710",
       "referenced_productions": [
@@ -10856,10 +10877,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 509,
+      "ordinal": 510,
       "production_id": "CommaArgumentSequence",
       "profile": "STABLE",
-      "source_line": 1069,
+      "source_line": 1074,
       "normalized_rhs": "Argument (\",\" Argument)* \",\"?",
       "rhs_sha256": "c2cb2e7a10067c754c86ebf3b9969aeea293bc66870ff3bcf3561b20bd70b6ca",
       "referenced_productions": [
@@ -10875,10 +10896,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 510,
+      "ordinal": 511,
       "production_id": "LayoutArgumentSequence",
       "profile": "STABLE",
-      "source_line": 1071,
+      "source_line": 1076,
       "normalized_rhs": "LineBreakBoundary NamedLayoutArgument LineBreakBoundary NamedLayoutArgument (LineBreakBoundary NamedLayoutArgument)* LineBreakBoundary?",
       "rhs_sha256": "17fa1dbfca01ae1d3f3a8abd68b7b9c724d359222e146e9e58c419bf96930aa2",
       "referenced_productions": [
@@ -10895,10 +10916,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 511,
+      "ordinal": 512,
       "production_id": "NamedLayoutArgument",
       "profile": "STABLE",
-      "source_line": 1073,
+      "source_line": 1078,
       "normalized_rhs": "NamedArgument | NamedUnfoldArgument",
       "rhs_sha256": "315d50363be46716ed2e2191d4e1843884476bbf082918b9f6c4ea157badf5eb",
       "referenced_productions": [
@@ -10915,10 +10936,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 512,
+      "ordinal": 513,
       "production_id": "Argument",
       "profile": "STABLE",
-      "source_line": 1074,
+      "source_line": 1079,
       "normalized_rhs": "ContextArgument | WitnessArgument | NamedArgument | PositionalUnfoldArgument | NamedUnfoldArgument | Expr",
       "rhs_sha256": "14b0d52c59712a15aa9e78d7a6e79b97a049d3e6f7835e3909233b22ce107a36",
       "referenced_productions": [
@@ -10939,10 +10960,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 513,
+      "ordinal": 514,
       "production_id": "ContextArgument",
       "profile": "STABLE",
-      "source_line": 1080,
+      "source_line": 1085,
       "normalized_rhs": "\"context\" Expr",
       "rhs_sha256": "ad8123e2867f54a66afd08d2f5b6659ad9c0490e06502a1ac6acdce275911978",
       "referenced_productions": [
@@ -10958,10 +10979,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 514,
+      "ordinal": 515,
       "production_id": "WitnessArgument",
       "profile": "STABLE",
-      "source_line": 1081,
+      "source_line": 1086,
       "normalized_rhs": "\"using\" WitnessArgumentValue",
       "rhs_sha256": "4ef213b7c58e1dc84f395669bfa7ebec9ac388a7df1ff6b8223af479428dbe90",
       "referenced_productions": [
@@ -10977,10 +10998,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 515,
+      "ordinal": 516,
       "production_id": "WitnessArgumentValue",
       "profile": "STABLE",
-      "source_line": 1082,
+      "source_line": 1087,
       "normalized_rhs": "Identifier | ConformanceEvidenceSelector | NamedConformanceEvidenceSelector",
       "rhs_sha256": "a0c580f4da919523cae64bb0f00a6951b2d159299c696a0da9c7eba319ee3900",
       "referenced_productions": [
@@ -10998,10 +11019,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 516,
+      "ordinal": 517,
       "production_id": "NamedArgument",
       "profile": "STABLE",
-      "source_line": 1083,
+      "source_line": 1088,
       "normalized_rhs": "Identifier \":\" Expr",
       "rhs_sha256": "19853ec9415d4e1433ff40027758de674cf4ff366524bf4d382bfd7e45631024",
       "referenced_productions": [
@@ -11018,10 +11039,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 517,
+      "ordinal": 518,
       "production_id": "PositionalUnfoldArgument",
       "profile": "STABLE",
-      "source_line": 1084,
+      "source_line": 1089,
       "normalized_rhs": "\"*\" Expr",
       "rhs_sha256": "8cc1b433961a1e7005aaa2c05774289e7c62ac3d12a180a61fe2ab18bdc3c2e8",
       "referenced_productions": [
@@ -11037,10 +11058,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 518,
+      "ordinal": 519,
       "production_id": "NamedUnfoldArgument",
       "profile": "STABLE",
-      "source_line": 1085,
+      "source_line": 1090,
       "normalized_rhs": "\"**\" Expr",
       "rhs_sha256": "de68623141bccc1ea6cf8fffaa6809fff948aebdc1033b3cf85b246fa0d564cb",
       "referenced_productions": [
@@ -11056,10 +11077,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 519,
+      "ordinal": 520,
       "production_id": "AtomicCallArgument",
       "profile": "STABLE",
-      "source_line": 1086,
+      "source_line": 1091,
       "normalized_rhs": "Literal | Identifier | QualifiedStaticExpr | ExpectedVariantExpr",
       "rhs_sha256": "5310061ae0c962400af4640c3cd2c49ee97747ca55f8f764e76069d8fe734846",
       "referenced_productions": [
@@ -11078,10 +11099,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 520,
+      "ordinal": 521,
       "production_id": "TrailingClosureGroup",
       "profile": "STABLE",
-      "source_line": 1090,
+      "source_line": 1095,
       "normalized_rhs": "TrailingClosureArgument+",
       "rhs_sha256": "62816f689f406a284b6624a0aafff9d0b2a9935b4f16837fe62b30c6f40e5a4e",
       "referenced_productions": [
@@ -11097,10 +11118,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 521,
+      "ordinal": 522,
       "production_id": "TrailingClosureArgument",
       "profile": "STABLE",
-      "source_line": 1091,
+      "source_line": 1096,
       "normalized_rhs": "ClosureExpr | Identifier \":\" ClosureExpr",
       "rhs_sha256": "013892b7478ae18779e66edfd57db0fc4a8ef0e7594276c9488e4eda732e24a4",
       "referenced_productions": [
@@ -11117,10 +11138,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 522,
+      "ordinal": 523,
       "production_id": "IndexSuffix",
       "profile": "STABLE",
-      "source_line": 1095,
+      "source_line": 1100,
       "normalized_rhs": "\"[\" SliceAxisList \"]\"",
       "rhs_sha256": "7f4a3158fe36f641aa32fe26fefedc7371fc26a3494825c79efbf97b76bcd701",
       "referenced_productions": [
@@ -11136,10 +11157,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 523,
+      "ordinal": 524,
       "production_id": "SliceAxisList",
       "profile": "STABLE",
-      "source_line": 1096,
+      "source_line": 1101,
       "normalized_rhs": "SliceAxis (\";\" SliceAxis)*",
       "rhs_sha256": "52d7a6d01922242a43f0b8effa7ed7df743fc036c6f988320a6a36c32835dc14",
       "referenced_productions": [
@@ -11155,10 +11176,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 524,
+      "ordinal": 525,
       "production_id": "SliceAxis",
       "profile": "STABLE",
-      "source_line": 1097,
+      "source_line": 1102,
       "normalized_rhs": "SliceRange | SliceIndexExpr | AxisWildcard",
       "rhs_sha256": "8089a1bf2351fdbb7d1569d0de6aafff46dfa9209e67ddefbe077acf3b1808b3",
       "referenced_productions": [
@@ -11176,10 +11197,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 525,
+      "ordinal": 526,
       "production_id": "SliceRange",
       "profile": "STABLE",
-      "source_line": 1100,
+      "source_line": 1105,
       "normalized_rhs": "SliceBound (\"..\" | \"..<\") SliceBound",
       "rhs_sha256": "ccf0455f9c64c7ac8055fad7f18ca138cc170988f4eee43ab47746606a1bb691",
       "referenced_productions": [
@@ -11195,10 +11216,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 526,
+      "ordinal": 527,
       "production_id": "SliceBound",
       "profile": "STABLE",
-      "source_line": 1101,
+      "source_line": 1106,
       "normalized_rhs": "SliceIndexExpr | \"^\" | \"$\" | \"^\" OffsetExpr | \"$\" OffsetExpr",
       "rhs_sha256": "c68ac442351d7123ee8bda8bb88c777da4d50f4ebb82ed645ac86937ef2c8743",
       "referenced_productions": [
@@ -11215,10 +11236,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 527,
+      "ordinal": 528,
       "production_id": "OffsetExpr",
       "profile": "STABLE",
-      "source_line": 1102,
+      "source_line": 1107,
       "normalized_rhs": "(\"+\" | \"-\") NumericLiteral",
       "rhs_sha256": "306f6b3c3096760c3f3187136ab8f4d277023b8fc11d7f7d8bd2b0fa77f49934",
       "referenced_productions": [
@@ -11234,10 +11255,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 528,
+      "ordinal": 529,
       "production_id": "AxisWildcard",
       "profile": "STABLE",
-      "source_line": 1103,
+      "source_line": 1108,
       "normalized_rhs": "\"*\"",
       "rhs_sha256": "ed725292f5f32d61535958c16f8772f1be779c75203cf31b477673f9e564b3b5",
       "referenced_productions": [],
@@ -11251,10 +11272,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 529,
+      "ordinal": 530,
       "production_id": "TupleOrdinalSuffix",
       "profile": "STABLE",
-      "source_line": 1105,
+      "source_line": 1110,
       "normalized_rhs": "\".\" StaticIntLiteral",
       "rhs_sha256": "5ef2fbecbd41969c7d855b0206e6f24dd54082c1905277159604dedf7f5ec194",
       "referenced_productions": [
@@ -11270,10 +11291,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 530,
+      "ordinal": 531,
       "production_id": "MemberSuffix",
       "profile": "STABLE",
-      "source_line": 1106,
+      "source_line": 1111,
       "normalized_rhs": "\".\" Identifier | \".\" \"\\\\\" NAME_TOKEN",
       "rhs_sha256": "1a628a310f3cd8fe58eacc0ee4f343fb854b118918f411cd18dc54b4a2fa0fb3",
       "referenced_productions": [
@@ -11290,10 +11311,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 531,
+      "ordinal": 532,
       "production_id": "TildeCallLed",
       "profile": "STABLE",
-      "source_line": 1112,
+      "source_line": 1117,
       "normalized_rhs": "TildeCallToken MessageSelector TildeArgumentSequence? TrailingClosureGroup?",
       "rhs_sha256": "837dbb60987876d5e045c4569b99b35358179d32e25e7a5dfb99b8c107d18e23",
       "referenced_productions": [
@@ -11312,10 +11333,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 532,
+      "ordinal": 533,
       "production_id": "TildeCallToken",
       "profile": "STABLE",
-      "source_line": 1114,
+      "source_line": 1119,
       "normalized_rhs": "\"~\" | \":~\"",
       "rhs_sha256": "6424125f64ab8ff64bc8053f8da02f7b6ac30b86094e080363f44463b8ac2288",
       "referenced_productions": [],
@@ -11329,10 +11350,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 533,
+      "ordinal": 534,
       "production_id": "MessageSelector",
       "profile": "STABLE",
-      "source_line": 1115,
+      "source_line": 1120,
       "normalized_rhs": "Identifier | QualifiedMessageSelector",
       "rhs_sha256": "10ca82f7a83db7f316d80f31589711049c96d325fce37da82d71087d927f87e1",
       "referenced_productions": [
@@ -11349,10 +11370,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 534,
+      "ordinal": 535,
       "production_id": "QualifiedMessageSelector",
       "profile": "STABLE",
-      "source_line": 1116,
+      "source_line": 1121,
       "normalized_rhs": "TypeRef \"::\" Identifier (\"::\" Identifier)?",
       "rhs_sha256": "30b9ad90dc07896e07403f1197ed1912fda68a6690023ba57e72739de77b9fe4",
       "referenced_productions": [
@@ -11369,10 +11390,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 535,
+      "ordinal": 536,
       "production_id": "QualifiedExtensionSelector",
       "profile": "STABLE",
-      "source_line": 1117,
+      "source_line": 1122,
       "normalized_rhs": "TypeRef \"::\" Identifier \"::\" Identifier",
       "rhs_sha256": "c275d50435acf0981278ca69075f525ad685416438630a612c7ae133f18b8c39",
       "referenced_productions": [
@@ -11389,10 +11410,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 536,
+      "ordinal": 537,
       "production_id": "TildeArgumentSequence",
       "profile": "STABLE",
-      "source_line": 1118,
+      "source_line": 1123,
       "normalized_rhs": "TildeArgument (\",\" TildeArgument)*",
       "rhs_sha256": "aacd6c8cbd8133a8a2c6227317ef53477322684eb26ddd0cd1c40ef775c40599",
       "referenced_productions": [
@@ -11408,10 +11429,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 537,
+      "ordinal": 538,
       "production_id": "TildeArgument",
       "profile": "STABLE",
-      "source_line": 1119,
+      "source_line": 1124,
       "normalized_rhs": "ContextArgument | WitnessArgument | NamedArgument | PositionalUnfoldArgument | NamedUnfoldArgument | Expr",
       "rhs_sha256": "14b0d52c59712a15aa9e78d7a6e79b97a049d3e6f7835e3909233b22ce107a36",
       "referenced_productions": [
@@ -11432,10 +11453,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 538,
+      "ordinal": 539,
       "production_id": "NumericArrayTransposeSuffix",
       "profile": "STABLE",
-      "source_line": 1126,
+      "source_line": 1131,
       "normalized_rhs": "\"^\"",
       "rhs_sha256": "06acab321522f3d8e30c93ace350e0407b4d176f9b3669e1116dc927bcdc665e",
       "referenced_productions": [],
@@ -11449,10 +11470,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 539,
+      "ordinal": 540,
       "production_id": "ConstructorCallSuffix",
       "profile": "STABLE",
-      "source_line": 1127,
+      "source_line": 1132,
       "normalized_rhs": "\"!\" ArgumentList",
       "rhs_sha256": "7289a53fbd821230fbd5aa8bfe09f0fc7029173619b1280b4c46a3077dd6e148",
       "referenced_productions": [
@@ -11468,10 +11489,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 540,
+      "ordinal": 541,
       "production_id": "NamedConstructorCallSuffix",
       "profile": "STABLE",
-      "source_line": 1128,
+      "source_line": 1133,
       "normalized_rhs": "\"!\" Identifier ArgumentList",
       "rhs_sha256": "c38bd98e36cc067ad224e5ebc03c4c1c56abadb279c9e5ca87de4747cbc3f5d5",
       "referenced_productions": [
@@ -11488,10 +11509,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 541,
+      "ordinal": 542,
       "production_id": "PrototypeDerivationSuffix",
       "profile": "STABLE",
-      "source_line": 1129,
+      "source_line": 1134,
       "normalized_rhs": "(\"!\" | \"!!\") DerivationBody",
       "rhs_sha256": "a0cb5dfe5a25c608477ec88ada642b78c5077dc062bf719b8560d34616bdacab",
       "referenced_productions": [
@@ -11507,10 +11528,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 542,
+      "ordinal": 543,
       "production_id": "DerivationBody",
       "profile": "STABLE",
-      "source_line": 1130,
+      "source_line": 1135,
       "normalized_rhs": "\"{\" MaterializationEntryList? \"}\"",
       "rhs_sha256": "ccfca4b57b8d91969df413d8359d25a508bd0a2f5bdb4f6ef9b45f9054ad3558",
       "referenced_productions": [
@@ -11526,10 +11547,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 543,
+      "ordinal": 544,
       "production_id": "CastSuffix",
       "profile": "STABLE",
-      "source_line": 1132,
+      "source_line": 1137,
       "normalized_rhs": "\"as\" \"?\" TypeRef | \"as\" \"!\" TypeRef",
       "rhs_sha256": "34910fe08eee290e38c690a352cb3d7ad602fd8e0323ec027570f068aa3dba17",
       "referenced_productions": [
@@ -11545,10 +11566,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 544,
+      "ordinal": 545,
       "production_id": "QualifiedStaticExpr",
       "profile": "STABLE",
-      "source_line": 1134,
+      "source_line": 1139,
       "normalized_rhs": "StaticQualifier \"::\" Identifier | TraitQualifiedAssociatedSelector",
       "rhs_sha256": "46364f91ab1d3fb4c1a283f12efd7175e558a466613dbe5ddf8f4d33880c4583",
       "referenced_productions": [
@@ -11566,10 +11587,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 545,
+      "ordinal": 546,
       "production_id": "StaticQualifier",
       "profile": "STABLE",
-      "source_line": 1136,
+      "source_line": 1141,
       "normalized_rhs": "QualifiedTypeReference | AssociatedProjection",
       "rhs_sha256": "8ebf8ebb02291f2c6df4b3ce6259ca923824866e2eedafdcfb138cd4caa7054a",
       "referenced_productions": [
@@ -11586,10 +11607,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 546,
+      "ordinal": 547,
       "production_id": "TraitQualifiedAssociatedSelector",
       "profile": "STABLE",
-      "source_line": 1137,
+      "source_line": 1142,
       "normalized_rhs": "\"<\" TypeRef \"as\" QualifiedTypeReference \">\" \"::\" Identifier",
       "rhs_sha256": "11018068e81ede138aa162e0ad2c1065b6e5778a41d94f8ca28fae8cc2e6675c",
       "referenced_productions": [
@@ -11607,10 +11628,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 547,
+      "ordinal": 548,
       "production_id": "AtControlExpr",
       "profile": "STABLE",
-      "source_line": 1143,
+      "source_line": 1148,
       "normalized_rhs": "AtIfExpr | AtTryExpr | AtScopeExpr",
       "rhs_sha256": "ef7aea161bb542c8e038050806ea1060210cf663b7eb3f8ad56b3f8eb9c24c47",
       "referenced_productions": [
@@ -11628,10 +11649,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 548,
+      "ordinal": 549,
       "production_id": "AtIfExpr",
       "profile": "STABLE",
-      "source_line": 1145,
+      "source_line": 1150,
       "normalized_rhs": "\"@\" \"if\" Expr ValueBody \"else\" ValueBody",
       "rhs_sha256": "4428e67522c5eeea1c3c5523b901a8eca2fb4f6a9d69bf7ee0112a0a751869db",
       "referenced_productions": [
@@ -11648,10 +11669,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 549,
+      "ordinal": 550,
       "production_id": "AtTryExpr",
       "profile": "STABLE",
-      "source_line": 1146,
+      "source_line": 1151,
       "normalized_rhs": "\"@\" \"try\" ValueBody (ValueCatchClause+ FinallyClause? | FinallyClause)",
       "rhs_sha256": "ef6134cdba7d739b1e2213b92b267e80cf2cc2c11c3306b5267a760b125dfb60",
       "referenced_productions": [
@@ -11669,10 +11690,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 550,
+      "ordinal": 551,
       "production_id": "AtScopeExpr",
       "profile": "STABLE",
-      "source_line": 1147,
+      "source_line": 1152,
       "normalized_rhs": "\"@\" \"scope\" ScopeModifier* ValueBody",
       "rhs_sha256": "0fb563a6aca504108553745e5e7963a07fa0f2282400dcef2ab843877fadb635",
       "referenced_productions": [
@@ -11689,10 +11710,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 551,
+      "ordinal": 552,
       "production_id": "ScopeModifier",
       "profile": "STABLE",
-      "source_line": 1148,
+      "source_line": 1153,
       "normalized_rhs": "\"isolated\" | \"cancellable\" | \"shielded\"",
       "rhs_sha256": "d4ee672f2fa23424b1eb3496ffd9801456ffa56d9bd1772aa65ee81870b489d5",
       "referenced_productions": [],
@@ -11706,10 +11727,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 552,
+      "ordinal": 553,
       "production_id": "MatchExpr",
       "profile": "STABLE",
-      "source_line": 1150,
+      "source_line": 1155,
       "normalized_rhs": "\"@\" \"match\" MatchCore",
       "rhs_sha256": "a07e75433ff965aac133931772c53e9ea35e3b69d54b2c804a82aec28975c1db",
       "referenced_productions": [
@@ -11725,10 +11746,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 553,
+      "ordinal": 554,
       "production_id": "ClosureExpr",
       "profile": "STABLE",
-      "source_line": 1154,
+      "source_line": 1159,
       "normalized_rhs": "CaptureList? HashTag* \"{\" ClosureContent \"}\"",
       "rhs_sha256": "a82a5ae6e7ae6a9992cfbbb2c088712b422cacc0cb9b756c089b7a065dc63ace",
       "referenced_productions": [
@@ -11746,10 +11767,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 554,
+      "ordinal": 555,
       "production_id": "ClosureContent",
       "profile": "STABLE",
-      "source_line": 1159,
+      "source_line": 1164,
       "normalized_rhs": "ExplicitLambdaContent | LambdaBody?",
       "rhs_sha256": "5ff64480ded2f61da4012d1784013b892e7254f227910ff2ff359ee1e1fb37ab",
       "referenced_productions": [
@@ -11766,10 +11787,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 555,
+      "ordinal": 556,
       "production_id": "ExplicitLambdaContent",
       "profile": "STABLE",
-      "source_line": 1160,
+      "source_line": 1165,
       "normalized_rhs": "LambdaParameterList? \"=>\" LambdaBody",
       "rhs_sha256": "955c8a380e58136cc35fd2b8b3e99f6d3c489bdebe8c2e9902b16fd349a9f584",
       "referenced_productions": [
@@ -11786,10 +11807,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 556,
+      "ordinal": 557,
       "production_id": "LambdaParameterList",
       "profile": "STABLE",
-      "source_line": 1161,
+      "source_line": 1166,
       "normalized_rhs": "LambdaParameter (\",\" LambdaParameter)* \",\"?",
       "rhs_sha256": "70e61b6a0f49d443d7ff205a29cba2db208ea5ebab62b375323834b75d3670c7",
       "referenced_productions": [
@@ -11805,10 +11826,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 557,
+      "ordinal": 558,
       "production_id": "LambdaParameter",
       "profile": "STABLE",
-      "source_line": 1162,
+      "source_line": 1167,
       "normalized_rhs": "ParameterMode? LambdaParameterPattern TypeAnnotation?",
       "rhs_sha256": "d3fbbeb371b7a31d6165395af1d347eb6c4228d098f48ded9aaa3f5dc6f9b801",
       "referenced_productions": [
@@ -11826,10 +11847,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 558,
+      "ordinal": 559,
       "production_id": "LambdaParameterPattern",
       "profile": "STABLE",
-      "source_line": 1163,
+      "source_line": 1168,
       "normalized_rhs": "Identifier | IrrefutableParameterPattern",
       "rhs_sha256": "9376b2a68d86493c388a1c2ff324778aade9fdcd6c3d4531f8fd02d81fc81b79",
       "referenced_productions": [
@@ -11846,10 +11867,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 559,
+      "ordinal": 560,
       "production_id": "LambdaBody",
       "profile": "STABLE",
-      "source_line": 1164,
+      "source_line": 1169,
       "normalized_rhs": "ReturnValueSurface | LineBreakBoundary LambdaBlockContent",
       "rhs_sha256": "3369b0e6bc442c4d2b9479d30bea522f181b4de7a4d68f5759a39e42a653229f",
       "referenced_productions": [
@@ -11867,10 +11888,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 560,
+      "ordinal": 561,
       "production_id": "LambdaBlockContent",
       "profile": "STABLE",
-      "source_line": 1165,
+      "source_line": 1170,
       "normalized_rhs": "BlockItem* LambdaFinalItem?",
       "rhs_sha256": "d5207986a3785c1b7d79583e0a76c712f925451e3cc901c8b2b0ccfeb9fdb88f",
       "referenced_productions": [
@@ -11887,10 +11908,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 561,
+      "ordinal": 562,
       "production_id": "LambdaFinalItem",
       "profile": "STABLE",
-      "source_line": 1166,
+      "source_line": 1171,
       "normalized_rhs": "RetTransfer | Expr",
       "rhs_sha256": "3111c0e0a3bf9eae1e993bcabe3c020e0291960c0213036712f07bbb1a298246",
       "referenced_productions": [
@@ -11907,10 +11928,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 562,
+      "ordinal": 563,
       "production_id": "CaptureList",
       "profile": "STABLE",
-      "source_line": 1168,
+      "source_line": 1173,
       "normalized_rhs": "\"[\" CaptureItemList? \"]\"",
       "rhs_sha256": "734ae9a1447bcf76bafee504feb347680ef827b2f245394423840d12c1d22f9f",
       "referenced_productions": [
@@ -11926,10 +11947,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 563,
+      "ordinal": 564,
       "production_id": "CaptureItemList",
       "profile": "STABLE",
-      "source_line": 1169,
+      "source_line": 1174,
       "normalized_rhs": "CaptureItem (\",\" CaptureItem)* \",\"?",
       "rhs_sha256": "dbf7810d474ac0e19c056d282f49ba2b527b7bd80b7dab056d67fb28e934fc10",
       "referenced_productions": [
@@ -11945,10 +11966,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 564,
+      "ordinal": 565,
       "production_id": "CaptureItem",
       "profile": "STABLE",
-      "source_line": 1170,
+      "source_line": 1175,
       "normalized_rhs": "(\"let\" | \"var\") Identifier \"=\" Expr | CaptureMode Identifier | Identifier",
       "rhs_sha256": "684ed2463590e7a11b6f2b523b459f41de2d446305a2f0ca874caabc3b645c84",
       "referenced_productions": [
@@ -11966,10 +11987,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 565,
+      "ordinal": 566,
       "production_id": "CaptureMode",
       "profile": "STABLE",
-      "source_line": 1173,
+      "source_line": 1178,
       "normalized_rhs": "\"borrow\" | \"inout\" | \"move\" | \"clone\" | \"deep\" | \"copy\" | \"once\"",
       "rhs_sha256": "761113817a37c6e27b4153ad1bd64e9a1727cae7c61c9e07dc0e4f63412be8f0",
       "referenced_productions": [],
@@ -11983,10 +12004,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 566,
+      "ordinal": 567,
       "production_id": "GeneratorExpr",
       "profile": "STABLE",
-      "source_line": 1186,
+      "source_line": 1196,
       "normalized_rhs": "CaptureList? GeneratorCore",
       "rhs_sha256": "dfaea63fc6a5242c5e057ef65ed0bb0d3f307fa0b78d62b96dbbff8a9534dec1",
       "referenced_productions": [
@@ -12003,10 +12024,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 567,
+      "ordinal": 568,
       "production_id": "GeneratorCore",
       "profile": "STABLE",
-      "source_line": 1187,
+      "source_line": 1197,
       "normalized_rhs": "\"@\" \"for\" Pattern \"in\" Expr Block | \"@\" \"while\" Expr Block | \"@\" \"repeat\" Block \"while\" Expr",
       "rhs_sha256": "3db27e70e243713a8e396b01cb607d30722d0d61c4ce2e26c41fa9b4e0f3ab13",
       "referenced_productions": [
@@ -12024,10 +12045,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 568,
+      "ordinal": 569,
       "production_id": "SpawnExpr",
       "profile": "STABLE",
-      "source_line": 1195,
+      "source_line": 1205,
       "normalized_rhs": "\"spawn\" (SpawnBody | SpawnOperandSlot)",
       "rhs_sha256": "273b1db805a06126a05cc09a1aa4a61dca7bbdbd58532c0e43bd2e11411933bb",
       "referenced_productions": [
@@ -12044,10 +12065,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 569,
+      "ordinal": 570,
       "production_id": "SpawnBody",
       "profile": "STABLE",
-      "source_line": 1196,
+      "source_line": 1206,
       "normalized_rhs": "\"{\" \"=>\" SpawnBodySequence \"}\"",
       "rhs_sha256": "68286d66fc35ad8e3d19f7f1a62eb2c3c9e6ea20a469b58cbb917cd2ef521ed2",
       "referenced_productions": [
@@ -12063,10 +12084,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 570,
+      "ordinal": 571,
       "production_id": "SpawnBodySequence",
       "profile": "STABLE",
-      "source_line": 1197,
+      "source_line": 1207,
       "normalized_rhs": "LineBreakBoundary? BlockSequence",
       "rhs_sha256": "722292d20bbcc12219bec5f892b13e7c0215def8838df0f86526c71d279fcb23",
       "referenced_productions": [
@@ -12083,10 +12104,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 571,
+      "ordinal": 572,
       "production_id": "SpawnOperandSlot",
       "profile": "STABLE",
-      "source_line": 1198,
+      "source_line": 1208,
       "normalized_rhs": "SPAWN_OPERAND_BY_PREFIX_PARSER",
       "rhs_sha256": "d0b5789ad1526393cafcc213eccc5e883577f9c7a800094f7fe67b47d9a88c86",
       "referenced_productions": [],
@@ -12100,10 +12121,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 572,
+      "ordinal": 573,
       "production_id": "ConcurExpr",
       "profile": "STABLE",
-      "source_line": 1199,
+      "source_line": 1209,
       "normalized_rhs": "\"concur\" Block",
       "rhs_sha256": "f7f07589e697b04b0fefd5e04bc79de2ed9dd15e73491dba0c34a1ce3639ea1f",
       "referenced_productions": [
@@ -12119,10 +12140,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 573,
+      "ordinal": 574,
       "production_id": "UnsafeBlockExpr",
       "profile": "STABLE",
-      "source_line": 1200,
+      "source_line": 1210,
       "normalized_rhs": "\"unsafe\" Block",
       "rhs_sha256": "0f8acd2c03a9cc8fd7a6316522775a7cd03043a8f6063bb347d5e9dc3fa86aa2",
       "referenced_productions": [
@@ -12138,10 +12159,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 574,
+      "ordinal": 575,
       "production_id": "FacetExpr",
       "profile": "STABLE",
-      "source_line": 1203,
+      "source_line": 1213,
       "normalized_rhs": "\"facet\" \"[\" \"borrow\" Expr \"as\" QualifiedTypeReference AssociatedTypeConstraintList? \"]\"",
       "rhs_sha256": "d349c64f8b583dfaed445e26bc66b8ddc9de3847fb67f6d70c64d7bfc87ca927",
       "referenced_productions": [
@@ -12159,10 +12180,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 575,
+      "ordinal": 576,
       "production_id": "ConformanceEvidenceSelector",
       "profile": "STABLE",
-      "source_line": 1205,
+      "source_line": 1215,
       "normalized_rhs": "\"conformance\" \"(\" TypeRef \"conforms\" QualifiedTypeReference \")\"",
       "rhs_sha256": "ac70e1a077bd823e7947b9ee47898f665ad47f3d7dafaefe44c6bd03fda32f98",
       "referenced_productions": [
@@ -12179,10 +12200,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 576,
+      "ordinal": 577,
       "production_id": "NamedConformanceEvidenceSelector",
       "profile": "STABLE",
-      "source_line": 1206,
+      "source_line": 1216,
       "normalized_rhs": "ConformanceEvidenceSelector \"::\" Identifier",
       "rhs_sha256": "97b3f4f226b0af6df1dfb4e6abbe53096b09bcdd2e2018f936826fcbb107b0ac",
       "referenced_productions": [
@@ -12199,10 +12220,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 577,
+      "ordinal": 578,
       "production_id": "PrattExpr",
       "profile": "STABLE",
-      "source_line": 1209,
+      "source_line": 1219,
       "normalized_rhs": "EXPRESSION_PRATT_ENTRY",
       "rhs_sha256": "cc7d56d8f86f6907e25680a37d4ad9a6cdf51f9bf4e3fc8d4267d0571c0bd982",
       "referenced_productions": [],
@@ -12216,10 +12237,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 578,
+      "ordinal": 579,
       "production_id": "PrattPredicateExpr",
       "profile": "STABLE",
-      "source_line": 1210,
+      "source_line": 1220,
       "normalized_rhs": "PREDICATE_PRATT_ENTRY",
       "rhs_sha256": "62140dfa7075027d496f071cb2546af7150afcb207d800ac6f87b6b6e8acc16b",
       "referenced_productions": [],
@@ -12233,10 +12254,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 579,
+      "ordinal": 580,
       "production_id": "PrattSliceIndexExpr",
       "profile": "STABLE",
-      "source_line": 1211,
+      "source_line": 1221,
       "normalized_rhs": "SLICE_INDEX_PRATT_ENTRY",
       "rhs_sha256": "980c6109479b4bb97d2992faefb6c6b50441c2c98bcbfa1b6127986dac3ac2b1",
       "referenced_productions": [],
@@ -12250,10 +12271,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 580,
+      "ordinal": 581,
       "production_id": "Literal",
       "profile": "STABLE",
-      "source_line": 1219,
+      "source_line": 1229,
       "normalized_rhs": "BoolLiteral | NumericLiteral | ImaginaryLiteralExpr | RationalLiteralExpr | StringLiteralExpr | CharLiteralExpr | BytesLiteral",
       "rhs_sha256": "4e3db75f568a96920c9c5188c6fd604fbe81cb557d56c7f37bef6cbd1c221940",
       "referenced_productions": [
@@ -12275,10 +12296,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 581,
+      "ordinal": 582,
       "production_id": "BoolLiteral",
       "profile": "STABLE",
-      "source_line": 1226,
+      "source_line": 1236,
       "normalized_rhs": "\"true\" | \"false\"",
       "rhs_sha256": "c4524ca854086f3691bfadeece20db41eaee7589e0f66d091f4716d74faad790",
       "referenced_productions": [],
@@ -12292,10 +12313,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 582,
+      "ordinal": 583,
       "production_id": "NumericLiteral",
       "profile": "STABLE",
-      "source_line": 1227,
+      "source_line": 1237,
       "normalized_rhs": "NUMERIC_LITERAL",
       "rhs_sha256": "81ff1e9ffd7a26dc8d380608c94ce025d45c05ca84838b3879eb8f165310ab1f",
       "referenced_productions": [
@@ -12311,10 +12332,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 583,
+      "ordinal": 584,
       "production_id": "ImaginaryLiteralExpr",
       "profile": "STABLE",
-      "source_line": 1228,
+      "source_line": 1238,
       "normalized_rhs": "IMAGINARY_LITERAL",
       "rhs_sha256": "2edca8f59563e5c003b700379608922c7b6f871fbb67a3683154e1baa82478da",
       "referenced_productions": [
@@ -12330,10 +12351,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 584,
+      "ordinal": 585,
       "production_id": "RationalLiteralExpr",
       "profile": "STABLE",
-      "source_line": 1229,
+      "source_line": 1239,
       "normalized_rhs": "RATIONAL_LITERAL",
       "rhs_sha256": "249b3bb626b7f4a6d59c9698fe0c7dc29e3aa2bdd023ed5a656fde36a097bf43",
       "referenced_productions": [
@@ -12349,10 +12370,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 585,
+      "ordinal": 586,
       "production_id": "CharLiteralExpr",
       "profile": "STABLE",
-      "source_line": 1230,
+      "source_line": 1240,
       "normalized_rhs": "CHAR_LITERAL",
       "rhs_sha256": "39096177d5c54d74d6343376a91a6f0da05549c74d0a53a71748afe38090d12e",
       "referenced_productions": [
@@ -12368,10 +12389,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 586,
+      "ordinal": 587,
       "production_id": "BytesLiteral",
       "profile": "STABLE",
-      "source_line": 1231,
+      "source_line": 1241,
       "normalized_rhs": "BYTES_LITERAL",
       "rhs_sha256": "905f976e38eb8c29a3db3ab6288d32a1e8c9c584f47998685e8a9916ed109932",
       "referenced_productions": [
@@ -12387,10 +12408,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 587,
+      "ordinal": 588,
       "production_id": "StringLiteralExpr",
       "profile": "STABLE",
-      "source_line": 1234,
+      "source_line": 1244,
       "normalized_rhs": "PLAIN_STRING_LITERAL | RAW_STRING_LITERAL | MULTILINE_STRING_LITERAL | InterpolatedString",
       "rhs_sha256": "72467b0e26472590df5a211a62b47a7e2a660eba2e2a2fa532b9fb38a951e420",
       "referenced_productions": [
@@ -12409,10 +12430,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 588,
+      "ordinal": 589,
       "production_id": "InterpolatedString",
       "profile": "STABLE",
-      "source_line": 1235,
+      "source_line": 1245,
       "normalized_rhs": "STRING_START InterpolatedStringPart* STRING_END",
       "rhs_sha256": "e82a740a4f10c862a9b3d0a0f0d8ba61eec97e128a9a49fdffd4fb9229ce6932",
       "referenced_productions": [
@@ -12430,10 +12451,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 589,
+      "ordinal": 590,
       "production_id": "InterpolatedStringPart",
       "profile": "STABLE",
-      "source_line": 1236,
+      "source_line": 1246,
       "normalized_rhs": "STRING_TEXT | STRING_ESCAPE | InterpolationExpr | InterpolationPath",
       "rhs_sha256": "c7eb54996fbcc3ff9994e8572f49e3ca4e4f14c094c6a075e636ff7455f3590a",
       "referenced_productions": [
@@ -12452,10 +12473,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 590,
+      "ordinal": 591,
       "production_id": "InterpolationExpr",
       "profile": "STABLE",
-      "source_line": 1240,
+      "source_line": 1250,
       "normalized_rhs": "INTERPOLATION_OPEN Expr InterpolationFormat? INTERPOLATION_CLOSE",
       "rhs_sha256": "867cafa68ff82fa43d59eaa571d0e28a58eb55c8086b9cfafb0818fb0522bc93",
       "referenced_productions": [
@@ -12474,10 +12495,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 591,
+      "ordinal": 592,
       "production_id": "InterpolationFormat",
       "profile": "STABLE",
-      "source_line": 1241,
+      "source_line": 1251,
       "normalized_rhs": "\":\" INTERPOLATION_FORMAT_TEXT",
       "rhs_sha256": "53f340bdf4f6a5e62b20a22f0be1fc687a6b5bd68a989d95bb56f259bf43e590",
       "referenced_productions": [
@@ -12493,10 +12514,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 592,
+      "ordinal": 593,
       "production_id": "InterpolationPath",
       "profile": "STABLE",
-      "source_line": 1246,
+      "source_line": 1256,
       "normalized_rhs": "\"$\" InterpolationPathRoot InterpolationPathSelector* INTERPOLATION_BOUNDARY?",
       "rhs_sha256": "a141cabdf3783e648556b41bca2b56edeff9bbf0365432376a0686153d46fdc1",
       "referenced_productions": [
@@ -12514,10 +12535,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 593,
+      "ordinal": 594,
       "production_id": "InterpolationPathRoot",
       "profile": "STABLE",
-      "source_line": 1247,
+      "source_line": 1257,
       "normalized_rhs": "Identifier | \"@\"",
       "rhs_sha256": "de0fdb40c18a063819484121e5158fa816f28cc8a10eca9c4f62465b72331826",
       "referenced_productions": [
@@ -12533,10 +12554,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 594,
+      "ordinal": 595,
       "production_id": "InterpolationPathSelector",
       "profile": "STABLE",
-      "source_line": 1248,
+      "source_line": 1258,
       "normalized_rhs": "\".\" Identifier | \".\" StaticIntLiteral | \"[\" InterpolationIndex \"]\"",
       "rhs_sha256": "25baedaefddda62bc08f4189fd6894487b57b4a006421343defa7081e8043be8",
       "referenced_productions": [
@@ -12554,10 +12575,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 595,
+      "ordinal": 596,
       "production_id": "InterpolationIndex",
       "profile": "STABLE",
-      "source_line": 1251,
+      "source_line": 1261,
       "normalized_rhs": "StaticIntLiteral | Identifier",
       "rhs_sha256": "2c075255b7ae9cdcaf8c2098e1eac22bcc0b63007b4575c715901ec4621627f4",
       "referenced_productions": [
@@ -12574,10 +12595,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 596,
+      "ordinal": 597,
       "production_id": "ListLiteral",
       "profile": "STABLE",
-      "source_line": 1256,
+      "source_line": 1266,
       "normalized_rhs": "\"[\" ExpressionList? \"]\"",
       "rhs_sha256": "cc5bc4108360ac4fa721bc8f497dc906844e2d5bde41a7d0c2d8d166053e303f",
       "referenced_productions": [
@@ -12593,10 +12614,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 597,
+      "ordinal": 598,
       "production_id": "BoundedListLiteral",
       "profile": "STABLE",
-      "source_line": 1257,
+      "source_line": 1267,
       "normalized_rhs": "\"[\" StaticIntLiteral \"..\" StaticIntLiteral \":\" ExpressionList? \"]\"",
       "rhs_sha256": "229ab0ec79a3de9d51581a774a72dc3b2b1a88ea6678d92e333ad1d4afb2df92",
       "referenced_productions": [
@@ -12613,10 +12634,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 598,
+      "ordinal": 599,
       "production_id": "ComprehensionExpr",
       "profile": "STABLE",
-      "source_line": 1259,
+      "source_line": 1269,
       "normalized_rhs": "\"[\" Expr ComprehensionClause+ \"]\"",
       "rhs_sha256": "ec1baa688e82c75dcb224a7ccc9df01818ff4dc6e6caabaf389441289cf40465",
       "referenced_productions": [
@@ -12633,10 +12654,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 599,
+      "ordinal": 600,
       "production_id": "TypedMaterializationExpr",
       "profile": "STABLE",
-      "source_line": 1262,
+      "source_line": 1272,
       "normalized_rhs": "TypeRef MaterializationBody",
       "rhs_sha256": "341418a12959c9a6557f67d98a4304ebb4a1598c16572c0375044bbf17f1cbdf",
       "referenced_productions": [
@@ -12653,10 +12674,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 600,
+      "ordinal": 601,
       "production_id": "MaterializationBody",
       "profile": "STABLE",
-      "source_line": 1263,
+      "source_line": 1273,
       "normalized_rhs": "\"${\" MaterializationEntryList? \"}\"",
       "rhs_sha256": "2fb1535d408da822246a1f18b90e80c207520393e8f4eab73dbd056d0bc786f7",
       "referenced_productions": [
@@ -12672,10 +12693,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 601,
+      "ordinal": 602,
       "production_id": "MaterializationEntryList",
       "profile": "STABLE",
-      "source_line": 1264,
+      "source_line": 1274,
       "normalized_rhs": "MaterializationEntry (MaterializationSeparator MaterializationEntry)* MaterializationSeparator?",
       "rhs_sha256": "ee217c4e668e3e86259fbddfbcdfe1e384b21c9db0c963557306ccc6a2558aa0",
       "referenced_productions": [
@@ -12692,10 +12713,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 602,
+      "ordinal": 603,
       "production_id": "MaterializationEntry",
       "profile": "STABLE",
-      "source_line": 1265,
+      "source_line": 1275,
       "normalized_rhs": "Identifier | Identifier \":\" Expr | StringLiteralExpr \":\" Expr | NamedUnfoldArgument",
       "rhs_sha256": "61d0ccd0f08c80b67205ac3777ac620623d8103c343a47bcc8b80ea9076ba3e0",
       "referenced_productions": [
@@ -12714,10 +12735,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 603,
+      "ordinal": 604,
       "production_id": "MaterializationSeparator",
       "profile": "STABLE",
-      "source_line": 1269,
+      "source_line": 1279,
       "normalized_rhs": "\",\" LineBreakBoundary? | LineBreakBoundary",
       "rhs_sha256": "a2ae6f682586d290cfc684fe00d98c60fec8b2563beff329f23e2edf0463c4f6",
       "referenced_productions": [
@@ -12733,10 +12754,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 604,
+      "ordinal": 605,
       "production_id": "MapLiteral",
       "profile": "STABLE",
-      "source_line": 1272,
+      "source_line": 1282,
       "normalized_rhs": "\"#\" \"map\" \"{\" MapEntryList? \"}\"",
       "rhs_sha256": "5a2ccb25bd8bf5ea8478e16f172809861e33f902aff1b0458ccc8dfa39b44596",
       "referenced_productions": [
@@ -12752,10 +12773,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 605,
+      "ordinal": 606,
       "production_id": "MapEntryList",
       "profile": "STABLE",
-      "source_line": 1273,
+      "source_line": 1283,
       "normalized_rhs": "MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator?",
       "rhs_sha256": "0c380f6c8d1807072c912f7eab2cb5c947def41efe1e8979abf8c665ca248909",
       "referenced_productions": [
@@ -12772,10 +12793,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 606,
+      "ordinal": 607,
       "production_id": "MapEntry",
       "profile": "STABLE",
-      "source_line": 1274,
+      "source_line": 1284,
       "normalized_rhs": "Expr \":\" Expr | NamedUnfoldArgument",
       "rhs_sha256": "cb07de8c54bc69fed0d667b3e0286a2a90061e7744e8cfe7156f75adde8bfcd6",
       "referenced_productions": [
@@ -12792,10 +12813,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 607,
+      "ordinal": 608,
       "production_id": "SetLiteral",
       "profile": "STABLE",
-      "source_line": 1275,
+      "source_line": 1285,
       "normalized_rhs": "\"#\" \"set\" \"{\" ExpressionList? \"}\"",
       "rhs_sha256": "09bf61a42cf297c241071bf49816daec39a4416eafba64e611690a78d1af143c",
       "referenced_productions": [
@@ -12811,10 +12832,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 608,
+      "ordinal": 609,
       "production_id": "MutListLiteral",
       "profile": "STABLE",
-      "source_line": 1276,
+      "source_line": 1286,
       "normalized_rhs": "\"#\" \"mut\" \"[\" ExpressionList? \"]\"",
       "rhs_sha256": "05b9d5102c92882096ef455a41816242448ef2eccdea4aab6776bf341d4944e5",
       "referenced_productions": [
@@ -12830,10 +12851,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 609,
+      "ordinal": 610,
       "production_id": "MapComprehensionExpr",
       "profile": "STABLE",
-      "source_line": 1277,
+      "source_line": 1287,
       "normalized_rhs": "\"#\" \"map\" \"{\" MapEntry ComprehensionClause+ \"}\"",
       "rhs_sha256": "0ce34c6c8da5e1a7ac0d40d7b0d72cb506891c6a8182d9f5cc201502990d290b",
       "referenced_productions": [
@@ -12850,10 +12871,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 610,
+      "ordinal": 611,
       "production_id": "SetComprehensionExpr",
       "profile": "STABLE",
-      "source_line": 1278,
+      "source_line": 1288,
       "normalized_rhs": "\"#\" \"set\" \"{\" Expr ComprehensionClause+ \"}\"",
       "rhs_sha256": "e1362bfee4328a12ef5ca6768fb37bb513b5c3110092860392b805d4000f1eef",
       "referenced_productions": [
@@ -12870,10 +12891,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 611,
+      "ordinal": 612,
       "production_id": "ComprehensionClause",
       "profile": "STABLE",
-      "source_line": 1280,
+      "source_line": 1290,
       "normalized_rhs": "ForClause | PositiveGuard | IfLetClause | UnfoldClause",
       "rhs_sha256": "d789ff7e65441458e7208c22686ff1277cec8e6e79f3e930f1a44169a1fdea6e",
       "referenced_productions": [
@@ -12892,10 +12913,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 612,
+      "ordinal": 613,
       "production_id": "ForClause",
       "profile": "STABLE",
-      "source_line": 1281,
+      "source_line": 1291,
       "normalized_rhs": "\"for\" Pattern \"in\" Expr",
       "rhs_sha256": "bc9f2b57819bc9fa0d10d671ae0d66de5c6b3fba5eded4586a5eff39cfa6ada0",
       "referenced_productions": [
@@ -12912,10 +12933,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 613,
+      "ordinal": 614,
       "production_id": "IfLetClause",
       "profile": "STABLE",
-      "source_line": 1282,
+      "source_line": 1292,
       "normalized_rhs": "\"if\" \"let\" Pattern \"=\" Expr",
       "rhs_sha256": "be385dc32b40963061aeff303517c7149d7c52e07d36f49755e4457b8814da03",
       "referenced_productions": [
@@ -12932,10 +12953,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 614,
+      "ordinal": 615,
       "production_id": "UnfoldClause",
       "profile": "STABLE",
-      "source_line": 1283,
+      "source_line": 1293,
       "normalized_rhs": "\"for\" \"...\" Pattern \"in\" Expr",
       "rhs_sha256": "ff07380211df7a200aa8196f8ace6a8da11d160cad2de16d91c277c7da936d2b",
       "referenced_productions": [
@@ -12952,10 +12973,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 615,
+      "ordinal": 616,
       "production_id": "NumericArrayLiteral",
       "profile": "STABLE",
-      "source_line": 1286,
+      "source_line": 1296,
       "normalized_rhs": "ShapeInferredArrayLiteral | ShapeInferredColumnVectorLiteral | ExactShapeArrayLiteral",
       "rhs_sha256": "110dada34cccc950594c16f908f947dd84853d67f340244bc6011d2b50c2c0cf",
       "referenced_productions": [
@@ -12973,10 +12994,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 616,
+      "ordinal": 617,
       "production_id": "ShapeInferredArrayLiteral",
       "profile": "STABLE",
-      "source_line": 1289,
+      "source_line": 1299,
       "normalized_rhs": "\"#\" \"[\" ExpressionList? \"]\"",
       "rhs_sha256": "c17bd971dbe5c457ec128ca674a186f1bed5b57edd717bb0f15a00f5593a4c54",
       "referenced_productions": [
@@ -12992,10 +13013,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 617,
+      "ordinal": 618,
       "production_id": "ShapeInferredColumnVectorLiteral",
       "profile": "STABLE",
-      "source_line": 1290,
+      "source_line": 1300,
       "normalized_rhs": "\"#\" \"[\" Expr (\";\" Expr)+ \"]\"",
       "rhs_sha256": "b0c472a7247ba5e4c0c2254fb82af06590b7c17cb102b571bebc4be9c2ba7fbe",
       "referenced_productions": [
@@ -13011,10 +13032,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 618,
+      "ordinal": 619,
       "production_id": "ExactShapeArrayLiteral",
       "profile": "STABLE",
-      "source_line": 1291,
+      "source_line": 1301,
       "normalized_rhs": "\"#\" StaticDimensionList \"[\" ArrayInitializer? \"]\"",
       "rhs_sha256": "2e5b1c5c39d72122ec65bd8c58461c9f119c2c6261e664eea858e7d408b6e030",
       "referenced_productions": [
@@ -13031,10 +13052,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 619,
+      "ordinal": 620,
       "production_id": "ArrayInitializer",
       "profile": "STABLE",
-      "source_line": 1292,
+      "source_line": 1302,
       "normalized_rhs": "ShapedRepeatInitializer | ShapedGeneratorInitializer | ShapedElementSequence",
       "rhs_sha256": "ca94869fb0c23f59e1a6fe560ce16221c44ebd2ff9f32c57cc0a24ebed3a03ba",
       "referenced_productions": [
@@ -13052,10 +13073,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 620,
+      "ordinal": 621,
       "production_id": "ShapedRepeatInitializer",
       "profile": "STABLE",
-      "source_line": 1295,
+      "source_line": 1305,
       "normalized_rhs": "\"repeat\" \":\" Expr",
       "rhs_sha256": "4dec9e94b83bdcfb553400d2f1b464d7904aa6f51c1c1fb616242a6be381f3d4",
       "referenced_productions": [
@@ -13071,10 +13092,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 621,
+      "ordinal": 622,
       "production_id": "ShapedGeneratorInitializer",
       "profile": "STABLE",
-      "source_line": 1296,
+      "source_line": 1306,
       "normalized_rhs": "\"generate\" \":\" Expr",
       "rhs_sha256": "c8ddfc2fc386898d689053d65ce05acc67fe09949f23de7569f3a3785cf663cf",
       "referenced_productions": [
@@ -13090,10 +13111,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 622,
+      "ordinal": 623,
       "production_id": "ShapedElementSequence",
       "profile": "STABLE",
-      "source_line": 1297,
+      "source_line": 1307,
       "normalized_rhs": "Expr (ShapedElementSeparator Expr)* ShapedElementSeparator?",
       "rhs_sha256": "ed53bdd5392d9431a6ec18ca02139045c92ae4df8a4bab5f45e58b9f8fd5ac36",
       "referenced_productions": [
@@ -13110,10 +13131,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 623,
+      "ordinal": 624,
       "production_id": "ShapedElementSeparator",
       "profile": "STABLE",
-      "source_line": 1298,
+      "source_line": 1308,
       "normalized_rhs": "\",\" | ShapedAxisBoundary",
       "rhs_sha256": "7989945c027f18ac129d43bcc14ab8d753c3553dcc4dc3dae98eef4985aaec1b",
       "referenced_productions": [
@@ -13129,10 +13150,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 624,
+      "ordinal": 625,
       "production_id": "ShapedAxisBoundary",
       "profile": "STABLE",
-      "source_line": 1299,
+      "source_line": 1309,
       "normalized_rhs": "\";\" \";\"*",
       "rhs_sha256": "5be88766d3f6e1d28c2699747143d919687071c6bd68f7ef07d06cc214b01a89",
       "referenced_productions": [],
@@ -13146,10 +13167,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 625,
+      "ordinal": 626,
       "production_id": "MeasureLiteralExpr",
       "profile": "STABLE",
-      "source_line": 1302,
+      "source_line": 1312,
       "normalized_rhs": "NumericLiteral \"[\" UnitExpr \"]\"",
       "rhs_sha256": "c186b96bc6594b528801f6f85e34772add87b742a64539dd44ec218e63cbc876",
       "referenced_productions": [
@@ -13166,10 +13187,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 626,
+      "ordinal": 627,
       "production_id": "UnitExpr",
       "profile": "STABLE",
-      "source_line": 1303,
+      "source_line": 1313,
       "normalized_rhs": "PrattUnitExpr",
       "rhs_sha256": "188194b5a02b5f6c7c95e76fb359e29446596563190d4c7df367b861ccdca9b0",
       "referenced_productions": [
@@ -13185,10 +13206,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 627,
+      "ordinal": 628,
       "production_id": "UnitPrimary",
       "profile": "STABLE",
-      "source_line": 1304,
+      "source_line": 1314,
       "normalized_rhs": "Identifier | QualifiedPath | \"(\" UnitExpr \")\"",
       "rhs_sha256": "975e662bdb8baebf37ff3458a27b91245209456e6f92c4979bad7e0d8c65e158",
       "referenced_productions": [
@@ -13206,10 +13227,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 628,
+      "ordinal": 629,
       "production_id": "UnitPostfixParselet",
       "profile": "STABLE",
-      "source_line": 1305,
+      "source_line": 1315,
       "normalized_rhs": "\"^\" SignedStaticInt",
       "rhs_sha256": "c032ba2a80f0b3b476f4a20202b4682a415e7e190df2df4e8456e0a28d3ee7f2",
       "referenced_productions": [
@@ -13225,10 +13246,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 629,
+      "ordinal": 630,
       "production_id": "UnitInfixOperator",
       "profile": "STABLE",
-      "source_line": 1306,
+      "source_line": 1316,
       "normalized_rhs": "\"*\" | \"/\"",
       "rhs_sha256": "6acb9b2b39846e61861eecd91f8fde80796458ad49f270e6298d5aef6bcb976d",
       "referenced_productions": [],
@@ -13242,10 +13263,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 630,
+      "ordinal": 631,
       "production_id": "PrattUnitExpr",
       "profile": "STABLE",
-      "source_line": 1307,
+      "source_line": 1317,
       "normalized_rhs": "UNIT_PRATT_ENTRY",
       "rhs_sha256": "4ace237e64081ac393a361bb12fbabd84c8c53538124ba791fe8e00f35877e58",
       "referenced_productions": [],
@@ -13259,10 +13280,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 631,
+      "ordinal": 632,
       "production_id": "DeeplusPreview",
       "profile": "PREVIEW",
-      "source_line": 1316,
+      "source_line": 1326,
       "normalized_rhs": "PreviewLibrarySourceFile | PreviewExecutableSourceFile | PreviewScriptSourceFile",
       "rhs_sha256": "7beb92fed5fd0cc79a7e22f9d7a9d1fc435d5308c562b8e70a7cc62c9a304ecc",
       "referenced_productions": [
@@ -13280,10 +13301,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 632,
+      "ordinal": 633,
       "production_id": "PreviewLibrarySourceFile",
       "profile": "PREVIEW",
-      "source_line": 1317,
+      "source_line": 1327,
       "normalized_rhs": "PreviewGate ModuleDecl? PreviewLibraryItem*",
       "rhs_sha256": "5b4f530cab27bf0f22fc287c78a27e8c8b7e1c58b479c5ebaec5cf26ae838e1b",
       "referenced_productions": [
@@ -13301,10 +13322,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 633,
+      "ordinal": 634,
       "production_id": "PreviewExecutableSourceFile",
       "profile": "PREVIEW",
-      "source_line": 1318,
+      "source_line": 1328,
       "normalized_rhs": "PreviewGate ModuleDecl? PreviewExecutableItem*",
       "rhs_sha256": "9da595421d28961e81defe08c03095f9440077e0da0d1ea3e887e12c86a27096",
       "referenced_productions": [
@@ -13322,10 +13343,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 634,
+      "ordinal": 635,
       "production_id": "PreviewScriptSourceFile",
       "profile": "PREVIEW",
-      "source_line": 1319,
+      "source_line": 1329,
       "normalized_rhs": "Shebang? PreviewGate ModuleDecl? PreviewScriptItem*",
       "rhs_sha256": "d48c472913ff05f348fd6d35982a3a2c6122561175cf619fbe748e9b7066ef6d",
       "referenced_productions": [
@@ -13344,10 +13365,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 635,
+      "ordinal": 636,
       "production_id": "PreviewLibraryItem",
       "profile": "PREVIEW",
-      "source_line": 1321,
+      "source_line": 1331,
       "normalized_rhs": "LibrarySourceItem | PreviewFfiDecl",
       "rhs_sha256": "27e7e632509911d2823da21d0448278589dc401bbffc44709db5db34b92348db",
       "referenced_productions": [
@@ -13364,10 +13385,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 636,
+      "ordinal": 637,
       "production_id": "PreviewExecutableItem",
       "profile": "PREVIEW",
-      "source_line": 1322,
+      "source_line": 1332,
       "normalized_rhs": "ExecutableSourceItem | PreviewFfiDecl",
       "rhs_sha256": "63f188f006cbacf0927fc9767bc8ebacdbd14b4108944f0b20354fffe9f5f209",
       "referenced_productions": [
@@ -13384,10 +13405,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 637,
+      "ordinal": 638,
       "production_id": "PreviewScriptItem",
       "profile": "PREVIEW",
-      "source_line": 1323,
+      "source_line": 1333,
       "normalized_rhs": "ScriptSourceItem | PreviewFfiDecl",
       "rhs_sha256": "605f5a15c7dbe8948928f9b1a85240015ca741a27e64fe26f6193c808e411f6e",
       "referenced_productions": [
@@ -13404,10 +13425,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 638,
+      "ordinal": 639,
       "production_id": "PreviewGate",
       "profile": "PREVIEW",
-      "source_line": 1325,
+      "source_line": 1335,
       "normalized_rhs": "\"#\" \"preview\" \"(\" PreviewFeatureList \")\" LineBreakBoundary",
       "rhs_sha256": "a20a42077a9031cca72aa220391495beaac4882723a1b9dac3f20ea9d4d8af79",
       "referenced_productions": [
@@ -13424,10 +13445,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 639,
+      "ordinal": 640,
       "production_id": "PreviewFeatureList",
       "profile": "PREVIEW",
-      "source_line": 1326,
+      "source_line": 1336,
       "normalized_rhs": "Identifier (\",\" Identifier)*",
       "rhs_sha256": "83d1ce174d1dc5c52d7050fdf0efbe56519b444235e82307a975596c61fe5063",
       "referenced_productions": [
@@ -13443,10 +13464,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 640,
+      "ordinal": 641,
       "production_id": "PreviewFfiDecl",
       "profile": "PREVIEW",
-      "source_line": 1329,
+      "source_line": 1339,
       "normalized_rhs": "PreviewFfiFunctionDecl | PreviewFfiBlockDecl",
       "rhs_sha256": "0056dda9b2fc820cd8269577a12804d5e04f7e737025f28d99cb2100f40cfb1e",
       "referenced_productions": [
@@ -13463,10 +13484,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 641,
+      "ordinal": 642,
       "production_id": "PreviewFfiFunctionDecl",
       "profile": "PREVIEW",
-      "source_line": 1330,
+      "source_line": 1340,
       "normalized_rhs": "\"extern\" \"#\" \"C\" \"def\" \"#\" \"unsafe\" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary",
       "rhs_sha256": "6d142b5d6ecf80b5c32c9d39342ed60aec086c940bad790fd04ed9a0b7a87785",
       "referenced_productions": [
@@ -13487,10 +13508,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 642,
+      "ordinal": 643,
       "production_id": "PreviewFfiBlockDecl",
       "profile": "PREVIEW",
-      "source_line": 1332,
+      "source_line": 1342,
       "normalized_rhs": "\"extern\" \"c\" \"(\" PLAIN_STRING_LITERAL \")\" \"{\" PreviewFfiBlockMember* \"}\"",
       "rhs_sha256": "2292aae08835c187ef6a63a5431e56c4b3f87a539bd7f4fdb4ff2668df37cdef",
       "referenced_productions": [
@@ -13507,10 +13528,10 @@
       "invalid_or_recovery_ast_count": 0
     },
     {
-      "ordinal": 643,
+      "ordinal": 644,
       "production_id": "PreviewFfiBlockMember",
       "profile": "PREVIEW",
-      "source_line": 1334,
+      "source_line": 1344,
       "normalized_rhs": "\"unsafe\" \"def\" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary",
       "rhs_sha256": "51e9202fe1a9cd3bd27f82a7e3ab2d960e140236af38fe947389b40e56eb3f4a",
       "referenced_productions": [

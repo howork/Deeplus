@@ -1118,27 +1118,84 @@ call committed.
 
 Values may carry move, borrow, inout, resource, isolation, and cleanup responsibilities. Borrowed values must not escape their admitted region. Inout requires exclusive mutable access. Move invalidates the source place according to the place-typing model.
 
+The type-prefix spellings `owned T`, `borrowed T`, `mut T`, and `inout T`
+form one closed `TypeOwnershipQualifier` domain. An absent prefix is the
+distinct value `UNQUALIFIED`; it does not silently mean `owned`. The base type
+still decides whether an unqualified value is reusable, affine, resource
+owning, or otherwise constrained. `owned T` makes exclusive value ownership
+and cleanup transfer explicit without granting mutation. `borrowed T` is a
+shared read-only view bound to one checker region. `mut T` is a unique mutable
+owner, not a borrow and not a binding-reassignment marker. `inout T` is an
+exclusive mutable view bound to one checker region, not a caller-place call
+channel. These qualifiers never select representation, serialization tag,
+runtime discriminant, layout, ABI, or backend address form.
+
+Exactly one type ownership qualifier may remain after alias expansion.
+Stacked or mixed forms such as `owned borrowed T` and `mut inout T` are
+rejected; no qualifier is erased, reordered, or allowed to win by source
+order. Every qualified type is invariant in its qualified base, and there is
+no implicit subtyping or conversion between qualifier variants. Borrowing,
+exclusive access, and ownership transfer are explicit access plans rather
+than type-subtyping steps. The type Pratt contract remains authoritative:
+postfix `?` binds more tightly than a qualifier and `&` and `|` bind less
+tightly. Thus `borrowed A?` qualifies `A?`, whereas `borrowed A | B` is a
+union whose left alternative alone is qualified. Parentheses are required to
+qualify the whole union or intersection.
+
+`owned T` and `mut T` may appear in local bindings, parameter value types,
+results, stored fields, statics, and public API residue when the base type is
+otherwise legal there. Their normalized qualifier must survive HIR sealing
+and public API hashing. `borrowed T` is admitted only when the checker binds a
+concrete owner region that outlives every use. A local or input view may use
+its acquisition or incoming channel as that origin. A borrowed result is
+admitted only for an invocation-bounded callable whose checked HIR and module
+API residue identify exactly one input or receiver channel as the return
+region origin; zero or multiple possible origins reject. Borrowed fields,
+statics, unowned captures, and exported results without that exact relation
+reject with `BORROW_ESCAPE_OWNER_REGION`. No lifetime name is invented in
+source.
+
+`inout T` is admitted only as a region-bound local view or as a private,
+invocation-bounded value whose origin is already an exclusive live loan. It
+is forbidden in fields, statics, results, escaping captures, unconstrained
+public API residue, suspension frames, actor messages, concur-child transfer,
+and FFI residue. An `inout` type view may not be copied or implicitly
+reborrowed. A conflicting qualifier context or qualifier stack rejects through
+`OWNERSHIP_MODE_ADMISSION_FAILED`; an escape or absent-region failure rejects
+through `BORROW_ESCAPE_OWNER_REGION`, before alias-conflict and place-join
+secondary diagnostics.
+
+Canonical HIR records `TypeOwnershipQualifier` separately from the base
+`NormalizedTypeId`, parameter mode, region relation, place mutability, and
+responsibility profile. The module API digest carries the qualifier for every
+public channel and binds the borrowed-result origin relation when present.
+MIR projects `OWNED` through the base type's reusable-or-owned value class,
+`BORROWED` to a shared loan with exact `RegionId` and `LoanId`, `MUT` to an
+owned value plus mutable-place capability,
+and `INOUT` to an exclusive loan with exact `RegionId` and `LoanId`.
+`UNQUALIFIED` delegates only to the already checked base-type responsibility.
+xVM and Cranelift consume this sealed plan and may not reselect, erase, or
+reinterpret source ownership.
+
 For an ordinary parameter, `mut name: T` creates a callee-owned mutable local
 place. The argument is acquired once; an affine owner moves into that place,
 the caller receives no write-back alias, and cleanup remains with the callee.
 This differs from `inout`, which borrows one caller place exclusively and
 commits observable writes back to that same place, and from explicit `move`,
 which emphasizes transfer without itself granting mutation. A `mut T` type
-qualifier denotes a unique mutable owner/view responsibility and is never an
+qualifier denotes a unique mutable owner responsibility and is never an
 alternate spelling for an `inout` channel.
 
 Closure capture is independent from callable multiplicity. `borrow` captures a
 nonescaping shared observation, `inout` captures one exclusive nonescaping
 place, and `move` transfers the owner into the environment. `copy` requires
-the admitted bit/value-copy responsibility and leaves the source valid;
-`clone` invokes one explicit `Clone` witness and therefore retains that
-witness's declared effects and errors; `deep` requires a distinct deep-copy
-profile rather than recursively guessing cloneability. Capture `once` transfers
+the sealed `CopyValue` responsibility and leaves the source valid without
+claiming a byte copy. `clone` selects one exact `Clone` witness and preserves
+its normalized, possibly narrower effects, errors, result acquisition, and
+cleanup; `deep` requires the distinct nonactivatable `DeepClone` profile rather
+than recursively guessing cloneability. Capture `once` transfers
 an owner and makes reading that environment field a one-shot operation; it
-does not by itself turn a reusable closure into a `#once` callable. Capture
-acquisition is left-to-right and failure-atomic: before environment commit,
-acquired temporaries are cleaned in reverse order and no partial closure
-escapes.
+does not by itself infer a callable profile. Capture `once` is admitted only when the callable also declares explicit `#once`. Initializer captures resolve every initializer in the enclosing scope, then expose all capture binders together only in the closure body. Capture acquisition is left-to-right and failure-atomic: preflight rejects duplicate binder names, duplicate normalized source-place acquisition, and initializer self/forward references before evaluation. Before the single environment commit, only the prepared prefix is cleaned in strict reverse order, move reservations are cancelled, loans are ended, and no partial closure escapes. Already observed external effects are not claimed to be rolled back. The exact machine-readable contract is `spec/contracts/closure-capture-plan-r1.json`.
 
 Lexical dependency and explicit capture are orthogonal. A callable with no
 capture list may read an ancestor place at invocation time only when the
@@ -1170,7 +1227,70 @@ ordinary outer `var` read observes the then-current value; `[copy name]` instead
 captures a creation-time snapshot. Explicit capture wins for the same resolved
 place, so that body reference has no duplicate lexical residue.
 
-`defer` captures one admitted invocation and executes exactly once in deterministic LIFO cleanup order. Trailing closures, arbitrary inline callable construction, await, spawn, guards, and blocks are not silently converted into defer invocations. Cleanup during failure, cancellation, and normal return follows the cleanup budget algebra.
+`defer` registers one admitted ordinary direct/member/type-side or ordinary
+message invocation and executes it exactly once in deterministic LIFO cleanup
+order. Trailing closures, arbitrary inline callable construction, `await`,
+`spawn`, guards, blocks, and actor transport are not silently converted into
+defer invocations.
+
+The call winner, normalized substitutions, formal bindings, result
+responsibility, and cleanup effect/error budget close before the registration
+can be sealed. A failure in this static preflight evaluates zero operands.
+Registration then evaluates the runtime callee or receiver, when present,
+followed by every explicit runtime `CallArgument` including `context` arguments
+in source order, and only then evaluates omitted-formal default expressions in
+formal declaration order. A statically bound direct or type-side callee identity
+and a `using` Witness/Conformance argument are static evidence and cause zero
+runtime evaluation. Every runtime preparation occurs exactly once at the
+reached `defer`; none is repeated when cleanup later executes.
+
+Each prepared operand retains its normalized call transfer mode and maps to one
+typed acquisition: `SNAPSHOT_VALUE`, `SHARED_LOAN`, `EXCLUSIVE_LOAN`,
+`MOVE_INTO_PLAN`, `OWNED_TEMPORARY`, `PINNED_PLACE_RESERVATION`, or
+zero-evaluation `STATIC_EVIDENCE`. A reusable value may be snapshotted, a view
+or borrow retains its proven region, and an affine value admitted by `CONSUME`
+moves into the deferred-call plan only at the single registration seal. Hidden
+clone, later receiver lookup, later index evaluation, and rebinding a reserved
+place are forbidden. If receiver, argument, default,
+ownership, region, or budget preparation fails before the seal, no cleanup
+registration is published: already acquired temporary owners and reversible
+reservations are unwound in reverse preparation order. This rollback does not
+erase I/O, authority use, or another external effect that already occurred, and
+the compiler does not retry either registration or cleanup.
+
+The seven cleanup-triggering scope exits are normal fallthrough, `return`,
+`break`, `continue`, recoverable Error propagation through `throw`, Defect, and
+Cancellation. A return, break, or throw payload is staged before leaving its
+scope; then inner cleanup regions run before outer regions and registrations in
+one region run in reverse dynamic registration order. A suspension is not an
+exit and executes no defer action; it preserves every live owner, reservation,
+borrow, isolation fact, and cleanup obligation until a later actual exit. A
+loop body therefore owns a dynamic cleanup region per reached iteration, so a
+`continue` runs that iteration's registrations before the next iteration.
+
+Registration seals one result disposition: `UNIT_NO_VALUE`,
+`DISCARD_CLEANUP_FREE_VALUE`, or `CLEAN_OWNED_TEMPORARY`. When the deferred
+invocation runs, it applies that ordinary expression-statement responsibility
+rule; a result carrying unhandled responsibility is rejected rather than
+silently lost. This does not impose a blanket `Unit` return requirement. Cleanup during
+failure and cancellation follows the cleanup budget algebra; an existing body
+failure remains primary and cleanup failures are appended in actual LIFO order.
+
+A general borrow has one compiler-local loan identity and one dynamic
+activation on each path that executes its begin operation. MIR must place
+exactly one matching `LOAN_END` for that activation on every reachable normal,
+error, defect, cancellation, and early-control exit. Static end sites may be
+path-exclusive, but each executed activation crosses exactly one of them. The
+close frontier follows every authorized use, closes child reborrows before
+their parent, and precedes conflicting mutation, move, owner cleanup, region
+exit, or a suspension not covered by the existing suspension proof. CFG joins
+must receive byte-identical loan state. `LOAN_END` is infallible and
+nonsuspending: it discharges only the existing `ACCESS(LoanId)` responsibility,
+performs no user cleanup, and cannot alter primary or suppressed failure
+ordering. Loan identities and close-site identities are compiler-private and
+do not enter a module API digest. Source-level admission failures keep their
+existing ownership diagnostics; an imbalanced admitted MIR body is rejected by
+the release verifier as `MIR_LOAN_UNBALANCED`.
 
 Facet borrow packaging is current. Owned and inout Facet packages remain Preview-design until escape, alias, cleanup, and ABI laws close.
 
@@ -1388,7 +1508,7 @@ The current asynchronous sequence profile is `AsyncSequence<T, E: ErrorSet>`. It
 
 The current ordering guarantee is FIFO only for successfully committed messages with the same exact `(sender identity, receiver actor identity, admitted mailbox profile identity)` key. Commit transfers each moved owner exactly once and allocates the next `channel_sequence`; a rejected attempt retains every moved owner and has no sequence. There is no global ordering, fairness, exactly-once delivery, distributed delivery, or session guarantee. Cancellation observed before commit aborts without transfer; cancellation after commit does not retract the actor-owned payload or rewrite an already returned admission result. Actor handlers cannot leak isolated references, synthesize reply authority, or convert Cancellation/Defect into a recoverable Error. Cross-actor waiting must preserve structured concur ownership and cannot form an implicit detached cycle. Product lanes remain `15/15_NOT_RUN` until the target-execution gate has receipts.
 
-Shared mutable state is admitted only through an explicit stdlib profile. `SharedCell<T>` requires normalized Plain payload and supplies sequentially consistent `withValue` scoped observation and `replace` owner exchange. The observation cannot escape or suspend; replacement commits once and returns the old owner. Plain does not imply byte-copy, raw layout, lock-free implementation, or a progress guarantee, and no weaker-order source surface exists. `SharedMutex<T>` supplies receiver-bound, non-reentrant, non-suspending scoped exclusive mutation; unlock executes exactly once on return, Error, Defect, or Cancellation and happens-before the next successful lock on that mutex. Neither profile infers poisoning, fairness, lock ordering, transferability, or erasure of effects, cancellation, isolation, or cleanup.
+Shared mutable state is admitted only through an explicit stdlib profile. `SharedCell<T>` requires normalized Plain payload and supplies sequentially consistent `withValue` scoped observation and `replace` owner exchange. The observation cannot escape or suspend; replacement commits once and returns the old owner. Plain does not imply byte-copy, raw layout, lock-free implementation, or a progress guarantee, and no weaker-order source surface exists. `SharedMutex<T: SharedMutexPayload>` publishes a different, context-specific payload law. `SharedMutexPayload` is a sealed public constraint checked by the internal `SharedMutexPayloadAdmitted` predicate; it is neither a Trait nor a user conformance or synthesis surface. The predicate admits cleanup-free Reusable or Affine owner-closed payload graphs and rejects Resource lifecycle, cleanup tokens or hooks, cleanup errors or effects, authority, suspension or cancellation responsibility, borrow or `inout` views, and opaque or unbounded generic components. A generic payload must state the bound. Admission creates no Plain, Copy, Clone, Shareable, Transferable, layout, ABI, serialization or other responsibility evidence, and the bound remains part of public API identity. SharedMutex supplies receiver-bound, non-reentrant, non-suspending scoped exclusive mutation; construction checks the payload before move commit, and unlock executes exactly once on return, Error, Defect, or Cancellation and happens-before the next successful lock on that mutex. Neither profile infers poisoning, fairness, lock ordering, transferability, or erasure of effects, cancellation, isolation, or cleanup.
 
 ## 39. Compiler tree boundary
 
@@ -2451,7 +2571,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN` [error]: A pattern-binding control requires a refutable pattern.
 - `PLACE_REPLACE_NOT_ADMITTED` [error]: replace requires one stable place, exclusive access, and a transaction that preserves exactly one old and one new owner.
 - `PLAIN_HETEROGENEOUS_TOP_FORBIDDEN` [error]: `Plain` is not a heterogeneous dynamic top. Use an explicit union, JsonValue, Dyn, or a typed boundary wrapper.
-- `PLAIN_IS_NOT_DERIVED_BY_ANNOTATION` [error]: Annotation cannot create Plain admissibility. Use Plain boundary type or satisfies Plain candidate.
+- `PLAIN_IS_NOT_DERIVED_BY_ANNOTATION` [error]: Annotation cannot create Plain admissibility. Use a type admitted by the sealed Plain registry rule.
 - `PLAIN_IS_NOT_DYNAMIC` [error]: Plain is not a dynamic invocation boundary; use Dyn for dynamic inspection.
 - `PLAIN_IS_NOT_JSONVALUE` [error]: Plain is not external JSON; use JsonValue for JSON data.
 - `PLAIN_IS_NOT_LAYOUT_SAFE` [error]: Plain does not imply FFI-safe layout or byte-copy safety.
@@ -2481,6 +2601,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PROTOTYPE_DERIVATION_DOLLAR_REMOVED` [error]: Prototype derivation no longer uses $; write source!{...} or source!!{...}.
 - `PROTOTYPE_DERIVATION_NO_WHITESPACE_BEFORE_DELTA` [error]: No whitespace is allowed between !/!! and the prototype delta block.
 - `PROTOTYPE_DERIVATION_RESPONSIBILITY_MISMATCH` [error]: Prototype derivation must preserve the exact nominal type and satisfy its visible ConstructionRow and clone responsibilities.
+- `RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE` [error]: The known responsibility identity has no exact admissible compiler derivation or selected Trait witness for this normalized type and context.
+- `RESPONSIBILITY_IDENTITY_UNRESOLVED` [error]: The responsibility name is unknown, removed, stale, or used in the wrong identity domain; no compatibility alias or inferred replacement is created.
 - `PUBLIC_API_HIDDEN_WITNESS` [error]: Public API depends on a trait, associated item, or witness that is not public/exportable.
 - `PURE_CALLABLE_MUTABLE_CAPTURE_FORBIDDEN` [error]: A #pure callable cannot capture var/inout/mutable shared state.
 - `PURE_CALLABLE_OBSERVES_MUTABLE_OUTER_PLACE` [error]: A #pure lexical callable cannot observe an outer mutable place.
@@ -2736,7 +2858,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `TYPE_KEY_REQUIRES_COPYABLE_HASHABLE` [error]: Old Copyable & Hashable key law is removed; use Keyable.
 - `TYPE_KEY_REQUIRES_KEYABLE` [error]: Map/Set key requires Keyable admissibility.
 - `TYPE_KIND_HASH_SURFACE_REMOVED` [error]: Use public/private/common data/value/resource class, not class#data/class#value/class#resource.
-- `TYPE_PLAINDATA_REMOVED_USE_PLAIN` [error]: `PlainData` removed spelling; use `Plain` or formal `PlainValue`.
+- `TYPE_PLAINDATA_REMOVED_USE_PLAIN` [error]: `PlainData` removed spelling; use the sole public spelling `Plain`.
 - `TYPE_RELATION_SYMBOLIC_ALIAS_FORBIDDEN` [error]: Use derives/conforms keywords, not symbolic type relation aliases.
 - `TYPE_SCHEMA_CONSTRUCTION_MUST_BE_SCHEMA_ONLY` [error]: Type${...} is typed schema construction, not nominal constructor-domain allocation or resource construction.
 - `TYPE_SCHEMA_CONSTRUCTION_REQUIRES_SCHEMA_AUTHORITY` [error]: Type${...} requires visible schema construction authority for the target type.
@@ -3537,7 +3659,7 @@ The successor responsibility split is nevertheless fixed. `freeze` moves a
 mutable owner but consumes it exactly once only after a successful commit. It
 rejects an outstanding borrow or view, preserves the exact owner and value
 state on failure, is shallow with respect to payload capabilities, and never
-proves `ShareSafe` or `Transferable`. `snapshot` borrows and preserves its
+proves `Shareable` or `Transferable`. `snapshot` borrows and preserves its
 source and produces an independent point-in-time immutable result; later source
 mutation cannot change it, while allocation and representation cost remain
 visible and implementation-dependent. A `view` is a borrowed, owner-bounded,

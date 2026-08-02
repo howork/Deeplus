@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r51f3/shared-mutex-payload-bound-fixtures-r1.schema.json",
+  "title": "SharedMutexPayloadBoundFixturesR1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "baseline",
+    "product_execution",
+    "semantic_cases",
+    "mutation_matrix"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.shared-mutex-payload-bound-fixtures/r1"
+    },
+    "baseline": {
+      "const": "87115776365fcbe8870d2f631050db3e23194c9b"
+    },
+    "product_execution": {
+      "const": "NOT_RUN"
+    },
+    "semantic_cases": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/semanticCase"
+      }
+    },
+    "mutation_matrix": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "$ref": "#/$defs/mutation"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stringSet": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/id"
+      }
+    },
+    "payloadNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "type_id",
+        "lifecycle_owner",
+        "cleanup_kind",
+        "cleanup_effects",
+        "cleanup_errors",
+        "cleanup_authorities",
+        "cleanup_suspends",
+        "cleanup_cancellation"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^\\$([.][A-Za-z_][A-Za-z0-9_]*)*$"
+        },
+        "type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "lifecycle_owner": {
+          "type": "boolean"
+        },
+        "cleanup_kind": {
+          "enum": [
+            "none",
+            "view_release",
+            "drop_exactly_once"
+          ]
+        },
+        "cleanup_effects": {
+          "$ref": "#/$defs/stringSet"
+        },
+        "cleanup_errors": {
+          "$ref": "#/$defs/stringSet"
+        },
+        "cleanup_authorities": {
+          "$ref": "#/$defs/stringSet"
+        },
+        "cleanup_suspends": {
+          "type": "boolean"
+        },
+        "cleanup_cancellation": {
+          "type": "boolean"
+        }
+      }
+    },
+    "payloadDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "root_type_id",
+        "normalized",
+        "proof_origin",
+        "proof_complete",
+        "bound_predicate_ids",
+        "user_conformance_evidence",
+        "wrapper_internal_unlock_present",
+        "payload_nodes"
+      ],
+      "properties": {
+        "schema": {
+          "const": "deeplus.shared-mutex-payload-descriptor/r1"
+        },
+        "root_type_id": {
+          "$ref": "#/$defs/id"
+        },
+        "normalized": {
+          "const": true
+        },
+        "proof_origin": {
+          "enum": [
+            "builtin",
+            "nominal_definition",
+            "generic_bound"
+          ]
+        },
+        "proof_complete": {
+          "type": "boolean"
+        },
+        "bound_predicate_ids": {
+          "$ref": "#/$defs/stringSet"
+        },
+        "user_conformance_evidence": {
+          "type": "boolean"
+        },
+        "wrapper_internal_unlock_present": {
+          "type": "boolean"
+        },
+        "payload_nodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/payloadNode"
+          }
+        }
+      }
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verdict",
+        "reason_or_null",
+        "diagnostic_id_or_null",
+        "culprit_path_or_null",
+        "emitted_primary_count",
+        "later_candidate_status"
+      ],
+      "properties": {
+        "verdict": {
+          "enum": [
+            "ADMIT",
+            "REJECT"
+          ]
+        },
+        "reason_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostic_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "culprit_path_or_null": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^\\$([.][A-Za-z_][A-Za-z0-9_]*)*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "emitted_primary_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "later_candidate_status": {
+          "enum": [
+            "NOT_APPLICABLE",
+            "NOT_EVALUATED"
+          ]
+        }
+      }
+    },
+    "semanticCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "class",
+        "intent",
+        "descriptor",
+        "expected"
+      ],
+      "properties": {
+        "case_id": {
+          "$ref": "#/$defs/id"
+        },
+        "class": {
+          "enum": [
+            "positive",
+            "boundary",
+            "negative"
+          ]
+        },
+        "intent": {
+          "$ref": "#/$defs/id"
+        },
+        "descriptor": {
+          "$ref": "#/$defs/payloadDescriptor"
+        },
+        "expected": {
+          "$ref": "#/$defs/expected"
+        }
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mutation_id",
+        "operation",
+        "target",
+        "base_case_id_or_null",
+        "expected_validator_reason"
+      ],
+      "properties": {
+        "mutation_id": {
+          "$ref": "#/$defs/id"
+        },
+        "operation": {
+          "$ref": "#/$defs/id"
+        },
+        "target": {
+          "$ref": "#/$defs/id"
+        },
+        "base_case_id_or_null": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_validator_reason": {
+          "$ref": "#/$defs/id"
+        }
+      }
+    }
+  }
+}

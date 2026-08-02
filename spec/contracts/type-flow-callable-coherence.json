@@ -516,7 +516,11 @@
         ],
         "borrow_escape": "reject",
         "overlapping_inout_capture": "reject",
-        "resource_cleanup_path_count": "exactly one"
+        "resource_cleanup_path_count": "exactly one",
+        "capture_plan_contract": "spec/contracts/closure-capture-plan-r1.json",
+        "capture_once_rule": "capture ONCE is admitted only with an explicit callable #once; no profile inference",
+        "initializer_scope": "all initializer expressions resolve in the enclosing scope; capture binders become visible together only in the body",
+        "failure_atomicity": "prepare left-to-right once; rollback prepared prefix in reverse; publish one complete environment"
       }
     },
     {
@@ -623,10 +627,17 @@
         "inout_parameter_commit": "borrow one caller place exclusively for the dynamic call extent and make successful writes observable in that same caller place",
         "branch_cleanup": "complete before control reaches a join or exits",
         "finally": "exactly once after the try body or selected catch on every exit",
-        "defer": "deterministic LIFO and exactly once",
+        "defer_surface": "one statically selected ordinary direct/member/type-side or ordinary message invocation; trailing closure, inline callable, await, spawn, guard, block, and actor transport are forbidden",
+        "defer_registration_order": "evaluate a runtime callee or receiver first, then all explicit runtime CallArguments including context in source order, then omitted-formal defaults in formal declaration order; statically bound callee identity and using evidence have zero runtime evaluations",
+        "defer_static_preflight_failure": "evaluate zero operands and publish zero registration",
+        "defer_acquisition_modes": "SNAPSHOT_VALUE, SHARED_LOAN, EXCLUSIVE_LOAN, MOVE_INTO_PLAN, OWNED_TEMPORARY, PINNED_PLACE_RESERVATION, or zero-evaluation STATIC_EVIDENCE",
+        "defer_registration_commit": "all ownership, region, effect, error, suspension, result-responsibility, and cleanup-budget obligations close before one seal; CONSUME transfers into the plan only at that seal",
+        "defer_registration_failure": "reverse-unwind acquired temporaries and reversible reservations, publish zero registration, retain already-observed external effects, and perform no retry",
+        "defer_execution": "normal fallthrough, return, break, continue, Error propagation, Defect, and Cancellation trigger inner-before-outer cleanup; one region executes reached registrations in reverse dynamic registration order exactly once",
+        "defer_result_disposition": "seal UNIT_NO_VALUE, DISCARD_CLEANUP_FREE_VALUE, or CLEAN_OWNED_TEMPORARY under ordinary ExprStmt responsibility checking; unhandled responsibility cannot be silently discarded",
         "primary_and_suppressed_failure_order": "deterministic",
         "return_break_continue_throw": "cannot skip required cleanup",
-        "suspension": "preserves live ownership, borrow, isolation, and cleanup obligations"
+        "suspension": "is not a scope exit, executes no cleanup, and preserves every proven live ownership, borrow, reservation, isolation, and cleanup obligation"
       }
     },
     {

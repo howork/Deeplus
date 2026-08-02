@@ -1,0 +1,552 @@
+{
+  "schema": "deeplus.responsibility-identity-registry/r1",
+  "contract_schema": "schemas/language/responsibility-identity-registry-r1.schema.json",
+  "revision": "R30-RESPONSIBILITY-IDENTITY-REGISTRY-R1",
+  "status": "CURRENT_DESIGN_STATIC_CONTRACT",
+  "authority": "DESIGN_RESPONSIBILITY_IDENTITY_REGISTRY_R1",
+  "date": "2026-08-02",
+  "baseline": {
+    "commit": "87115776365fcbe8870d2f631050db3e23194c9b",
+    "tree": "2452f0a6be1e1391b3678dafa86987059b115ec7"
+  },
+  "gap": {
+    "gap_id": "IR-OWN-P1-023",
+    "resolution": "BOUNDED_IDENTITY_AND_EVIDENCE_PROJECTION",
+    "semantic_p0_created": 0
+  },
+  "source_surface": {
+    "grammar_owner": "spec/grammar/deeplus.ebnf",
+    "grammar_change_required": false,
+    "grammar_production_change_count": 0,
+    "new_source_spelling_count": 0,
+    "existing_conformance_surface_reused": true,
+    "existing_capture_spellings": [
+      "copy",
+      "clone",
+      "deep"
+    ]
+  },
+  "axis_model": {
+    "identity_count": 6,
+    "axis_count": 6,
+    "axes_are_independent": true,
+    "implicit_cross_axis_derivation_count": 0,
+    "identity_and_lifecycle_axes_are_distinct": true,
+    "identity_and_shared_handle_axes_are_distinct": true
+  },
+  "identities": [
+    {
+      "identity_id": "PlainValue",
+      "axis_id": "PLAIN_VALUE_ADMISSIBILITY",
+      "kind": "SEALED_INTRINSIC_PREDICATE",
+      "availability": "CURRENT",
+      "public_spelling_or_null": "Plain",
+      "public_aliases": [],
+      "capture_spelling_or_null": null,
+      "user_direct_conformance": "FORBIDDEN",
+      "auto_policy": "SEALED_TERMINATING_STRUCTURAL_PREDICATE",
+      "trait_id_required": false,
+      "evidence_mode": "INTRINSIC_PREDICATE_PROOF",
+      "runtime_relookup_count": 0,
+      "behavior": {
+        "status": "NON_BEHAVIORAL",
+        "source_access_or_null": null,
+        "result_contract_or_null": null,
+        "maximum_throws": [],
+        "maximum_effects": [],
+        "suspension_or_null": null,
+        "cancellation_or_null": null,
+        "narrower_implementation_allowed": false,
+        "pending_policy_axes": []
+      }
+    },
+    {
+      "identity_id": "Shareable",
+      "axis_id": "SHAREABLE_OBSERVATION_SAFETY",
+      "kind": "SEALED_COMPILER_GOVERNED_RESPONSIBILITY_TRAIT",
+      "availability": "CURRENT",
+      "public_spelling_or_null": "Shareable",
+      "public_aliases": [],
+      "capture_spelling_or_null": null,
+      "user_direct_conformance": "FORBIDDEN",
+      "auto_policy": "CLOSED_TERMINATING_STRUCTURAL_AUTO",
+      "trait_id_required": true,
+      "evidence_mode": "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+      "runtime_relookup_count": 0,
+      "behavior": {
+        "status": "NON_BEHAVIORAL",
+        "source_access_or_null": null,
+        "result_contract_or_null": null,
+        "maximum_throws": [],
+        "maximum_effects": [],
+        "suspension_or_null": null,
+        "cancellation_or_null": null,
+        "narrower_implementation_allowed": false,
+        "pending_policy_axes": []
+      }
+    },
+    {
+      "identity_id": "Transferable",
+      "axis_id": "CROSS_ISOLATION_OWNED_MOVE",
+      "kind": "SEALED_COMPILER_GOVERNED_RESPONSIBILITY_TRAIT",
+      "availability": "CURRENT",
+      "public_spelling_or_null": "Transferable",
+      "public_aliases": [],
+      "capture_spelling_or_null": null,
+      "user_direct_conformance": "FORBIDDEN",
+      "auto_policy": "CLOSED_TERMINATING_STRUCTURAL_AUTO",
+      "trait_id_required": true,
+      "evidence_mode": "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+      "runtime_relookup_count": 0,
+      "behavior": {
+        "status": "NON_BEHAVIORAL",
+        "source_access_or_null": null,
+        "result_contract_or_null": null,
+        "maximum_throws": [],
+        "maximum_effects": [],
+        "suspension_or_null": null,
+        "cancellation_or_null": null,
+        "narrower_implementation_allowed": false,
+        "pending_policy_axes": []
+      }
+    },
+    {
+      "identity_id": "CopyValue",
+      "axis_id": "IMPLICIT_VALUE_COPY_ADMISSIBILITY",
+      "kind": "INTERNAL_SEALED_COPY_PREDICATE",
+      "availability": "CURRENT_INTERNAL",
+      "public_spelling_or_null": null,
+      "public_aliases": [],
+      "capture_spelling_or_null": "copy",
+      "user_direct_conformance": "FORBIDDEN",
+      "auto_policy": "SEALED_TERMINATING_STRUCTURAL_PREDICATE",
+      "trait_id_required": false,
+      "evidence_mode": "INTRINSIC_PREDICATE_PROOF",
+      "runtime_relookup_count": 0,
+      "behavior": {
+        "status": "NON_BEHAVIORAL",
+        "source_access_or_null": null,
+        "result_contract_or_null": null,
+        "maximum_throws": [],
+        "maximum_effects": [],
+        "suspension_or_null": null,
+        "cancellation_or_null": null,
+        "narrower_implementation_allowed": false,
+        "pending_policy_axes": []
+      }
+    },
+    {
+      "identity_id": "Clone",
+      "axis_id": "EXPLICIT_BEHAVIORAL_CLONE",
+      "kind": "PUBLIC_BEHAVIORAL_TRAIT",
+      "availability": "CURRENT",
+      "public_spelling_or_null": "Clone",
+      "public_aliases": [],
+      "capture_spelling_or_null": "clone",
+      "user_direct_conformance": "ADMITTED",
+      "auto_policy": "NONE",
+      "trait_id_required": true,
+      "evidence_mode": "EXACT_SELECTED_TRAIT_WITNESS",
+      "runtime_relookup_count": 0,
+      "behavior": {
+        "status": "CURRENT_BEHAVIORAL_CONTRACT",
+        "source_access_or_null": "BORROWED",
+        "result_contract_or_null": "SAME_TYPE_INDEPENDENT_RESULT",
+        "maximum_throws": [
+          "AllocationError"
+        ],
+        "maximum_effects": [
+          "allocate"
+        ],
+        "suspension_or_null": "FORBIDDEN",
+        "cancellation_or_null": "FORBIDDEN",
+        "narrower_implementation_allowed": true,
+        "pending_policy_axes": []
+      }
+    },
+    {
+      "identity_id": "DeepClone",
+      "axis_id": "EXPLICIT_GRAPH_DEEP_CLONE",
+      "kind": "RESERVED_PREVIEW_BEHAVIORAL_TRAIT",
+      "availability": "RESERVED_PREVIEW_NONACTIVATABLE",
+      "public_spelling_or_null": "DeepClone",
+      "public_aliases": [],
+      "capture_spelling_or_null": "deep",
+      "user_direct_conformance": "FORBIDDEN",
+      "auto_policy": "NONE_PENDING_PREVIEW_POLICY",
+      "trait_id_required": true,
+      "evidence_mode": "NONACTIVATABLE_RESERVED_IDENTITY",
+      "runtime_relookup_count": 0,
+      "behavior": {
+        "status": "RESERVED_PREVIEW_BLOCKED",
+        "source_access_or_null": null,
+        "result_contract_or_null": null,
+        "maximum_throws": [],
+        "maximum_effects": [],
+        "suspension_or_null": null,
+        "cancellation_or_null": null,
+        "narrower_implementation_allowed": false,
+        "pending_policy_axes": [
+          "GRAPH",
+          "CYCLE",
+          "ALIAS"
+        ]
+      }
+    }
+  ],
+  "implication_matrix": {
+    "PlainValue": {
+      "PlainValue": true,
+      "Shareable": false,
+      "Transferable": false,
+      "CopyValue": false,
+      "Clone": false,
+      "DeepClone": false
+    },
+    "Shareable": {
+      "PlainValue": false,
+      "Shareable": true,
+      "Transferable": false,
+      "CopyValue": false,
+      "Clone": false,
+      "DeepClone": false
+    },
+    "Transferable": {
+      "PlainValue": false,
+      "Shareable": false,
+      "Transferable": true,
+      "CopyValue": false,
+      "Clone": false,
+      "DeepClone": false
+    },
+    "CopyValue": {
+      "PlainValue": false,
+      "Shareable": false,
+      "Transferable": false,
+      "CopyValue": true,
+      "Clone": false,
+      "DeepClone": false
+    },
+    "Clone": {
+      "PlainValue": false,
+      "Shareable": false,
+      "Transferable": false,
+      "CopyValue": false,
+      "Clone": true,
+      "DeepClone": false
+    },
+    "DeepClone": {
+      "PlainValue": false,
+      "Shareable": false,
+      "Transferable": false,
+      "CopyValue": false,
+      "Clone": false,
+      "DeepClone": true
+    }
+  },
+  "plain_boundary": {
+    "public_spelling": "Plain",
+    "internal_formal_identity": "PlainValue",
+    "sole_public_spelling": true,
+    "implies": {
+      "CopyValue": false,
+      "Shareable": false,
+      "Transferable": false,
+      "layout_safe": false,
+      "abi_safe": false,
+      "json_value": false,
+      "dyn_value": false
+    }
+  },
+  "lifecycle_boundary": {
+    "internal_lifecycle_classes": [
+      "Reusable",
+      "Affine",
+      "Resource"
+    ],
+    "public_trait_identity_count": 0,
+    "cleanup_trait_dispatch_count": 0,
+    "cleanup_owner": "LANGUAGE_OWNED_DEF_HASH_CLEANUP"
+  },
+  "shared_handle_boundary": {
+    "spelling": "Shared<T>",
+    "kind": "SHARED_OWNER_HANDLE",
+    "is_responsibility_identity": false,
+    "alias_creation_authority": true,
+    "shareable_observation_proof_is_separate": true,
+    "transferable_payload_proof_is_synthesized": false
+  },
+  "predicate_input_contract": {
+    "descriptor": "ResponsibilityIdentityInputR1",
+    "schema_path": "schemas/language/responsibility-identity-input-r1.schema.json",
+    "fixture_path": "tests/fixtures/current/responsibility-identity-input-r1.json",
+    "closed_object": true,
+    "predicate_ids": [
+      "PlainValueAdmissible",
+      "ShareableObservationSafe",
+      "TransferableAcrossIsolation",
+      "CopyValueAdmissible"
+    ],
+    "case_count": 12,
+    "classes_per_predicate": [
+      "positive",
+      "boundary",
+      "negative"
+    ]
+  },
+  "rejected_spellings": [
+    {
+      "spelling": "PlainValue",
+      "accepted": false,
+      "alias_created": false,
+      "canonical_replacements": [
+        "Plain"
+      ],
+      "replacement_rule": "USE_PLAIN_AS_THE_SOLE_PUBLIC_SOURCE_SPELLING",
+      "diagnostic_id": "RESPONSIBILITY_IDENTITY_UNRESOLVED"
+    },
+    {
+      "spelling": "Sendable",
+      "accepted": false,
+      "alias_created": false,
+      "canonical_replacements": [
+        "Transferable"
+      ],
+      "replacement_rule": "USE_TRANSFERABLE_FOR_CROSS_ISOLATION_OWNED_MOVE",
+      "diagnostic_id": "RESPONSIBILITY_IDENTITY_UNRESOLVED"
+    },
+    {
+      "spelling": "ShareSafe",
+      "accepted": false,
+      "alias_created": false,
+      "canonical_replacements": [
+        "Shareable"
+      ],
+      "replacement_rule": "USE_SHAREABLE_FOR_OBSERVATION_SAFETY",
+      "diagnostic_id": "RESPONSIBILITY_IDENTITY_UNRESOLVED"
+    },
+    {
+      "spelling": "Copyable",
+      "accepted": false,
+      "alias_created": false,
+      "canonical_replacements": [
+        "Plain",
+        "Shared<T>",
+        "clone",
+        "move"
+      ],
+      "replacement_rule": "CHOOSE_EXACT_VALUE_ALIAS_CLONE_OR_MOVE_RESPONSIBILITY",
+      "diagnostic_id": "COPYABLE_REMOVED_USE_PLAIN_OR_SHARED"
+    },
+    {
+      "spelling": "Duplicable",
+      "accepted": false,
+      "alias_created": false,
+      "canonical_replacements": [
+        "Plain",
+        "Shared<T>",
+        "clone",
+        "move"
+      ],
+      "replacement_rule": "CHOOSE_EXACT_VALUE_ALIAS_CLONE_OR_MOVE_RESPONSIBILITY",
+      "diagnostic_id": "DUPLICABLE_REMOVED_USE_EXPLICIT_RESPONSIBILITY"
+    },
+    {
+      "spelling": "Aliasable",
+      "accepted": false,
+      "alias_created": false,
+      "canonical_replacements": [
+        "Plain",
+        "Shared<T>",
+        "Shareable",
+        "move",
+        "clone"
+      ],
+      "replacement_rule": "CHOOSE_PLAIN_SHARED_OBSERVATION_MOVE_OR_CLONE_BY_INTENT",
+      "diagnostic_id": "ALIASABLE_REMOVED_USE_SHARED_OR_PLAIN"
+    },
+    {
+      "spelling": "PlainData",
+      "accepted": false,
+      "alias_created": false,
+      "canonical_replacements": [
+        "Plain"
+      ],
+      "replacement_rule": "USE_PLAIN_PUBLIC_ALIAS",
+      "diagnostic_id": "TYPE_PLAINDATA_REMOVED_USE_PLAIN"
+    }
+  ],
+  "structural_resolution": {
+    "algorithm_id": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1",
+    "candidate_identities": [
+      "PlainValue",
+      "Shareable",
+      "Transferable",
+      "CopyValue"
+    ],
+    "terminating": true,
+    "finite_nominal_graph_required": true,
+    "memoized_identity_subject_pairs": true,
+    "cycle_detection_required": true,
+    "import_order_independent": true,
+    "source_declaration_order_independent": true,
+    "runtime_or_provider_search_count": 0,
+    "open_world_structural_search": false
+  },
+  "evidence_residue": {
+    "descriptor_exact_fields": [
+      "ResponsibilityRuleId",
+      "TypeId",
+      "EvidenceKind",
+      "RegistryRevision",
+      "DerivationDigest",
+      "TraitWitnessIdOrNull"
+    ],
+    "behavioral_descriptor_exact_fields": [
+      "ErrorSetIdOrNull",
+      "EffectRowIdOrNull",
+      "ResultAcquisitionPlanIdOrNull",
+      "CleanupPlanIdOrNull"
+    ],
+    "hir_exact_fields": [
+      "ResponsibilityRuleId",
+      "ResponsibilityEvidenceId",
+      "TypeId",
+      "EvidenceKind",
+      "RegistryRevision",
+      "DerivationDigest",
+      "TraitWitnessIdOrNull",
+      "ErrorSetIdOrNull",
+      "EffectRowIdOrNull",
+      "ResultAcquisitionPlanIdOrNull",
+      "CleanupPlanIdOrNull",
+      "OwnerIdOrNull",
+      "RegionIdOrNull",
+      "DestinationIsolationDomainIdOrNull",
+      "SourceProvenance"
+    ],
+    "api_exact_fields": [
+      "ResponsibilityRuleId",
+      "TypeId",
+      "EvidenceKind",
+      "RegistryRevision",
+      "DerivationDigest",
+      "TraitWitnessIdOrNull",
+      "ErrorSetIdOrNull",
+      "EffectRowIdOrNull"
+    ],
+    "mir_exact_fields": [
+      "ResponsibilityRuleId",
+      "ResponsibilityEvidenceId",
+      "TypeId",
+      "EvidenceKind",
+      "RegistryRevision",
+      "DerivationDigest",
+      "TraitWitnessIdOrNull",
+      "ErrorSetIdOrNull",
+      "EffectRowIdOrNull",
+      "ResultAcquisitionPlanIdOrNull",
+      "CleanupPlanIdOrNull",
+      "OwnerIdOrNull",
+      "RegionIdOrNull",
+      "DestinationIsolationDomainIdOrNull",
+      "SourceOriginId"
+    ],
+    "exact_identity_preservation": true,
+    "exact_selected_witness_preservation": true,
+    "clone_runtime_relookup_count": 0,
+    "deep_clone_runtime_relookup_count": 0
+  },
+  "operator_boundary": {
+    "fixed_operator_role_count": 13,
+    "operator_trait_root_count": 9,
+    "responsibility_identity_operator_mapping_count": 0,
+    "responsibility_identity_operator_mappings": [],
+    "capture_operations_are_operator_dispatch": false
+  },
+  "diagnostics": {
+    "existing_active_ids": [
+      "PLAIN_IS_NOT_LAYOUT_SAFE",
+      "PLAIN_IS_NOT_JSONVALUE",
+      "PLAIN_IS_NOT_DYNAMIC",
+      "PLAIN_IS_PLAINVALUE_ALIAS",
+      "SHAREABLE_DOES_NOT_CREATE_ALIAS",
+      "SHARED_WRAPPER_DOES_NOT_IMPLY_TRANSFERABLE",
+      "COPYABLE_REMOVED_USE_PLAIN_OR_SHARED",
+      "DUPLICABLE_REMOVED_USE_EXPLICIT_RESPONSIBILITY",
+      "ALIASABLE_REMOVED_USE_SHARED_OR_PLAIN",
+      "TYPE_PLAINDATA_REMOVED_USE_PLAIN",
+      "PROTOTYPE_DEEP_DERIVATION_REQUIRES_DEEP_CLONE_LAW",
+      "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED"
+    ],
+    "expected_new_ids": [
+      {
+        "diagnostic_id": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+        "stage": "checker",
+        "severity": "error",
+        "status": "EXPECTED_REGISTRY_ADDITION"
+      },
+      {
+        "diagnostic_id": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+        "stage": "checker",
+        "severity": "error",
+        "status": "EXPECTED_REGISTRY_ADDITION"
+      }
+    ],
+    "expected_new_id_count": 2,
+    "diagnostic_catalog_mutation_count": 2
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "open_feature_p1": [
+      "CE-C-P1-001",
+      "CE-C-P1-002",
+      "CE-C-P1-003",
+      "CE-C-P1-004",
+      "CE-C-P1-005",
+      "CE-C-P1-006",
+      "CE-E-P1-001",
+      "CE-E-P1-002",
+      "CE-E-P1-003",
+      "CE-E-P1-004",
+      "CE-E-P1-005",
+      "CE-E-P1-006",
+      "CE-E-P1-007",
+      "CE-E-P1-008",
+      "TCC-P1-002",
+      "TCC-P1-003",
+      "TCC-P1-004",
+      "TCC-P1-005",
+      "TCC-P1-006",
+      "TCC-P1-007",
+      "TCC-P1-008",
+      "SFD-P1-009"
+    ],
+    "separate_open_m13_actions": [
+      "M13-A002",
+      "M13-A003",
+      "M13-A004",
+      "M13-A005"
+    ],
+    "product_lanes": {
+      "rust_frontend_lexer": "NOT_RUN",
+      "rust_frontend_parser": "NOT_RUN",
+      "rust_hir_lowering": "NOT_RUN",
+      "rust_integrated_checker": "NOT_RUN",
+      "deeplus_mir_lowering": "NOT_RUN",
+      "xvm_bytecode_emitter": "NOT_RUN",
+      "xvm_interpreter": "NOT_RUN",
+      "cranelift_object_aot_backend": "NOT_RUN",
+      "cranelift_jit_backend": "NOT_RUN",
+      "formatter_lsp": "NOT_RUN",
+      "stdlib_provider_runner": "NOT_RUN",
+      "official_tooling": "NOT_RUN",
+      "independent_conformance": "NOT_RUN",
+      "cross_backend_conformance": "NOT_RUN",
+      "actual_user_team_study": "NOT_RUN"
+    },
+    "product_execution": "NOT_RUN",
+    "evidence_level": "E2_DESIGN_STATIC",
+    "github_mutation": 0
+  }
+}

@@ -63,18 +63,18 @@ PROFILE_MARKER_RE = re.compile(
 )
 PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
 EXPECTED_COUNTS = {
-    "grammar_productions": 643,
-    "features": 721,
-    "diagnostics": 1476,
-    "predicates": 278,
-    "prelude_entries": 72,
-    "examples": 743,
+    "grammar_productions": 644,
+    "features": 722,
+    "diagnostics": 1482,
+    "predicates": 281,
+    "prelude_entries": 77,
+    "examples": 752,
     "hard_keywords": 29,
     "contextual_words": 105,
 }
 EXPECTED_PROFILES = {
     "LEXICAL": 91,
-    "STABLE": 539,
+    "STABLE": 540,
     "PREVIEW": 13,
 }
 EXPECTED_FENCES = {
@@ -709,7 +709,7 @@ def validate_grammar_topology(
     by_name = {row["name"]: row for row in productions}
     names = set(by_name)
     if (
-        len(by_name) != 643
+        len(by_name) != EXPECTED_COUNTS["grammar_productions"]
         or topology.get("production_set", {}).get("count") != len(names)
         or topology.get("production_set", {}).get("sha256")
         != grammar_name_digest(names)

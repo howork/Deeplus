@@ -683,7 +683,9 @@
       "TYPE_SYSTEM"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
+    "depends_on": [
+      "responsibility_identity_registry_r1"
+    ],
     "display_name": "Shareable observation safety proof",
     "feature_id": "shareable_observation_safety",
     "feature_kind": "canonical_feature",
@@ -783,13 +785,13 @@
       "callable_responsibility_profile_core",
       "scoped_callable_lifetime_profile"
     ],
-    "display_name": "SharedMutex<T> no-drop controlled mutable stdlib profile",
+    "display_name": "SharedMutex<T: SharedMutexPayload> controlled mutable stdlib profile",
     "feature_id": "shared_mutex_no_drop_minimum_profile",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "Current contract: SharedMutex no-drop profile promoted to stdlib profile.",
+    "notes": "Current contract: SharedMutexPayload is a sealed context-specific public constraint checked by SharedMutexPayloadAdmitted; it admits cleanup-free Reusable or Affine payloads, rejects lifecycle/cleanup/authority/suspension/cancellation/view and opaque or unbounded generic residue, creates no other responsibility implication, and product support remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -807,7 +809,9 @@
         "SHARED_MUTEX_REENTRANT_LOCK_FORBIDDEN",
         "SHARED_STATE_SCOPED_ACCESS_MAY_NOT_SUSPEND"
       ],
-      "predicates": [],
+      "predicates": [
+        "SharedMutexPayloadAdmitted"
+      ],
       "examples": [
         "EX-R51COH-SHARED-002"
       ],
@@ -817,7 +821,13 @@
       ]
     },
     "artifact_trace_refs": [
+      "spec/contracts/shared-mutex-payload-bound-r1.json",
       "spec/contracts/shared-state-coherence.json",
+      "spec/types/type-system.md",
+      "library/prelude/prelude.md",
+      "library/prelude/signatures/chunks/part-0003.json",
+      "schemas/language/shared-mutex-payload-bound-fixtures-r1.schema.json",
+      "tests/fixtures/current/shared-mutex-payload-bound-r1.json",
       "tests/fixtures/current/shared-state-coherence-r1.json"
     ],
     "production_lexer": "NOT_RUN",
@@ -971,7 +981,7 @@
     "authority": "LANGUAGE / PARSER / CHECKER / RUNTIME",
     "source_activation": "none",
     "depends_on": [],
-    "notes": "`defer` registers exactly one direct, message, or type-side cleanup invocation. Block, inline callable, control expression, guard, and await forms are not current.",
+    "notes": "`defer` registers exactly one direct, ordinary message, or type-side cleanup invocation as a sealed DeferredCallPlanInputR1 plan. Registration fixes call identity and evaluates dynamic operands once; suspension preserves the plan without executing it until terminal scope exit. Block, inline callable, control expression, guard, await, spawn, and actor-transport forms are not current.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",
@@ -989,7 +999,8 @@
     "normative_trace_refs": {
       "diagnostics": [
         "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
-        "DEFER_REQUIRES_SINGLE_INVOCATION"
+        "DEFER_REQUIRES_SINGLE_INVOCATION",
+        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
       ],
       "predicates": [
         "SingleActionDeferAdmitted"
@@ -998,7 +1009,8 @@
         "EX-R51a1-DEFER-001",
         "EX-R51a1-DEFER-NG-001",
         "EX-R51b-GRAM-NG-008",
-        "EX-R51b-GRAM-P-006"
+        "EX-R51b-GRAM-P-006",
+        "EX-R32-DCP-NG-001"
       ],
       "productions": [
         "DeferStmt",

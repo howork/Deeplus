@@ -1,0 +1,222 @@
+{
+  "schema": "deeplus.cleanup-budget-algebra/r1",
+  "revision": "R33-CLEANUP-BUDGET-ALGEBRA-R1",
+  "status": "CURRENT_DESIGN_STATIC_CONTRACT_LOCAL_CANDIDATE",
+  "authority": "CODEX_DESIGN_R33_CLEANUP_BUDGET_ALGEBRA",
+  "baseline": {
+    "canonical_commit": "87115776365fcbe8870d2f631050db3e23194c9b",
+    "canonical_tree": "2452f0a6be1e1391b3678dafa86987059b115ec7",
+    "r32_overlap_reference": "047333dfdb3b4e37d4ab360c10a9b0a2b9b92825_FUSED_IN_R47"
+  },
+  "gap": {
+    "gap_id": "IR-OWN-P1-021",
+    "resolution": "NORMALIZED_PUBLIC_UPPER_ENVELOPE_WITH_TRANSITIVE_SUBSET_PROOF",
+    "semantic_p0_created": 0
+  },
+  "scope_fence": {
+    "general_loan_close_gap": "IR-OWN-P1-022_FUSED_SEPARATELY_IN_R47",
+    "shared_mutex_payload_gap": "IR-OWN-P1-024_FUSED_SEPARATELY_IN_R47",
+    "grammar_change_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "production_execution_count": 0,
+    "r32_deferred_call_plan_absorbed": true
+  },
+  "surface": {
+    "owner": "CLASS_HEADER",
+    "exact_ebnf": [
+      "CleanupBudgetClause ::= cleanup budget { CleanupBudgetItem* }",
+      "CleanupBudgetItem ::= EffectsBudget | ErrorsBudget",
+      "EffectsBudget ::= effects { IdentifierList? }",
+      "ErrorsBudget ::= errors TypeRef"
+    ],
+    "item_cardinality": {
+      "effects": "ZERO_OR_ONE",
+      "errors": "ZERO_OR_ONE"
+    },
+    "missing_effects_item": "EMPTY_EFFECT_ROW",
+    "missing_errors_item": "NEVER_EMPTY_ERROR_SET",
+    "empty_explicit_block": "EXPLICIT_EMPTY_ENVELOPE",
+    "body_position": "FORBIDDEN",
+    "camelcase_spelling": "FORBIDDEN"
+  },
+  "normalization": {
+    "recoverable_error_ids": "resolve ErrorSet TypeRef, expand members, canonicalize aliases, reject duplicate normalized identities, then sort by canonical identity",
+    "effect_ids": "resolve effect identities, canonicalize aliases, reject duplicate normalized identities, then sort by canonical identity",
+    "union": "finite commutative associative idempotent set union",
+    "subset": "canonical identity set inclusion",
+    "never_error_set_members": [],
+    "empty_effect_row_members": [],
+    "defects_are_error_members": false,
+    "cancellation_is_error_member": false,
+    "suspension_is_effect_member": false,
+    "authority_is_effect_member": false
+  },
+  "declaration_modes": {
+    "IMPLICIT_EXACT_ROOT": "a non-inheritance class with no header exports its exact normalized computed envelope",
+    "EXPLICIT_HEADER": "the normalized header is the owner's effective envelope",
+    "INHERITED_SEALED_ROOT": "a derived class with no header inherits the exact family-root effective envelope"
+  },
+  "composition": {
+    "source_kinds": [
+      "BASE_OWNER",
+      "FIELD_OWNER",
+      "OWNER_DEF_CLEANUP"
+    ],
+    "trace_order": [
+      "base owner if present",
+      "owned instance fields in declaration order",
+      "owner def#cleanup hook if present"
+    ],
+    "semantic_combination": "set union independent of trace order",
+    "conditional_reachability": "include every statically reachable cleanup contribution; do not use runtime path selection to narrow the public envelope",
+    "computed_error_ids": "union of every contribution recoverable_error_ids",
+    "computed_effect_ids": "union of every contribution effect_ids",
+    "local_admission": "computed_error_ids subset effective_error_ids and computed_effect_ids subset effective_effect_ids",
+    "unused_declared_capacity": "ADMITTED",
+    "external_effect_rollback_claim": false
+  },
+  "inheritance": {
+    "resource_root": "same-module sealed root with an EXPLICIT_HEADER envelope",
+    "implicit_child": "inherits the exact family-root envelope",
+    "explicit_child": "may equal or narrow the family-root envelope and must still cover its computed obligations",
+    "child_widening": "FORBIDDEN",
+    "cross_module_resource_inheritance": "FORBIDDEN",
+    "family_root_is_public_substitutability_ceiling": true,
+    "source_order_or_subclass_discovery_is_semantic": false
+  },
+  "static_decision": {
+    "predicate_id": "CleanupBudgetEnvelopeAdmitted",
+    "input": "CleanupBudgetEnvelopeInputR1",
+    "success": "ADMIT_NORMALIZED_ENVELOPE",
+    "failure_priority": [
+      "DUPLICATE_AXIS_ITEM",
+      "ERRORS_TYPE_NOT_ERROR_SET",
+      "DUPLICATE_NORMALIZED_IDENTITY",
+      "RESOURCE_ROOT_OR_CHILD_INVALID",
+      "LOCAL_RECOVERABLE_ERROR_EXCEEDED",
+      "LOCAL_EFFECT_EXCEEDED",
+      "CHILD_RECOVERABLE_ERROR_WIDENED",
+      "CHILD_EFFECT_WIDENED"
+    ],
+    "violation_diagnostics": {
+      "DUPLICATE_AXIS_ITEM": "CLEANUP_BUDGET_DUPLICATE",
+      "ERRORS_TYPE_NOT_ERROR_SET": "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+      "DUPLICATE_NORMALIZED_IDENTITY": "CLEANUP_BUDGET_DUPLICATE",
+      "RESOURCE_ROOT_OR_CHILD_INVALID": "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT",
+      "LOCAL_RECOVERABLE_ERROR_EXCEEDED": "CLEANUP_BUDGET_EXCEEDED",
+      "LOCAL_EFFECT_EXCEEDED": "CLEANUP_BUDGET_EXCEEDED",
+      "CHILD_RECOVERABLE_ERROR_WIDENED": "CLEANUP_BUDGET_EXCEEDED",
+      "CHILD_EFFECT_WIDENED": "CLEANUP_BUDGET_EXCEEDED"
+    },
+    "decision_order": [
+      "validate item cardinality and ErrorSet kind",
+      "normalize declared rows",
+      "select declaration mode and family-root ceiling",
+      "normalize each exact contribution in trace order",
+      "recompute transitive set unions",
+      "prove local computed subset effective envelope",
+      "prove child effective subset family-root envelope",
+      "seal typed HIR and public API residue"
+    ]
+  },
+  "hir_projection": {
+    "table": "CanonicalModuleBase.cleanup_budget_envelopes",
+    "identity": "CleanupBudgetId(OwnerTypeId, canonical normalized envelope digest)",
+    "construction_reference": "HirConstructionLifecyclePlan.cleanup_budget_id",
+    "compiler_local_contributions_preserved": true,
+    "unresolved_reference_count": 0
+  },
+  "mir_projection": {
+    "table": "DeeplusMir.cleanup_budget_envelope_table",
+    "construction_reference": "constructionLifecyclePayload.cleanup_budget_id",
+    "new_operation_kind_count": 0,
+    "existing_cleanup_operations_reused": [
+      "CLEANUP_REGION_ENTER",
+      "CLEANUP_REGISTER",
+      "CLEANUP_PIN",
+      "CLEANUP_SEAL",
+      "CLEANUP_DISARM",
+      "OBJECT_CLEANUP_BEGIN",
+      "OBJECT_CLEANUP_HOOK",
+      "OBJECT_FIELD_CLEANUP",
+      "OBJECT_BASE_CLEANUP",
+      "OBJECT_CLEANUP_END"
+    ],
+    "verification": "recompute computed rows and subset proofs before Verified<DeeplusMirR1>",
+    "runtime_evaluation_count": 0,
+    "backend_semantic_selection_count": 0,
+    "loan_end_policy_change_count": 0
+  },
+  "module_api": {
+    "exported_for_cleanup_bearing_public_type": [
+      "declaration_mode",
+      "family_root_type_id",
+      "effective_recoverable_error_ids",
+      "effective_effect_ids",
+      "envelope_digest"
+    ],
+    "compiler_local_fields_forbidden": [
+      "cleanup_budget_id",
+      "declared_envelope",
+      "computed_envelope",
+      "transitive_contributions_in_trace_order",
+      "source_ordinal",
+      "source_kind",
+      "source_owner_id",
+      "cleanup_plan_id",
+      "local_compatibility_proof",
+      "family_subset_proof_or_null"
+    ],
+    "import_admission": "exact canonical envelope digest and rows must agree"
+  },
+  "dynamic_semantics": {
+    "budget_evaluation_count": 0,
+    "cleanup_execution_order": "existing deterministic lifecycle and LIFO rules",
+    "existing_primary_failure_remains_primary": true,
+    "first_cleanup_failure_without_primary_becomes_primary": true,
+    "later_cleanup_failures": "suppressed in actual deterministic cleanup order",
+    "budget_changes_failure_order": false,
+    "budget_authorizes_runtime_effect": false
+  },
+  "diagnostic_policy": {
+    "new_active_ids": [
+      "CLEANUP_BUDGET_DUPLICATE",
+      "CLEANUP_BUDGET_ERRORS_REQUIRES_ERROR_SET",
+      "CLEANUP_BUDGET_EXCEEDED"
+    ],
+    "reused_active_ids": [
+      "CLEANUP_BUDGET_BODY_POSITION_REMOVED",
+      "CLEANUP_BUDGET_CAMELCASE_REMOVED",
+      "RESOURCE_INHERITANCE_REQUIRES_SAME_MODULE_SEALED_ROOT"
+    ],
+    "seed_activation_count": 0,
+    "defer_throw_seed_status": "UNCHANGED_SEED",
+    "iterator_cleanup_seed_status": "UNCHANGED_SEED"
+  },
+  "acceptance": {
+    "schema": "schemas/language/cleanup-budget-envelope-input-r1.schema.json",
+    "fixtures": "tests/fixtures/current/cleanup-budget-algebra-r1.json",
+    "validator": "tools/validators/validate_cleanup_budget_algebra.py",
+    "check_count": 14,
+    "mutation_count": 12
+  },
+  "overlap_register": {
+    "r32_files_overlap_expected": true,
+    "local_candidates_are_auto_merged": false,
+    "future_fusion_order": [
+      "R46 local dependency candidate",
+      "R29-R31 ownership prerequisites",
+      "R32 deferred-call plan",
+      "R33 cleanup-budget algebra",
+      "R34-R35 ownership closure contracts"
+    ],
+    "semantic_conflict_policy": "R47 exact-order semantic fusion; re-run focused validators and never select by file order"
+  },
+  "global_fences": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "separate_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

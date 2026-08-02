@@ -18,10 +18,10 @@ from typing import Any
 
 
 BASELINE_COMMIT = "e680568057ec9c6b02218dbe153758471734cf44"
-GRAMMAR_SHA256 = "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276"
+GRAMMAR_SHA256 = "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc"
 INTERFACE_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
-R36_MANAGED_REFERENCE_DIGEST = "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3"
-R37_RUNTIME_ABI_DIGEST = "26206926f0b6033ed520f4acd0277445bf583d32ae6d678e8281d6734539bf1c"
+R36_MANAGED_REFERENCE_DIGEST = "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
+R37_RUNTIME_ABI_DIGEST = "e2675436420814e9e4af6c3a7f530321f8c829c7d31d95533f371cbd9ba56146"
 FRAME_STATES = ["RUNNING", "SUSPENDED", "CLEANING", "TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]
 EPOCH_STATES = ["PREPARING", "COMMITTED", "RESUME_WON", "CANCEL_WON", "DISCHARGED"]
 OPERATIONS = ["FRAME_CREATE", "FRAME_SUSPEND_COMMIT", "FRAME_RESUME_COMMIT", "FRAME_CANCEL_COMMIT", "FRAME_CLEANUP_STEP", "FRAME_TERMINATE"]
@@ -383,7 +383,7 @@ def main() -> int:
     check("R38_R20_ACCEPTANCE_PRESERVED", len(legacy) == 24 and len({row.get("test_id") for row in legacy}) == 24, len(legacy))
 
     counts: dict[str, tuple[int, int]] = {}
-    expected_counts = {"diagnostics": 1476, "predicates": 278, "predicate_fixtures": 858, "relations": 570}
+    expected_counts = {"diagnostics": 1482, "predicates": 281, "predicate_fixtures": 864, "relations": 597}
     locations = {
         "diagnostics": ("spec/diagnostics/catalog", "diagnostic_count"),
         "predicates": ("spec/types/predicates", "predicate_count"),

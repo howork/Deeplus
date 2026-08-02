@@ -14,7 +14,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Parameter and capture modes are explicit. An ordinary `mut name: T` parameter acquires its argument once and commits a callee-owned mutable local: it creates no caller alias or write-back edge, and a failure before commit retains the caller owner. `inout` instead borrows one caller place exclusively for the dynamic call extent and successful writes remain visible in that place. borrow creates a nonescaping shared region view; move transfers ownership and invalidates the source. The narrow Stable profile permits replacement through an inout place but not moving the current value out of that borrowed place; definite reinitialization across every exit is not a current feature. Overlapping inout/borrow conflicts, use-after-move, escape across return/storage/capture, and crossing suspension or actor transfer without an admitted ownership proof are rejected. Typed ownership decisions bind exact inout-alias and place-join diagnostic reasons without claiming product execution.",
+    "notes": "Parameter/capture modes and type ownership qualifiers are explicit, closed, and separate identity axes. An ordinary `mut name: T` parameter acquires its argument once and commits a callee-owned mutable local with no caller alias/writeback; `name: mut T` is instead an ordinary channel carrying a unique mutable owner. Function types preserve the published `(borrow T) -> R` family by committing a direct item-leading ParameterMode only after the same ParenTypeSyntax owner observes `->`; `((mut T)) -> R` preserves a qualified input on an ordinary channel. Type qualifiers normalize exactly to UNQUALIFIED/OWNED/BORROWED/MUT/INOUT, allow no stacking or implicit variance, retain exact HIR/API residue, require region binding for BORROWED/INOUT, and lower by one closed MIR table. Unbound escape selects BORROW_ESCAPE_OWNER_REGION; other illegal qualifier composition/context selects OWNERSHIP_MODE_ADMISSION_FAILED. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -27,6 +27,7 @@
     "trace_class": "semantic",
     "normative_trace_refs": {
       "diagnostics": [
+        "BORROW_ESCAPE_OWNER_REGION",
         "OWNERSHIP_MODE_ADMISSION_FAILED",
         "INOUT_ALIAS_CONFLICT",
         "PLACE_STATE_JOIN_MISMATCH"
@@ -41,6 +42,8 @@
       "productions": [
         "CaptureItem",
         "ExpressionPrefixParselet",
+        "FunctionTypeModeItem",
+        "OwnershipQualifier",
         "ParameterMode"
       ],
       "semantic_reference_productions": []
@@ -50,7 +53,9 @@
       "spec/mir/semantics.md",
       "tests/fixtures/current/type-flow-callable-coherence-r1.json",
       "spec/contracts/ownership-decision-input-r1.json",
+      "spec/contracts/ownership-type-qualifier-r1.json",
       "tests/fixtures/current/ownership-decision-inputs-r1.json",
+      "tests/fixtures/current/ownership-type-qualifier-r1.json",
       "tests/conformance/ownership-decisions/chunks/part-0001.json"
     ],
     "production_lexer": "NOT_RUN",

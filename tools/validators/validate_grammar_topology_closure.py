@@ -8,7 +8,9 @@ import copy
 import hashlib
 import importlib.util
 import json
+import re
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any, Callable
 
@@ -32,6 +34,21 @@ CHECK_IDS = [
     "R27_MUTATIONS_EXACT_6",
     "R27_GOVERNANCE_FENCE",
 ]
+
+REFRESHABLE_NEW_PRODUCTIONS = {
+    "FunctionTypeModeItem": {
+        "reachability_owner": "HANDWRITTEN_PARSER_REGISTRY",
+        "disposition": "cst_only",
+        "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+        "cst_kind": None,
+        "cst_owner_rule": (
+            "nearest enclosing production node retains the exact child tokens and order"
+        ),
+        "ast_target": None,
+        "ast_output_cardinality": "ZERO",
+        "invalid_or_recovery_ast_count": 0,
+    }
+}
 
 
 def load_json(path: Path) -> Any:
@@ -61,10 +78,276 @@ def load_documents(root: Path) -> dict[str, Any]:
     }
 
 
+def grammar_bindings(
+    productions: list[dict[str, Any]],
+) -> tuple[dict[str, list[str]], dict[str, list[str]]]:
+    names = {row["name"] for row in productions}
+    quoted = re.compile(r'"(?:\\.|[^"\\])*"')
+    references: dict[str, list[str]] = {}
+    external_uses: dict[str, set[str]] = {}
+    for row in productions:
+        identifiers = set(
+            re.findall(
+                r"\b[A-Za-z][A-Za-z0-9_]*\b",
+                quoted.sub(" ", row["definition"]),
+            )
+        )
+        references[row["name"]] = sorted(identifiers & names)
+        for symbol in identifiers - names:
+            external_uses.setdefault(symbol, set()).add(row["name"])
+    return references, {
+        symbol: sorted(used_by) for symbol, used_by in external_uses.items()
+    }
+
+
+def ordered_counts(
+    existing: dict[str, Any], values: list[str], label: str
+) -> dict[str, int]:
+    counts = Counter(values)
+    if set(existing) != set(counts):
+        raise RuntimeError(
+            f"REFRESH_{label}_DOMAIN: expected={sorted(existing)} "
+            f"observed={sorted(counts)}"
+        )
+    return {key: counts[key] for key in existing}
+
+
+def render_refreshed_documents(
+    root: Path, generator: Any
+) -> dict[str, bytes]:
+    """Render the bounded R29 grammar-derived contract refresh."""
+
+    documents = load_documents(root)
+    productions, _counts = generator.parse_grammar(
+        documents["grammar_text"],
+        documents["frontend"],
+        documents["reference_contract"],
+    )
+    names = [row["name"] for row in productions]
+    name_set = set(names)
+    references, external_uses = grammar_bindings(productions)
+
+    registry = copy.deepcopy(documents["disposition"])
+    old_rows = registry.get("production_rows")
+    if not isinstance(old_rows, list):
+        raise RuntimeError("REFRESH_DISPOSITION_ROWS: not an array")
+    old_by_name = {
+        row.get("production_id"): row
+        for row in old_rows
+        if isinstance(row, dict) and isinstance(row.get("production_id"), str)
+    }
+    if len(old_by_name) != len(old_rows):
+        raise RuntimeError(
+            "REFRESH_DISPOSITION_ROWS: duplicate or invalid production_id"
+        )
+    missing = name_set - set(old_by_name)
+    stale = set(old_by_name) - name_set
+    if stale or not missing.issubset(REFRESHABLE_NEW_PRODUCTIONS):
+        raise RuntimeError(
+            "REFRESH_PRODUCTION_DELTA: "
+            f"missing={sorted(missing)} stale={sorted(stale)}"
+        )
+
+    refreshed_rows: list[dict[str, Any]] = []
+    for ordinal, production in enumerate(productions, 1):
+        production_id = production["name"]
+        if production_id in old_by_name:
+            refreshed = copy.deepcopy(old_by_name[production_id])
+        else:
+            refreshed = copy.deepcopy(REFRESHABLE_NEW_PRODUCTIONS[production_id])
+        derived = {
+            "ordinal": ordinal,
+            "production_id": production_id,
+            "profile": production["profile"],
+            "source_line": production["line"],
+            "normalized_rhs": production["definition"],
+            "rhs_sha256": hashlib.sha256(
+                production["definition"].encode("utf-8")
+            ).hexdigest(),
+            "referenced_productions": references[production_id],
+        }
+        preserved = {
+            key: value for key, value in refreshed.items() if key not in derived
+        }
+        refreshed = {**derived, **preserved}
+        refreshed_rows.append(refreshed)
+
+    external_rows = registry.get("external_symbol_contracts")
+    if not isinstance(external_rows, list):
+        raise RuntimeError("REFRESH_EXTERNAL_ROWS: not an array")
+    external_by_symbol = {
+        row.get("symbol"): row
+        for row in external_rows
+        if isinstance(row, dict) and isinstance(row.get("symbol"), str)
+    }
+    if (
+        len(external_by_symbol) != len(external_rows)
+        or set(external_by_symbol) != set(external_uses)
+    ):
+        raise RuntimeError(
+            "REFRESH_EXTERNAL_DELTA: "
+            f"registered={sorted(external_by_symbol)} "
+            f"observed={sorted(external_uses)}"
+        )
+    registry["external_symbol_contracts"] = [
+        {
+            **copy.deepcopy(row),
+            "used_by_productions": external_uses[row["symbol"]],
+        }
+        for row in external_rows
+    ]
+    grammar_bytes = documents["grammar_bytes"]
+    registry["grammar"].update(
+        {
+            "path": GRAMMAR_REL,
+            "bytes": len(grammar_bytes),
+            "sha256": hashlib.sha256(grammar_bytes).hexdigest(),
+            "production_count": len(productions),
+            "external_symbol_count": len(external_uses),
+        }
+    )
+    registry["production_rows"] = refreshed_rows
+    registry["disposition_counts"] = ordered_counts(
+        registry["disposition_counts"],
+        [row["disposition"] for row in refreshed_rows],
+        "DISPOSITION",
+    )
+    registry["profile_counts"] = ordered_counts(
+        registry["profile_counts"],
+        [row["profile"] for row in refreshed_rows],
+        "PROFILE",
+    )
+    registry["reachability_owner_counts"] = ordered_counts(
+        registry["reachability_owner_counts"],
+        [row["reachability_owner"] for row in refreshed_rows],
+        "REACHABILITY_OWNER",
+    )
+    registry_bytes = generator.json_bytes(registry)
+
+    topology = copy.deepcopy(documents["contract"])
+    topology["inputs"]["grammar"] = {
+        "path": GRAMMAR_REL,
+        "bytes": len(grammar_bytes),
+        "sha256": hashlib.sha256(grammar_bytes).hexdigest(),
+    }
+    topology["inputs"]["disposition_registry"] = {
+        "path": DISPOSITION_REL,
+        "bytes": len(registry_bytes),
+        "sha256": hashlib.sha256(registry_bytes).hexdigest(),
+    }
+    topology["production_set"] = {
+        "count": len(name_set),
+        "sha256": generator.grammar_name_digest(name_set),
+    }
+    external_names = set(external_uses)
+    topology["external_symbol_set"].update(
+        {
+            "count": len(external_names),
+            "sha256": generator.grammar_name_digest(external_names),
+        }
+    )
+
+    by_name = {row["name"]: row for row in productions}
+
+    def reachable(start: str) -> set[str]:
+        seen: set[str] = set()
+        pending = [start]
+        while pending:
+            current = pending.pop()
+            if current in seen:
+                continue
+            seen.add(current)
+            pending.extend(set(references[current]) - seen)
+        return seen
+
+    root_sets: list[set[str]] = []
+    for root_row in topology["source_roots"]:
+        root_id = root_row["production_id"]
+        reached = reachable(root_id)
+        root_sets.append(reached)
+        root_row.update(
+            {
+                "profile": by_name[root_id]["profile"],
+                "reachable_count": len(reached),
+                "reachable_sha256": generator.grammar_name_digest(reached),
+            }
+        )
+    union = set().union(*root_sets)
+    shared = set.intersection(*root_sets)
+    topology["six_root_reachability"] = {
+        "union": {
+            "count": len(union),
+            "sha256": generator.grammar_name_digest(union),
+        },
+        "shared": {
+            "count": len(shared),
+            "sha256": generator.grammar_name_digest(shared),
+        },
+    }
+    aggregate_ids = {
+        row["production_id"] for row in topology["aggregate_entry_roots"]
+    }
+    disposition_by_name = {
+        row["production_id"]: row for row in refreshed_rows
+    }
+    unreachable = name_set - union
+    owner_counts = Counter(
+        disposition_by_name[production_id]["reachability_owner"]
+        for production_id in unreachable
+    )
+    allowed_non_source = set(topology["non_source_reachability_owners"])
+    unowned = {
+        production_id
+        for production_id in unreachable
+        if production_id not in aggregate_ids
+        and disposition_by_name[production_id]["reachability_owner"]
+        not in allowed_non_source
+    }
+    topology["six_root_unreachable"].update(
+        {
+            "count": len(unreachable),
+            "sha256": generator.grammar_name_digest(unreachable),
+            "owner_counts": dict(sorted(owner_counts.items())),
+        }
+    )
+    topology["unowned_orphan_count"] = len(unowned)
+    allowed_edges = {
+        profile: set(targets)
+        for profile, targets in topology["profile_edge_policy"].items()
+    }
+    topology["illegal_cross_profile_edge_count"] = sum(
+        by_name[target]["profile"] not in allowed_edges[by_name[source]["profile"]]
+        for source, targets in references.items()
+        for target in targets
+    )
+    generator.validate_grammar_topology(
+        productions, documents["frontend"], topology, registry
+    )
+    topology_bytes = generator.json_bytes(topology)
+
+    fixtures = copy.deepcopy(documents["fixtures"])
+    fixtures["acceptance"]["production_count"] = len(productions)
+    fixture_bytes = generator.json_bytes(fixtures)
+    return {
+        DISPOSITION_REL: registry_bytes,
+        CONTRACT_REL: topology_bytes,
+        FIXTURE_REL: fixture_bytes,
+    }
+
+
+def refresh_documents(root: Path, generator: Any) -> None:
+    outputs = render_refreshed_documents(root, generator)
+    for relative, data in outputs.items():
+        generator.atomic_write(generator.safe_path(root, relative), data)
+
+
 def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
     errors: list[str] = []
     contract = documents["contract"]
     fixtures = documents["fixtures"]
+    expected_production_count = documents["reference_contract"]["grammar"][
+        "expected_total"
+    ]
 
     def require(condition: bool, code: str) -> None:
         if not condition:
@@ -79,7 +362,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
         "CONTRACT_STATUS",
     )
     require(
-        contract.get("production_set", {}).get("count") == 643,
+        contract.get("production_set", {}).get("count") == expected_production_count,
         "CONTRACT_PRODUCTION_COUNT",
     )
     require(
@@ -104,7 +387,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
             "contract": CONTRACT_REL,
             "disposition_registry": DISPOSITION_REL,
             "source_root_count": 6,
-            "production_count": 643,
+            "production_count": expected_production_count,
             "closed_external_symbol_count": 40,
             "unowned_orphan_count": 0,
             "illegal_cross_profile_edge_count": 0,
@@ -130,6 +413,61 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
             documents["grammar_text"],
             documents["frontend"],
             documents["reference_contract"],
+        )
+        references, external_uses = grammar_bindings(productions)
+        production_rows = documents["disposition"].get("production_rows", [])
+        require(
+            documents["disposition"].get("grammar")
+            == {
+                "path": GRAMMAR_REL,
+                "bytes": len(documents["grammar_bytes"]),
+                "sha256": hashlib.sha256(documents["grammar_bytes"]).hexdigest(),
+                "production_count": len(productions),
+                "external_symbol_count": len(external_uses),
+            },
+            "DISPOSITION_GRAMMAR_BINDING",
+        )
+        require(
+            isinstance(production_rows, list)
+            and len(production_rows) == len(productions)
+            and all(
+                row.get("ordinal") == ordinal
+                and row.get("production_id") == production["name"]
+                and row.get("profile") == production["profile"]
+                and row.get("source_line") == production["line"]
+                and row.get("normalized_rhs") == production["definition"]
+                and row.get("rhs_sha256")
+                == hashlib.sha256(
+                    production["definition"].encode("utf-8")
+                ).hexdigest()
+                and row.get("referenced_productions")
+                == references[production["name"]]
+                for ordinal, (row, production) in enumerate(
+                    zip(production_rows, productions), 1
+                )
+            ),
+            "DISPOSITION_PRODUCTION_PROJECTION",
+        )
+        require(
+            documents["disposition"].get("disposition_counts")
+            == dict(
+                Counter(row.get("disposition") for row in production_rows)
+            ),
+            "DISPOSITION_COUNTS",
+        )
+        require(
+            documents["disposition"].get("profile_counts")
+            == dict(Counter(row.get("profile") for row in production_rows)),
+            "DISPOSITION_PROFILE_COUNTS",
+        )
+        require(
+            documents["disposition"].get("reachability_owner_counts")
+            == dict(
+                Counter(
+                    row.get("reachability_owner") for row in production_rows
+                )
+            ),
+            "DISPOSITION_REACHABILITY_OWNER_COUNTS",
         )
         generator.validate_grammar_topology(
             productions,
@@ -168,7 +506,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
         == {
             "case_count": 3,
             "mutation_count": 6,
-            "production_count": 643,
+            "production_count": expected_production_count,
             "external_symbol_count": 40,
             "source_root_count": 6,
             "unowned_orphan_count": 0,
@@ -184,6 +522,12 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
     require(
         governance.get("grammar_production_change_count") == 0,
         "GOVERNANCE_GRAMMAR",
+    )
+    require(
+        governance.get("post_closure_projection_addition_count") == 1
+        and governance.get("post_closure_projection_gap_id")
+        == "IR-OWN-P1-018",
+        "GOVERNANCE_POST_CLOSURE_PROJECTION",
     )
     require(governance.get("new_source_spelling_count") == 0, "GOVERNANCE_SURFACE")
     require(governance.get("feature_p1") == "22_OPEN_UNCHANGED", "GOVERNANCE_P1")
@@ -289,10 +633,21 @@ def main() -> int:
     parser.add_argument(
         "--root", type=Path, default=Path(__file__).resolve().parents[2]
     )
+    parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help=(
+            "refresh only the bounded grammar disposition, topology, and fixture "
+            "projections before validating them"
+        ),
+    )
     args = parser.parse_args()
     root = args.root.resolve()
+    documents: dict[str, Any] = {}
     try:
         generator = load_generator(root)
+        if args.refresh:
+            refresh_documents(root, generator)
         documents = load_documents(root)
         errors = evaluate(documents, generator)
         mutations = mutation_receipts(documents, generator)
@@ -345,6 +700,10 @@ def main() -> int:
         checks.append({"check_id": check_id, "pass": passed})
 
     result = "PASS" if not errors and all(row["pass"] for row in checks) else "FAIL"
+    topology = documents.get("contract", {})
+    production_count = topology.get("production_set", {}).get("count", 0)
+    reachability = topology.get("six_root_reachability", {})
+    unreachable = topology.get("six_root_unreachable", {})
     receipt = {
         "schema": "deeplus.r27-grammar-topology-validation-receipt/r1",
         "result": result,
@@ -353,13 +712,13 @@ def main() -> int:
         "check_count": len(checks),
         "passed_check_count": sum(row["pass"] for row in checks),
         "checks": checks,
-        "production_count": 643,
-        "declared_reference_binding_count": 643,
+        "production_count": documents.get("contract", {}).get("production_set", {}).get("count", 0),
+        "declared_reference_binding_count": len(documents.get("disposition", {}).get("production_rows", [])),
         "external_symbol_count": 40,
         "source_root_count": 6,
-        "six_root_union_count": 492,
-        "six_root_shared_count": 465,
-        "six_root_unreachable_count": 151,
+        "six_root_union_count": documents.get("contract", {}).get("six_root_reachability", {}).get("union", {}).get("count", 0),
+        "six_root_shared_count": documents.get("contract", {}).get("six_root_reachability", {}).get("shared", {}).get("count", 0),
+        "six_root_unreachable_count": documents.get("contract", {}).get("six_root_unreachable", {}).get("count", 0),
         "aggregate_entry_root_count": 2,
         "unowned_orphan_count": 0,
         "illegal_cross_profile_edge_count": 0,
@@ -370,11 +729,15 @@ def main() -> int:
         ),
         "mutations": mutations,
         "grammar_production_change_count": 0,
+        "post_closure_projection_addition_count": 1,
+        "post_closure_projection_gap_id": "IR-OWN-P1-018",
         "new_source_spelling_count": 0,
         "semantic_change_count": 0,
         "product_execution": "NOT_RUN",
         "errors": errors,
     }
+    if args.refresh:
+        receipt["mode"] = "refresh"
     print(json.dumps(receipt, ensure_ascii=False, indent=2))
     return 0 if result == "PASS" else 1
 

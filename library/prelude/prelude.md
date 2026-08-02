@@ -315,7 +315,7 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `Measure<Rep, Dim>` | stdlib_profile | `stdlib_profile` | Measure conversion APIs are explicit and use unit witness carriers. |
 | `UnitCatalog` | stdlib_profile | `stable_design` | Stable design user unit catalog profile; product support NOT_RUN. Dynamic/provider conversion is outside this stable core. |
 | `Grapheme` | stdlib_value_or_view | `stable_design` | extended grapheme cluster produced by named segmentation API |
-| `SharedMutex<T>` | synchronization | `stable_design` | receiver-bound non-reentrant scoped mutation; non-suspending access and exactly-once unlock precede the next successful lock |
+| `SharedMutex<T: SharedMutexPayload>` | synchronization | `stable_design` | `SharedMutexPayload` is the sealed context-specific public payload constraint checked by internal `SharedMutexPayloadAdmitted`; it admits cleanup-free Reusable or Affine payloads without creating any other responsibility evidence, while receiver-bound non-reentrant scoped mutation provides non-suspending access and exactly-once unlock before the next successful lock |
 | `ExtensionSetId` | tooling_schema | `stable_design` | semantic identity seed for named extension set D-MAD; not current source |
 | `BitfieldCodec` | trait | `stdlib` | explicit endian codec |
 | `BitfieldRaw<Backing>` | trait | `stdlib` | checked raw carrier contract |

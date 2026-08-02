@@ -693,9 +693,9 @@
     "feature_refs": [
       "shared_mutex_no_drop_minimum_profile"
     ],
-    "fixit_hint": "use no-drop state object or future SharedResource profile",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use no-drop state object or future SharedResource profile",
+    "fixit_hint": "choose a payload whose exact stored-component graph satisfies SharedMutexPayload, or select an explicit future resource-sharing profile",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "no automatic rewrite; changing ownership or cleanup responsibility requires a programmer decision",
     "message": "Minimum SharedMutex<T> cannot hide lifecycle or effectful cleanup owner.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",

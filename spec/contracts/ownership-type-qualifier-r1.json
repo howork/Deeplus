@@ -1,0 +1,314 @@
+{
+  "$schema": "../../schemas/language/ownership-type-qualifier-r1.schema.json",
+  "schema": "deeplus.ownership-type-qualifier/r1",
+  "revision": "R29-LOCAL-CANDIDATE-R1",
+  "status": "APPROVED_NOT_INTEGRATED_DESIGN_STATIC",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "branch": "main",
+  "baseline_commit": "87115776365fcbe8870d2f631050db3e23194c9b",
+  "baseline_tree": "2452f0a6be1e1391b3678dafa86987059b115ec7",
+  "gap_id": "IR-OWN-P1-018",
+  "dependencies": {
+    "IR-OWN-P0-013": "VERIFIED_CLOSED"
+  },
+  "source_surface": {
+    "grammar_change_required": true,
+    "grammar_repair": "ROOT_CONNECTION_ONLY_EXISTING_STABLE_SURFACE",
+    "new_surface_count": 0,
+    "exact_qualifier_spellings": ["owned", "borrowed", "mut", "inout"],
+    "ast_target": "OwnershipQualifiedType",
+    "maximum_qualifier_count_after_alias_expansion": 1,
+    "function_type_item_rule": "After the closing parenthesis commits the parse as FunctionType by observing ->, a direct item-leading borrow, mut, move, or inout token is ParameterMode; an extra inner grouping preserves mut T or inout T as TypeOwnershipQualifier.",
+    "preserved_parameter_mode_spellings": ["borrow", "mut", "move", "inout"]
+  },
+  "identity_separation": {
+    "parameter_mode_domain": {
+      "identity": "ParameterMode",
+      "normalized_values": ["ORDINARY", "BORROW", "MUT_LOCAL", "MOVE", "INOUT"],
+      "source_values": [null, "borrow", "mut", "move", "inout"],
+      "law": "Controls caller/callee transfer, writeback, and place admission for a callable parameter."
+    },
+    "type_ownership_qualifier_domain": {
+      "identity": "TypeOwnershipQualifier",
+      "normalized_values": ["UNQUALIFIED", "OWNED", "BORROWED", "MUT", "INOUT"],
+      "source_values": [null, "owned", "borrowed", "mut", "inout"],
+      "law": "Qualifies the normalized type responsibility and region residue independently of callable parameter mode."
+    },
+    "cross_product_is_explicit": true,
+    "implicit_conversion_between_domains": false,
+    "examples": [
+      {
+        "surface": "mut item: T",
+        "parameter_mode": "MUT_LOCAL",
+        "type_ownership_qualifier": "UNQUALIFIED"
+      },
+      {
+        "surface": "item: mut T",
+        "parameter_mode": "ORDINARY",
+        "type_ownership_qualifier": "MUT"
+      },
+      {
+        "surface": "mut item: mut T",
+        "parameter_mode": "MUT_LOCAL",
+        "type_ownership_qualifier": "MUT"
+      },
+      {
+        "surface": "#scoped (inout T) -> R",
+        "parameter_mode": "INOUT",
+        "type_ownership_qualifier": "UNQUALIFIED"
+      },
+      {
+        "surface": "#scoped ((inout T)) -> R",
+        "parameter_mode": "ORDINARY",
+        "type_ownership_qualifier": "INOUT"
+      }
+    ],
+    "function_type_disambiguation": {
+      "commit_lookahead": "CLOSING_PAREN_FOLLOWED_BY_ARROW",
+      "direct_channel_tokens": ["borrow", "mut", "move", "inout"],
+      "direct_channel_normalization": ["BORROW", "MUT_LOCAL", "MOVE", "INOUT"],
+      "inner_grouped_qualifier_tokens": ["owned", "borrowed", "mut", "inout"],
+      "non_function_parenthesized_type_rule": "NORMAL_TYPE_REF_QUALIFIER",
+      "new_spelling_count": 0
+    }
+  },
+  "normalization": {
+    "ordered_steps": [
+      "PARSE_OWNERSHIP_PREFIX_AS_OWNERSHIP_QUALIFIED_TYPE",
+      "RESOLVE_BASE_TYPE_AND_EXPAND_TRANSPARENT_ALIASES",
+      "COUNT_EFFECTIVE_OWNERSHIP_QUALIFIERS",
+      "REJECT_MORE_THAN_ONE_NON_UNQUALIFIED_WRAPPER",
+      "NORMALIZE_BASE_TYPE_IDENTITY",
+      "BIND_REGION_WHEN_REQUIRED",
+      "APPLY_CONTEXT_LEGALITY",
+      "EMIT_DISTINCT_API_RESIDUE"
+    ],
+    "alias_expansion_precedes_uniqueness_check": true,
+    "duplicate_same_qualifier_is_idempotent": false,
+    "conflicting_qualifiers_are_rejected": true,
+    "unqualified_is_not_owned": true,
+    "qualifier_distribution_over_union_or_intersection": false,
+    "outer_qualifier_requires_parentheses_for_composite_base": true,
+    "canonical_emission": {
+      "UNQUALIFIED": null,
+      "OWNED": "owned",
+      "BORROWED": "borrowed",
+      "MUT": "mut",
+      "INOUT": "inout"
+    }
+  },
+  "qualifier_semantics": [
+    {
+      "qualifier": "UNQUALIFIED",
+      "surface": null,
+      "responsibility": "BASE_TYPE_RESPONSIBILITY",
+      "region_requirement": "BASE_TYPE_RULE",
+      "mutability": "BASE_TYPE_RULE",
+      "variance": "BASE_TYPE_RULE",
+      "implicit_subtyping": false,
+      "mir_ownership_mode": "BASE_TYPE_DERIVED"
+    },
+    {
+      "qualifier": "OWNED",
+      "surface": "owned",
+      "responsibility": "EXCLUSIVE_OWNER_AND_CLEANUP",
+      "region_requirement": "NONE",
+      "mutability": "BASE_TYPE_RULE",
+      "variance": "INVARIANT",
+      "implicit_subtyping": false,
+      "mir_ownership_mode": "BASE_REUSABLE_OR_OWNED"
+    },
+    {
+      "qualifier": "BORROWED",
+      "surface": "borrowed",
+      "responsibility": "SHARED_READ_ONLY_REGION_BOUND_VIEW",
+      "region_requirement": "REQUIRED",
+      "mutability": "READ_ONLY",
+      "variance": "INVARIANT",
+      "implicit_subtyping": false,
+      "mir_ownership_mode": "BORROWED"
+    },
+    {
+      "qualifier": "MUT",
+      "surface": "mut",
+      "responsibility": "UNIQUE_MUTABLE_OWNER",
+      "region_requirement": "NONE",
+      "mutability": "UNIQUE_MUTABLE",
+      "variance": "INVARIANT",
+      "implicit_subtyping": false,
+      "mir_ownership_mode": "OWNED"
+    },
+    {
+      "qualifier": "INOUT",
+      "surface": "inout",
+      "responsibility": "EXCLUSIVE_REGION_BOUND_WRITEBACK_VIEW",
+      "region_requirement": "REQUIRED_NONESCAPING",
+      "mutability": "EXCLUSIVE_MUTABLE_VIEW",
+      "variance": "INVARIANT",
+      "implicit_subtyping": false,
+      "mir_ownership_mode": "INOUT"
+    }
+  ],
+  "context_legality": {
+    "contexts": [
+      "LOCAL_BINDING",
+      "CALLABLE_PARAMETER_TYPE",
+      "FUNCTION_TYPE_ITEM",
+      "STORED_FIELD",
+      "RETURN_TYPE",
+      "EXPORTED_API",
+      "OPTIONAL_TYPE",
+      "UNION_OR_INTERSECTION_MEMBER",
+      "SUSPENSION_OR_ISOLATION_BOUNDARY"
+    ],
+    "rows": [
+      {
+        "qualifier": "UNQUALIFIED",
+        "admission": {
+          "LOCAL_BINDING": "BASE_TYPE_RULE",
+          "CALLABLE_PARAMETER_TYPE": "BASE_TYPE_RULE",
+          "FUNCTION_TYPE_ITEM": "BASE_TYPE_RULE",
+          "STORED_FIELD": "BASE_TYPE_RULE",
+          "RETURN_TYPE": "BASE_TYPE_RULE",
+          "EXPORTED_API": "BASE_TYPE_RULE",
+          "OPTIONAL_TYPE": "BASE_TYPE_RULE",
+          "UNION_OR_INTERSECTION_MEMBER": "BASE_TYPE_RULE",
+          "SUSPENSION_OR_ISOLATION_BOUNDARY": "BASE_TYPE_RULE"
+        }
+      },
+      {
+        "qualifier": "OWNED",
+        "admission": {
+          "LOCAL_BINDING": "ACCEPT",
+          "CALLABLE_PARAMETER_TYPE": "ACCEPT",
+          "FUNCTION_TYPE_ITEM": "ACCEPT",
+          "STORED_FIELD": "ACCEPT",
+          "RETURN_TYPE": "ACCEPT",
+          "EXPORTED_API": "ACCEPT_WITH_EXACT_RESIDUE",
+          "OPTIONAL_TYPE": "ACCEPT",
+          "UNION_OR_INTERSECTION_MEMBER": "REJECT",
+          "SUSPENSION_OR_ISOLATION_BOUNDARY": "ACCEPT_WITH_TRANSFER_PROOF"
+        }
+      },
+      {
+        "qualifier": "BORROWED",
+        "admission": {
+          "LOCAL_BINDING": "ACCEPT_WITH_OWNER_REGION",
+          "CALLABLE_PARAMETER_TYPE": "ACCEPT_WITH_OWNER_REGION",
+          "FUNCTION_TYPE_ITEM": "ACCEPT_WITH_OWNER_REGION",
+          "STORED_FIELD": "REJECT_ESCAPE",
+          "RETURN_TYPE": "ACCEPT_WITH_DECLARED_ORIGIN_RELATION",
+          "EXPORTED_API": "ACCEPT_WITH_DECLARED_ORIGIN_RELATION_AND_EXACT_RESIDUE",
+          "OPTIONAL_TYPE": "ACCEPT_WITH_OWNER_REGION",
+          "UNION_OR_INTERSECTION_MEMBER": "REJECT",
+          "SUSPENSION_OR_ISOLATION_BOUNDARY": "REJECT_ESCAPE"
+        }
+      },
+      {
+        "qualifier": "MUT",
+        "admission": {
+          "LOCAL_BINDING": "ACCEPT_WITH_UNIQUENESS",
+          "CALLABLE_PARAMETER_TYPE": "ACCEPT_WITH_UNIQUENESS",
+          "FUNCTION_TYPE_ITEM": "ACCEPT_WITH_UNIQUENESS",
+          "STORED_FIELD": "ACCEPT_WITH_UNIQUENESS",
+          "RETURN_TYPE": "ACCEPT_WITH_TRANSFER_PROOF",
+          "EXPORTED_API": "ACCEPT_WITH_EXACT_RESIDUE_AND_TRANSFER_PROOF",
+          "OPTIONAL_TYPE": "ACCEPT_WITH_UNIQUENESS",
+          "UNION_OR_INTERSECTION_MEMBER": "REJECT",
+          "SUSPENSION_OR_ISOLATION_BOUNDARY": "ACCEPT_WITH_TRANSFER_PROOF"
+        }
+      },
+      {
+        "qualifier": "INOUT",
+        "admission": {
+          "LOCAL_BINDING": "ACCEPT_WITH_OWNER_REGION_NONESCAPING",
+          "CALLABLE_PARAMETER_TYPE": "ACCEPT_WITH_OWNER_REGION_NONESCAPING",
+          "FUNCTION_TYPE_ITEM": "ACCEPT_WITH_OWNER_REGION_NONESCAPING",
+          "STORED_FIELD": "REJECT_ESCAPE",
+          "RETURN_TYPE": "REJECT_ESCAPE",
+          "EXPORTED_API": "REJECT_ESCAPE",
+          "OPTIONAL_TYPE": "REJECT",
+          "UNION_OR_INTERSECTION_MEMBER": "REJECT",
+          "SUSPENSION_OR_ISOLATION_BOUNDARY": "REJECT_ESCAPE"
+        }
+      }
+    ],
+    "generic_argument_rule": "A qualified type argument is invariant and must preserve the exact qualifier and every required region/transfer proof.",
+    "nested_qualifier_rule": "REJECT_AFTER_ALIAS_EXPANSION",
+    "implicit_conversion_rule": "NO_QUALIFIER_WIDENING_NARROWING_OR_ERASURE"
+  },
+  "api_residue": {
+    "required_fields": [
+      "normalized_base_type_id",
+      "type_ownership_qualifier",
+      "parameter_mode",
+      "region_binding_id_or_null",
+      "origin_relation_id_or_null",
+      "transfer_proof_id_or_null",
+      "variance",
+      "source_provenance"
+    ],
+    "public_qualifier_erasure_allowed": false,
+    "parameter_mode_erasure_allowed": false,
+    "borrowed_public_return_requires_declared_origin_relation": true,
+    "inout_public_return_allowed": false,
+    "serialization_order": [
+      "parameter_mode",
+      "type_ownership_qualifier",
+      "normalized_base_type_id",
+      "region_binding_id_or_null",
+      "origin_relation_id_or_null",
+      "transfer_proof_id_or_null",
+      "variance"
+    ]
+  },
+  "hir_mapping": {
+    "node": "HirOwnershipQualifiedType",
+    "required_fields": [
+      "normalized_base_type_id",
+      "type_ownership_qualifier",
+      "region_binding_id_or_null",
+      "origin_relation_id_or_null",
+      "transfer_proof_id_or_null",
+      "variance",
+      "source_provenance"
+    ],
+    "callable_parameter_fields": [
+      "parameter_mode",
+      "normalized_type_id",
+      "type_ownership_qualifier"
+    ],
+    "unqualified_wrapper_materialization": "OPTIONAL_BUT_API_RESIDUE_FIELD_REQUIRED",
+    "backend_neutral": true
+  },
+  "mir_mapping": {
+    "ownership_mode_universe": ["REUSABLE", "OWNED", "BORROWED", "INOUT"],
+    "rows": [
+      {"qualifier": "UNQUALIFIED", "ownership_mode": "BASE_TYPE_DERIVED", "additional_proof": "BASE_TYPE_RULE"},
+      {"qualifier": "OWNED", "ownership_mode": "BASE_REUSABLE_OR_OWNED", "additional_proof": "OWNER_ID_AND_CLEANUP_TOKEN_WHEN_REQUIRED"},
+      {"qualifier": "BORROWED", "ownership_mode": "BORROWED", "additional_proof": "LOAN_ID_AND_REGION_ID"},
+      {"qualifier": "MUT", "ownership_mode": "OWNED", "additional_proof": "UNIQUE_OWNER_AND_MUTABLE_PLACE_CAPABILITY"},
+      {"qualifier": "INOUT", "ownership_mode": "INOUT", "additional_proof": "EXCLUSIVE_LOAN_ID_REGION_ID_AND_WRITEBACK_EDGE"}
+    ],
+    "new_mir_operation_count": 0,
+    "backend_specific_semantic_count": 0
+  },
+  "diagnostic_dispatch": {
+    "borrowed_or_inout_unbound_escape": "BORROW_ESCAPE_OWNER_REGION",
+    "other_illegal_context_or_qualifier_combination": "OWNERSHIP_MODE_ADMISSION_FAILED",
+    "new_diagnostic_id_count": 0,
+    "priority": [
+      "BORROW_ESCAPE_OWNER_REGION",
+      "OWNERSHIP_MODE_ADMISSION_FAILED"
+    ]
+  },
+  "status_fence": {
+    "semantic_p0": 0,
+    "gap_state": "APPROVED_NOT_INTEGRATED",
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_mutation": 0
+  }
+}

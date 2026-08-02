@@ -38,9 +38,9 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 
 <!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
 
-- 문법 생성 규칙: `643`
+- 문법 생성 규칙: `644`
   - `LEXICAL 91`
-  - `STABLE 539`
+  - `STABLE 540`
   - `PREVIEW 13`
   - recovery는 production profile이 아니라 별도의 CST/parser 복구 정책
 - 기능 레지스트리: `705`

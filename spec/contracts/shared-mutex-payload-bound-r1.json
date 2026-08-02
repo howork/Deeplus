@@ -1,0 +1,133 @@
+{
+  "schema": "deeplus.shared-mutex-payload-bound-contract/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "candidate_class": "CANONICAL_IMPLEMENTATION_READINESS_CONTRACT",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "87115776365fcbe8870d2f631050db3e23194c9b"
+  },
+  "gap_id": "IR-OWN-P1-024",
+  "feature_id": "shared_mutex_no_drop_minimum_profile",
+  "public_surface": {
+    "constraint_id": "SharedMutexPayload",
+    "constraint_kind": "SEALED_COMPILER_KNOWN_STRUCTURAL_CONSTRAINT",
+    "checker_predicate_id": "SharedMutexPayloadAdmitted",
+    "canonical_signature": "prelude intrinsic SharedMutex<T: SharedMutexPayload> { new(move T) -> SharedMutex<T>; withLock(#scoped (inout T) -> R throws E effects ε) -> R throws E effects ε effects state }",
+    "source_trait": false,
+    "user_conformable": false,
+    "annotation_or_wrapper_synthesizes_evidence": false,
+    "new_grammar_production_count": 0
+  },
+  "descriptor_contract": {
+    "descriptor_id": "SharedMutexPayloadDescriptorR1",
+    "schema_locator": "schemas/language/shared-mutex-payload-bound-fixtures-r1.schema.json#/$defs/payloadDescriptor",
+    "summary_domain": "normalized root plus complete transitive stored-payload responsibility projection",
+    "proof_origins": [
+      "builtin",
+      "nominal_definition",
+      "generic_bound"
+    ],
+    "canonical_node_order": "UTF-8 bytewise ascending payload path, then type identity",
+    "proof_digest_domain": "canonical JSON bytes of the normalized complete transitive payload-node projection",
+    "rcts_v5_fallback": "PROHIBITED_BECAUSE_TRANSITIVE_STORED_FIELD_CLOSURE_IS_NOT_REPRESENTED"
+  },
+  "admission_algorithm": {
+    "preflight_order": [
+      "PAYLOAD_PROOF_NOT_CLOSED",
+      "PAYLOAD_EVIDENCE_ROUTE_NOT_ADMITTED"
+    ],
+    "per_node_order": [
+      "LIFECYCLE_OWNER_PRESENT",
+      "CLEANUP_KIND_NOT_NONE",
+      "CLEANUP_EFFECT_ROW_NONEMPTY",
+      "CLEANUP_ERROR_SET_NONEMPTY",
+      "CLEANUP_AUTHORITY_NONEMPTY",
+      "CLEANUP_SUSPENSION_OR_CANCELLATION"
+    ],
+    "decision_order": "preflight in declared order; then canonical payload-node order; then per-node reason order",
+    "admit_when": [
+      "proof_complete is true",
+      "generic_bound proof carries exactly SharedMutexPayloadAdmitted",
+      "user_conformance_evidence is false",
+      "every projected payload node has lifecycle_owner false",
+      "every projected payload node has cleanup_kind none",
+      "every projected payload node has empty cleanup effect, error and authority rows",
+      "every projected payload node has cleanup_suspends false and cleanup_cancellation false"
+    ],
+    "unknown_or_open_generic": "REJECT_FAIL_CLOSED",
+    "move_commit_on_rejection": false,
+    "termination_metric": "finite normalized transitive projection length; each row is evaluated once"
+  },
+  "diagnostic_binding": {
+    "primary_diagnostic": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+    "new_diagnostic_id_count": 0,
+    "emitted_primary_count_per_rejection": 1,
+    "later_payload_candidate_status": "NOT_EVALUATED",
+    "unresolved_type_identity": "existing resolver/type diagnostic precedes this predicate",
+    "fixit_kind": "manual_review",
+    "automatic_rewrite_count": 0
+  },
+  "module_api_residue": {
+    "property": "type_parameter_predicate_bounds",
+    "row_fields": [
+      "parameter_id",
+      "predicate_id",
+      "predicate_contract_sha256"
+    ],
+    "required_row": {
+      "parameter_id": "T",
+      "predicate_id": "SharedMutexPayloadAdmitted",
+      "predicate_contract_sha256": "CANONICAL_PREDICATE_ROW_SHA256"
+    },
+    "digest_format": "64 lowercase hexadecimal characters",
+    "normalized_signature_also_retains_public_bound": true,
+    "text_only_binding_sufficient": false
+  },
+  "unlock_separation": {
+    "payload_predicate_observes_wrapper_unlock": false,
+    "cleanup_owner": "withLock call",
+    "unlock_count": 1,
+    "terminal_paths": [
+      "return",
+      "Error",
+      "Defect",
+      "Cancellation"
+    ],
+    "unlock_failure": "not admitted",
+    "body_failure_remains_primary": true
+  },
+  "fixture_contract": {
+    "fixture_path": "tests/fixtures/current/shared-mutex-payload-bound-r1.json",
+    "schema_path": "schemas/language/shared-mutex-payload-bound-fixtures-r1.schema.json",
+    "semantic_case_count": 12,
+    "semantic_class_counts": {
+      "positive": 3,
+      "boundary": 3,
+      "negative": 6
+    },
+    "mutation_count": 14
+  },
+  "expected_registry_deltas": {
+    "features": 0,
+    "diagnostics": 0,
+    "prelude_entries": 0,
+    "checker_predicates": 1,
+    "design_algorithms": 1,
+    "primary_diagnostic_relations": 1,
+    "diagnostic_dispatch_rows": 1
+  },
+  "status_fences": {
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "open_action_count": 4,
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "production_checker": "NOT_RUN",
+    "production_hir_mir": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "canonical_source_mutation_by_contract": 0,
+    "github_mutation_by_contract": 0
+  }
+}

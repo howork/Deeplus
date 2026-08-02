@@ -1,0 +1,402 @@
+{
+  "schema": "deeplus.responsibility-identity-registry-fixtures/r1",
+  "revision": "R30-RESPONSIBILITY-IDENTITY-REGISTRY-R1",
+  "contract": "spec/contracts/responsibility-identity-registry-r1.json",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "cases": [
+    {
+      "case_id": "R30-RIR-POS-001",
+      "class": "positive",
+      "scenario": "the public Plain spelling resolves to the sealed intrinsic PlainValue predicate",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "PlainValue",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "public_spelling": "Plain",
+        "internal_formal_identity": "PlainValue",
+        "direct_user_conformance": "FORBIDDEN",
+        "runtime_relookup_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-POS-002",
+      "class": "positive",
+      "scenario": "a closed structural auto policy synthesizes one exact Shareable witness",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "Shareable",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "evidence_mode": "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+        "alias_creation_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-POS-003",
+      "class": "positive",
+      "scenario": "a cross-isolation owned move carries one exact Transferable witness",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "Transferable",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "operation": "CROSS_ISOLATION_OWNED_MOVE",
+        "payload_alias_synthesis_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-POS-004",
+      "class": "positive",
+      "scenario": "capture mode copy proves the internal sealed CopyValue predicate",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "CopyValue",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "capture_spelling": "copy",
+        "public_copy_trait_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-POS-005",
+      "class": "positive",
+      "scenario": "capture mode clone selects one static Clone witness and borrows the source",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "Clone",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "source_access": "BORROWED",
+        "result": "SAME_TYPE_INDEPENDENT_RESULT",
+        "maximum_throws": ["AllocationError"],
+        "maximum_effects": ["allocate"],
+        "runtime_relookup_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-POS-006",
+      "class": "positive",
+      "scenario": "Reusable, Affine, and Resource remain language-owned lifecycle classifications",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "lifecycle_classes": ["Reusable", "Affine", "Resource"],
+        "cleanup_trait_dispatch_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-BND-001",
+      "class": "boundary",
+      "scenario": "Plain is the sole public source spelling of the internal formal PlainValue identity",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "PlainValue",
+      "expected_diagnostic_or_null": "PLAIN_IS_PLAINVALUE_ALIAS",
+      "assertions": {
+        "public_spelling_count": 1,
+        "source_identity_created": false
+      }
+    },
+    {
+      "case_id": "R30-RIR-BND-002",
+      "class": "boundary",
+      "scenario": "Plain proves none of copy, sharing, transfer, layout, ABI, JSON, or Dyn",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "PlainValue",
+      "expected_diagnostic_or_null": "PLAIN_IS_NOT_LAYOUT_SAFE",
+      "assertions": {
+        "plain_external_implication_true_count": 0,
+        "pairwise_implication_true_count_excluding_reflexive": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-BND-003",
+      "class": "boundary",
+      "scenario": "Shared<T> creates a shared owner handle while Shareable remains separate observation evidence",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "Shareable",
+      "expected_diagnostic_or_null": "SHAREABLE_DOES_NOT_CREATE_ALIAS",
+      "assertions": {
+        "shared_handle_is_identity": false,
+        "transferable_payload_proof_is_synthesized": false
+      }
+    },
+    {
+      "case_id": "R30-RIR-BND-004",
+      "class": "boundary",
+      "scenario": "a Clone implementation may narrow the declared AllocationError and allocate envelope to Never and no effects",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "Clone",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "implementation_throws": [],
+        "implementation_effects": [],
+        "narrower_implementation_allowed": true,
+        "suspension": "FORBIDDEN",
+        "cancellation": "FORBIDDEN"
+      }
+    },
+    {
+      "case_id": "R30-RIR-BND-005",
+      "class": "boundary",
+      "scenario": "DeepClone has a stable reserved identity but cannot activate before graph, cycle, and alias policy closes",
+      "expected_outcome": "BLOCKED_PREVIEW",
+      "expected_identity_or_null": "DeepClone",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+      "assertions": {
+        "pending_policy_axes": ["GRAPH", "CYCLE", "ALIAS"],
+        "runtime_relookup_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-BND-006",
+      "class": "boundary",
+      "scenario": "equivalent imports and declaration permutations produce the same structural responsibility proof",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "import_order_independent": true,
+        "source_declaration_order_independent": true,
+        "algorithm_terminates": true
+      }
+    },
+    {
+      "case_id": "R30-RIR-BND-007",
+      "class": "boundary",
+      "scenario": "typed HIR, public API, and MIR retain their exact responsibility evidence residue without backend relookup",
+      "expected_outcome": "ADMIT",
+      "expected_identity_or_null": "Clone",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "descriptor_field_count": 6,
+        "behavioral_descriptor_field_count": 4,
+        "hir_field_count": 15,
+        "api_field_count": 8,
+        "mir_field_count": 15,
+        "backend_relookup_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-001",
+      "class": "negative",
+      "scenario": "an unknown responsibility identity is requested",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "assertions": {
+        "fallback_identity_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-002",
+      "class": "negative",
+      "scenario": "source declares a direct user conformance to Shareable",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "Shareable",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+      "assertions": {
+        "user_direct_conformance": "FORBIDDEN",
+        "closed_auto_policy_required": true
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-003",
+      "class": "negative",
+      "scenario": "source declares a direct user conformance to Transferable",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "Transferable",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+      "assertions": {
+        "user_direct_conformance": "FORBIDDEN",
+        "closed_auto_policy_required": true
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-004",
+      "class": "negative",
+      "scenario": "source attempts to resolve a public Copy Trait",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "CopyValue",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "assertions": {
+        "public_copy_trait_count": 0,
+        "capture_spelling_remains": "copy"
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-005",
+      "class": "negative",
+      "scenario": "the stale Sendable spelling is used",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "Transferable",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "assertions": {
+        "alias_created": false,
+        "canonical_replacements": ["Transferable"]
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-006",
+      "class": "negative",
+      "scenario": "the stale ShareSafe spelling is used",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "Shareable",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "assertions": {
+        "alias_created": false,
+        "canonical_replacements": ["Shareable"]
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-007",
+      "class": "negative",
+      "scenario": "the stale Copyable spelling is used",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": "COPYABLE_REMOVED_USE_PLAIN_OR_SHARED",
+      "assertions": {
+        "alias_created": false,
+        "replacement_is_context_sensitive": true
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-008",
+      "class": "negative",
+      "scenario": "the stale Duplicable spelling is used",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": "DUPLICABLE_REMOVED_USE_EXPLICIT_RESPONSIBILITY",
+      "assertions": {
+        "alias_created": false,
+        "replacement_is_context_sensitive": true
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-009",
+      "class": "negative",
+      "scenario": "the stale Aliasable spelling is used",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": "ALIASABLE_REMOVED_USE_SHARED_OR_PLAIN",
+      "assertions": {
+        "alias_created": false,
+        "shared_handle_is_separate": true
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-010",
+      "class": "negative",
+      "scenario": "the stale PlainData spelling is used",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "PlainValue",
+      "expected_diagnostic_or_null": "TYPE_PLAINDATA_REMOVED_USE_PLAIN",
+      "assertions": {
+        "alias_created": false,
+        "canonical_replacements": ["Plain"]
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-011",
+      "class": "negative",
+      "scenario": "deep capture is activated before DeepClone graph policy closes",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "DeepClone",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_EVIDENCE_NOT_ADMISSIBLE",
+      "assertions": {
+        "availability": "RESERVED_PREVIEW_NONACTIVATABLE",
+        "activation_count": 0
+      }
+    },
+    {
+      "case_id": "R30-RIR-NEG-012",
+      "class": "negative",
+      "scenario": "source uses the internal formal identity PlainValue instead of the sole public spelling Plain",
+      "expected_outcome": "REJECT",
+      "expected_identity_or_null": "PlainValue",
+      "expected_diagnostic_or_null": "RESPONSIBILITY_IDENTITY_UNRESOLVED",
+      "assertions": {
+        "alias_created": false,
+        "canonical_replacements": ["Plain"],
+        "internal_formal_identity": "PlainValue"
+      }
+    },
+    {
+      "case_id": "R30-RIR-MUT-001",
+      "class": "mutation",
+      "scenario": "PlainValue is mutated to imply CopyValue",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_identity_or_null": "PlainValue",
+      "expected_diagnostic_or_null": null,
+      "mutation_path": ["implication_matrix", "PlainValue", "CopyValue"],
+      "replacement": true,
+      "expected_validator_error": "IMPLICATION_OFF_DIAGONAL"
+    },
+    {
+      "case_id": "R30-RIR-MUT-002",
+      "class": "mutation",
+      "scenario": "CopyValue is mutated into a public Copy Trait",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_identity_or_null": "CopyValue",
+      "expected_diagnostic_or_null": null,
+      "mutation_path": ["identities", 3, "public_spelling_or_null"],
+      "replacement": "Copy",
+      "expected_validator_error": "COPY_PUBLIC_TRAIT"
+    },
+    {
+      "case_id": "R30-RIR-MUT-003",
+      "class": "mutation",
+      "scenario": "DeepClone is mutated to current availability without closing preview policy",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_identity_or_null": "DeepClone",
+      "expected_diagnostic_or_null": null,
+      "mutation_path": ["identities", 5, "availability"],
+      "replacement": "CURRENT",
+      "expected_validator_error": "DEEPCLONE_ACTIVATION"
+    },
+    {
+      "case_id": "R30-RIR-MUT-004",
+      "class": "mutation",
+      "scenario": "Clone runtime witness relookup is mutated from zero to one",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_identity_or_null": "Clone",
+      "expected_diagnostic_or_null": null,
+      "mutation_path": ["evidence_residue", "clone_runtime_relookup_count"],
+      "replacement": 1,
+      "expected_validator_error": "RUNTIME_RELOOKUP"
+    },
+    {
+      "case_id": "R30-RIR-MUT-005",
+      "class": "mutation",
+      "scenario": "structural resolution is mutated to depend on import order",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": null,
+      "mutation_path": ["structural_resolution", "import_order_independent"],
+      "replacement": false,
+      "expected_validator_error": "STRUCTURAL_TERMINATION"
+    },
+    {
+      "case_id": "R30-RIR-MUT-006",
+      "class": "mutation",
+      "scenario": "one product lane is mutated from NOT_RUN to PASS",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_identity_or_null": null,
+      "expected_diagnostic_or_null": null,
+      "mutation_path": ["governance", "product_lanes", "xvm_interpreter"],
+      "replacement": "PASS",
+      "expected_validator_error": "PRODUCT_LANES"
+    }
+  ],
+  "expected_counts": {
+    "positive": 6,
+    "boundary": 7,
+    "negative": 12,
+    "mutation": 6,
+    "total": 31
+  },
+  "status_fence": {
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "open_m13_actions": 4,
+    "product_lanes": "15/15_NOT_RUN",
+    "product_execution": "NOT_RUN",
+    "github_mutation": 0
+  }
+}

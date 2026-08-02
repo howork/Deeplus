@@ -41,13 +41,20 @@ body failure가 있으면 그것이 primary다. cleanup failure는 실제 LIFO
 
 `defer`는 scope exit에서 실행할 정확히 한 개의 non-suspending invocation을
 등록한다. block이나 임의 closure를 나중에 실행하는 표면이 아니다.
-등록 순간 receiver와 argument place를 예약하고 정상 return, Error,
-Defect, Cancellation 경로에서 deterministic LIFO 순서를 보존한다.
+exact callee와 formal binding은 정적으로 닫고, 등록 순간 runtime
+callee/receiver, explicit runtime argument, default expression을 정해진
+순서로 한 번 준비한다. scope exit에서 같은 expression을 다시 평가하지
+않는다.
 
-판정은 cleanup invocation의 exact callee, captured place, effect/error
-budget을 확인하는 데서 시작한다. scope 안에서 그 place를 move하거나
-rebind해 예약을 깨지 않는지 검사한다. body outcome과 cleanup outcome을
-별도 축으로 유지하고 primary/suppressed ordering을 명시한다.
+판정은 cleanup invocation의 exact callee, prepared value/place,
+formal별 transfer mode, result responsibility, effect/error budget을 확인하는
+데서 시작한다. operand acquisition은 `SNAPSHOT_VALUE`, `SHARED_LOAN`,
+`EXCLUSIVE_LOAN`, `MOVE_INTO_PLAN`, `OWNED_TEMPORARY`,
+`PINNED_PLACE_RESERVATION`, `STATIC_EVIDENCE`로 구분한다. `CONSUME`는
+seal할 때 affine owner를 cleanup plan으로 한 번 옮기고, borrow/view는
+suspension을 포함한 남은 lifetime 동안 exact place를 유지해야 한다.
+scope 안에서 reserved place를 move하거나 rebind해 예약을 깨지 않는지
+검사한다.
 
 두 cleanup `closeInner`, `closeOuter`를 그 순서로 등록한 작은 trace에서
 scope exit는 역순으로 inner가 먼저 실행된다. body가 실패하고 inner도
@@ -60,10 +67,11 @@ suspension을 숨기거나 cleanup block에 여러 action을 넣으면 책임과
 실패 순서가 모호해지므로 current 단일 invocation 계약을 사용한다.
 
 cleanup ledger는 등록 순서와 실행 순서를 모두 보존한다. 각 행에
-invocation identity, 예약된 receiver/place, 실행을 요구하는 terminal
-edge, error/effect row를 적는다. scope를 나갈 때 live한 행을 역순으로
-정확히 한 번 소비하고, 이미 실행한 행을 retry하거나 성공 경로에서만
-정리하는 최적화를 허용하지 않는다.
+invocation identity, 준비된 receiver/value/place, formal binding과 transfer,
+실행을 요구하는 terminal edge, result responsibility, error/effect row를
+적는다. scope를 나갈 때 live한 행을 역순으로 정확히 한 번 소비하고,
+이미 실행한 행을 retry하거나 성공 경로에서만 정리하는 최적화를 허용하지
+않는다.
 
 transaction과 cleanup은 연결되지만 같은 단계는 아니다. assignment,
 Pattern, constructor는 검사를 모두 마친 뒤 publication을 한 번 commit해
@@ -76,7 +84,10 @@ Pattern, constructor는 검사를 모두 마친 뒤 publication을 한 번 commi
 세 칸으로 기록한다. primary failure와 suppressed failure의 identity와
 순서를 유지하고, Cancellation을 ordinary Error로 재분류하지 않는다.
 rollback은 “과거의 외부 effect를 지운다”는 뜻이 아니라 아직 publish하지
-않은 semantic state와 owner balance를 보존한다는 뜻이다.
+않은 semantic state와 owner balance를 보존한다는 뜻이다. 등록 준비 중
+I/O가 이미 관찰된 뒤 다음 argument가 실패했다면 I/O를 되감을 수 없다.
+대신 temporary와 reversible reservation만 준비 역순으로 정리하고 등록을
+0개 publish한다.
 
 ### 6.1 단일 cleanup invocation 등록
 
@@ -90,9 +101,60 @@ process(bytes)
 ```
 
 `defer`는 현재 handle receiver와 cleanup call plan을 등록한다. block이나
-trailing closure를 cleanup으로 추측하지 않는다.
+trailing closure를 cleanup으로 추측하지 않는다. cleanup result는
+`UNIT_NO_VALUE`, `DISCARD_CLEANUP_FREE_VALUE`,
+`CLEAN_OWNED_TEMPORARY` 중 하나로 봉인되며, `Result`나 다른 미처리
+책임을 조용히 버릴 수는 없다.
 
-### 6.2 resource Class의 lifecycle cleanup
+### 6.2 receiver, argument, default의 등록 순서
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+defer closeWith(
+    acquireHandle(),
+    context currentCleanupContext(),
+    using closeEvidence,
+)
+```
+
+선택된 `closeWith`에 빠진 ordinary formal의 default expression이 있다고
+하자. runtime 관찰 순서는 다음과 같다.
+
+1. statically bound direct callee identity 선택: runtime evaluation 0회
+2. `acquireHandle()`: explicit runtime argument 첫 번째
+3. `currentCleanupContext()`: explicit `context` argument 두 번째
+4. `using closeEvidence`: static evidence이므로 runtime evaluation 0회
+5. omitted-formal default expression: formal declaration order
+6. ownership/region/budget 검사를 마친 뒤 registration seal 한 번
+
+5단계에서 실패하면 `acquireHandle()`로 얻은 temporary를 역순 정리하고
+등록은 0개다. 2~3단계에서 이미 관찰된 외부 effect는 취소하지 않으며,
+scope exit에서 어떤 준비 expression도 다시 실행하지 않는다.
+
+### 6.3 loop iteration과 suspension
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+for item in items {
+    defer release(item)
+    if skip(item) {
+        continue
+    }
+    consume(item)
+}
+```
+
+`defer`에 도달한 iteration만 registration을 가진다. `continue`는 그
+iteration의 cleanup을 역순 실행한 뒤 다음 iteration으로 간다. normal
+fallthrough, `return`, `break`, `continue`, Error 전파, Defect,
+Cancellation이 일곱 exit다.
+
+반면 `await` 같은 suspension은 exit가 아니므로 cleanup을 실행하지 않는다.
+live owner/borrow/reservation이 suspension을 넘어 유효하다는 proof가 있으면
+의무를 보존한 채 resume한다. proof가 없으면 suspension site가 거부된다.
+즉 `defer`는 enclosing suspension의 blanket 금지가 아니다.
+
+### 6.4 resource Class의 lifecycle cleanup
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
@@ -106,10 +168,57 @@ public resource class File {
 }
 ```
 
+#### 6.2.1 cleanup 책임의 정적 상한
+
+Class header의 `cleanup budget`은 정리가 실제로 실행될 때 평가하는 값이
+아니다. base, 소유 field, `def#cleanup`이 노출할 수 있는 recoverable
+Error와 Effect의 정적 상한이다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+private data class Tracked
+cleanup budget {
+    effects { audit, io }
+    errors CloseError | FlushError
+}
+{
+    def#cleanup()
+        throws CloseError
+        effects audit
+        effects io
+    = {
+        auditHandle()
+        closeHandle()
+    }
+}
+```
+
+이 예에서 hook의 `{CloseError}`와 `{audit, io}`는 header 상한 안에 있다.
+field가 별도의 cleanup 책임을 가진다면 그 field의 공개 envelope도 함께
+합친다. 선언한 `FlushError`를 현재 구현이 쓰지 않는 것은 허용된다. 상한은
+현재 body의 정확한 실행 trace가 아니라 대체 가능한 공개 계약이기 때문이다.
+
+두 가지 생략을 구분해야 한다.
+
+- block 전체를 생략한 비상속 Class: 모든 기여를 합친 정확한 envelope을
+  추론한다.
+- block은 있지만 축을 생략함: 그 축은 비어 있다. `cleanup budget {}`은
+  `Never`와 `{}`를 모두 명시한 것과 같다.
+
+따라서 앞의 `File` 예제는 header가 없어도 `{CloseError}`와 `{io}`를
+정확히 추론한다. 반면 같은 hook 앞에 `cleanup budget {}`을 쓰면 budget
+초과로 거부된다. Stable resource 상속에서는 sealed root가 명시적 상한을
+제시해야 한다. child는 이를 그대로 상속하거나 자기 책임을 모두 포함하는
+범위에서 좁힐 수 있지만 넓힐 수 없다.
+
+이 규칙은 `NOT_RUN`인 parser/checker 지원을 주장하지 않는다. 또한 기존
+hook → 역획득 field → base 정리 순서와 primary/suppressed failure 순서를
+변경하지 않는다.
+
 File owner가 scope를 떠날 때 cleanup responsibility가 정확히 한 번
 끝나야 한다. move하면 그 책임도 새 owner로 이동한다.
 
-### 6.3 try/finally와 transaction
+### 6.5 try/finally와 transaction
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
@@ -127,7 +236,7 @@ total += nextDelta()
 value와 RHS operation이 성공한 뒤에만 한 번 write한다. overflow나 RHS
 failure에서는 `total`이 10으로 남는다.
 
-### 6.4 Pattern과 지역 병렬 대입의 commit
+### 6.6 Pattern과 지역 병렬 대입의 commit
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
@@ -161,6 +270,15 @@ region을 보존하므로 view가 escape하도록 수명을 늘리지 않는다.
 defer await remoteClose()
 // DEFER_REQUIRES_SINGLE_INVOCATION
 ```
+
+<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER; product: NOT_RUN -->
+```deeplus
+defer worker :~ stop
+// ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER
+```
+
+actor transport는 immediate admission `Result`와 transfer responsibility를
+만든다. `defer`는 그 책임을 조용히 버리는 통로가 아니다.
 
 throwing cleanup이 body failure를 덮는 것, Cancellation을 catchable Error로
 바꾸는 것, partial aggregate나 partial owner transfer를 publish하는 것은

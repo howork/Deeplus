@@ -1,0 +1,181 @@
+{
+  "schema": "deeplus.closure-capture-plan/r1",
+  "revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
+  "status": "CURRENT_DESIGN_STATIC_CONTRACT_LOCAL_CANDIDATE",
+  "authority": "CODEX_DESIGN_R31_CLOSURE_CAPTURE_PLAN",
+  "baseline": {
+    "commit": "87115776365fcbe8870d2f631050db3e23194c9b",
+    "tree": "2452f0a6be1e1391b3678dafa86987059b115ec7"
+  },
+  "gap": {
+    "gap_id": "IR-OWN-P1-019",
+    "resolution": "BOUNDED_CAPTURE_PLAN_CHECKER_HIR_MIR_CLOSURE",
+    "semantic_p0_created": 0
+  },
+  "dependency_fence": {
+    "gap_id": "IR-OWN-P1-023",
+    "evidence": "R30 local contract fused in R47 after commit 50ad91fddc8111104fb2adc1f1ae74b21ddef3c2",
+    "bytes_imported": true,
+    "promotion_order": "R29 then R30 responsibility identities then R31 closure capture plan in R47",
+    "copy_rule": "exact CopyValue responsibility evidence",
+    "clone_rule": "exact selected Clone witness; no runtime relookup",
+    "deep_rule": "Preview Design and nonactivatable"
+  },
+  "surface": {
+    "grammar_change_count": 0,
+    "capture_list_states": [
+      "ABSENT",
+      "PRESENT_EMPTY",
+      "PRESENT_NONEMPTY"
+    ],
+    "reference_modes": [
+      "BORROW",
+      "INOUT",
+      "MOVE",
+      "COPY",
+      "CLONE",
+      "DEEP",
+      "ONCE"
+    ],
+    "initializer_modes": [
+      "INIT_LET",
+      "INIT_VAR"
+    ],
+    "bare_normalization": "BORROW",
+    "capture_once_requires_explicit_callable_once": true,
+    "capture_once_infers_callable_profile": false,
+    "capture_list_owner_attachment_line_break_allowed": false
+  },
+  "identity_model": {
+    "plan_identity": "CapturePlanId(ClosureOwnerId, CreationPointId)",
+    "field_identity": "CaptureFieldId(CapturePlanId, source_ordinal, canonical_name)",
+    "source_order": "contiguous zero-based",
+    "initializer_scope": "enclosing scope only; capture binders become visible together in the closure body",
+    "self_forward_cycle_initializer_count": 0,
+    "duplicate_binder_count": 0,
+    "duplicate_normalized_source_place_count": 0
+  },
+  "profile_gates": {
+    "BORROW": "nonescaping and bounded by the exact owner region",
+    "INOUT": "#scoped#mut, nonsuspending, nonescaping and exclusive",
+    "MOVE": "one live owned source and one move reservation",
+    "COPY": "one exact CopyValue ResponsibilityEvidenceId",
+    "CLONE": "one exact Clone TraitWitnessId and visible normalized error/effect rows",
+    "DEEP": "reject FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+    "ONCE": "one live owned source plus explicit callable #once",
+    "INIT_LET": "evaluate one initializer expression in the enclosing scope",
+    "INIT_VAR": "INIT_LET plus callable #mut environment receiver",
+    "CONCUR_LOCAL_ASYNC": "empty or explicit reusable COPY-only capture plan"
+  },
+  "algorithm": {
+    "preflight": [
+      "resolve all binders and source places without evaluating an item",
+      "reject duplicate field names, duplicate normalized source-place acquisition, and initializer self/forward references",
+      "apply owner, callable-profile, escape, suspension and isolation gates"
+    ],
+    "preparation_order": "strict source ordinal, left to right, exactly once",
+    "mode_preparation": {
+      "BORROW": "begin exact shared loan",
+      "INOUT": "begin exact exclusive loan",
+      "MOVE": "reserve move; consume source only at environment commit",
+      "COPY": "materialize cleanup-free same-type value copy",
+      "CLONE": "invoke selected witness through CHECKED/INVOKE and stage its result cleanup",
+      "ONCE": "reserve move; commit owner to a one-shot environment field",
+      "INIT_LET": "evaluate once and stage one owned immutable field",
+      "INIT_VAR": "evaluate once and stage one owned mutable field"
+    },
+    "failure_atomicity": {
+      "rollback_scope": "prepared prefix only",
+      "rollback_order": "strict reverse acquisition order",
+      "move_reservation_cancelled": true,
+      "loans_ended": true,
+      "staged_owned_values_cleaned": true,
+      "already_observed_external_effects_undone": false,
+      "partial_environment_publication_count": 0
+    },
+    "commit": "one BUILDER_COMMIT publishes the complete environment, then infallible CLOSURE_MAKE creates the callable value",
+    "termination_metric": "finite source-ordered capture list plus finite dependency predicates"
+  },
+  "lexical_separation": {
+    "same_place_explicit_capture_wins": true,
+    "same_place_lexical_residue_count": 0,
+    "different_place_lexical_dependency_may_coexist": true,
+    "lexical_dependency_creates_capture_event_count": 0
+  },
+  "diagnostic_priority": [
+    {
+      "rank": 1,
+      "reason": "identity_or_initializer_graph_invalid",
+      "diagnostic": "RESOLVER_SCOPE_TREE_INVALID"
+    },
+    {
+      "rank": 2,
+      "reason": "current_owner_or_profile_gate",
+      "diagnostic": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE"
+    },
+    {
+      "rank": 3,
+      "reason": "inout_alias_conflict",
+      "diagnostic": "INOUT_ALIAS_CONFLICT"
+    },
+    {
+      "rank": 4,
+      "reason": "inout_profile_missing",
+      "diagnostic": "CLOSURE_INOUT_CAPTURE_REQUIRES_SCOPED_MUT"
+    },
+    {
+      "rank": 5,
+      "reason": "borrow_escape",
+      "diagnostic": "BORROW_ESCAPE_OWNER_REGION"
+    },
+    {
+      "rank": 6,
+      "reason": "ownership_mode_or_evidence_failure",
+      "diagnostic": "OWNERSHIP_MODE_ADMISSION_FAILED"
+    }
+  ],
+  "machine_projection": {
+    "new_mir_operation_kind_count": 0,
+    "required_operations": [
+      "BUILDER_BEGIN",
+      "BUILDER_STAGE",
+      "BUILDER_COMMIT",
+      "MOVE_RESERVE",
+      "MOVE_CANCEL",
+      "PLACE_MOVE",
+      "LOAN_BEGIN_SHARED",
+      "LOAN_BEGIN_EXCLUSIVE",
+      "LOAN_END",
+      "CLEANUP_REGISTER",
+      "CLEANUP_DISARM",
+      "CLOSURE_MAKE"
+    ],
+    "failure_terminators": [
+      "INVOKE",
+      "CHECKED",
+      "LEAVE"
+    ],
+    "closure_make_is_infallible_after_commit": true,
+    "backend_reselection_count": 0
+  },
+  "api_fence": {
+    "value_level_capture_field_id_export_count": 0,
+    "value_level_place_owner_region_loan_id_export_count": 0,
+    "value_level_responsibility_evidence_id_export_count": 0,
+    "named_exported_callable_capture_row_count": 0
+  },
+  "acceptance": {
+    "schema": "schemas/language/closure-capture-plan-input-r1.schema.json",
+    "fixtures": "tests/fixtures/current/closure-capture-plan-r1.json",
+    "validator": "tools/validators/validate_closure_capture_plan.py",
+    "check_count": 12,
+    "mutation_count": 11
+  },
+  "global_fences": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

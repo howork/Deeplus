@@ -319,6 +319,13 @@ CaptureMode       ::= "borrow" | "inout" | "move" | "clone"
                     | "deep" | "copy" | "once"
 ```
 
+capture list가 있으면 닫는 `]`와 뒤의 closure hashtag 또는 `{` 사이에는
+줄바꿈을 둘 수 없다. 줄바꿈은 `CAPTURE_LIST_NEWLINE_DETACHED`이며 formatter가
+임의의 owner를 추측해 붙이지 않는다. Bare `[name]`은 `borrow` capture로
+정규화된다. `let name = expr`와 `var name = expr`는 outer place를 잡는
+형식이 아니라 생성 시점에 `expr`을 평가해 새 environment field를 만드는
+initializer capture다.
+
 lambda parameter 목록 자체에는 바깥 괄호를 쓰지 않는다. 다만
 `{ (x, y): (Int, Int) => ... }`의 괄호는 Tuple parameter 하나를
 분해하고, `{ x: Int, y: Int => ... }`는 parameter 둘을 받는다. 두
@@ -482,18 +489,29 @@ closure capture mode는 실제 owner/borrow 책임이다. borrow capture는 regi
 
 나머지 capture도 이름뿐인 hint가 아니다.
 
-- `copy`는 admitted value/bit-copy 책임을 요구하고 source를 계속 valid로
-  둔다.
+- `copy`는 sealed `CopyValue` 규칙이 증명한 cleanup-free semantic
+  duplication을 요구하고 source를 계속 valid로 둔다. byte-copy나 layout
+  호환성을 뜻하지 않는다.
 - `clone`은 선택된 `Clone` witness를 한 번 호출하므로 그 witness의
   effects와 errors를 그대로 노출한다.
-- `deep`은 별도의 deep-copy profile을 요구하며 자식이 clone 가능해
-  보인다는 이유로 재귀 복사를 추측하지 않는다.
+- `deep`은 별도의 `DeepClone` profile을 요구하며 자식이 clone 가능해
+  보인다는 이유로 재귀 복사를 추측하지 않는다. 이 profile은 현재
+  Preview Design이며 nonactivatable이다.
 - capture `once`는 환경 field owner를 한 번만 읽을 수 있게 한다.
   callable 자체의 `#once` profile과는 별도 축이다.
 
-capture acquisition은 왼쪽부터 한 번씩 수행한다. 환경 publish 전에
-어느 capture가 실패하면 이미 얻은 temporary를 역순으로 cleanup하고
-partial closure를 외부에 노출하지 않는다.
+capture item은 먼저 이름·source place·profile을 평가 없이 preflight한다.
+중복 binder, 같은 normalized place의 중복 acquisition, initializer의
+self/forward reference는 이 단계에서 거부한다. 그 뒤 item을 왼쪽부터
+정확히 한 번 준비한다. 환경 publish 전에 실패하면 준비된 prefix만
+역순으로 cleanup하고 loan을 끝내며 move reservation을 취소한다. 이미
+관찰된 외부 effect 자체를 되돌렸다고 주장하지 않으며 partial closure는
+노출하지 않는다. 모든 준비가 성공한 뒤에만 환경을 한 번 commit한다.
+
+`let`/`var` initializer capture는 reference capture와 다른 HIR variant다.
+initializer는 capture binder가 아직 보이지 않는 enclosing scope에서
+평가되고, 모든 binder는 closure body에 함께 나타난다. `var` field는
+`#mut`, `inout` field는 nonescaping `#scoped#mut`를 요구한다.
 
 `return`은 이름 있는 함수·메서드·handler·local function의 control
 transfer다. `ret`는 lambda와 `@if/@match/@try/@scope`의 로컬 value body에만

@@ -389,7 +389,7 @@ no-trivia attached candidate이고 `#N[T]`는 별도의 NumericArray
 추론하지 않는다. Map key는 runtime `K` 값이고 Record label은 정적
 `Identifier`이므로 두 domain을 서로 변환하거나 dot-key projection을
 추론하지 않는다. 이 type sugar는 bracket, mutation, Copy, deep-freeze,
-`ShareSafe`, `Transferable`, actor crossing, Trait witness 또는 operator
+`Shareable`, `Transferable`, actor crossing, Trait witness 또는 operator
 glyph evidence를 부여하지 않는다.
 
 소유권 후보의 최소 의미는 다음과 같다.

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r30/responsibility-identity-input-r1.schema.json",
+  "title": "Deeplus responsibility identity predicate input R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "predicate_id",
+    "responsibility_rule_id",
+    "normalized_type_id",
+    "source_spelling_or_null",
+    "lifecycle",
+    "cleanup_token_ids",
+    "borrow_region_id_or_null",
+    "callable_environment_present",
+    "storage_kind",
+    "raw_or_provenance",
+    "authority_kind",
+    "observation_mutability",
+    "synchronization_law_id_or_null",
+    "owner_id_or_null",
+    "source_isolation_domain_id_or_null",
+    "destination_isolation_domain_id_or_null",
+    "authority_delegation_evidence_ids",
+    "copy_rule_id_or_null",
+    "copy_source_remains_live",
+    "copy_result_same_type",
+    "copy_error_set_id_or_null",
+    "copy_effect_row_id_or_null",
+    "copy_creates_cleanup_obligation",
+    "direct_user_conformance",
+    "ordered_component_type_ids",
+    "registered_law_ids"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.responsibility-identity-input/r1"},
+    "predicate_id": {
+      "enum": [
+        "PlainValueAdmissible",
+        "ShareableObservationSafe",
+        "TransferableAcrossIsolation",
+        "CopyValueAdmissible"
+      ]
+    },
+    "responsibility_rule_id": {
+      "enum": ["PlainValue", "Shareable", "Transferable", "CopyValue"]
+    },
+    "normalized_type_id": {"type": "string", "minLength": 1},
+    "source_spelling_or_null": {"type": ["string", "null"]},
+    "lifecycle": {"enum": ["Reusable", "Affine", "Resource"]},
+    "cleanup_token_ids": {"$ref": "#/$defs/uniqueStringArray"},
+    "borrow_region_id_or_null": {"type": ["string", "null"]},
+    "callable_environment_present": {"type": "boolean"},
+    "storage_kind": {"enum": ["VALUE", "SHARED_HANDLE", "VIEW", "RAW_POINTER"]},
+    "raw_or_provenance": {"enum": ["SAFE_VALUE", "RAW_POINTER", "PROVENANCE_BEARING"]},
+    "authority_kind": {"enum": ["NONE", "VALUE", "META", "PROVIDER", "ACTOR"]},
+    "observation_mutability": {
+      "enum": ["NOT_APPLICABLE", "IMMUTABLE", "SYNCHRONIZED_MUTABLE", "UNSYNCHRONIZED_MUTABLE"]
+    },
+    "synchronization_law_id_or_null": {"type": ["string", "null"]},
+    "owner_id_or_null": {"type": ["string", "null"]},
+    "source_isolation_domain_id_or_null": {"type": ["string", "null"]},
+    "destination_isolation_domain_id_or_null": {"type": ["string", "null"]},
+    "authority_delegation_evidence_ids": {"$ref": "#/$defs/uniqueStringArray"},
+    "copy_rule_id_or_null": {"type": ["string", "null"]},
+    "copy_source_remains_live": {"type": "boolean"},
+    "copy_result_same_type": {"type": "boolean"},
+    "copy_error_set_id_or_null": {"type": ["string", "null"]},
+    "copy_effect_row_id_or_null": {"type": ["string", "null"]},
+    "copy_creates_cleanup_obligation": {"type": "boolean"},
+    "direct_user_conformance": {"type": "boolean"},
+    "ordered_component_type_ids": {"$ref": "#/$defs/stringArray"},
+    "registered_law_ids": {"$ref": "#/$defs/uniqueStringArray"}
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "uniqueStringArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "x-product-compiler": "NOT_RUN"
+}

@@ -1,0 +1,619 @@
+{
+  "schema": "deeplus.shared-mutex-payload-bound-fixtures/r1",
+  "baseline": "87115776365fcbe8870d2f631050db3e23194c9b",
+  "product_execution": "NOT_RUN",
+  "semantic_cases": [
+    {
+      "case_id": "R35-SMP-POS-001",
+      "class": "positive",
+      "intent": "builtin integer payload has a closed no-lifecycle summary",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.Int",
+        "normalized": true,
+        "proof_origin": "builtin",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.Int",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "ADMIT",
+        "reason_or_null": null,
+        "diagnostic_id_or_null": null,
+        "culprit_path_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "R35-SMP-POS-002",
+      "class": "positive",
+      "intent": "movable mutable nominal payload is admitted without requiring Plain",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.CounterState",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.CounterState",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          },
+          {
+            "path": "$.value",
+            "type_id": "Type.Int",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "ADMIT",
+        "reason_or_null": null,
+        "diagnostic_id_or_null": null,
+        "culprit_path_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "R35-SMP-POS-003",
+      "class": "positive",
+      "intent": "generic payload carries the exact sealed checker predicate bound",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "TypeParameter.T",
+        "normalized": true,
+        "proof_origin": "generic_bound",
+        "proof_complete": true,
+        "bound_predicate_ids": [
+          "SharedMutexPayloadAdmitted"
+        ],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "TypeParameter.T",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "ADMIT",
+        "reason_or_null": null,
+        "diagnostic_id_or_null": null,
+        "culprit_path_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "R35-SMP-BOUNDARY-001",
+      "class": "boundary",
+      "intent": "empty nominal payload has one closed root summary row",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.EmptyState",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.EmptyState",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "ADMIT",
+        "reason_or_null": null,
+        "diagnostic_id_or_null": null,
+        "culprit_path_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "R35-SMP-BOUNDARY-002",
+      "class": "boundary",
+      "intent": "transitive aggregate remains admitted when every canonical node is lifecycle-free",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.ServerState",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.ServerState",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          },
+          {
+            "path": "$.counters",
+            "type_id": "Type.CounterState",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          },
+          {
+            "path": "$.counters.value",
+            "type_id": "Type.Int",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          },
+          {
+            "path": "$.enabled",
+            "type_id": "Type.Bool",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "ADMIT",
+        "reason_or_null": null,
+        "diagnostic_id_or_null": null,
+        "culprit_path_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "R35-SMP-BOUNDARY-003",
+      "class": "boundary",
+      "intent": "wrapper-owned exactly-once unlock is not payload lifecycle evidence",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.LockedFlag",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.LockedFlag",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "ADMIT",
+        "reason_or_null": null,
+        "diagnostic_id_or_null": null,
+        "culprit_path_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      }
+    },
+    {
+      "case_id": "R35-SMP-NEG-001",
+      "class": "negative",
+      "intent": "direct Resource payload is rejected before move commit",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.FileOwner",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.FileOwner",
+            "lifecycle_owner": true,
+            "cleanup_kind": "drop_exactly_once",
+            "cleanup_effects": [
+              "io"
+            ],
+            "cleanup_errors": [],
+            "cleanup_authorities": [
+              "FileCapability"
+            ],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "reason_or_null": "LIFECYCLE_OWNER_PRESENT",
+        "diagnostic_id_or_null": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "culprit_path_or_null": "$",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "case_id": "R35-SMP-NEG-002",
+      "class": "negative",
+      "intent": "first canonical nested lifecycle owner rejects the complete payload",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.NestedState",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.NestedState",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          },
+          {
+            "path": "$.handle",
+            "type_id": "Type.SocketOwner",
+            "lifecycle_owner": true,
+            "cleanup_kind": "drop_exactly_once",
+            "cleanup_effects": [
+              "io"
+            ],
+            "cleanup_errors": [],
+            "cleanup_authorities": [
+              "NetworkCapability"
+            ],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          },
+          {
+            "path": "$.value",
+            "type_id": "Type.Int",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "reason_or_null": "LIFECYCLE_OWNER_PRESENT",
+        "diagnostic_id_or_null": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "culprit_path_or_null": "$.handle",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "case_id": "R35-SMP-NEG-003",
+      "class": "negative",
+      "intent": "even pure infallible user-visible cleanup is outside the no-lifecycle profile",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.PureCleanupOwner",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.PureCleanupOwner",
+            "lifecycle_owner": false,
+            "cleanup_kind": "drop_exactly_once",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "reason_or_null": "CLEANUP_KIND_NOT_NONE",
+        "diagnostic_id_or_null": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "culprit_path_or_null": "$",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "case_id": "R35-SMP-NEG-004",
+      "class": "negative",
+      "intent": "effectful cleanup row is independently fail-closed",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.EffectfulCleanupSummary",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.EffectfulCleanupSummary",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [
+              "io"
+            ],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "reason_or_null": "CLEANUP_EFFECT_ROW_NONEMPTY",
+        "diagnostic_id_or_null": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "culprit_path_or_null": "$",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "case_id": "R35-SMP-NEG-005",
+      "class": "negative",
+      "intent": "cleanup ErrorSet is independently fail-closed",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "Type.ErrorfulCleanupSummary",
+        "normalized": true,
+        "proof_origin": "nominal_definition",
+        "proof_complete": true,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "Type.ErrorfulCleanupSummary",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [
+              "CloseError"
+            ],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "reason_or_null": "CLEANUP_ERROR_SET_NONEMPTY",
+        "diagnostic_id_or_null": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "culprit_path_or_null": "$",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    {
+      "case_id": "R35-SMP-NEG-006",
+      "class": "negative",
+      "intent": "open generic without the exact predicate proof rejects before node evaluation",
+      "descriptor": {
+        "schema": "deeplus.shared-mutex-payload-descriptor/r1",
+        "root_type_id": "TypeParameter.T",
+        "normalized": true,
+        "proof_origin": "generic_bound",
+        "proof_complete": false,
+        "bound_predicate_ids": [],
+        "user_conformance_evidence": false,
+        "wrapper_internal_unlock_present": true,
+        "payload_nodes": [
+          {
+            "path": "$",
+            "type_id": "TypeParameter.T",
+            "lifecycle_owner": false,
+            "cleanup_kind": "none",
+            "cleanup_effects": [],
+            "cleanup_errors": [],
+            "cleanup_authorities": [],
+            "cleanup_suspends": false,
+            "cleanup_cancellation": false
+          }
+        ]
+      },
+      "expected": {
+        "verdict": "REJECT",
+        "reason_or_null": "PAYLOAD_PROOF_NOT_CLOSED",
+        "diagnostic_id_or_null": "SHARED_MUTEX_REJECTS_LIFECYCLE_PAYLOAD",
+        "culprit_path_or_null": "$",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      }
+    }
+  ],
+  "mutation_matrix": [
+    {
+      "mutation_id": "R35-SMP-MUT-001-REMOVE-PUBLIC-BOUND",
+      "operation": "REMOVE_PUBLIC_BOUND",
+      "target": "library/prelude/signatures#sharedmutex_t",
+      "base_case_id_or_null": null,
+      "expected_validator_reason": "PUBLIC_SIGNATURE_BOUND_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-002-RENAME-PUBLIC-BOUND",
+      "operation": "RENAME_PUBLIC_BOUND",
+      "target": "library/prelude/signatures#sharedmutex_t",
+      "base_case_id_or_null": null,
+      "expected_validator_reason": "PUBLIC_SIGNATURE_BOUND_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-003-CLEAR-FEATURE-PREDICATE",
+      "operation": "CLEAR_FEATURE_PREDICATE_REF",
+      "target": "spec/features/catalog#shared_mutex_no_drop_minimum_profile",
+      "base_case_id_or_null": null,
+      "expected_validator_reason": "FEATURE_PREDICATE_BINDING_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-004-REMOVE-PRIMARY-RELATION",
+      "operation": "REMOVE_PRIMARY_RELATION",
+      "target": "spec/diagnostics/relations#SharedMutexPayloadAdmitted",
+      "base_case_id_or_null": null,
+      "expected_validator_reason": "PRIMARY_DIAGNOSTIC_RELATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-005-SUBSTITUTE-PRIMARY-DIAGNOSTIC",
+      "operation": "SUBSTITUTE_PRIMARY_DIAGNOSTIC",
+      "target": "spec/diagnostics/relations#SharedMutexPayloadAdmitted",
+      "base_case_id_or_null": null,
+      "expected_validator_reason": "PRIMARY_DIAGNOSTIC_RELATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-006-ADMIT-DIRECT-LIFECYCLE",
+      "operation": "FORCE_EXPECTED_ADMIT",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-NEG-001",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-007-ADMIT-TRANSITIVE-LIFECYCLE",
+      "operation": "FORCE_EXPECTED_ADMIT",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-NEG-002",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-008-ADMIT-CLEANUP-KIND",
+      "operation": "FORCE_EXPECTED_ADMIT",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-NEG-003",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-009-ADMIT-CLEANUP-EFFECT",
+      "operation": "FORCE_EXPECTED_ADMIT",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-NEG-004",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-010-ADMIT-CLEANUP-ERROR",
+      "operation": "FORCE_EXPECTED_ADMIT",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-NEG-005",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-011-ADMIT-UNPROVEN-GENERIC",
+      "operation": "FORCE_EXPECTED_ADMIT",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-NEG-006",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-012-ACCEPT-USER-CONFORMANCE",
+      "operation": "FORGE_USER_CONFORMANCE_AND_EXPECT_ADMIT",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-POS-002",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-013-ERASE-MODULE-API-BOUND",
+      "operation": "ERASE_MODULE_API_BOUND",
+      "target": "schemas/language/module-api-digest.schema.json#type_parameter_predicate_bounds",
+      "base_case_id_or_null": null,
+      "expected_validator_reason": "MODULE_API_BOUND_PROPERTY_MISSING"
+    },
+    {
+      "mutation_id": "R35-SMP-MUT-014-CONFUSE-WRAPPER-UNLOCK",
+      "operation": "FORCE_WRAPPER_UNLOCK_REJECTION",
+      "target": "semantic_case",
+      "base_case_id_or_null": "R35-SMP-BOUNDARY-003",
+      "expected_validator_reason": "SEMANTIC_EXPECTATION_MISMATCH"
+    }
+  ]
+}

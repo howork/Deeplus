@@ -318,12 +318,6 @@
     "relation": "secondary"
   },
   {
-    "violation_id": "ShareableObservationSafe:default",
-    "predicate_id": "ShareableObservationSafe",
-    "diagnostic_id": "SHAREABLE_DOES_NOT_CREATE_ALIAS",
-    "relation": "primary"
-  },
-  {
     "violation_id": "SharingTransitionAdmitted:default",
     "predicate_id": "SharingTransitionAdmitted",
     "diagnostic_id": "IMPLICIT_OWNER_TO_SHARED_FORBIDDEN",
@@ -339,6 +333,12 @@
     "violation_id": null,
     "predicate_id": "SingleActionDeferAdmitted",
     "diagnostic_id": "DEFER_BLOCK_REMOVED_USE_SINGLE_CLEANUP_CALL",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "SingleActionDeferAdmitted",
+    "diagnostic_id": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
     "relation": "secondary"
   },
   {
@@ -669,12 +669,6 @@
     "violation_id": "TraitVariancePositionAdmitted:default",
     "predicate_id": "TraitVariancePositionAdmitted",
     "diagnostic_id": "VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "TransferableAcrossIsolation:default",
-    "predicate_id": "TransferableAcrossIsolation",
-    "diagnostic_id": "UNSAFE_REQUIRES_UNSAFE_BOUNDARY",
     "relation": "primary"
   },
   {

@@ -517,6 +517,55 @@ Typed labeled materialization checks the target schema/Record row, field default
 
 Each place has a state sufficient to reject use-after-move, overlapping inout access, mutable/shared alias violations, and borrow escape. A move consumes the source place unless the normalized type is reusable. A shared borrow prevents conflicting mutation for its admitted region. An inout borrow is exclusive and cannot be duplicated. Resource cleanup responsibility follows the owned value across moves.
 
+### 15.1 Type ownership qualifier normalization
+
+`TypeOwnershipQualifier` is the closed identity domain `UNQUALIFIED`,
+`OWNED`, `BORROWED`, `MUT`, and `INOUT`. Source prefixes map one-to-one from
+`owned`, `borrowed`, `mut`, and `inout`; an absent prefix maps to
+`UNQUALIFIED`. The normalized identity tuple is
+`(qualifier, base_normalized_type_id, region_binding_or_null)`. Region binding
+is required exactly for `BORROWED` and `INOUT` and is null for `UNQUALIFIED`,
+`OWNED`, and `MUT`. A qualifier does not imply a representation, layout, ABI,
+serialization, discriminant, or backend pointer choice.
+
+Alias expansion precedes qualifier-admission checking and leaves at most one
+qualifier. Any nested or mixed qualifier is ill-formed, including when the
+second qualifier is revealed only by an alias. All qualified wrappers are
+invariant in their base type. There is no implicit qualifier covariance,
+contravariance, erasure, or source-order precedence. `Optional` binds inside a
+prefix qualifier. Union and intersection bind outside it unless parentheses
+make the whole composite the qualified base. A union or intersection may not
+combine differently qualified alternatives and then erase that difference at
+join.
+
+The qualifier capability table is exact:
+
+| qualifier | owner class | read | write | region | MIR projection |
+|---|---|---:|---:|---|---|
+| `UNQUALIFIED` | base-type-defined | base-defined | base-defined | none | base responsibility |
+| `OWNED` | explicit value owner | yes | base-defined | none | base `REUSABLE` or `OWNED` class retained |
+| `BORROWED` | shared view | yes | no | required | `BORROWED` + `RegionId` + `LoanId` |
+| `MUT` | unique mutable owner | yes | yes | none | `OWNED` + mutable-place capability |
+| `INOUT` | exclusive mutable view | yes | yes | required | `INOUT` + `RegionId` + `LoanId` |
+
+`OWNED` and `MUT` are storable and returnable subject to the base type's
+ordinary laws. `BORROWED` may be used only while one exact owner region is
+live. A borrowed result additionally requires an invocation-bounded callable
+and one exact input or receiver origin recorded in HIR and the module API
+digest. `INOUT` is limited to a local or private invocation-bounded exclusive
+view and cannot enter storage, results, public residue, captures, suspension,
+isolation transfer, or FFI. Missing/escaping regions select
+`BORROW_ESCAPE_OWNER_REGION`; illegal qualifier composition or context selects
+`OWNERSHIP_MODE_ADMISSION_FAILED`.
+
+Parameter mode is a separate axis. `mut name: T` creates a mutable callee local
+whose normalized value type is `T`; `name: mut T` receives an ordinary channel
+whose normalized value type is `MUT(T)`. Likewise `inout name: T` acquires an
+exclusive caller-place channel, whereas `name: inout T` would be an ordinary
+channel carrying an already-proven exclusive view and is rejected outside the
+narrow private invocation-bounded profile. Neither syntax is rewritten to the
+other by the parser, formatter, checker, HIR, or API digest.
+
 The construction lifecycle is represented in HIR by one structural plan and in
 Deeplus MIR by the closed construction/cleanup operation family. The token,
 owner, phase, required/initialized/delegated/registered masks, and terminal
@@ -598,6 +647,7 @@ evidence.
 The normalized callable descriptor is the product of
 `Residence = FrameIndependent | RegionBound(RegionId)`,
 `Environment = Empty | Explicit(CapturePlan)`, a `closed_assertion` bit, and a
+source-ordered capture plan whose field identity is `CaptureFieldId(CapturePlanId, source ordinal, canonical name)`. Reference captures and `let`/`var` initializer captures are distinct HIR variants. Every initializer resolves outside the capture-binder scope; `var` requires a mutable environment, `inout` requires `#scoped#mut`, and capture `once` requires an explicit callable `#once`. Preparation is left-to-right exactly once, rollback is reverse-order over the prepared prefix, and publication is one atomic environment commit. The plan is bound by `spec/contracts/closure-capture-plan-r1.json`. The callable also carries a
 sorted unique lexical-dependency row. This form preserves mixed explicit
 capture and lexical read. RegionId is value-level and must not escape through a
 function type or module API digest. A region-bound callable converts only to a
@@ -614,15 +664,27 @@ message-call syntax: `cell ~ withValue { borrow value => body }` and
 profile, while `borrow` alone is the callback binder mode. Its region is owned
 by that invocation, so the borrow cannot escape or suspend. `replace` commits
 one new owner while returning the old owner; Plain supplies neither raw layout
-nor lock-free representation. `SharedMutex<T>` admits the
-no-lifecycle-payload minimum profile. `SharedMutex::new(move value)` is likewise
-an ordinary qualified call, while `mutex ~ withLock { inout state => body }` is
-a receiver message call. `#scoped` belongs to the callback type/profile and
-`inout` is the binder mode; the invocation owns the non-reentrant,
-non-suspending region. Unlock is an infallible exactly-once cleanup on every
-terminal path and establishes the mutex handoff edge to the next successful
-lock. No type rule infers weaker ordering, poisoning, fairness, lock ordering,
-actor transferability, or hidden cleanup.
+nor lock-free representation. `SharedMutex<T: SharedMutexPayload>` admits the
+no-lifecycle-payload minimum profile. `SharedMutexPayload` is a sealed,
+context-specific public constraint, not a Trait and not a user conformance or
+synthesis surface. The internal `SharedMutexPayloadAdmitted` predicate first
+normalizes aliases and the finite owner-closed payload graph. It admits only a
+Reusable or Affine payload for which every reachable component has no Resource
+lifecycle, cleanup token or hook, cleanup ErrorSet or EffectRow, authority,
+suspension or cancellation responsibility, and no borrow or `inout` view. An
+opaque component or unbounded generic is rejected; a generic payload therefore
+requires the explicit `SharedMutexPayload` bound. Successful admission creates
+no Plain, Copy, Clone, Shareable, Transferable, layout, ABI, serialization or
+other responsibility implication, and the exact bound remains in public API
+identity. `SharedMutex::new(move value)` checks the predicate before move commit
+and is otherwise an ordinary qualified call, while
+`mutex ~ withLock { inout state => body }` is a receiver message call.
+`#scoped` belongs to the callback type/profile and `inout` is the binder mode;
+the invocation owns the non-reentrant, non-suspending region. Unlock is an
+infallible exactly-once cleanup on every terminal path and establishes the
+mutex handoff edge to the next successful lock. No type rule infers weaker
+ordering, poisoning, fairness, lock ordering, actor transferability, or hidden
+cleanup.
 
 Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the ordinary static channel matcher to the preserved ordered `CallArgument` list. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Reply<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting that `Reply<T>`. Each successfully admitted request carries a non-forgeable `ReplyResponsibility` descriptor in typed HIR, module API digest, and MIR. Its exact fields are normalized result type, handler ErrorSet, cancellation axis, isolation owner, `ReplyId`, request correlation identity, and terminal transport failure. Module API identity stores static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers, while each committed request keeps its concrete identities only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second `Reply` type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted reply and does not retroactively change the successful admission Result.
 
@@ -672,6 +734,42 @@ type-level ErrorSet/EffectRow algebra. All throws clauses precede all effects
 clauses, duplicate normalized identities are rejected, and source order is
 retained only for deterministic diagnostics. Typed AST/HIR, callable identity,
 API digest, and MIR carry duplicate-free normalized rows.
+
+Class cleanup budgets reuse the same normalized ErrorSet and EffectRow identity
+domains but have a distinct header surface and admission judgment. Let
+`CleanupErrors(X)` and `CleanupEffects(X)` denote duplicate-free sorted sets.
+For a class `C`, the checker computes both sets by unioning, in evidence order,
+the base segment's transitive computed obligation when present, every owned
+cleanup-bearing field's effective envelope in declaration order, and the
+declared rows of `C`'s `def#cleanup` hook when present. Stable resource
+inheritance is same-module and sealed, so the base computation is available to
+the family checker without exporting private contribution identities. Every
+statically reachable contribution is included; runtime path selection cannot
+shrink a public envelope.
+
+```text
+ComputedErrors(C)  = Normalize(union contribution.error_ids)
+ComputedEffects(C) = Normalize(union contribution.effect_ids)
+Admitted(C)        = ComputedErrors(C)  subset_of EffectiveErrors(C)
+                  and ComputedEffects(C) subset_of EffectiveEffects(C)
+```
+
+In a present `cleanup budget` block, each axis item has cardinality zero or one.
+An absent `effects` item is `{}`, an absent `errors` item is `Never`, and an
+empty block makes both axes empty. A repeated axis, a duplicate normalized
+identity, or an `errors` type that is not ErrorSet-kinded is rejected. For a
+non-inheritance class with no block, the effective envelope is exactly the
+computed envelope and is still materialized in typed AST/HIR and public API
+residue where the type is exported.
+
+A Stable resource hierarchy has one same-module sealed root with an explicit
+envelope. An implicit child inherits the root envelope. An explicit child may
+normalize to an equal or narrower envelope, must cover its complete computed
+obligation, and must prove both of its rows are subsets of the root rows. The
+root envelope is therefore the family substitutability ceiling. Declaration or
+subclass discovery order is not semantic. Cleanup budget admission does not
+alter lifecycle ordering, failure suppression, loan closing, or runtime effect
+authorization.
 
 The concise omission successor remains Preview Design and does not supersede
 current private ErrorSet inference. In that Preview, omission of a syntactically
@@ -976,7 +1074,7 @@ inference.
 
 Immutable and mutable collection owners are distinct, non-subtyping
 identities. A shallow freeze changes the outer owner state only; payload
-ownership, alias, `ShareSafe`, `Transferable`, and witness obligations remain
+ownership, alias, `Shareable`, `Transferable`, and witness obligations remain
 separate proofs. Freeze is a prepare/commit transaction: a live borrow rejects,
 failure returns the exact original owner and value state, and success consumes
 exactly once. Snapshot borrows and preserves its source while producing a
