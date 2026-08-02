@@ -36,9 +36,10 @@ Suspension is not a fifth inferred result tag. `PARKED` commits no outcome tag,
 no outcome slot, and no MIR successor. It instead transfers the exact committed
 owners, active loans, cleanup tokens, and roots to one continuation receipt,
 with zero source residual. Those loans end only on the resumed or cancelled
-terminal edge. A suspending runtime entry must bind the separately approved
-continuation interface before this ABI can admit it; until then it remains
-dependency-unbound and excluded from the active helper allowlist.
+terminal edge. A suspending runtime entry binds the separately approved
+continuation interface before this ABI admits it. The fused contract carries
+that exact digest, so the six suspending helpers remain admitted members of the
+22-row base allowlist; a missing or stale binding fails closed.
 
 ## Ownership boundary
 
@@ -84,20 +85,18 @@ before execution.
 
 ## Dependency guards
 
-The logical contract is independently materialized from canonical `main`.
-Canonical promotion is not ready until both of these exact dependencies are
-integrated and rebound:
+The fused logical contract binds both of these exact dependencies:
 
 1. `IR-OWN-P1-025`: managed-reference Phase-1 handle/root ABI;
 2. `IR-OWN-P0-017`: suspending continuation-root interface, for any suspending
    runtime entry.
 
-Their digest fields are deliberately null in this local candidate. Six
-suspending helper rows and three managed-memory helper rows are therefore
-dependency-unbound and excluded from the active allowlist. The two function-
-static/lazy helpers and scoped mutex acquire are synchronous COMPLETE-only
-operations: host-thread blocking does not create semantic suspension. No digest
-is guessed from another local branch.
+Their digest fields are non-null and match the separately validated contracts.
+The six suspending rows are included in the 22-row base allowlist, and the three
+managed-memory rows are conditionally admitted, for exactly 25 active helpers.
+The function-static/lazy helpers and scoped mutex acquire are synchronous
+COMPLETE-only operations: host-thread blocking does not create semantic
+suspension. No digest is inferred from a branch name or runtime address.
 
 ## Rejected alternatives
 

@@ -38,7 +38,7 @@
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
 | `frontend_admission` | `spec/frontend/frontend-model.json` | `8dea136713ba07bc09b2c1c64db236b20c353f04349bf70be57cb15bde210c09` |
 | `type_system` | `spec/types/type-system.md` | `f6dc240149a08f280d1ef073f385268ad3574ba6b781d8b5ffc77255b3e7eedd` |
-| `mir_observable_semantics` | `spec/mir/semantics.md` | `0b6bc62190b6d87f930171323b70202813eb22aaa9058cf6dac9f0b5fd957860` |
+| `mir_observable_semantics` | `spec/mir/semantics.md` | `14519a8a6d7e042f2af91c115c80e44ec13c39fe33e2f7a190fd791815edf102` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `e68a4237fd8e231ce74601295e5cb9975fc60afa03bbe81500e5368183d96efe` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `35c20cccef65dcb19c0477b4470a11c8f97a08f8a0dde4cef1098b573df998f1` |
 | `actor_concurrency_coherence` | `spec/contracts/actor-concurrency-coherence.json` | `dead650e9307bbd51c3cb70916ce26ef31a995f54ab3e537fb33cb625b83a2b2` |

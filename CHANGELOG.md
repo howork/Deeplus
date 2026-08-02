@@ -1,5 +1,16 @@
 # Changelog
 
+## r51f3-current-managed-root-runtime-fusion-r1 — 2026-08-03
+
+- Supersede the earlier dependency-unbound R37 candidate phase by binding the
+  exact continuation-interface and managed-reference profile digests into the
+  backend-neutral internal runtime ABI.
+- Keep all 22 base runtime helpers active, including the six suspending rows,
+  and conditionally admit the exact three managed-memory helpers for a total of
+  25 active helpers.
+- Preserve external FFI and callbacks as excluded, feature P1 at 22 OPEN, M13
+  actions at 4 OPEN, and all 15 product lanes as `NOT_RUN`.
+
 ## r51f3-current-internal-runtime-abi-r1 — 2026-08-02
 
 - xVM, Cranelift Object AOT와 Cranelift JIT가 공유하는 backend-neutral

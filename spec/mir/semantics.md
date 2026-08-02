@@ -607,14 +607,14 @@ is `RUNTIME_ABI_HOST_UNWIND_FORBIDDEN`.
 The helper registry declares exactly the 22 runtime-bound base operations
 already named by `CANCEL_CHECK`, `SUSPEND`, `RUN_OP`, `ACTOR_OP`,
 `PROVIDER_OP`, `ONCE_OP` and `SYNC_OP`. Ordinary user calls and checked
-arithmetic are not helpers. Six suspending rows are dependency-unbound on the
-exact `IR-OWN-P0-017` continuation interface digest and excluded from the
-active allowlist, leaving 16 active base helpers. Three managed-memory helpers
-remain conditional on the exact `IR-OWN-P1-025` profile digest. Function-static
-ensure, lazy force and scoped mutex acquire are synchronous COMPLETE-only
-helpers; they may block a host thread but never manufacture semantic PARKED.
-Both dependency fields are null in the local design candidate and therefore
-fail closed for canonical promotion; no local-candidate digest is guessed.
+arithmetic are not helpers. The six suspending rows bind the exact
+`IR-OWN-P0-017` continuation-interface digest and remain part of those 22 base
+operations. Three managed-memory helpers are conditionally admitted by the
+exact `IR-OWN-P1-025` managed-reference profile digest, producing 25 active
+helpers in this fused design contract. Function-static ensure, lazy force and
+scoped mutex acquire are synchronous COMPLETE-only helpers; they may block a
+host thread but never manufacture semantic PARKED. Both dependency fields are
+exactly bound; a missing, stale, or substituted digest fails closed.
 
 xVM binds typed helper-table entries. Object AOT binds an exact symbol sidecar
 and linker receipt. JIT binds an exact import allowlist, resolved

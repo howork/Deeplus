@@ -9,7 +9,8 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
-      "hir_h1_current_mir_bridge_design"
+      "hir_h1_current_mir_bridge_design",
+      "managed_reference_memory_profile_phase1"
     ],
     "display_name": "Internal runtime ABI R1",
     "feature_id": "internal_runtime_abi_r1",
@@ -17,7 +18,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "One backend-neutral internal runtime ABI binds fixed scalar versus indirect aggregate channels, four explicit MIR outcomes, one ownership commit, exact helper identities/signatures, target projections, JIT imports and retirement. IR-OWN-P1-025 and IR-OWN-P0-017 dependency digests remain deliberately unbound; external FFI and callbacks are excluded. Product execution is NOT_RUN.",
+    "notes": "One backend-neutral internal runtime ABI binds fixed scalar versus indirect aggregate channels, four explicit MIR outcomes, one ownership commit, exact helper identities/signatures, target projections, JIT imports and retirement. The exact IR-OWN-P1-025 managed-reference and IR-OWN-P0-017 continuation-interface digests are bound; 22 base helpers plus 3 conditionally admitted managed-memory helpers are active. External FFI and callbacks remain excluded. Product execution is NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
