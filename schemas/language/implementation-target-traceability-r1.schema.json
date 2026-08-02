@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/implementation-target-traceability-r1.schema.json",
+  "title": "Deeplus implementation target traceability registry R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "external_post_commit_receipt_required", "catalog_feature_count", "base_statuses", "base_count", "dependency_additions", "dependency_addition_count", "target_count", "target_feature_id_list_sha256", "excluded_count", "excluded_feature_id_list_sha256", "stage_order", "test_outcome_order", "chunks", "evidence_registry", "derived_counts", "governance"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/implementation-target-traceability-r1.schema.json"},
+    "schema": {"const": "deeplus.implementation-target-traceability/r1"},
+    "revision": {"const": "r53-local-target-traceability-reconciliation-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "063ed9ba77b49f6d276e70f558553e941550172d"},
+    "external_post_commit_receipt_required": {"const": true},
+    "catalog_feature_count": {"const": 723},
+    "base_statuses": {"const": ["STABLE_DESIGN", "STDLIB_PROFILE"]},
+    "base_count": {"const": 463},
+    "dependency_additions": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string"}},
+    "dependency_addition_count": {"const": 6},
+    "target_count": {"const": 469},
+    "target_feature_id_list_sha256": {"const": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435"},
+    "excluded_count": {"const": 254},
+    "excluded_feature_id_list_sha256": {"const": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7"},
+    "stage_order": {"const": ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]},
+    "test_outcome_order": {"const": ["POSITIVE", "BOUNDARY", "REJECT"]},
+    "chunks": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "object", "required": ["path", "row_count"], "properties": {"path": {"const": "spec/traceability/implementation-target-profile-r1/rows.json"}, "row_count": {"const": 469}}, "additionalProperties": false}},
+    "evidence_registry": {"type": "array", "minItems": 469, "items": {"$ref": "#/$defs/evidence"}},
+    "derived_counts": {"type": "object"},
+    "governance": {"type": "object"}
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "class", "path", "locator_kind", "locator", "stage_role", "evidence_level"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^EV-[0-9a-f]{64}$"},
+        "class": {"enum": ["FEATURE_REGISTRY_ROW", "ARTIFACT_POINTER", "GRAMMAR_PRODUCTION_ID", "CHECKER_PREDICATE_ID", "DIAGNOSTIC_REGISTRY_ID", "TEACHING_EXAMPLE_ID"]},
+        "path": {"type": "string"},
+        "locator_kind": {"enum": ["FILE", "JSON_POINTER", "REGISTRY_ID"]},
+        "locator": {"type": "string"},
+        "stage_role": {"type": "string"},
+        "evidence_level": {"const": "E2_STRUCTURED_STATIC"}
+      }
+    }
+  }
+}

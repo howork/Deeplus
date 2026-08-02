@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/current-contract-authority-status-r1.schema.json",
+  "title": "Deeplus current contract authority status registry R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "repository", "canonical_baseline_commit", "local_predecessor_commit", "interpretation_rule", "rows", "expected_counts", "governance"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/current-contract-authority-status-r1.schema.json"},
+    "schema": {"const": "deeplus.current-contract-authority-status/r1"},
+    "revision": {"const": "r53-local-authority-status-reconciliation-r1"},
+    "repository": {"const": "howork/Deeplus"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "063ed9ba77b49f6d276e70f558553e941550172d"},
+    "interpretation_rule": {"const": "CURRENT_AUTHORITY_OBJECT_OVERRIDES_BYTE_BOUND_HISTORICAL_PROVENANCE_FIELDS_WITHOUT_REWRITING_THE_BOUND_CONTRACT"},
+    "rows": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"$ref": "#/$defs/row"}},
+    "expected_counts": {"type": "object"},
+    "governance": {"type": "object"}
+  },
+  "$defs": {
+    "row": {
+      "type": "object",
+      "required": ["contract_path", "contract_sha256", "current_authority", "historical_provenance", "semantic_delta", "source_syntax_delta", "product_execution"],
+      "properties": {
+        "contract_path": {"type": "string", "pattern": "^spec/contracts/[a-z0-9-]+\\.json$"},
+        "contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "current_authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifact_status", "language_status", "gap_id", "gap_status", "evidence_level", "semantic_publication_commit", "publication_closure_commit", "closure_receipt", "republished_current_commit"],
+          "properties": {
+            "artifact_status": {"const": "CANONICAL_CURRENT"},
+            "language_status": {"const": "STABLE_DESIGN"},
+            "gap_id": {"type": "string", "pattern": "^IR-(OWN|FE)-P[01]-[0-9]{3}$"},
+            "gap_status": {"const": "VERIFIED_CLOSED"},
+            "evidence_level": {"const": "E2_DESIGN_STATIC"},
+            "semantic_publication_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "publication_closure_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "closure_receipt": {"type": "string", "pattern": "^release/evidence/[a-z0-9-]+\\.json$"},
+            "republished_current_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"}
+          }
+        },
+        "historical_provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["field_values", "interpretation"],
+          "properties": {
+            "field_values": {"type": "object", "minProperties": 1, "additionalProperties": {"type": ["string", "number", "boolean", "null"]}},
+            "interpretation": {"const": "HISTORICAL_CANDIDATE_ORIGIN_NOT_CURRENT_AUTHORITY"}
+          }
+        },
+        "current_binding_rule": {"type": "string"},
+        "semantic_delta": {"const": 0},
+        "source_syntax_delta": {"const": 0},
+        "product_execution": {"const": "NOT_RUN"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

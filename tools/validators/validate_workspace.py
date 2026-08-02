@@ -12614,6 +12614,16 @@ def main() -> int:
         "tests/fixtures/current/ownership-tooling-obligations-r1.json",
         "spec/diagnostics/catalog/chunks/part-0033.json",
         "tools/validators/validate_ownership_tooling_obligations.py",
+        "decisions/language/Design_Deeplus_Contract_Authority_Status_Reconciliation_R1.md",
+        "spec/contracts/current-contract-authority-status-r1.json",
+        "schemas/language/current-contract-authority-status-r1.schema.json",
+        "tools/validators/validate_current_contract_authority_status.py",
+        "tools/validators/run_current_contract_authority_status_mutation_tests.py",
+        "spec/traceability/implementation-target-profile-r1/catalog-metadata.json",
+        "schemas/language/implementation-target-traceability-r1.schema.json",
+        "tools/generators/build_implementation_target_traceability.py",
+        "tools/validators/validate_implementation_target_traceability.py",
+        "tools/validators/run_implementation_target_traceability_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -18408,7 +18418,7 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            62
+            63
             if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
             else 61
             if revision == R46_MANAGED_ROOT_RUNTIME_REVISION
