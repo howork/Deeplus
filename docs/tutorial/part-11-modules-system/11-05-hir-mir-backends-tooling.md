@@ -183,8 +183,10 @@ owner를 되돌리지 않는다. cleanup과 loan 종료는 MIR의 명시적 edge
 
 반면 `PARKED(receipt)`는 다섯 번째 outcome이 아니다. outcome tag와 slot을
 commit하지 않고 owner, loan, cleanup token, root의 정확한 상태를
-continuation receipt에 한 번 넘긴다. continuation ABI가 아직 결속되지 않은
-동안 실제 suspension helper 여섯 개는 active allowlist에 들어가지 않는다.
+continuation receipt에 한 번 넘긴다. exact continuation ABI digest가 결속된
+현재 설계에서는 suspension helper 여섯 개가 22개 base allowlist에 포함된다.
+세 managed-memory helper까지 조건부로 admit되어 active helper는 25개이며,
+어느 dependency digest라도 없거나 stale이면 해당 경로는 fail-closed한다.
 function static 초기화, lazy force와 scoped mutex acquire가 host thread를
 기다리게 할 수 있어도 그것은 Deeplus suspension이 아니므로 COMPLETE-only다.
 

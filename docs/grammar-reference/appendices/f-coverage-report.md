@@ -31,7 +31,7 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `77d3d47f6fd81ca1b80834c2ad4bc4d9211a448b3c10956a915f4146e8ef9789` |
+| `human_language` | `spec/language.md` | `23beff0ecc3d8e40f7a9861f85233366a40db37bebfd76fffac72e584ef57e09` |
 | `exact_grammar` | `spec/grammar/deeplus.ebnf` | `a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276` |
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `6b7d2db6e3110667a4d431889245e94a1195afd9d34ee751a38e936ad314be5d` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `56f42fd6b7668c6cdd13c5461d8d51401e38b80474761b6b3209420dd9cd0c27` |

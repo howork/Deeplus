@@ -328,9 +328,10 @@ import map은 모두 같은 logical helper ID/signature set을 결속한다. exa
 digest가 다르거나 host unwind가 경계를 넘으면 실행 전에 거부한다.
 
 현재 이 계약은 Stable design이지만 product support는 `NOT_RUN`이다.
-managed-reference와 suspension dependency digest도 아직 정본에 결속되지
-않았으므로 해당 helper는 fail-closed한다. suspending helper 여섯 개는 active
-allowlist에서 제외되며, function-static/lazy/mutex의 host blocking은
+managed-reference와 suspension dependency digest는 exact contract에 결속된다.
+suspending helper 여섯 개는 22개 base allowlist에 포함되고 managed-memory
+helper 세 개가 조건부로 admit되어 active helper는 25개다. digest가 없거나
+stale이면 fail-closed한다. function-static/lazy/mutex의 host blocking은
 `COMPLETE`-only이고 semantic suspension이 아니다. external FFI는 별도 Preview
 경계이며 이 계약이 활성화하지 않는다.
 

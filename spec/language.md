@@ -1515,8 +1515,9 @@ xVM은 typed helper table을, Object AOT는 exact symbol/link receipt를, JIT는
 exact import/signature/provider map과 image-generation/retirement receipt를
 사용한다. R1 compatibility는 ABI ID와 full digest의 exact equality뿐이다.
 managed-reference와 suspending helper는 각각 `IR-OWN-P1-025`와
-`IR-OWN-P0-017`의 exact digest가 정본에 결속되기 전까지 fail-closed한다.
-따라서 여섯 suspending helper는 active allowlist에서 제외된다. 반면 function
+`IR-OWN-P0-017`의 exact digest에 결속된다. 여섯 suspending helper는 22개
+base helper에 포함되고, 세 managed-memory helper가 조건부로 admit되어 active
+helper는 정확히 25개다. digest가 없거나 stale이면 fail-closed한다. 반면 function
 static ensure, lazy force와 scoped mutex acquire의 host-thread blocking은 언어
 의미의 suspension이 아니므로 `COMPLETE`-only다. managed safepoint도
 Cancellation을 관찰하거나 전달하지 않는다.
