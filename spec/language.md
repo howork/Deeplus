@@ -1492,6 +1492,35 @@ outstanding root receipt가 모두 0일 때만 한 번 retire한다. xVM, Object
 JIT parity는 logical roots, owner transfer, cleanup과 outcome을 비교하며 주소,
 heap layout, collection 시점은 비교하지 않는다. 이 설계 계약은 product
 구현 영수증이 아니므로 관련 lane은 계속 `NOT_RUN`이다.
+내부 runtime 경계는 `DEEPLUS_INTERNAL_RUNTIME_ABI_R1`이라는 하나의
+backend-neutral logical ABI를 사용한다. 고정 primitive scalar만 direct
+channel을 사용하고 aggregate와 nominal value는 모두 typed indirect slot을
+사용한다. aggregate normal result는 caller가 제공한 normal slot을 sret로
+사용하며 register splitting은 허용하지 않는다. 이 분류는 language value
+identity나 공개 FFI ABI를 새로 만들지 않는다.
+
+dispatcher 결과는 `COMPLETE(OutcomeTag) | PARKED(ContinuationReceiptId)`의
+닫힌 합이다. 완료된 runtime call만 `NORMAL`, `ERROR`, `DEFECT`,
+`CANCELLATION` 네 tag 중 정확히 하나와 그 전용 payload slot을 commit한다.
+`PARKED`는 다섯 번째 tag가 아니며 outcome tag·slot·MIR successor를 commit하지
+않는다. 대신 committed owner, active loan, cleanup token과 root를 하나의
+continuation receipt로 정확히 한 번 옮기고 source residual을 0으로 만든다.
+이 loan은 resume 또는 cancellation의 terminal edge에서만 끝난다. 모든
+preflight와 root publication이 끝난 뒤 callee entry 직전에
+`ownership_commit`이 한 번 일어난다. entry 전 실패는 caller owner를
+보존하지만 entry 뒤의 어떤 outcome도 transferred input을 되돌리지 않는다.
+host unwind와 native exception은 이 경계를 통과할 수 없다.
+
+xVM은 typed helper table을, Object AOT는 exact symbol/link receipt를, JIT는
+exact import/signature/provider map과 image-generation/retirement receipt를
+사용한다. R1 compatibility는 ABI ID와 full digest의 exact equality뿐이다.
+managed-reference와 suspending helper는 각각 `IR-OWN-P1-025`와
+`IR-OWN-P0-017`의 exact digest가 정본에 결속되기 전까지 fail-closed한다.
+따라서 여섯 suspending helper는 active allowlist에서 제외된다. 반면 function
+static ensure, lazy force와 scoped mutex acquire의 host-thread blocking은 언어
+의미의 suspension이 아니므로 `COMPLETE`-only다. managed safepoint도
+Cancellation을 관찰하거나 전달하지 않는다.
+외부 FFI와 runtime callback은 이 내부 ABI에 포함되지 않는다.
 
 ## 42. MIR handoff
 

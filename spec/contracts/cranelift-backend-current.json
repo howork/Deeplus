@@ -69,7 +69,12 @@
     "pointer_width_and_endianness",
     "object_format_and_code_relocation_model",
     "calling_convention",
+    "internal_runtime_abi_id",
+    "internal_runtime_abi_schema_id",
     "runtime_abi_digest",
+    "runtime_helper_registry_digest",
+    "internal_runtime_target_projection_digest",
+    "internal_runtime_artifact_binding_receipt_schema_id",
     "optimization_settings_digest",
     "runtime_helper_and_safepoint_capability_digest",
     "managed_memory_profile_digest",
@@ -89,6 +94,42 @@
     "host_unwind_semantic_authority": false,
     "arbitrary_backend_trap_semantic_authority": false,
     "trap_requires_preselected_defect_or_verified_unreachable": true
+  },
+  "internal_runtime_abi_guard": {
+    "contract": "spec/contracts/internal-runtime-abi-r1.json",
+    "helper_registry": "spec/contracts/runtime-helper-registry-r1.json",
+    "manifest_schema": "deeplus.internal-runtime-abi-manifest/r1",
+    "target_projection_schema": "deeplus.internal-runtime-abi-target-projection/r1",
+    "artifact_binding_receipt_schema": "deeplus.internal-runtime-abi-artifact-binding-receipt/r1",
+    "logical_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+    "fixed_primitive_scalars_direct": true,
+    "aggregate_and_nominal_values_indirect": true,
+    "aggregate_result_uses_sret_slot": true,
+    "aggregate_register_split_admitted": false,
+    "outcome_tags": [
+      "NORMAL",
+      "ERROR",
+      "DEFECT",
+      "CANCELLATION"
+    ],
+    "dispatcher_completion_union": [
+      "COMPLETE(OutcomeTag)",
+      "PARKED(ContinuationReceiptId)"
+    ],
+    "active_base_runtime_helper_count": 22,
+    "conditional_continuation_helper_count": 6,
+    "conditional_managed_helper_count": 3,
+    "parked_commits_outcome_or_successor": false,
+    "parked_requires_exact_continuation_receipt": true,
+    "host_unwind_across_boundary": false,
+    "exact_digest_compatibility_only": true,
+    "runtime_to_generated_callback_admitted": false,
+    "external_ffi_included": false,
+    "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+    "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "canonical_promotion_ready": true,
+    "active_conditional_managed_helper_count": 3,
+    "dependency_binding_status": "EXACT_LOCAL_FUSION_BOUND"
   },
   "aot_contract": {
     "module": "ObjectModule",
@@ -175,11 +216,11 @@
     },
     {
       "rule_id": "CLB-R005",
-      "law": "Exact target, ISA, toolchain, module, ABI and optimization inputs are receipt bound."
+      "law": "Exact target, ISA, toolchain, module, internal ABI ID/schema/digest, helper registry, target projection, artifact-binding schema and optimization inputs are receipt bound."
     },
     {
       "rule_id": "CLB-R006",
-      "law": "Error, Defect, Cancellation, suspension and cleanup remain explicit MIR outcomes."
+      "law": "Error, Defect and Cancellation use the four-tag internal ABI outcome channel; suspension and cleanup remain separate explicit MIR transitions and actions."
     },
     {
       "rule_id": "CLB-R007",
@@ -187,7 +228,7 @@
     },
     {
       "rule_id": "CLB-R008",
-      "law": "Object mode records object and linker identity; JIT mode records imports, image and lifetime."
+      "law": "Object mode records object, exact runtime helper symbols and linker identity; JIT mode records the exact helper allowlist, resolved signatures/providers, image generation and zero-lease retirement."
     },
     {
       "rule_id": "CLB-R009",

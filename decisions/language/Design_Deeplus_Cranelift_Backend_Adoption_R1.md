@@ -78,6 +78,15 @@ receipt의 일부다. MIR semantic digest와 다음 입력을 결합한다.
 host default, 환경 변수, link order 또는 symbol lookup order가 이 입력을
 암묵적으로 대신할 수 없다.
 
+내부 runtime 쪽 경계는 `DEEPLUS_INTERNAL_RUNTIME_ABI_R1`로 닫는다. fixed
+primitive scalar만 direct이며 aggregate/nominal value는 typed indirect
+slot, aggregate result는 caller-owned sret를 사용한다. 네 MIR outcome은
+분리된 slot을 사용하고 ownership은 entry 직전에 한 번 commit되며 host
+unwind는 금지된다. exact helper registry와 xVM/Object/JIT projection은
+digest-bound다. managed-reference와 suspending entry는 해당 dependency
+digest가 정본에 결속될 때까지 fail-closed하며 external FFI나 runtime
+callback은 이 결정으로 활성화되지 않는다.
+
 ## 5. 공통 lowering과 두 finalization 경로
 
 Object AOT와 JIT는 하나의 MIR→CLIF lowering 법칙을 공유한다. 두 경로는

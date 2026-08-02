@@ -1,5 +1,20 @@
 # Changelog
 
+## r51f3-current-internal-runtime-abi-r1 — 2026-08-02
+
+- xVM, Cranelift Object AOT와 Cranelift JIT가 공유하는 backend-neutral
+  `DEEPLUS_INTERNAL_RUNTIME_ABI_R1` 설계 계약을 추가했다.
+- fixed primitive scalar direct channel, aggregate/nominal indirect slot과
+  caller-owned sret, 네 explicit MIR outcome slot 및 pre-entry ownership
+  commit 법칙을 닫았다.
+- current MIR runtime-bound operation을 exact 22-helper registry로 결속하고,
+  managed-memory helper 3개는 `IR-OWN-P1-025` dependency-unbound 상태로
+  분리했다.
+- exact target projection, AOT/JIT helper binding, JIT generation/zero-lease
+  retirement와 no-host-unwind 검증 계약을 추가했다.
+- external FFI와 runtime callback은 활성화하지 않았고 semantic P0 0,
+  feature P1 22 OPEN, product lanes 15/15 `NOT_RUN`을 유지했다.
+
 ## r51f3-current-cranelift-backend-r1 — 2026-07-29
 
 - xVM을 초기 개발·검증·REPL 경로로 유지하면서 LLVM native backend

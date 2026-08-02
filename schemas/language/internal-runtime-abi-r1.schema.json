@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r37/internal-runtime-abi-r1.schema.json",
+  "title": "Deeplus internal runtime ABI manifest R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "runtime_abi_id",
+    "revision",
+    "mir_schema_digest",
+    "mir_machine_registry_digest",
+    "managed_reference_profile_digest_or_null",
+    "continuation_interface_digest_or_null",
+    "outcome_tags",
+    "helper_registry_digest",
+    "helper_allowlist_digest",
+    "digest_material",
+    "runtime_abi_digest"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.internal-runtime-abi-manifest/r1"},
+    "runtime_abi_id": {"$ref": "#/$defs/runtimeAbiId"},
+    "revision": {"const": 1},
+    "mir_schema_digest": {"$ref": "#/$defs/sha256"},
+    "mir_machine_registry_digest": {"$ref": "#/$defs/sha256"},
+    "managed_reference_profile_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+    "continuation_interface_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+    "outcome_tags": {
+      "type": "array",
+      "prefixItems": [
+        {"$ref": "#/$defs/normalTag"},
+        {"$ref": "#/$defs/errorTag"},
+        {"$ref": "#/$defs/defectTag"},
+        {"$ref": "#/$defs/cancellationTag"}
+      ],
+      "items": false,
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "helper_registry_digest": {"$ref": "#/$defs/sha256"},
+    "helper_allowlist_digest": {"$ref": "#/$defs/sha256"},
+    "digest_material": {"$ref": "#/$defs/digestMaterial"},
+    "runtime_abi_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "runtimeAbiId": {"type": "string", "pattern": "^RuntimeAbiId:[A-Za-z0-9_.:/-]+$"},
+    "runtimeHelperId": {"type": "string", "pattern": "^RuntimeHelperId:[A-Za-z0-9_.:/-]+$"},
+    "runtimeHelperSignatureId": {"type": "string", "pattern": "^RuntimeHelperSignatureId:[A-Za-z0-9_.:/-]+$"},
+    "runtimeValueKind": {
+      "enum": [
+        "UNIT", "BOOL", "I8", "I16", "I32", "I64", "I128", "U8",
+        "U16", "U32", "U64", "U128", "ISIZE", "USIZE", "F32", "F64",
+        "MANAGED_HANDLE", "AGGREGATE_SLOT", "TYPE_ID", "OPAQUE_RUNTIME_TOKEN"
+      ]
+    },
+    "parameterMode": {
+      "enum": [
+        "COPY_VALUE", "CONSUME_ON_ENTRY", "BORROW_READ_CALL_BOUND",
+        "INOUT_EXCLUSIVE_CALL_BOUND", "OPAQUE_HANDLE"
+      ]
+    },
+    "outcomeName": {"enum": ["NORMAL", "ERROR", "DEFECT", "CANCELLATION"]},
+    "normalTag": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ordinal", "name", "payload_slot"],
+      "properties": {"ordinal": {"const": 0}, "name": {"const": "NORMAL"}, "payload_slot": {"const": "NORMAL_SLOT"}}
+    },
+    "errorTag": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ordinal", "name", "payload_slot"],
+      "properties": {"ordinal": {"const": 1}, "name": {"const": "ERROR"}, "payload_slot": {"const": "ERROR_SLOT"}}
+    },
+    "defectTag": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ordinal", "name", "payload_slot"],
+      "properties": {"ordinal": {"const": 2}, "name": {"const": "DEFECT"}, "payload_slot": {"const": "DEFECT_SLOT"}}
+    },
+    "cancellationTag": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ordinal", "name", "payload_slot"],
+      "properties": {"ordinal": {"const": 3}, "name": {"const": "CANCELLATION"}, "payload_slot": {"const": "CANCELLATION_SLOT"}}
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "value_kind", "mode"],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 0},
+        "value_kind": {"$ref": "#/$defs/runtimeValueKind"},
+        "mode": {"$ref": "#/$defs/parameterMode"}
+      }
+    },
+    "helperRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_helper_id", "runtime_helper_signature_id", "helper_version",
+        "parameters", "normal_result_kind", "admitted_outcomes", "completion_modes",
+        "may_block", "may_collect", "may_suspend", "observes_cancellation",
+        "parameter_address_classes", "managed_referent_or_interior_address_cross_boundary",
+        "ownership_profile_digest", "managed_reference_profile_digest_or_null",
+        "continuation_interface_digest_or_null", "signature_digest"
+      ],
+      "properties": {
+        "runtime_helper_id": {"$ref": "#/$defs/runtimeHelperId"},
+        "runtime_helper_signature_id": {"$ref": "#/$defs/runtimeHelperSignatureId"},
+        "helper_version": {"const": 1},
+        "parameters": {"type": "array", "items": {"$ref": "#/$defs/parameter"}},
+        "parameter_address_classes": {
+          "type": "array",
+          "items": {"enum": ["NON_ADDRESS_VALUE", "OPAQUE_MANAGED_HANDLE", "CALL_BOUNDED_ADDRESS"]}
+        },
+        "managed_referent_or_interior_address_cross_boundary": {"const": false},
+        "normal_result_kind": {"$ref": "#/$defs/runtimeValueKind"},
+        "admitted_outcomes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/outcomeName"}},
+        "completion_modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["COMPLETE", "PARKED"]}},
+        "may_block": {"type": "boolean"},
+        "may_collect": {"type": "boolean"},
+        "may_suspend": {"type": "boolean"},
+        "observes_cancellation": {"type": "boolean"},
+        "ownership_profile_digest": {"$ref": "#/$defs/sha256"},
+        "managed_reference_profile_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+        "continuation_interface_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+        "signature_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "digestMaterial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema", "runtime_abi_id", "revision", "mir_schema_digest",
+        "mir_machine_registry_digest", "managed_reference_profile_digest_or_null",
+        "continuation_interface_digest_or_null", "outcome_tags", "helper_registry_digest",
+        "helper_allowlist_digest"
+      ],
+      "properties": {
+        "schema": {"const": "deeplus.internal-runtime-abi-manifest/r1"},
+        "runtime_abi_id": {"$ref": "#/$defs/runtimeAbiId"},
+        "revision": {"const": 1},
+        "mir_schema_digest": {"$ref": "#/$defs/sha256"},
+        "mir_machine_registry_digest": {"$ref": "#/$defs/sha256"},
+        "managed_reference_profile_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+        "continuation_interface_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+        "outcome_tags": {"type": "array", "minItems": 4, "maxItems": 4},
+        "helper_registry_digest": {"$ref": "#/$defs/sha256"},
+        "helper_allowlist_digest": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "x-deeplus-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "digest_preimage": "digest_material",
+    "unknown_or_duplicate_keys": "REJECT"
+  },
+  "x-deeplus-status-fence": {
+    "schema_materialization": "DESIGN_STATIC_ONLY",
+    "current_binding": false,
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

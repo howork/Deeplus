@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r37/internal-runtime-target-projection-r1.schema.json",
+  "title": "Deeplus internal runtime ABI target projection R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "projection_id", "runtime_abi_id", "runtime_abi_digest",
+    "mir_schema_digest", "mir_machine_registry_digest", "target_triple",
+    "pointer_width", "endianness", "stack_alignment_bytes",
+    "calling_convention", "module_kind", "scalar_mapping_digest",
+    "indirect_slot_mapping_digest", "outcome_mapping_digest",
+    "helper_allowlist_digest", "helper_symbol_or_table_map_digest",
+    "toolchain_digest", "managed_reference_profile_digest_or_null",
+    "continuation_interface_digest_or_null", "target_location_is_semantic_identity",
+    "digest_material", "projection_digest"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.internal-runtime-abi-target-projection/r1"},
+    "projection_id": {"type": "string", "pattern": "^RuntimeAbiTargetProjectionId:[A-Za-z0-9_.:/-]+$"},
+    "runtime_abi_id": {"type": "string", "pattern": "^RuntimeAbiId:[A-Za-z0-9_.:/-]+$"},
+    "runtime_abi_digest": {"$ref": "#/$defs/sha256"},
+    "mir_schema_digest": {"$ref": "#/$defs/sha256"},
+    "mir_machine_registry_digest": {"$ref": "#/$defs/sha256"},
+    "target_triple": {"type": "string", "minLength": 1},
+    "pointer_width": {"enum": [32, 64]},
+    "endianness": {"enum": ["LITTLE", "BIG"]},
+    "stack_alignment_bytes": {"type": "integer", "enum": [8, 16, 32, 64]},
+    "calling_convention": {"type": "string", "minLength": 1},
+    "module_kind": {"enum": ["Xvm", "ObjectAot", "InMemoryJit"]},
+    "scalar_mapping_digest": {"$ref": "#/$defs/sha256"},
+    "indirect_slot_mapping_digest": {"$ref": "#/$defs/sha256"},
+    "outcome_mapping_digest": {"$ref": "#/$defs/sha256"},
+    "helper_allowlist_digest": {"$ref": "#/$defs/sha256"},
+    "helper_symbol_or_table_map_digest": {"$ref": "#/$defs/sha256"},
+    "toolchain_digest": {"$ref": "#/$defs/sha256"},
+    "managed_reference_profile_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+    "continuation_interface_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
+    "target_location_is_semantic_identity": {"const": false},
+    "digest_material": {"type": "object", "minProperties": 1},
+    "projection_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "nullableSha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+  },
+  "x-deeplus-canonicalization": {
+    "algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "digest_preimage": "digest_material"
+  }
+}

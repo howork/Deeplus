@@ -31,7 +31,7 @@
       "rule_ids": ["CLB-R005"],
       "scenario": "a native receipt binds target triple ISA settings toolchain module ABI and optimization identities",
       "expected": "ADMIT_STATIC",
-      "assertions": ["required_receipt_input_count=17", "host_default_authority=false"],
+      "assertions": ["required_receipt_input_count=17", "internal_runtime_abi_id=RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1", "internal_runtime_abi_exact_digest=true", "active_base_runtime_helper_count=16", "conditional_continuation_helper_count=6", "managed_extension_helper_count=3", "host_default_authority=false"],
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
     {
@@ -94,7 +94,7 @@
       "rule_ids": ["CLB-R006", "CLB-R007"],
       "scenario": "a mutant turns recoverable Error into host unwind and arbitrary trap selection",
       "expected": "REJECT_STATIC",
-      "assertions": ["host_unwind_semantic_authority=false", "arbitrary_trap_authority=false"],
+      "assertions": ["dispatcher_completion=COMPLETE(OutcomeTag)|PARKED(ContinuationReceiptId)", "parked_outcome_commit_count=0", "outcome_tags=NORMAL|ERROR|DEFECT|CANCELLATION", "host_unwind_semantic_authority=false", "arbitrary_trap_authority=false"],
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
     {
@@ -103,7 +103,7 @@
       "rule_ids": ["CLB-R008", "CLB-R009"],
       "scenario": "a JIT mutant resolves an unlisted import or substitutes raw pointers for a missing or invalid managed-memory plan",
       "expected": "REJECT_STATIC",
-      "assertions": ["unlisted_import=terminal_link_failure", "missing_or_invalid_plan=block_native_lowering", "raw_pointer_fallback=false"],
+      "assertions": ["unlisted_or_signature_mismatched_import=terminal_link_failure", "missing_or_invalid_plan=block_native_lowering", "continuation_dependency_unbound_helper_admitted=false", "runtime_helper_registry_digest_required=true", "raw_pointer_fallback=false"],
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
     {

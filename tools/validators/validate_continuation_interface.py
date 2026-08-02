@@ -20,6 +20,8 @@ from typing import Any
 BASELINE_COMMIT = "e680568057ec9c6b02218dbe153758471734cf44"
 GRAMMAR_SHA256 = "a95ce1649e872fa0803300bff4e720e1c1d6a5afa54fa546de584501c8da2276"
 INTERFACE_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
+R36_MANAGED_REFERENCE_DIGEST = "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3"
+R37_RUNTIME_ABI_DIGEST = "26206926f0b6033ed520f4acd0277445bf583d32ae6d678e8281d6734539bf1c"
 FRAME_STATES = ["RUNNING", "SUSPENDED", "CLEANING", "TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]
 EPOCH_STATES = ["PREPARING", "COMMITTED", "RESUME_WON", "CANCEL_WON", "DISCHARGED"]
 OPERATIONS = ["FRAME_CREATE", "FRAME_SUSPEND_COMMIT", "FRAME_RESUME_COMMIT", "FRAME_CANCEL_COMMIT", "FRAME_CLEANUP_STEP", "FRAME_TERMINATE"]
@@ -154,7 +156,15 @@ def interface_errors(value: dict[str, Any]) -> list[str]:
     if dispatch.get("arbitrary_runtime_to_generated_callback_authority") is not False or dispatch.get("host_function_pointer_is_identity") is not False:
         errors.append("dispatch_fence")
     seam = value.get("seam_status", {})
-    if seam.get("r37_helpers_remain_dependency_unbound") is not True or seam.get("silent_candidate_stacking") is not False or seam.get("future_fusion_required") is not True:
+    if not (
+        seam.get("r36_digest_binding") == "EXACT_LOCAL_FUSION_BOUND"
+        and seam.get("r36_managed_reference_profile_digest") == R36_MANAGED_REFERENCE_DIGEST
+        and seam.get("r37_helpers_remain_dependency_unbound") is False
+        and seam.get("r37_dependency_binding") == "EXACT_LOCAL_FUSION_BOUND"
+        and seam.get("r37_runtime_abi_digest") == R37_RUNTIME_ABI_DIGEST
+        and seam.get("silent_candidate_stacking") is False
+        and seam.get("future_fusion_required") is False
+    ):
         errors.append("sibling_seam")
     governance = value.get("governance", {})
     if governance != {
@@ -360,7 +370,7 @@ def main() -> int:
     mutant = copy.deepcopy(interface); mutant["projection_entry_maps"].pop(); mutants.append(("PROJECTION_OMISSION", mutant))
     mutant = copy.deepcopy(interface); mutant["projection_entry_maps"][0]["address_as_identity"] = True; mutants.append(("ADDRESS_IDENTITY", mutant))
     mutant = copy.deepcopy(interface); mutant["dispatch_entry_law"]["arbitrary_runtime_to_generated_callback_authority"] = True; mutants.append(("ARBITRARY_CALLBACK", mutant))
-    mutant = copy.deepcopy(interface); mutant["seam_status"]["r37_helpers_remain_dependency_unbound"] = False; mutants.append(("SILENT_SIBLING_STACK", mutant))
+    mutant = copy.deepcopy(interface); mutant["seam_status"]["r37_helpers_remain_dependency_unbound"] = True; mutants.append(("SILENT_SIBLING_STACK", mutant))
     mutation_results = {name: bool(interface_errors(value)) for name, value in mutants}
     check("R38_MUTATION_REJECTION_12_OF_12", all(mutation_results.values()), mutation_results)
 

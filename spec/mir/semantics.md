@@ -566,6 +566,62 @@ layout, collection timing and stack offsets are excluded.
 Source locations and `DebugOrigin` project through a separate nonsemantic debug
 digest. Debug info, unwind tables and profiler metadata do not change program
 meaning and remain unsupported until a target-bound receipt exists.
+
+### Internal runtime ABI R1
+
+Every generated-code/runtime crossing uses the backend-neutral logical identity
+`DEEPLUS_INTERNAL_RUNTIME_ABI_R1`. Its canonical manifest, closed helper
+registry, target projection and artifact-binding receipt are defined by
+`spec/contracts/internal-runtime-abi-r1.json`. A matching-looking symbol name,
+table index, native address, link order or host default is not ABI evidence.
+R1 admits only exact ABI ID and full-digest equality.
+
+Fixed primitive scalars use direct channels. Every aggregate, nominal value,
+closure, collection, `Option`, `Result`, Rational, Complex and unrecognized
+opaque value crosses through an indirect typed slot. A normal aggregate result
+uses the caller-owned normal slot as sret. A one-field or zero-sized nominal
+does not collapse to a scalar, and an aggregate is never split across target
+registers at this boundary. Borrow and `inout` addresses are call-bounded target
+coordinates: they neither escape nor become semantic identities.
+
+The dispatcher returns the closed union `COMPLETE(OutcomeTag) |
+PARKED(ContinuationReceiptId)`. A completed call carries exactly one `U8`
+outcome tag: `NORMAL = 0`, `ERROR = 1`, `DEFECT = 2`, or `CANCELLATION = 3`.
+The caller supplies four disjoint typed slots and only the selected completed-
+call slot commits. `Unit` has no normal payload and `Never` cannot return.
+Suspension is not a fifth outcome: `PARKED` commits no outcome tag, no outcome
+slot and no MIR successor. It transfers committed owners, active loans,
+cleanup tokens and roots exactly once to one continuation receipt, leaving zero
+source residual; those loans end only at the resumed or cancelled terminal
+edge.
+
+Argument evaluation, acquisition, ABI/signature verification, slot preparation
+and root publication precede one atomic `ownership_commit`, which immediately
+precedes callee entry. Pre-entry failure cancels reservations and retains the
+caller owner. After entry, Normal, Error, Defect and Cancellation never restore
+transferred input ownership. Completed-call loans end and cleanup runs on the
+explicit MIR edges; parked state remains owned by the continuation receipt.
+Native exceptions and host unwind cannot cross this boundary; violation
+is `RUNTIME_ABI_HOST_UNWIND_FORBIDDEN`.
+
+The helper registry declares exactly the 22 runtime-bound base operations
+already named by `CANCEL_CHECK`, `SUSPEND`, `RUN_OP`, `ACTOR_OP`,
+`PROVIDER_OP`, `ONCE_OP` and `SYNC_OP`. Ordinary user calls and checked
+arithmetic are not helpers. Six suspending rows are dependency-unbound on the
+exact `IR-OWN-P0-017` continuation interface digest and excluded from the
+active allowlist, leaving 16 active base helpers. Three managed-memory helpers
+remain conditional on the exact `IR-OWN-P1-025` profile digest. Function-static
+ensure, lazy force and scoped mutex acquire are synchronous COMPLETE-only
+helpers; they may block a host thread but never manufacture semantic PARKED.
+Both dependency fields are null in the local design candidate and therefore
+fail closed for canonical promotion; no local-candidate digest is guessed.
+
+xVM binds typed helper-table entries. Object AOT binds an exact symbol sidecar
+and linker receipt. JIT binds an exact import allowlist, resolved
+signature/provider map, immutable image-generation identity and retirement
+receipt. An image can retire only after it is unpublished and all active-call
+and suspended-continuation leases are zero. External FFI and runtime-to-generated
+callbacks are not part of R1.
 ## 11. Elaboration and evaluation preservation
 
 Field puns and grouped forwarding are eliminated before MIR while preserving source-order evaluation and static identities. A scoped import/use group changes only compile-time resolution. Multiline String dedent is completed by the scanner before `ConstString`; interpolation segments retain ordinary left-to-right evaluation.

@@ -12247,6 +12247,18 @@ def main() -> int:
             "tools/generators/refresh_source_tree_manifest.py",
             "tools/validators/validate_hir_mir_machine_contract.py",
             "tools/validators/validate_continuation_interface.py",
+            "decisions/language/Design_Deeplus_Internal_Runtime_ABI_R1.md",
+            "schemas/language/internal-runtime-abi-r1.schema.json",
+            "schemas/language/runtime-helper-registry-r1.schema.json",
+            "schemas/language/internal-runtime-target-projection-r1.schema.json",
+            "schemas/language/internal-runtime-artifact-binding-receipt-r1.schema.json",
+            "schemas/language/internal-runtime-abi-fixtures-r1.schema.json",
+            "spec/contracts/internal-runtime-abi-r1.json",
+            "spec/contracts/runtime-helper-registry-r1.json",
+            "spec/features/catalog/chunks/part-0026.json",
+            "spec/diagnostics/catalog/chunks/part-0030.json",
+            "tests/fixtures/current/internal-runtime-abi-r1.json",
+            "tools/validators/validate_internal_runtime_abi.py",
         ])
     required.append("release/candidate-state.json" if args.candidate else "current/current-pointer.json")
     for rel in required:
@@ -12287,6 +12299,23 @@ def main() -> int:
         check(
             process.returncode == 0,
             "R38_CONTINUATION_INTERFACE",
+            detail[-4000:],
+        )
+
+        r37_validator = root / "tools/validators/validate_internal_runtime_abi.py"
+        process = subprocess.run(
+            [sys.executable, str(r37_validator), "--root", str(root)],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R37_INTERNAL_RUNTIME_ABI",
             detail[-4000:],
         )
 
@@ -13510,6 +13539,21 @@ def main() -> int:
         and cranelift_managed.get("raw_pointer_fallback") is False
         and cranelift_debug.get("separate_debug_digest") is True
         and cranelift_debug.get("debug_info_is_semantic_authority") is False
+        and cranelift_contract.get("internal_runtime_abi_guard", {}).get(
+            "logical_abi_id"
+        ) == "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1"
+        and cranelift_contract.get("internal_runtime_abi_guard", {}).get(
+            "outcome_tags"
+        ) == ["NORMAL", "ERROR", "DEFECT", "CANCELLATION"]
+        and cranelift_contract.get("internal_runtime_abi_guard", {}).get(
+            "exact_digest_compatibility_only"
+        ) is True
+        and cranelift_contract.get("internal_runtime_abi_guard", {}).get(
+            "host_unwind_across_boundary"
+        ) is False
+        and cranelift_contract.get("internal_runtime_abi_guard", {}).get(
+            "canonical_promotion_ready"
+        ) is False
         and (root / "crates/deeplus-codegen-cranelift/Cargo.toml").is_file(),
         "CRANELIFT_HIR_MIR_PROJECTION_BOUNDARY",
         (

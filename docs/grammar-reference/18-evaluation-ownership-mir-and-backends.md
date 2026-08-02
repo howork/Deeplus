@@ -310,6 +310,30 @@ object/linker 또는 JIT import map을 고정한다. Error, Defect,
 Cancellation, suspension과 cleanup은 명시적 MIR edge로 유지되며 native
 exception, host unwind 또는 임의 trap으로 대체할 수 없다.
 
+internal runtime ABI R1은 source 문법이 아니라 MIR 이후의 implementation
+contract다. fixed primitive scalar만 direct이고 aggregate/nominal은 typed
+indirect slot이다. aggregate result는 normal sret slot을 사용하며 target
+register 분할은 없다. dispatcher 결과는 `COMPLETE(OutcomeTag) |
+PARKED(ContinuationReceiptId)`다. 완료된 호출에서만 `NORMAL(0)`,
+`ERROR(1)`, `DEFECT(2)`, `CANCELLATION(3)` 가운데 하나가 선택되고 선택되지
+않은 slot은 초기화되지 않는다. `PARKED`는 outcome을 commit하지 않고 owner,
+loan, cleanup token과 root를 continuation receipt로 한 번 옮기는 별도
+transition이다.
+
+호출 전에는 argument 평가·acquire·ABI와 helper signature 검증·slot 준비·
+root publication을 마친 뒤 `ownership_commit`을 정확히 한 번 수행한다.
+entry 전 실패만 caller owner를 보존하며 entry 뒤 outcome은 transferred
+input을 rollback하지 않는다. xVM helper table, AOT symbol sidecar와 JIT
+import map은 모두 같은 logical helper ID/signature set을 결속한다. exact ABI
+digest가 다르거나 host unwind가 경계를 넘으면 실행 전에 거부한다.
+
+현재 이 계약은 Stable design이지만 product support는 `NOT_RUN`이다.
+managed-reference와 suspension dependency digest도 아직 정본에 결속되지
+않았으므로 해당 helper는 fail-closed한다. suspending helper 여섯 개는 active
+allowlist에서 제외되며, function-static/lazy/mutex의 host blocking은
+`COMPLETE`-only이고 semantic suspension이 아니다. external FFI는 별도 Preview
+경계이며 이 계약이 활성화하지 않는다.
+
 ## 3. 무엇이 관찰 가능한가
 
 ### 3.1 관찰 event

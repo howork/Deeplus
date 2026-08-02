@@ -1,0 +1,878 @@
+{
+  "schema": "deeplus.runtime-helper-registry/r1",
+  "revision": 1,
+  "runtime_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+  "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+  "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+  "helper_rows": [
+    {
+      "runtime_helper_id": "RuntimeHelperId:actor.await_reply",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.await_reply/r1",
+      "helper_version": 1,
+      "terminator_kind": "ACTOR_OP",
+      "operation": "AWAIT_REPLY",
+      "arguments_record_id": "RuntimeAbiRecordId:actor.await_reply.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:actor.await_reply.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY",
+        "OPAQUE_HANDLE"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE",
+        "PARKED"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": true,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "c8b74c420eb916d4672e620450f841c9c56c3284b4b506de5841e945418f439a",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "signature_digest": "67de7c9859f1d8d04dce3ff6fed692e9cbf3413125fe3024baca874c65812c13",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE",
+        "OPAQUE_MANAGED_HANDLE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:actor.dequeue",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.dequeue/r1",
+      "helper_version": 1,
+      "terminator_kind": "ACTOR_OP",
+      "operation": "DEQUEUE",
+      "arguments_record_id": "RuntimeAbiRecordId:actor.dequeue.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:actor.dequeue.result/r1",
+      "parameter_modes": [
+        "OPAQUE_HANDLE"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE",
+        "PARKED"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": true,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "c15079b879dd497360aa6cd4640f8f10f04195d17b86b3139f6a070a3f435f6a",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "signature_digest": "a035cf146aeef1b94a333bc2e1e20ebe60424a23a29b84ff39639018400b961b",
+      "parameter_address_classes": [
+        "OPAQUE_MANAGED_HANDLE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:actor.reply",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.reply/r1",
+      "helper_version": 1,
+      "terminator_kind": "ACTOR_OP",
+      "operation": "REPLY",
+      "arguments_record_id": "RuntimeAbiRecordId:actor.reply.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:actor.reply.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY",
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "663c2454b6bda5584ab7b7a2afd59f4857eabaa1bf3315af28d3ceb1c2ec64f1",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "a2fda9b151ce6ae38e70fe70367ed03578639a8bbcb81941868b23833dc849ad",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE",
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:actor.request",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.request/r1",
+      "helper_version": 1,
+      "terminator_kind": "ACTOR_OP",
+      "operation": "REQUEST",
+      "arguments_record_id": "RuntimeAbiRecordId:actor.request.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:actor.request.result/r1",
+      "parameter_modes": [
+        "OPAQUE_HANDLE",
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "728e7a80a50cc118ef9a4823a5f1b1e6f7929059824b6ceee541808ee43ec24b",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "7d15d30f55de42007b29cfcfd8311714f05a437607dde737bf265a543c56f561",
+      "parameter_address_classes": [
+        "OPAQUE_MANAGED_HANDLE",
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:actor.send",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.send/r1",
+      "helper_version": 1,
+      "terminator_kind": "ACTOR_OP",
+      "operation": "SEND",
+      "arguments_record_id": "RuntimeAbiRecordId:actor.send.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:actor.send.result/r1",
+      "parameter_modes": [
+        "OPAQUE_HANDLE",
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "d8ad11845e9bdebb9e92621ce7b6cd2ae4d941c42543d0cf53b2a423a3ea3481",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "e446b20f1df74530de15103c84d5e6cbb976bf493d1fe1c0cb410a8ccaeec2f1",
+      "parameter_address_classes": [
+        "OPAQUE_MANAGED_HANDLE",
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:actor.turn_begin",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.turn_begin/r1",
+      "helper_version": 1,
+      "terminator_kind": "ACTOR_OP",
+      "operation": "TURN_BEGIN",
+      "arguments_record_id": "RuntimeAbiRecordId:actor.turn_begin.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:actor.turn_begin.result/r1",
+      "parameter_modes": [
+        "OPAQUE_HANDLE"
+      ],
+      "normal_result_kind": "OPAQUE_RUNTIME_TOKEN",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "19eb505af94449a97d524feeeb4d4776639a55974f2aaaa5233f12b964017d1f",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "0e95117f6c969ee5e3447db28c2bda26be989a7b1f7e1da402b2e25c5570b2ce",
+      "parameter_address_classes": [
+        "OPAQUE_MANAGED_HANDLE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:actor.turn_end",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.turn_end/r1",
+      "helper_version": 1,
+      "terminator_kind": "ACTOR_OP",
+      "operation": "TURN_END",
+      "arguments_record_id": "RuntimeAbiRecordId:actor.turn_end.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:actor.turn_end.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "81600b2132b81551c8f3c8747e36f96c1e4f9173bfcae9d14d45a8ccd9a7d00b",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "61d0d624a8f04039f32403ca40b3f6e662de2dd82bf66d70d976440b20d966bc",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:cancellation.check",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:cancellation.check/r1",
+      "helper_version": 1,
+      "terminator_kind": "CANCEL_CHECK",
+      "operation": "CHECK",
+      "arguments_record_id": "RuntimeAbiRecordId:cancellation.check.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:cancellation.check.result/r1",
+      "parameter_modes": [
+        "BORROW_READ_CALL_BOUND"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "a8952c1148cee4a0c86a3b6a7bed3f83a3418a9aa6f92408376a614373858e0d",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "dabb3d154e195f0b475716b055b0f86c869878e42fc6eb0e812c1599330da7fe",
+      "parameter_address_classes": [
+        "CALL_BOUNDED_ADDRESS"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:once.function_static_ensure",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:once.function_static_ensure/r1",
+      "helper_version": 1,
+      "terminator_kind": "ONCE_OP",
+      "operation": "FUNCTION_STATIC_ENSURE",
+      "arguments_record_id": "RuntimeAbiRecordId:once.function_static_ensure.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:once.function_static_ensure.result/r1",
+      "parameter_modes": [
+        "OPAQUE_HANDLE"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "9fcdaa6ecc927ea0af54981c4730f850c8cf01c90f0e0bbd42a552a28f7a0f6e",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "70945c6653c23e22eb894f0a36704eb87b8806d5b13cddc7f54da35b6bc30aea",
+      "parameter_address_classes": [
+        "OPAQUE_MANAGED_HANDLE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:once.lazy_force",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:once.lazy_force/r1",
+      "helper_version": 1,
+      "terminator_kind": "ONCE_OP",
+      "operation": "LAZY_FORCE",
+      "arguments_record_id": "RuntimeAbiRecordId:once.lazy_force.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:once.lazy_force.result/r1",
+      "parameter_modes": [
+        "OPAQUE_HANDLE"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "e662d0f1848a1107d2c35f5d019ec099a9d28a636e2c8e8ea0aa4325a774f2e1",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "ff0d1342c6890702222929ec8aa2368ac247645144ccd9a65bd88d01778d0157",
+      "parameter_address_classes": [
+        "OPAQUE_MANAGED_HANDLE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:provider.dispatch",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:provider.dispatch/r1",
+      "helper_version": 1,
+      "terminator_kind": "PROVIDER_OP",
+      "operation": "DISPATCH",
+      "arguments_record_id": "RuntimeAbiRecordId:provider.dispatch.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:provider.dispatch.result/r1",
+      "parameter_modes": [
+        "BORROW_READ_CALL_BOUND",
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "58da40946c43b88295ddea030974aa0fc88c90d2c489d066af38a6d43ddc3d36",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "47b9aae525aa43740eb881acd61bd4b1400805ceac37abe025d3de1bb4550844",
+      "parameter_address_classes": [
+        "CALL_BOUNDED_ADDRESS",
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:run.await",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.await/r1",
+      "helper_version": 1,
+      "terminator_kind": "RUN_OP",
+      "operation": "AWAIT",
+      "arguments_record_id": "RuntimeAbiRecordId:run.await.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:run.await.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE",
+        "PARKED"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": true,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "e61a5d2946ca2149fc24162c907a5b6b7d2751943a0d6d1a3bf31f85aa91b464",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "signature_digest": "6aa1ee74ebc27b3e757bd410eee33c36d0b70104b63f6a7ed78c205b402d98b5",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:run.cancel_then_join",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.cancel_then_join/r1",
+      "helper_version": 1,
+      "terminator_kind": "RUN_OP",
+      "operation": "CANCEL_THEN_JOIN",
+      "arguments_record_id": "RuntimeAbiRecordId:run.cancel_then_join.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:run.cancel_then_join.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE",
+        "PARKED"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": true,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "9f77617339ab58e906a2137383ab043b6357f35c42dd7cbf4ed0e0f04f90b18e",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "signature_digest": "de30414f99506da7d902d8dc799cd4521ea4584bf76b67fd573dccc8e19d27ca",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:run.exit",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.exit/r1",
+      "helper_version": 1,
+      "terminator_kind": "RUN_OP",
+      "operation": "EXIT",
+      "arguments_record_id": "RuntimeAbiRecordId:run.exit.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:run.exit.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "0bb4096538eab06957bfc08769f91f1982980e537e5577f2a396bc05951ac995",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "d47089460f69d5a18f2aa127125fcfdba526884a449028cbbcc3ce3330e32269",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:run.join",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.join/r1",
+      "helper_version": 1,
+      "terminator_kind": "RUN_OP",
+      "operation": "JOIN",
+      "arguments_record_id": "RuntimeAbiRecordId:run.join.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:run.join.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE",
+        "PARKED"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": true,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "59950927e883f6a2a02657f2293ca41258ca5c92dcf71ccea35d165c6b3db9e8",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "signature_digest": "abe5995553ac9c0a80f4f9570969e78a932d6e38bf3332de1689d674c74bdb09",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:run.spawn",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.spawn/r1",
+      "helper_version": 1,
+      "terminator_kind": "RUN_OP",
+      "operation": "SPAWN",
+      "arguments_record_id": "RuntimeAbiRecordId:run.spawn.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:run.spawn.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "OPAQUE_RUNTIME_TOKEN",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "ff1ebd3a5f21f13e0ed7620665575fa556751f1d1ca8b16515df7ad93b36b7d4",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "732c53722d868c1669197f0b6311385821ca3eeff043728a65f764d34a48e3d9",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:suspension.park",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:suspension.park/r1",
+      "helper_version": 1,
+      "terminator_kind": "SUSPEND",
+      "operation": "PARK",
+      "arguments_record_id": "RuntimeAbiRecordId:suspension.park.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:suspension.park.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "PARKED",
+        "COMPLETE"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": true,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "9c37f65cb68872f3c05ab67b06162d6b36e5d7648722fe47c8ab7948a4123f8b",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+      "signature_digest": "912fbc5a701b1ab0145cf3f82552bbb685edbe4cd5ee6b5a423faa04b96b427d",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:sync.lock_acquire",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.lock_acquire/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "LOCK_ACQUIRE",
+      "arguments_record_id": "RuntimeAbiRecordId:sync.lock_acquire.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:sync.lock_acquire.result/r1",
+      "parameter_modes": [
+        "BORROW_READ_CALL_BOUND"
+      ],
+      "normal_result_kind": "OPAQUE_RUNTIME_TOKEN",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": true,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "31a58b2cb2c958f5fc2cfce66d8caa5d0b0122d96db2c4bde16fb8d32253d77d",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "79dcd5a4af4a493df599522e302b690032fee189288ab64a263d05bb99be6695",
+      "parameter_address_classes": [
+        "CALL_BOUNDED_ADDRESS"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:sync.lock_release",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.lock_release/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "LOCK_RELEASE",
+      "arguments_record_id": "RuntimeAbiRecordId:sync.lock_release.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:sync.lock_release.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "14e1c7a084e0e98ed9bc2404f4637b18eb704ef3616afc4f2289e18fea104b2f",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "c0ad289a64cb1d0ae08a15f234ebe52cd132ffe0ae185ad52633c04c7892366c",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:sync.observe_begin",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.observe_begin/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "OBSERVE_BEGIN",
+      "arguments_record_id": "RuntimeAbiRecordId:sync.observe_begin.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:sync.observe_begin.result/r1",
+      "parameter_modes": [
+        "BORROW_READ_CALL_BOUND"
+      ],
+      "normal_result_kind": "OPAQUE_RUNTIME_TOKEN",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "5be63c000d2d8a612b0f86a227414a5e641d869295497eb91ff9b0f7d4d0f3fe",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "db48e687c8fb46ebd5b9cae190515966b63f519a7821f1a35e450cb2aad91a46",
+      "parameter_address_classes": [
+        "CALL_BOUNDED_ADDRESS"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:sync.observe_end",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.observe_end/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "OBSERVE_END",
+      "arguments_record_id": "RuntimeAbiRecordId:sync.observe_end.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:sync.observe_end.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "1cf249294539bc4279961b58fe7565179560334f344f3f946a361c53cd32acd4",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "0ed767d1977aa9bc20549125c3ca551731adf5f890a8dcf13f8436932bc3e6f1",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:sync.replace_commit",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.replace_commit/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "REPLACE_COMMIT",
+      "arguments_record_id": "RuntimeAbiRecordId:sync.replace_commit.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:sync.replace_commit.result/r1",
+      "parameter_modes": [
+        "INOUT_EXCLUSIVE_CALL_BOUND",
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "AGGREGATE_SLOT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT",
+        "CANCELLATION"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": true,
+      "ownership_profile_digest": "713966ee67cfed6669d146caecc923cd010528b4851f9415318a1402d28c8236",
+      "managed_reference_profile_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "d96959c77f0a3bd776d2c7b4d03ca87418f50e7d233dea093362f826ebd970ea",
+      "parameter_address_classes": [
+        "CALL_BOUNDED_ADDRESS",
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    }
+  ],
+  "conditional_extension_rows": [
+    {
+      "runtime_helper_id": "RuntimeHelperId:managed.allocate_slow",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:managed.allocate_slow/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "MANAGED_ALLOCATE_SLOW",
+      "arguments_record_id": "RuntimeAbiRecordId:managed.allocate_slow.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:managed.allocate_slow.result/r1",
+      "parameter_modes": [
+        "COPY_VALUE",
+        "COPY_VALUE"
+      ],
+      "normal_result_kind": "MANAGED_HANDLE",
+      "admitted_outcomes": [
+        "NORMAL",
+        "ERROR",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": true,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "32a53d035e3e0ed9385cce15cf1ca0bf982c714d30aff743e05426c5c0c25431",
+      "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "0fe18c89f453adca7d76ab7fb7872b7d826b97f1ba8022ab3ee9db3c18642d53",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE",
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:managed.safepoint_enter",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:managed.safepoint_enter/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "MANAGED_SAFEPOINT_ENTER",
+      "arguments_record_id": "RuntimeAbiRecordId:managed.safepoint_enter.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:managed.safepoint_enter.result/r1",
+      "parameter_modes": [
+        "BORROW_READ_CALL_BOUND"
+      ],
+      "normal_result_kind": "OPAQUE_RUNTIME_TOKEN",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": true,
+      "may_collect": true,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "89e7bbbe98566547b5cbb0b6b91cd1779d9b804c274acdd7ab1e84d2961862c5",
+      "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "55390722b5bb916bc26aea8dd2e2c7b95d18d23d8da9497089df2a801c77b605",
+      "parameter_address_classes": [
+        "CALL_BOUNDED_ADDRESS"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    },
+    {
+      "runtime_helper_id": "RuntimeHelperId:managed.safepoint_leave",
+      "runtime_helper_signature_id": "RuntimeHelperSignatureId:managed.safepoint_leave/r1",
+      "helper_version": 1,
+      "terminator_kind": "SYNC_OP",
+      "operation": "MANAGED_SAFEPOINT_LEAVE",
+      "arguments_record_id": "RuntimeAbiRecordId:managed.safepoint_leave.args/r1",
+      "result_record_id": "RuntimeAbiRecordId:managed.safepoint_leave.result/r1",
+      "parameter_modes": [
+        "CONSUME_ON_ENTRY"
+      ],
+      "normal_result_kind": "UNIT",
+      "admitted_outcomes": [
+        "NORMAL",
+        "DEFECT"
+      ],
+      "completion_modes": [
+        "COMPLETE"
+      ],
+      "may_block": false,
+      "may_collect": false,
+      "may_suspend": false,
+      "observes_cancellation": false,
+      "ownership_profile_digest": "cca2b0b7a6c3a66b9e837426b58262a003e078497c1e0a8e8339be49971ab6ad",
+      "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+      "continuation_interface_digest_or_null": null,
+      "signature_digest": "dda00ff4a5e6823f0522f488a213ce7081b19ec4f3cf50584053da63b0fdf566",
+      "parameter_address_classes": [
+        "NON_ADDRESS_VALUE"
+      ],
+      "managed_referent_or_interior_address_cross_boundary": false
+    }
+  ],
+  "expected_counts": {
+    "declared_base_helpers": 22,
+    "active_base_helpers": 22,
+    "conditional_continuation_helpers": 6,
+    "conditional_managed_helpers": 3,
+    "active_conditional_helpers": 3,
+    "runtime_callbacks": 0
+  },
+  "digest_material": {
+    "runtime_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+    "revision": 1,
+    "managed_reference_profile_digest_or_null": "4e4a0145319db64f1857f8619dddffffba7c5f0be1de3c69c385290e3a2a20b3",
+    "continuation_interface_digest_or_null": "fd5c28412c49c0405943f4ea13c9a196073de23030a9381f5d0bcb4a12b10ff1",
+    "helper_rows_digest": "5bafd3881bcfa45ffe23c4c78c5673f8e1510c556fc40d87ba27ccd7c4887d02",
+    "conditional_extension_rows_digest": "28f8ab72bdee0318362181d29724225d49c154509418fb2b7bddfd8434223d70"
+  },
+  "helper_allowlist_digest": "a2b54d778b451c3475809f96b9ae597a8814eaf4aad5dcd36c2f5abf968d26bd",
+  "registry_digest": "622c8bdbe71d27709b69b544cba556dc256e5eda0083b3c22ceb7884ccd4c5e2"
+}
