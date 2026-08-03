@@ -3237,6 +3237,61 @@
     },
     "context_policy_authority": "spec/patterns/pattern-context-policies.json",
     "lowering_authority": "spec/patterns/pattern-lowering.json",
+    "dynamic_lowering_trace_closure": {
+      "contract_path": "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
+      "feature_ids": [
+        "or_alias_pattern",
+        "pattern_binding_control_family",
+        "pattern_decomposition"
+      ],
+      "trace_stage": "DYNAMIC_LOWERING",
+      "subject_evaluation_count": 1,
+      "structural_probe": "PURE_NONCONSUMING",
+      "probe_binders": "READ_ONLY_NONESCAPING",
+      "guard": {
+        "admission_count": "ZERO_OR_ONE",
+        "type": "Bool",
+        "purity": "PURE",
+        "evaluation_count_after_structural_success": 1
+      },
+      "binding_commit": {
+        "top_pattern_attempt_commit_count_on_success": 1,
+        "child_pattern_row_binding_commit": "COMPOSITIONAL_REQUIREMENT_COLLAPSED_INTO_TOP_PATTERN_ATTEMPT_COMMIT",
+        "multiple_executable_commits": false
+      },
+      "or_pattern": {
+        "branch_selection": "FIRST_SOURCE_ORDERED_STRUCTURAL_SUCCESS",
+        "binder_interface": "EXACT_EQUAL",
+        "retry_or_backtracking": false,
+        "false_guard_retries_later_branch": false
+      },
+      "alias_pattern": {
+        "subject_identity": "SAME",
+        "clone": false,
+        "probe_action": "STAGE_BORROW_REQUIREMENT",
+        "loan_acquisition": "FINAL_PATTERN_ATTEMPT_COMMIT_ONLY"
+      },
+      "failure_publication": {
+        "bindings": 0,
+        "moves": 0,
+        "loans": 0,
+        "views": 0,
+        "authority": 0
+      },
+      "pattern_control_false_dispositions": {
+        "if_let": "FALSE_BRANCH",
+        "while_let": "LOOP_EXIT",
+        "for_let": "CANDIDATE_SKIP"
+      },
+      "delegated_to_pattern_match_ownership_split": [
+        "OR_PATTERN_BINDINGS_INCONSISTENT",
+        "ALIAS_PATTERN_OWNERSHIP_CONFLICT"
+      ],
+      "pattern_match_ownership_split_trace_row_changed": false,
+      "grammar_changed": false,
+      "source_activation": "none",
+      "product_support": "NOT_RUN"
+    },
     "tuple_pattern_current": "exact fixed product; (p) grouping, (p,) one-Tuple, no Tuple rest",
     "record_rest_current": "exact by default; .._ open-ignore; ..name exact residual",
     "map_pattern_current": "exact/open over literal or pinned stable keys and a pure total closed descriptor",

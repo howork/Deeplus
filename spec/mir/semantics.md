@@ -722,22 +722,37 @@ copy, language-observable allocation, mutation, adjoint, shareability
 inference, or isolation crossing. Backend representation and incidental
 storage strategy remain unselected.
 
-A successful Pattern owner emits `subject_evaluate`, `subject_acquire`,
-`test_plan_build`, `structural_test`, `probe_bind`, optional
-`guard_evaluate`, `atomic_commit`, `final_bind`, `body`, and
-`exit_or_join`. A structural mismatch terminates after `structural_test`; a
-false guard terminates after `guard_evaluate`. In both cases only the
-context-bound `exit_or_join` edge follows. TestPlan and probe events are
-nonconsuming. Failure before `atomic_commit` has zero ownership commit,
-`pattern_move_count`, irreversible borrow, authority, escape, suspension,
-partial binding, residual-view publication, and final binders. Guarded-binding
-failure transfers to its required `else`; `for let` mismatch or false guard
-filters exactly one candidate; assertive binding emits one
-`PatternMatchDefect`; ordered catch continues to the next handler or
+A Pattern owner lowers to exactly one logical `PatternAttempt`. The attempt
+emits `subject_evaluate` once, then `subject_acquire`, `test_plan_build`, a pure
+nonconsuming `structural_test`, read-only nonescaping `probe_bind` events, zero
+or one `guard_evaluate`, exactly one `atomic_commit` after final guarded
+success, `final_bind`, `body`, and `exit_or_join`. The optional guard has type
+`Bool`, is pure, runs once only after structural success, and may read probe
+binders without moving, escaping, suspending, mutating through, or acquiring a
+loan, view, or authority from them.
+
+Every child pattern-row `BINDING_COMMIT` entry is a compositional commit
+requirement accumulated by the enclosing `PatternAttempt`. All such entries
+collapse into its single top-level `atomic_commit`; they are not nested or
+multiple executable commits. An Or probe chooses the first source-ordered
+branch whose structural probe succeeds, requires the exact same canonical
+binder interface on every branch, and performs no retry or backtracking. A
+false owner guard after that selection does not try another Or branch. An
+Alias probe preserves the same subject identity, performs no clone, and stages
+a borrow requirement; the actual loan is acquired only by the final commit.
+
+A structural mismatch terminates after `structural_test`; a false guard
+terminates after `guard_evaluate`. Neither publishes bindings, moves, loans,
+views, or authority, and neither leaves final binders. For pattern-control
+owners the context-bound disposition is exact: `if let` takes the false
+branch, `while let` exits the loop, and `for let` skips the current candidate.
+Guarded-binding failure transfers to its required `else`; assertive binding
+emits one `PatternMatchDefect`; ordered catch continues to the next handler or
 propagates. Each phase carries the exact DPM fixture identity and attempt
-disposition. Or-pattern branches expose one canonical binder interface, alias
-binding is a borrow event, and a place join retains only the intersection of
-incoming capabilities.
+disposition. `OR_PATTERN_BINDINGS_INCONSISTENT` and Alias ownership conflict
+remain delegated to `pattern_match_ownership_split`; that feature's trace row
+is unchanged. A place join retains only the intersection of incoming
+capabilities.
 
 Tuple Pattern lowering is an exact static product projection. Record/Map
 patterns first compare their exact or explicitly open row/key shapes; nominal

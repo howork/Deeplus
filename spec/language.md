@@ -1454,16 +1454,25 @@ runtime type-test Pattern node. A callable's leading parameter Identifier owns
 the public type annotation; an optional following structural Pattern is checked
 for irrefutability and lowers only as body-entry decomposition.
 
-Every refutable owner follows one phase order: evaluate the subject once;
-acquire its place/owner; build and execute a nonconsuming structural TestPlan;
-expose nonowning probe binders; evaluate zero or one terminating pure Bool
-guard; atomically commit moves/borrows/bindings; expose final binders; run the
-body; then perform the owner-specific exit or join. A failed structural test or
-guard performs no component move, irreversible borrow, authority acquisition,
-escape, suspension, residual-view publication, or partial binding. Mismatch
-disposition belongs to the context: skip a loop candidate, choose the next
-match arm/clause/catch, take the false branch, run the required guarded-binding
-exit, or raise `PatternMatchDefect` for an explicit assertive binding.
+Every refutable owner creates exactly one logical `PatternAttempt` and follows
+one phase order: evaluate the subject once; acquire its place/owner; build and
+execute a pure nonconsuming structural TestPlan; expose read-only nonescaping
+probe binders; evaluate zero or one terminating pure Bool guard exactly once
+after structural success; and, only after final guarded success, perform
+exactly one logical commit of all moves, loans, views, and bindings. Final
+binders are exposed only after that commit, followed by the body and the
+owner-specific exit or join. A child pattern-row `BINDING_COMMIT` is a
+compositional requirement of the enclosing attempt and collapses into this
+single top-level commit; it is not an independently executable commit.
+
+A failed structural probe or false guard publishes no binding, component move,
+loan, residual view, or authority. Probe binders may be read by the guard but
+may not move, escape, suspend, mutate through, or acquire a loan, view, or
+authority. The pattern-control dispositions are exact: `if let` takes its
+false branch, `while let` exits its loop, and `for let` skips the current
+candidate. Other mismatch dispositions remain context-owned: choose the next
+match arm/clause/catch, run the required guarded-binding exit, or raise
+`PatternMatchDefect` for an explicit assertive binding.
 
 Current structural carriers are exact Tuple products; closed List/bounded-List
 descriptors; exact/open structural Record and Map rows; Enum positional or
@@ -1492,11 +1501,17 @@ rest binding.
 Pin Patterns read one stable place or static value exactly once. Bounded range
 and relational Patterns are current only for closed exactly ordered domains
 such as Int, UInt, Char and an ordered Enum; Float ranges remain Preview. An
-Or-pattern requires identical observable binders with the same canonical types,
-ownership modes, mutability, and regions on every branch; path/source order is
-not identity. `pattern as name` creates a borrow alias rather than a clone, and
-it cannot coexist with a moved or exclusive descendant. Cross-arm place joins
-preserve only capabilities valid on every incoming arm.
+Or-pattern probes branches in source order, selects the first structurally
+successful branch, and requires an exactly equal binder interface: names,
+canonical types, ownership modes, mutability, and regions. There is no retry or
+backtracking, including after a false owner guard. Path/source order is not
+identity. `pattern as name` preserves the same subject identity, performs no
+clone, and stages a borrow whose actual loan is acquired only by the enclosing
+`PatternAttempt` final commit; it cannot coexist with a moved or exclusive
+descendant. `OR_PATTERN_BINDINGS_INCONSISTENT` and Alias ownership conflict
+remain delegated to `pattern_match_ownership_split`, whose trace row is
+unchanged. Cross-arm place joins preserve only capabilities valid on every
+incoming arm.
 
 A match head may use the bounded-binder Pattern
 `lower OrderedRelOp name OrderedRelOp upper`. The match subject is evaluated

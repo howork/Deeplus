@@ -173,13 +173,17 @@ policy. Plain `let`/`var`, bare `for`, callable/lambda parameter decomposition,
 and direct-local Pattern assignment require irrefutability; guarded
 `let`/`var`, `if let`, `while let`, `for let`, ordered `catch`, and `match`
 admit refutable patterns under their own failure dispositions. `let!`/`var!`
-are explicitly refutable and raise `PatternMatchDefect` on mismatch. The
-subject is evaluated once, structural testing is nonconsuming, probe binders
-are nonowning, the optional guard is terminating/pure/Bool, and final
-moves/borrows/bindings commit atomically only after success. Failure commits no
-binding, partial move, irreversible borrow, rest view, escape, suspension, or
-authority. `while let` failure completes the loop, `for let` failure skips the
-candidate, and an unmatched catch continues or propagates.
+are explicitly refutable and raise `PatternMatchDefect` on mismatch. Each
+refutable owner creates one `PatternAttempt`: the subject is evaluated once;
+structural probing is pure and nonconsuming; probe binders are read-only and
+nonescaping; and zero or one terminating pure Bool guard runs exactly once
+after structural success. Only final guarded success performs exactly one
+logical commit of all bindings, moves, loans, views, and authority. Child
+pattern-row `BINDING_COMMIT` entries are compositional requirements that
+collapse into that single top-level commit, not separate executable commits.
+Failure or a false guard publishes none of those results. `if let` takes its
+false branch, `while let` exits the loop, `for let` skips the candidate, and an
+unmatched catch continues or propagates.
 
 Current coverage domains include enum/union/Option/Result alternatives, exact
 Tuple products, exact/open Record and Map rows, closed List length/rest cells,
@@ -1059,7 +1063,20 @@ Dynamic conversion admission is the conjunction `ProfileActive ∧ ProviderBound
 
 Field punning elaborates `label` to `label: label` before construction-row checking, without inserting clone, move, authority or lookup. Grouped forwarding elaborates to a finite ordered list of ordinary forwarding declarations and rejects duplicate or colliding names. Scoped import/use grouping pushes exactly one compile-time lexical frame for its `in` block and pops it on every exit. Enum comma lists, multiline indentation, and the single-guard law are parser/scanner obligations whose normalized HIR is identical to their unsugared forms.
 
-`if let`, `while let`, and `for let` use one transactional pattern-commit judgment: evaluate once, acquire, compile a nonconsuming TestPlan, test, expose probe binders, evaluate zero or one guard, commit atomically, expose final binders, execute, and exit/join. Failed `for let` matching or a false guard skips the current element; it is not an error or loop failure.
+`if let`, `while let`, and `for let` use one transactional `PatternAttempt`
+judgment: evaluate once, acquire, compile and run a pure nonconsuming TestPlan,
+expose read-only nonescaping probe binders, evaluate zero or one pure Bool
+guard once after structural success, collapse every child `BINDING_COMMIT`
+requirement into exactly one final logical commit, expose final binders,
+execute, and exit/join. An Or probe selects the first source-ordered structural
+success with an exactly equal binder interface and never retries or
+backtracks. An Alias probe preserves subject identity, performs no clone, and
+stages a borrow; the loan is acquired only at final commit. Failure or a false
+guard publishes no binding, move, loan, view, or authority. `if let` takes the
+false branch, `while let` exits the loop, and failed `for let` matching or a
+false guard skips the current element. `OR_PATTERN_BINDINGS_INCONSISTENT` and
+Alias ownership conflict remain delegated to `pattern_match_ownership_split`,
+whose trace row is unchanged.
 
 The quarantine-scope predicate is design-seed-only and nonemitting. Even its minimum sound profile requires a typed immutable export and rejects pointer, authority, borrow, resource, closure, run, actor, suspension and outer-mutation escape. No source profile activates it and no product support is claimed.
 

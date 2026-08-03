@@ -31,14 +31,14 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `107e36793d039e78f97943cc911b892dfb3d0b2e7f862ac62b56248342e96d32` |
+| `human_language` | `spec/language.md` | `2894afa7d2a638921e5238562592f9e0be585bb768c69e1f07a6f2a51a91cdbd` |
 | `exact_grammar` | `spec/grammar/deeplus.ebnf` | `303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a` |
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `cfb11253ff4b67122bfa25786a05c4598da71ce682ed8de822a9a092d6f7cc35` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `0744e9353a24a016c279ceb91c3585cf5094608e59f676515b7e254f4223f03c` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `658f4d6dbc78862862c392ee37b242b172a0a2320c1ed82974b889d1dced4a50` |
-| `type_system` | `spec/types/type-system.md` | `5277f49f2df7e700066f0be90378deb7295c54f4035bf5d5b5be6f7cf6a81219` |
-| `mir_observable_semantics` | `spec/mir/semantics.md` | `8c620428b6f2672e9a1ffa8b2a2c41f0892ff4548cab8db18f539c1e5ae94077` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `efaa8bf5d41084acece2dd5f6c063297fd3d80b9a648d3fe31fd3e1bd765a5db` |
+| `type_system` | `spec/types/type-system.md` | `9916e26631b6e54ff32aede76ef7964d765bbcdfeefbe366695aa829aff6aa9d` |
+| `mir_observable_semantics` | `spec/mir/semantics.md` | `4cf57caac4b0dca181d69b7680febdc3c95362adf7b11e82afe463cf69c068a8` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `92fd16dc3bc87f43521e6066159015adcde128300dfe9f1bab866a4d04401370` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `35c20cccef65dcb19c0477b4470a11c8f97a08f8a0dde4cef1098b573df998f1` |
 | `actor_concurrency_coherence` | `spec/contracts/actor-concurrency-coherence.json` | `355c295018e32054e08082b07494efdd0d7f282a2df3ddc923d4ad2cb3a9f7c3` |

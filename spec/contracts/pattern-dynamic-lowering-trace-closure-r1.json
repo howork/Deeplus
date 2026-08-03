@@ -1,0 +1,393 @@
+{
+  "$schema": "../../schemas/language/pattern-dynamic-lowering-trace-closure-r1.schema.json",
+  "schema": "deeplus.pattern-dynamic-lowering-trace-closure/r1",
+  "revision": "r59-local-pattern-dynamic-lowering-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "fb3e98888f947d0e7b45f713efe3b017a55c976a",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_ids": [
+    "or_alias_pattern",
+    "pattern_binding_control_family",
+    "pattern_decomposition"
+  ],
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "scope_fence": {
+    "transitioned_cells": [
+      {
+        "feature_id": "or_alias_pattern",
+        "stage": "DYNAMIC_LOWERING",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      },
+      {
+        "feature_id": "pattern_binding_control_family",
+        "stage": "DYNAMIC_LOWERING",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      },
+      {
+        "feature_id": "pattern_decomposition",
+        "stage": "DYNAMIC_LOWERING",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      }
+    ],
+    "excluded_feature_stage_cells": [
+      "pattern_match_ownership_split/STATIC_SEMANTICS",
+      "pattern_match_ownership_split/DYNAMIC_LOWERING"
+    ],
+    "excluded_reverse_dependents_of_pattern_decomposition": [
+      "assertive_pattern_binding",
+      "irrefutable_parameter_entry_pattern",
+      "pattern_advanced_surface_preview_design",
+      "pattern_condition_chain",
+      "pin_range_relational_pattern",
+      "refutable_catch_pattern",
+      "sequence_positional_rest_pattern",
+      "structured_record_map_pattern",
+      "transparent_nominal_named_enum_pattern",
+      "tuple_bare_product_surface"
+    ],
+    "preview_pattern_rows_transition_count": 0,
+    "other_target_cell_transition_count": 0,
+    "ownership_split_transition_count": 0,
+    "reverse_dependent_transition_count": 0
+  },
+  "current_registry_alignment": {
+    "pattern_lowering_registry": "spec/patterns/pattern-lowering.json",
+    "pattern_kind_registry": "spec/patterns/pattern-kinds.json",
+    "hir_mir_lowering_registry": "spec/contracts/hir-mir-lowering-registry.json",
+    "current_mapping_count": 29,
+    "mappings": [
+      {"pattern_lowering_id": "PL-BINDER", "pattern_kind_id": "PK-BINDER", "hir_mir_row_id": "HM-LR-PAT-001"},
+      {"pattern_lowering_id": "PL-UNION-ALTERNATIVE-BINDER", "pattern_kind_id": "PK-UNION-ALTERNATIVE-BINDER", "hir_mir_row_id": "HM-LR-PAT-002"},
+      {"pattern_lowering_id": "PL-TYPED-BINDER", "pattern_kind_id": "PK-TYPED-BINDER", "hir_mir_row_id": "HM-LR-PAT-003"},
+      {"pattern_lowering_id": "PL-WILDCARD", "pattern_kind_id": "PK-WILDCARD", "hir_mir_row_id": "HM-LR-PAT-004"},
+      {"pattern_lowering_id": "PL-UNIT", "pattern_kind_id": "PK-UNIT", "hir_mir_row_id": "HM-LR-PAT-005"},
+      {"pattern_lowering_id": "PL-LITERAL", "pattern_kind_id": "PK-LITERAL", "hir_mir_row_id": "HM-LR-PAT-006"},
+      {"pattern_lowering_id": "PL-PARENTHESIZED", "pattern_kind_id": "PK-PARENTHESIZED", "hir_mir_row_id": "HM-LR-PAT-007"},
+      {"pattern_lowering_id": "PL-TUPLE", "pattern_kind_id": "PK-TUPLE", "hir_mir_row_id": "HM-LR-PAT-008"},
+      {"pattern_lowering_id": "PL-LIST-EXACT", "pattern_kind_id": "PK-LIST-EXACT", "hir_mir_row_id": "HM-LR-PAT-009"},
+      {"pattern_lowering_id": "PL-LIST-IGNORED-TAIL", "pattern_kind_id": "PK-LIST-IGNORED-TAIL", "hir_mir_row_id": "HM-LR-PAT-010"},
+      {"pattern_lowering_id": "PL-LIST-SUFFIX-REST", "pattern_kind_id": "PK-LIST-SUFFIX-REST", "hir_mir_row_id": "HM-LR-PAT-011"},
+      {"pattern_lowering_id": "PL-LIST-PREFIX-REST", "pattern_kind_id": "PK-LIST-PREFIX-REST", "hir_mir_row_id": "HM-LR-PAT-012"},
+      {"pattern_lowering_id": "PL-LIST-MIDDLE-REST", "pattern_kind_id": "PK-LIST-MIDDLE-REST", "hir_mir_row_id": "HM-LR-PAT-013"},
+      {"pattern_lowering_id": "PL-RECORD-EXACT", "pattern_kind_id": "PK-RECORD-EXACT", "hir_mir_row_id": "HM-LR-PAT-014"},
+      {"pattern_lowering_id": "PL-RECORD-OPEN-IGNORED", "pattern_kind_id": "PK-RECORD-OPEN-IGNORED", "hir_mir_row_id": "HM-LR-PAT-015"},
+      {"pattern_lowering_id": "PL-RECORD-OPEN-CAPTURED", "pattern_kind_id": "PK-RECORD-OPEN-CAPTURED", "hir_mir_row_id": "HM-LR-PAT-016"},
+      {"pattern_lowering_id": "PL-MAP-EXACT", "pattern_kind_id": "PK-MAP-EXACT", "hir_mir_row_id": "HM-LR-PAT-017"},
+      {"pattern_lowering_id": "PL-MAP-OPEN-IGNORED", "pattern_kind_id": "PK-MAP-OPEN-IGNORED", "hir_mir_row_id": "HM-LR-PAT-018"},
+      {"pattern_lowering_id": "PL-MAP-OPEN-CAPTURED", "pattern_kind_id": "PK-MAP-OPEN-CAPTURED", "hir_mir_row_id": "HM-LR-PAT-019"},
+      {"pattern_lowering_id": "PL-NOMINAL-TRANSPARENT", "pattern_kind_id": "PK-NOMINAL-TRANSPARENT", "hir_mir_row_id": "HM-LR-PAT-020"},
+      {"pattern_lowering_id": "PL-VARIANT", "pattern_kind_id": "PK-VARIANT", "hir_mir_row_id": "HM-LR-PAT-021"},
+      {"pattern_lowering_id": "PL-VARIANT-NAMED", "pattern_kind_id": "PK-VARIANT-NAMED", "hir_mir_row_id": "HM-LR-PAT-022"},
+      {"pattern_lowering_id": "PL-PIN", "pattern_kind_id": "PK-PIN", "hir_mir_row_id": "HM-LR-PAT-023"},
+      {"pattern_lowering_id": "PL-RANGE", "pattern_kind_id": "PK-RANGE", "hir_mir_row_id": "HM-LR-PAT-024"},
+      {"pattern_lowering_id": "PL-RELATIONAL", "pattern_kind_id": "PK-RELATIONAL", "hir_mir_row_id": "HM-LR-PAT-025"},
+      {"pattern_lowering_id": "PL-BOUNDED-BINDER", "pattern_kind_id": "PK-BOUNDED-BINDER", "hir_mir_row_id": "HM-LR-PAT-026"},
+      {"pattern_lowering_id": "PL-OR", "pattern_kind_id": "PK-OR", "hir_mir_row_id": "HM-LR-PAT-027"},
+      {"pattern_lowering_id": "PL-ALIAS", "pattern_kind_id": "PK-ALIAS", "hir_mir_row_id": "HM-LR-PAT-028"},
+      {"pattern_lowering_id": "PL-MOVE", "pattern_kind_id": "PK-MOVE", "hir_mir_row_id": "HM-LR-PAT-029"}
+    ],
+    "exact_or_mapping": {
+      "pattern_lowering_id": "PL-OR",
+      "pattern_kind_id": "PK-OR",
+      "hir_mir_row_id": "HM-LR-PAT-027"
+    },
+    "exact_alias_mapping": {
+      "pattern_lowering_id": "PL-ALIAS",
+      "pattern_kind_id": "PK-ALIAS",
+      "hir_mir_row_id": "HM-LR-PAT-028"
+    }
+  },
+  "context_lowering_alignment": {
+    "pattern_context_registry": "spec/patterns/pattern-context-policies.json",
+    "pattern_attempt_row_id": "HM-LR-TOP-016",
+    "if_owner_row_id": "HM-LR-TOP-008",
+    "loop_owner_row_id": "HM-LR-TOP-011",
+    "contexts": [
+      {"context_id": "PCTX-IF-LET", "hir_mir_row_ids": ["HM-LR-TOP-016", "HM-LR-TOP-008"], "failure_disposition": "FALSE_BRANCH"},
+      {"context_id": "PCTX-WHILE-LET", "hir_mir_row_ids": ["HM-LR-TOP-016", "HM-LR-TOP-011"], "failure_disposition": "LOOP_EXIT"},
+      {"context_id": "PCTX-PATTERN-CONDITION-CHAIN", "hir_mir_row_ids": ["HM-LR-TOP-016", "HM-LR-TOP-008"], "failure_disposition": "CONDITION_FALSE"},
+      {"context_id": "PCTX-BARE-FOR", "hir_mir_row_ids": ["HM-LR-TOP-016", "HM-LR-TOP-011"], "failure_disposition": "COMPILE_TIME_REJECTION_OR_CANDIDATE_SKIP"},
+      {"context_id": "PCTX-FOR-LET", "hir_mir_row_ids": ["HM-LR-TOP-016", "HM-LR-TOP-011"], "failure_disposition": "CANDIDATE_SKIP"}
+    ]
+  },
+  "dynamic_semantics": {
+    "subject_evaluation_count": 1,
+    "structural_probe": {
+      "purity": "PURE",
+      "consumption": "NONCONSUMING",
+      "determinism": "DETERMINISTIC",
+      "suspension": "NONE"
+    },
+    "probe_binders": {
+      "access": "READ_ONLY",
+      "escape": "FORBIDDEN",
+      "ownership_publication_count": 0
+    },
+    "optional_guard": {
+      "required_result_type": "Bool",
+      "purity": "PURE",
+      "evaluation_count_on_structural_success": 1,
+      "evaluation_count_on_structural_failure": 0
+    },
+    "final_commit": {
+      "logical_commit_count_on_final_guarded_success": 1,
+      "fallibility": "INFALLIBLE",
+      "timing": "AFTER_STRUCTURAL_AND_OPTIONAL_GUARD_SUCCESS",
+      "top_level_row_id": "HM-LR-TOP-016",
+      "subpattern_binding_commit_interpretation": "COMPOSITIONAL_COMMIT_REQUIREMENT",
+      "subpattern_executable_commit_count": 0,
+      "multiple_executable_commit_allowed": false
+    },
+    "failure_or_false_guard": {
+      "binding_publication_count": 0,
+      "move_publication_count": 0,
+      "loan_publication_count": 0,
+      "view_publication_count": 0,
+      "authority_publication_count": 0,
+      "context_dispositions": [
+        "FALSE_BRANCH_OR_CONDITION_FALSE",
+        "LOOP_EXIT",
+        "CANDIDATE_SKIP_OR_DISCHARGE"
+      ]
+    }
+  },
+  "or_alias_semantics": {
+    "or_pattern": {
+      "binder_interface_join": "EXACT_EQUAL_BINDER_INTERFACE",
+      "selection": "FIRST_SOURCE_ORDERED_SUCCESSFUL_BRANCH",
+      "backtracking_count": 0,
+      "retry_count": 0
+    },
+    "alias_pattern": {
+      "identity": "SAME_SUBJECT_BORROW",
+      "clone_count": 0,
+      "probe_loan_publication_count": 0,
+      "actual_loan_acquisition": "FINAL_TOP_LEVEL_COMMIT_ONLY"
+    }
+  },
+  "ownership_diagnostic_delegation": {
+    "delegate_feature_id": "pattern_match_ownership_split",
+    "delegated_conditions": [
+      "ALIAS_WITH_MOVED_DESCENDANT",
+      "ALIAS_WITH_EXCLUSIVELY_BORROWED_DESCENDANT",
+      "CROSS_BRANCH_PLACE_STATE_MISMATCH",
+      "REST_VIEW_ESCAPE"
+    ],
+    "delegate_static_semantics_transition_count": 0,
+    "delegate_dynamic_lowering_transition_count": 0
+  },
+  "rules": [
+    {"rule_id": "PDLTC-R001", "text": "R59 transitions exactly or_alias_pattern/DYNAMIC_LOWERING, pattern_binding_control_family/DYNAMIC_LOWERING, and pattern_decomposition/DYNAMIC_LOWERING from APPLICABLE_BLOCKED_BY_GAP to BOUND_DIRECT."},
+    {"rule_id": "PDLTC-R002", "text": "The 29 CURRENT pattern lowering rows map one-to-one from PL through PK to HM-LR-PAT-001 through HM-LR-PAT-029; PL-OR maps exactly to PK-OR and HM-LR-PAT-027, PL-ALIAS maps exactly to PK-ALIAS and HM-LR-PAT-028, and decomposition obeys the shared probe, guard, commit, and failure laws in PDLTC-R004 through PDLTC-R008."},
+    {"rule_id": "PDLTC-R003", "text": "The five current control contexts reuse HM-LR-TOP-016 plus the existing IF owner HM-LR-TOP-008 or LOOP owner HM-LR-TOP-011 and apply the shared probe, guard, commit, and context-failure laws in PDLTC-R004 through PDLTC-R008."},
+    {"rule_id": "PDLTC-R004", "text": "A pattern attempt evaluates its subject once, performs one pure deterministic nonconsuming structural probe, and exposes probe binders read-only and nonescaping."},
+    {"rule_id": "PDLTC-R005", "text": "An optional admitted pure Bool guard evaluates exactly once after structural success and zero times after structural failure."},
+    {"rule_id": "PDLTC-R006", "text": "Only final structural and optional-guard success performs one logical infallible top-level binding commit."},
+    {"rule_id": "PDLTC-R007", "text": "BINDING_COMMIT operations in subpattern HM rows are compositional commit requirements collapsed into the one HM-LR-TOP-016 commit and are never additional executable commits."},
+    {"rule_id": "PDLTC-R008", "text": "Mismatch or false guard publishes zero binding, move, loan, view, or authority and selects the context-specific false, exit, or skip/discharge disposition."},
+    {"rule_id": "PDLTC-R009", "text": "An Or pattern requires an exactly equal binder interface and selects the first source-ordered successful branch with no backtracking or retry; an Alias pattern is a same-subject borrow with no clone and acquires its actual loan only through the final top-level commit."},
+    {"rule_id": "PDLTC-R010", "text": "An Alias pattern is a same-subject borrow with no clone; its actual loan is acquired only by the final top-level commit."},
+    {"rule_id": "PDLTC-R011", "text": "Ownership conflicts and escape diagnostics delegate to pattern_match_ownership_split without transitioning either its STATIC_SEMANTICS or DYNAMIC_LOWERING cell."},
+    {"rule_id": "PDLTC-R012", "text": "The ten direct reverse dependents of pattern_decomposition, every Preview pattern row, and every other target cell are outside this transition overlay."},
+    {"rule_id": "PDLTC-R013", "text": "R59 introduces no source surface, AST identity, HIR identity, or MIR operation kind and supplies E2 design-static evidence only; all product lanes remain NOT_RUN and GitHub publication remains suspended."}
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "PDLTC-AC-001",
+      "audit_case_id": "OA1",
+      "class": "POSITIVE",
+      "feature_id": "or_alias_pattern",
+      "source_or_subject": "::left(x) | ::right(x) with the same binder interface",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {"joined_binder_interface": "EXACT_EQUAL", "logical_commit_count": 1},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-002",
+      "audit_case_id": "OA2",
+      "class": "BOUNDARY",
+      "feature_id": "or_alias_pattern",
+      "source_or_subject": "two Or alternatives can structurally succeed",
+      "expected": "SELECT_FIRST_SOURCE_ORDERED_SUCCESS",
+      "diagnostic_or_null": null,
+      "assertions": {"backtracking_count": 0, "retry_count": 0, "later_branch_probe_after_success_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-003",
+      "audit_case_id": "OA3",
+      "class": "POSITIVE",
+      "feature_id": "or_alias_pattern",
+      "source_or_subject": "whole @ child alias pattern over one subject",
+      "expected": "ADMIT_SAME_SUBJECT_ALIAS",
+      "diagnostic_or_null": null,
+      "assertions": {"same_subject": true, "clone_count": 0, "actual_loan_acquisition": "FINAL_TOP_LEVEL_COMMIT_ONLY"},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-004",
+      "audit_case_id": "OA4",
+      "class": "REJECT",
+      "feature_id": "or_alias_pattern",
+      "source_or_subject": "owned whole alias with a moved or exclusively borrowed descendant",
+      "expected": "REJECT",
+      "diagnostic_or_null": "ALIAS_PATTERN_OWNERSHIP_CONFLICT",
+      "assertions": {"delegate_feature_id": "pattern_match_ownership_split", "delegate_transition_count": 0, "logical_commit_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-005",
+      "audit_case_id": "PC1",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_binding_control_family",
+      "source_or_subject": "if let pattern mismatch",
+      "expected": "FALSE_BRANCH",
+      "diagnostic_or_null": null,
+      "assertions": {"context_id": "PCTX-IF-LET", "binding_publication_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-006",
+      "audit_case_id": "PC2",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_binding_control_family",
+      "source_or_subject": "while let pattern mismatch",
+      "expected": "LOOP_EXIT",
+      "diagnostic_or_null": null,
+      "assertions": {"context_id": "PCTX-WHILE-LET", "binding_publication_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-007",
+      "audit_case_id": "PC3",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_binding_control_family",
+      "source_or_subject": "for let candidate pattern mismatch",
+      "expected": "CANDIDATE_SKIP_AND_DISCHARGE_ONCE",
+      "diagnostic_or_null": null,
+      "assertions": {"context_id": "PCTX-FOR-LET", "candidate_discharge_count": 1, "logical_commit_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-008",
+      "audit_case_id": "PC4",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_binding_control_family",
+      "source_or_subject": "structural success followed by a false pure Bool guard",
+      "expected": "CONDITION_FALSE_WITH_ZERO_COMMIT",
+      "diagnostic_or_null": null,
+      "assertions": {"context_id": "PCTX-PATTERN-CONDITION-CHAIN", "guard_evaluation_count": 1, "logical_commit_count": 0, "publication_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-009",
+      "audit_case_id": "PC5",
+      "class": "REJECT",
+      "feature_id": "pattern_binding_control_family",
+      "source_or_subject": "pattern control guard has a non-Bool result",
+      "expected": "REJECT_BEFORE_LOWERING",
+      "diagnostic_or_null": "FOR_LET_FILTER_GUARD_NOT_BOOL",
+      "assertions": {"hir_residue_count": 0, "mir_residue_count": 0, "logical_commit_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-010",
+      "audit_case_id": "PD1",
+      "class": "POSITIVE",
+      "feature_id": "pattern_decomposition",
+      "source_or_subject": "successful nested structural decomposition with delayed move binder",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {"subject_evaluation_count": 1, "projection_order": "LEFT_TO_RIGHT", "logical_commit_count": 1, "move_commit_count": 1, "subpattern_executable_commit_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-011",
+      "audit_case_id": "PD2",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_decomposition",
+      "source_or_subject": "nested decomposition mismatch after a successful prefix probe",
+      "expected": "FAILURE_ATOMIC_MISMATCH",
+      "diagnostic_or_null": null,
+      "assertions": {"binding_publication_count": 0, "move_publication_count": 0, "loan_publication_count": 0, "view_publication_count": 0, "authority_publication_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PDLTC-AC-012",
+      "audit_case_id": "PD3",
+      "class": "REJECT",
+      "feature_id": "pattern_decomposition",
+      "source_or_subject": "a captured ListRestView would outlive its source owner",
+      "expected": "REJECT",
+      "diagnostic_or_null": "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE",
+      "assertions": {"delegate_feature_id": "pattern_match_ownership_split", "hidden_copy_count": 0, "view_publication_count": 0},
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "acceptance_bindings": {
+    "or_alias_pattern": {
+      "POSITIVE": ["PDLTC-AC-001", "PDLTC-AC-003"],
+      "BOUNDARY": ["PDLTC-AC-002"],
+      "REJECT": ["PDLTC-AC-004"]
+    },
+    "pattern_binding_control_family": {
+      "BOUNDARY": ["PDLTC-AC-005", "PDLTC-AC-006", "PDLTC-AC-007", "PDLTC-AC-008"],
+      "REJECT": ["PDLTC-AC-009"]
+    },
+    "pattern_decomposition": {
+      "POSITIVE": ["PDLTC-AC-010"],
+      "BOUNDARY": ["PDLTC-AC-011"],
+      "REJECT": ["PDLTC-AC-012"]
+    }
+  },
+  "machine_acceptance": {
+    "feature_count": 3,
+    "rule_count": 13,
+    "acceptance_case_count": 12,
+    "positive_case_count": 3,
+    "boundary_case_count": 6,
+    "reject_case_count": 3,
+    "current_pattern_mapping_count": 29,
+    "current_context_count": 5,
+    "overlay_binding_count": 3,
+    "predecessor_blocked_cell_count": 3,
+    "overlay_bound_direct_transition_count": 3,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 0,
+    "predecessor_cumulative_overlay_binding_count": 110,
+    "post_overlay_cumulative_binding_count": 113,
+    "predecessor_total_bound_direct_cell_count": 2447,
+    "predecessor_total_bound_delegated_cell_count": 3,
+    "predecessor_total_not_applicable_cell_count": 502,
+    "predecessor_total_blocked_cell_count": 1269,
+    "post_overlay_total_bound_direct_cell_count": 2450,
+    "post_overlay_total_bound_delegated_cell_count": 3,
+    "post_overlay_total_not_applicable_cell_count": 502,
+    "post_overlay_total_blocked_cell_count": 1266,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED"
+  }
+}

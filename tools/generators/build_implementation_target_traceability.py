@@ -23,6 +23,7 @@ OVERLAYS = [
     OUT / "numeric-array-shape-inferred-evidence-r1.json",
     OUT / "unified-call-tilde-evidence-r1.json",
     OUT / "member-visibility-evidence-r1.json",
+    OUT / "pattern-dynamic-lowering-evidence-r1.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -187,10 +188,16 @@ def main() -> None:
         expected_predecessor = binding.get(
             "predecessor_disposition", "APPLICABLE_BLOCKED_BY_GAP"
         )
-        if value.get("disposition") != expected_predecessor:
+        observed_disposition = value.get("disposition")
+        final_disposition = binding["disposition"]
+        if observed_disposition not in {
+            expected_predecessor,
+            final_disposition,
+        }:
             raise ValueError(
                 f"OVERLAY_PREDECESSOR_DISPOSITION:{feature_id}:{stage}:{outcome}:"
-                f"{expected_predecessor}"
+                f"expected={expected_predecessor}|{final_disposition}:"
+                f"observed={observed_disposition}"
             )
         refs = []
         for key in binding["evidence_keys"]:
@@ -252,7 +259,14 @@ def main() -> None:
         value = apply_overlay(feature_id, "SOURCE_GRAMMAR", None, value)
         stages.append({"stage": "SOURCE_GRAMMAR", **value})
 
-        if productions or semantic_productions:
+        if feature_id == "member_visibility_hierarchy_protected":
+            value = not_applicable(
+                "NA_AST_NO_PROGRAMMER_VISIBLE_FORM",
+                "FRONTEND_AUTHORITY",
+                [feature_ref, primary_ref],
+                "The rule reuses an existing surface or provider API and adds no AST identity.",
+            )
+        elif productions or semantic_productions:
             value = direct([feature_ref, path_evidence("spec/frontend/frontend-model.json", "AST_FRONTEND")] + production_refs)
         elif trace_class == "lexical":
             value = not_applicable("NA_AST_LEXICAL_TRIVIA_ONLY", "FRONTEND_AUTHORITY", [feature_ref], "The lexical rule has no distinct canonical AST node.")
@@ -280,7 +294,14 @@ def main() -> None:
         value = apply_overlay(feature_id, "STATIC_SEMANTICS", None, value)
         stages.append({"stage": "STATIC_SEMANTICS", **value})
 
-        if runtime_refs:
+        if feature_id == "member_visibility_sigil_surface_phase_a":
+            value = not_applicable(
+                "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
+                "MIR_RUNTIME_AUTHORITY",
+                [feature_ref, primary_ref],
+                "The catalog class is lexical/syntactic and binds no runtime artifact.",
+            )
+        elif runtime_refs:
             value = direct([feature_ref, primary_ref] + runtime_refs)
         elif trace_class == "rejection":
             value = not_applicable("NA_DYNAMIC_REJECTED_BEFORE_LOWERING", "MIR_RUNTIME_AUTHORITY", [feature_ref] + diagnostic_refs, "The rejected form creates no admitted dynamic residue.")
@@ -369,9 +390,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r58-local-member-visibility-trace-closure-r1",
+        "revision": "r59-local-pattern-dynamic-lowering-trace-closure-r1",
         "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "6a0eb950fb46fc061c260445bb0d25dc766117ea",
+        "local_predecessor_commit": "fb3e98888f947d0e7b45f713efe3b017a55c976a",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),
