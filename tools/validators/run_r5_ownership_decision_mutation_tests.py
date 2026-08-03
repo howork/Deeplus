@@ -103,7 +103,7 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "afc0939a529df91226a8aefd2e224a663bea0ae364e44383dc8be8af43382c1b"
+        "5503cc439837a0f246c5a1c088b803ed6fad9492cce97cfbf27757473f6e1a3f"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
@@ -2404,7 +2404,7 @@ R41_GRAMMAR_SHA256 = (
     "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
 )
 R41_HIR_H1_BRIDGE_SHA256 = (
-    "afc0939a529df91226a8aefd2e224a663bea0ae364e44383dc8be8af43382c1b"
+    "5503cc439837a0f246c5a1c088b803ed6fad9492cce97cfbf27757473f6e1a3f"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"

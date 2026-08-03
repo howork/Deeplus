@@ -360,7 +360,15 @@ def main(root: Path = ROOT) -> None:
     call_plan = hir_schema["$defs"]["CallPlan"]
     actor_fields = set(required_fields)
     require(actor_fields <= set(call_plan["properties"]), "HIR actor transport properties")
-    actor_branch = call_plan["allOf"][0]
+    actor_branch = next(
+        branch
+        for branch in call_plan["allOf"]
+        if branch.get("if", {})
+        .get("properties", {})
+        .get("mode_target_pair", {})
+        .get("const")
+        == "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+    )
     require(
         actor_branch["if"]["properties"]["mode_target_pair"]["const"]
         == "ACTOR_MESSAGE::ACTOR_TRANSPORT",

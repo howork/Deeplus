@@ -462,6 +462,17 @@ state begins from an explicit value owner. The checker must not make
 `T::item` search imported Traits. A selected Trait-associated value/function
 retains `TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
 `ImplementationId`, substitution and responsibility through HIR/API/MIR.
+These fields are carried by one non-structural
+`TraitAssociatedStaticSelection` keyed by `SelectionId`; substitution and
+responsibility are explicit `SubstitutionId` and `ResponsibilityId`, not
+implicit checker state. For an associated function, representation metadata
+maps `ImplementationId` to the exact `CallableImplementationId` and preserves
+the direct static symbol. An associated type has no runtime operation; an
+associated value or bare function reference uses the existing static-reference
+lowering; an invoked function uses the existing
+`ORDINARY::TRAIT_WITNESS` static-reference-plus-`INVOKE` lowering. The MIR
+static identity table preserves the descriptor exactly and cannot reconstruct,
+search, reorder, specialize, fall back, or replace its witness.
 Initial associated `let::` values must be immutable, Shareable, no-drop,
 authority-free, acyclic and statically materializable. No companion object,
 metatype value, activation trigger, fallback, provider order, or runtime lookup

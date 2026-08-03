@@ -215,7 +215,8 @@
         "ERROR_SET",
         "EFFECT_ROW",
         "RESULT_ACQUISITION_PLAN",
-        "CLEANUP_PLAN"
+        "CLEANUP_PLAN",
+        "TRAIT_ASSOCIATED_STATIC_SELECTION"
       ]
     },
     "typeEntry": {
@@ -505,6 +506,81 @@
         }
       ]
     },
+    "traitAssociatedStaticSelectionDescriptor": {
+      "description": "Exact MIR residue of the statically selected <T as Trait>::item. This descriptor is data identity, not a runtime lookup recipe.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selection_id",
+        "item_kind",
+        "trait_id",
+        "requirement_id",
+        "conformance_id",
+        "trait_witness_id",
+        "implementation_id",
+        "substitution_id",
+        "responsibility_id",
+        "representation_kind",
+        "direct_static_symbol_id_or_null",
+        "callable_implementation_id_or_null"
+      ],
+      "properties": {
+        "selection_id": { "$ref": "#/$defs/id" },
+        "item_kind": { "enum": ["ASSOCIATED_TYPE", "ASSOCIATED_VALUE", "ASSOCIATED_FUNCTION"] },
+        "trait_id": { "$ref": "#/$defs/id" },
+        "requirement_id": { "$ref": "#/$defs/id" },
+        "conformance_id": { "$ref": "#/$defs/id" },
+        "trait_witness_id": { "$ref": "#/$defs/id" },
+        "implementation_id": { "$ref": "#/$defs/id" },
+        "substitution_id": { "$ref": "#/$defs/id" },
+        "responsibility_id": { "$ref": "#/$defs/id" },
+        "representation_kind": { "enum": ["NO_RUNTIME_EMISSION", "STATIC_REF", "TRAIT_WITNESS_CALL"] },
+        "direct_static_symbol_id_or_null": {
+          "anyOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        },
+        "callable_implementation_id_or_null": {
+          "anyOf": [
+            { "$ref": "#/$defs/id" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_TYPE" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "const": "NO_RUNTIME_EMISSION" },
+              "direct_static_symbol_id_or_null": { "type": "null" },
+              "callable_implementation_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_VALUE" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "const": "STATIC_REF" },
+              "direct_static_symbol_id_or_null": { "$ref": "#/$defs/id" },
+              "callable_implementation_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_FUNCTION" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "enum": ["STATIC_REF", "TRAIT_WITNESS_CALL"] },
+              "direct_static_symbol_id_or_null": { "$ref": "#/$defs/id" },
+              "callable_implementation_id_or_null": { "$ref": "#/$defs/id" }
+            }
+          }
+        }
+      ]
+    },
     "staticIdentityEntry": {
       "type": "object",
       "additionalProperties": false,
@@ -522,8 +598,21 @@
         },
         "semantic_digest": {
           "$ref": "#/$defs/sha256"
+        },
+        "trait_associated_static_selection": {
+          "$ref": "#/$defs/traitAssociatedStaticSelectionDescriptor"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "identity_domain": { "const": "TRAIT_ASSOCIATED_STATIC_SELECTION" } },
+            "required": ["identity_domain"]
+          },
+          "then": { "required": ["trait_associated_static_selection"] },
+          "else": { "not": { "required": ["trait_associated_static_selection"] } }
+        }
+      ]
     },
     "responsibilityEvidenceKind": {
       "enum": [
@@ -6520,7 +6609,7 @@
     "constant_kind_count": 9,
     "proof_kind_count": 2,
     "canonical_type_kind_count": 39,
-    "static_identity_domain_count": 33,
+    "static_identity_domain_count": 34,
     "machine_registry_id": "deeplus.mir-machine-registry/r1",
     "closure_environment_plan_table_count": "MODULE_LOCAL_ZERO_OR_MORE",
     "new_operation_kind_count_for_closure_capture_plan": 0

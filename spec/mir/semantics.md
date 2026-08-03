@@ -23,6 +23,24 @@ closed plan variants are `DirectImplementation`, `VirtualSlot`,
 formal binding order survive lowering and are never recovered from runtime
 selector search, provider order, expected result type, or source order.
 
+A Trait-qualified associated-static selection is a non-structural
+`TraitAssociatedStaticSelection` descriptor, not a new HIR expression or MIR
+operation. It binds one `SelectionId` and the exact `TraitId`, `RequirementId`,
+`ConformanceId`, `TraitWitnessId`, `ImplementationId`, `SubstitutionId`, and
+`ResponsibilityId` selected by the checker. Representation metadata also binds
+the direct static symbol when one exists and maps an associated function's
+`ImplementationId` to its `CallableImplementationId`. An associated type emits
+no runtime operation. An associated value or bare associated-function reference
+reuses `ResolvedRef::DirectDecl`, `HM-LR-REF-002` (`STATIC_REF`), and
+`HM-LR-TOP-002`; an invoked associated function reuses
+`ORDINARY::TRAIT_WITNESS`, `HM-LR-CALL-003`, `STATIC_REF`, and `INVOKE`.
+MIR preserves the same descriptor in the closed
+`TRAIT_ASSOCIATED_STATIC_SELECTION` static-identity domain with
+`identity_id == SelectionId`. Lowering preserves all eleven responsibility
+axes and never reconstructs or searches for a conformance, witness,
+implementation, provider, order winner, specialization, fallback, or
+child-local replacement at runtime.
+
 The nonactivatable concise throws/effects Preview creates no MIR syntax or
 presence bit. If later activated, the frontend normalizes every omitted
 declaration axis before MIR: missing `throws` becomes `Never` and missing

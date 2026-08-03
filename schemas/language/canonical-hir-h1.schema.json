@@ -4241,6 +4241,93 @@
         }
       }
     },
+    "TraitAssociatedStaticSelection": {
+      "description": "Non-structural, statically closed identity residue for one <T as Trait>::item selection. It adds no HIR node identity and never authorizes runtime reconstruction or search.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selection_id",
+        "item_kind",
+        "trait_id",
+        "requirement_id",
+        "conformance_id",
+        "trait_witness_id",
+        "implementation_id",
+        "substitution_id",
+        "responsibility_id",
+        "representation_kind",
+        "direct_static_symbol_id_or_null",
+        "callable_implementation_id_or_null"
+      ],
+      "properties": {
+        "selection_id": { "$ref": "#/$defs/Id" },
+        "item_kind": {
+          "enum": [
+            "ASSOCIATED_TYPE",
+            "ASSOCIATED_VALUE",
+            "ASSOCIATED_FUNCTION"
+          ]
+        },
+        "trait_id": { "$ref": "#/$defs/Id" },
+        "requirement_id": { "$ref": "#/$defs/Id" },
+        "conformance_id": { "$ref": "#/$defs/Id" },
+        "trait_witness_id": { "$ref": "#/$defs/Id" },
+        "implementation_id": { "$ref": "#/$defs/Id" },
+        "substitution_id": { "$ref": "#/$defs/Id" },
+        "responsibility_id": { "$ref": "#/$defs/Id" },
+        "representation_kind": {
+          "enum": [
+            "NO_RUNTIME_EMISSION",
+            "STATIC_REF",
+            "TRAIT_WITNESS_CALL"
+          ]
+        },
+        "direct_static_symbol_id_or_null": {
+          "anyOf": [
+            { "$ref": "#/$defs/Id" },
+            { "type": "null" }
+          ]
+        },
+        "callable_implementation_id_or_null": {
+          "anyOf": [
+            { "$ref": "#/$defs/Id" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_TYPE" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "const": "NO_RUNTIME_EMISSION" },
+              "direct_static_symbol_id_or_null": { "type": "null" },
+              "callable_implementation_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_VALUE" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "const": "STATIC_REF" },
+              "direct_static_symbol_id_or_null": { "$ref": "#/$defs/Id" },
+              "callable_implementation_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_FUNCTION" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "enum": ["STATIC_REF", "TRAIT_WITNESS_CALL"] },
+              "direct_static_symbol_id_or_null": { "$ref": "#/$defs/Id" },
+              "callable_implementation_id_or_null": { "$ref": "#/$defs/Id" }
+            }
+          }
+        }
+      ]
+    },
     "ResolvedRef": {
       "oneOf": [
         {
@@ -4272,8 +4359,31 @@
             },
             "decl_id": {
               "$ref": "#/$defs/Id"
+            },
+            "trait_associated_static_selection": {
+              "$ref": "#/$defs/TraitAssociatedStaticSelection"
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": { "required": ["trait_associated_static_selection"] },
+              "then": {
+                "properties": {
+                  "trait_associated_static_selection": {
+                    "allOf": [
+                      { "$ref": "#/$defs/TraitAssociatedStaticSelection" },
+                      {
+                        "properties": {
+                          "item_kind": { "enum": ["ASSOCIATED_VALUE", "ASSOCIATED_FUNCTION"] },
+                          "representation_kind": { "const": "STATIC_REF" }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -4602,6 +4712,9 @@
         "outcome_responsibility_profile_id": {
           "$ref": "#/$defs/Id"
         },
+        "trait_associated_static_selection": {
+          "$ref": "#/$defs/TraitAssociatedStaticSelection"
+        },
         "actor_id": {
           "$ref": "#/$defs/Id"
         },
@@ -4666,6 +4779,25 @@
         }
       },
       "allOf": [
+        {
+          "if": { "required": ["trait_associated_static_selection"] },
+          "then": {
+            "properties": {
+              "mode_target_pair": { "const": "ORDINARY::TRAIT_WITNESS" },
+              "trait_associated_static_selection": {
+                "allOf": [
+                  { "$ref": "#/$defs/TraitAssociatedStaticSelection" },
+                  {
+                    "properties": {
+                      "item_kind": { "const": "ASSOCIATED_FUNCTION" },
+                      "representation_kind": { "const": "TRAIT_WITNESS_CALL" }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {
@@ -6663,6 +6795,8 @@
       "Resolve PatternAttempt.lowering_id and pattern_kind_id to the same admitted pattern registry row.",
       "Require each lowering-row hir_identity_ids entry to resolve in the exact 129-row catalog and to equal the identities implied by its dispatch key.",
       "Require every ResponsibilityEvidenceDescriptor to preserve exact ResponsibilityRuleId and ResponsibilityEvidenceId domains, normalized TypeId, evidence kind, registry revision, derivation digest and all nullable behavioral/value-level fields; this non-structural table adds no HIR identity-catalog row.",
+      "Require every TraitAssociatedStaticSelection to preserve one SelectionId and exact TraitId, RequirementId, ConformanceId, TraitWitnessId, ImplementationId, SubstitutionId, and ResponsibilityId; require associated types to emit no runtime operation, associated values and bare function references to use DIRECT_DECL plus STATIC_REF, and invoked associated functions to use ORDINARY::TRAIT_WITNESS without runtime reconstruction or search.",
+      "Require any repeated TraitAssociatedStaticSelection with the same selection_id in ResolvedRef, CallPlan, or MIR static identity residue to be byte-for-byte equal after canonical serialization; associated-type selections never occur as ResolvedRefExpr or ReferenceCapture values.",
       "Reject any reuse of callable ResponsibilityProfileId as ResponsibilityRuleId or ResponsibilityEvidenceId and forbid runtime or backend responsibility-evidence relookup.",
       "Require responsibility_evidence_descriptors to be strictly ordered by responsibility_evidence_id, unique by that ID, and fully reachable from the typed-HIR semantic facts that selected them.",
       "Allow only LOWER or NO_RUNTIME_EMISSION lowering rows. Capability insufficiency is not represented as a lowering row; preserve the verified HIR semantic digest exactly and do not create ExecutableHirH1.",

@@ -12711,6 +12711,14 @@ def main() -> int:
         "tools/validators/validate_pattern_clause_exhaustiveness_trace.py",
         "tools/validators/run_pattern_clause_exhaustiveness_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R61_Pattern_Clause_Exhaustiveness_Trace_Closure_R1.md",
+        "spec/contracts/trait-qualified-associated-static-selection-trace-closure-r1.json",
+        "schemas/language/trait-qualified-associated-static-selection-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/trait-qualified-associated-static-selection-evidence-r1.json",
+        "schemas/language/trait-qualified-associated-static-selection-evidence-r1.schema.json",
+        "tools/generators/build_trait_qualified_associated_static_selection_evidence.py",
+        "tools/validators/validate_trait_qualified_associated_static_selection_trace.py",
+        "tools/validators/run_trait_qualified_associated_static_selection_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R62_Trait_Qualified_Associated_Static_Selection_Dynamic_Trace_Closure_R1.md",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([

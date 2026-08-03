@@ -14,7 +14,7 @@
 - Deeplus 코드 블록: 375
 - 연습 prompt 표식: 261
 - 로컬 링크 오류: 0
-- contract SHA-256: `1632052eec49f2e28d1a4fdf3f5c655e66afd0a6974c1db8f017c0f68e63d0d9`
+- contract SHA-256: `b01e59e067a7595de7093ed2138be2f4030fec18a71abb151ce7a28e9e8bbeaa`
 - coverage schema SHA-256: `f4709219e1e0144cfa64fccb2950979829b81dd056724128116ec21d0254784f`
 
 ## authority 울타리

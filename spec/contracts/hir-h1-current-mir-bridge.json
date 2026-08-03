@@ -182,7 +182,12 @@
       "ActorProtocolRequirementId",
       "ActorProtocolBindingId",
       "ActorHandlerId",
-      "ActorRequestId"
+      "ActorRequestId",
+      "TraitAssociatedStaticSelectionId",
+      "TraitWitnessId",
+      "ImplementationId",
+      "SubstitutionId",
+      "ResponsibilityId"
     ],
     "mir_lowerer_forbidden_decisions": [
       "name_or_selector_lookup",
@@ -256,6 +261,13 @@
     "canonical_identity": "HIR-H1/EXPR/CALL",
     "canonical_arguments": "one ordered HirCallPlan.arguments array containing all seven argument kinds, including TrailingClosure",
     "canonical_trailing_closure_array_count": 0,
+    "optional_trait_associated_static_selection": {
+      "admitted_mode_target_pair": "ORDINARY::TRAIT_WITNESS",
+      "item_kind": "ASSOCIATED_FUNCTION",
+      "representation_kind": "TRAIT_WITNESS_CALL",
+      "selection_identity_equality": "EXACT_MATCH_WITH_STATIC_IDENTITY_TABLE_TRAIT_ASSOCIATED_STATIC_SELECTION_ENTRY",
+      "runtime_reselection_count": 0
+    },
     "valid_mode_target_pairs": [
       "ORDINARY::DIRECT_IMPLEMENTATION",
       "ORDINARY::VIRTUAL_SLOT",
@@ -268,6 +280,79 @@
       "MESSAGE::RESERVED_OPERATION",
       "ACTOR_MESSAGE::ACTOR_TRANSPORT"
     ]
+  },
+  "trait_associated_static_selection_bridge": {
+    "descriptor": "TraitAssociatedStaticSelection",
+    "descriptor_kind": "NON_STRUCTURAL_SELECTED_IDENTITY_RESIDUE",
+    "new_hir_node_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "selection_identity": "SelectionId",
+    "exact_identity_residue": [
+      "TraitId",
+      "RequirementId",
+      "ConformanceId",
+      "TraitWitnessId",
+      "ImplementationId",
+      "SubstitutionId",
+      "ResponsibilityId"
+    ],
+    "exact_identity_residue_count": 7,
+    "representation_metadata": {
+      "item_kind": "ASSOCIATED_TYPE_OR_ASSOCIATED_VALUE_OR_ASSOCIATED_FUNCTION",
+      "direct_static_symbol": "direct_static_symbol_id_or_null",
+      "callable_implementation": "callable_implementation_id_or_null",
+      "implementation_to_callable_mapping": "ASSOCIATED_FUNCTION_IMPLEMENTATION_ID_EQUALS_CALLABLE_IMPLEMENTATION_ID"
+    },
+    "item_kind_lowering": {
+      "ASSOCIATED_TYPE": {
+        "representation_kind": "NO_RUNTIME_EMISSION",
+        "lowering_row_ids": [],
+        "runtime_operation_count": 0
+      },
+      "ASSOCIATED_VALUE": {
+        "representation_kind": "STATIC_REF",
+        "lowering_row_ids": [
+          "HM-LR-REF-002",
+          "HM-LR-TOP-002"
+        ],
+        "operation_kinds": [
+          "STATIC_REF",
+          "TOTAL_PROJECTION"
+        ]
+      },
+      "ASSOCIATED_FUNCTION_BARE_REFERENCE": {
+        "representation_kind": "STATIC_REF",
+        "lowering_row_ids": [
+          "HM-LR-REF-002",
+          "HM-LR-TOP-002"
+        ],
+        "operation_kinds": [
+          "STATIC_REF",
+          "TOTAL_PROJECTION"
+        ]
+      },
+      "ASSOCIATED_FUNCTION_INVOKED": {
+        "representation_kind": "TRAIT_WITNESS_CALL",
+        "lowering_row_ids": [
+          "HM-LR-CALL-003"
+        ],
+        "operation_kinds": [
+          "STATIC_REF"
+        ],
+        "terminator_kinds": [
+          "INVOKE"
+        ]
+      }
+    },
+    "mir_static_identity_domain": "TRAIT_ASSOCIATED_STATIC_SELECTION",
+    "static_identity_equality": "MIR_IDENTITY_ID_EQUALS_SELECTION_ID_AND_DESCRIPTOR_IS_EXACT_CANONICAL_COPY",
+    "runtime_reconstruction_count": 0,
+    "runtime_search_count": 0,
+    "fallback_count": 0,
+    "provider_order_count": 0,
+    "specialization_count": 0,
+    "child_local_replacement_count": 0,
+    "responsibility_projection": "PRESERVE_ALL_ELEVEN_AXES_AND_EXACT_RESPONSIBILITY_ID"
   },
   "deferred_call_plan_contract": {
     "status": "CURRENT_STABLE_DESIGN_MACHINE_SCHEMA_NOT_PRODUCT_EXECUTION",
@@ -686,7 +771,7 @@
     "schema": "schemas/language/suspension-frame-responsibility.schema.json",
     "continuation_interface_contract": "spec/contracts/continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
+    "continuation_interface_digest": "e10fc230156dcc239648b0a759b046e2bc59cb0a7a6863179390baaa7056a23e",
     "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
     "hir_structural_plan": "ContinuationFramePlan",
     "static_identity_count": 3,
@@ -878,7 +963,7 @@
     "runtime_callback_count": 0,
     "external_ffi_included": false,
     "managed_reference_profile_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7",
-    "continuation_interface_digest_or_null": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
+    "continuation_interface_digest_or_null": "e10fc230156dcc239648b0a759b046e2bc59cb0a7a6863179390baaa7056a23e",
     "canonical_promotion_ready": true,
     "release_verifier_diagnostic_count": 12,
     "product_support": "NOT_RUN",

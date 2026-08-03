@@ -751,6 +751,17 @@ associated type is written `<T as Trait>::Assoc::member`. HIR and public API
 residue preserve `TraitId`, `RequirementId`, `ConformanceId`,
 `TraitWitnessId`, `ImplementationId`, substitution, responsibility, and
 authority rather than reconstructing them from spelling or discovery order.
+The selected residue is one non-structural
+`TraitAssociatedStaticSelection`: its `SelectionId` binds the exact seven
+`TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
+`ImplementationId`, `SubstitutionId`, and `ResponsibilityId` fields. The
+descriptor also records whether the item is an associated type, value, or
+function, its direct static symbol when present, and the associated function's
+`CallableImplementationId`. Associated types emit no runtime operation;
+associated values and bare function references reuse the ordinary static
+reference path; an invoked function reuses the closed Trait-witness call path.
+No runtime reconstruction, lookup, fallback, provider ordering,
+specialization, or child-local witness replacement is permitted.
 
 The initial associated `let::` profile admits only immutable, Shareable,
 no-drop, authority-free, acyclic, statically materializable values. Only a

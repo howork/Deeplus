@@ -322,7 +322,7 @@
     "unknown_type_kind_rejected": true
   },
   "closed_static_identity_contract": {
-    "static_identity_domain_count": 33,
+    "static_identity_domain_count": 34,
     "static_identity_domains": [
       "DECLARATION",
       "TYPE",
@@ -356,14 +356,16 @@
       "ERROR_SET",
       "EFFECT_ROW",
       "RESULT_ACQUISITION_PLAN",
-      "CLEANUP_PLAN"
+      "CLEANUP_PLAN",
+      "TRAIT_ASSOCIATED_STATIC_SELECTION"
     ],
     "foreign_identity_rule": "LOGICAL_SOURCE_OR_MODULE_INTERFACE_IDENTITY_ONLY_NO_NATIVE_SYMBOL_ADDRESS_REGISTER_LAYOUT_OR_ABI",
     "module_interface_rule": "CANONICAL_MODULE_AND_EXPORTED_INTERFACE_IDENTITY_WITHOUT_OBJECT_FORMAT_IDENTITY",
     "provider_identity_rule": "PROVIDER_OPERATION_VERSION_AUTHORITY_AND_REPLAY_IDENTITIES_CANNOT_DEFAULT",
     "opaque_catch_all_static_domain_admitted": false,
     "unknown_static_identity_domain_rejected": true,
-    "responsibility_identity_rule": "RESPONSIBILITY_RULE stores canonical ResponsibilityRuleId; RESPONSIBILITY_EVIDENCE stores one exact typed-HIR-selected ResponsibilityEvidenceId; both are disjoint from callable ResponsibilityProfileId and runtime or backend relookup is forbidden"
+    "responsibility_identity_rule": "RESPONSIBILITY_RULE stores canonical ResponsibilityRuleId; RESPONSIBILITY_EVIDENCE stores one exact typed-HIR-selected ResponsibilityEvidenceId; both are disjoint from callable ResponsibilityProfileId and runtime or backend relookup is forbidden",
+    "trait_associated_static_selection_rule": "TRAIT_ASSOCIATED_STATIC_SELECTION stores identity_id=SelectionId plus exact TraitId, RequirementId, ConformanceId, TraitWitnessId, ImplementationId, SubstitutionId, ResponsibilityId, item kind, direct-static-symbol metadata, and CallableImplementationId mapping; associated types emit zero runtime operations and no runtime reconstruction, search, fallback, provider ordering, specialization, or child-local replacement is admitted"
   },
   "identity_reference_domain_rules": {
     "field_identity_id": "FIELD",
@@ -394,6 +396,7 @@
     "effect_row_id_or_null": "EFFECT_ROW_OR_NULL",
     "result_acquisition_plan_id_or_null": "RESULT_ACQUISITION_PLAN_OR_NULL",
     "cleanup_plan_id_or_null": "CLEANUP_PLAN_OR_NULL",
+    "trait_associated_static_selection_id": "TRAIT_ASSOCIATED_STATIC_SELECTION",
     "verifier_rule": "RESOLVE_EVERY_ID_TO_EXACT_STATIC_IDENTITY_TABLE_ENTRY_AND_REJECT_DOMAIN_MISMATCH_UNKNOWN_ID_OR_TARGET_BOUND_IDENTITY"
   },
   "target_identity_fence": {
@@ -2583,6 +2586,7 @@
     "terminator_payload_and_successor_shape": "RECOMPUTE",
     "token_kind_and_binding_exact_shape": "RECOMPUTE",
     "type_and_static_identity_domains": "RECOMPUTE_CLOSED_SET",
+    "trait_associated_static_selection_projection": "REQUIRE_IDENTITY_ID_EQUALS_SELECTION_ID_AND_COMPARE_EXACT_SEVEN_IDENTITY_FIELDS_ITEM_KIND_REPRESENTATION_DIRECT_SYMBOL_CALLABLE_IMPLEMENTATION_AND_SEMANTIC_DIGEST_WITH_TYPED_HIR",
     "type_entry_payload_shape": "RECOMPUTE_EXACT_KIND_DISCRIMINATED_LOGICAL_TYPE_REPRESENTATION",
     "target_identity_fence": "RECOMPUTE_AND_REJECT",
     "constant_payload_canonicality": "RECOMPUTE",
