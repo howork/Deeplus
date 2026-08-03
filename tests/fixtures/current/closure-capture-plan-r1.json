@@ -25,6 +25,16 @@
       "assertions": {
         "mode": "MOVE",
         "evaluation_count": 1,
+        "fallible_preparation_operations": [
+          "MOVE_RESERVE"
+        ],
+        "source_consumed_before_commit_tail": false,
+        "commit_tail_operations": [
+          "PLACE_MOVE",
+          "BUILDER_STAGE",
+          "BUILDER_COMMIT",
+          "CLOSURE_MAKE"
+        ],
         "partial_publication_count": 0
       }
     },
@@ -36,6 +46,10 @@
       "expected_diagnostic_or_null": null,
       "assertions": {
         "mode": "COPY",
+        "responsibility_evidence_domain": "RESPONSIBILITY_EVIDENCE",
+        "responsibility_rule_id": "CopyValue",
+        "evidence_kind": "INTRINSIC_PREDICATE_PROOF",
+        "trait_witness_id_or_null": null,
         "evaluation_count": 1,
         "partial_publication_count": 0
       }
@@ -48,6 +62,12 @@
       "expected_diagnostic_or_null": null,
       "assertions": {
         "mode": "CLONE",
+        "responsibility_evidence_domain": "RESPONSIBILITY_EVIDENCE",
+        "responsibility_rule_id": "Clone",
+        "evidence_kind": "EXACT_SELECTED_TRAIT_WITNESS",
+        "responsibility_evidence_id_required": true,
+        "trait_witness_id_required_in_descriptor": true,
+        "descriptor_owns_error_effect_acquisition_cleanup_residue": true,
         "evaluation_count": 1,
         "partial_publication_count": 0
       }
@@ -84,6 +104,10 @@
       "expected_diagnostic_or_null": null,
       "assertions": {
         "mode": "ONCE",
+        "fallible_preparation_operations": [
+          "MOVE_RESERVE"
+        ],
+        "source_consumed_before_commit_tail": false,
         "evaluation_count": 1,
         "partial_publication_count": 0
       }
@@ -135,7 +159,9 @@
       "expected_diagnostic_or_null": null,
       "assertions": {
         "source_consumed_before_commit": false,
-        "move_reservation_cancelled": true
+        "place_move_before_all_fallible_preparations_complete_count": 0,
+        "move_reservation_cancelled": true,
+        "rollback_restores_consumed_source": false
       }
     },
     {
@@ -152,13 +178,30 @@
       }
     },
     {
+      "case_id": "R31-CCP-BND-004",
+      "class": "boundary",
+      "scenario": "COPY and CLONE share the ResponsibilityEvidenceId domain while their referenced descriptors keep proof and witness residue distinct",
+      "expected_outcome": "ADMIT",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "capture_field_evidence_domain": "RESPONSIBILITY_EVIDENCE",
+        "copy_evidence_kind": "INTRINSIC_PREDICATE_PROOF",
+        "copy_trait_witness_id_or_null": null,
+        "clone_evidence_kind": "EXACT_SELECTED_TRAIT_WITNESS",
+        "clone_trait_witness_id_required": true,
+        "callable_responsibility_profile_domain_is_distinct": true
+      }
+    },
+    {
       "case_id": "R31-CCP-NEG-001",
       "class": "negative",
       "scenario": "deep is Preview and nonactivatable",
       "expected_outcome": "REJECT",
       "expected_diagnostic_or_null": "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
       "assertions": {
-        "reason_key": "DEEP"
+        "reason_key": "DEEP",
+        "typed_hir_residue_count": 0,
+        "typed_mir_residue_count": 0
       }
     },
     {
@@ -208,7 +251,8 @@
       "expected_outcome": "REJECT",
       "expected_diagnostic_or_null": "OWNERSHIP_MODE_ADMISSION_FAILED",
       "assertions": {
-        "reason_key": "COPY_EVIDENCE"
+        "reason_key": "COPY_EVIDENCE",
+        "required_evidence_domain": "RESPONSIBILITY_EVIDENCE"
       }
     },
     {
@@ -218,7 +262,9 @@
       "expected_outcome": "REJECT",
       "expected_diagnostic_or_null": "OWNERSHIP_MODE_ADMISSION_FAILED",
       "assertions": {
-        "reason_key": "CLONE_WITNESS"
+        "reason_key": "CLONE_WITNESS",
+        "responsibility_evidence_id_required": true,
+        "trait_witness_id_required_in_descriptor": true
       }
     },
     {
@@ -391,14 +437,47 @@
         "mutation_id": "PRODUCT_LANE_FLIP",
         "validator_result": "REJECT"
       }
+    },
+    {
+      "case_id": "R31-CCP-MUT-012",
+      "class": "mutation",
+      "scenario": "validator rejects CLONE_RESPONSIBILITY_EVIDENCE_NULL",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "CLONE_RESPONSIBILITY_EVIDENCE_NULL",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-013",
+      "class": "mutation",
+      "scenario": "validator rejects PRECOMMIT_PLACE_MOVE",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "PRECOMMIT_PLACE_MOVE",
+        "validator_result": "REJECT"
+      }
+    },
+    {
+      "case_id": "R31-CCP-MUT-014",
+      "class": "mutation",
+      "scenario": "validator rejects DEEP_TYPED_HIR_MIR_RESIDUE",
+      "expected_outcome": "REJECT_MUTATION",
+      "expected_diagnostic_or_null": null,
+      "assertions": {
+        "mutation_id": "DEEP_TYPED_HIR_MIR_RESIDUE",
+        "validator_result": "REJECT"
+      }
     }
   ],
   "expected_counts": {
     "positive": 9,
-    "boundary": 3,
+    "boundary": 4,
     "negative": 12,
-    "mutation": 11,
-    "total": 35
+    "mutation": 14,
+    "total": 39
   },
   "product_support": "NOT_RUN"
 }

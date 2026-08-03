@@ -935,7 +935,8 @@
         "normalized_type_id",
         "source_place_id",
         "capture_mode",
-        "responsibility_id"
+        "responsibility_evidence_id_or_null",
+        "responsibility_profile_id"
       ],
       "properties": {
         "capture_kind": {
@@ -962,14 +963,51 @@
             "MOVE",
             "COPY",
             "CLONE",
-            "DEEP",
             "ONCE"
           ]
         },
-        "responsibility_id": {
-          "$ref": "#/$defs/id"
+        "responsibility_evidence_id_or_null": {
+          "$ref": "#/$defs/nullableId",
+          "description": "Exact ResponsibilityEvidenceId for COPY or CLONE; null for BORROW, INOUT, MOVE, and ONCE. The resolved descriptor owns the exact rule/evidence kind and Clone witness/error/effect/acquisition/cleanup residue.",
+          "x-deeplus-identity-domain": "RESPONSIBILITY_EVIDENCE_ID_OR_NULL"
+        },
+        "responsibility_profile_id": {
+          "$ref": "#/$defs/id",
+          "description": "Callable ResponsibilityProfileId, disjoint from ResponsibilityEvidenceId.",
+          "x-deeplus-identity-domain": "RESPONSIBILITY_PROFILE_ID"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "capture_mode": {
+                "enum": [
+                  "COPY",
+                  "CLONE"
+                ]
+              }
+            },
+            "required": [
+              "capture_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "responsibility_evidence_id_or_null": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "responsibility_evidence_id_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "closureInitializerCaptureField": {
       "type": "object",
@@ -6630,7 +6668,9 @@
     "ssa_dominance_and_edge_transfer": "RECOMPUTE",
     "place_move_loan_and_reservation_state": "RECOMPUTE_FROM_R8_CONTRACT",
     "closure_environment_plan": "RECOMPUTE_UNIQUE_PLAN_AND_CAPTURE_FIELD_IDENTITIES_CONTIGUOUS_SOURCE_ORDINALS_EXACT_NORMALIZED_TYPES_LIST_STATE_RESIDENCE_CLOSED_ASSERTION_AND_SORTED_UNIQUE_LEXICAL_DEPENDENCIES",
-    "closure_capture_transaction": "RECOMPUTE_LEFT_TO_RIGHT_EXACTLY_ONCE_REVERSE_ROLLBACK_BUILDER_COMMIT_BEFORE_INFALLIBLE_CLOSURE_MAKE_AND_NO_PARTIAL_PUBLICATION_USING_ONLY_EXISTING_OPERATION_AND_TERMINATOR_KINDS",
+    "closure_capture_transaction": "RECOMPUTE_LEFT_TO_RIGHT_EXACTLY_ONCE_MOVE_OR_ONCE_RESERVE_WITHOUT_PLACE_MOVE_WHILE_FALLIBLE_WORK_REMAINS_REVERSE_ROLLBACK_WITH_SOURCE_OWNERS_UNCONSUMED_THEN_SOURCE_ORDER_PLACE_MOVE_AND_BUILDER_STAGE_IN_ONE_STRAIGHT_LINE_NONSUSPENDING_ZERO_FAILURE_EDGE_INTERVAL_BEFORE_BUILDER_COMMIT_AND_INFALLIBLE_CLOSURE_MAKE_WITH_NO_PARTIAL_PUBLICATION_USING_ONLY_EXISTING_OPERATION_AND_TERMINATOR_KINDS",
+    "closure_capture_responsibility_evidence": "COPY_AND_CLONE_REQUIRE_EXACT_RESPONSIBILITY_EVIDENCE_ID_RESOLVING_MATCHING_TYPE_AND_COPYVALUE_OR_CLONE_DESCRIPTOR_OTHER_ADMITTED_MODES_REQUIRE_NULL_AND_CALLABLE_RESPONSIBILITY_PROFILE_ID_IS_DISJOINT",
+    "closure_capture_deep_typed_residue": "REJECT_DEEP_REFERENCE_CAPTURE_IN_TYPED_HIR_OR_MIR_FOR_EVERY_SOURCE_PROFILE",
     "closure_make_payload": "REQUIRE_EXACT_PLAN_COMMITTED_CONSTRUCTION_ENVIRONMENT_VALUE_BODY_AND_SOURCE_ORDERED_CAPTURE_FIELD_BINDING",
     "module_api_value_identity_fence": "REJECT_EXPORT_OF_CAPTURE_PLAN_CAPTURE_FIELD_EVAL_VALUE_PLACE_REGION_LOAN_RESERVATION_CLEANUP_CONSTRUCTION_OR_CLOSURE_IDENTITIES",
     "linear_token_balance": "RECOMPUTE_PATH_SENSITIVE_EXACTLY_ONCE",

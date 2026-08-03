@@ -641,7 +641,13 @@
         "normalized_type_id",
         "responsibility_profile_id"
       ],
-      "reference_capture": "ResolvedRef plus BORROW, INOUT, MOVE, COPY, CLONE, DEEP, or ONCE mode and its ordered preparation/evidence residue",
+      "reference_required_fields": [
+        "captured_ref",
+        "mode",
+        "preparations",
+        "responsibility_evidence_id_or_null"
+      ],
+      "reference_capture": "ResolvedRef plus BORROW, INOUT, MOVE, COPY, CLONE, or ONCE mode; COPY and CLONE carry one exact ResponsibilityEvidenceId while every other admitted mode carries null and DEEP is rejected before typed HIR",
       "initializer_capture": "one owning initializer_expr_id tagged with initializer_binding_kind LET or VAR and one result_eval_id"
     },
     "plan_identity_and_state": {
@@ -690,11 +696,18 @@
         "committed_construction_id",
         "environment_value_id",
         "capture_field_ids_in_source_order"
-      ]
+      ],
+      "responsibility_evidence_projection": "COPY_OR_CLONE_EXACT_RESPONSIBILITY_EVIDENCE_ID_PRESERVED; OTHER_ADMITTED_REFERENCE_MODES_NULL",
+      "callable_profile_separation": "responsibility_profile_id never substitutes for ResponsibilityEvidenceId",
+      "deep_typed_hir_or_mir_row_count": 0
     },
     "transaction": {
       "evaluation": "LEFT_TO_RIGHT_EXACTLY_ONCE",
-      "failure_before_commit": "CHECKED_OR_LEAVE_TO_REVERSE_ACQUISITION_ROLLBACK",
+      "fallible_preparation": "MOVE_AND_ONCE_USE_MOVE_RESERVE_ONLY; PLACE_MOVE_IS_FORBIDDEN_WHILE_ANY_FALLIBLE_WORK_REMAINS",
+      "failure_before_commit": "CHECKED_OR_LEAVE_TO_REVERSE_ACQUISITION_ROLLBACK_WITH_SOURCE_OWNERS_UNCONSUMED",
+      "final_infallible_commit_interval": "AFTER_ALL_FALLIBLE_PREPARATION_SOURCE_ORDER_PLACE_MOVE_AND_BUILDER_STAGE_FOR_MOVE_OR_ONCE_THEN_BUILDER_COMMIT_THEN_CLOSURE_MAKE",
+      "final_interval_failure_edge_count": 0,
+      "final_interval_suspend_or_branch_count": 0,
       "commit": "BUILDER_COMMIT_PRECEDES_CLOSURE_MAKE",
       "closure_make_after_commit": "INFALLIBLE",
       "publication": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
@@ -711,6 +724,7 @@
         "RegionId",
         "LoanId",
         "MoveReservationId",
+        "ResponsibilityEvidenceId",
         "CleanupRegistrationId",
         "ConstructionId",
         "ClosureId"
@@ -771,7 +785,7 @@
     "schema": "schemas/language/suspension-frame-responsibility.schema.json",
     "continuation_interface_contract": "spec/contracts/continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "e10fc230156dcc239648b0a759b046e2bc59cb0a7a6863179390baaa7056a23e",
+    "continuation_interface_digest": "42b925ea39769f9eb85310d333e0c43f866c72d0541dcdd6b7966c4bd1ed8562",
     "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
     "hir_structural_plan": "ContinuationFramePlan",
     "static_identity_count": 3,
@@ -963,7 +977,7 @@
     "runtime_callback_count": 0,
     "external_ffi_included": false,
     "managed_reference_profile_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7",
-    "continuation_interface_digest_or_null": "e10fc230156dcc239648b0a759b046e2bc59cb0a7a6863179390baaa7056a23e",
+    "continuation_interface_digest_or_null": "42b925ea39769f9eb85310d333e0c43f866c72d0541dcdd6b7966c4bd1ed8562",
     "canonical_promotion_ready": true,
     "release_verifier_diagnostic_count": 12,
     "product_support": "NOT_RUN",
@@ -1083,7 +1097,7 @@
     {
       "rule_id": "H1MB-R021",
       "title": "closure capture construction is transactional without new MIR operations",
-      "contract": "Tagged ReferenceCapture and InitializerCapture fields evaluate left-to-right exactly once into a private builder, failure uses CHECKED or LEAVE and reverse rollback through existing move, loan, and cleanup machinery, BUILDER_COMMIT precedes infallible CLOSURE_MAKE, partial publication is forbidden, and no capture/value identity enters module API bytes."
+      "contract": "Tagged ReferenceCapture and InitializerCapture fields evaluate left-to-right exactly once into a private builder; COPY and CLONE preserve one exact ResponsibilityEvidenceId disjoint from callable ResponsibilityProfileId; MOVE and ONCE reserve without PLACE_MOVE while fallible work remains; failure uses CHECKED or LEAVE and reverse rollback with source owners unconsumed; after all fallible preparation one straight-line nonsuspending interval performs source-ordered PLACE_MOVE and BUILDER_STAGE for MOVE or ONCE, BUILDER_COMMIT, and infallible CLOSURE_MAKE; DEEP has zero typed-HIR/MIR rows, partial publication is forbidden, and no capture/value identity enters module API bytes."
     }
   ],
   "machine_acceptance": {

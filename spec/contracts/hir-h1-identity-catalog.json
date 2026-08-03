@@ -2625,10 +2625,10 @@
           "cardinality": "N1_PER_PREPARATION"
         },
         {
-          "slot": "captures_in_source_order[ReferenceCapture].selected_evidence_id_or_null",
-          "reference_domain": "RESOLVED_EVIDENCE_ID",
+          "slot": "captures_in_source_order[ReferenceCapture].responsibility_evidence_id_or_null",
+          "reference_domain": "RESPONSIBILITY_EVIDENCE_ID",
           "cardinality": "N?_PER_REFERENCE_CAPTURE",
-          "condition": "N1_IFF_MODE_CLONE_OR_DEEP"
+          "condition": "N1_IFF_MODE_COPY_OR_CLONE"
         },
         {
           "slot": "captures_in_source_order[InitializerCapture].result_eval_id",
@@ -2677,11 +2677,12 @@
       "cross_field_rules": [
         "CaptureDescriptor is the exact tagged ReferenceCapture | InitializerCapture sum; initializer_binding_kind is exactly LET or VAR",
         "CaptureFieldId and source_ordinal are body-local, pairwise unique, zero-based, contiguous, and in exact source order; normalized_type_id equals the closed field type",
-        "ReferenceCapture preparation ordinals are source ordered and contiguous; CLONE and DEEP require evidence and every other reference mode requires null evidence",
+        "ReferenceCapture preparation ordinals are source ordered and contiguous; COPY and CLONE require one exact ResponsibilityEvidenceId whose descriptor matches normalized_type_id and the canonical CopyValue or Clone rule, every other admitted reference mode requires null evidence, and DEEP is rejected before typed HIR",
+        "ReferenceCapture responsibility_profile_id is a callable ResponsibilityProfileId and never substitutes for responsibility_evidence_id_or_null",
         "capture_list_state preserves ABSENT, PRESENT_EMPTY, or PRESENT_NONEMPTY independently of inferred capture discovery; PRESENT_EMPTY has zero fields and PRESENT_NONEMPTY has at least one field",
         "FrameIndependent or a true closed_ancestor_frame_assertion has no lexical dependencies; nonempty lexical dependencies imply RegionBound and false closed assertion",
         "lexical dependencies are sorted unique rows keyed by ancestor callable body, ancestor place, depth, region, Read, and LiveReadable",
-        "evaluation is LEFT_TO_RIGHT_EXACTLY_ONCE, rollback is REVERSE_ACQUISITION_ORDER, and publication commits the complete environment before infallible closure creation with no partial publication",
+        "evaluation is LEFT_TO_RIGHT_EXACTLY_ONCE; MOVE and ONCE reserve without PLACE_MOVE while fallible work remains; rollback is REVERSE_ACQUISITION_ORDER before source consumption; after all fallible preparation succeeds one straight-line nonsuspending interval performs source-ordered PLACE_MOVE and BUILDER_STAGE, BUILDER_COMMIT, and infallible CLOSURE_MAKE with no failure edge or partial publication",
         "CapturePlanId, CaptureFieldId, evaluation, place, region, loan, reservation, cleanup, and value identities are value-level semantic residue and never module API identities"
       ]
     },
@@ -3506,10 +3507,10 @@
           "cardinality": "N1_PER_PREPARATION"
         },
         {
-          "slot": "captures_in_source_order[*].selected_evidence_id_or_null",
-          "reference_domain": "RESOLVED_EVIDENCE_ID",
+          "slot": "captures_in_source_order[*].responsibility_evidence_id_or_null",
+          "reference_domain": "RESPONSIBILITY_EVIDENCE_ID",
           "cardinality": "N?_PER_CAPTURE",
-          "condition": "N1_IFF_MODE_CLONE_OR_DEEP"
+          "condition": "N1_IFF_MODE_COPY_OR_CLONE"
         },
         {
           "slot": "captures_in_source_order[*].responsibility_profile_id",
@@ -3524,7 +3525,7 @@
       ],
       "cross_field_rules": [
         "capture and preparation ordinals are source ordered and contiguous",
-        "CLONE and DEEP require evidence; every other capture mode requires null evidence"
+        "COPY and CLONE require one exact ResponsibilityEvidenceId; every other admitted reference mode requires null evidence; callable ResponsibilityProfileId is disjoint; DEEP is rejected before typed HIR"
       ]
     }
   ],

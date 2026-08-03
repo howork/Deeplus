@@ -1299,7 +1299,19 @@
       "common_fields": [
         "capture_field_id",
         "source_ordinal",
-        "normalized_type_id",
+        "normalized_type_id"
+      ],
+      "reference_fields": [
+        "source_place_id",
+        "capture_mode",
+        "responsibility_evidence_id_or_null",
+        "responsibility_profile_id"
+      ],
+      "reference_responsibility_evidence": "COPY_OR_CLONE_REQUIRE_EXACT_RESPONSIBILITY_EVIDENCE_ID_OTHER_ADMITTED_MODES_REQUIRE_NULL",
+      "callable_profile_separation": "responsibility_profile_id never substitutes for ResponsibilityEvidenceId",
+      "deep_typed_hir_or_mir_row_count": 0,
+      "initializer_fields": [
+        "initializer_value_id",
         "responsibility_id"
       ],
       "initializer_binding_kinds": [
@@ -1360,6 +1372,15 @@
         "CHECKED",
         "LEAVE"
       ],
+      "fallible_preparation": "MOVE_AND_ONCE_USE_MOVE_RESERVE_ONLY; PLACE_MOVE_AND_BUILDER_STAGE_FOR_THE_RESERVED_FIELD_ARE_FORBIDDEN_WHILE_ANY_FALLIBLE_WORK_REMAINS",
+      "precommit_failure": "REVERSE_ACQUISITION_ROLLBACK_CANCELS_ACTIVE_MOVE_RESERVATIONS_AND_PRESERVES_SOURCE_OWNERS",
+      "final_infallible_commit_interval": [
+        "SOURCE_ORDER_PLACE_MOVE_THEN_BUILDER_STAGE_FOR_EACH_MOVE_OR_ONCE_RESERVATION",
+        "BUILDER_COMMIT",
+        "CLOSURE_MAKE"
+      ],
+      "final_interval_failure_edge_count": 0,
+      "final_interval_suspend_or_branch_count": 0,
       "commit_before": "CLOSURE_MAKE",
       "closure_make_after_commit": "INFALLIBLE",
       "publication": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
@@ -2590,8 +2611,8 @@
     "type_entry_payload_shape": "RECOMPUTE_EXACT_KIND_DISCRIMINATED_LOGICAL_TYPE_REPRESENTATION",
     "target_identity_fence": "RECOMPUTE_AND_REJECT",
     "constant_payload_canonicality": "RECOMPUTE",
-    "closure_environment_plan_table": "RECOMPUTE_UNIQUE_PLAN_AND_CAPTURE_FIELD_IDENTITIES_EXACT_TAGS_TYPES_SOURCE_ORDINALS_LIST_STATE_RESIDENCE_CLOSED_ASSERTION_AND_LEXICAL_DEPENDENCIES",
-    "closure_capture_transaction": "RECOMPUTE_LEFT_TO_RIGHT_ONCE_REVERSE_ROLLBACK_COMMIT_BEFORE_INFALLIBLE_CLOSURE_MAKE_NO_PARTIAL_PUBLICATION_AND_ZERO_NEW_OPERATION_KINDS",
+    "closure_environment_plan_table": "RECOMPUTE_UNIQUE_PLAN_AND_CAPTURE_FIELD_IDENTITIES_EXACT_TAGS_TYPES_SOURCE_ORDINALS_LIST_STATE_RESIDENCE_CLOSED_ASSERTION_LEXICAL_DEPENDENCIES_AND_COPY_OR_CLONE_RESPONSIBILITY_EVIDENCE_BINDINGS; REJECT_DEEP_TYPED_RESIDUE",
+    "closure_capture_transaction": "RECOMPUTE_LEFT_TO_RIGHT_ONCE_MOVE_OR_ONCE_RESERVE_ONLY_WHILE_FALLIBLE_WORK_REMAINS_REVERSE_ROLLBACK_WITH_SOURCE_OWNERS_UNCONSUMED_THEN_SOURCE_ORDER_PLACE_MOVE_AND_BUILDER_STAGE_IN_ONE_STRAIGHT_LINE_NONSUSPENDING_ZERO_FAILURE_EDGE_INTERVAL_BEFORE_BUILDER_COMMIT_AND_INFALLIBLE_CLOSURE_MAKE_NO_PARTIAL_PUBLICATION_AND_ZERO_NEW_OPERATION_KINDS",
     "closure_make_payload_binding": "RESOLVE_EXACT_ENVIRONMENT_PLAN_COMMITTED_CONSTRUCTION_ENVIRONMENT_VALUE_BODY_AND_CAPTURE_FIELD_SOURCE_ORDER",
     "module_api_value_identity_export": "REJECT_ALL_CAPTURE_PLAN_CAPTURE_FIELD_EVAL_VALUE_PLACE_REGION_LOAN_RESERVATION_CLEANUP_CONSTRUCTION_AND_CLOSURE_IDENTITIES",
     "unreachable_proof_validity": "RECOMPUTE",
@@ -2614,6 +2635,7 @@
     "canonical_source_mutation": 0,
     "github_mutation": 0,
     "r32_deferred_call_plan_projection": "DESIGN_ONLY_NOT_RUN",
+    "closure_capture_deep_typed_hir_or_mir_row_count": 0,
     "new_mir_operation_kind_count": 0,
     "module_api_value_level_identity_export_count": 0
   },

@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/closure-capture-dynamic-trace-evidence-r1.schema.json",
+  "title": "Deeplus R67 Closure Capture Dynamic Trace Evidence Overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "feature_ids",
+    "evidence_entries",
+    "bindings",
+    "acceptance_cases",
+    "counts",
+    "guards"
+  ],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/closure-capture-dynamic-trace-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.closure-capture-dynamic-trace-evidence/r1"},
+    "revision": {"const": "r67-local-closure-capture-dynamic-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "a1fc8b99db7e7392fa17ea78880d02239ffc5d1e"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["closure_capture_descriptor_msp"]},
+    "evidence_entries": {
+      "const": [
+        {
+          "evidence_key": "R67:closure_capture_descriptor_msp:DYNAMIC_LOWERING:TRANSACTION",
+          "class": "ARTIFACT_POINTER",
+          "path": "spec/contracts/hir-mir-lowering-registry.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/closure_capture_plan_lowering_contract",
+          "stage_role": "DYNAMIC_LOWERING"
+        }
+      ]
+    },
+    "bindings": {
+      "const": [
+        {
+          "feature_id": "closure_capture_descriptor_msp",
+          "stage": "DYNAMIC_LOWERING",
+          "outcome": null,
+          "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+          "disposition": "BOUND_DIRECT",
+          "evidence_keys": ["R67:closure_capture_descriptor_msp:DYNAMIC_LOWERING:TRANSACTION"],
+          "delegate_feature_id": null,
+          "not_applicable": null
+        }
+      ]
+    },
+    "acceptance_cases": {
+      "const": [
+        {
+          "case_id": "R67-TRACE-001",
+          "feature_id": "closure_capture_descriptor_msp",
+          "stage": "DYNAMIC_LOWERING",
+          "outcome": null,
+          "contract_pointer": "/closure_capture_plan_lowering_contract",
+          "acceptance_case_ids": [
+            "R31-CCP-BND-002",
+            "R31-CCP-POS-003",
+            "R31-CCP-POS-004",
+            "R31-CCP-NEG-001"
+          ],
+          "disposition": "BOUND_DIRECT",
+          "delegate_feature_id": null,
+          "execution_state": "STATIC_REFERENCE_VALIDATOR_PASS"
+        }
+      ]
+    },
+    "counts": {
+      "const": {
+        "feature_count": 1,
+        "evidence_entry_count": 1,
+        "binding_count": 1,
+        "trace_acceptance_record_count": 1,
+        "predecessor_blocked_cell_count": 1,
+        "overlay_bound_direct_transition_count": 1,
+        "overlay_bound_delegated_transition_count": 0,
+        "overlay_not_applicable_transition_count": 0,
+        "predecessor_cumulative_overlay_count": 12,
+        "post_overlay_cumulative_overlay_count": 13,
+        "predecessor_cumulative_overlay_binding_count": 128,
+        "post_overlay_cumulative_binding_count": 129,
+        "predecessor_evidence_registry_count": 3141,
+        "post_overlay_evidence_registry_count": 3142,
+        "predecessor_total_bound_direct_cell_count": 2464,
+        "predecessor_total_bound_delegated_cell_count": 3,
+        "predecessor_total_not_applicable_cell_count": 501,
+        "predecessor_total_blocked_cell_count": 1253,
+        "post_overlay_total_bound_direct_cell_count": 2465,
+        "post_overlay_total_bound_delegated_cell_count": 3,
+        "post_overlay_total_not_applicable_cell_count": 501,
+        "post_overlay_total_blocked_cell_count": 1252,
+        "post_overlay_missing_cell_count": 0,
+        "post_overlay_conflict_cell_count": 0
+      }
+    },
+    "guards": {
+      "const": {
+        "target_feature_count": 469,
+        "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+        "excluded_feature_count": 254,
+        "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+        "transitioned_cell_count": 1,
+        "other_cell_transition_count": 0,
+        "other_atomic_cell_count": 4220,
+        "stage_cell_count": 3283,
+        "test_outcome_cell_count": 1407,
+        "move_source_consumed_before_commit_count": 0,
+        "move_barrier_fallible_operation_count": 0,
+        "move_barrier_suspension_point_count": 0,
+        "capture_responsibility_domain_mismatch_count": 0,
+        "callable_profile_as_capture_evidence_count": 0,
+        "current_deep_hir_mode_count": 0,
+        "current_deep_mir_mode_count": 0,
+        "current_deep_lowering_row_count": 0,
+        "current_deep_lowering_operation_count": 0,
+        "source_activation": "none",
+        "surface_change_count": 0,
+        "new_mir_operation_kind_count": 0,
+        "runtime_relookup_count": 0,
+        "backend_relookup_count": 0,
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED",
+        "product_execution_receipt_count": 0,
+        "implementation_claim": "NONE"
+      }
+    }
+  }
+}

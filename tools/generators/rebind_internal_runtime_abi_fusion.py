@@ -32,7 +32,6 @@ def write(root: Path, relative: str, value: Any) -> None:
     (root / relative).write_text(
         json.dumps(value, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
-        newline="\n",
     )
 
 

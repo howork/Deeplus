@@ -207,15 +207,26 @@ formatter/LSP, and executable concurrency evidence remain `NOT_RUN`.
 Closure environments are built by one ordered capture plan. `borrow` and
 `inout` create bounded nonescaping observations, `move` transfers one owner,
 and `copy` requires the sealed `CopyValue` responsibility while preserving a
-null Trait witness. `clone` retains one exact `Clone` witness together with its
-normalized ErrorSet, EffectRow, result acquisition, and cleanup plan. `deep`
-requires the distinct nonactivatable `DeepClone` profile and never falls back
-to Clone. The backend receives the already selected responsibility/evidence
+null Trait witness. Both `copy` and `clone` carry one exact
+`ResponsibilityEvidenceId`; their referenced descriptors remain distinct.
+The `CopyValue` descriptor is an intrinsic predicate proof with a null Trait
+witness, while the `Clone` descriptor owns one exact selected witness together
+with its normalized ErrorSet, EffectRow, result acquisition, and cleanup plan.
+`deep` is rejected before typed HIR or MIR because its distinct `DeepClone`
+profile is nonactivatable; it never falls back to Clone and leaves no typed
+lowering residue. Callable responsibility profiles remain a separate identity
+domain. The backend receives the already selected responsibility/evidence
 identities and performs no runtime lookup. A capture-level
 `once` field is one-shot but does not consume the closure's callable right
-unless the closure independently has `#once`. Before environment commit, a
-failed capture acquisition cleans acquired temporaries in reverse order and
-publishes no partial closure.
+unless the closure independently has `#once`. During the fallible preparation
+interval, `move` and capture-level `once` emit only `MOVE_RESERVE`; neither
+`PLACE_MOVE` nor their field `BUILDER_STAGE` may occur. A failed preparation
+cancels reservations, ends loans, and cleans staged values in reverse
+acquisition order without restoring an already consumed source, because no
+source has yet been consumed. After every fallible preparation succeeds, one
+infallible final interval performs source-ordered `PLACE_MOVE` and
+`BUILDER_STAGE` for reserved fields, then `BUILDER_COMMIT`, followed by
+infallible `CLOSURE_MAKE`. It publishes no partial environment or closure.
 
 A proven lexical dependency is not a capture-plan item. The callable descriptor
 keeps residence and environment orthogonal, so a region-bound callable may

@@ -2587,7 +2587,7 @@
         "captured_ref",
         "mode",
         "preparations",
-        "selected_evidence_id_or_null",
+        "responsibility_evidence_id_or_null",
         "responsibility_profile_id"
       ],
       "properties": {
@@ -2614,7 +2614,6 @@
             "MOVE",
             "COPY",
             "CLONE",
-            "DEEP",
             "ONCE"
           ]
         },
@@ -2624,11 +2623,15 @@
             "$ref": "#/$defs/CapturePreparation"
           }
         },
-        "selected_evidence_id_or_null": {
-          "$ref": "#/$defs/NullableId"
+        "responsibility_evidence_id_or_null": {
+          "$ref": "#/$defs/NullableId",
+          "description": "Exact ResponsibilityEvidenceId for COPY or CLONE. The referenced module descriptor owns the canonical rule, evidence kind, and any selected Clone witness/error/effect/acquisition/cleanup residue. This value never reuses ResponsibilityProfileId.",
+          "x-deeplus-identity-domain": "RESPONSIBILITY_EVIDENCE_ID_OR_NULL"
         },
         "responsibility_profile_id": {
-          "$ref": "#/$defs/Id"
+          "$ref": "#/$defs/Id",
+          "description": "Callable responsibility profile identity, disjoint from ResponsibilityEvidenceId.",
+          "x-deeplus-identity-domain": "RESPONSIBILITY_PROFILE_ID"
         }
       },
       "allOf": [
@@ -2637,8 +2640,8 @@
             "properties": {
               "mode": {
                 "enum": [
-                  "CLONE",
-                  "DEEP"
+                  "COPY",
+                  "CLONE"
                 ]
               }
             },
@@ -2648,14 +2651,14 @@
           },
           "then": {
             "properties": {
-              "selected_evidence_id_or_null": {
+              "responsibility_evidence_id_or_null": {
                 "$ref": "#/$defs/Id"
               }
             }
           },
           "else": {
             "properties": {
-              "selected_evidence_id_or_null": {
+              "responsibility_evidence_id_or_null": {
                 "type": "null"
               }
             }
@@ -6784,8 +6787,9 @@
       "Require payload owner_expr_id, owner_expr_kind, payload_contract_id, slot order, slot roles, reference classes, and cardinalities to exactly match the integrated identity catalog payload contract.",
       "Require every structural plan to match exactly one of the thirteen StructuralPlan discriminators and require every optional value to use its required *_or_null field.",
       "Require each ClosurePlan capture_plan_id and CaptureFieldId to be body-local and unique; require CaptureFieldId and source_ordinal projections to be one-to-one, zero-based, contiguous, and in exact source order.",
-      "Require every closure capture to match exactly one tagged ReferenceCapture or InitializerCapture; require every capture normalized_type_id to equal its closed result type and every initializer_binding_kind to be exactly LET or VAR.",
-      "Require closure capture evaluation left-to-right exactly once, reverse-acquisition rollback on every precommit failure, environment commit before an infallible closure make, and no partially initialized environment or closure publication.",
+      "Require every closure capture to match exactly one tagged ReferenceCapture or InitializerCapture; require every capture normalized_type_id to equal its closed result type and every initializer_binding_kind to be exactly LET or VAR; reject DEEP before typed HIR in every source profile.",
+      "For COPY and CLONE ReferenceCapture rows require one nonnull responsibility_evidence_id_or_null resolving to exactly one module ResponsibilityEvidenceDescriptor with the same normalized TypeId and the canonical CopyValue or Clone rule respectively; require all other admitted reference modes to carry null, preserve the Clone descriptor's exact TraitWitnessId, ErrorSetId, EffectRowId, ResultAcquisitionPlanId, and CleanupPlanId, and never substitute callable ResponsibilityProfileId for ResponsibilityEvidenceId.",
+      "Require closure capture evaluation left-to-right exactly once; MOVE and ONCE prepare only an exact move reservation while any fallible work remains; every precommit failure rolls back the prepared prefix in reverse acquisition order without consuming the source; only after all fallible preparation succeeds may a straight-line nonsuspending interval perform source-ordered PLACE_MOVE and BUILDER_STAGE, BUILDER_COMMIT, and infallible CLOSURE_MAKE with no failure edge or partial environment or closure publication.",
       "Require capture-list state, residence, closed-ancestor-frame assertion, and sorted unique lexical dependencies to satisfy their cross-field constraints; CapturePlanId, CaptureFieldId, eval, place, region, loan, reservation, cleanup, and value identities remain non-API value-level identities.",
       "Require each named plan-reference slot to resolve to exactly one StructuralPlan whose structural_identity_id is the exact plan class required by that slot.",
       "For each CleanupRegistration, require source_registration_ordinal to be contiguous in source order and equal deferred_call_plan.source_registration_ordinal; require cleanup scope identity equality, exact once-only dynamic operand ordinals, zero-evaluation static evidence, body-semantic-digest-bound defaults, and three-phase CLEANUP_REGISTER then CLEANUP_PIN* then CLEANUP_SEAL publication.",

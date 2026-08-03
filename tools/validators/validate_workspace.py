@@ -12736,6 +12736,11 @@ def main() -> int:
         "tools/validators/validate_responsibility_identity_dynamic_trace.py",
         "tools/validators/run_responsibility_identity_dynamic_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R66_Responsibility_Identity_Dynamic_Trace_Closure_R1.md",
+        "spec/traceability/implementation-target-profile-r1/closure-capture-dynamic-trace-evidence-r1.json",
+        "schemas/language/closure-capture-dynamic-trace-evidence-r1.schema.json",
+        "tools/validators/validate_closure_capture_dynamic_trace.py",
+        "tools/validators/run_closure_capture_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R67_Closure_Capture_Dynamic_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
@@ -20120,6 +20125,52 @@ def main() -> int:
         check((crate / "Cargo.toml").is_file() and bool(list((crate / "src").glob("*.rs"))), "CRATE_SCAFFOLD", crate.name)
     manifest = parsed.get(root / "release/source-tree-manifest.json", {})
     listed = manifest.get("files", [])
+    source_manifest_process = subprocess.run(
+        [
+            sys.executable,
+            str(root / "tools/generators/refresh_source_tree_manifest.py"),
+            "--root",
+            str(root),
+            "--check",
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    source_manifest_detail = (
+        source_manifest_process.stdout.strip()
+        if source_manifest_process.returncode == 0
+        else source_manifest_process.stderr.strip()
+        or source_manifest_process.stdout.strip()
+    )
+    check(
+        source_manifest_process.returncode == 0,
+        "SOURCE_TREE_INDEX_PROJECTION",
+        source_manifest_detail[-4000:],
+    )
+    worktree_index_process = subprocess.run(
+        [
+            "git",
+            "-c",
+            f"safe.directory={root.as_posix()}",
+            "-C",
+            str(root),
+            "diff",
+            "--quiet",
+            "--",
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    check(
+        worktree_index_process.returncode == 0,
+        "SOURCE_TREE_WORKTREE_INDEX_PARITY",
+        worktree_index_process.stderr.strip()
+        or "Git clean-filter parity between worktree and index",
+    )
     actual_files = sorted(
         p for p in root.rglob("*")
         if p.is_file()
@@ -20128,10 +20179,6 @@ def main() -> int:
     )
     listed_map = {row["path"]: row for row in listed}
     check(set(listed_map) == {p.relative_to(root).as_posix() for p in actual_files}, "SOURCE_TREE_MEMBERSHIP", f"listed={len(listed_map)} actual={len(actual_files)}")
-    for path in actual_files:
-        rel = path.relative_to(root).as_posix()
-        row = listed_map.get(rel, {})
-        check(row.get("sha256") == file_sha(path) and row.get("bytes") == path.stat().st_size, "SOURCE_TREE_FILE_IDENTITY", rel)
     tree_material = "\n".join(f"{row['path']}\0{row['sha256']}" for row in sorted(listed, key=lambda x: x["path"])).encode()
     check(manifest.get("revision") == revision and manifest.get("tree_sha256") == hashlib.sha256(tree_material).hexdigest(), "SOURCE_TREE_AGGREGATE", str(manifest.get("tree_sha256")))
 
