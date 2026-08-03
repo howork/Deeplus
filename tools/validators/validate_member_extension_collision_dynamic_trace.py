@@ -26,6 +26,15 @@ AUTHORITY = "MIR_RUNTIME_AUTHORITY"
 EVIDENCE_ID = "EV-879fcccb6c75f3f07a0d69202e8a77ab9cff9054049dfae8b7796d3865ea0374"
 NON_TARGET_COUNT = 4220
 NON_TARGET_SHA256 = "3cdbe4a509df453151f7e4900610acf2acbb6dfe0a8734f52e375a86082299e2"
+R73_REVISION = "r73-local-member-extension-collision-conformance-trace-closure-r1"
+R73_PREDECESSOR = "ab1ffd86db91d2b3b93e7c15e43829a7aa4704d3"
+R73_BOUNDARY_TARGET = (FEATURE, "CONFORMANCE_TESTS", "BOUNDARY")
+R73_REJECT_TARGET = (FEATURE, "CONFORMANCE_TESTS", "REJECT")
+R73_BOUNDARY_EVIDENCE_ID = "EV-7af9345ab4c98882b2af77fc1814fc0352298f5d5f4dd9d4df357abc824c0c3f"
+R73_REJECT_EVIDENCE_ID = "EV-ee837f7a965f93d9d84ad03a394d443692b235c6715b00ab2e748d5dbaf7850e"
+R73_OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json"
+R73_TRIPLE_EXCLUSION_COUNT = 4218
+R73_TRIPLE_EXCLUSION_SHA256 = "b7992b83d769cbaa0f2123afbe012732483101411e24fc4f5d924c7db3410a30"
 
 CONTRACT = "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json"
 CONTRACT_SCHEMA = "schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json"
@@ -135,6 +144,22 @@ def non_target_digest(
     cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
 ) -> Tuple[int, str]:
     material = [[*key, value] for key, value in cells.items() if key != TARGET]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
+def r73_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R72 and R73 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key not in {TARGET, R73_BOUNDARY_TARGET, R73_REJECT_TARGET}
+    ]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
         material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -291,29 +316,78 @@ def validate(
         "G03",
         "GENERATED_TARGET_EXACT",
     )
-    require(
-        current_count == NON_TARGET_COUNT
-        and current_digest == NON_TARGET_SHA256,
-        "G03",
-        "GENERATED_NON_TARGET_4220_EXACT",
-    )
     applied = metadata.get("applied_evidence_overlays", [])
+    applied_paths = [row.get("path") for row in applied]
     registry = metadata.get("evidence_registry", [])
     derived = metadata.get("derived_counts", {})
     registered = [row for row in registry if row.get("evidence_id") == EVIDENCE_ID]
+    r73_successor = (
+        metadata.get("revision") == R73_REVISION
+        and metadata.get("local_predecessor_commit") == R73_PREDECESSOR
+        and applied_paths[-2:] == [OVERLAY, R73_OVERLAY]
+    )
     require(
-        metadata.get("revision") == REVISION
-        and metadata.get("canonical_baseline_commit") == CANONICAL
-        and metadata.get("local_predecessor_commit") == PREDECESSOR
-        and len(applied) == 18
-        and applied[-1]
-        == {"path": OVERLAY, "feature_count": 1, "binding_count": 1}
-        and sum(row.get("binding_count", 0) for row in applied) == 134
-        and len(registry) == 3146
+        (
+            r73_successor
+            and r73_successor_non_target_digest(current_cells)
+            == (R73_TRIPLE_EXCLUSION_COUNT, R73_TRIPLE_EXCLUSION_SHA256)
+        )
+        or (
+            not r73_successor
+            and current_count == NON_TARGET_COUNT
+            and current_digest == NON_TARGET_SHA256
+        ),
+        "G03",
+        "GENERATED_NON_TARGET_SUCCESSOR_EXACT",
+    )
+    require(
+        metadata.get("canonical_baseline_commit") == CANONICAL
+        and (
+            (
+                metadata.get("revision") == REVISION
+                and metadata.get("local_predecessor_commit") == PREDECESSOR
+                and len(applied) == 18
+                and applied_paths[-1:] == [OVERLAY]
+                and sum(row.get("binding_count", 0) for row in applied) == 134
+                and len(registry) == 3146
+            )
+            or (
+                r73_successor
+                and len(applied) == 19
+                and sum(row.get("binding_count", 0) for row in applied) == 136
+                and len(registry) == 3148
+            )
+        )
         and len(registered) == 1,
         "G03",
         "GENERATED_METADATA_EXACT",
     )
+    if r73_successor:
+        boundary = current_cells.get(R73_BOUNDARY_TARGET, {})
+        reject = current_cells.get(R73_REJECT_TARGET, {})
+        successor_count, successor_digest = r73_successor_non_target_digest(
+            current_cells
+        )
+        require(
+            boundary.get("disposition") == "BOUND_DIRECT"
+            and boundary.get("evidence_refs") == [R73_BOUNDARY_EVIDENCE_ID]
+            and boundary.get("delegate_feature_id") is None
+            and boundary.get("not_applicable") is None
+            and boundary.get("blocked_gap_ids") == []
+            and reject.get("disposition") == "BOUND_DIRECT"
+            and reject.get("evidence_refs") == [R73_REJECT_EVIDENCE_ID]
+            and reject.get("delegate_feature_id") is None
+            and reject.get("not_applicable") is None
+            and reject.get("blocked_gap_ids") == [],
+            "G03",
+            "R73_SUCCESSOR_TARGETS_EXACT",
+        )
+        require(
+            successor_count == R73_TRIPLE_EXCLUSION_COUNT
+            and successor_digest == R73_TRIPLE_EXCLUSION_SHA256,
+            "G03",
+            "R73_OTHER_4218_EXACT",
+        )
     require(
         (
             derived.get("bound_direct_cells"),
@@ -321,7 +395,7 @@ def validate(
             derived.get("not_applicable_cells"),
             derived.get("applicable_blocked_cells"),
         )
-        == (2467, 4, 503, 1247)
+        == ((2469, 4, 503, 1245) if r73_successor else (2467, 4, 503, 1247))
         and derived.get("missing_cells") == 0
         and derived.get("conflict_cells") == 0,
         "G03",
@@ -563,8 +637,18 @@ def validate(
         and len(contract.get("rules", [])) == 13
         and [row.get("rule_id") for row in contract.get("rules", [])]
         == [f"MECDTC-R{index:03d}" for index in range(1, 14)]
-        and current_count == NON_TARGET_COUNT
-        and current_digest == NON_TARGET_SHA256,
+        and (
+            (
+                r73_successor
+                and r73_successor_non_target_digest(current_cells)
+                == (R73_TRIPLE_EXCLUSION_COUNT, R73_TRIPLE_EXCLUSION_SHA256)
+            )
+            or (
+                not r73_successor
+                and current_count == NON_TARGET_COUNT
+                and current_digest == NON_TARGET_SHA256
+            )
+        ),
         "G06",
         "MACHINE_AND_GOVERNANCE_FENCE",
     )
@@ -580,6 +664,8 @@ def main() -> int:
         errors = validate(root)
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
+    metadata = load(root / METADATA)
+    r73_successor = metadata.get("revision") == R73_REVISION
     receipt = {
         "schema": "deeplus.r72-member-extension-collision-dynamic-trace-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL",
@@ -589,12 +675,14 @@ def main() -> int:
         "reason_code": REASON,
         "authority_boundary": AUTHORITY,
         "projected_counts": {
-            "bound_direct": 2467,
+            "bound_direct": 2469 if r73_successor else 2467,
             "bound_delegated": 4,
             "not_applicable": 503,
-            "applicable_blocked": 1247,
+            "applicable_blocked": 1245 if r73_successor else 1247,
         },
-        "non_target_cell_count": NON_TARGET_COUNT,
+        "non_target_cell_count": (
+            R73_TRIPLE_EXCLUSION_COUNT if r73_successor else NON_TARGET_COUNT
+        ),
         "product_execution": "15_OF_15_NOT_RUN",
         "github_publication": "SUSPENDED",
         "gates": GATES,

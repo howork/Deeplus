@@ -28,6 +28,15 @@ R72_EVIDENCE_ID = "EV-879fcccb6c75f3f07a0d69202e8a77ab9cff9054049dfae8b7796d3865
 R72_OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-dynamic-evidence-r1.json"
 R72_DUAL_EXCLUSION_COUNT = 4219
 R72_DUAL_EXCLUSION_SHA256 = "75ccf47df040801cb0b75c34c47f85fb5ef0ef36d0d3a72ed3cf64099126f9ab"
+R73_REVISION = "r73-local-member-extension-collision-conformance-trace-closure-r1"
+R73_PREDECESSOR = "ab1ffd86db91d2b3b93e7c15e43829a7aa4704d3"
+R73_BOUNDARY_TARGET = ("member_extension_collision_error_policy", "CONFORMANCE_TESTS", "BOUNDARY")
+R73_REJECT_TARGET = ("member_extension_collision_error_policy", "CONFORMANCE_TESTS", "REJECT")
+R73_BOUNDARY_EVIDENCE_ID = "EV-7af9345ab4c98882b2af77fc1814fc0352298f5d5f4dd9d4df357abc824c0c3f"
+R73_REJECT_EVIDENCE_ID = "EV-ee837f7a965f93d9d84ad03a394d443692b235c6715b00ab2e748d5dbaf7850e"
+R73_OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json"
+R73_QUAD_EXCLUSION_COUNT = 4217
+R73_QUAD_EXCLUSION_SHA256 = "74f224cc61633e22f72c0c4f480afbdbe0aab42ffa905d85496620d8740a6296"
 
 CONTRACT = "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json"
 CONTRACT_SCHEMA = "schemas/language/method-extension-resolution-dynamic-trace-closure-r1.schema.json"
@@ -147,6 +156,23 @@ def r72_successor_non_target_digest(
         [*key, value]
         for key, value in cells.items()
         if key not in {TARGET, R72_TARGET}
+    ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
+def r73_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R71-R73 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key
+        not in {TARGET, R72_TARGET, R73_BOUNDARY_TARGET, R73_REJECT_TARGET}
     ]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
@@ -283,6 +309,11 @@ def validate(
         and metadata.get("local_predecessor_commit") == R72_PREDECESSOR
         and applied[-2:] == [OVERLAY, R72_OVERLAY]
     )
+    r73_successor = (
+        metadata.get("revision") == R73_REVISION
+        and metadata.get("local_predecessor_commit") == R73_PREDECESSOR
+        and applied[-3:] == [OVERLAY, R72_OVERLAY, R73_OVERLAY]
+    )
     require(
         duplicates == 0
         and target.get("disposition") == "BOUND_DELEGATED"
@@ -307,15 +338,24 @@ def validate(
                 and len(applied) == 18
                 and len(evidence_registry) == 3146
             )
+            or (
+                r73_successor
+                and len(applied) == 19
+                and len(evidence_registry) == 3148
+            )
         )
         and EVIDENCE_ID in evidence_registry,
         "G03",
         "GENERATED_METADATA_EXACT",
     )
-    if r72_successor:
+    if r72_successor or r73_successor:
         r72_target = cells.get(R72_TARGET, {})
         r72_detail = r72_target.get("not_applicable") or {}
-        successor_count, successor_digest = r72_successor_non_target_digest(cells)
+        successor_count, successor_digest = (
+            r73_successor_non_target_digest(cells)
+            if r73_successor
+            else r72_successor_non_target_digest(cells)
+        )
         require(
             r72_target.get("disposition") == "NOT_APPLICABLE"
             and r72_target.get("evidence_refs") == []
@@ -329,16 +369,43 @@ def validate(
             "R72_SUCCESSOR_TARGET_EXACT",
         )
         require(
-            successor_count == R72_DUAL_EXCLUSION_COUNT
-            and successor_digest == R72_DUAL_EXCLUSION_SHA256,
+            (
+                r73_successor
+                and successor_count == R73_QUAD_EXCLUSION_COUNT
+                and successor_digest == R73_QUAD_EXCLUSION_SHA256
+            )
+            or (
+                r72_successor
+                and successor_count == R72_DUAL_EXCLUSION_COUNT
+                and successor_digest == R72_DUAL_EXCLUSION_SHA256
+            ),
             "G03",
-            "R72_OTHER_4219_EXACT",
+            "R72_R73_SUCCESSOR_OTHER_EXACT",
+        )
+    if r73_successor:
+        boundary = cells.get(R73_BOUNDARY_TARGET, {})
+        reject = cells.get(R73_REJECT_TARGET, {})
+        require(
+            boundary.get("disposition") == "BOUND_DIRECT"
+            and boundary.get("evidence_refs") == [R73_BOUNDARY_EVIDENCE_ID]
+            and boundary.get("delegate_feature_id") is None
+            and boundary.get("not_applicable") is None
+            and boundary.get("blocked_gap_ids") == []
+            and reject.get("disposition") == "BOUND_DIRECT"
+            and reject.get("evidence_refs") == [R73_REJECT_EVIDENCE_ID]
+            and reject.get("delegate_feature_id") is None
+            and reject.get("not_applicable") is None
+            and reject.get("blocked_gap_ids") == [],
+            "G03",
+            "R73_SUCCESSOR_TARGETS_EXACT",
         )
     require(
-        counts.get("bound_direct_cells") == 2467
+        counts.get("bound_direct_cells") == (2469 if r73_successor else 2467)
         and counts.get("bound_delegated_cells") == 4
-        and counts.get("not_applicable_cells") == (503 if r72_successor else 502)
-        and counts.get("applicable_blocked_cells") == (1247 if r72_successor else 1248)
+        and counts.get("not_applicable_cells")
+        == (503 if (r72_successor or r73_successor) else 502)
+        and counts.get("applicable_blocked_cells")
+        == (1245 if r73_successor else (1247 if r72_successor else 1248))
         and counts.get("missing_cells") == 0
         and counts.get("conflict_cells") == 0,
         "G03",
@@ -540,6 +607,8 @@ def main() -> int:
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
     metadata = load(root / METADATA)
+    r73_successor = metadata.get("revision") == R73_REVISION
+    r72_successor = metadata.get("revision") == R72_REVISION
     receipt = {
         "schema": "deeplus.r71-method-extension-resolution-dynamic-trace-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL",
@@ -548,15 +617,17 @@ def main() -> int:
         "disposition": "BOUND_DELEGATED",
         "delegate_feature_id": DELEGATE,
         "projected_counts": {
-            "bound_direct": 2467,
+            "bound_direct": 2469 if r73_successor else 2467,
             "bound_delegated": 4,
-            "not_applicable": 503 if metadata.get("revision") == R72_REVISION else 502,
-            "applicable_blocked": 1247 if metadata.get("revision") == R72_REVISION else 1248,
+            "not_applicable": 503 if (r72_successor or r73_successor) else 502,
+            "applicable_blocked": (
+                1245 if r73_successor else (1247 if r72_successor else 1248)
+            ),
         },
         "non_target_cell_count": (
-            R72_DUAL_EXCLUSION_COUNT
-            if metadata.get("revision") == R72_REVISION
-            else NON_TARGET_COUNT
+            R73_QUAD_EXCLUSION_COUNT
+            if r73_successor
+            else (R72_DUAL_EXCLUSION_COUNT if r72_successor else NON_TARGET_COUNT)
         ),
         "product_execution": "15_OF_15_NOT_RUN",
         "github_publication": "SUSPENDED",

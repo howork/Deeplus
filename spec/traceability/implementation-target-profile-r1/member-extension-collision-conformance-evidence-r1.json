@@ -1,0 +1,124 @@
+{
+  "$schema": "../../../schemas/language/member-extension-collision-conformance-evidence-r1.schema.json",
+  "schema": "deeplus.member-extension-collision-conformance-evidence/r1",
+  "revision": "r73-local-member-extension-collision-conformance-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "ab1ffd86db91d2b3b93e7c15e43829a7aa4704d3",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_ids": ["member_extension_collision_error_policy"],
+  "evidence_entries": [
+    {
+      "evidence_key": "R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:BOUNDARY",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/BOUNDARY",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:REJECT",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/REJECT",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    }
+  ],
+  "bindings": [
+    {
+      "feature_id": "member_extension_collision_error_policy",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": ["R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:BOUNDARY"],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "member_extension_collision_error_policy",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": ["R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:REJECT"],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R73-TRACE-001",
+      "feature_id": "member_extension_collision_error_policy",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "contract_pointer": "/acceptance_bindings/BOUNDARY",
+      "acceptance_case_ids": ["R72-MECD-ACC-003", "R72-MECD-ACC-004", "R72-MECD-ACC-005"],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R73-TRACE-002",
+      "feature_id": "member_extension_collision_error_policy",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "contract_pointer": "/acceptance_bindings/REJECT",
+      "acceptance_case_ids": ["R72-MECD-ACC-006", "R72-MECD-ACC-007", "R72-MECD-ACC-008", "R72-MECD-ACC-009"],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "counts": {
+    "feature_count": 1,
+    "evidence_entry_count": 2,
+    "binding_count": 2,
+    "trace_acceptance_record_count": 2,
+    "acceptance_case_count": 7,
+    "predecessor_blocked_cell_count": 2,
+    "overlay_bound_direct_transition_count": 2,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 0,
+    "predecessor_cumulative_overlay_count": 18,
+    "post_overlay_cumulative_overlay_count": 19,
+    "predecessor_cumulative_overlay_binding_count": 134,
+    "post_overlay_cumulative_binding_count": 136,
+    "predecessor_evidence_registry_count": 3146,
+    "post_overlay_evidence_registry_count": 3148,
+    "predecessor_total_bound_direct_cell_count": 2467,
+    "predecessor_total_bound_delegated_cell_count": 4,
+    "predecessor_total_not_applicable_cell_count": 503,
+    "predecessor_total_blocked_cell_count": 1247,
+    "post_overlay_total_bound_direct_cell_count": 2469,
+    "post_overlay_total_bound_delegated_cell_count": 4,
+    "post_overlay_total_not_applicable_cell_count": 503,
+    "post_overlay_total_blocked_cell_count": 1245,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0
+  },
+  "guards": {
+    "target_feature_count": 469,
+    "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+    "excluded_feature_count": 254,
+    "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+    "transitioned_cell_count": 2,
+    "other_cell_transition_count": 0,
+    "other_atomic_cell_count": 4219,
+    "other_atomic_cell_sha256": "7448ce347ec8ebf432af540973ec6e56bf9ddbd04049c57d4eca7a23ba544cf7",
+    "stage_cell_count": 3283,
+    "test_outcome_cell_count": 1407,
+    "projected_boundary_evidence_registry_id": "EV-7af9345ab4c98882b2af77fc1814fc0352298f5d5f4dd9d4df357abc824c0c3f",
+    "projected_reject_evidence_registry_id": "EV-ee837f7a965f93d9d84ad03a394d443692b235c6715b00ab2e748d5dbaf7850e",
+    "new_source_surface_count": 0,
+    "new_identity_count": 0,
+    "new_p1_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}

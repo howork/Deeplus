@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/member-extension-collision-conformance-evidence-r1.schema.json",
+  "title": "Deeplus R73 member/extension collision conformance trace evidence overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "candidate_status", "feature_ids", "evidence_entries", "bindings", "acceptance_cases", "counts", "guards"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/member-extension-collision-conformance-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.member-extension-collision-conformance-evidence/r1"},
+    "revision": {"const": "r73-local-member-extension-collision-conformance-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "ab1ffd86db91d2b3b93e7c15e43829a7aa4704d3"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["member_extension_collision_error_policy"]},
+    "evidence_entries": {"const": [
+      {"evidence_key": "R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:BOUNDARY", "class": "ACCEPTANCE_CASE_SET", "path": "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json", "locator_kind": "JSON_POINTER", "locator": "/acceptance_bindings/BOUNDARY", "stage_role": "CONFORMANCE_TESTS:BOUNDARY"},
+      {"evidence_key": "R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:REJECT", "class": "ACCEPTANCE_CASE_SET", "path": "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json", "locator_kind": "JSON_POINTER", "locator": "/acceptance_bindings/REJECT", "stage_role": "CONFORMANCE_TESTS:REJECT"}
+    ]},
+    "bindings": {"const": [
+      {"feature_id": "member_extension_collision_error_policy", "stage": "CONFORMANCE_TESTS", "outcome": "BOUNDARY", "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP", "disposition": "BOUND_DIRECT", "evidence_keys": ["R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:BOUNDARY"], "delegate_feature_id": null, "not_applicable": null},
+      {"feature_id": "member_extension_collision_error_policy", "stage": "CONFORMANCE_TESTS", "outcome": "REJECT", "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP", "disposition": "BOUND_DIRECT", "evidence_keys": ["R73:member_extension_collision_error_policy:CONFORMANCE_TESTS:REJECT"], "delegate_feature_id": null, "not_applicable": null}
+    ]},
+    "acceptance_cases": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["case_id", "feature_id", "stage", "outcome", "contract_pointer", "acceptance_case_ids", "disposition", "delegate_feature_id", "execution_state"], "properties": {"case_id": {"enum": ["R73-TRACE-001", "R73-TRACE-002"]}, "feature_id": {"const": "member_extension_collision_error_policy"}, "stage": {"const": "CONFORMANCE_TESTS"}, "outcome": {"enum": ["BOUNDARY", "REJECT"]}, "contract_pointer": {"enum": ["/acceptance_bindings/BOUNDARY", "/acceptance_bindings/REJECT"]}, "acceptance_case_ids": {"type": "array", "minItems": 3, "maxItems": 4, "uniqueItems": true, "items": {"type": "string"}}, "disposition": {"const": "BOUND_DIRECT"}, "delegate_feature_id": {"type": "null"}, "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}}}},
+    "counts": {"type": "object"},
+    "guards": {"type": "object", "required": ["transitioned_cell_count", "other_atomic_cell_sha256", "projected_boundary_evidence_registry_id", "projected_reject_evidence_registry_id", "product_lanes"], "properties": {"transitioned_cell_count": {"const": 2}, "other_atomic_cell_sha256": {"const": "7448ce347ec8ebf432af540973ec6e56bf9ddbd04049c57d4eca7a23ba544cf7"}, "projected_boundary_evidence_registry_id": {"const": "EV-7af9345ab4c98882b2af77fc1814fc0352298f5d5f4dd9d4df357abc824c0c3f"}, "projected_reject_evidence_registry_id": {"const": "EV-ee837f7a965f93d9d84ad03a394d443692b235c6715b00ab2e748d5dbaf7850e"}, "product_lanes": {"const": "15_OF_15_NOT_RUN"}}}
+  }
+}

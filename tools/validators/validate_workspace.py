@@ -12785,6 +12785,11 @@ def main() -> int:
         "tools/validators/validate_member_extension_collision_dynamic_trace.py",
         "tools/validators/run_member_extension_collision_dynamic_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R72_Member_Extension_Collision_Dynamic_Trace_Closure_R1.md",
+        "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json",
+        "schemas/language/member-extension-collision-conformance-evidence-r1.schema.json",
+        "tools/validators/validate_member_extension_collision_conformance_trace.py",
+        "tools/validators/run_member_extension_collision_conformance_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R73_Member_Extension_Collision_Conformance_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
@@ -13027,6 +13032,52 @@ def main() -> int:
         r72_mutation_process.returncode == 0,
         "R72_MEMBER_EXTENSION_COLLISION_DYNAMIC_TRACE_MUTATIONS",
         r72_mutation_detail[-4000:],
+    )
+
+    r73_validator = (
+        root / "tools/validators/validate_member_extension_collision_conformance_trace.py"
+    )
+    r73_process = subprocess.run(
+        [sys.executable, str(r73_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r73_detail = (
+        r73_process.stdout.strip()
+        if r73_process.returncode == 0
+        else r73_process.stderr.strip() or r73_process.stdout.strip()
+    )
+    check(
+        r73_process.returncode == 0,
+        "R73_MEMBER_EXTENSION_COLLISION_CONFORMANCE_TRACE",
+        r73_detail[-4000:],
+    )
+
+    r73_mutation_runner = (
+        root
+        / "tools/validators/run_member_extension_collision_conformance_trace_mutation_tests.py"
+    )
+    r73_mutation_process = subprocess.run(
+        [sys.executable, str(r73_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r73_mutation_detail = (
+        r73_mutation_process.stdout.strip()
+        if r73_mutation_process.returncode == 0
+        else r73_mutation_process.stderr.strip()
+        or r73_mutation_process.stdout.strip()
+    )
+    check(
+        r73_mutation_process.returncode == 0,
+        "R73_MEMBER_EXTENSION_COLLISION_CONFORMANCE_TRACE_MUTATIONS",
+        r73_mutation_detail[-4000:],
     )
 
     if revision in CURRENT_MACHINE_REVISIONS:
