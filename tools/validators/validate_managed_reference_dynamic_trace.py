@@ -57,6 +57,15 @@ R73_REJECT_EVIDENCE_ID = "EV-ee837f7a965f93d9d84ad03a394d443692b235c6715b00ab2e7
 R73_OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json"
 R73_SEXT_EXCLUSION_COUNT = 4215
 R73_SEXT_EXCLUSION_SHA256 = "2e13b2301879b621eecd9e021842a994ae44cb764b2f9779cf8feed25897a0d5"
+R74_REVISION = "r74-local-member-extension-collision-diagnostic-trace-closure-r1"
+R74_PREDECESSOR = "f6581b6fba8f0f48e8b3ac2ea893298e7713d51d"
+R74_TARGET = ("member_extension_collision_error_policy", "DIAGNOSTICS", None)
+R74_EVIDENCE_REFS = [
+    "EV-55d02c2cea739b77d7d95070b34e6b350f4aa3b3c0b838597263a576b85115fa",
+    "EV-c3f43ca9fc5692e6da578ae1a0701cc340951ff85144c9263e69c60a0d358bb4",
+]
+R74_SEPT_EXCLUSION_COUNT = 4214
+R74_SEPT_EXCLUSION_SHA256 = "76bfae0600a5bedf9d68b16b633ccad0bbaf1c7da53c7b64a8c38cea428e621d"
 
 CONTRACT = "spec/contracts/managed-reference-dynamic-projection-r1.json"
 CONTRACT_SCHEMA = "schemas/language/managed-reference-dynamic-projection-r1.schema.json"
@@ -228,6 +237,31 @@ def r73_successor_non_target_digest(
             R72_TARGET,
             R73_BOUNDARY_TARGET,
             R73_REJECT_TARGET,
+        }
+    ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), sha256_bytes(raw)
+
+
+def r74_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R69-R74 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key
+        not in {
+            TARGET,
+            R70_TARGET,
+            R71_TARGET,
+            R72_TARGET,
+            R73_BOUNDARY_TARGET,
+            R73_REJECT_TARGET,
+            R74_TARGET,
         }
     ]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
@@ -614,11 +648,13 @@ def validate(
     r71_successor_count, r71_successor_digest = r71_successor_non_target_digest(cells)
     r72_successor_count, r72_successor_digest = r72_successor_non_target_digest(cells)
     r73_successor_count, r73_successor_digest = r73_successor_non_target_digest(cells)
+    r74_successor_count, r74_successor_digest = r74_successor_non_target_digest(cells)
     r70_target = cells.get(R70_TARGET, {})
     r71_target = cells.get(R71_TARGET, {})
     r72_target = cells.get(R72_TARGET, {})
     r73_boundary_target = cells.get(R73_BOUNDARY_TARGET, {})
     r73_reject_target = cells.get(R73_REJECT_TARGET, {})
+    r74_target = cells.get(R74_TARGET, {})
     registrations = [
         row for row in metadata.get("evidence_registry", [])
         if row.get("path") == CONTRACT
@@ -657,7 +693,13 @@ def validate(
         and applied_paths[-4:]
         == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY]
     )
-    if r70_successor or r71_successor or r72_successor or r73_successor:
+    r74_successor = (
+        metadata.get("revision") == R74_REVISION
+        and metadata.get("local_predecessor_commit") == R74_PREDECESSOR
+        and applied_paths[-4:]
+        == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY]
+    )
+    if r70_successor or r71_successor or r72_successor or r73_successor or r74_successor:
         r70_detail = r70_target.get("not_applicable") or {}
         require(
             r70_target.get("disposition") == "NOT_APPLICABLE"
@@ -672,7 +714,7 @@ def validate(
             "G09",
             "R70_SUCCESSOR_TARGET_EXACT",
         )
-    if r71_successor or r72_successor or r73_successor:
+    if r71_successor or r72_successor or r73_successor or r74_successor:
         require(
             r71_target.get("disposition") == "BOUND_DELEGATED"
             and r71_target.get("evidence_refs") == [R71_EVIDENCE_ID]
@@ -682,7 +724,7 @@ def validate(
             "G09",
             "R71_SUCCESSOR_TARGET_EXACT",
         )
-        if r72_successor or r73_successor:
+        if r72_successor or r73_successor or r74_successor:
             r72_detail = r72_target.get("not_applicable") or {}
             require(
                 r72_target.get("disposition") == "NOT_APPLICABLE"
@@ -697,7 +739,7 @@ def validate(
                 "G09",
                 "R72_SUCCESSOR_TARGET_EXACT",
             )
-            if r73_successor:
+            if r73_successor or r74_successor:
                 require(
                     r73_boundary_target.get("disposition") == "BOUND_DIRECT"
                     and r73_boundary_target.get("evidence_refs")
@@ -714,11 +756,29 @@ def validate(
                     "G09",
                     "R73_SUCCESSOR_TARGETS_EXACT",
                 )
+                if r74_successor:
+                    require(
+                        r74_target.get("disposition") == "BOUND_DIRECT"
+                        and r74_target.get("evidence_refs") == R74_EVIDENCE_REFS
+                        and r74_target.get("delegate_feature_id") is None
+                        and r74_target.get("not_applicable") is None
+                        and r74_target.get("blocked_gap_ids") == [],
+                        "G09",
+                        "R74_SUCCESSOR_TARGET_EXACT",
+                    )
                 require(
-                    r73_successor_count == R73_SEXT_EXCLUSION_COUNT
-                    and r73_successor_digest == R73_SEXT_EXCLUSION_SHA256,
+                    (
+                        r74_successor
+                        and r74_successor_count == R74_SEPT_EXCLUSION_COUNT
+                        and r74_successor_digest == R74_SEPT_EXCLUSION_SHA256
+                    )
+                    or (
+                        r73_successor
+                        and r73_successor_count == R73_SEXT_EXCLUSION_COUNT
+                        and r73_successor_digest == R73_SEXT_EXCLUSION_SHA256
+                    ),
                     "G09",
-                    "R73_OTHER_4215_EXACT",
+                    "R73_R74_SUCCESSOR_OTHER_EXACT",
                 )
             else:
                 require(
@@ -773,9 +833,35 @@ def validate(
             and OVERLAY in applied_paths
             and applied_paths[-4:]
             == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY]
+        )
+        or (
+            r74_successor
+            and OVERLAY in applied_paths
+            and applied_paths[-4:]
+            == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY]
         ),
         "G09", "GENERATED_METADATA",
     )
+    if r74_successor:
+        derived = metadata.get("derived_counts", {})
+        require(
+            len(metadata.get("applied_evidence_overlays", [])) == 19
+            and sum(
+                row.get("binding_count", 0)
+                for row in metadata.get("applied_evidence_overlays", [])
+            )
+            == 136
+            and len(metadata.get("evidence_registry", [])) == 3148
+            and (
+                derived.get("bound_direct_cells"),
+                derived.get("bound_delegated_cells"),
+                derived.get("not_applicable_cells"),
+                derived.get("applicable_blocked_cells"),
+            )
+            == (2470, 4, 502, 1245),
+            "G09",
+            "R74_GENERATED_CARDINALITY_EXACT",
+        )
 
     # G10: governance remains static/NOT_RUN and R68 evidence remains immutable.
     expected_governance = {

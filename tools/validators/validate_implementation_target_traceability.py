@@ -439,8 +439,8 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (2469, 4, 503, 1245),
-            "R73_EXACT_POST_OVERLAY_COUNTS",
+        (direct, delegated, na, blocked) == (2470, 4, 502, 1245),
+            "R74_EXACT_POST_FEATURE_ROW_COUNTS",
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")

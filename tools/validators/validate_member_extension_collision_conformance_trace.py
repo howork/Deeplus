@@ -19,6 +19,8 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 CANONICAL = "39a5d50cc770341c4b9776d00d84520b780d0c62"
 PREDECESSOR = "ab1ffd86db91d2b3b93e7c15e43829a7aa4704d3"
 REVISION = "r73-local-member-extension-collision-conformance-trace-closure-r1"
+R74_REVISION = "r74-local-member-extension-collision-diagnostic-trace-closure-r1"
+R74_PREDECESSOR = "f6581b6fba8f0f48e8b3ac2ea893298e7713d51d"
 FEATURE = "member_extension_collision_error_policy"
 BOUNDARY_TARGET = (FEATURE, "CONFORMANCE_TESTS", "BOUNDARY")
 REJECT_TARGET = (FEATURE, "CONFORMANCE_TESTS", "REJECT")
@@ -27,6 +29,13 @@ BOUNDARY_EVIDENCE_ID = "EV-7af9345ab4c98882b2af77fc1814fc0352298f5d5f4dd9d4df357
 REJECT_EVIDENCE_ID = "EV-ee837f7a965f93d9d84ad03a394d443692b235c6715b00ab2e748d5dbaf7850e"
 NON_TARGET_COUNT = 4219
 NON_TARGET_SHA256 = "7448ce347ec8ebf432af540973ec6e56bf9ddbd04049c57d4eca7a23ba544cf7"
+R74_TARGET = (FEATURE, "DIAGNOSTICS", None)
+R74_EVIDENCE_REFS = [
+    "EV-55d02c2cea739b77d7d95070b34e6b350f4aa3b3c0b838597263a576b85115fa",
+    "EV-c3f43ca9fc5692e6da578ae1a0701cc340951ff85144c9263e69c60a0d358bb4",
+]
+R74_TRIPLE_EXCLUSION_COUNT = 4218
+R74_TRIPLE_EXCLUSION_SHA256 = "aa4a204990a660ffcef3477ac2f0d1405182c813276349f9934f7cab6b5fb968"
 
 OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json"
 OVERLAY_SCHEMA = "schemas/language/member-extension-collision-conformance-evidence-r1.schema.json"
@@ -121,6 +130,22 @@ def non_target_digest(
     cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
 ) -> Tuple[int, str]:
     material = [[*key, value] for key, value in cells.items() if key not in TARGETS]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
+def r74_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R73 and R74 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key not in TARGETS | {R74_TARGET}
+    ]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
         material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -271,13 +296,31 @@ def validate(
     applied = metadata.get("applied_evidence_overlays", [])
     registry = metadata.get("evidence_registry", [])
     derived = metadata.get("derived_counts", {})
+    r74_successor = (
+        metadata.get("revision") == R74_REVISION
+        and metadata.get("local_predecessor_commit") == R74_PREDECESSOR
+    )
+    r74_target = current_cells.get(R74_TARGET, {})
     require(
         current_duplicates == 0
-        and current_count == NON_TARGET_COUNT
-        and current_digest == NON_TARGET_SHA256
-        and metadata.get("revision") == REVISION
+        and (
+            (
+                r74_successor
+                and r74_successor_non_target_digest(current_cells)
+                == (R74_TRIPLE_EXCLUSION_COUNT, R74_TRIPLE_EXCLUSION_SHA256)
+            )
+            or (
+                not r74_successor
+                and current_count == NON_TARGET_COUNT
+                and current_digest == NON_TARGET_SHA256
+            )
+        )
+        and (metadata.get("revision") == REVISION or r74_successor)
         and metadata.get("canonical_baseline_commit") == CANONICAL
-        and metadata.get("local_predecessor_commit") == PREDECESSOR
+        and (
+            metadata.get("local_predecessor_commit") == PREDECESSOR
+            or r74_successor
+        )
         and len(applied) == 19
         and applied[-1]
         == {"path": OVERLAY, "feature_count": 1, "binding_count": 2}
@@ -288,6 +331,16 @@ def validate(
         "G03",
         "GENERATED_METADATA_EXACT",
     )
+    if r74_successor:
+        require(
+            r74_target.get("disposition") == "BOUND_DIRECT"
+            and r74_target.get("evidence_refs") == R74_EVIDENCE_REFS
+            and r74_target.get("delegate_feature_id") is None
+            and r74_target.get("not_applicable") is None
+            and r74_target.get("blocked_gap_ids") == [],
+            "G03",
+            "R74_SUCCESSOR_TARGET_EXACT",
+        )
     require(
         (
             derived.get("bound_direct_cells"),
@@ -295,7 +348,7 @@ def validate(
             derived.get("not_applicable_cells"),
             derived.get("applicable_blocked_cells"),
         )
-        == (2469, 4, 503, 1245)
+        == ((2470, 4, 502, 1245) if r74_successor else (2469, 4, 503, 1245))
         and derived.get("missing_cells") == 0
         and derived.get("conflict_cells") == 0,
         "G03",
@@ -480,12 +533,16 @@ def main() -> int:
         "outcomes": ["BOUNDARY", "REJECT"],
         "disposition": "BOUND_DIRECT",
         "projected_counts": {
-            "bound_direct": 2469,
-            "bound_delegated": 4,
-            "not_applicable": 503,
-            "applicable_blocked": 1245,
+            "bound_direct": load(root / METADATA).get("derived_counts", {}).get("bound_direct_cells"),
+            "bound_delegated": load(root / METADATA).get("derived_counts", {}).get("bound_delegated_cells"),
+            "not_applicable": load(root / METADATA).get("derived_counts", {}).get("not_applicable_cells"),
+            "applicable_blocked": load(root / METADATA).get("derived_counts", {}).get("applicable_blocked_cells"),
         },
-        "non_target_cell_count": NON_TARGET_COUNT,
+        "non_target_cell_count": (
+            R74_TRIPLE_EXCLUSION_COUNT
+            if load(root / METADATA).get("revision") == R74_REVISION
+            else NON_TARGET_COUNT
+        ),
         "product_execution": "15_OF_15_NOT_RUN",
         "github_publication": "SUSPENDED",
         "gates": GATES,

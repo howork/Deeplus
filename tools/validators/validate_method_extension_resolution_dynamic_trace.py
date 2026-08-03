@@ -37,6 +37,15 @@ R73_REJECT_EVIDENCE_ID = "EV-ee837f7a965f93d9d84ad03a394d443692b235c6715b00ab2e7
 R73_OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json"
 R73_QUAD_EXCLUSION_COUNT = 4217
 R73_QUAD_EXCLUSION_SHA256 = "74f224cc61633e22f72c0c4f480afbdbe0aab42ffa905d85496620d8740a6296"
+R74_REVISION = "r74-local-member-extension-collision-diagnostic-trace-closure-r1"
+R74_PREDECESSOR = "f6581b6fba8f0f48e8b3ac2ea893298e7713d51d"
+R74_TARGET = ("member_extension_collision_error_policy", "DIAGNOSTICS", None)
+R74_EVIDENCE_REFS = [
+    "EV-55d02c2cea739b77d7d95070b34e6b350f4aa3b3c0b838597263a576b85115fa",
+    "EV-c3f43ca9fc5692e6da578ae1a0701cc340951ff85144c9263e69c60a0d358bb4",
+]
+R74_QUINT_EXCLUSION_COUNT = 4216
+R74_QUINT_EXCLUSION_SHA256 = "a474ca31b207ea5f45e7606e99ec1afe4ababc7850224788922a31faa2dd1f22"
 
 CONTRACT = "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json"
 CONTRACT_SCHEMA = "schemas/language/method-extension-resolution-dynamic-trace-closure-r1.schema.json"
@@ -181,6 +190,29 @@ def r73_successor_non_target_digest(
     return len(material), hashlib.sha256(raw).hexdigest()
 
 
+def r74_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R71-R74 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key
+        not in {
+            TARGET,
+            R72_TARGET,
+            R73_BOUNDARY_TARGET,
+            R73_REJECT_TARGET,
+            R74_TARGET,
+        }
+    ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
 def lowering_row(registry: Mapping[str, Any], row_id: str) -> Mapping[str, Any]:
     return next(
         (row for row in registry.get("rows", []) if row.get("row_id") == row_id),
@@ -314,6 +346,11 @@ def validate(
         and metadata.get("local_predecessor_commit") == R73_PREDECESSOR
         and applied[-3:] == [OVERLAY, R72_OVERLAY, R73_OVERLAY]
     )
+    r74_successor = (
+        metadata.get("revision") == R74_REVISION
+        and metadata.get("local_predecessor_commit") == R74_PREDECESSOR
+        and applied[-3:] == [OVERLAY, R72_OVERLAY, R73_OVERLAY]
+    )
     require(
         duplicates == 0
         and target.get("disposition") == "BOUND_DELEGATED"
@@ -339,7 +376,7 @@ def validate(
                 and len(evidence_registry) == 3146
             )
             or (
-                r73_successor
+                (r73_successor or r74_successor)
                 and len(applied) == 19
                 and len(evidence_registry) == 3148
             )
@@ -348,11 +385,13 @@ def validate(
         "G03",
         "GENERATED_METADATA_EXACT",
     )
-    if r72_successor or r73_successor:
+    if r72_successor or r73_successor or r74_successor:
         r72_target = cells.get(R72_TARGET, {})
         r72_detail = r72_target.get("not_applicable") or {}
         successor_count, successor_digest = (
-            r73_successor_non_target_digest(cells)
+            r74_successor_non_target_digest(cells)
+            if r74_successor
+            else r73_successor_non_target_digest(cells)
             if r73_successor
             else r72_successor_non_target_digest(cells)
         )
@@ -370,6 +409,11 @@ def validate(
         )
         require(
             (
+                r74_successor
+                and successor_count == R74_QUINT_EXCLUSION_COUNT
+                and successor_digest == R74_QUINT_EXCLUSION_SHA256
+            )
+            or (
                 r73_successor
                 and successor_count == R73_QUAD_EXCLUSION_COUNT
                 and successor_digest == R73_QUAD_EXCLUSION_SHA256
@@ -382,7 +426,7 @@ def validate(
             "G03",
             "R72_R73_SUCCESSOR_OTHER_EXACT",
         )
-    if r73_successor:
+    if r73_successor or r74_successor:
         boundary = cells.get(R73_BOUNDARY_TARGET, {})
         reject = cells.get(R73_REJECT_TARGET, {})
         require(
@@ -399,13 +443,25 @@ def validate(
             "G03",
             "R73_SUCCESSOR_TARGETS_EXACT",
         )
+    if r74_successor:
+        r74_target = cells.get(R74_TARGET, {})
+        require(
+            r74_target.get("disposition") == "BOUND_DIRECT"
+            and r74_target.get("evidence_refs") == R74_EVIDENCE_REFS
+            and r74_target.get("delegate_feature_id") is None
+            and r74_target.get("not_applicable") is None
+            and r74_target.get("blocked_gap_ids") == [],
+            "G03",
+            "R74_SUCCESSOR_TARGET_EXACT",
+        )
     require(
-        counts.get("bound_direct_cells") == (2469 if r73_successor else 2467)
+        counts.get("bound_direct_cells")
+        == (2470 if r74_successor else 2469 if r73_successor else 2467)
         and counts.get("bound_delegated_cells") == 4
         and counts.get("not_applicable_cells")
-        == (503 if (r72_successor or r73_successor) else 502)
+        == (502 if r74_successor else 503 if (r72_successor or r73_successor) else 502)
         and counts.get("applicable_blocked_cells")
-        == (1245 if r73_successor else (1247 if r72_successor else 1248))
+        == (1245 if (r73_successor or r74_successor) else (1247 if r72_successor else 1248))
         and counts.get("missing_cells") == 0
         and counts.get("conflict_cells") == 0,
         "G03",
@@ -609,6 +665,7 @@ def main() -> int:
     metadata = load(root / METADATA)
     r73_successor = metadata.get("revision") == R73_REVISION
     r72_successor = metadata.get("revision") == R72_REVISION
+    r74_successor = metadata.get("revision") == R74_REVISION
     receipt = {
         "schema": "deeplus.r71-method-extension-resolution-dynamic-trace-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL",
@@ -617,15 +674,17 @@ def main() -> int:
         "disposition": "BOUND_DELEGATED",
         "delegate_feature_id": DELEGATE,
         "projected_counts": {
-            "bound_direct": 2469 if r73_successor else 2467,
+            "bound_direct": 2470 if r74_successor else 2469 if r73_successor else 2467,
             "bound_delegated": 4,
-            "not_applicable": 503 if (r72_successor or r73_successor) else 502,
+            "not_applicable": 502 if r74_successor else 503 if (r72_successor or r73_successor) else 502,
             "applicable_blocked": (
-                1245 if r73_successor else (1247 if r72_successor else 1248)
+                1245 if (r73_successor or r74_successor) else (1247 if r72_successor else 1248)
             ),
         },
         "non_target_cell_count": (
-            R73_QUAD_EXCLUSION_COUNT
+            R74_QUINT_EXCLUSION_COUNT
+            if r74_successor
+            else R73_QUAD_EXCLUSION_COUNT
             if r73_successor
             else (R72_DUAL_EXCLUSION_COUNT if r72_successor else NON_TARGET_COUNT)
         ),

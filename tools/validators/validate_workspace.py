@@ -12790,6 +12790,9 @@ def main() -> int:
         "tools/validators/validate_member_extension_collision_conformance_trace.py",
         "tools/validators/run_member_extension_collision_conformance_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R73_Member_Extension_Collision_Conformance_Trace_Closure_R1.md",
+        "tools/validators/validate_member_extension_collision_diagnostic_trace.py",
+        "tools/validators/run_member_extension_collision_diagnostic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R74_Member_Extension_Collision_Diagnostic_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
@@ -13078,6 +13081,52 @@ def main() -> int:
         r73_mutation_process.returncode == 0,
         "R73_MEMBER_EXTENSION_COLLISION_CONFORMANCE_TRACE_MUTATIONS",
         r73_mutation_detail[-4000:],
+    )
+
+    r74_validator = (
+        root / "tools/validators/validate_member_extension_collision_diagnostic_trace.py"
+    )
+    r74_process = subprocess.run(
+        [sys.executable, str(r74_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r74_detail = (
+        r74_process.stdout.strip()
+        if r74_process.returncode == 0
+        else r74_process.stderr.strip() or r74_process.stdout.strip()
+    )
+    check(
+        r74_process.returncode == 0,
+        "R74_MEMBER_EXTENSION_COLLISION_DIAGNOSTIC_TRACE",
+        r74_detail[-4000:],
+    )
+
+    r74_mutation_runner = (
+        root
+        / "tools/validators/run_member_extension_collision_diagnostic_trace_mutation_tests.py"
+    )
+    r74_mutation_process = subprocess.run(
+        [sys.executable, str(r74_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r74_mutation_detail = (
+        r74_mutation_process.stdout.strip()
+        if r74_mutation_process.returncode == 0
+        else r74_mutation_process.stderr.strip()
+        or r74_mutation_process.stdout.strip()
+    )
+    check(
+        r74_mutation_process.returncode == 0,
+        "R74_MEMBER_EXTENSION_COLLISION_DIAGNOSTIC_TRACE_MUTATIONS",
+        r74_mutation_detail[-4000:],
     )
 
     if revision in CURRENT_MACHINE_REVISIONS:
