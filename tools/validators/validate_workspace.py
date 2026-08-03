@@ -36,12 +36,16 @@ R46_MANAGED_ROOT_RUNTIME_REVISION = (
 R47_OWNERSHIP_CONTRACT_FUSION_REVISION = (
     "r51f3-current-ownership-contract-fusion-r1"
 )
+R74_IMPLEMENTATION_READINESS_REVISION = (
+    "r51f3-current-implementation-readiness-r74-r1"
+)
 FRONTEND_SUCCESSOR_REVISIONS = {
     R11_R19_FRONTEND_REVISION,
     R41_ACTOR_PROTOCOL_REVISION,
     R23_ACTOR_PROTOCOL_BINDING_REVISION,
     R46_MANAGED_ROOT_RUNTIME_REVISION,
     R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+    R74_IMPLEMENTATION_READINESS_REVISION,
 }
 CURRENT_MACHINE_REVISIONS = {
     R10_HIR_MIR_REVISION,
@@ -75,7 +79,10 @@ R46_SEMANTIC_PUBLICATION_TREE = "d13a15af71c717c2145ce28a39e7dd1f6501c99f"
 R47_SEMANTIC_SOURCE_COMMIT = "6cff69d6e655e399baf82f66cf62a225cbb05640"
 R47_SEMANTIC_PUBLICATION_COMMIT = "ee7d1833dcc9156070c1071f96fc55b3e19ae967"
 R47_SEMANTIC_PUBLICATION_TREE = "dd631edaf0be77a13664ba83c57bf12512302627"
-CURRENT_PUBLICATION_TARGET_COMMIT = R47_SEMANTIC_PUBLICATION_COMMIT
+R74_SEMANTIC_SOURCE_COMMIT = "ee2ec2e4df5d8a9eb36d938602506b11fc66d52b"
+R74_SEMANTIC_PUBLICATION_COMMIT = "17d90a43908d45b03938006f9dfb5d1cd609e655"
+R74_SEMANTIC_PUBLICATION_TREE = "a9291ef158fa21a473789d5c685dfcf0cb3050d2"
+CURRENT_PUBLICATION_TARGET_COMMIT = R74_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -199,6 +206,34 @@ R47_DECISION_PATHS = [
     "decisions/language/Design_Deeplus_Cleanup_Budget_Algebra_R1.md",
     "decisions/language/Design_Deeplus_Loan_Close_Operation_R1.md",
     "decisions/language/Design_Deeplus_SharedMutex_Payload_Bound_R1.md",
+]
+R48_R74_DECISION_PATHS = [
+    "decisions/language/Design_Deeplus_Formatter_LSP_Incremental_Parsing_Contract_R1.md",
+    "decisions/language/Design_Deeplus_Ownership_Tooling_Projection_R1.md",
+    "decisions/language/Design_Deeplus_Actor_Minimum_Lifecycle_Implementation_Handoff_R1.md",
+    "decisions/language/Design_Deeplus_Contract_Authority_Status_Reconciliation_R1.md",
+    "decisions/language/Design_Deeplus_R54_Scalar_Numeric_Fixed_Operator_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R55_Lexical_Trivia_Source_Root_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R56_NumericArray_Shape_Inferred_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R57_Unified_Call_Tilde_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R58_Member_Visibility_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R60_Pattern_Match_Ownership_Split_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R61_Pattern_Clause_Exhaustiveness_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R62_Trait_Qualified_Associated_Static_Selection_Dynamic_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R63_Trait_Associated_Static_Stale_Diagnostic_Removal_R1.md",
+    "decisions/language/Design_Deeplus_R64_Associated_Requirement_Phase_A_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R65_Associated_Requirement_AST_Diagnostic_Parity_R1.md",
+    "decisions/language/Design_Deeplus_R66_Responsibility_Identity_Dynamic_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R67_Closure_Capture_Dynamic_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R68_Region_Lifetime_Dynamic_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_Managed_Reference_Memory_Profile_R1.md",
+    "decisions/language/Design_Deeplus_R69_Managed_Reference_Dynamic_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R70_Static_Runtime_Member_Boundary_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R71_Method_Extension_Resolution_Dynamic_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R72_Member_Extension_Collision_Dynamic_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R73_Member_Extension_Collision_Conformance_Trace_Closure_R1.md",
+    "decisions/language/Design_Deeplus_R74_Member_Extension_Collision_Diagnostic_Trace_Closure_R1.md",
 ]
 R10_DECISION_ID = "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
 AUTHORITY_TRANSITION_REPORT = (
@@ -396,6 +431,22 @@ R47_PUBLICATION_CLOSURE_DECISION_ID = (
 R47_PUBLICATION_CLOSURE_GAP_IDS = [
     *(f"IR-OWN-P1-{index:03d}" for index in range(18, 25)),
 ]
+R74_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R48_R74_Implementation_Readiness_Trace_"
+    "Publication_Closure_R1.md"
+)
+R74_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r48-r74-implementation-readiness-trace-publication-closure-receipt.json"
+)
+R74_INDEPENDENT_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "r48-r74-implementation-readiness-trace-independent-verification.json"
+)
+R74_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R48-R74-IMPLEMENTATION-READINESS-TRACE-PUBLICATION-CLOSURE"
+)
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
     "IR-RES-P0-041",
@@ -16894,7 +16945,15 @@ def main() -> int:
         + (R11_R19_DECISION_PATHS if revision in FRONTEND_SUCCESSOR_REVISIONS else [])
         + (
             R47_DECISION_PATHS
-            if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
+            if revision in {
+                R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+                R74_IMPLEMENTATION_READINESS_REVISION,
+            }
+            else []
+        )
+        + (
+            R48_R74_DECISION_PATHS
+            if revision == R74_IMPLEMENTATION_READINESS_REVISION
             else []
         )
     ]
@@ -16929,6 +16988,7 @@ def main() -> int:
             R23_ACTOR_PROTOCOL_BINDING_REVISION,
             R46_MANAGED_ROOT_RUNTIME_REVISION,
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+            R74_IMPLEMENTATION_READINESS_REVISION,
         }
         else []
     ) + (
@@ -16937,6 +16997,7 @@ def main() -> int:
             R23_ACTOR_PROTOCOL_BINDING_REVISION,
             R46_MANAGED_ROOT_RUNTIME_REVISION,
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+            R74_IMPLEMENTATION_READINESS_REVISION,
         }
         else []
     ) + (
@@ -16944,11 +17005,19 @@ def main() -> int:
         if revision in {
             R46_MANAGED_ROOT_RUNTIME_REVISION,
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+            R74_IMPLEMENTATION_READINESS_REVISION,
         }
         else []
     ) + (
         [R47_PUBLICATION_CLOSURE_REPORT]
-        if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
+        if revision in {
+            R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+            R74_IMPLEMENTATION_READINESS_REVISION,
+        }
+        else []
+    ) + (
+        [R74_PUBLICATION_CLOSURE_REPORT]
+        if revision == R74_IMPLEMENTATION_READINESS_REVISION
         else []
     )
     check(
@@ -16957,7 +17026,15 @@ def main() -> int:
         + (R11_R19_DECISION_PATHS if revision in FRONTEND_SUCCESSOR_REVISIONS else [])
         + (
             R47_DECISION_PATHS
-            if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
+            if revision in {
+                R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+                R74_IMPLEMENTATION_READINESS_REVISION,
+            }
+            else []
+        )
+        + (
+            R48_R74_DECISION_PATHS
+            if revision == R74_IMPLEMENTATION_READINESS_REVISION
             else []
         )
         and indexed_decision_rows == expected_decision_rows
@@ -16966,7 +17043,15 @@ def main() -> int:
                 + (R11_R19_DECISION_PATHS if revision in FRONTEND_SUCCESSOR_REVISIONS else [])
                 + (
                     R47_DECISION_PATHS
-                    if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
+                    if revision in {
+                        R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
+                        R74_IMPLEMENTATION_READINESS_REVISION,
+                    }
+                    else []
+                )
+                + (
+                    R48_R74_DECISION_PATHS
+                    if revision == R74_IMPLEMENTATION_READINESS_REVISION
                     else []
                 ))
         and indexed_governance_paths == expected_governance_paths
@@ -18709,6 +18794,120 @@ def main() -> int:
             }
         ),
     )
+    r74_report_path = root / R74_PUBLICATION_CLOSURE_REPORT
+    r74_receipt_path = root / R74_PUBLICATION_CLOSURE_RECEIPT
+    r74_independent_path = root / R74_INDEPENDENT_VERIFICATION_RECEIPT
+    r74_receipt = parsed.get(r74_receipt_path, {})
+    r74_publication = r74_receipt.get("semantic_publication", {})
+    r74_traceability = r74_receipt.get("traceability", {})
+    r74_transition = r74_receipt.get("publication_transition", {})
+    r74_governance = r74_receipt.get("governance", {})
+    r74_pointer_target = r74_receipt.get("pointer_target", {})
+    r74_independent = parsed.get(r74_independent_path, {})
+    r74_pr_ci = r74_receipt.get("semantic_pr_github_ci", [])
+    r74_main_ci = r74_receipt.get("semantic_merge_main_ci", [])
+    check(
+        r74_report_path.is_file()
+        and r74_receipt_path.is_file()
+        and r74_independent_path.is_file()
+        and r74_receipt.get("schema")
+        == "deeplus.r48-r74-implementation-readiness-trace-publication-closure-receipt/v1"
+        and r74_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r74_publication
+        == {
+            "pull_request": 67,
+            "url": "https://github.com/howork/Deeplus/pull/67",
+            "branch": "codex/r74-member-extension-collision-diagnostic-trace",
+            "source_commit": R74_SEMANTIC_SOURCE_COMMIT,
+            "source_tree": R74_SEMANTIC_PUBLICATION_TREE,
+            "merge_commit": R74_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": R74_SEMANTIC_PUBLICATION_TREE,
+            "parents": [
+                "39a5d50cc770341c4b9776d00d84520b780d0c62",
+                R74_SEMANTIC_SOURCE_COMMIT,
+            ],
+            "merged_at": "2026-08-03T20:51:58Z",
+            "post_merge_readback": "PASS",
+        }
+        and len(r74_pr_ci) == len(r74_main_ci) == 2
+        and {row.get("workflow") for row in r74_pr_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and {row.get("workflow") for row in r74_main_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R74_SEMANTIC_SOURCE_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r74_pr_ci
+        )
+        and all(
+            row.get("head_sha") == R74_SEMANTIC_PUBLICATION_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r74_main_ci
+        ),
+        "R74_PUBLICATION_CLOSURE_IDENTITY",
+        repr(r74_publication),
+    )
+    check(
+        r74_traceability
+        == {
+            "target_feature_rows": 469,
+            "stage_cells": 3283,
+            "test_outcome_cells": 1407,
+            "bound_direct_cells": 2470,
+            "bound_delegated_cells": 4,
+            "not_applicable_cells": 502,
+            "applicable_blocked_cells": 1245,
+            "evidence_overlays": 19,
+            "evidence_bindings": 136,
+            "evidence_registry_entries": 3148,
+        }
+        and r74_transition
+        == {
+            "publication_unit": "R48_R74_CUMULATIVE_LINEAGE",
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "umbrella_gap": "IR-XCUT-P1-054_OPEN_UNCHANGED",
+            "closed_feature_p1": 0,
+            "new_feature_p1": 0,
+        }
+        and r74_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "current_binding": False,
+        }
+        and r74_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "revision": R74_IMPLEMENTATION_READINESS_REVISION,
+            "semantic_merge_commit": R74_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and r74_independent.get("schema")
+        == "deeplus.r48-r74-implementation-readiness-trace-independent-verification/v1"
+        and r74_independent.get("semantic_merge_commit")
+        == R74_SEMANTIC_PUBLICATION_COMMIT
+        and r74_independent.get("verdict") == "PASS"
+        and r74_independent.get("evidence_level") == "E2_DESIGN_STATIC"
+        and r74_independent.get("product_execution") == "NOT_RUN"
+        and r74_independent.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+        "R74_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "traceability": r74_traceability,
+                "transition": r74_transition,
+                "governance": r74_governance,
+                "pointer_target": r74_pointer_target,
+                "independent": r74_independent,
+            }
+        ),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -18743,6 +18942,37 @@ def main() -> int:
         for row in current_laws
         if row.get("id") == R47_PUBLICATION_CLOSURE_DECISION_ID
     ]
+    r74_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R74_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        len(r74_closure_laws) == 1
+        and r74_closure_laws[0].get("status") == "CURRENT"
+        and r74_closure_laws[0].get("authority_origin")
+        == "CODEX_DESIGN_USER_DELEGATED"
+        and r74_closure_laws[0].get("ratification_status")
+        == "CURRENT_USER_DELEGATED_AUTHORITY"
+        and r74_closure_laws[0].get("effective_revision")
+        == R74_IMPLEMENTATION_READINESS_REVISION
+        and R74_PUBLICATION_CLOSURE_REPORT
+        in r74_closure_laws[0].get("source_evidence", "")
+        and R74_PUBLICATION_CLOSURE_RECEIPT
+        in r74_closure_laws[0].get("source_evidence", "")
+        and R74_INDEPENDENT_VERIFICATION_RECEIPT
+        in r74_closure_laws[0].get("source_evidence", "")
+        and R74_SEMANTIC_PUBLICATION_COMMIT
+        in r74_closure_laws[0].get("law", "")
+        and "IR-XCUT-P1-054" in r74_closure_laws[0].get("law", "")
+        and "1,245 trace cells remain APPLICABLE_BLOCKED_BY_GAP"
+        in r74_closure_laws[0].get("law", "")
+        and "22 OPEN" in r74_closure_laws[0].get("law", "")
+        and "15 product lanes remain NOT_RUN"
+        in r74_closure_laws[0].get("law", ""),
+        "R74_PUBLICATION_CLOSURE_DECISION",
+        repr(r74_closure_laws),
+    )
     check(
         len(r47_closure_laws) == 1
         and r47_closure_laws[0].get("status") == "CURRENT"
@@ -18860,7 +19090,9 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            63
+            64
+            if revision == R74_IMPLEMENTATION_READINESS_REVISION
+            else 63
             if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
             else 61
             if revision == R46_MANAGED_ROOT_RUNTIME_REVISION
@@ -19693,7 +19925,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION:
+        if revision == R74_IMPLEMENTATION_READINESS_REVISION:
+            expected_predecessor = R47_OWNERSHIP_CONTRACT_FUSION_REVISION
+        elif revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION:
             expected_predecessor = R46_MANAGED_ROOT_RUNTIME_REVISION
         elif revision == R46_MANAGED_ROOT_RUNTIME_REVISION:
             expected_predecessor = R23_ACTOR_PROTOCOL_BINDING_REVISION

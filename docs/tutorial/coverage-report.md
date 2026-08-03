@@ -2,7 +2,7 @@
 
 # Deeplus 튜토리얼 coverage 보고서
 
-- revision: `r51f3-current-ownership-contract-fusion-r1`
+- revision: `r51f3-current-implementation-readiness-r74-r1`
 - Part 안내: 12
 - 개념 장: 60
 - 안내 실습: 12
@@ -14,8 +14,8 @@
 - Deeplus 코드 블록: 375
 - 연습 prompt 표식: 261
 - 로컬 링크 오류: 0
-- contract SHA-256: `c1a5e6e76d2922a83fa015a77164b5a6a0b6cf111e7f5dd9d59ce11f1dd4c600`
-- coverage schema SHA-256: `f4709219e1e0144cfa64fccb2950979829b81dd056724128116ec21d0254784f`
+- contract SHA-256: `8c9d1ee6fb06fb04ed19d42eca61656be7913be6e85e187bca1a66245551750e`
+- coverage schema SHA-256: `6baab55882ca9de0f6eb650317f90410cdd08bd1a9446261158680d9a9a0f6d7`
 
 ## authority 울타리
 
