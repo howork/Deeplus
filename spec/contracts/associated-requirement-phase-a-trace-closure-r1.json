@@ -1,0 +1,286 @@
+{
+  "$schema": "../../schemas/language/associated-requirement-phase-a-trace-closure-r1.schema.json",
+  "schema": "deeplus.associated-requirement-phase-a-trace-closure/r1",
+  "revision": "r64-local-associated-requirement-phase-a-conformance-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "19d8ea962a884f57e45d16883a128405d419bbe6",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_CONTRACT",
+  "feature_id": "associated_requirement_phase_a",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "evidence_scope": {
+    "owner_predicate": "AssociatedRequirementAdmitted",
+    "supporting_predicates": [
+      "AssociatedRequirementWitnessAdmitted",
+      "WherePredicateAdmitted"
+    ],
+    "supporting_predicate_role": "UNCHANGED_NONCONTROLLING",
+    "canonical_semantic_rule": "TC-R010",
+    "fixture_path": "tests/fixtures/current/diagnostic-dispatch-closure-r1.json",
+    "conformance_catalog_path": "tests/conformance/diagnostic-dispatch-closure/chunks/part-0001.json",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "semantic_contract": {
+    "requirement_kinds": [
+      "type",
+      "value",
+      "function"
+    ],
+    "binding_cardinality": "EXACTLY_ONE_COMPATIBLE_EXPLICIT_OR_CANONICAL_INHERITED",
+    "default_policy": "ABSENT_IN_CURRENT_TC_R010_MINIMUM",
+    "binding_compatibility": {
+      "type": "REQUIRED_NORMALIZED_BOUNDS_SUBSET_OF_SATISFIED_BOUNDS",
+      "value": "EXACT_NORMALIZED_VALUE_TYPE",
+      "function": "EXACT_NORMALIZED_CALLABLE_SIGNATURE"
+    },
+    "normalization_order": [
+      "CLOSED_SCHEMA_VALIDATION",
+      "CANONICAL_KEY_AND_IDENTITY_ORDER",
+      "DEPENDENCY_EDGES_FROM_NORMALIZED_DEPENDENCY_REQUIREMENT_IDS",
+      "NUMERIC_REASON_RANK_1_THROUGH_4",
+      "CANONICAL_CULPRIT_ID"
+    ],
+    "rejection_rank_order": [
+      "1_requirement_identity_or_kind_conflict",
+      "2_requirement_bounds_or_default_not_admitted",
+      "3_implementation_binding_unresolved_or_ambiguous",
+      "4_recursive_requirement_obligation_cycle"
+    ],
+    "winner_policy": "LOWEST_DETECTED_RANK_THEN_CANONICAL_CULPRIT",
+    "source_order_policy": "LOCATOR_ONLY_NEVER_SEMANTIC_WINNER",
+    "primary_diagnostic": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+    "reject_emitted_primary_count": 1,
+    "reject_later_candidate_status": "NOT_EVALUATED"
+  },
+  "authority_fence": {
+    "classification": "STATIC_ADMISSION_ONLY",
+    "admission_terminates_before_hir": true,
+    "new_source_surface_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "runtime_operation_count": 0,
+    "later_use_owner_feature": "trait_qualified_associated_static_selection",
+    "later_use_owner_revision": "R62",
+    "later_use_scope": "PROJECTION_SELECTION_AND_EXISTING_STATIC_REFERENCE_OR_INVOKE_LOWERING",
+    "later_use_imported_into_this_contract": false
+  },
+  "rules": [
+    {
+      "rule_id": "ARPTC-R001",
+      "text": "AssociatedRequirementAdmitted is the sole controlling predicate for this Phase A conformance grouping; AssociatedRequirementWitnessAdmitted and WherePredicateAdmitted remain unchanged supporting predicates."
+    },
+    {
+      "rule_id": "ARPTC-R002",
+      "text": "The admitted requirement kind is exactly type, value, or function, and each requirement has exactly one compatible explicit or canonical inherited binding under TC-R010."
+    },
+    {
+      "rule_id": "ARPTC-R003",
+      "text": "Type bindings satisfy normalized bounds by subset, value bindings match the exact normalized value type, and function bindings match the exact normalized callable signature."
+    },
+    {
+      "rule_id": "ARPTC-R004",
+      "text": "Missing, duplicate, kind-conflicting, bounds-invalid, default-present, unresolved, ambiguous, incompatible, or cyclic bindings reject before HIR admission."
+    },
+    {
+      "rule_id": "ARPTC-R005",
+      "text": "Rejection selects the lowest detected numeric reason rank from one through four and then the canonical culprit identity; source order is never a semantic winner."
+    },
+    {
+      "rule_id": "ARPTC-R006",
+      "text": "Every rejection emits exactly one ASSOCIATED_REQUIREMENT_UNRESOLVED primary diagnostic and leaves every later candidate NOT_EVALUATED."
+    },
+    {
+      "rule_id": "ARPTC-R007",
+      "text": "This contract closes only design-static admission evidence and introduces no source, AST, HIR, MIR, runtime operation, or product-support claim."
+    },
+    {
+      "rule_id": "ARPTC-R008",
+      "text": "Projection selection and any existing static-reference or invoke lowering remain owned by trait_qualified_associated_static_selection and its R62 contract and are not imported here."
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "ARPTC-AC-001",
+      "outcome": "POSITIVE",
+      "test_id": "R9-AR-POS-001",
+      "fixture_pointer": "/cases/0",
+      "conformance_pointer": "/0",
+      "expected_decision": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "ARPTC-AC-002",
+      "outcome": "POSITIVE",
+      "test_id": "R9-ADV-AR-VALUE-ADMIT",
+      "fixture_pointer": "/adversarial_cases/0",
+      "conformance_pointer": "/18",
+      "expected_decision": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "ARPTC-AC-003",
+      "outcome": "BOUNDARY",
+      "test_id": "R9-AR-BOUNDARY-001",
+      "fixture_pointer": "/cases/1",
+      "conformance_pointer": "/1",
+      "expected_decision": {
+        "variant": "ADMIT",
+        "reason_key_or_null": null,
+        "diagnostic_id_or_null": null,
+        "canonical_culprit_id_or_null": null,
+        "emitted_primary_count": 0,
+        "later_candidate_status": "NOT_APPLICABLE"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "ARPTC-AC-004",
+      "outcome": "REJECT",
+      "test_id": "R9-AR-NEG-001",
+      "fixture_pointer": "/cases/2",
+      "conformance_pointer": "/2",
+      "expected_decision": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_requirement_identity_or_kind_conflict",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Item-V",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "ARPTC-AC-005",
+      "outcome": "REJECT",
+      "test_id": "R9-AR-NEG-002",
+      "fixture_pointer": "/cases/3",
+      "conformance_pointer": "/3",
+      "expected_decision": {
+        "variant": "REJECT",
+        "reason_key_or_null": "2_requirement_bounds_or_default_not_admitted",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Output",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "ARPTC-AC-006",
+      "outcome": "REJECT",
+      "test_id": "R9-AR-NEG-003",
+      "fixture_pointer": "/cases/4",
+      "conformance_pointer": "/4",
+      "expected_decision": {
+        "variant": "REJECT",
+        "reason_key_or_null": "3_implementation_binding_unresolved_or_ambiguous",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Output",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "ARPTC-AC-007",
+      "outcome": "REJECT",
+      "test_id": "R9-AR-NEG-004",
+      "fixture_pointer": "/cases/5",
+      "conformance_pointer": "/5",
+      "expected_decision": {
+        "variant": "REJECT",
+        "reason_key_or_null": "4_recursive_requirement_obligation_cycle",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Output",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    },
+    {
+      "case_id": "ARPTC-AC-008",
+      "outcome": "REJECT",
+      "test_id": "R9-ADV-MULTI-ASSOCIATED",
+      "fixture_pointer": "/adversarial_cases/5",
+      "conformance_pointer": "/23",
+      "expected_decision": {
+        "variant": "REJECT",
+        "reason_key_or_null": "1_requirement_identity_or_kind_conflict",
+        "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "canonical_culprit_id_or_null": "REQ-Item-V",
+        "emitted_primary_count": 1,
+        "later_candidate_status": "NOT_EVALUATED"
+      },
+      "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+      "product_support": "NOT_RUN"
+    }
+  ],
+  "acceptance_bindings": {
+    "POSITIVE": [
+      "ARPTC-AC-001",
+      "ARPTC-AC-002"
+    ],
+    "BOUNDARY": [
+      "ARPTC-AC-003"
+    ],
+    "REJECT": [
+      "ARPTC-AC-004",
+      "ARPTC-AC-005",
+      "ARPTC-AC-006",
+      "ARPTC-AC-007",
+      "ARPTC-AC-008"
+    ]
+  },
+  "machine_acceptance": {
+    "feature_count": 1,
+    "owner_predicate_count": 1,
+    "supporting_predicate_count": 2,
+    "rule_count": 8,
+    "acceptance_case_count": 8,
+    "positive_case_count": 2,
+    "boundary_case_count": 1,
+    "reject_case_count": 5,
+    "acceptance_binding_count": 3,
+    "rejection_rank_count": 4,
+    "new_fixture_case_count": 0,
+    "new_semantic_rule_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED"
+  },
+  "governance": {
+    "scope": "ASSOCIATED_REQUIREMENT_PHASE_A_CONFORMANCE_TRACE_ONLY",
+    "product_execution": "NOT_RUN",
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "implementation_claim": "NONE"
+  }
+}

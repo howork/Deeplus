@@ -61,6 +61,11 @@ OVERLAY_SPECS = [
         "schemas/language/trait-qualified-associated-static-selection-evidence-r1.schema.json",
         1,
     ),
+    (
+        "spec/traceability/implementation-target-profile-r1/associated-requirement-phase-a-evidence-r1.json",
+        "schemas/language/associated-requirement-phase-a-evidence-r1.schema.json",
+        4,
+    ),
 ]
 FEATURE_DIR = "spec/features/catalog/chunks"
 STAGES = ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]
@@ -205,7 +210,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
             cell = (item.get("feature_id"), item.get("stage"), item.get("outcome"))
             require(cell not in overlay_bindings, f"OVERLAY_BINDING_UNIQUE:{rel}:{cell}")
             overlay_bindings[cell] = item
-    require(len(overlay_bindings) == 121, "OVERLAY_BINDING_EXACT_TOTAL_121")
+    require(len(overlay_bindings) == 125, "OVERLAY_BINDING_EXACT_TOTAL_125")
 
     feature_rows: list[dict[str, Any]] = []
     for path in sorted((root / FEATURE_DIR).glob("part-*.json")):
@@ -227,7 +232,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     evidence_rows = metadata.get("evidence_registry", [])
     evidence = {row.get("evidence_id"): row for row in evidence_rows}
     require(len(evidence) == len(evidence_rows), "EVIDENCE_UNIQUE")
-    # R59-R62 are bounded pending-generation overlays. Make their exact E2 entries
+    # R59-R64 are bounded pending-generation overlays. Make their exact E2 entries
     # available to the in-memory projection without rewriting generated rows.
     for item in overlay_entries.values():
         ev_id = evidence_id(item)
@@ -377,15 +382,16 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
             (2450, 3, 502, 1266),
             (2452, 3, 502, 1264),
             (2457, 3, 502, 1259),
+            (2458, 3, 502, 1258),
             (direct, delegated, na, blocked),
         },
-        "DERIVED_LEGACY_OR_R62_COUNTS",
+        "DERIVED_LEGACY_OR_CURRENT_COUNTS",
     )
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (2458, 3, 502, 1258),
-        "R62_EXACT_POST_OVERLAY_COUNTS",
+        (direct, delegated, na, blocked) == (2461, 3, 503, 1254),
+        "R64_EXACT_POST_OVERLAY_COUNTS",
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")

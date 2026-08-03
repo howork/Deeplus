@@ -1,0 +1,381 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/associated-requirement-phase-a-trace-closure-r1.schema.json",
+  "title": "Deeplus R64 associated-requirement Phase A conformance trace-closure contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "feature_id",
+    "language_status",
+    "source_activation",
+    "current_binding",
+    "evidence_scope",
+    "semantic_contract",
+    "authority_fence",
+    "rules",
+    "acceptance_cases",
+    "acceptance_bindings",
+    "machine_acceptance",
+    "governance"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "../../schemas/language/associated-requirement-phase-a-trace-closure-r1.schema.json"
+    },
+    "schema": {
+      "const": "deeplus.associated-requirement-phase-a-trace-closure/r1"
+    },
+    "revision": {
+      "const": "r64-local-associated-requirement-phase-a-conformance-trace-closure-r1"
+    },
+    "canonical_baseline_commit": {
+      "const": "39a5d50cc770341c4b9776d00d84520b780d0c62"
+    },
+    "local_predecessor_commit": {
+      "const": "19d8ea962a884f57e45d16883a128405d419bbe6"
+    },
+    "candidate_status": {
+      "const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_CONTRACT"
+    },
+    "feature_id": {
+      "const": "associated_requirement_phase_a"
+    },
+    "language_status": {
+      "const": "STABLE_DESIGN"
+    },
+    "source_activation": {
+      "const": "none"
+    },
+    "current_binding": {
+      "const": false
+    },
+    "evidence_scope": {
+      "const": {
+        "owner_predicate": "AssociatedRequirementAdmitted",
+        "supporting_predicates": [
+          "AssociatedRequirementWitnessAdmitted",
+          "WherePredicateAdmitted"
+        ],
+        "supporting_predicate_role": "UNCHANGED_NONCONTROLLING",
+        "canonical_semantic_rule": "TC-R010",
+        "fixture_path": "tests/fixtures/current/diagnostic-dispatch-closure-r1.json",
+        "conformance_catalog_path": "tests/conformance/diagnostic-dispatch-closure/chunks/part-0001.json",
+        "evidence_level": "E2_STRUCTURED_STATIC"
+      }
+    },
+    "semantic_contract": {
+      "const": {
+        "requirement_kinds": [
+          "type",
+          "value",
+          "function"
+        ],
+        "binding_cardinality": "EXACTLY_ONE_COMPATIBLE_EXPLICIT_OR_CANONICAL_INHERITED",
+        "default_policy": "ABSENT_IN_CURRENT_TC_R010_MINIMUM",
+        "binding_compatibility": {
+          "type": "REQUIRED_NORMALIZED_BOUNDS_SUBSET_OF_SATISFIED_BOUNDS",
+          "value": "EXACT_NORMALIZED_VALUE_TYPE",
+          "function": "EXACT_NORMALIZED_CALLABLE_SIGNATURE"
+        },
+        "normalization_order": [
+          "CLOSED_SCHEMA_VALIDATION",
+          "CANONICAL_KEY_AND_IDENTITY_ORDER",
+          "DEPENDENCY_EDGES_FROM_NORMALIZED_DEPENDENCY_REQUIREMENT_IDS",
+          "NUMERIC_REASON_RANK_1_THROUGH_4",
+          "CANONICAL_CULPRIT_ID"
+        ],
+        "rejection_rank_order": [
+          "1_requirement_identity_or_kind_conflict",
+          "2_requirement_bounds_or_default_not_admitted",
+          "3_implementation_binding_unresolved_or_ambiguous",
+          "4_recursive_requirement_obligation_cycle"
+        ],
+        "winner_policy": "LOWEST_DETECTED_RANK_THEN_CANONICAL_CULPRIT",
+        "source_order_policy": "LOCATOR_ONLY_NEVER_SEMANTIC_WINNER",
+        "primary_diagnostic": "ASSOCIATED_REQUIREMENT_UNRESOLVED",
+        "reject_emitted_primary_count": 1,
+        "reject_later_candidate_status": "NOT_EVALUATED"
+      }
+    },
+    "authority_fence": {
+      "const": {
+        "classification": "STATIC_ADMISSION_ONLY",
+        "admission_terminates_before_hir": true,
+        "new_source_surface_count": 0,
+        "new_ast_identity_count": 0,
+        "new_hir_identity_count": 0,
+        "new_mir_operation_kind_count": 0,
+        "runtime_operation_count": 0,
+        "later_use_owner_feature": "trait_qualified_associated_static_selection",
+        "later_use_owner_revision": "R62",
+        "later_use_scope": "PROJECTION_SELECTION_AND_EXISTING_STATIC_REFERENCE_OR_INVOKE_LOWERING",
+        "later_use_imported_into_this_contract": false
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "prefixItems": [
+        {"$ref": "#/$defs/rule001"},
+        {"$ref": "#/$defs/rule002"},
+        {"$ref": "#/$defs/rule003"},
+        {"$ref": "#/$defs/rule004"},
+        {"$ref": "#/$defs/rule005"},
+        {"$ref": "#/$defs/rule006"},
+        {"$ref": "#/$defs/rule007"},
+        {"$ref": "#/$defs/rule008"}
+      ],
+      "items": false
+    },
+    "acceptance_cases": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "uniqueItems": true,
+      "prefixItems": [
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-001"},
+                "outcome": {"const": "POSITIVE"},
+                "test_id": {"const": "R9-AR-POS-001"},
+                "fixture_pointer": {"const": "/cases/0"},
+                "conformance_pointer": {"const": "/0"},
+                "expected_decision": {"const": {"variant": "ADMIT", "reason_key_or_null": null, "diagnostic_id_or_null": null, "canonical_culprit_id_or_null": null, "emitted_primary_count": 0, "later_candidate_status": "NOT_APPLICABLE"}}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-002"},
+                "outcome": {"const": "POSITIVE"},
+                "test_id": {"const": "R9-ADV-AR-VALUE-ADMIT"},
+                "fixture_pointer": {"const": "/adversarial_cases/0"},
+                "conformance_pointer": {"const": "/18"},
+                "expected_decision": {"const": {"variant": "ADMIT", "reason_key_or_null": null, "diagnostic_id_or_null": null, "canonical_culprit_id_or_null": null, "emitted_primary_count": 0, "later_candidate_status": "NOT_APPLICABLE"}}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-003"},
+                "outcome": {"const": "BOUNDARY"},
+                "test_id": {"const": "R9-AR-BOUNDARY-001"},
+                "fixture_pointer": {"const": "/cases/1"},
+                "conformance_pointer": {"const": "/1"},
+                "expected_decision": {"const": {"variant": "ADMIT", "reason_key_or_null": null, "diagnostic_id_or_null": null, "canonical_culprit_id_or_null": null, "emitted_primary_count": 0, "later_candidate_status": "NOT_APPLICABLE"}}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-004"},
+                "outcome": {"const": "REJECT"},
+                "test_id": {"const": "R9-AR-NEG-001"},
+                "fixture_pointer": {"const": "/cases/2"},
+                "conformance_pointer": {"const": "/2"},
+                "expected_decision": {"const": {"variant": "REJECT", "reason_key_or_null": "1_requirement_identity_or_kind_conflict", "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED", "canonical_culprit_id_or_null": "REQ-Item-V", "emitted_primary_count": 1, "later_candidate_status": "NOT_EVALUATED"}}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-005"},
+                "outcome": {"const": "REJECT"},
+                "test_id": {"const": "R9-AR-NEG-002"},
+                "fixture_pointer": {"const": "/cases/3"},
+                "conformance_pointer": {"const": "/3"},
+                "expected_decision": {"const": {"variant": "REJECT", "reason_key_or_null": "2_requirement_bounds_or_default_not_admitted", "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED", "canonical_culprit_id_or_null": "REQ-Output", "emitted_primary_count": 1, "later_candidate_status": "NOT_EVALUATED"}}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-006"},
+                "outcome": {"const": "REJECT"},
+                "test_id": {"const": "R9-AR-NEG-003"},
+                "fixture_pointer": {"const": "/cases/4"},
+                "conformance_pointer": {"const": "/4"},
+                "expected_decision": {"const": {"variant": "REJECT", "reason_key_or_null": "3_implementation_binding_unresolved_or_ambiguous", "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED", "canonical_culprit_id_or_null": "REQ-Output", "emitted_primary_count": 1, "later_candidate_status": "NOT_EVALUATED"}}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-007"},
+                "outcome": {"const": "REJECT"},
+                "test_id": {"const": "R9-AR-NEG-004"},
+                "fixture_pointer": {"const": "/cases/5"},
+                "conformance_pointer": {"const": "/5"},
+                "expected_decision": {"const": {"variant": "REJECT", "reason_key_or_null": "4_recursive_requirement_obligation_cycle", "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED", "canonical_culprit_id_or_null": "REQ-Output", "emitted_primary_count": 1, "later_candidate_status": "NOT_EVALUATED"}}
+              }
+            }
+          ]
+        },
+        {
+          "allOf": [
+            {"$ref": "#/$defs/acceptanceCase"},
+            {
+              "properties": {
+                "case_id": {"const": "ARPTC-AC-008"},
+                "outcome": {"const": "REJECT"},
+                "test_id": {"const": "R9-ADV-MULTI-ASSOCIATED"},
+                "fixture_pointer": {"const": "/adversarial_cases/5"},
+                "conformance_pointer": {"const": "/23"},
+                "expected_decision": {"const": {"variant": "REJECT", "reason_key_or_null": "1_requirement_identity_or_kind_conflict", "diagnostic_id_or_null": "ASSOCIATED_REQUIREMENT_UNRESOLVED", "canonical_culprit_id_or_null": "REQ-Item-V", "emitted_primary_count": 1, "later_candidate_status": "NOT_EVALUATED"}}
+              }
+            }
+          ]
+        }
+      ],
+      "items": false
+    },
+    "acceptance_bindings": {
+      "const": {
+        "POSITIVE": [
+          "ARPTC-AC-001",
+          "ARPTC-AC-002"
+        ],
+        "BOUNDARY": [
+          "ARPTC-AC-003"
+        ],
+        "REJECT": [
+          "ARPTC-AC-004",
+          "ARPTC-AC-005",
+          "ARPTC-AC-006",
+          "ARPTC-AC-007",
+          "ARPTC-AC-008"
+        ]
+      }
+    },
+    "machine_acceptance": {
+      "const": {
+        "feature_count": 1,
+        "owner_predicate_count": 1,
+        "supporting_predicate_count": 2,
+        "rule_count": 8,
+        "acceptance_case_count": 8,
+        "positive_case_count": 2,
+        "boundary_case_count": 1,
+        "reject_case_count": 5,
+        "acceptance_binding_count": 3,
+        "rejection_rank_count": 4,
+        "new_fixture_case_count": 0,
+        "new_semantic_rule_count": 0,
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED"
+      }
+    },
+    "governance": {
+      "const": {
+        "scope": "ASSOCIATED_REQUIREMENT_PHASE_A_CONFORMANCE_TRACE_ONLY",
+        "product_execution": "NOT_RUN",
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED",
+        "implementation_claim": "NONE"
+      }
+    }
+  },
+  "$defs": {
+    "rule001": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R001"}}},
+    "rule002": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R002"}}},
+    "rule003": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R003"}}},
+    "rule004": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R004"}}},
+    "rule005": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R005"}}},
+    "rule006": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R006"}}},
+    "rule007": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R007"}}},
+    "rule008": {"$ref": "#/$defs/rule", "properties": {"rule_id": {"const": "ARPTC-R008"}}},
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule_id", "text"],
+      "properties": {
+        "rule_id": {"type": "string", "pattern": "^ARPTC-R00[1-8]$"},
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "acceptanceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_id",
+        "outcome",
+        "test_id",
+        "fixture_pointer",
+        "conformance_pointer",
+        "expected_decision",
+        "execution_status",
+        "product_support"
+      ],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^ARPTC-AC-00[1-8]$"},
+        "outcome": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "test_id": {"type": "string", "minLength": 1},
+        "fixture_pointer": {"type": "string", "pattern": "^/(cases|adversarial_cases)/[0-9]+$"},
+        "conformance_pointer": {"type": "string", "pattern": "^/[0-9]+$"},
+        "expected_decision": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "variant",
+            "reason_key_or_null",
+            "diagnostic_id_or_null",
+            "canonical_culprit_id_or_null",
+            "emitted_primary_count",
+            "later_candidate_status"
+          ],
+          "properties": {
+            "variant": {"enum": ["ADMIT", "REJECT"]},
+            "reason_key_or_null": {"type": ["string", "null"]},
+            "diagnostic_id_or_null": {"type": ["string", "null"]},
+            "canonical_culprit_id_or_null": {"type": ["string", "null"]},
+            "emitted_primary_count": {"enum": [0, 1]},
+            "later_candidate_status": {"enum": ["NOT_APPLICABLE", "NOT_EVALUATED"]}
+          }
+        },
+        "execution_status": {"const": "STATIC_REFERENCE_VALIDATOR_PASS"},
+        "product_support": {"const": "NOT_RUN"}
+      }
+    }
+  }
+}

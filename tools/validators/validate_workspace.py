@@ -12719,6 +12719,13 @@ def main() -> int:
         "tools/validators/validate_trait_qualified_associated_static_selection_trace.py",
         "tools/validators/run_trait_qualified_associated_static_selection_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R62_Trait_Qualified_Associated_Static_Selection_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/associated-requirement-phase-a-trace-closure-r1.json",
+        "schemas/language/associated-requirement-phase-a-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/associated-requirement-phase-a-evidence-r1.json",
+        "schemas/language/associated-requirement-phase-a-evidence-r1.schema.json",
+        "tools/validators/validate_associated_requirement_phase_a_trace_closure.py",
+        "tools/validators/run_associated_requirement_phase_a_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R64_Associated_Requirement_Phase_A_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
