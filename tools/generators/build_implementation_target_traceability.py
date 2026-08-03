@@ -29,6 +29,7 @@ OVERLAYS = [
     OUT / "trait-qualified-associated-static-selection-evidence-r1.json",
     OUT / "associated-requirement-phase-a-evidence-r1.json",
     OUT / "associated-requirement-ast-diagnostic-parity-evidence-r1.json",
+    OUT / "responsibility-identity-dynamic-trace-evidence-r1.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -395,9 +396,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r65-local-associated-requirement-ast-diagnostic-parity-r1",
+        "revision": "r66-local-responsibility-identity-dynamic-trace-closure-r1",
         "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "f2e7353b1c44fc066eba47f6d013cbe0a20e9239",
+        "local_predecessor_commit": "5c36347f7ed7d2d23e5342f311766cea93b6aa89",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),

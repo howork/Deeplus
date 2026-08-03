@@ -1,0 +1,99 @@
+{
+  "$schema": "../../../schemas/language/responsibility-identity-dynamic-trace-evidence-r1.schema.json",
+  "schema": "deeplus.responsibility-identity-dynamic-trace-evidence/r1",
+  "revision": "r66-local-responsibility-identity-dynamic-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "5c36347f7ed7d2d23e5342f311766cea93b6aa89",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_ids": [
+    "responsibility_identity_registry_r1"
+  ],
+  "evidence_entries": [
+    {
+      "evidence_key": "R66:responsibility_identity_registry_r1:DYNAMIC_LOWERING:PROJECTION",
+      "class": "ARTIFACT_POINTER",
+      "path": "spec/contracts/hir-mir-lowering-registry.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/profile_contract/responsibility_evidence_projection_contract",
+      "stage_role": "DYNAMIC_LOWERING"
+    }
+  ],
+  "bindings": [
+    {
+      "feature_id": "responsibility_identity_registry_r1",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R66:responsibility_identity_registry_r1:DYNAMIC_LOWERING:PROJECTION"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R66-TRACE-001",
+      "feature_id": "responsibility_identity_registry_r1",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "contract_pointer": "/profile_contract/responsibility_evidence_projection_contract",
+      "acceptance_case_ids": [],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "STATIC_REFERENCE_VALIDATOR_PASS"
+    }
+  ],
+  "counts": {
+    "feature_count": 1,
+    "evidence_entry_count": 1,
+    "binding_count": 1,
+    "trace_acceptance_record_count": 1,
+    "predecessor_blocked_cell_count": 1,
+    "overlay_bound_direct_transition_count": 1,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 0,
+    "predecessor_cumulative_overlay_count": 11,
+    "post_overlay_cumulative_overlay_count": 12,
+    "predecessor_cumulative_overlay_binding_count": 127,
+    "post_overlay_cumulative_binding_count": 128,
+    "predecessor_evidence_registry_count": 3140,
+    "post_overlay_evidence_registry_count": 3141,
+    "predecessor_total_bound_direct_cell_count": 2463,
+    "predecessor_total_bound_delegated_cell_count": 3,
+    "predecessor_total_not_applicable_cell_count": 501,
+    "predecessor_total_blocked_cell_count": 1254,
+    "post_overlay_total_bound_direct_cell_count": 2464,
+    "post_overlay_total_bound_delegated_cell_count": 3,
+    "post_overlay_total_not_applicable_cell_count": 501,
+    "post_overlay_total_blocked_cell_count": 1253,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0
+  },
+  "guards": {
+    "target_feature_count": 469,
+    "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+    "excluded_feature_count": 254,
+    "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+    "transitioned_cell_count": 1,
+    "other_cell_transition_count": 0,
+    "other_atomic_cell_count": 4220,
+    "stage_cell_count": 3283,
+    "test_outcome_cell_count": 1407,
+    "source_activation": "none",
+    "surface_change_count": 0,
+    "ast_identity_change_count": 0,
+    "hir_identity_change_count": 0,
+    "mir_operation_kind_change_count": 0,
+    "runtime_relookup_count": 0,
+    "backend_relookup_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}
