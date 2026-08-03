@@ -34,6 +34,13 @@ R71_EVIDENCE_ID = "EV-8612c9785d1ec77315d24c4f6700d39e07b38f8c115155f519c698e406
 R71_OVERLAY = "spec/traceability/implementation-target-profile-r1/method-extension-resolution-dynamic-evidence-r1.json"
 R71_DUAL_EXCLUSION_COUNT = 4219
 R71_DUAL_EXCLUSION_SHA256 = "111a60194dc5cc049adcc2e77bb4f2f9e98cc863db3e2e32867fb9f7b0b62a3e"
+R72_REVISION = "r72-local-member-extension-collision-dynamic-trace-closure-r1"
+R72_PREDECESSOR = "d54633b10c1b92bcd2445afc9906ecf9bafec5c9"
+R72_TARGET = ("member_extension_collision_error_policy", "DYNAMIC_LOWERING", None)
+R72_EVIDENCE_ID = "EV-879fcccb6c75f3f07a0d69202e8a77ab9cff9054049dfae8b7796d3865ea0374"
+R72_OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-dynamic-evidence-r1.json"
+R72_TRIPLE_EXCLUSION_COUNT = 4218
+R72_TRIPLE_EXCLUSION_SHA256 = "0b7938f1d172f72f28d8a3b739f2c812fca88be80447453be15bf9446dc3586d"
 OVERLAY_SCHEMA = "schemas/language/static-runtime-member-boundary-evidence-r1.schema.json"
 ROWS = "spec/traceability/implementation-target-profile-r1/rows.json"
 METADATA = "spec/traceability/implementation-target-profile-r1/catalog-metadata.json"
@@ -151,6 +158,21 @@ def r71_successor_non_target_digest(
     return len(material), hashlib.sha256(raw).hexdigest()
 
 
+def r72_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key not in {TARGET, R71_TARGET, R72_TARGET}
+    ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
 def validate(
     root: Path,
     *,
@@ -189,6 +211,11 @@ def validate(
         metadata.get("revision") == R71_REVISION
         and metadata.get("local_predecessor_commit") == R71_PREDECESSOR
         and R71_OVERLAY in applied_paths
+    )
+    r72_successor = (
+        metadata.get("revision") == R72_REVISION
+        and metadata.get("local_predecessor_commit") == R72_PREDECESSOR
+        and applied_paths[-2:] == [R71_OVERLAY, R72_OVERLAY]
     )
 
     require(
@@ -353,7 +380,7 @@ def validate(
         "G03",
         "GENERATED_TARGET_EXACT",
     )
-    if r71_successor:
+    if r71_successor or r72_successor:
         r71_target = current_cells.get(R71_TARGET, {})
         require(
             r71_target.get("disposition") == "BOUND_DELEGATED"
@@ -364,16 +391,43 @@ def validate(
             "G03",
             "R71_SUCCESSOR_TARGET_EXACT",
         )
-        before_count, before_digest = r71_successor_non_target_digest(before_cells)
-        current_count, current_digest = r71_successor_non_target_digest(current_cells)
-        require(
-            before_duplicates == current_duplicates == 0
-            and len(before_cells) == len(current_cells) == 4221
-            and before_count == current_count == R71_DUAL_EXCLUSION_COUNT
-            and before_digest == current_digest == R71_DUAL_EXCLUSION_SHA256,
-            "G03",
-            "R71_OTHER_4219_EXACT",
-        )
+        if r72_successor:
+            r72_target = current_cells.get(R72_TARGET, {})
+            r72_detail = r72_target.get("not_applicable") or {}
+            require(
+                r72_target.get("disposition") == "NOT_APPLICABLE"
+                and r72_target.get("evidence_refs") == []
+                and r72_target.get("delegate_feature_id") is None
+                and r72_target.get("blocked_gap_ids") == []
+                and r72_detail.get("reason_code")
+                == "NA_DYNAMIC_REJECTED_BEFORE_LOWERING"
+                and r72_detail.get("authority_boundary") == "MIR_RUNTIME_AUTHORITY"
+                and r72_detail.get("justification_evidence_refs")
+                == [R72_EVIDENCE_ID],
+                "G03",
+                "R72_SUCCESSOR_TARGET_EXACT",
+            )
+            before_count, before_digest = r72_successor_non_target_digest(before_cells)
+            current_count, current_digest = r72_successor_non_target_digest(current_cells)
+            require(
+                before_duplicates == current_duplicates == 0
+                and len(before_cells) == len(current_cells) == 4221
+                and before_count == current_count == R72_TRIPLE_EXCLUSION_COUNT
+                and before_digest == current_digest == R72_TRIPLE_EXCLUSION_SHA256,
+                "G03",
+                "R72_OTHER_4218_EXACT",
+            )
+        else:
+            before_count, before_digest = r71_successor_non_target_digest(before_cells)
+            current_count, current_digest = r71_successor_non_target_digest(current_cells)
+            require(
+                before_duplicates == current_duplicates == 0
+                and len(before_cells) == len(current_cells) == 4221
+                and before_count == current_count == R71_DUAL_EXCLUSION_COUNT
+                and before_digest == current_digest == R71_DUAL_EXCLUSION_SHA256,
+                "G03",
+                "R71_OTHER_4219_EXACT",
+            )
     else:
         before_count, before_digest = non_target_digest(before_cells)
         current_count, current_digest = non_target_digest(current_cells)
@@ -399,11 +453,25 @@ def validate(
                 and metadata.get("local_predecessor_commit") == PREDECESSOR
             )
             or r71_successor
+            or r72_successor
         ),
         "G04",
         "METADATA_IDENTITY",
     )
-    if r71_successor:
+    if r72_successor:
+        require(
+            len(applied) == 18
+            and sum(row.get("binding_count", 0) for row in applied) == 134
+            and applied[-3]
+            == {"path": OVERLAY, "feature_count": 1, "binding_count": 1}
+            and applied[-2]
+            == {"path": R71_OVERLAY, "feature_count": 1, "binding_count": 1}
+            and applied[-1]
+            == {"path": R72_OVERLAY, "feature_count": 1, "binding_count": 1},
+            "G04",
+            "R72_SUCCESSOR_OVERLAY_REGISTRATION",
+        )
+    elif r71_successor:
         require(
             len(applied) == 17
             and sum(row.get("binding_count", 0) for row in applied) == 133
@@ -424,14 +492,20 @@ def validate(
             "OVERLAY_REGISTRATION",
         )
     require(
-        len(registry) == 3145
+        len(registry) == (3146 if r72_successor else 3145)
         and len(registered) == 1
         and registered[0].get("path") == BRIDGE
         and registered[0].get("locator") == "/name_resolution_module_bridge",
         "G04",
         "EVIDENCE_REGISTRATION",
     )
-    expected_counts = (2467, 4, 502, 1248) if r71_successor else (2467, 3, 502, 1249)
+    expected_counts = (
+        (2467, 4, 503, 1247)
+        if r72_successor
+        else (2467, 4, 502, 1248)
+        if r71_successor
+        else (2467, 3, 502, 1249)
+    )
     require(
         (
             derived.get("bound_direct_cells"),
@@ -813,6 +887,7 @@ def main() -> int:
     metadata = load(root / METADATA)
     derived = metadata.get("derived_counts", {})
     r71_successor = metadata.get("revision") == R71_REVISION
+    r72_successor = metadata.get("revision") == R72_REVISION
     receipt = {
         "schema": "deeplus.r70-static-runtime-member-boundary-trace-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL",
@@ -825,7 +900,11 @@ def main() -> int:
             "applicable_blocked": derived.get("applicable_blocked_cells"),
         },
         "non_target_cell_count": (
-            R71_DUAL_EXCLUSION_COUNT if r71_successor else NON_TARGET_COUNT
+            R72_TRIPLE_EXCLUSION_COUNT
+            if r72_successor
+            else R71_DUAL_EXCLUSION_COUNT
+            if r71_successor
+            else NON_TARGET_COUNT
         ),
         "product_execution": "15_OF_15_NOT_RUN",
         "github_publication": "SUSPENDED",

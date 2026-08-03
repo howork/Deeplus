@@ -101,6 +101,11 @@ OVERLAY_SPECS = [
         "schemas/language/method-extension-resolution-dynamic-evidence-r1.schema.json",
         1,
     ),
+    (
+        "spec/traceability/implementation-target-profile-r1/member-extension-collision-dynamic-evidence-r1.json",
+        "schemas/language/member-extension-collision-dynamic-evidence-r1.schema.json",
+        1,
+    ),
 ]
 FEATURE_DIR = "spec/features/catalog/chunks"
 STAGES = ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]
@@ -245,7 +250,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
             cell = (item.get("feature_id"), item.get("stage"), item.get("outcome"))
             require(cell not in overlay_bindings, f"OVERLAY_BINDING_UNIQUE:{rel}:{cell}")
             overlay_bindings[cell] = item
-    require(len(overlay_bindings) == 133, "OVERLAY_BINDING_EXACT_TOTAL_133")
+    require(len(overlay_bindings) == 134, "OVERLAY_BINDING_EXACT_TOTAL_134")
 
     feature_rows: list[dict[str, Any]] = []
     for path in sorted((root / FEATURE_DIR).glob("part-*.json")):
@@ -267,7 +272,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     evidence_rows = metadata.get("evidence_registry", [])
     evidence = {row.get("evidence_id"): row for row in evidence_rows}
     require(len(evidence) == len(evidence_rows), "EVIDENCE_UNIQUE")
-    # R59-R70 are bounded pending-generation overlays. Make their exact E2 entries
+    # R59-R72 are bounded pending-generation overlays. Make their exact E2 entries
     # available to the in-memory projection without rewriting generated rows.
     for item in overlay_entries.values():
         ev_id = evidence_id(item)
@@ -429,8 +434,8 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (2467, 4, 502, 1248),
-            "R71_EXACT_POST_OVERLAY_COUNTS",
+        (direct, delegated, na, blocked) == (2467, 4, 503, 1247),
+            "R72_EXACT_POST_OVERLAY_COUNTS",
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")

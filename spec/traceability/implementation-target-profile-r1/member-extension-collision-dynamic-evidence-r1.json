@@ -1,0 +1,105 @@
+{
+  "$schema": "../../../schemas/language/member-extension-collision-dynamic-evidence-r1.schema.json",
+  "schema": "deeplus.member-extension-collision-dynamic-evidence/r1",
+  "revision": "r72-local-member-extension-collision-dynamic-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "d54633b10c1b92bcd2445afc9906ecf9bafec5c9",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_ids": ["member_extension_collision_error_policy"],
+  "evidence_entries": [
+    {
+      "evidence_key": "R72:member_extension_collision_error_policy:DYNAMIC_LOWERING:REJECTED_BEFORE_HIR",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "MERTC-R003",
+      "stage_role": "DYNAMIC_LOWERING"
+    }
+  ],
+  "bindings": [
+    {
+      "feature_id": "member_extension_collision_error_policy",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "NOT_APPLICABLE",
+      "evidence_keys": ["R72:member_extension_collision_error_policy:DYNAMIC_LOWERING:REJECTED_BEFORE_HIR"],
+      "delegate_feature_id": null,
+      "not_applicable": {
+        "reason_code": "NA_DYNAMIC_REJECTED_BEFORE_LOWERING",
+        "authority_boundary": "MIR_RUNTIME_AUTHORITY",
+        "rationale": "The defining cross-domain collision rejects with selected_count zero before admitted HIR; noncollision and qualified-selector paths retain their existing selection and execution owners.",
+        "justification_evidence_keys": ["R72:member_extension_collision_error_policy:DYNAMIC_LOWERING:REJECTED_BEFORE_HIR"]
+      }
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R72-TRACE-001",
+      "feature_id": "member_extension_collision_error_policy",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "contract_pointer": "/acceptance_cases",
+      "acceptance_case_ids": ["R72-MECD-ACC-001", "R72-MECD-ACC-002", "R72-MECD-ACC-003", "R72-MECD-ACC-004", "R72-MECD-ACC-005", "R72-MECD-ACC-006", "R72-MECD-ACC-007", "R72-MECD-ACC-008", "R72-MECD-ACC-009"],
+      "disposition": "NOT_APPLICABLE",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "counts": {
+    "feature_count": 1,
+    "evidence_entry_count": 1,
+    "binding_count": 1,
+    "trace_acceptance_record_count": 1,
+    "acceptance_case_count": 9,
+    "predecessor_blocked_cell_count": 1,
+    "overlay_bound_direct_transition_count": 0,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 1,
+    "predecessor_cumulative_overlay_count": 17,
+    "post_overlay_cumulative_overlay_count": 18,
+    "predecessor_cumulative_overlay_binding_count": 133,
+    "post_overlay_cumulative_binding_count": 134,
+    "predecessor_evidence_registry_count": 3145,
+    "post_overlay_evidence_registry_count": 3146,
+    "predecessor_total_bound_direct_cell_count": 2467,
+    "predecessor_total_bound_delegated_cell_count": 4,
+    "predecessor_total_not_applicable_cell_count": 502,
+    "predecessor_total_blocked_cell_count": 1248,
+    "post_overlay_total_bound_direct_cell_count": 2467,
+    "post_overlay_total_bound_delegated_cell_count": 4,
+    "post_overlay_total_not_applicable_cell_count": 503,
+    "post_overlay_total_blocked_cell_count": 1247,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0
+  },
+  "guards": {
+    "target_feature_count": 469,
+    "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+    "excluded_feature_count": 254,
+    "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+    "transitioned_cell_count": 1,
+    "other_cell_transition_count": 0,
+    "other_atomic_cell_count": 4220,
+    "other_atomic_cell_sha256": "3cdbe4a509df453151f7e4900610acf2acbb6dfe0a8734f52e375a86082299e2",
+    "stage_cell_count": 3283,
+    "test_outcome_cell_count": 1407,
+    "projected_evidence_registry_id": "EV-879fcccb6c75f3f07a0d69202e8a77ab9cff9054049dfae8b7796d3865ea0374",
+    "selected_count_on_collision": 0,
+    "collision_primary": "MEMBER_EXTENSION_COLLISION",
+    "admitted_hir_residue_count": 0,
+    "mir_runtime_backend_residue_count": 0,
+    "r71_transition_count": 0,
+    "runtime_or_backend_relookup_count": 0,
+    "new_source_surface_count": 0,
+    "new_identity_count": 0,
+    "new_p1_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}

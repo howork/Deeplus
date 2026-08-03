@@ -12776,6 +12776,15 @@ def main() -> int:
         "tools/validators/validate_method_extension_resolution_dynamic_trace.py",
         "tools/validators/run_method_extension_resolution_dynamic_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R71_Method_Extension_Resolution_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json",
+        "schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json",
+        "tests/fixtures/current/member-extension-collision-dynamic-trace-closure-r1.json",
+        "schemas/language/member-extension-collision-dynamic-trace-closure-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/member-extension-collision-dynamic-evidence-r1.json",
+        "schemas/language/member-extension-collision-dynamic-evidence-r1.schema.json",
+        "tools/validators/validate_member_extension_collision_dynamic_trace.py",
+        "tools/validators/run_member_extension_collision_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R72_Member_Extension_Collision_Dynamic_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
@@ -12972,6 +12981,52 @@ def main() -> int:
         r71_mutation_process.returncode == 0,
         "R71_METHOD_EXTENSION_RESOLUTION_DYNAMIC_TRACE_MUTATIONS",
         r71_mutation_detail[-4000:],
+    )
+
+    r72_validator = (
+        root / "tools/validators/validate_member_extension_collision_dynamic_trace.py"
+    )
+    r72_process = subprocess.run(
+        [sys.executable, str(r72_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r72_detail = (
+        r72_process.stdout.strip()
+        if r72_process.returncode == 0
+        else r72_process.stderr.strip() or r72_process.stdout.strip()
+    )
+    check(
+        r72_process.returncode == 0,
+        "R72_MEMBER_EXTENSION_COLLISION_DYNAMIC_TRACE",
+        r72_detail[-4000:],
+    )
+
+    r72_mutation_runner = (
+        root
+        / "tools/validators/run_member_extension_collision_dynamic_trace_mutation_tests.py"
+    )
+    r72_mutation_process = subprocess.run(
+        [sys.executable, str(r72_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r72_mutation_detail = (
+        r72_mutation_process.stdout.strip()
+        if r72_mutation_process.returncode == 0
+        else r72_mutation_process.stderr.strip()
+        or r72_mutation_process.stdout.strip()
+    )
+    check(
+        r72_mutation_process.returncode == 0,
+        "R72_MEMBER_EXTENSION_COLLISION_DYNAMIC_TRACE_MUTATIONS",
+        r72_mutation_detail[-4000:],
     )
 
     if revision in CURRENT_MACHINE_REVISIONS:
