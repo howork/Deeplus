@@ -1,0 +1,413 @@
+{
+  "schema": "deeplus.formatter-lsp-incremental-parsing-contract/r1",
+  "status": "STABLE_DESIGN_IMPLEMENTATION_READINESS_CANDIDATE",
+  "candidate_class": "LOCAL_NONCANONICAL_NONACTIVATABLE",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+    "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
+  },
+  "gap_id": "IR-FE-P1-037",
+  "dependencies": [
+    "IR-FE-P0-028",
+    "IR-FE-P1-034"
+  ],
+  "inputs": {
+    "grammar": "spec/grammar/deeplus.ebnf",
+    "grammar_disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
+    "grammar_topology": "spec/contracts/grammar-topology-closure-r1.json",
+    "frontend_model": "spec/frontend/frontend-model.json",
+    "recovery_contract": "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json",
+    "parser_boundary_contract": "spec/contracts/parser-boundary-match-arm-contract-r1.json",
+    "scanner_contract": "spec/contracts/complete-token-lexical-goal-contract-r1.json"
+  },
+  "responsibility_separation": {
+    "formatter": "selects only declared layout actions over an admitted lossless CST and proves parse-format-parse AST equivalence plus idempotence",
+    "incremental_parser": "selects, reparses, and conditionally splices one deterministic CST owner without changing language admission",
+    "lsp": "binds every request and result to one document revision, source role/profile, parse snapshot, and contract digest set",
+    "checker": "never repairs CST structure or clears recovery taint",
+    "canonical_ast_hir": "consume only recovery-free sealed output; incremental and tooling handles are excluded from canonical identity",
+    "runtime_backend": "no formatter, LSP, reparse, or tooling identity survives into MIR, xVM, Cranelift, ABI, or runtime state"
+  },
+  "formatting_disposition_function": {
+    "input_domain": "exact 644 rows of grammar-production-disposition-registry-r1",
+    "ordered_first_match": true,
+    "total_and_disjoint": true,
+    "rules": [
+      {
+        "rule_id": "FD-01",
+        "when": {
+          "profile": "LEXICAL",
+          "cst_shape": "TOKEN_OR_TRIVIA_LEAF",
+          "disposition": "cst_only"
+        },
+        "formatting_disposition": "PRESERVE_TOKEN_OR_TRIVIA_BYTES",
+        "expected_row_count": 56
+      },
+      {
+        "rule_id": "FD-02",
+        "when": {
+          "profile": "LEXICAL",
+          "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+          "disposition": "cst_only"
+        },
+        "formatting_disposition": "DELEGATE_TO_SCANNER_TOKEN_OWNER",
+        "expected_row_count": 35
+      },
+      {
+        "rule_id": "FD-03",
+        "when": {
+          "profile_not": "LEXICAL",
+          "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+          "disposition": "cst_only"
+        },
+        "formatting_disposition": "PRESERVE_INLINE_CST_BYTES_UNLESS_PARENT_RULE",
+        "expected_row_count": 320
+      },
+      {
+        "rule_id": "FD-04",
+        "when": {
+          "cst_shape": "PRODUCTION_NODE",
+          "disposition": "ast_node"
+        },
+        "formatting_disposition": "PRESERVE_STRUCTURAL_SOURCE_UNLESS_EXPLICIT_OWNER_RULE",
+        "expected_row_count": 204
+      },
+      {
+        "rule_id": "FD-05",
+        "when": {
+          "cst_shape": "PRODUCTION_NODE",
+          "disposition": "normalize_to"
+        },
+        "formatting_disposition": "FORMAT_CANONICAL_NORMALIZATION_TARGET",
+        "expected_row_count": 10
+      },
+      {
+        "rule_id": "FD-06",
+        "when": {
+          "cst_shape": "DISPATCH_ENTRY_NO_NODE",
+          "disposition": "external_parser_entry"
+        },
+        "formatting_disposition": "DELEGATE_TO_SELECTED_EXTERNAL_ENTRY_OWNER",
+        "expected_row_count": 19
+      }
+    ],
+    "expected_total_row_count": 644,
+    "unclassified_row_count": 0,
+    "multiply_classified_row_count": 0,
+    "default_rewrite": "PRESERVE_EXACT_SOURCE_BYTES",
+    "undeclared_style_preference_count": 0
+  },
+  "explicit_owner_rule_gate": {
+    "admission": [
+      "the rule has one canonical owner path and field",
+      "the selected source profile admits the owner",
+      "the rule changes layout or a declared equivalent spelling only",
+      "comments and trivia retain one lossless owner",
+      "parse-format-parse normalized AST identity is equal",
+      "a second formatting pass emits zero edits"
+    ],
+    "current_owner_paths": [
+      "spec/frontend/frontend-model.json#/boundary_policies/hash_role_trivia",
+      "spec/frontend/frontend-model.json#/call_frontend_contract/formatter",
+      "spec/frontend/frontend-model.json#/function_static_activation_frontend_contract",
+      "spec/frontend/frontend-model.json#/callable_responsibility_clause_contract",
+      "spec/frontend/frontend-model.json#/borrow_context_anchor_frontend_contract/formatter_round_trip"
+    ],
+    "missing_or_ambiguous_owner_rule": "PRESERVE_EXACT_SOURCE_BYTES",
+    "composition_law": "token spellings and comments retain exact byte ownership; only whitespace or layout slots named by one unique parent owner rule may change",
+    "line_break_boundary_preservation": "a LineBreakBoundary or comment-owned newline remains when removing or moving it could change parsing",
+    "actor_protocol_token_rewrite_count": 0,
+    "actor_protocol_required_spellings": [
+      "conforms",
+      "conform",
+      "QualifiedTypeReference",
+      "on",
+      "request"
+    ],
+    "semantic_auto_rewrite_count": 0,
+    "profile_activation_count": 0
+  },
+  "recovery_and_malformed_cst": {
+    "whole_file_format": "REQUIRE_EMPTY_RECOVERY_TAINT",
+    "range_format": "REQUIRE_ONE_SMALLEST_RECOVERY_FREE_FORMAT_OWNER_WHOLELY_CONTAINING_RANGE",
+    "formatter_may_clear_taint": false,
+    "checker_may_clear_taint": false,
+    "taint_clear_owner": "NEW_PARSE_OF_CHANGED_INPUT_ONLY",
+    "recovery_nodes_rewritten_or_removed_by_formatter": false,
+    "analysis_only_fragments_advertised_as_canonical": false,
+    "fixit_scope": "exact action admitted by recovery contract; never invent semantic source"
+  },
+  "identity_domains": {
+    "DocumentSessionId": {
+      "domain": "editor process local",
+      "canonical_residue": false
+    },
+    "DocumentRevisionId": {
+      "recipe": [
+        "DocumentSessionId",
+        "strictly_monotonic_revision_ordinal"
+      ],
+      "canonical_residue": false
+    },
+    "ParseSnapshotId": {
+      "recipe": [
+        "SourceFileId",
+        "DocumentRevisionId",
+        "source_bytes_sha256",
+        "source_role",
+        "activation_profile",
+        "grammar_sha256",
+        "frontend_contract_digest_set"
+      ],
+      "owns": [
+        "immutable CST occurrence tree",
+        "line map and negotiated position encoding",
+        "ordered diagnostic set",
+        "recovery episode set"
+      ],
+      "canonical_residue": false
+    },
+    "CstContentId": {
+      "recipe": [
+        "production_id",
+        "profile",
+        "ordered child CstContentId or exact token kind and bytes",
+        "lossless trivia ownership"
+      ],
+      "position_independent": true,
+      "canonical_residue": false
+    },
+    "CstOccurrenceId": {
+      "recipe": [
+        "ParseSnapshotId",
+        "CstNodeId"
+      ],
+      "current_cst_node_id_mapping": "CstOccurrenceId = snapshot-qualified occurrence of current CstNodeId(SourceFileId, green_path, CstKind, byte_range)",
+      "cross_revision_stability": false,
+      "snapshot_local": true,
+      "canonical_residue": false
+    },
+    "IncrementalNodeHandleId": {
+      "recipe": [
+        "DocumentSessionId",
+        "monotonic handle generation"
+      ],
+      "reuse": "preserved only by one accepted one-to-one NodeReuseReceipt",
+      "canonical_residue": false
+    },
+    "NodeReuseReceipt": {
+      "old_to_new_cardinality": "ONE_TO_ONE_ONLY",
+      "required_equalities": [
+        "SourceFileId",
+        "old DocumentRevisionId and old ParseSnapshotId",
+        "new DocumentRevisionId and new ParseSnapshotId",
+        "source_role",
+        "activation_profile",
+        "grammar_sha256",
+        "frontend_contract_digest_set",
+        "production_id",
+        "CstContentId",
+        "exact token and trivia partition",
+        "recovery taint identity"
+      ],
+      "required_interval_mapping": [
+        "old half-open source-byte interval",
+        "new half-open source-byte interval",
+        "deterministic edit-coordinate transform"
+      ],
+      "required_proofs": [
+        "node is outside the replaced interval or is an unchanged child of the accepted splice",
+        "parent reuse is proven or node is the selected reparse root",
+        "mapping is unique in both directions"
+      ],
+      "ambiguous_or_missing_mapping": "ALLOCATE_NEW_HANDLE_AND_REJECT_OLD_HANDLE_LOOKUP"
+    },
+    "NormalizedAstSemanticDigest": {
+      "recipe": [
+        "AstKind",
+        "normalized semantic payload",
+        "ordered child NormalizedAstSemanticDigest values"
+      ],
+      "excluded": [
+        "AstNodeId",
+        "CstNodeId",
+        "CstOccurrenceId",
+        "source span",
+        "trivia",
+        "recovery node"
+      ],
+      "parse_format_parse_equality_authority": true,
+      "typed_hir_semantic_identity_must_agree_separately": true,
+      "canonical_residue": false
+    },
+    "forbidden_identity_conflations": [
+      "CstContentId == CstOccurrenceId",
+      "CstOccurrenceId == IncrementalNodeHandleId",
+      "tooling identity == DeclId or HirId",
+      "source byte offset alone == stable node identity"
+      ,"AstNodeId == NormalizedAstSemanticDigest"
+      ,"tooling identity participates in R23 Actor or binding identity preimage"
+    ]
+  },
+  "incremental_reparse": {
+    "edit_input": {
+      "required": [
+        "DocumentSessionId",
+        "expected_old_DocumentRevisionId",
+        "ordered nonoverlapping byte edits",
+        "old source bytes sha256",
+        "new source bytes sha256",
+        "source role",
+        "activation profile",
+        "contract digest set"
+      ],
+      "stale_revision": "REJECT_STALE_DOCUMENT_REVISION",
+      "overlapping_or_unsorted_edits": "REJECT_INVALID_EDIT_SET"
+    },
+    "edit_coordinate_transform": "apply ordered nonoverlapping edits simultaneously against one old snapshot and map the selected old half-open owner interval to one new half-open reparse interval after lexical-envelope expansion",
+    "boundary_insertion_rule": "an insertion at an owner boundary belongs to the smallest owner whose lexical entry and exit states remain exact; otherwise ascend",
+    "concurrent_edit_publication": "atomic compare-and-swap on expected old DocumentRevisionId and ParseSnapshotId; exactly one competing edit may publish",
+    "lexical_expansion": "expand each edit through the smallest scanner-mode envelope whose entry and exit lexical states can be recomputed exactly",
+    "reparse_owner_eligibility": [
+      "a source root",
+      "a PRODUCTION_NODE row with disposition ast_node or normalize_to",
+      "an exact external parser entry with a declared parent splice slot"
+    ],
+    "owner_selection": "choose the smallest eligible old CST owner containing every lexically expanded edit interval; ties are impossible because CST ownership is a tree",
+    "mandatory_ascent_conditions": [
+      "owner production or profile changed",
+      "entry or exit scanner state changed outside the owner",
+      "parser goal or boundary digest changed",
+      "old or new recovery taint crosses the owner boundary",
+      "splice partition or unchanged-sibling proof failed",
+      "node reuse is ambiguous",
+      "selected external entry lacks one parent splice slot"
+      ,"grammar, source role, activation profile, scanner goal, or frontend contract digest changed"
+      ,"boundary trivia or a contextual newline is owned outside the selected subtree"
+    ],
+    "ascent": "move to the nearest eligible parent and retry exactly once per ancestor",
+    "root_fallback": "reparse the selected source root; if it remains tainted, return analysis CST and no canonical AST seal",
+    "splice_gate": [
+      "the reparse consumes exactly the deterministic new interval mapped from the selected old owner interval",
+      "entry and exit scanner states match the new surrounding snapshot",
+      "source role, activation profile, grammar and contract digests match",
+      "the child byte partition is total, ordered and nonoverlapping",
+      "unchanged siblings have one-to-one reuse receipts",
+      "the new subtree has the selected production owner",
+      "canonical AST normalization succeeds only when recovery taint is empty"
+    ],
+    "snapshot_read_lease": "a formatter, parser, LSP, code-action, or reuse-receipt operation retains its exact ParseSnapshotId until result completion",
+    "snapshot_reclamation_gate": "no current-document, active request, or reuse-receipt lease remains",
+    "late_result_publication": "publish only when expected DocumentRevisionId and ParseSnapshotId are still current",
+    "recovery_episode_identity": "RecoveryEpisodeId(ParseSnapshotId, parser-boundary occurrence identity, ordered provenance)",
+    "diagnostic_parity": "incremental diagnostics equal a full parse of the same ParseSnapshotId after global recovery merge and cascade suppression",
+    "diagnostic_merge_order": "canonical recovery ordering key; worker completion order is ignored",
+    "evaluation_or_parse_order": "source byte order; no parallel result may change selected owner, diagnostic order, or reuse mapping",
+    "whole_document_mix_of_snapshot_count": 1
+  },
+  "range_format": {
+    "selection": "smallest recovery-free structural format owner wholly containing the requested byte range",
+    "token_split": "expand to complete token boundaries before owner selection",
+    "replacement_count": 1,
+    "replacement_interval": "exact selected owner source interval",
+    "outside_interval_bytes_unchanged": true,
+    "source_role_profile_unchanged": true,
+    "parse_format_parse_normalized_ast_equivalence": "EQUAL_NORMALIZED_AST_SEMANTIC_DIGEST_AND_TYPED_HIR_SEMANTIC_IDENTITIES",
+    "second_pass_edit_count": 0,
+    "no_recovery_free_owner": "REJECT_RANGE_INTERSECTS_RECOVERY_TAINT",
+    "request_spans_multiple_sibling_owners": "ASCEND_TO_SMALLEST_COMMON_RECOVERY_FREE_OWNER_OR_REJECT"
+  },
+  "lsp_snapshot_fence": {
+    "request_binding": [
+      "SourceFileId",
+      "DocumentSessionId",
+      "expected DocumentRevisionId",
+      "ParseSnapshotId",
+      "source role",
+      "activation profile",
+      "grammar sha256",
+      "frontend contract digest set",
+      "source bytes sha256",
+      "line map digest and negotiated position encoding"
+    ],
+    "result_binding": "echo the exact request binding and source bytes sha256",
+    "stale_request_or_result": "REJECT_STALE_DOCUMENT_REVISION",
+    "semantic_tokens": "exact tokens plus recovery-free semantic fragments only",
+    "rename_navigation": "canonical identities only for recovery-free sealed fragments; analysis-only navigation remains explicitly tainted",
+    "code_action": "exact diagnostic and recovery-contract action only",
+    "internal_span_domain": "zero-based half-open byte intervals over the exact snapshot source-byte buffer",
+    "position_conversion": "negotiated LSP position encoding plus snapshot line-map digest maps to one exact internal byte boundary",
+    "invalid_position": "REJECT_INVALID_POSITION_WITHOUT_CLAMPING",
+    "replacement_and_action_binding": "expected old DocumentRevisionId, ParseSnapshotId, half-open interval, and old interval sha256",
+    "stale_action_application": "REJECT_STALE_TOOLING_ACTION",
+    "cross_revision_result_merge_count": 0
+  },
+  "reason_codes": [
+    "FORMAT_WHOLE_FILE_RECOVERY_TAINTED",
+    "FORMAT_AST_EQUIVALENCE_FAILED",
+    "FORMAT_IDEMPOTENCE_FAILED",
+    "FORMAT_RANGE_INTERSECTS_RECOVERY_TAINT",
+    "FORMAT_EDIT_ESCAPES_OWNER",
+    "INCREMENTAL_INVALID_EDIT_SET",
+    "INCREMENTAL_SPLICE_GATE_FAILED",
+    "INCREMENTAL_REPARSE_ASCENDED",
+    "INCREMENTAL_NODE_REUSE_AMBIGUOUS",
+    "INCREMENTAL_STALE_DOCUMENT_REVISION"
+    ,"TOOLING_POSITION_INVALID"
+    ,"TOOLING_STALE_ACTION"
+    ,"INCREMENTAL_DIAGNOSTIC_PARITY_FAILED"
+    ,"TOOLING_SNAPSHOT_LEASE_VIOLATION"
+  ],
+  "diagnostic_policy": {
+    "reason_codes_are_final_registry_ids": false,
+    "new_final_diagnostic_id_count": 0,
+    "primary_diagnostic_selection": "retain the parser/checker primary diagnostic for source errors; tooling protocol failures return a typed tooling result until separate diagnostic authority",
+    "tooling_failure_precedence": [
+      "request, schema, and document identity",
+      "stale revision or snapshot",
+      "edit and coordinate validity",
+      "owner and recovery admission",
+      "AST equivalence, idempotence, splice, and reuse proof"
+    ],
+    "incremental_full_parse_diagnostic_order_parity": true,
+    "automatic_semantic_fix_count": 0
+  },
+  "acceptance": {
+    "fixture": "tests/fixtures/current/formatter-lsp-incremental-parsing-r1.json",
+    "schema": "schemas/language/formatter-lsp-incremental-parsing.schema.json",
+    "required_case_ids": [
+      "IR-R3-GAP-10-P",
+      "IR-R3-GAP-10-B",
+      "IR-R3-GAP-10-N"
+    ],
+    "successor_case_range": "R28R-T01..R28R-T34",
+    "successor_case_count": 34,
+    "mutation_ids": [
+      "R28-M-01-DROP-FORMATTING-RULE",
+      "R28-M-02-OVERLAP-FORMATTING-RULE",
+      "R28-M-03-ALLOW-FORMATTER-TAINT-CLEAR",
+      "R28-M-04-ALLOW-OUTSIDE-RANGE-EDIT",
+      "R28-M-05-CONFLATE-IDENTITY-DOMAINS",
+      "R28-M-06-ACCEPT-STALE-REVISION",
+      "R28-M-07-ALLOW-AMBIGUOUS-REUSE",
+      "R28-M-08-CLAIM-PRODUCT-PASS",
+      "R28-M-09-CONFLATE-AST-OCCURRENCE-SEMANTIC",
+      "R28-M-10-OMIT-SNAPSHOT-LEASE",
+      "R28-M-11-ALLOW-ACTOR-TOKEN-REWRITE",
+      "R28-M-12-ALLOW-R23-ID-FROM-TOOLING-ID"
+    ]
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "separate_m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "source_syntax_change_count": 0,
+    "grammar_production_change_count": 0,
+    "language_semantic_change_count": 0,
+    "production_formatter_lsp_incremental_parser": "NOT_RUN",
+    "github_publication": "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+  }
+}

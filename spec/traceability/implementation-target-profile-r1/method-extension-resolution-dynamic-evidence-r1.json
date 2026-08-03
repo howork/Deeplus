@@ -1,0 +1,97 @@
+{
+  "$schema": "../../../schemas/language/method-extension-resolution-dynamic-evidence-r1.schema.json",
+  "schema": "deeplus.method-extension-resolution-dynamic-evidence/r1",
+  "revision": "r71-local-method-extension-resolution-dynamic-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "7babf6b0d6a3c806784ef052308cf7026f3fecb2",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_ids": ["method_extension_resolution_policy"],
+  "evidence_entries": [
+    {
+      "evidence_key": "R71:method_extension_resolution_policy:DYNAMIC_LOWERING:UNIFIED_CALL_DELEGATE",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "UCTC-R011",
+      "stage_role": "DYNAMIC_LOWERING"
+    }
+  ],
+  "bindings": [
+    {
+      "feature_id": "method_extension_resolution_policy",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "BOUND_DELEGATED",
+      "evidence_keys": ["R71:method_extension_resolution_policy:DYNAMIC_LOWERING:UNIFIED_CALL_DELEGATE"],
+      "delegate_feature_id": "unified_call_expression_and_tilde_modes",
+      "not_applicable": null
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R71-TRACE-001",
+      "feature_id": "method_extension_resolution_policy",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "contract_pointer": "/acceptance_cases",
+      "acceptance_case_ids": ["R71-MER-ACC-001", "R71-MER-ACC-002", "R71-MER-ACC-003", "R71-MER-ACC-004", "R71-MER-ACC-005", "R71-MER-ACC-006", "R71-MER-ACC-007", "R71-MER-ACC-008", "R71-MER-ACC-009", "R71-MER-ACC-010"],
+      "disposition": "BOUND_DELEGATED",
+      "delegate_feature_id": "unified_call_expression_and_tilde_modes",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "counts": {
+    "feature_count": 1,
+    "evidence_entry_count": 1,
+    "binding_count": 1,
+    "trace_acceptance_record_count": 1,
+    "acceptance_case_count": 10,
+    "predecessor_blocked_cell_count": 1,
+    "overlay_bound_direct_transition_count": 0,
+    "overlay_bound_delegated_transition_count": 1,
+    "overlay_not_applicable_transition_count": 0,
+    "predecessor_cumulative_overlay_count": 16,
+    "post_overlay_cumulative_overlay_count": 17,
+    "predecessor_cumulative_overlay_binding_count": 132,
+    "post_overlay_cumulative_binding_count": 133,
+    "predecessor_evidence_registry_count": 3145,
+    "post_overlay_evidence_registry_count": 3145,
+    "predecessor_total_bound_direct_cell_count": 2467,
+    "predecessor_total_bound_delegated_cell_count": 3,
+    "predecessor_total_not_applicable_cell_count": 502,
+    "predecessor_total_blocked_cell_count": 1249,
+    "post_overlay_total_bound_direct_cell_count": 2467,
+    "post_overlay_total_bound_delegated_cell_count": 4,
+    "post_overlay_total_not_applicable_cell_count": 502,
+    "post_overlay_total_blocked_cell_count": 1248,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0
+  },
+  "guards": {
+    "target_feature_count": 469,
+    "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+    "excluded_feature_count": 254,
+    "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+    "transitioned_cell_count": 1,
+    "other_cell_transition_count": 0,
+    "other_atomic_cell_count": 4220,
+    "other_atomic_cell_sha256": "79510a1255de566d0dffe331717e2833b426ebc8ef871e07bce0d9a85e7a798a",
+    "stage_cell_count": 3283,
+    "test_outcome_cell_count": 1407,
+    "projected_evidence_registry_id": "EV-8612c9785d1ec77315d24c4f6700d39e07b38f8c115155f519c698e406770b5b",
+    "method_extension_static_owner_transition_count": 0,
+    "unified_call_dynamic_delegate_count": 1,
+    "runtime_or_backend_relookup_count": 0,
+    "new_source_surface_count": 0,
+    "new_identity_count": 0,
+    "new_p1_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}

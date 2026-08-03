@@ -1,0 +1,98 @@
+{
+  "schema": "deeplus.actor-minimum-lifecycle-trace/r1",
+  "feature_id": "actor_minimum_lifecycle_r1",
+  "gap_id": "IR-ACTOR-P1-005",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "candidate_status": "LOCAL_CANDIDATE_APPROVED_NOT_INTEGRATED",
+  "semantic_change_from_r49": false,
+  "trace": {
+    "source_and_grammar": {
+      "status": "EXISTING_SURFACE_REFERENCE_ONLY",
+      "new_production_count": 0,
+      "productions": [
+        "ActorDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl"
+      ],
+      "authority": "spec/grammar/deeplus.ebnf"
+    },
+    "ast_and_model": {
+      "status": "BOUND",
+      "frontend_model": "spec/frontend/frontend-model.json#/concurrency_frontend_contract/actor_minimum_lifecycle_contract",
+      "contract": "spec/contracts/actor-concurrency-coherence.json#/rules/19"
+    },
+    "static_semantics": {
+      "status": "BOUND",
+      "rule_id": "ACC-R020",
+      "validator": "tools/validators/validate_actor_minimum_lifecycle.py"
+    },
+    "dynamic_semantics_and_lowering": {
+      "status": "BOUND_DESIGN_STATIC",
+      "mir_schema": "schemas/language/mir-responsibility.schema.json#/$defs/actor_lifecycleEvent",
+      "mir_semantics": "spec/mir/semantics.md#7-actors-and-messages",
+      "runtime_execution": "NOT_RUN",
+      "backend_projection": "OUT_OF_SCOPE_R24_HELD"
+    },
+    "diagnostic": {
+      "compiler_user_diagnostic_lane": "NOT_APPLICABLE_INTERNAL_LIFECYCLE_EVIDENCE_INVARIANT",
+      "canonical_diagnostic_registry_id_count": 0,
+      "internal_verifier_guard_count": 12,
+      "internal_verifier_guards": [
+        "ACTOR_LIFECYCLE_ADMISSION_AFTER_CLOSE",
+        "ACTOR_LIFECYCLE_BINDING_FOREIGN_KEY_INVALID",
+        "ACTOR_LIFECYCLE_DEFERRED_POLICY_ACTIVATED",
+        "ACTOR_LIFECYCLE_HANDLER_AFTER_DEFECT",
+        "ACTOR_LIFECYCLE_IDENTITY_INVALID",
+        "ACTOR_LIFECYCLE_PAYLOAD_CLEANUP_CARDINALITY",
+        "ACTOR_LIFECYCLE_PUBLICATION_BEFORE_COMMIT",
+        "ACTOR_LIFECYCLE_REPLY_BINDING_INVALID",
+        "ACTOR_LIFECYCLE_REPLY_TERMINAL_CARDINALITY",
+        "ACTOR_LIFECYCLE_ROOT_OBSERVATION_INVALID",
+        "ACTOR_LIFECYCLE_TERMINATION_BEFORE_CLEANUP",
+        "ACTOR_LIFECYCLE_TRANSITION_INVALID"
+      ],
+      "boundary": "The twelve reason identifiers are design-static verifier guard codes, not public compiler source-diagnostic IDs. The compiler diagnostic lane is explicitly N/A because this contract adds no source-admission failure."
+    },
+    "tooling_and_debugger": {
+      "status": "OBLIGATIONS_BOUND_PRODUCT_NOT_RUN",
+      "formatter_lsp": "NOT_APPLICABLE_NO_NEW_SOURCE_SURFACE",
+      "debugger_obligations": [
+        "preserve ActorId, ActorInstanceId, ActorRuntimeRootOwnerId and StateRegionId as distinct inspectable identities",
+        "display lifecycle events in committed event order without synthesizing omitted phases",
+        "show primary Defect separately from deterministically ordered suppressed cleanup defects"
+      ],
+      "product_execution": "NOT_RUN"
+    },
+    "acceptance_tests": {
+      "status": "BOUND_DESIGN_STATIC",
+      "matrix": "tests/conformance/actor-lifecycle-guards-r1.json",
+      "direct_fixture_count": 5,
+      "mutation_test_count": 7,
+      "guard_coverage": "12_OF_12",
+      "fixture_source": "tests/fixtures/current/actor-concurrency-coherence-r1.json",
+      "mutation_runner": "tools/validators/run_actor_lifecycle_guard_mutation_tests.py",
+      "product_execution": "NOT_RUN"
+    }
+  },
+  "implementation_handoff": {
+    "document": "decisions/language/Design_Deeplus_Actor_Minimum_Lifecycle_Implementation_Handoff_R1.md",
+    "subsystem_order": [
+      "frontend identity preservation",
+      "checker lifecycle-plan admission",
+      "MIR lifecycle-event lowering",
+      "xVM runtime state machine and cleanup",
+      "debugger event projection",
+      "target-bound conformance execution"
+    ],
+    "parser_change_required": false,
+    "cranelift_change_in_r51": false,
+    "production_implementation_authorized": false
+  },
+  "evidence_boundary": {
+    "design_static_validation": "REQUIRED",
+    "product_lanes": "15/15_NOT_RUN",
+    "canonical_gap_closure_count": 0,
+    "r24_materialization": "HOLD_UNTIL_IR_ACTOR_P1_005_CANONICALLY_VERIFIED_CLOSED"
+  }
+}

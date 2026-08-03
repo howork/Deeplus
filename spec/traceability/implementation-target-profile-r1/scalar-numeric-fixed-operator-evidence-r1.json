@@ -1,0 +1,1454 @@
+{
+  "$schema": "../../../schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
+  "schema": "deeplus.scalar-numeric-fixed-operator-evidence/r1",
+  "revision": "r54-local-scalar-numeric-fixed-operator-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "7f540c2c593911ec19003b43ff48652615becfc6",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_ids": [
+    "caret_power_operator_msp",
+    "caret_power_right_associative_math_law",
+    "closed_operator_symbols_open_named_extensions",
+    "complex_core_numeric_value",
+    "fixed_operator_conformance_overloading",
+    "float_alias_float64",
+    "linear_algebra_complex_inner_product_law",
+    "numeric_literal_lexical_contract",
+    "numeric_literal_suffix",
+    "numeric_operator_core",
+    "operator_precedence_table_phase_a",
+    "rational_exact_numeric_value",
+    "scalar_real_complex_power",
+    "uint_default_unsigned_integer_domain"
+  ],
+  "evidence_entries": [
+    {
+      "evidence_key": "EVK-numeric_literal_suffix-STATIC_SEMANTICS",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/frontend/frontend-model.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/numeric_lexical_policy",
+      "stage_role": "STATIC_SEMANTICS"
+    },
+    {
+      "evidence_key": "EVK-numeric_operator_core-AST_FRONTEND",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/frontend/frontend-model.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/fixed_operator_conformance_frontend_contract",
+      "stage_role": "AST_FRONTEND"
+    },
+    {
+      "evidence_key": "EVK-rational_exact_numeric_value-DYNAMIC_LOWERING",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/rational-complex-numeric-coherence.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/rational_profile",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-complex_core_numeric_value-DYNAMIC_LOWERING",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/rational-complex-numeric-coherence.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/complex_profile",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-scalar_real_complex_power-DYNAMIC_LOWERING",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/hir-h1-current-mir-bridge.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/power_plan_contract",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-float_alias_float64-DYNAMIC_LOWERING",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/numeric-system-std-math.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/stable_names/Float",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-uint_default_unsigned_integer_domain-DYNAMIC_LOWERING",
+      "class": "MIR_RULE_ID",
+      "path": "spec/mir/semantics.md",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "Explicit integer domains remain distinct",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-fixed_operator_conformance_overloading-DYNAMIC_LOWERING",
+      "class": "MIR_RULE_ID",
+      "path": "spec/mir/semantics.md",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "FixedOperatorConformanceCall",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-linear_algebra_complex_inner_product_law-DYNAMIC_LOWERING",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "RCN-R1-POS-024",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-closed_operator_symbols_open_named_extensions-DYNAMIC_LOWERING",
+      "class": "MIR_RULE_ID",
+      "path": "spec/mir/semantics.md",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "FixedOperatorConformanceCall",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "EVK-operator_precedence_table_phase_a-AST_FRONTEND",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/frontend/frontend-model.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/pratt/expression/operators",
+      "stage_role": "AST_FRONTEND"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-001",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/0",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-numeric_literal_suffix-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/value-operator-indexing-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "VOI-R1-BND-001",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-002",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/1",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-numeric_literal_suffix-REJECT",
+      "class": "TEACHING_EXAMPLE_ID",
+      "path": "tests/conformance/surface/rejected",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "EX-R49C-NUM-006",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-003",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/2",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-numeric_literal_lexical_contract-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/value-operator-indexing-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "VOI-R1-BND-001",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-004",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/3",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-numeric_literal_lexical_contract-REJECT",
+      "class": "TEACHING_EXAMPLE_ID",
+      "path": "tests/conformance/surface/rejected",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "EX-R49C-NUM-002",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-005",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/4",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CANON-numeric_operator_core-POSITIVE",
+      "class": "TEACHING_EXAMPLE_ID",
+      "path": "tests/conformance/surface/positive",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "EX-R51VOI-002",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-006",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/5",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-numeric_operator_core-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/value-operator-indexing-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "VOI-R1-BND-003",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-007",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/6",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-numeric_operator_core-REJECT",
+      "class": "TEACHING_EXAMPLE_ID",
+      "path": "tests/conformance/surface/rejected",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "EX-R51VOI-NG-008",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-008",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/7",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-scalar_real_complex_power-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "RCN-R1-BOUND-004",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-009",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/8",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-scalar_real_complex_power-REJECT",
+      "class": "TEACHING_EXAMPLE_ID",
+      "path": "tests/conformance/surface/rejected",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "EX-R51f3-NUM-POWER-NG-001",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-010",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/9",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CANON-float_alias_float64-POSITIVE",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/numeric-system-std-math.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/stable_names/Float",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-011",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/10",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-float_alias_float64-BOUNDARY",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/numeric-system-std-math.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/stable_names/Float",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-NA-float_alias_float64-REJECT",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/numeric-system-std-math.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/stable_names/Float",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-012",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/11",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CANON-uint_default_unsigned_integer_domain-POSITIVE",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/numeric-system-std-math.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/stable_names/UInt",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-013",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/12",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-uint_default_unsigned_integer_domain-BOUNDARY",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/numeric-system-std-math.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/stable_names/UInt",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-014",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/13",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-uint_default_unsigned_integer_domain-REJECT",
+      "class": "DIAGNOSTIC_REGISTRY_ID",
+      "path": "spec/diagnostics/catalog",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-015",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/14",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-fixed_operator_conformance_overloading-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "RCN-R1-BOUND-006",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-016",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/15",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-fixed_operator_conformance_overloading-REJECT",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "RCN-R1-MUT-006",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-017",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/16",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-linear_algebra_complex_inner_product_law-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/conformance/checker-predicates",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "PF-LinearAlgebraOperatorAdmitted-BOUNDARY",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-018",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/17",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-linear_algebra_complex_inner_product_law-REJECT",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/conformance/checker-predicates",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "PF-LinearAlgebraOperatorAdmitted-NEG-DOT-LENGTH",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-019",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/18",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-caret_power_operator_msp-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/conformance/checker-predicates",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "PF-CaretPowerAdmitted-BOUNDARY",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-020",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/19",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-caret_power_operator_msp-REJECT",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/conformance/checker-predicates",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "PF-CaretPowerAdmitted-NEG",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-021",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/20",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-caret_power_right_associative_math_law-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "RCN-R1-BOUND-004",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-NA-caret_power_right_associative_math_law-REJECT",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/value-operator-indexing-coherence.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/expression_operator_precedence_matrix",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-022",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/21",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CANON-closed_operator_symbols_open_named_extensions-POSITIVE",
+      "class": "TEACHING_EXAMPLE_ID",
+      "path": "tests/conformance/surface/positive",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "EX-R51FOC-P-001",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-023",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/22",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-closed_operator_symbols_open_named_extensions-BOUNDARY",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/value-operator-indexing-coherence.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/numeric_operator_matrix",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-024",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/23",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-closed_operator_symbols_open_named_extensions-REJECT",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/value-operator-indexing-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "VOI-R1-NEG-002",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-025",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/24",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CANON-operator_precedence_table_phase_a-POSITIVE",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/conformance/checker-predicates",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "PF-OperatorPrecedenceTablePhaseAAdmitted-POS",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-026",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/25",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CANON-operator_precedence_table_phase_a-BOUNDARY",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/fixtures/current/rational-complex-numeric-coherence-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "RCN-R1-BOUND-005",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "EVK-CASE-R54-NUM-027",
+      "class": "TRACE_ACCEPTANCE_CASE_ID",
+      "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_cases/26",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "EVK-CANON-operator_precedence_table_phase_a-REJECT",
+      "class": "FIXTURE_CASE_ID",
+      "path": "tests/conformance/checker-predicates",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "PF-OperatorPrecedenceTablePhaseAAdmitted-NEG",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    }
+  ],
+  "bindings": [
+    {
+      "feature_id": "numeric_literal_suffix",
+      "stage": "STATIC_SEMANTICS",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-numeric_literal_suffix-STATIC_SEMANTICS"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_operator_core",
+      "stage": "AST_FRONTEND",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-numeric_operator_core-AST_FRONTEND"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "rational_exact_numeric_value",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-rational_exact_numeric_value-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "complex_core_numeric_value",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-complex_core_numeric_value-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "scalar_real_complex_power",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-scalar_real_complex_power-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "float_alias_float64",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "NOT_APPLICABLE",
+      "evidence_keys": [
+        "EVK-float_alias_float64-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": {
+        "reason_code": "NA_DYNAMIC_ALIAS_NORMALIZES_NO_DISTINCT_RUNTIME_IDENTITY",
+        "authority_boundary": "MIR_RUNTIME_AUTHORITY",
+        "rationale": "Float normalizes to Float64 before lowering and owns no distinct runtime, layout, serialization, discriminant, or ABI identity.",
+        "justification_evidence_keys": [
+          "EVK-float_alias_float64-DYNAMIC_LOWERING"
+        ]
+      }
+    },
+    {
+      "feature_id": "uint_default_unsigned_integer_domain",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-uint_default_unsigned_integer_domain-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "fixed_operator_conformance_overloading",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-fixed_operator_conformance_overloading-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "linear_algebra_complex_inner_product_law",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-linear_algebra_complex_inner_product_law-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "closed_operator_symbols_open_named_extensions",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DELEGATED",
+      "evidence_keys": [
+        "EVK-closed_operator_symbols_open_named_extensions-DYNAMIC_LOWERING"
+      ],
+      "delegate_feature_id": "fixed_operator_conformance_overloading",
+      "not_applicable": null
+    },
+    {
+      "feature_id": "operator_precedence_table_phase_a",
+      "stage": "AST_FRONTEND",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-operator_precedence_table_phase_a-AST_FRONTEND"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_literal_suffix",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-001",
+        "EVK-CANON-numeric_literal_suffix-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_literal_suffix",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-002",
+        "EVK-CANON-numeric_literal_suffix-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_literal_lexical_contract",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-003",
+        "EVK-CANON-numeric_literal_lexical_contract-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_literal_lexical_contract",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-004",
+        "EVK-CANON-numeric_literal_lexical_contract-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_operator_core",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "POSITIVE",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-005",
+        "EVK-CANON-numeric_operator_core-POSITIVE"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_operator_core",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-006",
+        "EVK-CANON-numeric_operator_core-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "numeric_operator_core",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-007",
+        "EVK-CANON-numeric_operator_core-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "scalar_real_complex_power",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-008",
+        "EVK-CANON-scalar_real_complex_power-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "scalar_real_complex_power",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-009",
+        "EVK-CANON-scalar_real_complex_power-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "float_alias_float64",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "POSITIVE",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-010",
+        "EVK-CANON-float_alias_float64-POSITIVE"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "float_alias_float64",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-011",
+        "EVK-CANON-float_alias_float64-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "float_alias_float64",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "NOT_APPLICABLE",
+      "evidence_keys": [
+        "EVK-NA-float_alias_float64-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": {
+        "reason_code": "NA_TEST_NO_DISTINCT_REJECTION_CLASS",
+        "authority_boundary": "CONFORMANCE_AUTHORITY",
+        "rationale": "The closed alias owns no rejected source surface or diagnostic; distinct-identity drift is a validator mutation.",
+        "justification_evidence_keys": [
+          "EVK-NA-float_alias_float64-REJECT"
+        ]
+      }
+    },
+    {
+      "feature_id": "uint_default_unsigned_integer_domain",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "POSITIVE",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-012",
+        "EVK-CANON-uint_default_unsigned_integer_domain-POSITIVE"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "uint_default_unsigned_integer_domain",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-013",
+        "EVK-CANON-uint_default_unsigned_integer_domain-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "uint_default_unsigned_integer_domain",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-014",
+        "EVK-CANON-uint_default_unsigned_integer_domain-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "fixed_operator_conformance_overloading",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-015",
+        "EVK-CANON-fixed_operator_conformance_overloading-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "fixed_operator_conformance_overloading",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-016",
+        "EVK-CANON-fixed_operator_conformance_overloading-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "linear_algebra_complex_inner_product_law",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-017",
+        "EVK-CANON-linear_algebra_complex_inner_product_law-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "linear_algebra_complex_inner_product_law",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-018",
+        "EVK-CANON-linear_algebra_complex_inner_product_law-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "caret_power_operator_msp",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-019",
+        "EVK-CANON-caret_power_operator_msp-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "caret_power_operator_msp",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-020",
+        "EVK-CANON-caret_power_operator_msp-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "caret_power_right_associative_math_law",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-021",
+        "EVK-CANON-caret_power_right_associative_math_law-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "caret_power_right_associative_math_law",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "NOT_APPLICABLE",
+      "evidence_keys": [
+        "EVK-NA-caret_power_right_associative_math_law-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": {
+        "reason_code": "NA_TEST_NO_DISTINCT_REJECTION_CLASS",
+        "authority_boundary": "CONFORMANCE_AUTHORITY",
+        "rationale": "Wrong default association is a parser-table mutation; explicitly parenthesized left association remains valid source.",
+        "justification_evidence_keys": [
+          "EVK-NA-caret_power_right_associative_math_law-REJECT"
+        ]
+      }
+    },
+    {
+      "feature_id": "closed_operator_symbols_open_named_extensions",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "POSITIVE",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-022",
+        "EVK-CANON-closed_operator_symbols_open_named_extensions-POSITIVE"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "closed_operator_symbols_open_named_extensions",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-023",
+        "EVK-CANON-closed_operator_symbols_open_named_extensions-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "closed_operator_symbols_open_named_extensions",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-024",
+        "EVK-CANON-closed_operator_symbols_open_named_extensions-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "operator_precedence_table_phase_a",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "POSITIVE",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-025",
+        "EVK-CANON-operator_precedence_table_phase_a-POSITIVE"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "operator_precedence_table_phase_a",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-026",
+        "EVK-CANON-operator_precedence_table_phase_a-BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "operator_precedence_table_phase_a",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "EVK-CASE-R54-NUM-027",
+        "EVK-CANON-operator_precedence_table_phase_a-REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R54-NUM-001",
+      "feature_id": "numeric_literal_suffix",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "let max: UInt8 = 255u8",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "suffix": "u8",
+        "normalized_type": "UInt8",
+        "boundary": "maximum exact value"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-002",
+      "feature_id": "numeric_literal_suffix",
+      "outcome": "REJECT",
+      "source_or_subject": "let bad = 1u7",
+      "expected": "REJECT",
+      "diagnostic_or_null": "UNKNOWN_NUMERIC_LITERAL_SUFFIX",
+      "assertions": {
+        "whole_candidate_rejected": true,
+        "prefix_split": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-003",
+      "feature_id": "numeric_literal_lexical_contract",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "let mask = 0xFF_FF",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "radix": 16,
+        "digit_separator_positions": "VALID",
+        "token_count": 1
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-004",
+      "feature_id": "numeric_literal_lexical_contract",
+      "outcome": "REJECT",
+      "source_or_subject": "let bad = 0xG",
+      "expected": "REJECT",
+      "diagnostic_or_null": "INVALID_DIGIT_FOR_NUMERIC_RADIX",
+      "assertions": {
+        "whole_candidate_rejected": true,
+        "recovery_prefix_token": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-005",
+      "feature_id": "numeric_operator_core",
+      "outcome": "POSITIVE",
+      "source_or_subject": "let total = 2 + 3 * 4",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "parse": "BinaryAdd(2,BinaryMultiply(3,4))",
+        "runtime_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-006",
+      "feature_id": "numeric_operator_core",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "var quotient: Int = 7; quotient /= divisor()",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "place_evaluation_count": 1,
+        "rhs_evaluation_count": 1,
+        "commit_after_success_only": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-007",
+      "feature_id": "numeric_operator_core",
+      "outcome": "REJECT",
+      "source_or_subject": "let bad = signed32 + unsigned32",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMERIC_OPERATOR_CORE_REQUIRED",
+      "assertions": {
+        "implicit_signedness_conversion": false,
+        "operator_candidate_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-008",
+      "feature_id": "scalar_real_complex_power",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "2.0 ^ 3.0 ^ 2.0",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "association": "RIGHT",
+        "normalized_type": "Float64",
+        "runtime_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-009",
+      "feature_id": "scalar_real_complex_power",
+      "outcome": "REJECT",
+      "source_or_subject": "Complex<Float32> ^ Complex<Float64>",
+      "expected": "REJECT",
+      "diagnostic_or_null": "POWER_OPERAND_DOMAIN_NOT_ADMITTED",
+      "assertions": {
+        "automatic_mixed_rep_conversion": false,
+        "operator_candidate_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-010",
+      "feature_id": "float_alias_float64",
+      "outcome": "POSITIVE",
+      "source_or_subject": "let x: Float = 1.5",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "normalized_type": "Float64",
+        "new_type_id": false,
+        "new_runtime_identity": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-011",
+      "feature_id": "float_alias_float64",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "request type identity of Float and Float64",
+      "expected": "SAME_IDENTITY",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "normalized_identity_equal": true,
+        "new_precision": false,
+        "new_abi": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-012",
+      "feature_id": "uint_default_unsigned_integer_domain",
+      "outcome": "POSITIVE",
+      "source_or_subject": "let n: UInt = 42",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "normalized_type": "UInt",
+        "distinct_from_uint64": true,
+        "storage_identity_selected": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-013",
+      "feature_id": "uint_default_unsigned_integer_domain",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "let n: UInt = 18446744073709551615",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "value": "2^64-1",
+        "checked_arithmetic": true,
+        "abi_identity_selected": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-014",
+      "feature_id": "uint_default_unsigned_integer_domain",
+      "outcome": "REJECT",
+      "source_or_subject": "let n: UInt = -1",
+      "expected": "REJECT",
+      "diagnostic_or_null": "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN",
+      "assertions": {
+        "implicit_signedness_conversion": false,
+        "mir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-015",
+      "feature_id": "fixed_operator_conformance_overloading",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "var residue = <7/3>; residue %= maybeZeroRational()",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "place_evaluation_count": 1,
+        "rhs_evaluation_count": 1,
+        "commit_count_on_defect": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-016",
+      "feature_id": "fixed_operator_conformance_overloading",
+      "outcome": "REJECT",
+      "source_or_subject": "inject provider fallback over sealed Complex Add row",
+      "expected": "REJECT",
+      "diagnostic_or_null": "OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED",
+      "assertions": {
+        "runtime_lookup_count": 0,
+        "fallback_route_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-017",
+      "feature_id": "linear_algebra_complex_inner_product_law",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "complex inner product with a zero-length but shape-compatible vector pair",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "conjugate_left": true,
+        "result_identity": "ComplexScalar",
+        "length_check": "EQUAL"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-018",
+      "feature_id": "linear_algebra_complex_inner_product_law",
+      "outcome": "REJECT",
+      "source_or_subject": "complex inner product with unequal vector lengths",
+      "expected": "REJECT",
+      "diagnostic_or_null": "LINEAR_ALGEBRA_STAR_PRODUCT_SPLIT",
+      "assertions": {
+        "result_residue_count": 0,
+        "implicit_padding": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-019",
+      "feature_id": "caret_power_operator_msp",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "-2.0 ^ 2.0",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "parse": "PrefixNegate(BinaryPower(2.0,2.0))",
+        "association": "RIGHT"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-020",
+      "feature_id": "caret_power_operator_msp",
+      "outcome": "REJECT",
+      "source_or_subject": "2.0^3.0",
+      "expected": "REJECT",
+      "diagnostic_or_null": "CARET_INFIX_REQUIRES_SPACING",
+      "assertions": {
+        "recovery_power_node_count": 0,
+        "bitwise_xor_fallback": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-021",
+      "feature_id": "caret_power_right_associative_math_law",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "2.0 ^ 3.0 ^ 2.0",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "parse": "BinaryPower(2.0,BinaryPower(3.0,2.0))",
+        "left_associative_default": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-022",
+      "feature_id": "closed_operator_symbols_open_named_extensions",
+      "outcome": "POSITIVE",
+      "source_or_subject": "let total = left + right",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "glyph_set_count": 13,
+        "arbitrary_custom_operator_count": 0,
+        "named_extension_open": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-023",
+      "feature_id": "closed_operator_symbols_open_named_extensions",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "let combined = left.combine(right)",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "named_method_extension": true,
+        "new_operator_glyph_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-024",
+      "feature_id": "closed_operator_symbols_open_named_extensions",
+      "outcome": "REJECT",
+      "source_or_subject": "operator <+> precedence 130",
+      "expected": "REJECT",
+      "diagnostic_or_null": "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
+      "assertions": {
+        "arbitrary_custom_operator_count": 0,
+        "operator_table_delta_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-025",
+      "feature_id": "operator_precedence_table_phase_a",
+      "outcome": "POSITIVE",
+      "source_or_subject": "let result = 2 + 3 * 4 ^ 2",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "table": "PHASE_A",
+        "association": "CANONICAL",
+        "runtime_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-026",
+      "feature_id": "operator_precedence_table_phase_a",
+      "outcome": "BOUNDARY",
+      "source_or_subject": "-2.0 ^ 2.0",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "power_binding_power": 160,
+        "prefix_binding_power": 159,
+        "parse": "PrefixNegate(BinaryPower(...))"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R54-NUM-027",
+      "feature_id": "operator_precedence_table_phase_a",
+      "outcome": "REJECT",
+      "source_or_subject": "mutation removes BinaryPower from the closed Pratt table",
+      "expected": "REJECT",
+      "diagnostic_or_null": "OPERATOR_PRECEDENCE_TABLE_REQUIRED",
+      "assertions": {
+        "missing_table_row_rejected": true,
+        "parser_fallback": false
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "counts": {
+    "feature_count": 14,
+    "evidence_entry_count": 67,
+    "binding_count": 40,
+    "predecessor_blocked_cell_count": 40,
+    "bound_direct_transition_count": 36,
+    "bound_delegated_transition_count": 1,
+    "not_applicable_transition_count": 3,
+    "predecessor_total_blocked_cell_count": 1381,
+    "post_overlay_total_blocked_cell_count": 1341,
+    "acceptance_case_count": 27
+  },
+  "guards": {
+    "target_feature_count": 469,
+    "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+    "excluded_feature_count": 254,
+    "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+    "feature_statuses": "UNCHANGED",
+    "source_activation": "UNCHANGED",
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "fixed_glyph_operator_count": 13,
+    "arbitrary_custom_operator_count": 0,
+    "runtime_operator_lookup_count": 0,
+    "float_normalizes_to": "Float64",
+    "float_distinct_identity_count": 0,
+    "uint_mathematical_domain": "0..2^64-1",
+    "uint_alias_of_uint64": false,
+    "uint_storage_or_abi_identity_selected": false,
+    "evidence_level": "E2_STRUCTURED_STATIC",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NOT_RUN"
+  }
+}

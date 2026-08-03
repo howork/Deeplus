@@ -17,9 +17,9 @@
     "evidence": "R30 local contract fused in R47 after commit 50ad91fddc8111104fb2adc1f1ae74b21ddef3c2",
     "bytes_imported": true,
     "promotion_order": "R29 then R30 responsibility identities then R31 closure capture plan in R47",
-    "copy_rule": "exact CopyValue responsibility evidence",
-    "clone_rule": "exact selected Clone witness; no runtime relookup",
-    "deep_rule": "Preview Design and nonactivatable"
+    "copy_rule": "exact CopyValue ResponsibilityEvidenceId whose descriptor has INTRINSIC_PREDICATE_PROOF and null TraitWitnessId",
+    "clone_rule": "exact Clone ResponsibilityEvidenceId whose descriptor owns the selected TraitWitnessId and normalized error/effect/acquisition/cleanup residue; no runtime relookup",
+    "deep_rule": "Preview Design, rejected before typed HIR/MIR, and nonactivatable"
   },
   "surface": {
     "grammar_change_count": 0,
@@ -37,6 +37,15 @@
       "DEEP",
       "ONCE"
     ],
+    "typed_hir_mir_reference_modes": [
+      "BORROW",
+      "INOUT",
+      "MOVE",
+      "COPY",
+      "CLONE",
+      "ONCE"
+    ],
+    "deep_typed_hir_mir_residue_count": 0,
     "initializer_modes": [
       "INIT_LET",
       "INIT_VAR"
@@ -60,8 +69,8 @@
     "INOUT": "#scoped#mut, nonsuspending, nonescaping and exclusive",
     "MOVE": "one live owned source and one move reservation",
     "COPY": "one exact CopyValue ResponsibilityEvidenceId",
-    "CLONE": "one exact Clone TraitWitnessId and visible normalized error/effect rows",
-    "DEEP": "reject FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+    "CLONE": "one exact Clone ResponsibilityEvidenceId whose descriptor contains one exact TraitWitnessId and visible normalized error/effect/acquisition/cleanup residue",
+    "DEEP": "reject FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE before typed HIR/MIR; residue count zero",
     "ONCE": "one live owned source plus explicit callable #once",
     "INIT_LET": "evaluate one initializer expression in the enclosing scope",
     "INIT_VAR": "INIT_LET plus callable #mut environment receiver",
@@ -77,10 +86,10 @@
     "mode_preparation": {
       "BORROW": "begin exact shared loan",
       "INOUT": "begin exact exclusive loan",
-      "MOVE": "reserve move; consume source only at environment commit",
+      "MOVE": "reserve move only; defer source consumption and field staging to the infallible commit tail",
       "COPY": "materialize cleanup-free same-type value copy",
       "CLONE": "invoke selected witness through CHECKED/INVOKE and stage its result cleanup",
-      "ONCE": "reserve move; commit owner to a one-shot environment field",
+      "ONCE": "reserve move only; defer source consumption and one-shot field staging to the infallible commit tail",
       "INIT_LET": "evaluate once and stage one owned immutable field",
       "INIT_VAR": "evaluate once and stage one owned mutable field"
     },
@@ -90,10 +99,28 @@
       "move_reservation_cancelled": true,
       "loans_ended": true,
       "staged_owned_values_cleaned": true,
+      "source_owner_consumed_before_commit_tail_count": 0,
+      "place_move_before_all_fallible_preparations_complete_count": 0,
       "already_observed_external_effects_undone": false,
       "partial_environment_publication_count": 0
     },
-    "commit": "one BUILDER_COMMIT publishes the complete environment, then infallible CLOSURE_MAKE creates the callable value",
+    "infallible_commit_tail": {
+      "starts_after_all_fallible_preparations": true,
+      "reserved_modes": [
+        "MOVE",
+        "ONCE"
+      ],
+      "per_reserved_capture_in_source_order": [
+        "PLACE_MOVE",
+        "BUILDER_STAGE"
+      ],
+      "fallible_step_count": 0,
+      "then": [
+        "BUILDER_COMMIT",
+        "CLOSURE_MAKE"
+      ]
+    },
+    "commit": "after all fallible preparations, source-ordered reserved MOVE/ONCE fields execute infallible PLACE_MOVE then BUILDER_STAGE; one BUILDER_COMMIT publishes the complete environment, then infallible CLOSURE_MAKE creates the callable value",
     "termination_metric": "finite source-ordered capture list plus finite dependency predicates"
   },
   "lexical_separation": {
@@ -155,6 +182,9 @@
       "CHECKED",
       "LEAVE"
     ],
+    "place_move_phase": "INFALLIBLE_COMMIT_TAIL_AFTER_ALL_FALLIBLE_PREPARATIONS",
+    "place_move_order": "RESERVED_MOVE_OR_ONCE_CAPTURE_SOURCE_ORDER",
+    "deep_typed_hir_mir_residue_count": 0,
     "closure_make_is_infallible_after_commit": true,
     "backend_reselection_count": 0
   },
@@ -168,8 +198,9 @@
     "schema": "schemas/language/closure-capture-plan-input-r1.schema.json",
     "fixtures": "tests/fixtures/current/closure-capture-plan-r1.json",
     "validator": "tools/validators/validate_closure_capture_plan.py",
-    "check_count": 12,
-    "mutation_count": 11
+    "check_count": 24,
+    "fixture_count": 39,
+    "mutation_count": 14
   },
   "global_fences": {
     "semantic_p0": 0,

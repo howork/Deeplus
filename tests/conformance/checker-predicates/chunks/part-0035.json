@@ -1,0 +1,115 @@
+[
+  {
+    "fixture_id": "PF-ContextParameterRoleAdmitted-BOUNDARY",
+    "predicate_id": "ContextParameterRoleAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "boundary_case": true
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-ContextParameterRoleAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "minimum closed boundary of the declared decision procedure",
+    "rule_seed": "R51a1 ContextParameterRoleAdmitted boundary fixture; product checker NOT_RUN.",
+    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NumericLiteralAdmitted-NEG",
+    "predicate_id": "NumericLiteralAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "NUMERIC_LITERAL_OUT_OF_RANGE",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "StaticInt",
+      "normalized_type": null,
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "numeric_radix": 2,
+        "numeric_digits_valid": true,
+        "numeric_separators_valid": true,
+        "numeric_exponent_valid": true,
+        "numeric_suffix_kind_valid": true,
+        "numeric_target_range_valid": false,
+        "numeric_token_contains_sign": false,
+        "ast_prefix_operator": null
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": "integer",
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "violated_condition": "the lexer-validated binary literal has an exact target but its magnitude is outside that target range",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "single-fault checker-owned target-range fixture over a lexer-validated signless token; product checker NOT_RUN",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NumericLiteralAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

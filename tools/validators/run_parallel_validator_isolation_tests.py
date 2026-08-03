@@ -64,7 +64,80 @@ def tracked_snapshot() -> dict[str, str] | None:
     return snapshot
 
 
+def run_git_checked(root: Path, *arguments: str) -> bytes:
+    process = subprocess.run(
+        [
+            "git",
+            "-c",
+            f"safe.directory={root.as_posix()}",
+            "-C",
+            str(root),
+            *arguments,
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if process.returncode != 0:
+        detail = process.stderr.decode("utf-8", "replace").strip()
+        raise RuntimeError(
+            "PARALLEL_TEST_GIT_PROVISIONING_FAILED: "
+            f"arguments={arguments!r}; detail={detail or 'git command failed'}"
+        )
+    return process.stdout
+
+
 def copy_manifest_workspace(target: Path) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    clone = subprocess.run(
+        [
+            "git",
+            "clone",
+            "--no-local",
+            "--no-checkout",
+            "--quiet",
+            str(ROOT),
+            str(target),
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if clone.returncode != 0:
+        detail = clone.stderr.decode("utf-8", "replace").strip()
+        raise RuntimeError(
+            "PARALLEL_TEST_GIT_CLONE_FAILED: "
+            f"{detail or 'git clone failed'}"
+        )
+
+    source_head = run_git_checked(ROOT, "rev-parse", "HEAD").strip()
+    isolated_head = run_git_checked(target, "rev-parse", "HEAD").strip()
+    if isolated_head != source_head:
+        raise RuntimeError(
+            "PARALLEL_TEST_HEAD_MISMATCH: "
+            f"source={source_head.decode('ascii', 'replace')} "
+            f"isolated={isolated_head.decode('ascii', 'replace')}"
+        )
+    run_git_checked(target, "remote", "remove", "origin")
+
+    common_dir_text = run_git_checked(
+        target, "rev-parse", "--git-common-dir"
+    ).decode("utf-8", "strict").strip()
+    common_dir = Path(common_dir_text)
+    if not common_dir.is_absolute():
+        common_dir = target / common_dir
+    if not is_inside(common_dir, target):
+        raise RuntimeError(
+            "PARALLEL_TEST_GIT_COMMON_DIR_OUTSIDE_WORKSPACE: "
+            f"{common_dir.resolve().as_posix()}"
+        )
+    alternates = common_dir / "objects" / "info" / "alternates"
+    if alternates.exists():
+        raise RuntimeError(
+            "PARALLEL_TEST_GIT_ALTERNATES_FORBIDDEN: "
+            f"{alternates.resolve().as_posix()}"
+        )
+
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     relatives = [Path("release/source-tree-manifest.json")]
     relatives.extend(Path(row["path"]) for row in manifest["files"])
@@ -77,12 +150,14 @@ def copy_manifest_workspace(target: Path) -> None:
         destination = target / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
+    run_git_checked(target, "add", "--all")
+    run_git_checked(target, "diff", "--quiet", "--")
 
 
 def external_temp_directory(
     prefix: str,
 ) -> tempfile.TemporaryDirectory[str]:
-    """Allocate held peer state outside both the repository and clean export."""
+    """Allocate held peer state outside the repository and isolated workspace."""
     temporary = tempfile.TemporaryDirectory(prefix=prefix)
     temporary_path = Path(temporary.name).resolve()
     if is_inside(temporary_path, ROOT):

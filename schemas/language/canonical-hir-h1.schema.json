@@ -1192,6 +1192,8 @@
             "value_type_id",
             "logical_domain_id",
             "region_constraints",
+            "result_region_id_or_null",
+            "loan_id_or_null",
             "replace_responsibility_profile_id_or_null"
           ],
           "properties": {
@@ -1234,11 +1236,52 @@
                 "$ref": "#/$defs/HirRegionConstraint"
               }
             },
+            "result_region_id_or_null": {
+              "$ref": "#/$defs/NullableId"
+            },
+            "loan_id_or_null": {
+              "$ref": "#/$defs/NullableId"
+            },
             "replace_responsibility_profile_id_or_null": {
               "$ref": "#/$defs/NullableId"
             }
           },
           "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "access": {
+                    "enum": [
+                      "BORROW_SHARED",
+                      "BORROW_INOUT"
+                    ]
+                  }
+                },
+                "required": [
+                  "access"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "result_region_id_or_null": {
+                    "$ref": "#/$defs/Id"
+                  },
+                  "loan_id_or_null": {
+                    "$ref": "#/$defs/Id"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "result_region_id_or_null": {
+                    "type": "null"
+                  },
+                  "loan_id_or_null": {
+                    "type": "null"
+                  }
+                }
+              }
+            },
             {
               "if": {
                 "properties": {
@@ -2587,7 +2630,7 @@
         "captured_ref",
         "mode",
         "preparations",
-        "selected_evidence_id_or_null",
+        "responsibility_evidence_id_or_null",
         "responsibility_profile_id"
       ],
       "properties": {
@@ -2614,7 +2657,6 @@
             "MOVE",
             "COPY",
             "CLONE",
-            "DEEP",
             "ONCE"
           ]
         },
@@ -2624,11 +2666,15 @@
             "$ref": "#/$defs/CapturePreparation"
           }
         },
-        "selected_evidence_id_or_null": {
-          "$ref": "#/$defs/NullableId"
+        "responsibility_evidence_id_or_null": {
+          "$ref": "#/$defs/NullableId",
+          "description": "Exact ResponsibilityEvidenceId for COPY or CLONE. The referenced module descriptor owns the canonical rule, evidence kind, and any selected Clone witness/error/effect/acquisition/cleanup residue. This value never reuses ResponsibilityProfileId.",
+          "x-deeplus-identity-domain": "RESPONSIBILITY_EVIDENCE_ID_OR_NULL"
         },
         "responsibility_profile_id": {
-          "$ref": "#/$defs/Id"
+          "$ref": "#/$defs/Id",
+          "description": "Callable responsibility profile identity, disjoint from ResponsibilityEvidenceId.",
+          "x-deeplus-identity-domain": "RESPONSIBILITY_PROFILE_ID"
         }
       },
       "allOf": [
@@ -2637,8 +2683,8 @@
             "properties": {
               "mode": {
                 "enum": [
-                  "CLONE",
-                  "DEEP"
+                  "COPY",
+                  "CLONE"
                 ]
               }
             },
@@ -2648,14 +2694,14 @@
           },
           "then": {
             "properties": {
-              "selected_evidence_id_or_null": {
+              "responsibility_evidence_id_or_null": {
                 "$ref": "#/$defs/Id"
               }
             }
           },
           "else": {
             "properties": {
-              "selected_evidence_id_or_null": {
+              "responsibility_evidence_id_or_null": {
                 "type": "null"
               }
             }
@@ -4241,6 +4287,93 @@
         }
       }
     },
+    "TraitAssociatedStaticSelection": {
+      "description": "Non-structural, statically closed identity residue for one <T as Trait>::item selection. It adds no HIR node identity and never authorizes runtime reconstruction or search.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selection_id",
+        "item_kind",
+        "trait_id",
+        "requirement_id",
+        "conformance_id",
+        "trait_witness_id",
+        "implementation_id",
+        "substitution_id",
+        "responsibility_id",
+        "representation_kind",
+        "direct_static_symbol_id_or_null",
+        "callable_implementation_id_or_null"
+      ],
+      "properties": {
+        "selection_id": { "$ref": "#/$defs/Id" },
+        "item_kind": {
+          "enum": [
+            "ASSOCIATED_TYPE",
+            "ASSOCIATED_VALUE",
+            "ASSOCIATED_FUNCTION"
+          ]
+        },
+        "trait_id": { "$ref": "#/$defs/Id" },
+        "requirement_id": { "$ref": "#/$defs/Id" },
+        "conformance_id": { "$ref": "#/$defs/Id" },
+        "trait_witness_id": { "$ref": "#/$defs/Id" },
+        "implementation_id": { "$ref": "#/$defs/Id" },
+        "substitution_id": { "$ref": "#/$defs/Id" },
+        "responsibility_id": { "$ref": "#/$defs/Id" },
+        "representation_kind": {
+          "enum": [
+            "NO_RUNTIME_EMISSION",
+            "STATIC_REF",
+            "TRAIT_WITNESS_CALL"
+          ]
+        },
+        "direct_static_symbol_id_or_null": {
+          "anyOf": [
+            { "$ref": "#/$defs/Id" },
+            { "type": "null" }
+          ]
+        },
+        "callable_implementation_id_or_null": {
+          "anyOf": [
+            { "$ref": "#/$defs/Id" },
+            { "type": "null" }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_TYPE" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "const": "NO_RUNTIME_EMISSION" },
+              "direct_static_symbol_id_or_null": { "type": "null" },
+              "callable_implementation_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_VALUE" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "const": "STATIC_REF" },
+              "direct_static_symbol_id_or_null": { "$ref": "#/$defs/Id" },
+              "callable_implementation_id_or_null": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "item_kind": { "const": "ASSOCIATED_FUNCTION" } }, "required": ["item_kind"] },
+          "then": {
+            "properties": {
+              "representation_kind": { "enum": ["STATIC_REF", "TRAIT_WITNESS_CALL"] },
+              "direct_static_symbol_id_or_null": { "$ref": "#/$defs/Id" },
+              "callable_implementation_id_or_null": { "$ref": "#/$defs/Id" }
+            }
+          }
+        }
+      ]
+    },
     "ResolvedRef": {
       "oneOf": [
         {
@@ -4272,8 +4405,31 @@
             },
             "decl_id": {
               "$ref": "#/$defs/Id"
+            },
+            "trait_associated_static_selection": {
+              "$ref": "#/$defs/TraitAssociatedStaticSelection"
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": { "required": ["trait_associated_static_selection"] },
+              "then": {
+                "properties": {
+                  "trait_associated_static_selection": {
+                    "allOf": [
+                      { "$ref": "#/$defs/TraitAssociatedStaticSelection" },
+                      {
+                        "properties": {
+                          "item_kind": { "enum": ["ASSOCIATED_VALUE", "ASSOCIATED_FUNCTION"] },
+                          "representation_kind": { "const": "STATIC_REF" }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -4602,6 +4758,9 @@
         "outcome_responsibility_profile_id": {
           "$ref": "#/$defs/Id"
         },
+        "trait_associated_static_selection": {
+          "$ref": "#/$defs/TraitAssociatedStaticSelection"
+        },
         "actor_id": {
           "$ref": "#/$defs/Id"
         },
@@ -4666,6 +4825,25 @@
         }
       },
       "allOf": [
+        {
+          "if": { "required": ["trait_associated_static_selection"] },
+          "then": {
+            "properties": {
+              "mode_target_pair": { "const": "ORDINARY::TRAIT_WITNESS" },
+              "trait_associated_static_selection": {
+                "allOf": [
+                  { "$ref": "#/$defs/TraitAssociatedStaticSelection" },
+                  {
+                    "properties": {
+                      "item_kind": { "const": "ASSOCIATED_FUNCTION" },
+                      "representation_kind": { "const": "TRAIT_WITNESS_CALL" }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
         {
           "if": {
             "properties": {
@@ -6165,6 +6343,47 @@
         }
       ]
     },
+    "HirRegionDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "region_id",
+        "kind",
+        "isolation_domain_id",
+        "parent_region_id_or_null",
+        "entry_node_id",
+        "end_frontier_node_ids"
+      ],
+      "properties": {
+        "region_id": {"$ref": "#/$defs/Id"},
+        "kind": {"enum": ["LEXICAL", "INVOCATION", "PROCESS_STATIC_IMMUTABLE"]},
+        "isolation_domain_id": {"$ref": "#/$defs/Id"},
+        "parent_region_id_or_null": {"$ref": "#/$defs/NullableId"},
+        "entry_node_id": {"$ref": "#/$defs/Id"},
+        "end_frontier_node_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Id"}
+        }
+      }
+    },
+    "HirPlaceRegionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "place_id",
+        "owner_id_or_null",
+        "storage_region_id",
+        "cleanup_plan_id_or_null"
+      ],
+      "properties": {
+        "place_id": {"$ref": "#/$defs/Id"},
+        "owner_id_or_null": {"$ref": "#/$defs/NullableId"},
+        "storage_region_id": {"$ref": "#/$defs/Id"},
+        "cleanup_plan_id_or_null": {"$ref": "#/$defs/NullableId"}
+      }
+    },
     "HirBodyBase": {
       "type": "object",
       "additionalProperties": false,
@@ -6177,7 +6396,9 @@
         "statements",
         "expressions",
         "generic_payloads",
-        "structural_plans"
+        "structural_plans",
+        "region_table",
+        "place_region_bindings"
       ],
       "properties": {
         "structural_identity_id": {
@@ -6219,6 +6440,17 @@
           "items": {
             "$ref": "#/$defs/StructuralPlan"
           }
+        },
+        "region_table": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/HirRegionDef"}
+        },
+        "place_region_bindings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/HirPlaceRegionBinding"}
         }
       }
     },
@@ -6261,7 +6493,7 @@
         "normalized_type_id",
         "base_normalized_type_id",
         "type_ownership_qualifier",
-        "region_id_or_null",
+        "region_profile_id_or_null",
         "variance",
         "public_residue"
       ],
@@ -6281,7 +6513,7 @@
             "INOUT"
           ]
         },
-        "region_id_or_null": {
+        "region_profile_id_or_null": {
           "$ref": "#/$defs/NullableId"
         },
         "variance": {
@@ -6314,20 +6546,38 @@
           },
           "then": {
             "properties": {
-              "region_id_or_null": {
+              "region_profile_id_or_null": {
                 "$ref": "#/$defs/Id"
               }
             }
           },
           "else": {
             "properties": {
-              "region_id_or_null": {
+              "region_profile_id_or_null": {
                 "type": "null"
               }
             }
           }
         }
       ]
+    },
+    "ManagedTraceDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normalized_type_id",
+        "trace_kind",
+        "ordered_managed_projection_ids"
+      ],
+      "properties": {
+        "normalized_type_id": {"$ref": "#/$defs/Id"},
+        "trace_kind": {"enum": ["NONE", "HANDLE", "AGGREGATE"]},
+        "ordered_managed_projection_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/Id"},
+          "uniqueItems": true
+        }
+      }
     },
     "CanonicalModuleBase": {
       "type": "object",
@@ -6340,6 +6590,7 @@
         "source_origins",
         "normalized_type_ids",
         "normalized_type_descriptors",
+        "managed_trace_descriptors",
         "responsibility_profile_ids",
         "responsibility_evidence_descriptors",
         "item_headers",
@@ -6384,6 +6635,11 @@
           "items": {
             "$ref": "#/$defs/NormalizedTypeDescriptor"
           }
+        },
+        "managed_trace_descriptors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/ManagedTraceDescriptor"},
+          "x-deeplus-unique-key": "normalized_type_id"
         },
         "responsibility_profile_ids": {
           "type": "array",
@@ -6652,8 +6908,9 @@
       "Require payload owner_expr_id, owner_expr_kind, payload_contract_id, slot order, slot roles, reference classes, and cardinalities to exactly match the integrated identity catalog payload contract.",
       "Require every structural plan to match exactly one of the thirteen StructuralPlan discriminators and require every optional value to use its required *_or_null field.",
       "Require each ClosurePlan capture_plan_id and CaptureFieldId to be body-local and unique; require CaptureFieldId and source_ordinal projections to be one-to-one, zero-based, contiguous, and in exact source order.",
-      "Require every closure capture to match exactly one tagged ReferenceCapture or InitializerCapture; require every capture normalized_type_id to equal its closed result type and every initializer_binding_kind to be exactly LET or VAR.",
-      "Require closure capture evaluation left-to-right exactly once, reverse-acquisition rollback on every precommit failure, environment commit before an infallible closure make, and no partially initialized environment or closure publication.",
+      "Require every closure capture to match exactly one tagged ReferenceCapture or InitializerCapture; require every capture normalized_type_id to equal its closed result type and every initializer_binding_kind to be exactly LET or VAR; reject DEEP before typed HIR in every source profile.",
+      "For COPY and CLONE ReferenceCapture rows require one nonnull responsibility_evidence_id_or_null resolving to exactly one module ResponsibilityEvidenceDescriptor with the same normalized TypeId and the canonical CopyValue or Clone rule respectively; require all other admitted reference modes to carry null, preserve the Clone descriptor's exact TraitWitnessId, ErrorSetId, EffectRowId, ResultAcquisitionPlanId, and CleanupPlanId, and never substitute callable ResponsibilityProfileId for ResponsibilityEvidenceId.",
+      "Require closure capture evaluation left-to-right exactly once; MOVE and ONCE prepare only an exact move reservation while any fallible work remains; every precommit failure rolls back the prepared prefix in reverse acquisition order without consuming the source; only after all fallible preparation succeeds may a straight-line nonsuspending interval perform source-ordered PLACE_MOVE and BUILDER_STAGE, BUILDER_COMMIT, and infallible CLOSURE_MAKE with no failure edge or partial environment or closure publication.",
       "Require capture-list state, residence, closed-ancestor-frame assertion, and sorted unique lexical dependencies to satisfy their cross-field constraints; CapturePlanId, CaptureFieldId, eval, place, region, loan, reservation, cleanup, and value identities remain non-API value-level identities.",
       "Require each named plan-reference slot to resolve to exactly one StructuralPlan whose structural_identity_id is the exact plan class required by that slot.",
       "For each CleanupRegistration, require source_registration_ordinal to be contiguous in source order and equal deferred_call_plan.source_registration_ordinal; require cleanup scope identity equality, exact once-only dynamic operand ordinals, zero-evaluation static evidence, body-semantic-digest-bound defaults, and three-phase CLEANUP_REGISTER then CLEANUP_PIN* then CLEANUP_SEAL publication.",
@@ -6663,6 +6920,8 @@
       "Resolve PatternAttempt.lowering_id and pattern_kind_id to the same admitted pattern registry row.",
       "Require each lowering-row hir_identity_ids entry to resolve in the exact 129-row catalog and to equal the identities implied by its dispatch key.",
       "Require every ResponsibilityEvidenceDescriptor to preserve exact ResponsibilityRuleId and ResponsibilityEvidenceId domains, normalized TypeId, evidence kind, registry revision, derivation digest and all nullable behavioral/value-level fields; this non-structural table adds no HIR identity-catalog row.",
+      "Require every TraitAssociatedStaticSelection to preserve one SelectionId and exact TraitId, RequirementId, ConformanceId, TraitWitnessId, ImplementationId, SubstitutionId, and ResponsibilityId; require associated types to emit no runtime operation, associated values and bare function references to use DIRECT_DECL plus STATIC_REF, and invoked associated functions to use ORDINARY::TRAIT_WITNESS without runtime reconstruction or search.",
+      "Require any repeated TraitAssociatedStaticSelection with the same selection_id in ResolvedRef, CallPlan, or MIR static identity residue to be byte-for-byte equal after canonical serialization; associated-type selections never occur as ResolvedRefExpr or ReferenceCapture values.",
       "Reject any reuse of callable ResponsibilityProfileId as ResponsibilityRuleId or ResponsibilityEvidenceId and forbid runtime or backend responsibility-evidence relookup.",
       "Require responsibility_evidence_descriptors to be strictly ordered by responsibility_evidence_id, unique by that ID, and fully reachable from the typed-HIR semantic facts that selected them.",
       "Allow only LOWER or NO_RUNTIME_EMISSION lowering rows. Capability insufficiency is not represented as a lowering row; preserve the verified HIR semantic digest exactly and do not create ExecutableHirH1.",

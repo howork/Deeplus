@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/method-extension-resolution-dynamic-trace-closure-fixtures-r1.schema.json",
+  "title": "Deeplus R71 method/extension resolution fixture oracles",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "contract", "execution_state", "acceptance_oracles", "mutation_oracles"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/method-extension-resolution-dynamic-trace-closure-fixtures-r1.schema.json"},
+    "schema": {"const": "deeplus.method-extension-resolution-dynamic-trace-closure-fixtures/r1"},
+    "revision": {"const": "r71-local-method-extension-resolution-dynamic-trace-closure-r1"},
+    "contract": {"const": "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json"},
+    "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"},
+    "acceptance_oracles": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"type": "object", "additionalProperties": false, "required": ["case_id", "class", "expected"], "properties": {"case_id": {"pattern": "^R71-MER-ACC-0(0[1-9]|10)$"}, "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]}, "expected": {"type": "string", "minLength": 1}}}},
+    "mutation_oracles": {"type": "array", "minItems": 14, "maxItems": 14, "items": {"type": "object", "additionalProperties": false, "required": ["mutation_id", "expected_gate", "expected"], "properties": {"mutation_id": {"pattern": "^M(0[1-9]|1[0-4])$"}, "expected_gate": {"const": "G06"}, "expected": {"const": "MUTANT_KILLED"}}}}
+  }
+}

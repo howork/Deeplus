@@ -258,13 +258,28 @@
     "fixture_id": "PF-ColumnVectorSemicolonGateAdmitted-NEG",
     "predicate_id": "ColumnVectorSemicolonGateAdmitted",
     "expected": "rejected",
-    "expected_primary_diagnostic": "SOURCE_TRUTH_PROJECTION_CONFLICT",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "expected_primary_diagnostic": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "ColumnVectorSemicolonGateAdmitted"
+    "descriptor": {
+      "source_kind": "ShapeInferredArrayLiteral",
+      "normalized_type": null,
+      "source_role": "numeric_array_shape_inferred_value_literal",
+      "call_shape": {
+        "surface": "#[]",
+        "attached_top_level_separators": [],
+        "element_count": 0,
+        "expected_shape": null,
+        "expected_orientation": null
+      },
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": []
     },
-    "fixture_kind": "mutation_recipe",
+    "violated_condition": "the shape-inferred value literal contains zero elements, so no rank-1 NumericArray can be admitted",
+    "rule_seed": "empty rejection is the first gate before separator, shape, orientation, or element admission; product checker NOT_RUN",
+    "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -291,48 +306,46 @@
     "predicate_id": "ColumnVectorSemicolonGateAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
+      "source_kind": "ShapeInferredArrayLiteral",
+      "normalized_type": "NumericArray<Int, rank 1, shape [3], orientation ROW>",
+      "source_role": "numeric_array_shape_inferred_value_literal",
+      "call_shape": {
+        "surface": "#[1, 2, 3]",
+        "attached_top_level_separators": [
+          ",",
+          ","
+        ],
+        "element_count": 3,
+        "expected_shape": [
+          3
+        ],
+        "expected_orientation": "ROW",
+        "mixed_separator_count": 0,
+        "runtime_inference_count": 0
       },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "shape": [
+        3
+      ],
+      "rank": 1,
+      "orientation": "ROW",
+      "element_types": [
+        "Int",
+        "Int",
+        "Int"
+      ],
+      "conditional_responsibility": {
+        "union_synthesis_count": 0,
+        "widening_count": 0,
+        "broadcast_count": 0,
+        "list_rewrite_count": 0,
+        "nested_rank_inference_count": 0,
+        "result_directed_orientation_count": 0,
+        "runtime_inference_count": 0
+      }
     },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "rule_seed": "the first attached comma selects the ROW_COMMA form and ROW orientation; the literal seals rank 1 and shape [3] after exact Int element admission; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -360,12 +373,34 @@
     "predicate_id": "ColumnVectorSemicolonOrientationAdmitted",
     "expected": "rejected",
     "expected_primary_diagnostic": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "ColumnVectorSemicolonOrientationAdmitted"
+    "descriptor": {
+      "source_kind": "ShapeInferredArrayLiteral",
+      "normalized_type": null,
+      "source_role": "numeric_array_shape_inferred_value_literal",
+      "call_shape": {
+        "surface": "#[1, 2; 3]",
+        "attached_top_level_separators": [
+          ",",
+          ";"
+        ],
+        "element_count": 3,
+        "selected_form_from_first_separator": "ROW_COMMA",
+        "mixed_separator_count": 1
+      },
+      "shape": null,
+      "rank": null,
+      "orientation": "ROW",
+      "element_types": [
+        "Int",
+        "Int",
+        "Int"
+      ]
     },
-    "fixture_kind": "mutation_recipe",
+    "violated_condition": "the attached top-level semicolon conflicts with the ROW_COMMA form and ROW orientation selected by the first attached comma",
+    "rule_seed": "mixed attached top-level separator kinds reject without nested-rank or result-directed reinterpretation; product checker NOT_RUN",
+    "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -392,48 +427,34 @@
     "predicate_id": "ColumnVectorSemicolonOrientationAdmitted",
     "expected": "admitted",
     "descriptor": {
-      "source_kind": "Type",
-      "normalized_type": "FixtureType",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": null,
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
+      "source_kind": "ShapeInferredColumnVectorLiteral",
+      "normalized_type": "NumericArray<Int, rank 1, shape [3], orientation COLUMN>",
+      "source_role": "numeric_array_shape_inferred_column_vector_semicolon_msp",
+      "call_shape": {
+        "surface": "#[1; 2; 3]",
+        "attached_top_level_separators": [
+          ";",
+          ";"
+        ],
+        "element_count": 3,
+        "selected_form_from_first_separator": "COLUMN_SEMICOLON",
+        "mixed_separator_count": 0,
+        "exact_rank2_rewrite_count": 0
       },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
+      "shape": [
+        3
+      ],
+      "rank": 1,
+      "orientation": "COLUMN",
+      "element_types": [
+        "Int",
+        "Int",
+        "Int"
+      ]
     },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "rule_seed": "the first attached semicolon selects the COLUMN_SEMICOLON form and COLUMN orientation while the literal remains rank 1 with shape [3]; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -1827,39 +1848,6 @@
         "isolation": "local"
       }
     },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-ContextParameterRoleAdmitted-BOUNDARY",
-    "predicate_id": "ContextParameterRoleAdmitted",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-ContextParameterRoleAdmitted-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 ContextParameterRoleAdmitted boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }

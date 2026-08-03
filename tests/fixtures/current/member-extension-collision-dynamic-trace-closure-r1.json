@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/language/member-extension-collision-dynamic-trace-closure-fixtures-r1.schema.json",
+  "schema": "deeplus.member-extension-collision-dynamic-trace-closure-fixtures/r1",
+  "revision": "r72-local-member-extension-collision-dynamic-trace-closure-r1",
+  "contract": "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json",
+  "execution_state": "DESIGN_STATIC_NOT_RUN",
+  "acceptance_oracles": [
+    {"case_id": "R72-MECD-ACC-001", "class": "POSITIVE", "expected": "ADMIT_COLLISION_PREDICATE_WINNER_DEFERRED"},
+    {"case_id": "R72-MECD-ACC-002", "class": "POSITIVE", "expected": "ADMIT_COLLISION_PREDICATE_WINNER_DEFERRED"},
+    {"case_id": "R72-MECD-ACC-003", "class": "BOUNDARY", "expected": "EXACT_DOMAIN_RESTRICTION_BYPASSES_ONLY_CROSS_DOMAIN_COLLISION"},
+    {"case_id": "R72-MECD-ACC-004", "class": "BOUNDARY", "expected": "NO_ORDER_WINNER_OR_SEMANTIC_DRIFT"},
+    {"case_id": "R72-MECD-ACC-005", "class": "BOUNDARY", "expected": "EXACT_COLLISION_PRIMARY_WINS"},
+    {"case_id": "R72-MECD-ACC-006", "class": "REJECT", "expected": "REJECT_SELECTED_COUNT_ZERO_BEFORE_HIR"},
+    {"case_id": "R72-MECD-ACC-007", "class": "REJECT", "expected": "CROSS_DOMAIN_COLLISION_PRECEDES_WITHIN_DOMAIN_RANKING"},
+    {"case_id": "R72-MECD-ACC-008", "class": "REJECT", "expected": "RECOVERY_HIR_AND_RUNTIME_FALLBACK_ZERO"},
+    {"case_id": "R72-MECD-ACC-009", "class": "REJECT", "expected": "NO_DYNAMIC_OR_BACKEND_RESIDUE"}
+  ],
+  "mutation_oracles": [
+    {"mutation_id": "M01", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M02", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M03", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M04", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M05", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M06", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M07", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M08", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M09", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M10", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M11", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M12", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M13", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M14", "expected_gate": "G06", "expected": "MUTANT_KILLED"}
+  ]
+}

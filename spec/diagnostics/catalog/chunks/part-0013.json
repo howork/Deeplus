@@ -465,7 +465,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "pattern_match_ownership_split"
+      "owned_downcast_result"
     ],
     "fixit_hint": "use downcast<>() with matched/unmatched owner result",
     "fixit_kind": "deterministic_rewrite",
@@ -542,24 +542,24 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
       "pattern_match_ownership_split"
     ],
-    "fixit_hint": "use match move subject or bind by borrow",
-    "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use match move subject or bind by borrow",
+    "fixit_hint": "use the grammar-rooted `move PatternPrimary` only with an owned consuming subject; otherwise bind the payload by borrow",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "do not synthesize ownership, cloning, or an unparsed match-move surface",
     "message": "Borrowed match arm cannot move a payload out of the borrowed subject.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "notes": "Current checker diagnostic contract. The hint names the existing MovePattern grammar and does not invent a match-subject modifier. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / TYPE_SYSTEM",

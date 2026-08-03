@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/member-visibility-evidence-r1.schema.json",
+  "title": "Deeplus R58 member-visibility trace evidence overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "candidate_status", "feature_ids", "evidence_entries", "bindings", "acceptance_cases", "counts", "guards"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/member-visibility-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.member-visibility-evidence/r1"},
+    "revision": {"const": "r58-local-member-visibility-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "6a0eb950fb46fc061c260445bb0d25dc766117ea"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["member_visibility_hierarchy_protected", "member_visibility_sigil_surface_phase_a", "member_visibility_sigils_only"]},
+    "evidence_entries": {"type": "array", "minItems": 13, "maxItems": 13, "items": {"$ref": "#/$defs/evidenceEntry"}},
+    "bindings": {"type": "array", "minItems": 13, "maxItems": 13, "items": {"$ref": "#/$defs/binding"}},
+    "acceptance_cases": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"$ref": "#/$defs/traceCase"}},
+    "counts": {"type": "object"},
+    "guards": {"type": "object"}
+  },
+  "$defs": {
+    "evidenceEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_key", "class", "path", "locator_kind", "locator", "stage_role"],
+      "properties": {
+        "evidence_key": {"type": "string", "pattern": "^R58:"},
+        "class": {"enum": ["CONTRACT_RULE_ID", "ACCEPTANCE_CASE_SET"]},
+        "path": {"const": "spec/contracts/member-visibility-trace-closure-r1.json"},
+        "locator_kind": {"enum": ["REGISTRY_ID", "JSON_POINTER"]},
+        "locator": {"type": "string", "minLength": 1},
+        "stage_role": {"type": "string", "minLength": 1}
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_id", "stage", "outcome", "predecessor_disposition", "disposition", "evidence_keys", "delegate_feature_id", "not_applicable"],
+      "properties": {
+        "feature_id": {"enum": ["member_visibility_hierarchy_protected", "member_visibility_sigil_surface_phase_a", "member_visibility_sigils_only"]},
+        "stage": {"enum": ["STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "CONFORMANCE_TESTS"]},
+        "outcome": {"type": ["string", "null"]},
+        "predecessor_disposition": {"enum": ["APPLICABLE_BLOCKED_BY_GAP", "NOT_APPLICABLE"]},
+        "disposition": {"enum": ["BOUND_DIRECT", "BOUND_DELEGATED", "NOT_APPLICABLE"]},
+        "evidence_keys": {"type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "delegate_feature_id": {"type": ["string", "null"]},
+        "not_applicable": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/notApplicable"}]}
+      }
+    },
+    "notApplicable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason_code", "authority_boundary", "rationale", "justification_evidence_keys"],
+      "properties": {
+        "reason_code": {"enum": ["NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR", "NA_STATIC_LEXICAL_OR_SYNTACTIC_ONLY"]},
+        "authority_boundary": {"enum": ["MIR_RUNTIME_AUTHORITY", "TYPE_CHECKER_AUTHORITY"]},
+        "rationale": {"type": "string", "minLength": 1},
+        "justification_evidence_keys": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "traceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "feature_id", "outcome", "contract_pointer", "acceptance_case_ids", "disposition", "delegate_feature_id", "execution_state"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^R58-TRACE-00[1-9]$"},
+        "feature_id": {"type": "string"},
+        "outcome": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "contract_pointer": {"type": "string", "pattern": "^/acceptance_bindings/"},
+        "acceptance_case_ids": {"type": "array", "minItems": 1, "uniqueItems": true},
+        "disposition": {"enum": ["BOUND_DIRECT", "BOUND_DELEGATED"]},
+        "delegate_feature_id": {"type": ["string", "null"]},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

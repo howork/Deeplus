@@ -2065,3 +2065,34 @@ rows and 111 at the explicit-Preview maximum. Deeplus MIR R1 has 29 operations,
 capabilities. These design-machine counts are not production or target
 execution evidence. `ProposedMirX1` remains a noncanonical compatibility
 target, and all 15 product lanes remain `NOT_RUN`.
+
+## 소유권 tooling sidecar와 backend 위치
+
+소유권 tooling projection은 HIR/MIR을 바꾸지 않는 sidecar다. 각 row는
+정확한 semantic identity와 program point를 가리키며 place, owner, loan,
+cleanup token 상태를 원본 ownership state와 손실 없이 대응시킨다.
+`MaybeMoved`에서는 특정 predecessor를 선택하지 않고 `JoinConflictId`와
+관련 predecessor 전체를 보존한다. `Suspended`나 `Ended` loan은 화면에
+표시할 수 있지만 접근 권한을 부여하지 않는다. `Consumed` cleanup token은
+다시 `Available`로 표시될 수 없다.
+
+paused runtime row는 `RuntimeInstanceId`, `ExecutionId`, activation frame,
+`pause_epoch`와 정확한 runtime/debug receipt에 결속된다. 이 receipt가 없으면
+row와 backend location sidecar는 사용할 수 없다. xVM slot, CLIF value,
+register, stack slot과 machine address는 pause 동안만 유효하며 semantic
+identity, 동등성 근거, module/API residue 또는 projection digest에 포함되지
+않고 resume과 함께 만료된다.
+
+현행 main은 managed-reference profile과 continuation interface의 exact
+digest를 정본으로 결속한다. 따라서 `RootId`와 `ContinuationReceiptId`의
+패널 스키마는 이 digest에 결속되지만, runtime/debug 실행 영수증이 없는
+동안 실제 row는 `UNAVAILABLE_RUNTIME_NOT_RUN`으로 비워 둔다. 정적 설계
+결속만으로 runtime identity나 관측값을 합성하지 않는다.
+
+actor 전송 projection도 commit receipt만 읽는다. 거부되었거나 commit 전인
+send에서는 sender가 owner를 유지하며, `enqueue_committed`에서만 receiver
+owner 또는 shared evidence와 channel-local sequence가 생긴다. 도구는 dual
+owner나 cross-channel/global order를 합성하지 않는다.
+
+이 절은 design/static obligation만 닫는다. runtime과 debugger 실행 및 모든
+product lane은 `NOT_RUN`이다.

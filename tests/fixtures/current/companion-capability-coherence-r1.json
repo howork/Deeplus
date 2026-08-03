@@ -441,19 +441,19 @@
         "CCC-R007"
       ],
       "facet": "LOOKUP",
-      "source_or_scenario": "T::default is visible as a nominal member, two Trait associated values, and one named extension item",
+      "source_or_scenario": "explicit <T as Factory>::default with exactly two visible normalized T conforms Factory candidates",
       "expected_design": "REJECT",
-      "diagnostic_family_or_null": "TRAIT_ASSOCIATED_STATIC_AMBIGUOUS",
+      "diagnostic_family_or_null": "TRAIT_AMBIGUOUS_IMPORTED_WITNESS",
       "assertions": [
-        "candidate domains are not merged into one ranking list",
-        "source, import, or use order cannot select a winner",
-        "the author must select a nominal, named-extension, or explicit Trait-qualified surface"
+        "explicit qualification fixes TraitId before conformance witness resolution",
+        "WitnessResolution rejects the two visible normalized T conforms Factory candidates before associated-item lookup",
+        "no requirement, implementation, substitution, responsibility, runtime lookup, fallback, or activation is selected"
       ],
       "oracle": {
-        "lookup_domain": null,
+        "lookup_domain": "TRAIT_QUALIFIED_ASSOCIATED_STATIC",
         "lookup_domain_count": 4,
         "associated_item_kind": null,
-        "selected_trait_id_count": 0,
+        "selected_trait_id_count": 1,
         "selected_requirement_id_count": 0,
         "selected_conformance_id_count": 0,
         "selected_trait_witness_id_count": 0,
@@ -1049,7 +1049,7 @@
       "facet": "LOOKUP",
       "source_or_scenario": "mutant merges nominal, named-extension, Trait-associated, and runtime-value candidates into one lookup list",
       "expected_design": "MUTANT_KILLED",
-      "diagnostic_family_or_null": "TRAIT_ASSOCIATED_STATIC_AMBIGUOUS",
+      "diagnostic_family_or_null": null,
       "assertions": [
         "the canonical model retains exactly four disjoint domains",
         "no cross-domain candidate ranking or fallback is admitted",

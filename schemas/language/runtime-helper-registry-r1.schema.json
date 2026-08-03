@@ -38,7 +38,7 @@
         "runtime_helper_id", "runtime_helper_signature_id", "helper_version",
         "terminator_kind", "operation", "arguments_record_id", "result_record_id",
         "parameter_modes", "normal_result_kind", "admitted_outcomes", "completion_modes",
-        "may_block", "may_collect", "may_suspend", "observes_cancellation",
+        "may_block", "may_collect", "may_suspend", "observes_cancellation", "projection_phase_or_null",
         "parameter_address_classes", "managed_referent_or_interior_address_cross_boundary",
         "ownership_profile_digest", "managed_reference_profile_digest_or_null",
         "continuation_interface_digest_or_null", "signature_digest"
@@ -47,7 +47,13 @@
         "runtime_helper_id": {"$ref": "#/$defs/helperId"},
         "runtime_helper_signature_id": {"$ref": "#/$defs/signatureId"},
         "helper_version": {"const": 1},
-        "terminator_kind": {"enum": ["CANCEL_CHECK", "SUSPEND", "RUN_OP", "ACTOR_OP", "PROVIDER_OP", "ONCE_OP", "SYNC_OP"]},
+        "terminator_kind": {"enum": ["CANCEL_CHECK", "SUSPEND", "RUN_OP", "ACTOR_OP", "PROVIDER_OP", "ONCE_OP", "SYNC_OP", "INVOKE", "TARGET_PROJECTION_STEP"]},
+        "projection_phase_or_null": {
+          "oneOf": [
+            {"enum": ["BEFORE_MAY_COLLECT_ENTRY", "AFTER_OUTCOME_COMMIT"]},
+            {"type": "null"}
+          ]
+        },
         "operation": {"type": "string", "pattern": "^[A-Z0-9_]+$"},
         "arguments_record_id": {"$ref": "#/$defs/recordId"},
         "result_record_id": {"$ref": "#/$defs/recordId"},
@@ -68,7 +74,14 @@
         "managed_reference_profile_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
         "continuation_interface_digest_or_null": {"$ref": "#/$defs/nullableSha256"},
         "signature_digest": {"$ref": "#/$defs/sha256"}
-      }
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"terminator_kind": {"const": "TARGET_PROJECTION_STEP"}}, "required": ["terminator_kind"]},
+          "then": {"properties": {"projection_phase_or_null": {"enum": ["BEFORE_MAY_COLLECT_ENTRY", "AFTER_OUTCOME_COMMIT"]}}},
+          "else": {"properties": {"projection_phase_or_null": {"type": "null"}}}
+        }
+      ]
     },
     "conditionalRow": {"$ref": "#/$defs/helperRow"}
   }

@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/pattern-dynamic-lowering-trace-closure-r1.schema.json",
+  "title": "Deeplus R59 pattern dynamic-lowering trace-closure contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "language_status",
+    "source_activation",
+    "current_binding",
+    "feature_ids",
+    "authority_fence",
+    "scope_fence",
+    "current_registry_alignment",
+    "context_lowering_alignment",
+    "dynamic_semantics",
+    "or_alias_semantics",
+    "ownership_diagnostic_delegation",
+    "rules",
+    "acceptance_cases",
+    "acceptance_bindings",
+    "machine_acceptance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/pattern-dynamic-lowering-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.pattern-dynamic-lowering-trace-closure/r1"},
+    "revision": {"const": "r59-local-pattern-dynamic-lowering-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "fb3e98888f947d0e7b45f713efe3b017a55c976a"},
+    "candidate_status": {"const": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE"},
+    "language_status": {"const": "STABLE_DESIGN"},
+    "source_activation": {"const": "none"},
+    "current_binding": {"const": false},
+    "feature_ids": {"const": ["or_alias_pattern", "pattern_binding_control_family", "pattern_decomposition"]},
+    "authority_fence": {
+      "const": {
+        "new_source_surface_count": 0,
+        "new_ast_identity_count": 0,
+        "new_hir_identity_count": 0,
+        "new_mir_operation_kind_count": 0,
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED",
+        "evidence_level": "E2_STRUCTURED_STATIC"
+      }
+    },
+    "scope_fence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transitioned_cells", "excluded_feature_stage_cells", "excluded_reverse_dependents_of_pattern_decomposition", "preview_pattern_rows_transition_count", "other_target_cell_transition_count", "ownership_split_transition_count", "reverse_dependent_transition_count"],
+      "properties": {
+        "transitioned_cells": {
+          "const": [
+            {"feature_id": "or_alias_pattern", "stage": "DYNAMIC_LOWERING", "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP", "disposition": "BOUND_DIRECT"},
+            {"feature_id": "pattern_binding_control_family", "stage": "DYNAMIC_LOWERING", "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP", "disposition": "BOUND_DIRECT"},
+            {"feature_id": "pattern_decomposition", "stage": "DYNAMIC_LOWERING", "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP", "disposition": "BOUND_DIRECT"}
+          ]
+        },
+        "excluded_feature_stage_cells": {"const": ["pattern_match_ownership_split/STATIC_SEMANTICS", "pattern_match_ownership_split/DYNAMIC_LOWERING"]},
+        "excluded_reverse_dependents_of_pattern_decomposition": {
+          "const": [
+            "assertive_pattern_binding",
+            "irrefutable_parameter_entry_pattern",
+            "pattern_advanced_surface_preview_design",
+            "pattern_condition_chain",
+            "pin_range_relational_pattern",
+            "refutable_catch_pattern",
+            "sequence_positional_rest_pattern",
+            "structured_record_map_pattern",
+            "transparent_nominal_named_enum_pattern",
+            "tuple_bare_product_surface"
+          ]
+        },
+        "preview_pattern_rows_transition_count": {"const": 0},
+        "other_target_cell_transition_count": {"const": 0},
+        "ownership_split_transition_count": {"const": 0},
+        "reverse_dependent_transition_count": {"const": 0}
+      }
+    },
+    "current_registry_alignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pattern_lowering_registry", "pattern_kind_registry", "hir_mir_lowering_registry", "current_mapping_count", "mappings", "exact_or_mapping", "exact_alias_mapping"],
+      "properties": {
+        "pattern_lowering_registry": {"const": "spec/patterns/pattern-lowering.json"},
+        "pattern_kind_registry": {"const": "spec/patterns/pattern-kinds.json"},
+        "hir_mir_lowering_registry": {"const": "spec/contracts/hir-mir-lowering-registry.json"},
+        "current_mapping_count": {"const": 29},
+        "mappings": {
+          "type": "array",
+          "minItems": 29,
+          "maxItems": 29,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/registryMapping"}
+        },
+        "exact_or_mapping": {"const": {"pattern_lowering_id": "PL-OR", "pattern_kind_id": "PK-OR", "hir_mir_row_id": "HM-LR-PAT-027"}},
+        "exact_alias_mapping": {"const": {"pattern_lowering_id": "PL-ALIAS", "pattern_kind_id": "PK-ALIAS", "hir_mir_row_id": "HM-LR-PAT-028"}}
+      }
+    },
+    "context_lowering_alignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pattern_context_registry", "pattern_attempt_row_id", "if_owner_row_id", "loop_owner_row_id", "contexts"],
+      "properties": {
+        "pattern_context_registry": {"const": "spec/patterns/pattern-context-policies.json"},
+        "pattern_attempt_row_id": {"const": "HM-LR-TOP-016"},
+        "if_owner_row_id": {"const": "HM-LR-TOP-008"},
+        "loop_owner_row_id": {"const": "HM-LR-TOP-011"},
+        "contexts": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/contextMapping"}}
+      }
+    },
+    "dynamic_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["subject_evaluation_count", "structural_probe", "probe_binders", "optional_guard", "final_commit", "failure_or_false_guard"],
+      "properties": {
+        "subject_evaluation_count": {"const": 1},
+        "structural_probe": {"const": {"purity": "PURE", "consumption": "NONCONSUMING", "determinism": "DETERMINISTIC", "suspension": "NONE"}},
+        "probe_binders": {"const": {"access": "READ_ONLY", "escape": "FORBIDDEN", "ownership_publication_count": 0}},
+        "optional_guard": {"const": {"required_result_type": "Bool", "purity": "PURE", "evaluation_count_on_structural_success": 1, "evaluation_count_on_structural_failure": 0}},
+        "final_commit": {"const": {"logical_commit_count_on_final_guarded_success": 1, "fallibility": "INFALLIBLE", "timing": "AFTER_STRUCTURAL_AND_OPTIONAL_GUARD_SUCCESS", "top_level_row_id": "HM-LR-TOP-016", "subpattern_binding_commit_interpretation": "COMPOSITIONAL_COMMIT_REQUIREMENT", "subpattern_executable_commit_count": 0, "multiple_executable_commit_allowed": false}},
+        "failure_or_false_guard": {"const": {"binding_publication_count": 0, "move_publication_count": 0, "loan_publication_count": 0, "view_publication_count": 0, "authority_publication_count": 0, "context_dispositions": ["FALSE_BRANCH_OR_CONDITION_FALSE", "LOOP_EXIT", "CANDIDATE_SKIP_OR_DISCHARGE"]}}
+      }
+    },
+    "or_alias_semantics": {
+      "const": {
+        "or_pattern": {"binder_interface_join": "EXACT_EQUAL_BINDER_INTERFACE", "selection": "FIRST_SOURCE_ORDERED_SUCCESSFUL_BRANCH", "backtracking_count": 0, "retry_count": 0},
+        "alias_pattern": {"identity": "SAME_SUBJECT_BORROW", "clone_count": 0, "probe_loan_publication_count": 0, "actual_loan_acquisition": "FINAL_TOP_LEVEL_COMMIT_ONLY"}
+      }
+    },
+    "ownership_diagnostic_delegation": {
+      "const": {
+        "delegate_feature_id": "pattern_match_ownership_split",
+        "delegated_conditions": ["ALIAS_WITH_MOVED_DESCENDANT", "ALIAS_WITH_EXCLUSIVELY_BORROWED_DESCENDANT", "CROSS_BRANCH_PLACE_STATE_MISMATCH", "REST_VIEW_ESCAPE"],
+        "delegate_static_semantics_transition_count": 0,
+        "delegate_dynamic_lowering_transition_count": 0
+      }
+    },
+    "rules": {"type": "array", "minItems": 13, "maxItems": 13, "items": {"$ref": "#/$defs/rule"}},
+    "acceptance_cases": {"type": "array", "minItems": 12, "maxItems": 12, "items": {"$ref": "#/$defs/acceptanceCase"}},
+    "acceptance_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["or_alias_pattern", "pattern_binding_control_family", "pattern_decomposition"],
+      "properties": {
+        "or_alias_pattern": {"type": "object"},
+        "pattern_binding_control_family": {"type": "object"},
+        "pattern_decomposition": {"type": "object"}
+      }
+    },
+    "machine_acceptance": {
+      "const": {
+        "feature_count": 3,
+        "rule_count": 13,
+        "acceptance_case_count": 12,
+        "positive_case_count": 3,
+        "boundary_case_count": 6,
+        "reject_case_count": 3,
+        "current_pattern_mapping_count": 29,
+        "current_context_count": 5,
+        "overlay_binding_count": 3,
+        "predecessor_blocked_cell_count": 3,
+        "overlay_bound_direct_transition_count": 3,
+        "overlay_bound_delegated_transition_count": 0,
+        "overlay_not_applicable_transition_count": 0,
+        "predecessor_cumulative_overlay_binding_count": 110,
+        "post_overlay_cumulative_binding_count": 113,
+        "predecessor_total_bound_direct_cell_count": 2447,
+        "predecessor_total_bound_delegated_cell_count": 3,
+        "predecessor_total_not_applicable_cell_count": 502,
+        "predecessor_total_blocked_cell_count": 1269,
+        "post_overlay_total_bound_direct_cell_count": 2450,
+        "post_overlay_total_bound_delegated_cell_count": 3,
+        "post_overlay_total_not_applicable_cell_count": 502,
+        "post_overlay_total_blocked_cell_count": 1266,
+        "post_overlay_missing_cell_count": 0,
+        "post_overlay_conflict_cell_count": 0,
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED"
+      }
+    }
+  },
+  "$defs": {
+    "registryMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pattern_lowering_id", "pattern_kind_id", "hir_mir_row_id"],
+      "properties": {
+        "pattern_lowering_id": {"type": "string", "pattern": "^PL-[A-Z0-9-]+$"},
+        "pattern_kind_id": {"type": "string", "pattern": "^PK-[A-Z0-9-]+$"},
+        "hir_mir_row_id": {"type": "string", "pattern": "^HM-LR-PAT-0(0[1-9]|1[0-9]|2[0-9])$"}
+      }
+    },
+    "contextMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_id", "hir_mir_row_ids", "failure_disposition"],
+      "properties": {
+        "context_id": {"enum": ["PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-BARE-FOR", "PCTX-FOR-LET"]},
+        "hir_mir_row_ids": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["HM-LR-TOP-016", "HM-LR-TOP-008", "HM-LR-TOP-011"]}},
+        "failure_disposition": {"type": "string", "minLength": 1}
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule_id", "text"],
+      "properties": {
+        "rule_id": {"type": "string", "pattern": "^PDLTC-R0(0[1-9]|1[0-3])$"},
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "acceptanceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "audit_case_id", "class", "feature_id", "source_or_subject", "expected", "diagnostic_or_null", "assertions", "execution_state"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^PDLTC-AC-0(0[1-9]|1[0-2])$"},
+        "audit_case_id": {"type": "string", "pattern": "^(OA[1-4]|PC[1-5]|PD[1-3])$"},
+        "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "feature_id": {"enum": ["or_alias_pattern", "pattern_binding_control_family", "pattern_decomposition"]},
+        "source_or_subject": {"type": "string", "minLength": 1},
+        "expected": {"type": "string", "minLength": 1},
+        "diagnostic_or_null": {"type": ["string", "null"]},
+        "assertions": {"type": "object"},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

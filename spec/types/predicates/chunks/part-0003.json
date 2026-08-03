@@ -413,7 +413,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ColumnVectorSemicolonGateAdmitted",
     "source_name": "ColumnVectorSemicolonGateAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Deterministic shape-inferred NumericArray row/column gate: the first attached top-level separator fixes orientation, mixed separators reject, and element/shape admission completes before lowering; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -425,19 +425,28 @@
       "element_types"
     ],
     "feature_refs": [
+      "numeric_array_shape_inferred_value_literal",
       "numeric_array_shape_inferred_column_vector_semicolon_msp"
     ],
     "diagnostic_refs": [
-      "SOURCE_TRUTH_PROJECTION_CONFLICT"
+      "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "NUMARR_EXPECTED_SHAPE_MISMATCH",
+      "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
+      "NUMARR_ELEMENT_NOT_NUMERIC",
+      "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+      "NUMARR_ELEMENT_TYPE_MISMATCH",
+      "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE"
     ],
-    "design_seed_diagnostic_refs": [
-      "SOURCE_TRUTH_PROJECTION_CONFLICT"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "the literal contains at least one element",
+      "the first attached top-level separator is comma or semicolon and no other top-level separator kind occurs",
+      "row and column forms both produce rank 1 with shape [element_count] and explicit ROW or COLUMN orientation",
+      "exact rank-2 literals remain a distinct syntax and admission route",
+      "NumericArrayElementAdmitted succeeds for the complete element list"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -453,31 +462,53 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "parser attachment has identified only top-level separators",
+      "element expressions and any exact expected element type are available without evaluating expressions",
+      "no runtime shape or orientation inference is requested"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "count elements; normalize a singleton with no separator as ROW; otherwise select the ROW_COMMA form from the first comma and derive ROW orientation, or select the COLUMN_SEMICOLON form from the first semicolon and derive COLUMN orientation; preserve rank 1 and shape [element_count]; normalize aliases and any exact expected element type without widening",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ColumnVectorSemicolonGateAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the closed RCTS-V5 descriptor and reject an empty element list",
+      "classify the first attached top-level separator as ROW_COMMA or COLUMN_SEMICOLON and derive provisional rank 1, shape [element_count], and explicit ROW or COLUMN orientation",
+      "reject a conflicting exact expected shape or orientation, then reject any later attached top-level separator of the other kind",
+      "delegate element-domain admission to NumericArrayElementAdmitted after orientation is fixed",
+      "evaluate diagnostic_dispatch once in numeric key order and emit only the first matching diagnostic; on success seal the static literal descriptor without runtime inference"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "SOURCE_TRUTH_PROJECTION_CONFLICT",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+    "secondary_diagnostics": [
+      "NUMARR_EXPECTED_SHAPE_MISMATCH",
+      "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
+      "NUMARR_ELEMENT_NOT_NUMERIC",
+      "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+      "NUMARR_ELEMENT_TYPE_MISMATCH",
+      "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE"
+    ],
     "positive_fixture_ids": [
       "PF-ColumnVectorSemicolonGateAdmitted-POS"
     ],
     "negative_fixture_ids": [
       "PF-ColumnVectorSemicolonGateAdmitted-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "evaluation_order": "empty -> provisional separator/orientation -> expected shape/orientation -> mixed-separator rejection -> numeric -> PlainValue -> exact element type -> contextual literal range -> seal",
+    "dependency_predicates": [
+      "ColumnVectorSemicolonOrientationAdmitted",
+      "NumericArrayElementAdmitted"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_empty_element_list": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "2_expected_shape_or_orientation_conflict": "NUMARR_EXPECTED_SHAPE_MISMATCH",
+      "3_mixed_attached_top_level_separator_kinds": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
+      "4_element_not_numeric": "NUMARR_ELEMENT_NOT_NUMERIC",
+      "5_element_not_plain_value_or_has_drop": "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+      "6_normalized_element_type_mismatch": "NUMARR_ELEMENT_TYPE_MISMATCH",
+      "7_contextual_numeric_literal_not_representable": "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE"
+    },
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "ee25735c1d1229b5f953d1ed98959da79c1fba7791adf310d0daeeb3b726f63b",
@@ -489,7 +520,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ColumnVectorSemicolonOrientationAdmitted",
     "source_name": "Column-vector semicolon orientation",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Deterministic attached-separator orientation algorithm for shape-inferred NumericArray literals; both row and column forms remain rank 1 and exact rank-2 syntax remains distinct; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -502,19 +533,24 @@
       "element_types"
     ],
     "feature_refs": [
+      "numeric_array_shape_inferred_value_literal",
       "numeric_array_shape_inferred_column_vector_semicolon_msp"
     ],
     "diagnostic_refs": [
+      "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "NUMARR_EXPECTED_SHAPE_MISMATCH",
       "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED"
     ],
-    "design_seed_diagnostic_refs": [
-      "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED"
-    ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "#[a,b] rank-1, #[a;b] column matrix law"
+      "a singleton without a separator uses the ROW_COMMA form and ROW orientation",
+      "the first attached top-level comma selects the ROW_COMMA form and ROW orientation; the first attached top-level semicolon selects the COLUMN_SEMICOLON form and COLUMN orientation",
+      "all later attached top-level separators have the selected kind",
+      "both selected forms are rank 1 with shape [element_count]",
+      "exact rank-2 literals are never reclassified by this predicate"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -531,31 +567,42 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "#[a,b] rank-1, #[a;b] column matrix law"
+      "parser attachment identifies separators at the literal's top level",
+      "element_count is at least one before orientation succeeds",
+      "any expected shape and orientation are exact rather than inferred at runtime"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "map no separator for a singleton and comma to the ROW_COMMA form with ROW orientation; map semicolon to the COLUMN_SEMICOLON form with COLUMN orientation; derive rank 1 and shape [element_count] without rewriting either form to a List or rank-2 matrix",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ColumnVectorSemicolonOrientationAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the closed RCTS-V5 descriptor and reject zero elements",
+      "inspect attached top-level separators left-to-right and choose ROW or COLUMN orientation from the first separator, or ROW for a singleton",
+      "reject the first separator whose kind differs from the selected kind",
+      "derive rank 1 and shape [element_count], then compare an exact expected shape or orientation if present",
+      "return the sealed orientation descriptor with no nested-rank, result-directed, or runtime inference"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
-    "secondary_diagnostics": [],
+    "secondary_diagnostics": [
+      "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "NUMARR_EXPECTED_SHAPE_MISMATCH"
+    ],
     "positive_fixture_ids": [
       "PF-ColumnVectorSemicolonOrientationAdmitted-POS"
     ],
     "negative_fixture_ids": [
       "PF-ColumnVectorSemicolonOrientationAdmitted-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "evaluation_order": "empty -> first attached top-level separator -> mixed-separator rejection -> expected shape/orientation -> seal",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_empty_element_list": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "2_mixed_attached_top_level_separator_kinds": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
+      "3_expected_shape_or_orientation_conflict": "NUMARR_EXPECTED_SHAPE_MISMATCH"
+    },
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "050c5847b9112320414b8e8df1332308e80cf02ea4a1e2e4e0742cfd44023f8d",
@@ -1379,103 +1426,6 @@
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "1d3ecb19b9dc0cfee1e7df893f9dbeeb5e8f0b640480bfccecf4dfc125b54180",
-      "disposition": "superseded_by_current_r51a1_row"
-    }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "ContextParameterRoleAdmitted",
-    "source_name": "ContextParameterRoleAdmitted",
-    "summary": "R51a1 closed design algorithm for ContextParameterRoleAdmitted; product checker NOT_RUN.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "effect_row",
-      "call_shape",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
-    ],
-    "feature_refs": [
-      "explicit_context_argument_keyword_spelling",
-      "explicit_context_parameter_msp"
-    ],
-    "diagnostic_refs": [
-      "CONTEXT_ARGUMENT_REQUIRED",
-      "CONTEXT_FUNCTION_TYPE_MISMATCH"
-    ],
-    "design_seed_diagnostic_refs": [
-      "CONTEXT_ARGUMENT_REQUIRED",
-      "CONTEXT_FUNCTION_TYPE_MISMATCH"
-    ],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "the formal parameter is explicitly marked context and the supplied call argument uses the exact context argument channel",
-      "exactly one supplied context value resolves for each required context parameter and their normalized types and role identities match",
-      "missing, duplicate, ordinary-channel, or role-mismatched supply emits CONTEXT_ARGUMENT_REQUIRED before ordinary type conversion"
-    ],
-    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "ownership",
-      "borrow_region",
-      "effect_row",
-      "call_shape",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
-    ],
-    "formal_judgment_id": "J-ContextParameterRoleAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "preconditions": [
-      "the formal parameter is explicitly marked context and the supplied call argument uses the exact context argument channel",
-      "exactly one supplied context value resolves for each required context parameter and their normalized types and role identities match",
-      "missing, duplicate, ordinary-channel, or role-mismatched supply emits CONTEXT_ARGUMENT_REQUIRED before ordinary type conversion"
-    ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
-    "decision_procedure": [
-      "validate the closed RCTS-V5 input variant",
-      "normalize every declared descriptor axis",
-      "the formal parameter is explicitly marked context and the supplied call argument uses the exact context argument channel",
-      "exactly one supplied context value resolves for each required context parameter and their normalized types and role identities match",
-      "missing, duplicate, ordinary-channel, or role-mismatched supply emits CONTEXT_ARGUMENT_REQUIRED before ordinary type conversion",
-      "evaluate finite candidates in canonical identity order",
-      "return admit or the active primary diagnostic"
-    ],
-    "termination_metric": "finite descriptor size plus decreasing candidate count",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "CONTEXT_ARGUMENT_REQUIRED",
-    "secondary_diagnostics": [
-      "CONTEXT_FUNCTION_TYPE_MISMATCH"
-    ],
-    "positive_fixture_ids": [
-      "PF-ContextParameterRoleAdmitted-POS",
-      "PF-ContextParameterRoleAdmitted-BOUNDARY"
-    ],
-    "negative_fixture_ids": [
-      "PF-ContextParameterRoleAdmitted-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "diagnostic_disposition": "design_algorithm_product_not_run",
-    "predicate_maturity": "design_algorithm",
-    "emission_eligible": true,
-    "predecessor_identity": {
-      "baseline": "0.1.2-baseline.r50",
-      "sha256": "d8dd44f6ce50795d910b3d4b14e74ff4e8e7ee29436a8ce76f3f0877ff870f66",
       "disposition": "superseded_by_current_r51a1_row"
     }
   }

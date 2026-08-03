@@ -3616,6 +3616,7 @@
         "law_id",
         "source_span",
         "actor_id",
+        "actor_instance_id",
         "receiver_id",
         "sender_id",
         "mailbox_id",
@@ -3627,10 +3628,26 @@
         "turn_id",
         "turn_index",
         "handler_id",
+        "actor_protocol_binding_table_id",
+        "actor_protocol_binding_id",
+        "implementation_kind",
+        "actor_handler_id",
+        "actor_request_id",
+        "responsibility_id",
+        "binding_row_sha256",
         "supervisor_id",
+        "root_owner_id",
         "message_id",
         "phase",
         "outcome",
+        "lifecycle_policy",
+        "lifecycle_state_before",
+        "lifecycle_state_after",
+        "resource_cleanup_count",
+        "reply_terminal_count",
+        "defect_id",
+        "suppressed_cleanup_defect_ids",
+        "terminal_transport_failure",
         "correlation_id",
         "reply_id",
         "transfer_id",
@@ -3683,20 +3700,36 @@
           "type": "string",
           "minLength": 1
         },
-        "receiver_id": {
+        "actor_instance_id": {
           "type": "string",
+          "minLength": 1
+        },
+        "receiver_id": {
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "sender_id": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "mailbox_id": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "channel_id": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "channel_sequence": {
@@ -3711,11 +3744,17 @@
           ]
         },
         "mailbox_profile_id": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "state_region_id": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "state_region_authority": {
@@ -3731,11 +3770,39 @@
             "null"
           ]
         },
+        "actor_protocol_binding_table_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "actor_protocol_binding_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "implementation_kind": {
+          "enum": [null, "SEND_TO_ON", "REQUEST_TO_REQUEST"]
+        },
+        "actor_handler_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "actor_request_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "responsibility_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "binding_row_sha256": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{64}$"
+        },
         "supervisor_id": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "null"
+        },
+        "root_owner_id": {
+          "type": "string",
+          "minLength": 1
         },
         "turn_id": {
           "type": [
@@ -3755,11 +3822,20 @@
           ]
         },
         "message_id": {
-          "type": "string",
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "phase": {
           "enum": [
+            "create_prepare",
+            "state_initialized",
+            "mailbox_initialized",
+            "actor_publish_committed",
+            "create_failed",
+            "initialized_resource_cleaned",
             "prepare_send",
             "admission_rejected",
             "enqueue_committed",
@@ -3769,7 +3845,17 @@
             "turn_resume",
             "turn_finish",
             "reply_terminal",
-            "supervisor_disposition"
+            "stop_requested",
+            "admission_closed",
+            "drain_started",
+            "drain_completed",
+            "defect_observed",
+            "pending_reply_terminalized",
+            "queued_payload_cleaned",
+            "active_turn_cleanup_completed",
+            "actor_state_cleanup_completed",
+            "root_owner_observed",
+            "termination_published"
           ]
         },
         "outcome": {
@@ -3783,6 +3869,44 @@
             "defect",
             "cancelled"
           ]
+        },
+        "lifecycle_policy": {
+          "enum": [
+            "TRANSPORT_ONLY_V1",
+            "CREATE_FAIL_CLOSED_V1",
+            "DRAIN_ALL_COMMITTED_V1",
+            "STOP_AND_FAIL_PENDING_V1"
+          ]
+        },
+        "lifecycle_state_before": {
+          "enum": [null, "PREPARING", "CREATION_ABORTED", "LIVE", "STOP_REQUESTED", "ADMISSION_CLOSED", "DRAINING", "DEFECT_STOPPING", "CLEANING", "TERMINATED"]
+        },
+        "lifecycle_state_after": {
+          "enum": [null, "PREPARING", "CREATION_ABORTED", "LIVE", "STOP_REQUESTED", "ADMISSION_CLOSED", "DRAINING", "DEFECT_STOPPING", "CLEANING", "TERMINATED"]
+        },
+        "resource_cleanup_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "reply_terminal_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "defect_id": {
+          "type": ["string", "null"]
+        },
+        "suppressed_cleanup_defect_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "terminal_transport_failure": {
+          "enum": [null, "ActorMessageError::receiverClosedBeforeReply"]
         },
         "correlation_id": {
           "type": [
@@ -3839,6 +3963,62 @@
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "implementation_kind": {"const": null}
+            },
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "actor_protocol_binding_table_id": {"type": "null"},
+              "actor_protocol_binding_id": {"type": "null"},
+              "actor_handler_id": {"type": "null"},
+              "actor_request_id": {"type": "null"},
+              "responsibility_id": {"type": "null"},
+              "binding_row_sha256": {"type": "null"},
+              "terminal_transport_failure": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "implementation_kind": {"const": "SEND_TO_ON"}
+            },
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "actor_protocol_binding_table_id": {"type": "string", "minLength": 1},
+              "actor_protocol_binding_id": {"type": "string", "minLength": 1},
+              "actor_handler_id": {"type": "string", "minLength": 1},
+              "actor_request_id": {"type": "null"},
+              "responsibility_id": {"type": "string", "minLength": 1},
+              "binding_row_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "terminal_transport_failure": {"type": "null"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "implementation_kind": {"const": "REQUEST_TO_REQUEST"}
+            },
+            "required": ["implementation_kind"]
+          },
+          "then": {
+            "properties": {
+              "actor_protocol_binding_table_id": {"type": "string", "minLength": 1},
+              "actor_protocol_binding_id": {"type": "string", "minLength": 1},
+              "actor_handler_id": {"type": "null"},
+              "actor_request_id": {"type": "string", "minLength": 1},
+              "responsibility_id": {"type": "string", "minLength": 1},
+              "binding_row_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            }
+          }
+        },
         {
           "if": {
             "properties": {
@@ -3977,6 +4157,97 @@
               "state_region_authority": {
                 "const": "released"
               }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "phase": {
+                "enum": ["prepare_send", "admission_rejected", "enqueue_committed", "dequeue", "turn_start", "turn_suspend", "turn_resume", "turn_finish", "reply_terminal"]
+              }
+            },
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "receiver_id": {"type": "string", "minLength": 1},
+              "sender_id": {"type": "string", "minLength": 1},
+              "mailbox_id": {"type": "string", "minLength": 1},
+              "channel_id": {"type": "string", "minLength": 1},
+              "mailbox_profile_id": {"type": "string", "minLength": 1},
+              "state_region_id": {"type": "string", "minLength": 1},
+              "message_id": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "create_failed"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "failure_id": {"type": "string", "minLength": 1},
+              "lifecycle_policy": {"const": "CREATE_FAIL_CLOSED_V1"},
+              "lifecycle_state_after": {"const": "CREATION_ABORTED"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "defect_observed"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "defect_id": {"type": "string", "minLength": 1},
+              "lifecycle_policy": {"const": "STOP_AND_FAIL_PENDING_V1"},
+              "lifecycle_state_after": {"const": "DEFECT_STOPPING"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "pending_reply_terminalized"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "reply_id": {"type": "string", "minLength": 1},
+              "correlation_id": {"type": "string", "minLength": 1},
+              "reply_terminal_count": {"const": 1},
+              "outcome": {"const": "receiver_closed"},
+              "implementation_kind": {"const": "REQUEST_TO_REQUEST"},
+              "actor_protocol_binding_table_id": {"type": "string", "minLength": 1},
+              "actor_protocol_binding_id": {"type": "string", "minLength": 1},
+              "actor_request_id": {"type": "string", "minLength": 1},
+              "responsibility_id": {"type": "string", "minLength": 1},
+              "binding_row_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "terminal_transport_failure": {"const": "ActorMessageError::receiverClosedBeforeReply"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "queued_payload_cleaned"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "message_id": {"type": "string", "minLength": 1},
+              "resource_cleanup_count": {"const": 1}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "termination_published"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "lifecycle_state_after": {"const": "TERMINATED"}
             }
           }
         }
@@ -4550,9 +4821,16 @@
         "turn_index",
         "handler_id",
         "supervisor_id",
+        "root_owner_id",
         "message_id",
         "phase",
         "outcome",
+        "lifecycle_policy",
+        "lifecycle_state_before",
+        "lifecycle_state_after",
+        "resource_cleanup_count",
+        "reply_terminal_count",
+        "defect_id",
         "correlation_id",
         "reply_id",
         "transfer_id",
@@ -4690,5 +4968,30 @@
     "operator_role_binding": "EXACT_13_IF_THEN_ROWS"
   },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/mir-responsibility-fixtures.json",
+  "x-deeplus-actor-lifecycle-ordering": {
+    "static_actor_identity": "ActorId:STATIC_ACTOR_DECLARATION_ID",
+    "runtime_instance_identity": "ActorInstanceId",
+    "root_owner_identity": "ActorRuntimeRootOwnerId",
+    "state_region_identity": "StateRegionId",
+    "supervisor_id_current_value": null,
+    "creation_success_order": ["create_prepare", "state_initialized", "mailbox_initialized", "actor_publish_committed"],
+    "creation_failure_terminal_state": "CREATION_ABORTED",
+    "normal_stop_policy": "DRAIN_ALL_COMMITTED_V1",
+    "normal_stop_order": ["stop_requested", "admission_closed", "drain_started", "drain_completed", "actor_state_cleanup_completed", "root_owner_observed", "termination_published"],
+    "defect_policy": "STOP_AND_FAIL_PENDING_V1",
+    "defect_order": ["defect_observed", "admission_closed", "queued_payload_cleaned", "active_turn_cleanup_completed", "actor_state_cleanup_completed", "pending_reply_terminalized", "root_owner_observed", "termination_published"],
+    "reply_already_terminal_before_defect": "PRESERVE_WITHOUT_DUPLICATION",
+    "cleanup_defect_order": "PRIMARY_UNCAUGHT_DEFECT_THEN_REVERSE_CLEANUP_EXECUTION_ORDER",
+    "r41_binding_runtime_reselection_count": 0,
+    "r23_binding_foreign_key": ["ActorProtocolBindingTableId", "ActorProtocolBindingId"],
+    "r23_binding_preserved_fields": ["implementation_kind", "ActorHandlerId_or_ActorRequestId", "ResponsibilityId", "binding_row_sha256"],
+    "r23_binding_creation_count": 0,
+    "r23_binding_runtime_reselection_count": 0,
+    "runtime_instance_in_binding_bytes_count": 0,
+    "r24_codegen_lifetime_absorbed_count": 0,
+    "restart_event_count": 0,
+    "interleaving_event_count": 0,
+    "product_execution": "NOT_RUN"
+  },
   "x-product-runtime": "NOT_RUN"
 }

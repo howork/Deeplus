@@ -1348,6 +1348,239 @@
       "violated_condition": "a precommit admission-only error appears in the admitted Reply descriptor"
     }
   ],
+  "actor_lifecycle_binding_cases": [
+    {
+      "fixture_id": "ACC-LC-001-CREATE-PUBLISH",
+      "policy": "CREATE_FAIL_CLOSED_V1",
+      "static_actor_id": "actor-decl-001",
+      "actor_instance_id": "actor-instance-001",
+      "state_region_id": "state-region-001",
+      "root_owner_id": "root-001",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": null,
+      "events": [
+        {"phase": "create_prepare"},
+        {"phase": "state_initialized", "resource_id": "state-001"},
+        {"phase": "mailbox_initialized", "resource_id": "mailbox-001"},
+        {"phase": "actor_publish_committed"}
+      ],
+      "expected_outcome": "admit_design_static",
+      "expected_failed_guard": null
+    },
+    {
+      "fixture_id": "ACC-LC-002-CREATE-FAIL-REVERSE-CLEANUP",
+      "policy": "CREATE_FAIL_CLOSED_V1",
+      "static_actor_id": "actor-decl-002",
+      "actor_instance_id": "actor-instance-002",
+      "state_region_id": "state-region-002",
+      "root_owner_id": "root-002",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": null,
+      "events": [
+        {"phase": "create_prepare"},
+        {"phase": "state_initialized", "resource_id": "state-002"},
+        {"phase": "mailbox_initialized", "resource_id": "mailbox-002"},
+        {"phase": "create_failed", "failure_id": "failure-002", "state_after": "CREATION_ABORTED"},
+        {"phase": "initialized_resource_cleaned", "resource_id": "mailbox-002", "cleanup_count": 1},
+        {"phase": "initialized_resource_cleaned", "resource_id": "state-002", "cleanup_count": 1},
+        {"phase": "root_owner_observed", "failure_id": "failure-002", "root_observation_count": 1}
+      ],
+      "expected_outcome": "admit_design_static",
+      "expected_failed_guard": null
+    },
+    {
+      "fixture_id": "ACC-LC-003-NORMAL-STOP-REQUEST",
+      "policy": "DRAIN_ALL_COMMITTED_V1",
+      "static_actor_id": "actor-decl-003",
+      "actor_instance_id": "actor-instance-003",
+      "state_region_id": "state-region-003",
+      "root_owner_id": "root-003",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": {
+        "table_id": "binding-table-003",
+        "binding_id": "binding-003",
+        "implementation_kind": "REQUEST_TO_REQUEST",
+        "actor_handler_id": null,
+        "actor_request_id": "request-003",
+        "responsibility_id": "responsibility-003",
+        "binding_row_sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "committed_envelope_ids_before_close": [],
+      "pending_request_ids": ["reply-003"],
+      "events": [
+        {"phase": "stop_requested"},
+        {"phase": "admission_closed"},
+        {"phase": "drain_started"},
+        {"phase": "reply_terminal", "reply_id": "reply-003", "reply_terminal_count": 1, "binding_id": "binding-003", "responsibility_id": "responsibility-003", "binding_row_sha256": "3333333333333333333333333333333333333333333333333333333333333333"},
+        {"phase": "drain_completed"},
+        {"phase": "actor_state_cleanup_completed", "resource_id": "state-region-003", "cleanup_count": 1},
+        {"phase": "root_owner_observed", "root_observation_count": 1},
+        {"phase": "termination_published", "termination_count": 1}
+      ],
+      "expected_outcome": "admit_design_static",
+      "expected_failed_guard": null
+    },
+    {
+      "fixture_id": "ACC-LC-004-SUSPENDED-STOP-PENDING",
+      "policy": "DRAIN_ALL_COMMITTED_V1",
+      "static_actor_id": "actor-decl-004",
+      "actor_instance_id": "actor-instance-004",
+      "state_region_id": "state-region-004",
+      "root_owner_id": "root-004",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": null,
+      "active_turn_id": "turn-004",
+      "committed_envelope_ids_before_close": [],
+      "active_turn_state": "SUSPENDED_INDEFINITELY",
+      "events": [
+        {"phase": "stop_requested"},
+        {"phase": "admission_closed"},
+        {"phase": "drain_started"},
+        {"phase": "turn_suspend", "turn_id": "turn-004", "state_region_id": "state-region-004", "state_region_authority": "held"}
+      ],
+      "expected_outcome": "admit_design_static_pending",
+      "expected_failed_guard": null
+    },
+    {
+      "fixture_id": "ACC-LC-005-DEFECT-FAIL-PENDING",
+      "policy": "STOP_AND_FAIL_PENDING_V1",
+      "static_actor_id": "actor-decl-005",
+      "actor_instance_id": "actor-instance-005",
+      "state_region_id": "state-region-005",
+      "root_owner_id": "root-005",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": {
+        "table_id": "binding-table-005",
+        "binding_id": "binding-005",
+        "implementation_kind": "REQUEST_TO_REQUEST",
+        "actor_handler_id": null,
+        "actor_request_id": "request-005",
+        "responsibility_id": "responsibility-005",
+        "binding_row_sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+      },
+      "active_turn_id": "turn-005",
+      "open_reply_ids_at_defect": ["reply-005"],
+      "suppressed_cleanup_defect_ids": [],
+      "pending_request_ids": ["reply-005"],
+      "queued_message_ids": ["message-005"],
+      "events": [
+        {"phase": "defect_observed", "defect_id": "defect-005", "binding_id": "binding-005"},
+        {"phase": "admission_closed"},
+        {"phase": "queued_payload_cleaned", "message_id": "message-005", "cleanup_count": 1, "binding_id": "binding-005"},
+        {"phase": "active_turn_cleanup_completed", "turn_id": "turn-005", "cleanup_count": 1, "binding_id": "binding-005"},
+        {"phase": "actor_state_cleanup_completed", "resource_id": "state-region-005", "cleanup_count": 1},
+        {"phase": "pending_reply_terminalized", "reply_id": "reply-005", "failure": "ActorMessageError::receiverClosedBeforeReply", "reply_terminal_count": 1, "binding_id": "binding-005", "responsibility_id": "responsibility-005", "binding_row_sha256": "5555555555555555555555555555555555555555555555555555555555555555"},
+        {"phase": "root_owner_observed", "defect_id": "defect-005", "root_observation_count": 1},
+        {"phase": "termination_published", "termination_count": 1}
+      ],
+      "expected_outcome": "admit_design_static",
+      "expected_failed_guard": null
+    },
+    {
+      "fixture_id": "ACC-LC-006-PUBLISH-BEFORE-MAILBOX",
+      "policy": "CREATE_FAIL_CLOSED_V1",
+      "static_actor_id": "actor-decl-006",
+      "actor_instance_id": "actor-instance-006",
+      "state_region_id": "state-region-006",
+      "root_owner_id": "root-006",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": null,
+      "events": [
+        {"phase": "create_prepare"},
+        {"phase": "state_initialized", "resource_id": "state-006"},
+        {"phase": "actor_publish_committed"}
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "ACTOR_LIFECYCLE_PUBLICATION_BEFORE_COMMIT"
+    },
+    {
+      "fixture_id": "ACC-LC-007-ADMISSION-AFTER-CLOSE",
+      "policy": "DRAIN_ALL_COMMITTED_V1",
+      "static_actor_id": "actor-decl-007",
+      "actor_instance_id": "actor-instance-007",
+      "state_region_id": "state-region-007",
+      "root_owner_id": "root-007",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": null,
+      "events": [
+        {"phase": "stop_requested"},
+        {"phase": "admission_closed"},
+        {"phase": "enqueue_committed", "message_id": "message-007"}
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "ACTOR_LIFECYCLE_ADMISSION_AFTER_CLOSE"
+    },
+    {
+      "fixture_id": "ACC-LC-008-HANDLER-AFTER-DEFECT",
+      "policy": "STOP_AND_FAIL_PENDING_V1",
+      "static_actor_id": "actor-decl-008",
+      "actor_instance_id": "actor-instance-008",
+      "state_region_id": "state-region-008",
+      "root_owner_id": "root-008",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": {
+        "table_id": "binding-table-008",
+        "binding_id": "binding-008",
+        "implementation_kind": "SEND_TO_ON",
+        "actor_handler_id": "handler-008",
+        "actor_request_id": null,
+        "responsibility_id": "responsibility-008",
+        "binding_row_sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+      },
+      "events": [
+        {"phase": "defect_observed", "defect_id": "defect-008", "binding_id": "binding-008"},
+        {"phase": "admission_closed"},
+        {"phase": "turn_start", "binding_id": "binding-008", "actor_handler_id": "handler-008"}
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "ACTOR_LIFECYCLE_HANDLER_AFTER_DEFECT"
+    },
+    {
+      "fixture_id": "ACC-LC-009-TERMINATE-WITHOUT-ROOT",
+      "policy": "STOP_AND_FAIL_PENDING_V1",
+      "static_actor_id": "actor-decl-009",
+      "actor_instance_id": "actor-instance-009",
+      "state_region_id": "state-region-009",
+      "root_owner_id": "root-009",
+      "supervisor_id": null,
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": null,
+      "events": [
+        {"phase": "defect_observed", "defect_id": "defect-009"},
+        {"phase": "admission_closed"},
+        {"phase": "active_turn_cleanup_completed", "cleanup_count": 1},
+        {"phase": "actor_state_cleanup_completed", "resource_id": "state-region-009", "cleanup_count": 1},
+        {"phase": "termination_published", "termination_count": 1}
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "ACTOR_LIFECYCLE_ROOT_OBSERVATION_INVALID"
+    },
+    {
+      "fixture_id": "ACC-LC-010-RESTART-DEFERRED",
+      "policy": "STOP_AND_FAIL_PENDING_V1",
+      "static_actor_id": "actor-decl-010",
+      "actor_instance_id": "actor-instance-010",
+      "state_region_id": "state-region-010",
+      "root_owner_id": "root-010",
+      "supervisor_id": "supervisor-010",
+      "binding_set_verified_before_prepare": true,
+      "binding_selection": null,
+      "events": [
+        {"phase": "defect_observed", "defect_id": "defect-010"},
+        {"phase": "restart_requested"}
+      ],
+      "expected_outcome": "reject_design_static",
+      "expected_failed_guard": "ACTOR_LIFECYCLE_DEFERRED_POLICY_ACTIVATED"
+    }
+  ],
   "expected_counts": {
     "positive": 20,
     "negative": 23,
@@ -1357,6 +1590,9 @@
     "mir_reply_responsibility_binding": 7,
     "mir_reply_responsibility_binding_admit": 3,
     "mir_reply_responsibility_binding_reject": 4,
+    "actor_lifecycle_binding": 10,
+    "actor_lifecycle_binding_admit": 5,
+    "actor_lifecycle_binding_reject": 5,
     "product_executed": 0
   }
 }

@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r69/managed-reference-runtime-root-receipt-r1.schema.json",
+  "title": "Deeplus managed-reference runtime root publication receipt R1",
+  "description": "Runtime-only publication evidence for one exact static managed-memory root map. Handle generations and publication lifecycle are deliberately absent from the static plan and live only in this receipt.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "receipt_id",
+    "mir_semantic_digest",
+    "managed_memory_profile_digest",
+    "continuation_interface_digest",
+    "managed_memory_plan_id",
+    "managed_memory_plan_digest",
+    "body_id",
+    "safepoint_id",
+    "root_map_id",
+    "execution_epoch_id",
+    "target_root_projection_digest",
+    "canonical_root_set_digest",
+    "root_entry_order",
+    "root_entries",
+    "lifecycle",
+    "runtime_root_receipt_digest"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.managed-reference-runtime-root-receipt/r1"},
+    "receipt_id": {"$ref": "#/$defs/runtimeRootReceiptId"},
+    "mir_semantic_digest": {"$ref": "#/$defs/sha256"},
+    "managed_memory_profile_digest": {"$ref": "#/$defs/sha256"},
+    "continuation_interface_digest": {"$ref": "#/$defs/sha256"},
+    "managed_memory_plan_id": {"$ref": "#/$defs/managedMemoryPlanId"},
+    "managed_memory_plan_digest": {"$ref": "#/$defs/sha256"},
+    "body_id": {"$ref": "#/$defs/bodyId"},
+    "safepoint_id": {"$ref": "#/$defs/safepointId"},
+    "root_map_id": {"$ref": "#/$defs/rootMapId"},
+    "execution_epoch_id": {"$ref": "#/$defs/executionEpochId"},
+    "target_root_projection_digest": {"$ref": "#/$defs/sha256"},
+    "canonical_root_set_digest": {"$ref": "#/$defs/sha256"},
+    "root_entry_order": {"const": "ROOT_ID_ASCENDING_UNIQUE"},
+    "root_entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/runtimeRootEntry"}
+    },
+    "lifecycle": {"$ref": "#/$defs/receiptLifecycle"},
+    "suspension_rebind_receipts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/suspensionRebindReceipt"}
+    },
+    "runtime_root_receipt_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "runtimeRootReceiptId": {"type": "string", "pattern": "^RuntimeRootReceiptId:[^\\s]+$"},
+    "managedMemoryPlanId": {"type": "string", "pattern": "^ManagedMemoryPlanId:[^\\s]+$"},
+    "bodyId": {"type": "string", "pattern": "^BodyId:[^\\s]+$"},
+    "safepointId": {"type": "string", "pattern": "^SafepointId:[^\\s]+$"},
+    "rootMapId": {"type": "string", "pattern": "^RootMapId:[^\\s]+$"},
+    "executionEpochId": {"type": "string", "pattern": "^ExecutionEpochId:[^\\s]+$"},
+    "continuationReceiptId": {"type": "string", "pattern": "^ContinuationReceiptId:[^\\s]+$"},
+    "rootId": {"type": "string", "pattern": "^RootId:[^\\s]+$"},
+    "managedTraceDescriptorId": {"type": "string", "pattern": "^ManagedTraceDescriptorId:[^\\s]+$"},
+    "activeFrameId": {"type": "string", "pattern": "^ActiveFrameId:[^\\s]+$"},
+    "continuationFrameId": {"type": "string", "pattern": "^ContinuationFrameId:[^\\s]+$"},
+    "cleanupCaptureId": {"type": "string", "pattern": "^CleanupCaptureId:[^\\s]+$"},
+    "pendingOutcomeId": {"type": "string", "pattern": "^PendingOutcomeId:[^\\s]+$"},
+    "closureEnvironmentId": {"type": "string", "pattern": "^ClosureEnvironmentId:[^\\s]+$"},
+    "actorEnvelopeId": {"type": "string", "pattern": "^ActorEnvelopeId:[^\\s]+$"},
+    "runStateId": {"type": "string", "pattern": "^RunStateId:[^\\s]+$"},
+    "replyStateId": {"type": "string", "pattern": "^ReplyStateId:[^\\s]+$"},
+    "runtimeOwnerId": {"type": "string", "pattern": "^RuntimeOwnerId:[^\\s]+$"},
+    "ownerId": {
+      "oneOf": [
+        {"$ref": "#/$defs/activeFrameId"},
+        {"$ref": "#/$defs/continuationFrameId"},
+        {"$ref": "#/$defs/cleanupCaptureId"},
+        {"$ref": "#/$defs/pendingOutcomeId"},
+        {"$ref": "#/$defs/closureEnvironmentId"},
+        {"$ref": "#/$defs/actorEnvelopeId"},
+        {"$ref": "#/$defs/runStateId"},
+        {"$ref": "#/$defs/replyStateId"},
+        {"$ref": "#/$defs/runtimeOwnerId"}
+      ]
+    },
+    "valueId": {"type": "string", "pattern": "^ValueId:[^\\s]+$"},
+    "placeId": {"type": "string", "pattern": "^PlaceId:[^\\s]+$"},
+    "frameSlotId": {"type": "string", "pattern": "^FrameSlotId:[^\\s]+$"},
+    "runtimeRootSlotId": {"type": "string", "pattern": "^RuntimeRootSlotId:[^\\s]+$"},
+    "storageId": {
+      "oneOf": [
+        {"$ref": "#/$defs/valueId"},
+        {"$ref": "#/$defs/placeId"},
+        {"$ref": "#/$defs/frameSlotId"},
+        {"$ref": "#/$defs/runtimeRootSlotId"}
+      ]
+    },
+    "runtimeRootEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root_id",
+        "partition",
+        "owner_kind",
+        "owner_id",
+        "storage_kind",
+        "storage_id",
+        "trace_descriptor_id",
+        "handle_generation"
+      ],
+      "properties": {
+        "root_id": {"$ref": "#/$defs/rootId"},
+        "partition": {"enum": ["RUNNING", "FRAME", "RUNTIME"]},
+        "owner_kind": {
+          "enum": [
+            "ACTIVE_FRAME",
+            "SUSPENDED_FRAME",
+            "CLEANUP_CAPTURE",
+            "PENDING_OUTCOME",
+            "CLOSURE_ENVIRONMENT",
+            "ACTOR_ENVELOPE",
+            "RUN_STATE",
+            "REPLY_STATE",
+            "RUNTIME_OWNER"
+          ]
+        },
+        "owner_id": {"$ref": "#/$defs/ownerId"},
+        "storage_kind": {"enum": ["VALUE", "PLACE", "FRAME_SLOT", "RUNTIME_SLOT"]},
+        "storage_id": {"$ref": "#/$defs/storageId"},
+        "trace_descriptor_id": {"$ref": "#/$defs/managedTraceDescriptorId"},
+        "handle_generation": {"type": "integer", "minimum": 0}
+      },
+      "allOf": [
+        {"if": {"properties": {"owner_kind": {"const": "ACTIVE_FRAME"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/activeFrameId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "SUSPENDED_FRAME"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/continuationFrameId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "CLEANUP_CAPTURE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/cleanupCaptureId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "PENDING_OUTCOME"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/pendingOutcomeId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "CLOSURE_ENVIRONMENT"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/closureEnvironmentId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "ACTOR_ENVELOPE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/actorEnvelopeId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "RUN_STATE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/runStateId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "REPLY_STATE"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/replyStateId"}}}},
+        {"if": {"properties": {"owner_kind": {"const": "RUNTIME_OWNER"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/runtimeOwnerId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "VALUE"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/valueId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "PLACE"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/placeId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "FRAME_SLOT"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/frameSlotId"}}}},
+        {"if": {"properties": {"storage_kind": {"const": "RUNTIME_SLOT"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/runtimeRootSlotId"}}}}
+      ]
+    },
+    "receiptLifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verified_before_publish",
+        "published_before_operation_entry",
+        "live_through_outcome_commit",
+        "released_after_outcome_commit"
+      ],
+      "properties": {
+        "verified_before_publish": {"const": true},
+        "published_before_operation_entry": {"const": true},
+        "live_through_outcome_commit": {"const": true},
+        "released_after_outcome_commit": {"const": true}
+      }
+    },
+    "suspensionRebindReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_root_id",
+        "destination_root_id",
+        "continuation_receipt_id",
+        "source_runtime_root_receipt_id",
+        "source_runtime_root_receipt_digest",
+        "destination_runtime_root_receipt_id",
+        "destination_runtime_root_receipt_digest",
+        "source_root_map_id",
+        "source_root_map_digest",
+        "destination_root_map_id",
+        "destination_root_map_digest",
+        "source_handle_generation",
+        "destination_handle_generation",
+        "distinct_root_ids",
+        "same_handle_generation"
+      ],
+      "properties": {
+        "source_root_id": {"$ref": "#/$defs/rootId"},
+        "destination_root_id": {"$ref": "#/$defs/rootId"},
+        "continuation_receipt_id": {"$ref": "#/$defs/continuationReceiptId"},
+        "source_runtime_root_receipt_id": {"$ref": "#/$defs/runtimeRootReceiptId"},
+        "source_runtime_root_receipt_digest": {"$ref": "#/$defs/sha256"},
+        "destination_runtime_root_receipt_id": {"$ref": "#/$defs/runtimeRootReceiptId"},
+        "destination_runtime_root_receipt_digest": {"$ref": "#/$defs/sha256"},
+        "source_root_map_id": {"$ref": "#/$defs/rootMapId"},
+        "source_root_map_digest": {"$ref": "#/$defs/sha256"},
+        "destination_root_map_id": {"$ref": "#/$defs/rootMapId"},
+        "destination_root_map_digest": {"$ref": "#/$defs/sha256"},
+        "source_handle_generation": {"type": "integer", "minimum": 0},
+        "destination_handle_generation": {"type": "integer", "minimum": 0},
+        "distinct_root_ids": {"const": true},
+        "same_handle_generation": {"const": true}
+      }
+    }
+  },
+  "x-deeplus-verifier-contract": {
+    "plan_binding": "REQUIRE_EXACT_MANAGED_MEMORY_PLAN_BODY_SAFEPOINT_AND_ROOT_MAP",
+    "root_entries": "REQUIRE_ROOT_ID_ASCENDING_UNIQUE_AND_EXACT_STATIC_ENTRY_PARITY_PLUS_RUNTIME_HANDLE_GENERATION",
+    "lifecycle": "REQUIRE_VERIFIED_THEN_PUBLISHED_BEFORE_ENTRY_THEN_LIVE_THROUGH_COMMIT_THEN_RELEASED_AFTER_COMMIT",
+    "suspension_rebind": "WHEN_PRESENT_REQUIRE_EXACT_CONTINUATION_RECEIPT_AND_SOURCE_DESTINATION_RUNTIME_RECEIPT_ROOT_MAP_DIGEST_PARITY_DISTINCT_TYPED_ROOT_IDS_AND_EQUAL_EXACT_HANDLE_GENERATION"
+  },
+  "x-deeplus-status-fence": {
+    "schema_materialization": "DESIGN_STATIC_ONLY",
+    "current_product_receipt_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

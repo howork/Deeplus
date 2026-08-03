@@ -1,0 +1,475 @@
+{
+  "$schema": "../../schemas/language/numeric-array-shape-inferred-literal-r1.schema.json",
+  "schema": "deeplus.numeric-array-shape-inferred-literal/r1",
+  "revision": "r56-local-numeric-array-shape-inferred-literal-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "f4e194d414a024b1fbf93549cdbe3d0cc59fb810",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_ids": [
+    "numeric_array_shape_inferred_column_vector_semicolon_msp",
+    "numeric_array_shape_inferred_value_literal",
+    "numeric_array_vector_orientation_witness_msp"
+  ],
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_ast_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "backend_layout_or_abi_selection_count": 0,
+    "preview_feature_activation_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "syntax_contract": {
+    "root_production": "NumericArrayLiteral",
+    "forms": [
+      {
+        "form_id": "ROW_COMMA",
+        "production_id": "ShapeInferredArrayLiteral",
+        "surface": "#[e1, e2, ..., eN]",
+        "separator": ",",
+        "minimum_element_count": 1,
+        "rank": 1,
+        "shape_expression": "[N]",
+        "orientation": "ROW"
+      },
+      {
+        "form_id": "COLUMN_SEMICOLON",
+        "production_id": "ShapeInferredColumnVectorLiteral",
+        "surface": "#[e1; e2; ...; eN]",
+        "separator": ";",
+        "minimum_element_count": 2,
+        "rank": 1,
+        "shape_expression": "[N]",
+        "orientation": "COLUMN"
+      }
+    ],
+    "nonempty_required": true,
+    "mixed_separator_admitted": false,
+    "exact_rank_two_forms_distinct": [
+      {
+        "surface": "#1,N[e1, ..., eN]",
+        "rank": 2,
+        "shape_expression": "[1,N]",
+        "orientation": "MATRIX"
+      },
+      {
+        "surface": "#N,1[e1; ...; eN]",
+        "rank": 2,
+        "shape_expression": "[N,1]",
+        "orientation": "MATRIX"
+      }
+    ],
+    "surface_equivalence_count_between_inferred_rank_one_and_exact_rank_two": 0
+  },
+  "ast_contract": {
+    "wrapper_node": "AST/NumericArrayLiteral",
+    "variants": [
+      {
+        "form_id": "ROW_COMMA",
+        "cst_kind": "CST/ShapeInferredArrayLiteral",
+        "ast_kind": "AST/ShapeInferredArrayLiteral"
+      },
+      {
+        "form_id": "COLUMN_SEMICOLON",
+        "cst_kind": "CST/ShapeInferredColumnVectorLiteral",
+        "ast_kind": "AST/ShapeInferredColumnVectorLiteral"
+      }
+    ],
+    "required_fields": [
+      "form_id",
+      "orientation",
+      "element_expr_ids",
+      "inferred_rank",
+      "inferred_shape",
+      "aggregate_kind_id",
+      "source_span"
+    ],
+    "aggregate_kind_id": "NUMERIC_ARRAY",
+    "inferred_rank": 1,
+    "shape_rule": "inferred_shape is exactly [len(element_expr_ids)]",
+    "element_source_order_preserved": true,
+    "backend_layout_field_count": 0,
+    "abi_identity_field_count": 0
+  },
+  "static_semantics": {
+    "admission_predicate": "NumericArrayElementAdmitted",
+    "element_count_rule": "N is the source element count and N >= 1",
+    "contextual_check": "When an expected rank-1 NumericArray type fixes element type, shape, or orientation, each element uses the existing ordinary expression typing and contextual adaptation rules, then the inferred [N] and orientation must match exactly.",
+    "context_free_inference": "Without an expected NumericArray type, all elements must normalize to one identical admitted numeric type. The checker does not synthesize a Union and does not search for widening, signedness, real-to-complex, provider, broadcast, or layout conversions.",
+    "row_result": "NumericArray<Element, rank=1, shape=[N], orientation=ROW>",
+    "column_result": "NumericArray<Element, rank=1, shape=[N], orientation=COLUMN>",
+    "exact_rank_two_nonidentity": true,
+    "implicit_broadcast_count": 0,
+    "implicit_element_conversion_search_count": 0,
+    "runtime_shape_inference_count": 0
+  },
+  "diagnostic_contract": {
+    "priority": [
+      {
+        "rank": 1,
+        "condition": "the # NumericArray sigil and following [ opener are separated by trivia",
+        "diagnostic_id": "NUMARR_LITERAL_NO_WHITESPACE"
+      },
+      {
+        "rank": 2,
+        "condition": "token or production recovery fails before a complete NumericArray literal is formed",
+        "diagnostic_owner": "existing lexer/parser diagnostic"
+      },
+      {
+        "rank": 3,
+        "condition": "a shape-inferred #[...] value literal is used where a type is required",
+        "diagnostic_id": "NUMARR_SHAPE_INFERRED_VALUE_LITERAL_NOT_TYPE"
+      },
+      {
+        "rank": 4,
+        "condition": "the inferred literal contains zero elements",
+        "diagnostic_id": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN"
+      },
+      {
+        "rank": 5,
+        "condition": "comma and semicolon separators are mixed or violate the column orientation form",
+        "diagnostic_id": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED"
+      },
+      {
+        "rank": 6,
+        "condition": "an element expression independently fails name, type, effect, ownership, or control checking",
+        "diagnostic_owner": "the element expression primary diagnostic"
+      },
+      {
+        "rank": 7,
+        "condition": "all element expressions are individually valid but do not normalize to one exact admitted element type",
+        "diagnostic_id": "NUMARR_ELEMENT_TYPE_MISMATCH"
+      },
+      {
+        "rank": 8,
+        "condition": "element type is valid but expected rank, shape, or orientation does not exactly match the inferred value",
+        "diagnostic_id": "NUMARR_EXPECTED_SHAPE_MISMATCH"
+      }
+    ],
+    "new_diagnostics": [
+      {
+        "diagnostic_id": "NUMARR_ELEMENT_TYPE_MISMATCH",
+        "severity": "error",
+        "owner": "checker",
+        "message": "Shape-inferred NumericArray elements must normalize to one exact admitted element type; use explicit conversions before the literal.",
+        "recovery_ast_count": 0,
+        "hir_residue_count": 0,
+        "mir_residue_count": 0
+      }
+    ]
+  },
+  "lowering_contract": {
+    "hir_plan_id": "NUMERIC_ARRAY_SHAPE_INFERRED_LITERAL_PLAN_R1",
+    "aggregate_kind_id": "NUMERIC_ARRAY",
+    "shape_identity": {
+      "rank": 1,
+      "dimensions": "[N]",
+      "orientation_source": "AST.orientation",
+      "backend_layout_selected": false,
+      "abi_identity_selected": false
+    },
+    "element_evaluation_order": "SOURCE_LEFT_TO_RIGHT",
+    "element_evaluation_count_each": 1,
+    "element_lowering": "Each element expression lowers through its already selected ordinary expression operations; this contract adds no per-element MIR operation.",
+    "assembly": {
+      "operation_kind": "AGGREGATE_ASSEMBLE",
+      "semantic_operation_id": "DM-SEMOP-AGGREGATE-ASSEMBLE-R1",
+      "operation_count_on_success": 1,
+      "payload": {
+        "aggregate_kind_id": "NUMERIC_ARRAY"
+      },
+      "shape_carrier": "the statically sealed HIR/MIR result type identity, not a new operation payload field"
+    },
+    "publication": {
+      "partial_publish_count": 0,
+      "publish_point": "after every element expression succeeds and immediately after the single aggregate assembly completes",
+      "assembly_count_on_element_failure": 0
+    },
+    "failure_cleanup": {
+      "cleanup_order": "REVERSE_INITIALIZATION_ORDER",
+      "cleanup_scope": "successfully initialized element temporaries only",
+      "failing_element_result_published": false,
+      "unevaluated_suffix_element_count": "all source elements strictly after the failing element"
+    },
+    "new_mir_operation_kind_count": 0,
+    "runtime_or_provider_lookup_count": 0,
+    "backend_layout_or_abi_decision_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "tooling_contract": {
+    "formatter": {
+      "row_separator": ", ",
+      "column_separator": "; ",
+      "orientation_rewrite_count": 0,
+      "inferred_to_exact_shape_rewrite_count": 0,
+      "idempotence_required": true
+    },
+    "lsp": {
+      "hover_fields": [
+        "normalized_element_type",
+        "rank",
+        "shape",
+        "orientation"
+      ],
+      "completion_changes_orientation_count": 0,
+      "diagnostic_priority_matches_checker": true
+    },
+    "formatter_execution": "NOT_RUN",
+    "lsp_execution": "NOT_RUN"
+  },
+  "rules": [
+    {
+      "rule_id": "NASIL-R001",
+      "text": "ROW_COMMA and COLUMN_SEMICOLON are existing current STABLE_DESIGN forms; this contract adds no source surface."
+    },
+    {
+      "rule_id": "NASIL-R002",
+      "text": "Both inferred forms have semantic rank 1 and shape [N], with ROW or COLUMN orientation retained as distinct static identity."
+    },
+    {
+      "rule_id": "NASIL-R003",
+      "text": "Exact #1,N and #N,1 literals are rank-2 matrices and never become identical to either inferred rank-1 form."
+    },
+    {
+      "rule_id": "NASIL-R004",
+      "text": "An inferred NumericArray literal must contain at least one element."
+    },
+    {
+      "rule_id": "NASIL-R005",
+      "text": "The normalized AST preserves form, orientation, source element order, inferred rank and inferred shape."
+    },
+    {
+      "rule_id": "NASIL-R006",
+      "text": "Element typing uses only existing ordinary expression and contextual adaptation rules and must close one exact admitted numeric element type."
+    },
+    {
+      "rule_id": "NASIL-R007",
+      "text": "Element-type disagreement reports NUMARR_ELEMENT_TYPE_MISMATCH after all higher-priority structural or element-local failures."
+    },
+    {
+      "rule_id": "NASIL-R008",
+      "text": "Each element expression is evaluated exactly once from left to right."
+    },
+    {
+      "rule_id": "NASIL-R009",
+      "text": "Successful construction emits exactly one existing AGGREGATE_ASSEMBLE operation with semantic identity DM-SEMOP-AGGREGATE-ASSEMBLE-R1 and aggregate kind NUMERIC_ARRAY."
+    },
+    {
+      "rule_id": "NASIL-R010",
+      "text": "No element or aggregate value is partially published before successful assembly."
+    },
+    {
+      "rule_id": "NASIL-R011",
+      "text": "Failure cleans successfully initialized element temporaries in reverse initialization order and does not evaluate later elements."
+    },
+    {
+      "rule_id": "NASIL-R012",
+      "text": "Shape and orientation are carried by sealed semantic type identity and do not select backend layout or ABI."
+    },
+    {
+      "rule_id": "NASIL-R013",
+      "text": "Formatter and LSP preserve inferred form and orientation and do not rewrite to an exact rank-2 form."
+    },
+    {
+      "rule_id": "NASIL-R014",
+      "text": "Static validation is E2 evidence only; all product lanes remain NOT_RUN."
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "NASIL-AC-TARGET-POS-001",
+      "class": "POSITIVE",
+      "feature_id": "numeric_array_shape_inferred_value_literal",
+      "source_or_subject": "let row = #[1, 2, 3]",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "form_id": "ROW_COMMA",
+        "rank": 1,
+        "shape": [3],
+        "orientation": "ROW",
+        "element_type": "Int"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-TARGET-BOUND-001",
+      "class": "BOUNDARY",
+      "feature_id": "numeric_array_shape_inferred_value_literal",
+      "source_or_subject": "let singleton = #[1]",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "minimum_element_count": 1,
+        "rank": 1,
+        "shape": [1],
+        "orientation": "ROW"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-TARGET-REJECT-001",
+      "class": "REJECT",
+      "feature_id": "numeric_array_shape_inferred_value_literal",
+      "source_or_subject": "let empty = #[]",
+      "expected": "REJECT",
+      "diagnostic_or_null": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "assertions": {
+        "hir_residue_count": 0,
+        "mir_residue_count": 0,
+        "aggregate_publish_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-TARGET-REJECT-002",
+      "class": "REJECT",
+      "feature_id": "numeric_array_shape_inferred_value_literal",
+      "source_or_subject": "let mixed = #[1, 2.0]",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMARR_ELEMENT_TYPE_MISMATCH",
+      "assertions": {
+        "implicit_union_count": 0,
+        "implicit_conversion_search_count": 0,
+        "mir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-COLUMN-POS-001",
+      "class": "POSITIVE",
+      "feature_id": "numeric_array_shape_inferred_column_vector_semicolon_msp",
+      "source_or_subject": "let column = #[1; 2; 3]",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "form_id": "COLUMN_SEMICOLON",
+        "rank": 1,
+        "shape": [3],
+        "orientation": "COLUMN",
+        "element_type": "Int"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-COLUMN-BOUND-001",
+      "class": "BOUNDARY",
+      "feature_id": "numeric_array_shape_inferred_column_vector_semicolon_msp",
+      "source_or_subject": "let minimumColumn = #[1; 2]",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "minimum_column_element_count": 2,
+        "rank": 1,
+        "shape": [2],
+        "orientation": "COLUMN"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-COLUMN-REJECT-001",
+      "class": "REJECT",
+      "feature_id": "numeric_array_shape_inferred_column_vector_semicolon_msp",
+      "source_or_subject": "let malformed = #[1, 2; 3]",
+      "expected": "REJECT",
+      "diagnostic_or_null": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
+      "assertions": {
+        "orientation_identity_count": 0,
+        "hir_residue_count": 0,
+        "mir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-ORIENTATION-POS-001",
+      "class": "POSITIVE",
+      "feature_id": "numeric_array_vector_orientation_witness_msp",
+      "source_or_subject": "compare #[1, 2, 3] with #[1; 2; 3]",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "both_rank": 1,
+        "both_shape": [3],
+        "orientation_equal": false,
+        "implicit_orientation_conversion_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-ORIENTATION-BOUND-001",
+      "class": "BOUNDARY",
+      "feature_id": "numeric_array_vector_orientation_witness_msp",
+      "source_or_subject": "compare #[1, 2, 3] with #1,3[1, 2, 3]",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "inferred_rank": 1,
+        "exact_rank": 2,
+        "semantic_identity_equal": false,
+        "implicit_rank_conversion_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-ORIENTATION-REJECT-001",
+      "class": "REJECT",
+      "feature_id": "numeric_array_vector_orientation_witness_msp",
+      "source_or_subject": "let matrix: #1,3[Int] = #[1, 2, 3]",
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMARR_EXPECTED_SHAPE_MISMATCH",
+      "assertions": {
+        "inferred_rank": 1,
+        "expected_rank": 2,
+        "implicit_rank_conversion_count": 0,
+        "mir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "NASIL-AC-DYNAMIC-FAIL-001",
+      "class": "BOUNDARY",
+      "feature_id": "numeric_array_shape_inferred_value_literal",
+      "source_or_subject": "let value = #[first(), fail(), never()]",
+      "expected": "PROPAGATE_ELEMENT_FAILURE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "first_evaluation_count": 1,
+        "fail_evaluation_count": 1,
+        "never_evaluation_count": 0,
+        "aggregate_assemble_count": 0,
+        "partial_publish_count": 0,
+        "cleanup_order": [
+          "first_result"
+        ]
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "machine_acceptance": {
+    "feature_count": 3,
+    "form_count": 2,
+    "rule_count": 14,
+    "diagnostic_priority_count": 8,
+    "new_diagnostic_count": 1,
+    "acceptance_case_count": 11,
+    "positive_case_count": 3,
+    "boundary_case_count": 4,
+    "reject_case_count": 4,
+    "dynamic_failure_case_count": 1,
+    "aggregate_assemble_count_on_success": 1,
+    "new_mir_operation_kind_count": 0,
+    "backend_layout_or_abi_selection_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED"
+  }
+}

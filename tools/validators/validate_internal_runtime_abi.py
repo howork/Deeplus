@@ -18,6 +18,7 @@ from validate_hir_mir_machine_contract import schema_errors
 CONTRACT = "spec/contracts/internal-runtime-abi-r1.json"
 REGISTRY = "spec/contracts/runtime-helper-registry-r1.json"
 FIXTURES = "tests/fixtures/current/internal-runtime-abi-r1.json"
+CONTINUATION = "spec/contracts/continuation-interface-r1.json"
 
 SCHEMAS = [
     "schemas/language/internal-runtime-abi-r1.schema.json",
@@ -51,6 +52,7 @@ EXPECTED_RECEIPT_INPUTS = [
     "runtime_helper_and_safepoint_capability_digest",
     "managed_memory_profile_digest",
     "managed_memory_plan_digest",
+    "managed_root_receipt_schema_digest",
     "continuation_root_interface_digest",
     "target_root_projection_digest",
     "runtime_root_registry_digest",
@@ -258,6 +260,7 @@ def main() -> int:
     contract = load_json(root, CONTRACT)
     registry = load_json(root, REGISTRY)
     fixtures = load_json(root, FIXTURES)
+    continuation = load_json(root, CONTINUATION)
     schema_documents = {rel: load_json(root, rel) for rel in SCHEMAS}
     for rel in SCHEMAS:
         schema = schema_documents[rel]
@@ -322,6 +325,9 @@ def main() -> int:
 
     helper_rows = registry.get("helper_rows", [])
     conditional = registry.get("conditional_extension_rows", [])
+    conditional_by_operation = {
+        row.get("operation"): row for row in conditional
+    }
     continuation_rows = [
         row
         for row in helper_rows
@@ -369,6 +375,18 @@ def main() -> int:
         and len(helper_ids) == len(set(helper_ids))
         and operations == expected_ops
         and {row.get("operation") for row in conditional} == CONDITIONAL_OPERATIONS
+        and conditional_by_operation.get("MANAGED_ALLOCATE_SLOW", {}).get("terminator_kind")
+        == "INVOKE"
+        and conditional_by_operation.get("MANAGED_ALLOCATE_SLOW", {}).get("projection_phase_or_null")
+        is None
+        and conditional_by_operation.get("MANAGED_SAFEPOINT_ENTER", {}).get("terminator_kind")
+        == "TARGET_PROJECTION_STEP"
+        and conditional_by_operation.get("MANAGED_SAFEPOINT_ENTER", {}).get("projection_phase_or_null")
+        == "BEFORE_MAY_COLLECT_ENTRY"
+        and conditional_by_operation.get("MANAGED_SAFEPOINT_LEAVE", {}).get("terminator_kind")
+        == "TARGET_PROJECTION_STEP"
+        and conditional_by_operation.get("MANAGED_SAFEPOINT_LEAVE", {}).get("projection_phase_or_null")
+        == "AFTER_OUTCOME_COMMIT"
         and len(active_helper_rows) == 25
         and len(continuation_rows) == 6
         and all(
@@ -491,6 +509,10 @@ def main() -> int:
         and dispatcher.get("parked_commits_outcome_slot") is False
         and dispatcher.get("parked_commits_mir_successor") is False
         and dispatcher.get("bounded_continuation_dispatch", {}).get("profile_count") == 1
+        and dispatcher.get("bounded_continuation_dispatch", {}).get("continuation_interface_digest")
+        == contract.get("dependencies", {}).get("continuation_interface_digest_or_null")
+        == registry.get("continuation_interface_digest_or_null")
+        == continuation.get("continuation_interface_digest")
         and dispatcher.get("bounded_continuation_dispatch", {}).get("operation_allowlist")
         == ["RESUME", "CANCEL"]
         and dispatcher.get("arbitrary_callback_entry_count") == 0,
@@ -629,7 +651,7 @@ def main() -> int:
             "required_receipt_inputs"
         )
         == EXPECTED_RECEIPT_INPUTS
-        and len(EXPECTED_RECEIPT_INPUTS) == len(set(EXPECTED_RECEIPT_INPUTS)) == 22
+        and len(EXPECTED_RECEIPT_INPUTS) == len(set(EXPECTED_RECEIPT_INPUTS)) == 23
         and cranelift_guard.get("contract") == CONTRACT
         and cranelift_guard.get("helper_registry") == REGISTRY
         and cranelift_guard.get("manifest_schema")
@@ -671,7 +693,7 @@ def main() -> int:
         and hir_guard.get("canonical_promotion_ready") is True
         and hir_guard.get("product_support") == "NOT_RUN",
         "R37_HIR_CRANELIFT_BINDING",
-        "exact ordered 22-input fused receipts and typed ABI guard parity",
+        "exact ordered 23-input fused receipts and typed ABI guard parity",
         failures,
     )
 
@@ -730,14 +752,21 @@ def main() -> int:
             )
         ],
     ]
+    internal_feature_rows = [
+        row for row in feature_rows
+        if row.get("feature_id") == "internal_runtime_abi_r1"
+    ]
     check(
         contract.get("diagnostics") == DIAGNOSTICS
         and fixtures.get("expected_counts", {}).get("diagnostics")
         == len(DIAGNOSTICS)
-        and len(feature_rows) == 1
-        and feature_rows[0].get("feature_id") == "internal_runtime_abi_r1"
-        and feature_rows[0].get("authority_set")
+        and len(internal_feature_rows) == 1
+        and internal_feature_rows[0].get("authority_set")
         == ["LANGUAGE", "RUNTIME", "VERIFIER"]
+        and "consumes the exact continuation and managed-reference digests"
+        in internal_feature_rows[0].get("notes", "")
+        and "does not canonically close IR-OWN-P0-017"
+        in internal_feature_rows[0].get("notes", "")
         and [row.get("diagnostic_id") for row in diagnostic_rows]
         == DIAGNOSTICS
         and all(
@@ -748,7 +777,8 @@ def main() -> int:
         and not catalog_schema_errors,
         "R37_CATALOG_PRIORITY",
         (
-            f"feature_rows={len(feature_rows)} diagnostics={len(diagnostic_rows)} "
+            f"feature_rows={len(feature_rows)} internal_features={len(internal_feature_rows)} "
+            f"diagnostics={len(diagnostic_rows)} "
             f"schema_errors={catalog_schema_errors[:3]}"
         ),
         failures,

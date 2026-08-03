@@ -106,6 +106,10 @@ No whitespace, newline, or comment may appear between `.`, `\`, and the escaped 
 
 Whitespace and comments are trivia except where a boundary policy requires attachment. Line comments, block comments, documentation comments, and word comments follow scanner priority; comment openers win over operator decompositions.
 
+At a shared comment prefix, the scanner uses the fixed longest/specific-first order `//!!` documentation block, `//!` documentation line, `//-` nested block, then `//` ordinary line comment. A word comment consumes the maximal nonempty `UnicodeXIDContinue` sequence after its backtick. Its terminator is not consumed and is scanned again in the enclosing goal. The backtick must be byte-adjacent to exactly one already completed eligible left anchor; the comment is preserved once as CST trivia and contributes no AST, name, label, overload key, lookup fact, or runtime behavior.
+
+Consecutive documentation comments form one `DocGroup` only inside the same declaration container. Horizontal whitespace and at most one physical line break may separate adjacent documentation comments or the final comment from its owner. A blank line, ordinary comment, word comment, shebang, container boundary, or EOF is an attachment fence. An annotation cluster may intervene when it is itself attached to the same underlying declaration. Public and private documentable declarations may own a group; import/use/export directives, grouping wrappers, accessor children, local declarations, reserved slots, and recovery nodes may not. The parser attachment pass diagnoses a detached group and preserves its trivia without manufacturing an AST attachment.
+
 The parser may admit horizontal whitespace and comments between `#` and a role word only on the same physical line. A physical line break is rejected. The formatter rehomes comments safely and prints canonical attached spelling such as `#get`, `#pure`, and `#entry`. Literal sigils are different: `#raw`, `#bytes`, collection literal sigils, and NumericArray literal sigils are attached scanner/parser owners and must not be reconstructed from a separated `#` plus identifier.
 
 ## 4. Numeric, character, string, and bytes literals
@@ -236,12 +240,110 @@ syntax. API closure is checked after normalization: a wider visibility domain
 cannot expose a dependency identity from a narrower domain, and a `public`
 declaration is not externally exported merely because it is public.
 
-Member declarations use `+`, `-`, and `#`, not top-level visibility words. The
-hierarchy-protected `#` member visibility is visible in the declaring nominal
-type and its nominal subclasses, not in arbitrary conforming or structurally
-similar types. Public API residue records visibility exactly. The structural
-Grammar never turns an omitted type-producing-owner visibility into an implicit
-`private` declaration.
+Member declarations use the exact sigils `+`, `-`, and `#`, not top-level
+visibility words. Their widening order is `- < # < +`: `-` admits only the
+declaring nominal type, `#` admits that declaring nominal type and its nominal
+subclasses, and `+` admits every site at which the owning top-level declaration
+is itself reachable. Module or package co-location, friendship by import,
+Trait conformance, witness availability, and structural similarity do not make
+a site a nominal subclass and therefore do not satisfy `#`.
+
+The effective access domain is the intersection of the member domain and the
+reachability domain of its top-level owner. A `+` member of a `private` class is
+not reachable outside the declaring module, and a `#` member does not expose an
+otherwise unreachable owner. Public API residue records both domains exactly
+and never widens the owner merely because a member is `+`.
+
+The exact Grammar has fifteen productions carrying `MemberVisibility?`, without
+introducing another spelling: `MemberFunctionDecl`,
+`TypeSideMemberFunctionDecl`, `ConstructorDecl`, `StoredParameter`,
+`FieldDecl`, `TypeSideFieldDecl`, `AccessorDecl`, `ForwardDecl`,
+`TraitMethodDecl`, `ConformanceMethodDecl`, `ExtensionSetFunctionDecl`,
+`ActorOnDecl`, `ActorRequestDecl`, `BitfieldNamedSlot`, and `FlagNamedSlot`.
+The optional grammar term is a source-preservation boundary, not a defaulting
+rule. When the sigil is absent, CST and frontend normalization preserve
+`MemberVisibility = OMITTED` (serialized as `null`). R58 assigns no global
+member default; the immediate parent-owner contract must either resolve the
+omission or reject it. An unresolved omission never participates in the
+`- < # < +` comparison.
+
+An inherited slot retains its original declaring-nominal access anchor through
+every override. After the parent-owner contract has resolved any omission, an
+override must preserve or widen the inherited slot visibility; it cannot
+narrow it or re-anchor `#` at the overriding subclass. A valid narrowing is
+rejected with `OVERRIDE_VISIBILITY_CANNOT_NARROW`. Trait witness visibility is
+checked independently against the requirement and retains the existing
+`TRAIT_REQUIREMENT_VISIBILITY_MISMATCH` identity.
+
+Diagnostic precedence is owner-first and deterministic. A top-level visibility
+word on a member callable, or the unsupported word `protected`, is rejected
+first with `CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN`; `public def` is the canonical
+wrong-word example. No override or Trait visibility comparison is attempted for
+that malformed owner. For a callable with a valid member sigil,
+inherited-slot narrowing is diagnosed next with
+`OVERRIDE_VISIBILITY_CANNOT_NARROW`, before a later Trait requirement mismatch.
+A well-formed, non-narrowing witness that still fails its requirement uses
+`TRAIT_REQUIREMENT_VISIBILITY_MISMATCH`.
+
+Member visibility is entirely static. It adds no runtime member search,
+visibility check, registry entry, MIR operation, xVM instruction, or backend
+instruction. A rejected declaration or access produces no HIR residue.
+Successful access lowers the already selected member exactly as it would after
+any other static admission proof.
+
+Normal owner-local access:
+
+```deeplus
+module core::base
+
+public open class Base {
+    -let nonce: Int = 0
+    #def hook*+() -> Int = return nonce
+    +def value() -> Int = return self ~ hook
+}
+```
+
+Boundary access from a separate source unit and module is admitted by nominal
+ancestry, not module identity:
+
+```deeplus
+module app::derived
+import core::base::Base
+
+public class Derived derives Base {
+    #def hook*.() -> Int = return 2
+    +def expose() -> Int = return self ~ hook
+}
+```
+
+Rejection examples:
+
+```deeplus
+// Same-module peer access is not nominal subclass access.
+module core::base
+
+public class Peer {
+    +def probe(base: Base) -> Int = return base ~ hook
+    // REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION
+}
+
+public class WrongWord {
+    public def value() -> Int = return 1
+    // CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN
+}
+
+public open class WideBase {
+    +def value*+() -> Int = return 1
+}
+
+public class NarrowChild derives WideBase {
+    #def value*.() -> Int = return 2
+    // OVERRIDE_VISIBILITY_CANNOT_NARROW
+}
+```
+
+The structural Grammar also never turns an omitted type-producing-owner
+visibility into an implicit `private` declaration.
 
 Annotations are structural attachments and must not float to a different declaration after an error. Modifier sequences are closed by declaration owner. Duplicate or reordered modifiers that are not in the owner matrix are rejected.
 
@@ -649,6 +751,17 @@ associated type is written `<T as Trait>::Assoc::member`. HIR and public API
 residue preserve `TraitId`, `RequirementId`, `ConformanceId`,
 `TraitWitnessId`, `ImplementationId`, substitution, responsibility, and
 authority rather than reconstructing them from spelling or discovery order.
+The selected residue is one non-structural
+`TraitAssociatedStaticSelection`: its `SelectionId` binds the exact seven
+`TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
+`ImplementationId`, `SubstitutionId`, and `ResponsibilityId` fields. The
+descriptor also records whether the item is an associated type, value, or
+function, its direct static symbol when present, and the associated function's
+`CallableImplementationId`. Associated types emit no runtime operation;
+associated values and bare function references reuse the ordinary static
+reference path; an invoked function reuses the closed Trait-witness call path.
+No runtime reconstruction, lookup, fallback, provider ordering,
+specialization, or child-local witness replacement is permitted.
 
 The initial associated `let::` profile admits only immutable, Shareable,
 no-drop, authority-free, acyclic, statically materializable values. Only a
@@ -910,11 +1023,16 @@ The checker owns target depth, payload type, and cleanup order. A control transf
 ## 20. Declarative clause functions
 
 Declarative clause functions partition a finite normalized subject domain.
-Phase A admits the pattern carriers that have exact current productions and
-context rows: Enum, Option, and Result variants; literal equality; and exact
-closed-Union alternative binders. Sealed-Class constructor patterns and
-scalar-interval patterns have no current production and are not inferred from
-type closure or range expressions. Guards must be R0-pure and terminating.
+Phase A admits exactly the current pattern kinds listed by
+`PCTX-DECLARATIVE-CLAUSE`, subject to the stronger requirement that their
+normalized cells form a finite decidable partition. The current carrier set
+therefore includes the admitted Tuple, List, Record/Map row, Enum/Option/Result,
+closed-Union alternative, literal, pin, range/relational, Or, Alias, and Move
+forms when their exact child cells and ownership interface are statically
+closed. Merely having an admitted Pattern production is not enough: an open or
+undecidable carrier is rejected by the partition procedure. Sealed-Class
+closure does not manufacture constructor-pattern syntax. Guards must be
+R0-pure and terminating.
 
 The checker constructs a finite partition, intersects each source-ordered arm, rejects the first nonempty overlap, subtracts covered cells, lets one final `otherwise` cover the exact remainder, and rejects a nonempty remainder. Option, Result, and `throws` do not add implicit arms.
 
@@ -976,9 +1094,22 @@ An explicitly bounded List `[L..U: elements]` preserves the declared `L..U` logi
 
 Prefix/postfix `++` and `--` expressions do not exist. Mutation is written as an explicit assignment under the single-place transaction law in §17. NumericArray axes, suffix coordinates, and shape coordinates are separate typed domains. Each built-in default source-visible NumericArray axis nevertheless has the explicit domain `1..dimension`; its axis type is not supplied by an ordinary sequence witness. A complete rank-matching coordinate list selects one element. Wrong axis type/count is rejected statically, and a dynamic coordinate outside its axis domain raises `IndexError::outOfLogicalDomain`.
 
-NumericArray literals are `#[...]` and rank-qualified `#N[...]`. `array` and
-`case` are ordinary identifiers with no special token, parser role, resolver
-namespace, checker intrinsic, or formatter rule. Deeplus supplies no
+NumericArray literals are shape-inferred `#[...]` forms and exact-shape
+`#N[...]` forms. In every NumericArray literal head, `#` and the following `[` or
+static dimension list are attached with no intervening trivia. The comma form
+`#[e1, e2, ...]` is nonempty and produces rank 1, shape `[N]`, with `ROW`
+orientation; one trailing comma is permitted. The semicolon form
+`#[e1; e2; ...]` is nonempty and produces the same rank 1, shape `[N]`, with
+`COLUMN` orientation. Orientation is therefore selected solely by the literal
+separator, never by the expected result type. The exact forms `#1,N[...]` and
+`#N,1[...]` remain distinct rank-2 matrices and are not alternate spellings of
+the two rank-1 forms. Neither an expected type nor element context may rewrite
+an ordinary List, insert broadcasting, or infer nested rank for these literals.
+All shape-inferred elements must have one exact normalized admitted numeric type;
+otherwise the checker emits `NUMARR_ELEMENT_TYPE_MISMATCH`.
+
+`array` and `case` are ordinary identifiers with no special token, parser role,
+resolver namespace, checker intrinsic, or formatter rule. Deeplus supplies no
 predeclared or intrinsic `Array<T>` or `Case` type binding, but either spelling
 may be introduced by an ordinary user declaration and then resolves normally.
 Enum alternatives remain variants identified by their declared name and nominal
@@ -1339,16 +1470,25 @@ runtime type-test Pattern node. A callable's leading parameter Identifier owns
 the public type annotation; an optional following structural Pattern is checked
 for irrefutability and lowers only as body-entry decomposition.
 
-Every refutable owner follows one phase order: evaluate the subject once;
-acquire its place/owner; build and execute a nonconsuming structural TestPlan;
-expose nonowning probe binders; evaluate zero or one terminating pure Bool
-guard; atomically commit moves/borrows/bindings; expose final binders; run the
-body; then perform the owner-specific exit or join. A failed structural test or
-guard performs no component move, irreversible borrow, authority acquisition,
-escape, suspension, residual-view publication, or partial binding. Mismatch
-disposition belongs to the context: skip a loop candidate, choose the next
-match arm/clause/catch, take the false branch, run the required guarded-binding
-exit, or raise `PatternMatchDefect` for an explicit assertive binding.
+Every refutable owner creates exactly one logical `PatternAttempt` and follows
+one phase order: evaluate the subject once; acquire its place/owner; build and
+execute a pure nonconsuming structural TestPlan; expose read-only nonescaping
+probe binders; evaluate zero or one terminating pure Bool guard exactly once
+after structural success; and, only after final guarded success, perform
+exactly one logical commit of all moves, loans, views, and bindings. Final
+binders are exposed only after that commit, followed by the body and the
+owner-specific exit or join. A child pattern-row `BINDING_COMMIT` is a
+compositional requirement of the enclosing attempt and collapses into this
+single top-level commit; it is not an independently executable commit.
+
+A failed structural probe or false guard publishes no binding, component move,
+loan, residual view, or authority. Probe binders may be read by the guard but
+may not move, escape, suspend, mutate through, or acquire a loan, view, or
+authority. The pattern-control dispositions are exact: `if let` takes its
+false branch, `while let` exits its loop, and `for let` skips the current
+candidate. Other mismatch dispositions remain context-owned: choose the next
+match arm/clause/catch, run the required guarded-binding exit, or raise
+`PatternMatchDefect` for an explicit assertive binding.
 
 Current structural carriers are exact Tuple products; closed List/bounded-List
 descriptors; exact/open structural Record and Map rows; Enum positional or
@@ -1377,11 +1517,31 @@ rest binding.
 Pin Patterns read one stable place or static value exactly once. Bounded range
 and relational Patterns are current only for closed exactly ordered domains
 such as Int, UInt, Char and an ordered Enum; Float ranges remain Preview. An
-Or-pattern requires identical observable binders with the same canonical types,
-ownership modes, mutability, and regions on every branch; path/source order is
-not identity. `pattern as name` creates a borrow alias rather than a clone, and
-it cannot coexist with a moved or exclusive descendant. Cross-arm place joins
-preserve only capabilities valid on every incoming arm.
+Or-pattern probes branches in source order, selects the first structurally
+successful branch, and requires an exactly equal normalized binder interface:
+name, canonical type, ownership mode, mutability, usable region, and capability
+set must agree for every binder. There is no retry or backtracking, including
+after a false owner guard. Path/source order is not identity. A mismatch emits
+`OR_PATTERN_BINDINGS_INCONSISTENT` before lowering.
+
+`pattern as name` preserves the same subject identity, performs no clone, and
+stages a shared borrow. It conflicts with any moved or exclusively borrowed
+descendant of that subject and emits `ALIAS_PATTERN_OWNERSHIP_CONFLICT`. A
+borrowed subject cannot use `move PatternPrimary` to extract an affine payload;
+that rejection emits `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD`. The move
+Pattern is admitted only when the attempted subject supplies consuming owner
+authority.
+
+Ownership preparation is failure-atomic. Probing and the optional guard leave
+no ownership residue. Move reservations are cancelled on every preparation
+abort; on final success the required moves and shared loans are acquired before
+one infallible group `BINDING_COMMIT` publishes the binders. A pattern loan ends
+at the earliest mutation, move, replacement, cleanup, or enclosing-region
+frontier that invalidates it. At a join, normally returning arms must preserve
+compatible place identity and ownership state before their capability sets are
+intersected. Divergent arms do not participate. Incompatible returning arms
+emit `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH`; the checker never synthesizes a
+clone or ownership join.
 
 A match head may use the bounded-binder Pattern
 `lower OrderedRelOp name OrderedRelOp upper`. The match subject is evaluated
@@ -1427,7 +1587,7 @@ performs backtracking.
 
 The checker maintains a flow-proof environment `Phi` separately from each binding's declared semantic type. A successful structural pattern intersects `Phi` with its exact enum case or union alternative; an inline admitted R0 guard may add finite facts on its true edge. Every admitted `def#guard` has one verified, versioned `GuardSummaryV1` containing a finite normalized R0 Boolean formula bound to its exact `CallableImplementationId`, parameter types, body digest, summary digest, and profile version. A direct truth-test of that exact guard over stable actual places substitutes the actuals into the summary once: the true edge adds `P` and the false edge adds the exact logical `not(P)` to `Phi`. The runtime Bool call still executes exactly once; no proof object or second predicate evaluation exists, and the declared type is unchanged. Stored Bool results, wrappers, dynamic dispatch, first-class callable erasure, arbitrary helpers, and unstable actuals add no fact. For IEEE values the complement remains logical negation and is never rewritten into an algebraically stronger comparison that erases NaN behavior. Guard facts do not make a guarded match arm exhaustive. Summary construction failure is a declaration error rather than an opaque fallback; use `def#pure` for a pure Bool helper that intentionally exports no narrowing proof. Joins retain only facts present on every incoming edge, and assignment, aliasing mutation, exclusive borrow, escape, mutable capture, consume, suspension, or a call permitted to mutate or consume the subject kills affected facts.
 
-Usefulness and exhaustiveness are one ordered finite-partition pass. An arm with no new structural cell is `MATCH_ARM_UNREACHABLE`. A guard is checked for usefulness but never subtracts coverage; a witness left only because all covering arms are guarded is `MATCH_NONEXHAUSTIVE_AFTER_GUARDS`. `otherwise` after an empty residual is `OTHERWISE_UNREACHABLE`; any other final residual is `MATCH_NOT_EXHAUSTIVE`.
+Usefulness and exhaustiveness are one ordered structural-partition pass. The checker first restricts every arm to the normalized subject domain, which is either a finite constructor/type partition or an admitted finite symbolic scalar partition with a complement cell, and then removes cells already covered by earlier reachable unguarded arms. An empty result is `MATCH_ARM_UNREACHABLE`. A guarded arm is checked for usefulness and recorded as mentioning its structural cells, but it never subtracts coverage. `MATCH_NONEXHAUSTIVE_AFTER_GUARDS` is selected only when every final residual cell was mentioned by one or more guarded arms; if even one residual cell was never mentioned, the diagnostic is `MATCH_NOT_EXHAUSTIVE`. `otherwise` after an empty residual is `OTHERWISE_UNREACHABLE`. These design-static rules determine the primary diagnostic; they do not yet claim a product checker's residual-witness spelling or ordering. A sealed Class may prove nominal-family closure for other judgments, but absent constructor-pattern syntax that proof does not manufacture match cells.
 
 Enum pattern admission resolves the `VariantId` in the scrutinee's Enum owner and checks the active payload arity, labels or positions, and child-pattern types before any guard or ownership commit. A foreign or unknown case and any inactive-payload projection reject at that boundary. Or-pattern alternatives must bind identical names, canonical types, modes, mutability, usable lifetimes, and capabilities; projection paths may differ. Structural failure and false guards commit no binding, move, exclusive borrow, or authority.
 
@@ -1509,6 +1669,56 @@ The current asynchronous sequence profile is `AsyncSequence<T, E: ErrorSet>`. It
 The current ordering guarantee is FIFO only for successfully committed messages with the same exact `(sender identity, receiver actor identity, admitted mailbox profile identity)` key. Commit transfers each moved owner exactly once and allocates the next `channel_sequence`; a rejected attempt retains every moved owner and has no sequence. There is no global ordering, fairness, exactly-once delivery, distributed delivery, or session guarantee. Cancellation observed before commit aborts without transfer; cancellation after commit does not retract the actor-owned payload or rewrite an already returned admission result. Actor handlers cannot leak isolated references, synthesize reply authority, or convert Cancellation/Defect into a recoverable Error. Cross-actor waiting must preserve structured concur ownership and cannot form an implicit detached cycle. Product lanes remain `15/15_NOT_RUN` until the target-execution gate has receipts.
 
 Shared mutable state is admitted only through an explicit stdlib profile. `SharedCell<T>` requires normalized Plain payload and supplies sequentially consistent `withValue` scoped observation and `replace` owner exchange. The observation cannot escape or suspend; replacement commits once and returns the old owner. Plain does not imply byte-copy, raw layout, lock-free implementation, or a progress guarantee, and no weaker-order source surface exists. `SharedMutex<T: SharedMutexPayload>` publishes a different, context-specific payload law. `SharedMutexPayload` is a sealed public constraint checked by the internal `SharedMutexPayloadAdmitted` predicate; it is neither a Trait nor a user conformance or synthesis surface. The predicate admits cleanup-free Reusable or Affine owner-closed payload graphs and rejects Resource lifecycle, cleanup tokens or hooks, cleanup errors or effects, authority, suspension or cancellation responsibility, borrow or `inout` views, and opaque or unbounded generic components. A generic payload must state the bound. Admission creates no Plain, Copy, Clone, Shareable, Transferable, layout, ABI, serialization or other responsibility evidence, and the bound remains part of public API identity. SharedMutex supplies receiver-bound, non-reentrant, non-suspending scoped exclusive mutation; construction checks the payload before move commit, and unlock executes exactly once on return, Error, Defect, or Cancellation and happens-before the next successful lock on that mutex. Neither profile infers poisoning, fairness, lock ordering, transferability, or erasure of effects, cancellation, isolation, or cleanup.
+
+Static `ActorId` denotes the source Actor declaration and remains the only Actor
+identity admitted into R23 protocol-binding tables. Each runtime incarnation
+instead receives one internal, non-forgeable `ActorInstanceId`; its `ActorRef`,
+mailbox, state region and `ActorRuntimeRootOwnerId` bind that instance. Runtime
+instance identity never enters module API binding bytes, binding-table digests
+or executable-origin identity. `ActorRuntimeRootOwnerId` is also distinct from
+the managed-memory `RootId` domain: it owns the terminal lifecycle observation,
+while managed roots are transferred or removed through their own exact receipts.
+
+Each Actor incarnation is owned by one compiler/runtime-only,
+non-forgeable `ActorRuntimeRootOwnerId`. The compatibility
+`supervisor_id` field is `null`; restart and supervision are not current. Actor
+creation is fail-closed: state and mailbox initialization commit before
+`actor_publish_committed`, which is the first point at which an `ActorRef` may
+escape. A failure before that point publishes no reference, enters the internal
+`CREATION_ABORTED` state, cleans each initialized resource exactly once in
+reverse order, and reports one non-forgeable `FailureId` to the root owner.
+
+Normal stop uses `DRAIN_ALL_COMMITTED_V1`: it records `stop_requested`, closes
+admission, drains the exact set of envelopes already committed before that
+close under the existing local-serial and per-channel ordering rules,
+terminalizes every admitted request exactly once, cleans Actor state, reports
+once to the root owner, and only then publishes termination. This is a safety
+rule rather than a fairness promise. If the active turn remains suspended
+indefinitely, stop remains pending with its exact continuation receipt,
+state-region authority, managed roots, loans and cleanup tokens; the runtime
+does not invent cancellation, a reply, cleanup, resume, cancel or termination.
+
+For a protocol-originated event the lifecycle trace references exactly one
+already verified R23 selection by `ActorProtocolBindingTableId` and stable
+`ActorProtocolBindingId`, and retains its typed handler/request identity,
+`ResponsibilityId`, and `binding_row_sha256`. Concrete non-protocol operations
+carry no such foreign key. Lifecycle processing creates or reselects no binding,
+and R24 code-generation lifetime is outside this profile.
+
+An uncaught Defect uses `STOP_AND_FAIL_PENDING_V1`. Admission closes and no
+queued handler starts. Unexecuted queued payloads and active-turn obligations
+are consumed once, every active loan ends through the existing infallible
+`LOAN_END`, and deferred, capture and owner cleanup tokens discharge exactly
+once before Actor state cleanup completes. Only after that cleanup may each
+admitted Reply without a prior terminal result fail exactly once through
+`ActorMessageError::receiverClosedBeforeReply`; the Defect itself is not
+converted into a recoverable Error. The root owner next observes the primary
+`DefectId` and any cleanup Defects in deterministic reverse-cleanup execution
+order, after all actor-owned managed roots have an exact transfer-or-removal
+receipt, and termination is then published. Restart, actor generations,
+interleaved turns, persistent mailboxes, and distributed lifecycle behavior
+remain inactive. These barriers consume the single typed runtime ABI; runtime
+helpers cannot create a second ABI, choose a handler or reselect a binding.
 
 ## 39. Compiler tree boundary
 
@@ -1644,6 +1854,15 @@ Cancellation을 관찰하거나 전달하지 않는다.
 외부 FFI와 runtime callback은 이 내부 ABI에 포함되지 않는다.
 
 ## 42. MIR handoff
+
+R69 clarifies the managed-reference dynamic boundary without adding syntax.
+The deterministic managed-memory plan contains static logical root-map
+templates; runtime handle generations and the publish/commit/release lifecycle
+belong only to an execution-time managed-root receipt. The current continuation
+interface digest is `2ccf2acd...c8b4`, and the former `0dc489...1271` binding
+does not select the successor seam. `RegionId` and `LoanId` are never `RootId`:
+a borrowed or `inout` view gains neither an independent root nor a longer
+lifetime merely because its referent uses managed storage.
 
 MIR represents normalized call channels, construction, witness calls, extension resolution, ownership/place operations, cleanup regions, effects/errors, match partitions, async suspension, actor messages, measures, NumericArray operations, and RCTS responsibility events. Surface sugar must be gone or explicitly represented by a responsibility-bearing MIR node.
 
@@ -1787,7 +2006,7 @@ domains below:
 | call/materialization named unfold | `**options` |
 | linear product expression | spaced infix `a ** b` |
 
-The CST must keep these owners distinguishable even if a downstream AST normalizes punctuation. Source roots must consume EOF, and a parser receipt must identify the exact Grammar hash, feature profile, source role, and input bytes.
+The CST must keep these owners distinguishable even if a downstream AST normalizes punctuation. Each of the six direct source roots—Stable and Preview variants of `LibrarySourceFile`, `ExecutableSourceFile`, and `ScriptSourceFile`—owns an explicit final `EOF_TOKEN`. Success requires every trailing trivia occurrence to be owned exactly once, the next parser token to be EOF, and the scanner byte cursor to equal the input byte length. A committed lexical or source-item error wins over the generic `SOURCE_TRAILING_TOKENS` fallback, which points at the first otherwise valid residual token. A failed root may retain a recovery CST but commits no canonical source-unit AST. A parser receipt must identify the exact Grammar hash, feature profile, source role, and input bytes.
 
 The source carrier fixes one role (`library`, `executable`, or `script`) and one
 activation profile (`stable` or `preview`) before scanning or parsing. These two
@@ -1798,7 +2017,7 @@ its dependency closure atomically. It cannot select or rewrite a role, profile,
 or root. A mismatch produces no activated feature and no canonical source-unit
 AST.
 
-The exact 643 Grammar productions are bound by the canonical production-
+The exact 644 Grammar productions are bound by the canonical production-
 disposition registry. Every production has exactly one disposition: lossless
 CST-only, canonical AST node, deterministic normalization, external parser
 entry, or reject-before-AST recovery. The lossless CST preserves every source
@@ -1922,6 +2141,141 @@ as `name***: Record`, function-type residue as `Record***`, and named unfold as
 prints parameter/type `**`.
 
 The LSP shares parser/checker identities. Completion for a final named-rest parameter inserts `***`; signature help displays `Record***`; unfold completion inserts `**`; hover text names the owner rather than calling both forms “spread.” Rename and formatting preserve static labels. Diagnostics expose the primary ID, exact span, owner-sensitive fix, and current profile.
+
+The exact formatter disposition is total over all 643 rows of the current
+grammar-production registry. The six disjoint classes contain exactly
+`56/35/319/204/10/19` rows. Lexical token/trivia leaves preserve their owned
+bytes; inline CST components remain with their scanner or parent owner;
+structural AST and normalization owners may apply only an explicitly declared
+layout rule; external parser entries delegate to their selected owner. A parent
+rule may replace only its declared whitespace/layout slots. It cannot change a
+token spelling, detach or duplicate a comment, or take trivia owned by another
+node. If no unique declared rule applies, exact source bytes win. The formatter
+must not invent a style preference, activate a source profile, or perform a
+semantic rewrite.
+
+The five Actor additions are explicit members of this total function.
+`ActorProtocolConformanceClause` and `ActorProtocolConformBlock` are structural
+FD-04 owners. `ActorMemberDecl`, `ActorProtocolConformanceBody`, and
+`ActorProtocolConformanceItem` are inline FD-03 owners. The default therefore
+preserves the repeated header `conforms QualifiedTypeReference`, body-local
+`conform QualifiedTypeReference { ... }`, `on`/`request` members, and their
+comments exactly. A required `LineBreakBoundary` is never collapsed to
+horizontal trivia, and a comment is never moved across the boundary between an
+Actor header clause and body or between a `conform` header and its body. The two
+contextual words are different production owners and are never normalized into
+one another.
+
+Every accepted rewrite proves equality of `NormalizedAstSemanticDigest`, the
+`DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1` digest over `SourceFileId`, source role,
+activation profile, grammar digest, frontend contract digest set, and the
+ordered normalized AST kinds, semantic payloads and semantic children. Source
+intervals, trivia, recovery artifacts, `CstNodeId`, `AstNodeId`, occurrence IDs,
+and editor handles are excluded. `AstNodeId` remains occurrence-bound and may
+change after formatting; it is not the equivalence proof. A second formatting
+pass produces zero edits. For Actor source, equal semantic digests must also
+recompute equal `ActorId`, `ActorProtocolId`,
+`ActorProtocolConformanceId`, `ActorProtocolRequirementId`,
+`ActorProtocolBindingId`, `ActorProtocolBindingTableId`, `ResponsibilityId`,
+and normalized binding-row/table digests. No CST, offset, occurrence, snapshot,
+or editor handle participates in those semantic preimages.
+
+Recovery is an analysis boundary, not formatter input to repair. Whole-file
+formatting requires empty recovery taint. Range formatting selects one smallest
+recovery-free structural owner that wholly contains the requested range,
+returns one replacement, leaves every byte outside that owner unchanged, and
+rejects a range for which no such owner exists. Neither the formatter nor the
+checker may clear recovery taint; only a new parse of changed input may do so.
+
+Incremental parsing expands edits through a recomputable lexical-state
+envelope, chooses the smallest eligible old CST owner containing the expanded
+edits, and ascends deterministically through eligible parents when scanner
+state, parser boundary, profile, taint, splice, or unique-reuse proof does not
+close. The source root is the final fallback. A splice is accepted only when
+the ordered, nonoverlapping edit set maps the old expanded half-open interval to
+one exact new half-open interval, the new parser consumes exactly that mapped
+interval, its scanner entry/exit states match the surrounding new snapshot,
+its child byte partition is total and nonoverlapping, unchanged siblings have
+one-to-one reuse receipts, and the new subtree has the selected production
+owner. Insertions at a boundary are assigned by this deterministic interval
+transform before owner selection; an implementation may not choose a neighbor
+by traversal or task-completion order. A tainted result remains an analysis CST
+and cannot seal canonical AST/HIR.
+
+Editor identity is deliberately noncanonical. `DocumentSessionId`,
+`DocumentRevisionId`, `ParseSnapshotId`, `CstContentId`, `CstOccurrenceId`,
+`IncrementalNodeHandleId`, and `NodeReuseReceipt` are separate domains. Equal
+content does not imply equal occurrence or handle identity; byte offset alone
+is never a stable node identity; no tooling identity aliases `DeclId`, `HirId`,
+or any Actor Protocol identity. `CstContentId` is the position-independent
+identity of production, profile, ordered child content or token kind/bytes, and
+lossless trivia ownership. Within one `ParseSnapshotId`, the serialized
+`CstNodeId` denotes exactly the same typed occurrence as `CstOccurrenceId` and
+includes its parent occurrence path, child slot, production/kind, content ID,
+and zero-based half-open source byte interval. It is not reusable as the node ID
+of another snapshot. `IncrementalNodeHandleId` is a session-local opaque handle
+whose monotonic generation has no syntax or semantic meaning.
+
+A handle survives a revision only through one `NodeReuseReceipt` that names the
+old and new `DocumentRevisionId` and `ParseSnapshotId`, `SourceFileId`, old
+interval, ordered edit transform, mapped new interval, production and content
+identity, token/trivia partition, taint identity, and unique old-to-new and
+new-to-old cardinality. Missing or ambiguous proof allocates a new handle and
+invalidates lookup through the old one; it never guesses by equal bytes or
+offset.
+
+The document head is an immutable `(DocumentRevisionId, ParseSnapshotId)` pair.
+An edit worker reads it under a snapshot lease, constructs one candidate, and
+publishes only with compare-and-swap from the exact expected old pair. A lease
+keeps the referenced text, CST and diagnostic storage alive but does not make
+the revision current. CAS loss or a different current head makes the candidate
+stale. The worker releases every acquired lease exactly once and returns the
+typed stale result without merging, rebasing, retrying, or publishing a partial
+tree.
+
+The canonical internal coordinate is a zero-based half-open UTF-8 byte interval
+`[start, end)` in the bound snapshot. An LSP session negotiates exactly one of
+its mutually supported position encodings and carries that encoding in every
+request binding. Line/character positions are converted using the exact line
+table and source bytes of that snapshot. Both endpoints must be in range and
+land on boundaries representable by the negotiated encoding and on UTF-8 scalar
+boundaries. A split scalar/surrogate pair, out-of-range coordinate, encoding
+mismatch, stale revision, or stale snapshot is rejected; coordinates are never
+clamped, rounded, or interpreted against the newest document.
+
+Every LSP request and result binds exactly one session, revision, snapshot,
+negotiated encoding, source role/profile, grammar digest, frontend contract
+digest set, and source-bytes digest. A request holds a read lease for that
+snapshot. A result echoes the complete binding and is publishable only while
+the request's revision policy still admits it. Cross-revision result merging is
+forbidden.
+
+For the same source bytes and contract binding, full and incremental parsing
+produce equal `NormalizedAstSemanticDigest` and diagnostic projections. The
+diagnostic projection preserves the canonical primary diagnostic identity,
+arguments, zero-based half-open byte span, related information, owner-sensitive
+fix-it, and cascade-suppression set in the same canonical diagnostic order.
+Parallel task completion is never an ordering authority. An unchanged-region
+diagnostic may be reused only when its CST owner and every declared dependency
+have one-to-one reuse proof; an intersecting edit, changed boundary state, or
+invalidated dependency recomputes the affected diagnostic closure. Incremental
+parsing neither emits an extra cascade nor hides a diagnostic that a full parse
+would retain.
+
+Tooling failure precedence is deterministic. First validate the request,
+session and negotiated-encoding envelope. Next bind the exact expected revision
+and snapshot. Then convert and validate positions and the ordered edit set.
+Only then perform lexical expansion, reparse, owner ascent and splice proofs,
+followed by recovery-taint, semantic-digest, diagnostic-parity, range-containment
+and idempotence gates. Publication CAS is last. An earlier failure suppresses
+later tooling failures; source diagnostic precedence remains the canonical
+frontend diagnostic order. A final CAS loss returns only the stale-result
+outcome and publishes no tree, handles, diagnostics, or edits.
+
+These are `STABLE_DESIGN` tooling obligations only. Formatter, LSP, and
+incremental-parser execution remain `NOT_RUN`; their static contract does not
+claim product support. Semantic P0 remains `0`, the canonical feature P1 set is
+exactly `22 OPEN`, and all 15 product lanes remain `NOT_RUN`.
 
 Language guides, design galleries, examples, Prelude signatures, code actions, snippets, and generated API documentation must follow the same surface. Any role report that proposes named-rest parameter/type `**` conflicts with current law and must be rejected or rewritten before integration.
 
@@ -2180,7 +2534,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `COLLECTION_GET_REQUIRES_REUSABLE_VALUE` [error]: By-value collection get requires reusable value law.
 - `COLLECTION_SNAPSHOT_PROFILE_NOT_ADMITTED` [error]: snapshot must produce an independent value with explicit copy or copy-on-write responsibility.
 - `COLLECTION_TRAVERSAL_ROLE_MISMATCH` [error]: A collection value and a traversal handle are distinct responsibilities and are not automatically interchangeable.
-- `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` [error]: Column-vector semicolon form must follow the current profile orientation law: `#[a,b]` is rank-1 `#N[T]`; `#[a;b]` is column `#N,1[T]`; explicit row matrix is `#1,N[...]`.
+- `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` [error]: Column-vector semicolon form must follow the current profile orientation law: `#[a,b]` is rank 1, shape `[N]`, with `ROW` orientation; `#[a;b]` is rank 1, shape `[N]`, with `COLUMN` orientation; exact `#1,N[...]` and `#N,1[...]` are distinct rank-2 matrices.
 - `COMPARISON_CHAIN_MIXED_DIRECTION_REQUIRES_EXPLICIT_AND` [error]: Mixed-direction comparison chains require explicit `and`.
 - `COMPARISON_CHAIN_OPERAND_HAS_EFFECTS` [error]: Comparison chain operands should not hide effects inside mathematical-looking predicates.
 - `COMPARISON_CHAIN_OPERATOR_MUST_BE_PURE` [error]: Comparison chain operators must be pure and no-throw.
@@ -2509,6 +2863,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMARR_ELEMENT_COUNT_MISMATCH` [error]: NumericArray literal element count does not match shape.
 - `NUMARR_ELEMENT_NOT_NUMERIC` [error]: NumericArray element must be an admitted numeric type.
 - `NUMARR_ELEMENT_NOT_PLAIN_NUMERIC` [error]: NumericArray element must satisfy numeric/plain/no-drop law.
+- `NUMARR_ELEMENT_TYPE_MISMATCH` [error]: Shape-inferred NumericArray elements must have one exact normalized admitted numeric type; use an explicit conversion when element types differ.
 - `NUMARR_ELEMENT_TYPE_REQUIRED` [error]: NumericArray type façade requires an element type.
 - `NUMARR_EXPECTED_SHAPE_MISMATCH` [error]: NumericArray literal shape mismatches expected type.
 - `NUMARR_INFIX_POWER_NOT_ADMITTED` [error]: NumericArray `A ^ B` infix power is not admitted; use `**`, `*+`, elementwise `^` where specified, or a named API.
@@ -2821,6 +3176,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PARALLEL_ASSIGNMENT_TARGET_OVERLAP` [error]: Every parallel-assignment target must be a distinct mutable LocalPlaceId.
 - `PARALLEL_ASSIGNMENT_TARGET_PROFILE_NOT_ADMITTED` [error]: Resource, nonlocal, member, index, property, shared, actor, or FFI targets require a separately activated Preview profile.
 - `ALIAS_PATTERN_OWNERSHIP_CONFLICT` [error]: A Pattern alias cannot coexist with a moved or exclusively borrowed descendant of the same subject.
+- `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` [error]: A borrowed Pattern subject cannot move an affine payload; `move PatternPrimary` requires consuming owner authority.
 - `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH` [error]: Normally returning Pattern arms leave incompatible usable-place states at the join.
 - `PATTERN_ANALYSIS_RESOURCE_LIMIT` [error]: Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness.
 - `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` [error]: An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress.
@@ -2972,7 +3328,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `CONFORMS_REQUIRES_KEYWORD` [error]: Trait/capability conformance must use `conforms` in the stable profile.
 - `CONTEXT_KEYWORD_RESERVED_FOR_CONTEXT_ROLE` [error]: `context` is recognized only in the Stable explicit context parameter, argument, and function-type role positions; it never requests ambient lookup.
 - `DOC_BLOCK_COMMENT_UNTERMINATED` [error]: Documentation block comment opened by `//!!` was not closed by `!!//`.
-- `DOC_COMMENT_NOT_ATTACHED_TO_DECL` [error]: Documentation comment is not attached to a documentable declaration.
+- `DOC_COMMENT_NOT_ATTACHED_TO_DECL` [error]: A contiguous documentation-comment group is not attached to the next documentable declaration in the same declaration container.
 - `CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED` [error]: A callable writes one nonempty effect term per repeated `effects` clause; `effects {}` is reserved for the explicit empty row.
 - `CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED` [error]: A callable writes one error-set term per repeated `throws` clause; `|` remains type-level ErrorSet algebra rather than callable-list punctuation.
 - `CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED` [error]: `conform Trait { ... }` must be nested in a Class or Enum body whose header declares the same `conforms Trait`; it has no `for` clause.
@@ -2997,7 +3353,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `UNICODE_ESCAPE_OUT_OF_RANGE` [error]: Unicode scalar escape is above U+10FFFF.
 - `UNICODE_ESCAPE_SURROGATE_NOT_ALLOWED` [error]: Unicode scalar escape cannot encode a surrogate.
 - `UNKNOWN_NUMERIC_LITERAL_SUFFIX` [error]: Unknown numeric literal suffix; use the closed integer or float suffix table.
-- `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` [error]: A Word Comment attachment is ambiguous; use line structure or explicit placement so lossless CST attachment is deterministic.
+- `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` [error]: A Word Comment must be byte-adjacent to exactly one eligible completed left anchor; its lossless CST owner is otherwise ambiguous.
 - `WORD_COMMENT_EXPECTED_TEXT` [error]: Backtick word comment requires a non-empty word comment body.
 - `WORD_COMMENT_LOSSLESS_TRIVIA_REQUIRED` [error]: Word Comment trivia must be preserved by parser, formatter, and LSP projections.
 - `WORD_COMMENT_NOT_CALL_LABEL` [error]: A word comment is lossless trivia, not a named argument label or overload selector.
@@ -6197,3 +6553,45 @@ identity and continuation lease. Resume and cancel enter generated code only
 through the typed internal continuation dispatcher after exact interface,
 receipt, epoch and operation validation; this does not grant arbitrary
 runtime-to-generated callback authority.
+
+## Ownership-aware tooling projection
+
+Formatter, LSP and debugger behavior is a read-only projection of one exact
+R28 `ParseSnapshotId`, extended only by the checker snapshot digest and the
+ownership-contract digest set. `ToolingSnapshotId` does not introduce a second
+document-revision authority. Tooling cannot admit a program, synthesize an
+owner, loan, cleanup token, root, continuation or witness, or feed changed
+responsibility back into HIR or MIR.
+
+An ownership diagnostic has exactly one primary `SourceOriginId`. Its exact
+diagnostic row, and for `OWNERSHIP_MODE_ADMISSION_FAILED` its reason key,
+selects the primary role and complete related-role cardinality. Families group
+diagnostics but do not impose one false cardinality on heterogeneous failures.
+Primary and related candidates are ordered by stable `SourceOriginId` and a
+typed semantic-reference tie-break. Source, fixture, catalog and CFG iteration
+order never chooses the winner. Conflict diagnostics report every conflicting
+access and join diagnostics report every relevant predecessor.
+
+Formatting preserves ownership-bearing spelling and responsibility order,
+round-trips to the same normalized HIR and responsibility digest, and emits no
+edit on a second pass. Rename requires the exact snapshot and symbol graph and
+proves ownership/responsibility graph isomorphism after an authorized spelling
+substitution. Automatic actions may not add `move`, `borrow`, `inout`, clone,
+share, transfer, capture, region, cleanup, conformance or other authority.
+
+Hover and debugger views distinguish proved ownership, loan and cleanup-token
+states. Missing evidence is reported as unavailable; optimized runtime evidence
+is reported as `OPTIMIZED_OUT`, never fabricated. Backend registers, stack
+slots and addresses are ephemeral display-only locations, not semantic
+identity, equality evidence, digest material or persistent residue. Runtime
+rows remain unavailable and `NOT_RUN` without one exact runtime/debug receipt.
+Root and continuation panels remain unavailable until their exact canonical
+dependency digests are bound.
+
+The R47 responsibility and cleanup-budget diagnostics remain source/checker
+diagnostics but have no R48 span-profile claim until separately bound.
+`MIR_LOAN_UNBALANCED` remains an internal release-verifier diagnostic and has
+no fabricated source span. `OWNERSHIP_TOOLING_PROJECTION_DRIFT` diagnoses
+release-verifier projection drift; it is not a source-repair instruction.
+Production formatter, LSP and debugger execution remains `NOT_RUN`, as do all
+15 product lanes.

@@ -1,0 +1,349 @@
+[
+  {
+    "fixture_id": "PF-MemberVisibilityAdmitted-POS",
+    "predicate_id": "MemberVisibilityAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r58-member-visibility-predicate-fixture/r1",
+      "test_class": "positive",
+      "member_owner_production": "MemberFunctionDecl",
+      "source": "+ def render() -> Text",
+      "member_visibility_surface": "+",
+      "omission_state": "PRESENT",
+      "normalized_visibility": "PUBLIC",
+      "declaring_nominal_id": "Widget",
+      "original_slot_anchor_id": null,
+      "original_slot_visibility": null,
+      "override_visibility": null,
+      "exact_surface_cases": [
+        {
+          "member_owner_production": "MemberFunctionDecl",
+          "member_visibility_surface": "+",
+          "normalized_visibility": "PUBLIC"
+        },
+        {
+          "member_owner_production": "FieldDecl",
+          "member_visibility_surface": "-",
+          "normalized_visibility": "PRIVATE"
+        },
+        {
+          "member_owner_production": "TraitMethodDecl",
+          "member_visibility_surface": "#",
+          "normalized_visibility": "HIERARCHY_PROTECTED"
+        }
+      ],
+      "expected_outcome": "ADMIT_MEMBER_VISIBILITY_FACT"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R58MemberVisibilityDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "one of the exact +, -, or # member sigils is preserved on an admitted owner production",
+    "rule_seed": "R58 exact member-visibility surface positive fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-MemberVisibilityAdmitted-BOUNDARY",
+    "predicate_id": "MemberVisibilityAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r58-member-visibility-predicate-fixture/r1",
+      "test_class": "boundary",
+      "member_owner_production": "StoredParameter",
+      "source": "let value: Int",
+      "member_visibility_surface": null,
+      "omission_state": "OMITTED",
+      "semantic_value": null,
+      "r58_global_default": null,
+      "default_application_count": 0,
+      "declaring_nominal_id": "Cell",
+      "expected_outcome": "ADMIT_OMITTED_MEMBER_VISIBILITY_WITHOUT_DEFAULT"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R58MemberVisibilityDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "omission remains OMITTED with normalized visibility null and no global member default",
+    "rule_seed": "R58 member-visibility omission boundary fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-MemberVisibilityAdmitted-NEG-KEYWORD",
+    "predicate_id": "MemberVisibilityAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r58-member-visibility-predicate-fixture/r1",
+      "test_class": "negative_keyword",
+      "member_owner_production": "MemberFunctionDecl",
+      "source": "public def render() -> Text",
+      "member_visibility_surface": "public",
+      "omission_state": "PRESENT",
+      "declaring_nominal_id": "Widget",
+      "expected_outcome": "REJECT_CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+      "primary_reason": "CALLABLE_VISIBILITY_WORD"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R58MemberVisibilityDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+    "violated_condition": "CALLABLE_VISIBILITY_WORD",
+    "rule_seed": "R58 forbidden member callable visibility-word single-fault fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-MemberVisibilityAdmitted-NEG-OVERRIDE",
+    "predicate_id": "MemberVisibilityAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r58-member-visibility-predicate-fixture/r1",
+      "test_class": "negative_override",
+      "member_owner_production": "ConformanceMethodDecl",
+      "source": "- def render() -> Text",
+      "member_visibility_surface": "-",
+      "omission_state": "PRESENT",
+      "declaring_nominal_id": "CompactWidget",
+      "original_slot_anchor_id": "Renderable.render/0",
+      "original_slot_visibility": "#",
+      "original_slot_visibility_rank": 1,
+      "override_visibility": "-",
+      "override_visibility_rank": 0,
+      "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT",
+      "anchor_rewrite_count": 0,
+      "rejected_transitions": [
+        "#->-",
+        "+->#",
+        "+->-"
+      ],
+      "expected_outcome": "REJECT_OVERRIDE_VISIBILITY_CANNOT_NARROW",
+      "primary_reason": "OVERRIDE_NARROWS_ORIGINAL_SLOT"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R58MemberVisibilityDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "OVERRIDE_VISIBILITY_CANNOT_NARROW",
+    "violated_condition": "OVERRIDE_NARROWS_ORIGINAL_SLOT",
+    "rule_seed": "R58 original-slot anchor and - < # < + lattice single-fault fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active secondary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-POS",
+    "predicate_id": "ReferenceVisibilityActivationAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "positive",
+      "scenario": "A # member is consumed by its declaring nominal type.",
+      "member_visibility_surface": "#",
+      "normalized_member_visibility": "HIERARCHY_PROTECTED",
+      "declaring_nominal_id": "Ledger",
+      "consumer_nominal_id": "Ledger",
+      "consumer_relation": "DECLARING_NOMINAL",
+      "expected_outcome": "ADMIT_MEMBER_HASH_DECLARING_NOMINAL",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceVisibilityActivationDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "# admits an access proof whose consumer is the declaring nominal identity",
+    "rule_seed": "R58 # declaring-nominal access fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-BOUNDARY",
+    "predicate_id": "ReferenceVisibilityActivationAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "boundary",
+      "scenario": "A # member is consumed by a proven nominal subclass.",
+      "member_visibility_surface": "#",
+      "normalized_member_visibility": "HIERARCHY_PROTECTED",
+      "declaring_nominal_id": "Ledger",
+      "consumer_nominal_id": "AuditedLedger",
+      "consumer_relation": "NOMINAL_SUBCLASS",
+      "nominal_subclass_proof": "AuditedLedger <:nominal Ledger",
+      "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT",
+      "anchor_rewrite_count": 0,
+      "expected_outcome": "ADMIT_MEMBER_HASH_NOMINAL_SUBCLASS",
+      "primary_reason": null
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceVisibilityActivationDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the outer # boundary admits the declaring nominal's proven nominal subclass",
+    "rule_seed": "R58 # nominal-subclass boundary fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-NEG",
+    "predicate_id": "ReferenceVisibilityActivationAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
+      "test_class": "negative",
+      "scenario": "A module peer, a nominal conformer that is not a subclass, and a structural peer attempt to consume a # member.",
+      "member_visibility_surface": "#",
+      "normalized_member_visibility": "HIERARCHY_PROTECTED",
+      "declaring_nominal_id": "Ledger",
+      "consumer_nominal_id": "LedgerReporter",
+      "consumer_relation": "MODULE_PEER",
+      "rejected_access_proofs": [
+        {
+          "declaring_nominal_id": "Ledger",
+          "consumer_nominal_id": "LedgerReporter",
+          "consumer_relation": "MODULE_PEER"
+        },
+        {
+          "declaring_nominal_id": "Ledger",
+          "consumer_nominal_id": "SerializableLedger",
+          "consumer_relation": "NOMINAL_CONFORMER_NOT_SUBCLASS"
+        },
+        {
+          "declaring_nominal_id": "Ledger",
+          "consumer_nominal_id": "LedgerShapePeer",
+          "consumer_relation": "STRUCTURAL_PEER"
+        }
+      ],
+      "expected_outcome": "REJECT_ALL_REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "primary_reason": "MEMBER_VISIBILITY_DOMAIN"
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "R4ReferenceVisibilityActivationDescriptor"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+    "violated_condition": "MEMBER_VISIBILITY_DOMAIN",
+    "rule_seed": "R58 # rejected-consumer-domain fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

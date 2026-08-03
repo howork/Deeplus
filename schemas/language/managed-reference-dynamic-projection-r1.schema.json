@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/managed-reference-dynamic-projection-r1.schema.json",
+  "title": "Deeplus R69 managed-reference dynamic projection contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "gap_id",
+    "feature_id",
+    "candidate_status",
+    "authority_binding",
+    "predecessors",
+    "stale_pointer_supersession",
+    "projection_contract",
+    "acceptance_matrix",
+    "counts",
+    "guards"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/managed-reference-dynamic-projection-r1.schema.json"},
+    "schema": {"const": "deeplus.managed-reference-dynamic-projection/r1"},
+    "revision": {"const": "r69-local-managed-reference-dynamic-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "a84fd17137b8e2f8f620be8c7f0f96afd627a9e1"},
+    "gap_id": {"const": "IR-XCUT-P1-054"},
+    "feature_id": {"const": "managed_reference_memory_profile_phase1"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_CONTRACT"},
+    "authority_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["continuation_interface_id", "continuation_interface_digest", "continuation_contract_path", "region_lifetime_contract_path", "interpretation"],
+      "properties": {
+        "continuation_interface_id": {"const": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"},
+        "continuation_interface_digest": {"const": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb"},
+        "continuation_contract_path": {"const": "spec/contracts/continuation-interface-r1.json"},
+        "region_lifetime_contract_path": {"const": "spec/contracts/region-lifetime-mir-projection-r1.json"},
+        "interpretation": {"const": "CURRENT_SUCCESSOR_SEAM_AUTHORITY"}
+      }
+    },
+    "predecessors": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "path", "file_sha256"],
+        "properties": {
+          "role": {"enum": ["R36_MEMORY_PROFILE", "R37_INTERNAL_RUNTIME_ABI"]},
+          "path": {"type": "string"},
+          "file_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "stale_pointer_supersession": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stale_digest", "successor_digest", "pointers", "pointer_count", "scope"],
+      "properties": {
+        "stale_digest": {"const": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271"},
+        "successor_digest": {"const": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb"},
+        "pointers": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"type": "string"}},
+        "pointer_count": {"const": 3},
+        "scope": {"const": "SUPERSEDED_AT_R69_SUCCESSOR_SEAM_WITHOUT_REWRITING_PREDECESSOR_HISTORY"}
+      }
+    },
+    "projection_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_owner", "static_plan", "runtime_root_receipt", "lowering_order", "region_loan_fence", "suspension_bridge", "cross_path_parity", "identity_and_operation_fence"],
+      "properties": {
+        "semantic_owner": {"type": "object"},
+        "static_plan": {"type": "object"},
+        "runtime_root_receipt": {"type": "object"},
+        "lowering_order": {"type": "array", "minItems": 7, "maxItems": 7, "items": {"type": "string"}},
+        "region_loan_fence": {"type": "object"},
+        "suspension_bridge": {"type": "object"},
+        "cross_path_parity": {"type": "object"},
+        "identity_and_operation_fence": {"type": "object"}
+      }
+    },
+    "acceptance_matrix": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "role", "expected"],
+        "properties": {
+          "case_id": {"pattern": "^R69-MRM-ACC-[0-9]{3}$"},
+          "role": {"type": "string"},
+          "expected": {"type": "string"}
+        }
+      }
+    },
+    "counts": {"const": {"stale_pointer_count": 3, "acceptance_case_count": 14, "new_source_surface_count": 0, "new_hir_identity_kind_count": 0, "new_mir_operation_kind_count": 0, "new_backend_identity_count": 0, "product_execution_receipt_count": 0}},
+    "guards": {"const": {"semantic_p0": 0, "feature_p1": "22_OPEN_UNCHANGED", "m13_actions": "4_OPEN_UNCHANGED", "product_lanes": "15_OF_15_NOT_RUN", "github_publication": "SUSPENDED", "implementation_claim": "NONE"}}
+  }
+}

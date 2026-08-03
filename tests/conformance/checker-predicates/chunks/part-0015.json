@@ -122,7 +122,37 @@
     "predicate_id": "MatchExhaustive",
     "expected": "admitted",
     "descriptor": {
-      "boundary_case": true
+      "case_id": "R61-MATCH-B01-GUARDED-FALLBACK",
+      "subject": "Option<Int>",
+      "normalized_partition": [
+        "some",
+        "none"
+      ],
+      "arms": [
+        {
+          "arm_id": "some_if_positive",
+          "coverage_cells": [
+            "some"
+          ],
+          "guarded": true
+        },
+        {
+          "arm_id": "some_fallback",
+          "coverage_cells": [
+            "some"
+          ],
+          "guarded": false
+        },
+        {
+          "arm_id": "none",
+          "coverage_cells": [
+            "none"
+          ],
+          "guarded": false
+        }
+      ],
+      "final_residual": [],
+      "expected_primary_diagnostic": null
     },
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -142,9 +172,9 @@
         "isolation": "local"
       }
     },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 MatchExhaustive boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
+    "admitted_condition": "the guarded some arm is useful but does not subtract coverage; the following unguarded some and none arms close the exact subject partition",
+    "rule_seed": "R61 exact guarded-fallback boundary; design-static only and product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
@@ -157,10 +187,29 @@
     "expected_primary_diagnostic": "MATCH_NOT_EXHAUSTIVE",
     "diagnostic_disposition": "design_algorithm_static_expected_result",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "MatchExhaustive"
+    "descriptor": {
+      "case_id": "R61-MATCH-R04-UNMENTIONED-RESIDUAL",
+      "subject": "Option<Int>",
+      "normalized_partition": [
+        "some",
+        "none"
+      ],
+      "arms": [
+        {
+          "arm_id": "some",
+          "coverage_cells": [
+            "some"
+          ],
+          "guarded": false
+        }
+      ],
+      "final_residual": [
+        "none"
+      ],
+      "guard_mentioned_residual": [],
+      "expected_primary_diagnostic": "MATCH_NOT_EXHAUSTIVE"
     },
-    "fixture_kind": "mutation_recipe",
+    "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
@@ -179,6 +228,8 @@
         "isolation": "local"
       }
     },
+    "violated_condition": "the unguarded some arm leaves the never-mentioned none cell in the final residual",
+    "rule_seed": "R61 exact generic-residual reject; design-static only and product checker NOT_RUN.",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1811,39 +1862,6 @@
         "isolation": "local"
       }
     },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-NamedRestParameterRecordAndLastPosition-BOUNDARY",
-    "predicate_id": "NamedRestParameterRecordAndLastPosition",
-    "expected": "admitted",
-    "descriptor": {
-      "boundary_case": true
-    },
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-NamedRestParameterRecordAndLastPosition-BOUNDARY"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "R51a1 NamedRestParameterRecordAndLastPosition boundary fixture; product checker NOT_RUN.",
-    "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
-    "diagnostic_disposition": "no diagnostic",
-    "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }

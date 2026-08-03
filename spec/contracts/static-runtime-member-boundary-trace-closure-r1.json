@@ -1,0 +1,621 @@
+{
+  "$schema": "../../schemas/language/static-runtime-member-boundary-trace-closure-r1.schema.json",
+  "schema": "deeplus.static-runtime-member-boundary-trace-closure/r1",
+  "revision": "r70-local-static-runtime-member-boundary-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "29059c1b23de7d32398f582d2a37d5ce24d31341",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_id": "static_runtime_member_boundary_law",
+  "target_cell": {
+    "stage": "DYNAMIC_LOWERING",
+    "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+    "predecessor_gap_id": "IR-XCUT-P1-054",
+    "disposition": "NOT_APPLICABLE",
+    "reason_code": "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
+    "authority_boundary": "MIR_RUNTIME_AUTHORITY",
+    "rationale": "Module and static qualifier identity plus lookup are closed by the resolver and have no expression-HIR, MIR, xVM, internal-runtime-ABI, or Cranelift residue. A successfully selected terminal value or callable is handed to existing selection, place, and call contracts rather than owned by this boundary-law cell."
+  },
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_grammar_production_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "new_mir_terminator_kind_count": 0,
+    "new_xvm_capability_count": 0,
+    "new_internal_runtime_abi_field_count": 0,
+    "new_runtime_helper_count": 0,
+    "new_cranelift_mapping_count": 0,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "open_m13_actions": 4,
+    "product_lanes": {
+      "total": 15,
+      "executed": 0,
+      "state": "15_OF_15_NOT_RUN"
+    },
+    "github_publication": "SUSPENDED",
+    "execution_state": "DESIGN_STATIC_NOT_RUN",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "boundary_definition": {
+    "owned_subject": "MODULE_AND_STATIC_QUALIFIER_LOOKUP_BOUNDARY",
+    "module_identity_is_runtime_value": false,
+    "static_qualifier_identity_is_runtime_value": false,
+    "successful_terminal_selection_may_denote_value_or_callable": true,
+    "qualifier_lookup_erased_before_expression_hir": true,
+    "runtime_member_surface": ".",
+    "static_qualification_surface": "::",
+    "ordinary_dot_execution_owner": "SEPARATE_EXISTING_PLACEPLAN_OR_CALLPLAN_CONTRACT",
+    "ordinary_dot_execution_absorbed_by_r70": false,
+    "companion_or_metatype_value_created": false
+  },
+  "lookup_domain_fence": {
+    "domains": [
+      {
+        "domain_id": "NOMINAL_TYPE_SIDE",
+        "surface": "Type::item",
+        "selection": "EXACT_NOMINAL_TYPE_SIDE_DECLARATION",
+        "runtime_lookup_count": 0
+      },
+      {
+        "domain_id": "NAMED_TYPE_SIDE_EXTENSION",
+        "surface": "Type::extension::item",
+        "selection": "EXACT_NAMED_EXTENSION_DECLARATION",
+        "runtime_lookup_count": 0
+      },
+      {
+        "domain_id": "TRAIT_QUALIFIED_ASSOCIATED_STATIC",
+        "surface": "<T as Trait>::item",
+        "selection": "EXACT_STATIC_CONFORMANCE_AND_REQUIREMENT",
+        "runtime_lookup_count": 0
+      },
+      {
+        "domain_id": "EXPLICIT_RUNTIME_OWNER",
+        "surface": "value.item",
+        "selection": "ORDINARY_VALUE_MEMBER_OR_CALL_PLAN",
+        "runtime_lookup_count": 0
+      }
+    ],
+    "domain_count": 4,
+    "cross_domain_fallback_count": 0,
+    "source_import_use_link_order_winner_count": 0,
+    "implicit_trait_search_from_type_selector_count": 0,
+    "implicit_companion_count": 0
+  },
+  "resolver_hir_fence": {
+    "qualified_path_production": "QualifiedPath",
+    "qualified_static_expression_production": "QualifiedStaticExpr",
+    "member_suffix_production": "MemberSuffix",
+    "static_separator_ast_roles": [
+      "QualifiedName",
+      "VariantReference",
+      "TypeSideDeclaration"
+    ],
+    "member_separator_ast_role": "MemberAccess",
+    "module_resolver_identity": "ModuleId",
+    "module_expression_hir_projection": null,
+    "static_terminal_expression_hir_projection": "ResolvedRef::DirectDecl(DeclId)",
+    "ordinary_dot_field_hir_projection": "PlacePlan.root+StaticProjection::FIELD(field_symbol_key)",
+    "ordinary_dot_call_hir_projection": "CallPlan(mode_target_pair,call_head_id)",
+    "unresolved_count": 0,
+    "candidate_set_count": 0,
+    "runtime_relookup_count": 0,
+    "recovery_admitted_hir_count": 0
+  },
+  "terminal_selection_handoff": {
+    "static_value": {
+      "owner": "EXISTING_STATIC_SELECTION_CONTRACT",
+      "hir_form": "ResolvedRef::DirectDecl(DeclId)",
+      "lowering_rows": [
+        "HM-LR-REF-002",
+        "HM-LR-TOP-002"
+      ],
+      "operation_sequence": [
+        "STATIC_REF",
+        "TOTAL_PROJECTION"
+      ],
+      "capability_ids": [
+        "DM-CAP-STATIC-IDENTITY-R1"
+      ]
+    },
+    "ordinary_dot_field_read": {
+      "owner": "EXISTING_PLACEPLAN_CONTRACT",
+      "hir_form": "PlacePlan.root+StaticProjection::FIELD(field_symbol_key)",
+      "lowering_rows": [
+        "HM-LR-TOP-006"
+      ],
+      "operation_sequence": [
+        "PLACE_LOAD"
+      ],
+      "capability_ids": [
+        "DM-CAP-PLACE-OWNERSHIP-R1"
+      ]
+    },
+    "ordinary_direct_call": {
+      "owner": "unified_call_expression_and_tilde_modes",
+      "hir_mode_target_pair": "ORDINARY::DIRECT_IMPLEMENTATION",
+      "lowering_rows": [
+        "HM-LR-CALL-001"
+      ],
+      "operation_sequence": [
+        "STATIC_REF",
+        "INVOKE"
+      ],
+      "capability_ids": [
+        "DM-CAP-CALL-DIRECT-R1"
+      ]
+    },
+    "ordinary_virtual_call": {
+      "owner": "unified_call_expression_and_tilde_modes",
+      "hir_mode_target_pair": "ORDINARY::VIRTUAL_SLOT",
+      "lowering_rows": [
+        "HM-LR-CALL-002"
+      ],
+      "operation_sequence": [
+        "TOTAL_PROJECTION",
+        "INVOKE"
+      ],
+      "capability_ids": [
+        "DM-CAP-CALL-VIRTUAL-R1"
+      ]
+    },
+    "ordinary_extension_static_call": {
+      "owner": "method_extension_resolution_policy",
+      "hir_mode_target_pair": "ORDINARY::EXTENSION_STATIC",
+      "lowering_rows": [
+        "HM-LR-CALL-004"
+      ],
+      "operation_sequence": [
+        "CONTEXT_ADAPT",
+        "INVOKE"
+      ],
+      "capability_ids": [
+        "DM-CAP-CALL-EXTENSION-STATIC-R1"
+      ]
+    },
+    "associated_type_then_member": {
+      "owner": "trait_qualified_associated_static_selection",
+      "source_shape": "<T as Trait>::Assoc::member",
+      "associated_type_runtime_operation_count": 0,
+      "second_selection_domain": "NOMINAL_TYPE_SIDE",
+      "trait_or_extension_fallback_count": 0
+    }
+  },
+  "separate_feature_ownership": [
+    {
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "responsibility": "ORDINARY_DOT_CALL_EXECUTION",
+      "r70_transition_count": 0
+    },
+    {
+      "feature_id": "place_view_owner_algebra",
+      "responsibility": "ORDINARY_DOT_FIELD_AND_PLACE_SEMANTICS",
+      "r70_transition_count": 0
+    },
+    {
+      "feature_id": "place_replace",
+      "responsibility": "ATOMIC_PLACE_REPLACEMENT",
+      "r70_transition_count": 0
+    },
+    {
+      "feature_id": "method_extension_resolution_policy",
+      "responsibility": "METHOD_AND_EXTENSION_CANDIDATE_SELECTION",
+      "r70_transition_count": 0
+    },
+    {
+      "feature_id": "member_extension_collision_error_policy",
+      "responsibility": "MEMBER_EXTENSION_COLLISION_REJECTION",
+      "r70_transition_count": 0
+    }
+  ],
+  "runtime_backend_residue_fence": {
+    "qualifier_hir_residue_count": 0,
+    "qualifier_mir_residue_count": 0,
+    "runtime_selector_lookup_count": 0,
+    "runtime_member_name_lookup_count": 0,
+    "xvm_new_opcode_count": 0,
+    "xvm_new_capability_count": 0,
+    "internal_runtime_selector_payload_count": 0,
+    "internal_runtime_selector_helper_count": 0,
+    "cranelift_selector_reselection_count": 0,
+    "cranelift_new_mapping_count": 0,
+    "target_identity_leak_count": 0,
+    "xvm_authority": "Verified<DeeplusMirR1>",
+    "internal_runtime_abi_role": "TYPED_CALL_TRANSPORT_ONLY",
+    "cranelift_input": "Verified<DeeplusMir>",
+    "cranelift_lowering": "DETERMINISTIC_MIR_TO_BACKEND_PRIVATE_CLIF"
+  },
+  "diagnostic_ownership": {
+    "owned": [
+      {
+        "diagnostic_id": "MODULE_IS_NOT_A_VALUE",
+        "trigger": "RESOLVED_MODULE_OR_STATIC_QUALIFIER_USED_AS_VALUE_WITHOUT_TERMINAL_VALUE_SELECTION"
+      },
+      {
+        "diagnostic_id": "STATIC_ALIAS_CONFLICTS_WITH_LOCAL_BINDING",
+        "trigger": "STATIC_ALIAS_COLLIDES_WITH_EXISTING_LOCAL_BINDING"
+      }
+    ],
+    "delegated": [
+      {
+        "diagnostic_id": "DOTTED_STATIC_PATH_NOT_CURRENT",
+        "owner_feature_id": "r51e_frontend_grammar_current_canonical"
+      },
+      {
+        "diagnostic_id": "DOT_NOT_ALLOWED_FOR_TYPE_SIDE_SELECTOR",
+        "owner_feature_id": "type_side_colon_colon_selector_call_surface"
+      },
+      {
+        "diagnostic_id": "STATIC_SELECTOR_RESOLUTION_FAILED",
+        "owner_feature_id": "type_side_colon_colon_selector_call_surface"
+      },
+      {
+        "diagnostic_id": "MEMBER_EXTENSION_COLLISION",
+        "owner_feature_id": "method_extension_resolution_policy"
+      },
+      {
+        "diagnostic_id": "MEMBER_NOT_FOUND",
+        "owner_feature_id": "closed_source_surface_boundary_law"
+      }
+    ],
+    "precedence": [
+      {
+        "ordinal": 1,
+        "gate": "EXACT_OWNER_BOUND_SURFACE_REJECTION",
+        "diagnostic_ids": [
+          "DOTTED_STATIC_PATH_NOT_CURRENT",
+          "DOT_NOT_ALLOWED_FOR_TYPE_SIDE_SELECTOR"
+        ]
+      },
+      {
+        "ordinal": 2,
+        "gate": "QUALIFIED_STATIC_TERMINAL_RESOLUTION",
+        "diagnostic_ids": [
+          "STATIC_SELECTOR_RESOLUTION_FAILED"
+        ]
+      },
+      {
+        "ordinal": 3,
+        "gate": "STATIC_ALIAS_BINDING",
+        "diagnostic_ids": [
+          "STATIC_ALIAS_CONFLICTS_WITH_LOCAL_BINDING"
+        ]
+      },
+      {
+        "ordinal": 4,
+        "gate": "MODULE_OR_STATIC_QUALIFIER_VALUE_BOUNDARY",
+        "diagnostic_ids": [
+          "MODULE_IS_NOT_A_VALUE"
+        ]
+      },
+      {
+        "ordinal": 5,
+        "gate": "ORDINARY_DOT_MEMBER_EXTENSION_COLLISION",
+        "diagnostic_ids": [
+          "MEMBER_EXTENSION_COLLISION"
+        ]
+      },
+      {
+        "ordinal": 6,
+        "gate": "ORDINARY_DOT_MEMBER_AVAILABILITY",
+        "diagnostic_ids": [
+          "MEMBER_NOT_FOUND"
+        ]
+      }
+    ],
+    "new_diagnostic_count": 0,
+    "r70_reselection_count": 0
+  },
+  "rules": [
+    {
+      "rule_id": "SRMBTC-R001",
+      "text": "Only static_runtime_member_boundary_law DYNAMIC_LOWERING transitions, from APPLICABLE_BLOCKED_BY_GAP to NOT_APPLICABLE."
+    },
+    {
+      "rule_id": "SRMBTC-R002",
+      "text": "A module identity or static qualifier is resolver identity, not a runtime value, and receives no expression-HIR projection."
+    },
+    {
+      "rule_id": "SRMBTC-R003",
+      "text": "A successfully selected terminal static value or callable may project through existing ResolvedRef or CallPlan contracts after the qualifier lookup is erased."
+    },
+    {
+      "rule_id": "SRMBTC-R004",
+      "text": "Nominal type-side, named type-side extension, Trait-qualified associated static, and explicit runtime owner lookup remain four disjoint domains with zero fallback or order winner."
+    },
+    {
+      "rule_id": "SRMBTC-R005",
+      "text": "Double colon remains static qualification and dot remains runtime member access; R70 creates no companion or metatype value."
+    },
+    {
+      "rule_id": "SRMBTC-R006",
+      "text": "ModuleId has no expression-HIR projection; a selected static declaration uses ResolvedRef::DirectDecl(DeclId) with zero unresolved, candidate-set, or runtime-relookup residue."
+    },
+    {
+      "rule_id": "SRMBTC-R007",
+      "text": "Static values reuse HM-LR-REF-002 and HM-LR-TOP-002; ordinary dot field reads reuse PlacePlan FIELD plus HM-LR-TOP-006."
+    },
+    {
+      "rule_id": "SRMBTC-R008",
+      "text": "Direct, virtual, and extension-static calls reuse HM-LR-CALL-001, HM-LR-CALL-002, and HM-LR-CALL-004 with their exact existing mode-target pairs."
+    },
+    {
+      "rule_id": "SRMBTC-R009",
+      "text": "Ordinary dot place and call behavior remains owned by existing place, call, method-extension, and collision features; R70 changes none of their cells."
+    },
+    {
+      "rule_id": "SRMBTC-R010",
+      "text": "xVM consumes existing Verified Deeplus MIR operations and capabilities and performs no selector or member-name lookup."
+    },
+    {
+      "rule_id": "SRMBTC-R011",
+      "text": "The internal runtime ABI transports typed calls only and gains no module, static-path, selector, or member-name payload or helper."
+    },
+    {
+      "rule_id": "SRMBTC-R012",
+      "text": "Cranelift deterministically projects Verified Deeplus MIR to backend-private CLIF and cannot reselect semantics by symbol, link order, address, or target identity."
+    },
+    {
+      "rule_id": "SRMBTC-R013",
+      "text": "R70 preserves exact diagnostic ownership and precedence and invents no diagnostic or cross-owner primary selection."
+    },
+    {
+      "rule_id": "SRMBTC-R014",
+      "text": "Semantic P0 remains zero, feature P1 remains 22 OPEN, M13 remains four OPEN actions, product lanes remain 15/15 NOT_RUN, and GitHub publication remains suspended."
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R70-SRMB-ACC-001",
+      "class": "POSITIVE",
+      "source_or_subject": "Type::value",
+      "expected": "STATIC_TERMINAL_DIRECT_DECL_HANDOFF",
+      "diagnostic_or_null": null,
+      "assertion_ids": [
+        "QUALIFIER_ERASED_BEFORE_EXPRESSION_HIR",
+        "DIRECT_DECL_ID_EXACT",
+        "HM_LR_REF_002_THEN_TOP_002",
+        "RUNTIME_RELOOKUP_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-002",
+      "class": "POSITIVE",
+      "source_or_subject": "Type::make(argument)",
+      "expected": "STATIC_TERMINAL_CALLPLAN_HANDOFF",
+      "diagnostic_or_null": null,
+      "assertion_ids": [
+        "QUALIFIER_ERASED_BEFORE_EXPRESSION_HIR",
+        "ORDINARY_DIRECT_IMPLEMENTATION",
+        "HM_LR_CALL_001",
+        "RUNTIME_SELECTOR_LOOKUP_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-003",
+      "class": "POSITIVE",
+      "source_or_subject": "service.field and service.method()",
+      "expected": "ORDINARY_DOT_PLACEPLAN_OR_CALLPLAN_SEPARATE_OWNER",
+      "diagnostic_or_null": null,
+      "assertion_ids": [
+        "MEMBER_ACCESS_AST_ROLE",
+        "PLACEPLAN_FIELD_OR_CALLPLAN",
+        "NO_STATIC_DOMAIN_ENTRY",
+        "R70_ABSORPTION_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-004",
+      "class": "BOUNDARY",
+      "source_or_subject": "<T as Trait>::Assoc::member",
+      "expected": "ASSOCIATED_TYPE_ZERO_RUNTIME_THEN_NOMINAL_TYPE_SIDE",
+      "diagnostic_or_null": null,
+      "assertion_ids": [
+        "ASSOCIATED_TYPE_RUNTIME_OPERATION_ZERO",
+        "NORMALIZE_BEFORE_SECOND_SELECTION",
+        "SECOND_DOMAIN_NOMINAL_TYPE_SIDE",
+        "TRAIT_EXTENSION_FALLBACK_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-005",
+      "class": "BOUNDARY",
+      "source_or_subject": "ordinary dot call preselected as direct, virtual, or extension-static",
+      "expected": "EXACT_EXISTING_CALLPLAN_ROUTE_WITHOUT_RUNTIME_SEARCH",
+      "diagnostic_or_null": null,
+      "assertion_ids": [
+        "CALLPLAN_SELECTED_BEFORE_MIR",
+        "HM_LR_CALL_001_002_004_EXACT",
+        "RECEIVER_EVALUATED_ONCE",
+        "RUNTIME_SELECTOR_LOOKUP_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-006",
+      "class": "REJECT",
+      "source_or_subject": "a resolved module or static qualifier is used directly as a runtime value",
+      "expected": "REJECT_BEFORE_EXPRESSION_HIR",
+      "diagnostic_or_null": "MODULE_IS_NOT_A_VALUE",
+      "assertion_ids": [
+        "MODULE_EXPRESSION_HIR_PROJECTION_ZERO",
+        "MIR_NODE_COUNT_ZERO",
+        "RUNTIME_RELOOKUP_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-007",
+      "class": "REJECT",
+      "source_or_subject": "Type.member(argument) attempts a dotted type-side call",
+      "expected": "DELEGATE_EXACT_SURFACE_REJECTION",
+      "diagnostic_or_null": "DOT_NOT_ALLOWED_FOR_TYPE_SIDE_SELECTOR",
+      "assertion_ids": [
+        "R70_DIAGNOSTIC_RESELECTION_ZERO",
+        "EXPRESSION_HIR_COUNT_ZERO",
+        "STATIC_QUALIFICATION_REWRITE_IS_DOUBLE_COLON"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-008",
+      "class": "REJECT",
+      "source_or_subject": "Type::missing selects no terminal declaration",
+      "expected": "REJECT_UNRESOLVED_STATIC_TERMINAL_BEFORE_HIR",
+      "diagnostic_or_null": "STATIC_SELECTOR_RESOLUTION_FAILED",
+      "assertion_ids": [
+        "UNRESOLVED_HIR_COUNT_ZERO",
+        "CANDIDATE_SET_HIR_COUNT_ZERO",
+        "RUNTIME_FALLBACK_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R70-SRMB-ACC-009",
+      "class": "REJECT",
+      "source_or_subject": "a static alias collides with an existing local binding",
+      "expected": "REJECT_ALIAS_COLLISION_BEFORE_HIR",
+      "diagnostic_or_null": "STATIC_ALIAS_CONFLICTS_WITH_LOCAL_BINDING",
+      "assertion_ids": [
+        "LOCAL_BINDING_IDENTITY_PRESERVED",
+        "STATIC_ALIAS_BINDING_NOT_CREATED",
+        "RUNTIME_RELOOKUP_ZERO"
+      ],
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "acceptance_bindings": {
+    "POSITIVE": [
+      "R70-SRMB-ACC-001",
+      "R70-SRMB-ACC-002",
+      "R70-SRMB-ACC-003"
+    ],
+    "BOUNDARY": [
+      "R70-SRMB-ACC-004",
+      "R70-SRMB-ACC-005"
+    ],
+    "REJECT": [
+      "R70-SRMB-ACC-006",
+      "R70-SRMB-ACC-007",
+      "R70-SRMB-ACC-008",
+      "R70-SRMB-ACC-009"
+    ]
+  },
+  "mutation_obligations": [
+    {
+      "mutation_id": "M01",
+      "mutation": "REINTERPRET_DOUBLE_COLON_AS_MEMBER_ACCESS",
+      "killed_by": "STATIC_AND_MEMBER_AST_ROLE_DISJOINTNESS",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M02",
+      "mutation": "REINTERPRET_DOT_AS_QUALIFIED_STATIC_SELECTION",
+      "killed_by": "STATIC_AND_MEMBER_AST_ROLE_DISJOINTNESS",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M03",
+      "mutation": "PROJECT_MODULE_ID_INTO_EXPRESSION_RESOLVED_REF",
+      "killed_by": "MODULE_EXPRESSION_HIR_PROJECTION_ZERO",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M04",
+      "mutation": "CREATE_COMPANION_OR_METATYPE_RUNTIME_VALUE_FROM_STATIC_QUALIFIER",
+      "killed_by": "COMPANION_OR_METATYPE_VALUE_COUNT_ZERO",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M05",
+      "mutation": "ALLOW_UNRESOLVED_CANDIDATE_OR_RUNTIME_RELOOKUP_RESIDUE",
+      "killed_by": "RESOLVER_HIR_SEAL_ZERO_RESIDUE",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M06",
+      "mutation": "ENCODE_MODULE_ID_OR_WRONG_DECL_DOMAIN_IN_STATIC_REF",
+      "killed_by": "CLOSED_STATIC_IDENTITY_DOMAIN_VERIFIER",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M07",
+      "mutation": "DROP_OR_CHANGE_FIELD_SYMBOL_KEY_OR_USE_RUNTIME_MEMBER_LOOKUP",
+      "killed_by": "PLACEPLAN_FIELD_IDENTITY_AND_RUNTIME_LOOKUP_ZERO",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M08",
+      "mutation": "EVALUATE_DOT_RECEIVER_MORE_THAN_ONCE",
+      "killed_by": "CALL_AND_PLACE_SOURCE_EVALUATION_EXACTLY_ONCE",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M09",
+      "mutation": "LOWER_DIRECT_MEMBER_CALL_THROUGH_NONMATCHING_MODE_TARGET_ROW",
+      "killed_by": "HM_LR_CALL_001_EXACT_PAIR",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M10",
+      "mutation": "DROP_VIRTUAL_SLOT_IDENTITY_OR_REWRITE_VIRTUAL_CALL_AS_DIRECT",
+      "killed_by": "HM_LR_CALL_002_EXACT_VIRTUAL_SLOT",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M11",
+      "mutation": "DROP_EXTENSION_IDENTITY_OR_CONTEXT_ADAPT_OR_SEARCH_PROVIDER_AT_RUNTIME",
+      "killed_by": "HM_LR_CALL_004_EXACT_EXTENSION_STATIC",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M12",
+      "mutation": "ADD_SELECTOR_OR_STATIC_PATH_PAYLOAD_OR_HELPER_TO_INTERNAL_RUNTIME_ABI",
+      "killed_by": "INTERNAL_RUNTIME_TYPED_CALL_TRANSPORT_ONLY",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M13",
+      "mutation": "ADD_XVM_SELECTOR_SEARCH_OPCODE_OR_CAPABILITY",
+      "killed_by": "XVM_EXISTING_MIR_OPERATION_SET_ONLY",
+      "expected": "MUTANT_KILLED"
+    },
+    {
+      "mutation_id": "M14",
+      "mutation": "LET_CRANELIFT_SYMBOL_LINK_ORDER_OR_TARGET_IDENTITY_RESELECT_SEMANTICS",
+      "killed_by": "DETERMINISTIC_VERIFIED_MIR_TO_CLIF_FENCE",
+      "expected": "MUTANT_KILLED"
+    }
+  ],
+  "machine_acceptance": {
+    "feature_count": 1,
+    "transitioned_cell_count": 1,
+    "not_applicable_transition_count": 1,
+    "other_feature_transition_count": 0,
+    "rule_count": 14,
+    "lookup_domain_count": 4,
+    "acceptance_case_count": 9,
+    "positive_case_count": 3,
+    "boundary_case_count": 2,
+    "reject_case_count": 4,
+    "acceptance_bound_case_count": 9,
+    "mutation_obligation_count": 14,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "new_mir_terminator_kind_count": 0,
+    "runtime_relookup_count": 0,
+    "xvm_new_opcode_count": 0,
+    "internal_runtime_selector_payload_count": 0,
+    "cranelift_selector_reselection_count": 0,
+    "other_target_cell_transition_count": 0,
+    "product_executed_count": 0
+  }
+}

@@ -1,0 +1,500 @@
+{
+  "$schema": "../../schemas/language/trait-qualified-associated-static-selection-trace-closure-r1.schema.json",
+  "schema": "deeplus.trait-qualified-associated-static-selection-trace-closure/r1",
+  "revision": "r62-local-trait-qualified-associated-static-selection-dynamic-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "0346f2cdd417618ffa0af144a1c37569da63a4c4",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_ids": [
+    "trait_qualified_associated_static_selection"
+  ],
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_grammar_production_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "new_runtime_mechanism_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "scope_fence": {
+    "transitioned_cells": [
+      {
+        "feature_id": "trait_qualified_associated_static_selection",
+        "stage": "DYNAMIC_LOWERING",
+        "outcome": null,
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "predecessor_gap_id": "IR-XCUT-P1-054",
+        "disposition": "BOUND_DIRECT"
+      }
+    ],
+    "transitioned_cell_count": 1,
+    "other_feature_transition_count": 0,
+    "other_target_cell_transition_count": 0
+  },
+  "descriptor_repair": {
+    "identity_kind": "TraitAssociatedStaticSelectionId",
+    "identity_role": "CLOSED_STATIC_SELECTION_DESCRIPTOR_ID",
+    "required_fields": [
+      "TraitId",
+      "RequirementId",
+      "ConformanceId",
+      "TraitWitnessId",
+      "ImplementationId",
+      "SubstitutionId",
+      "ResponsibilityId"
+    ],
+    "required_field_count": 7,
+    "item_kinds": [
+      "associated_type",
+      "associated_value",
+      "associated_function"
+    ],
+    "implementation_callable_mapping": {
+      "source_field": "ImplementationId",
+      "hir_projection": "CallableImplementationId",
+      "cardinality": "ONE_TO_ONE",
+      "complete_before_hir_emission": true,
+      "injective_within_compilation_identity_domain": true,
+      "independent_candidate_selection_count": 0
+    },
+    "hir_binding": "decl_id_or_call_head_id_REFERENCES_TraitAssociatedStaticSelectionId",
+    "mir_binding": "STATIC_REF.static_identity_id_REFERENCES_TraitAssociatedStaticSelectionId",
+    "selected_identity_erased_before_mir": false,
+    "runtime_reconstruction_count": 0,
+    "machine_address_identity_input_count": 0
+  },
+  "associated_item_kind_lowering": {
+    "associated_type": {
+      "runtime_operation_count": 0,
+      "composition_order": [
+        "EXACT_ASSOCIATED_TYPE_SELECTION",
+        "NORMALIZE_SELECTED_TYPE",
+        "NOMINAL_TYPE_SIDE_SELECTION"
+      ],
+      "trait_or_extension_fallback_count": 0
+    },
+    "associated_value": {
+      "hir_form": "ResolvedRef::DirectDecl(TraitAssociatedStaticSelectionId)",
+      "lowering_rows": [
+        "HM-LR-REF-002",
+        "HM-LR-TOP-002"
+      ],
+      "operation_sequence": [
+        "STATIC_REF",
+        "TOTAL_PROJECTION"
+      ],
+      "invoke_count": 0,
+      "static_material_profile": [
+        "IMMUTABLE",
+        "SHAREABLE",
+        "NO_DROP",
+        "AUTHORITY_FREE",
+        "ACYCLIC",
+        "STATICALLY_MATERIALIZABLE"
+      ]
+    },
+    "associated_function": {
+      "hir_mode_target_pair": "ORDINARY::TRAIT_WITNESS",
+      "hir_call_head": "TraitAssociatedStaticSelectionId",
+      "lowering_rows": [
+        "HM-LR-CALL-003"
+      ],
+      "operation_sequence": [
+        "STATIC_REF",
+        "INVOKE"
+      ],
+      "direct_symbol_input": [
+        "CallableImplementationId",
+        "SubstitutionId",
+        "ResponsibilityId"
+      ],
+      "semantic_target_rewrite_count": 0
+    }
+  },
+  "existing_operation_alignment": {
+    "reused_rows": [
+      "HM-LR-REF-002",
+      "HM-LR-TOP-002",
+      "HM-LR-CALL-003"
+    ],
+    "reused_operations": [
+      "STATIC_REF",
+      "TOTAL_PROJECTION"
+    ],
+    "reused_terminators": [
+      "INVOKE"
+    ],
+    "static_ref_semantic_operation_id": "DM-SEMOP-STATIC-REF-R1",
+    "new_hir_node_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "new_mir_terminator_kind_count": 0,
+    "new_runtime_service_count": 0
+  },
+  "zero_runtime_contract": {
+    "runtime_witness_lookup_count": 0,
+    "candidate_enumeration_count": 0,
+    "candidate_ranking_count": 0,
+    "provider_search_count": 0,
+    "fallback_count": 0,
+    "source_import_use_link_order_winner_count": 0,
+    "expected_result_selection_count": 0,
+    "implicit_conversion_selection_count": 0,
+    "specialization_count": 0,
+    "child_local_witness_replacement_count": 0,
+    "activation_trigger_count": 0,
+    "new_commit_event_count": 0,
+    "runtime_identity_reconstruction_count": 0,
+    "machine_address_identity_input_count": 0
+  },
+  "diagnostic_fence": {
+    "active_diagnostics": [
+      "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+      "TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND",
+      "TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH",
+      "TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE",
+      "TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN",
+      "ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED"
+    ],
+    "active_diagnostic_count": 6,
+    "new_diagnostic_count": 0
+  },
+  "out_of_scope_follow_up": {
+    "catalog_spelling": "TRAIT_ASSOCIATED_STATIC_AMBIGUOUS",
+    "used_as_r62_evidence": false,
+    "disposition": "OUT_OF_SCOPE_CATALOG_COHERENCE_FOLLOW_UP",
+    "blocks_dynamic_trace_closure": false
+  },
+  "rules": [
+    {
+      "rule_id": "TQASSTC-R001",
+      "text": "Only trait_qualified_associated_static_selection DYNAMIC_LOWERING transitions from APPLICABLE_BLOCKED_BY_GAP to BOUND_DIRECT."
+    },
+    {
+      "rule_id": "TQASSTC-R002",
+      "text": "R62 adds no source spelling, grammar production, AST or HIR node kind, MIR operation or terminator kind, runtime service, activation, or product-support claim."
+    },
+    {
+      "rule_id": "TQASSTC-R003",
+      "text": "One immutable TraitAssociatedStaticSelectionId binds exactly TraitId, RequirementId, ConformanceId, TraitWitnessId, ImplementationId, SubstitutionId, and ResponsibilityId."
+    },
+    {
+      "rule_id": "TQASSTC-R004",
+      "text": "For an associated function, ImplementationId projects one-to-one and injectively to CallableImplementationId before HIR emission; it is not an independent candidate selection."
+    },
+    {
+      "rule_id": "TQASSTC-R005",
+      "text": "Checked context fixes exactly one of associated_type, associated_value, or associated_function before HIR lowering, and a kind mismatch is terminal."
+    },
+    {
+      "rule_id": "TQASSTC-R006",
+      "text": "Associated values reuse HM-LR-REF-002 and HM-LR-TOP-002 for STATIC_REF then TOTAL_PROJECTION; associated functions reuse HM-LR-CALL-003 for STATIC_REF then INVOKE with ORDINARY::TRAIT_WITNESS preserved as the semantic target."
+    },
+    {
+      "rule_id": "TQASSTC-R007",
+      "text": "An associated type emits no runtime operation; a following member selector operates only in the normalized selected type's nominal type-side domain without Trait or extension fallback."
+    },
+    {
+      "rule_id": "TQASSTC-R008",
+      "text": "An associated value reaches HIR only when immutable, Shareable, no-drop, authority-free, acyclic, and statically materializable, and selection adds no activation or cache lifecycle."
+    },
+    {
+      "rule_id": "TQASSTC-R009",
+      "text": "Runtime witness lookup, candidate enumeration or ranking, provider search, fallback, order winner, specialization, child-local replacement, activation, new commit events, and runtime identity reconstruction all remain zero."
+    },
+    {
+      "rule_id": "TQASSTC-R010",
+      "text": "Inherited evidence retains its original ConformanceId and TraitWitnessId; a child cannot replace or specialize the selected parent evidence."
+    },
+    {
+      "rule_id": "TQASSTC-R011",
+      "text": "Normalized substitutions receive distinct selection identities where required, while source, import, use, link order and machine address never contribute semantic identity."
+    },
+    {
+      "rule_id": "TQASSTC-R012",
+      "text": "The six diagnostics in diagnostic_fence are the only rejection evidence admitted by R62, and R62 invents no new diagnostic."
+    },
+    {
+      "rule_id": "TQASSTC-R013",
+      "text": "TRAIT_ASSOCIATED_STATIC_AMBIGUOUS is not used as R62 evidence and remains a separate catalog-coherence follow-up."
+    },
+    {
+      "rule_id": "TQASSTC-R014",
+      "text": "Semantic P0 remains zero, feature P1 remains exactly 22 OPEN, M13 remains four OPEN actions, product lanes remain 15/15 NOT_RUN, and GitHub publication remains suspended."
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "TQASSTC-AC-001",
+      "audit_case_id": "TYPE1",
+      "class": "POSITIVE",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "<Packet as Codec>::Format::canonical",
+      "expected": "SELECT_EXACT_ASSOCIATED_TYPE_THEN_NOMINAL_TYPE_SIDE_MEMBER",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "identity_residue_field_count": 7,
+        "associated_type_runtime_operation_count": 0,
+        "second_selection_domain": "NOMINAL_TYPE_SIDE",
+        "trait_or_extension_fallback_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-002",
+      "audit_case_id": "VALUE1",
+      "class": "POSITIVE",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "<Packet as Codec>::defaultFormat",
+      "expected": "DIRECT_DECL_STATIC_REF_TOTAL_PROJECTION",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "identity_residue_field_count": 7,
+        "static_ref_count": 1,
+        "total_projection_count": 1,
+        "invoke_count": 0,
+        "runtime_lookup_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-003",
+      "audit_case_id": "FUNCTION1",
+      "class": "POSITIVE",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "<T as Factory>::make(argument)",
+      "expected": "ORDINARY_TRAIT_WITNESS_STATIC_REF_DIRECT_SYMBOL_INVOKE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "hir_mode_target_pair": "ORDINARY::TRAIT_WITNESS",
+        "identity_residue_field_count": 7,
+        "static_ref_count": 1,
+        "invoke_count": 1,
+        "runtime_witness_search_count": 0,
+        "new_commit_event_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-004",
+      "audit_case_id": "SUBSTITUTION1",
+      "class": "BOUNDARY",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "the same Trait requirement selected under two unequal normalized substitutions",
+      "expected": "DISTINCT_SELECTION_IDS_WITH_EXACT_SUBSTITUTION_RESIDUE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "selection_id_count": 2,
+        "substitution_id_count": 2,
+        "specialization_count": 0,
+        "candidate_ranking_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-005",
+      "audit_case_id": "INHERITED1",
+      "class": "BOUNDARY",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "a child type uses exact inherited parent conformance evidence",
+      "expected": "PRESERVE_PARENT_CONFORMANCE_AND_WITNESS_IDENTITY",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "original_conformance_id_preserved": true,
+        "original_trait_witness_id_preserved": true,
+        "child_local_replacement_count": 0,
+        "specialization_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-006",
+      "audit_case_id": "CALLABLE1",
+      "class": "BOUNDARY",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "an associated function ImplementationId is projected into the HIR call plan",
+      "expected": "ONE_TO_ONE_IMPLEMENTATION_TO_CALLABLE_IMPLEMENTATION_MAPPING",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "implementation_id_count": 1,
+        "callable_implementation_id_count": 1,
+        "mapping_cardinality": "ONE_TO_ONE",
+        "independent_candidate_selection_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-007",
+      "audit_case_id": "LINK1",
+      "class": "BOUNDARY",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "source, import, use and link order or backend address is permuted after static selection",
+      "expected": "UNCHANGED_SEMANTIC_SELECTION_AND_DIRECT_SYMBOL_TARGET",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "order_winner_count": 0,
+        "machine_address_identity_input_count": 0,
+        "semantic_selection_id_changed": false,
+        "runtime_reconstruction_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-008",
+      "audit_case_id": "EXPLICIT1",
+      "class": "REJECT",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "T::item attempts to select a visible Trait associated static item",
+      "expected": "REJECT_BEFORE_HIR_REQUIRING_EXPLICIT_TRAIT_QUALIFICATION",
+      "diagnostic_or_null": "TRAIT_ASSOCIATED_STATIC_REQUIRES_EXPLICIT_QUALIFICATION",
+      "assertions": {
+        "hir_node_count": 0,
+        "mir_node_count": 0,
+        "trait_search_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-009",
+      "audit_case_id": "NOTFOUND1",
+      "class": "REJECT",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "<T as Trait>::missing names no requirement in the exact Trait",
+      "expected": "REJECT_MISSING_ITEM_BEFORE_HIR",
+      "diagnostic_or_null": "TRAIT_ASSOCIATED_STATIC_ITEM_NOT_FOUND",
+      "assertions": {
+        "hir_node_count": 0,
+        "mir_node_count": 0,
+        "fallback_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-010",
+      "audit_case_id": "KIND1",
+      "class": "REJECT",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "an associated value is selected where an associated type or called function is required",
+      "expected": "REJECT_TERMINAL_ITEM_KIND_MISMATCH_BEFORE_HIR",
+      "diagnostic_or_null": "TRAIT_ASSOCIATED_STATIC_ITEM_KIND_MISMATCH",
+      "assertions": {
+        "hir_node_count": 0,
+        "mir_node_count": 0,
+        "cross_domain_reinterpretation_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-011",
+      "audit_case_id": "RESIDUE1",
+      "class": "REJECT",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "one of the seven required identity or responsibility fields is absent or the ImplementationId mapping is incomplete",
+      "expected": "REJECT_INCOMPLETE_RESIDUE_BEFORE_MIR",
+      "diagnostic_or_null": "TRAIT_ASSOCIATED_STATIC_IDENTITY_RESIDUE_INCOMPLETE",
+      "assertions": {
+        "required_field_count": 7,
+        "selected_identity_erased_before_mir": false,
+        "mir_node_count": 0,
+        "runtime_reconstruction_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-012",
+      "audit_case_id": "RUNTIME1",
+      "class": "REJECT",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "lowering attempts runtime witness lookup, provider search, fallback, order ranking, specialization, replacement, or activation",
+      "expected": "REJECT_RUNTIME_DISCOVERY_OR_RECONSTRUCTION",
+      "diagnostic_or_null": "TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN",
+      "assertions": {
+        "runtime_lookup_count": 0,
+        "provider_search_count": 0,
+        "fallback_count": 0,
+        "specialization_count": 0,
+        "activation_trigger_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "TQASSTC-AC-013",
+      "audit_case_id": "VALUEPROFILE1",
+      "class": "REJECT",
+      "feature_id": "trait_qualified_associated_static_selection",
+      "source_or_subject": "an associated let value is mutable, non-Shareable, needs drop, authority-bearing, cyclic, or not statically materializable",
+      "expected": "REJECT_VALUE_PROFILE_BEFORE_STATIC_REF",
+      "diagnostic_or_null": "ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED",
+      "assertions": {
+        "static_ref_count": 0,
+        "activation_trigger_count": 0,
+        "runtime_cache_count": 0,
+        "invalid_profile_admitted_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "acceptance_bindings": {
+    "trait_qualified_associated_static_selection": {
+      "POSITIVE": [
+        "TQASSTC-AC-001",
+        "TQASSTC-AC-002",
+        "TQASSTC-AC-003"
+      ],
+      "BOUNDARY": [
+        "TQASSTC-AC-004",
+        "TQASSTC-AC-005",
+        "TQASSTC-AC-006",
+        "TQASSTC-AC-007"
+      ],
+      "REJECT": [
+        "TQASSTC-AC-008",
+        "TQASSTC-AC-009",
+        "TQASSTC-AC-010",
+        "TQASSTC-AC-011",
+        "TQASSTC-AC-012",
+        "TQASSTC-AC-013"
+      ]
+    }
+  },
+  "machine_acceptance": {
+    "feature_count": 1,
+    "rule_count": 14,
+    "acceptance_case_count": 13,
+    "positive_case_count": 3,
+    "boundary_case_count": 4,
+    "reject_case_count": 6,
+    "acceptance_binding_set_count": 3,
+    "acceptance_bound_case_count": 13,
+    "overlay_binding_count": 1,
+    "predecessor_blocked_cell_count": 1,
+    "overlay_bound_direct_transition_count": 1,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 0,
+    "identity_residue_field_count": 7,
+    "implementation_callable_mapping_count": 1,
+    "associated_item_kind_count": 3,
+    "reused_lowering_row_count": 3,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "runtime_lookup_count": 0,
+    "fallback_count": 0,
+    "provider_search_count": 0,
+    "order_winner_count": 0,
+    "specialization_count": 0,
+    "child_replacement_count": 0,
+    "activation_trigger_count": 0,
+    "new_commit_event_count": 0,
+    "other_feature_transition_count": 0,
+    "other_target_cell_transition_count": 0,
+    "product_executed_count": 0
+  }
+}

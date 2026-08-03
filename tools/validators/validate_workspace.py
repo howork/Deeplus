@@ -100,8 +100,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 719, "diagnostics": 1448, "predicates": 278,
-    "predicate_fixtures": 849, "no_go": 155,
+    "features": 723, "diagnostics": 1484, "predicates": 283,
+    "predicate_fixtures": 877, "no_go": 156,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -1364,11 +1364,21 @@ def r4_nrm_contract_results(
     observed_predicate_ids = [
         row.get("predicate_id") for row in new_predicates
     ]
+    expected_dependency_predicates = {
+        predicate_id: precedence_ids[:index]
+        + (
+            ["MemberVisibilityAdmitted"]
+            if predicate_id == "ReferenceVisibilityActivationAdmitted"
+            else []
+        )
+        for index, predicate_id in enumerate(precedence_ids)
+    }
     record(
         observed_predicate_ids == precedence_ids
         and all(
-            row.get("dependency_predicates") == precedence_ids[:index]
-            for index, row in enumerate(new_predicates)
+            row.get("dependency_predicates")
+            == expected_dependency_predicates[row.get("predicate_id")]
+            for row in new_predicates
         ),
         "R4_NRM_PRECEDENCE",
         f"observed={observed_predicate_ids}",
@@ -1394,12 +1404,28 @@ def r4_nrm_contract_results(
             and row.get("evidence_status")
             == "DESIGN_ALGORITHM_STATIC_NOT_RUN"
             and row.get("positive_fixture_ids")
-            == [
-                f"PF-{predicate_id}-POS",
-                f"PF-{predicate_id}-BOUNDARY",
-            ]
+            == (
+                [
+                    f"PF-{predicate_id}-POS",
+                    f"PF-{predicate_id}-BOUNDARY",
+                    "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-POS",
+                    "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-BOUNDARY",
+                ]
+                if predicate_id == "ReferenceVisibilityActivationAdmitted"
+                else [
+                    f"PF-{predicate_id}-POS",
+                    f"PF-{predicate_id}-BOUNDARY",
+                ]
+            )
             and row.get("negative_fixture_ids")
-            == [f"PF-{predicate_id}-NEG"]
+            == (
+                [
+                    f"PF-{predicate_id}-NEG",
+                    "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-NEG",
+                ]
+                if predicate_id == "ReferenceVisibilityActivationAdmitted"
+                else [f"PF-{predicate_id}-NEG"]
+            )
         )
     record(
         reason_contract,
@@ -10980,6 +11006,22 @@ R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
     "R27_MUTATIONS_EXACT_6",
     "R27_GOVERNANCE_FENCE",
 )
+R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS = (
+    "R28_CONTRACT_IDENTITY",
+    "R28_SCHEMA_BINDING",
+    "R28_FORMATTING_TOTAL_644",
+    "R28_FORMATTING_DISJOINT_COUNTS",
+    "R28_ACTOR_ROWS_EXACT_5",
+    "R28_RECOVERY_RANGE_FENCE",
+    "R28_IDENTITY_DOMAIN_SEPARATION",
+    "R28_EDIT_SNAPSHOT_CONCURRENCY",
+    "R28_LSP_COORDINATE_ACTION_FENCE",
+    "R28_DIAGNOSTIC_PARITY_PRECEDENCE",
+    "R28_ORACLE_CASES_9",
+    "R28_ACCEPTANCE_MATRIX_34",
+    "R28_MUTATIONS_12",
+    "R28_GOVERNANCE_FENCE",
+)
 R40_MANUAL_GRAMMAR_COUNT_CHECK_IDS = (
     "R40_CONTRACT_EXACT",
     "R40_AUTHORITATIVE_PROJECTION_EXACT",
@@ -11493,8 +11535,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc"
-            and len(grammar_bytes) == 67902
+            == "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
+            and len(grammar_bytes) == 68181
             and len(production_names) == 644
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
@@ -11945,9 +11987,9 @@ def r27_grammar_topology_workspace_checks(
             or receipt.get("declared_reference_binding_count") != 644
             or receipt.get("external_symbol_count") != 40
             or receipt.get("source_root_count") != 6
-            or receipt.get("six_root_union_count") != 492
-            or receipt.get("six_root_shared_count") != 465
-            or receipt.get("six_root_unreachable_count") != 152
+            or receipt.get("six_root_union_count") != 494
+            or receipt.get("six_root_shared_count") != 467
+            or receipt.get("six_root_unreachable_count") != 150
             or receipt.get("aggregate_entry_root_count") != 2
             or receipt.get("unowned_orphan_count") != 0
             or receipt.get("illegal_cross_profile_edge_count") != 0
@@ -11977,8 +12019,8 @@ def r27_grammar_topology_workspace_checks(
                 "productions": 644,
                 "external_symbols": 40,
                 "source_roots": 6,
-                "six_root_union": 492,
-                "six_root_shared": 465,
+                "six_root_union": 494,
+                "six_root_shared": 467,
                 "unowned_orphans": 0,
                 "illegal_profile_edges": 0,
                 "mutations_rejected": 6,
@@ -11996,6 +12038,117 @@ def r27_grammar_topology_workspace_checks(
     except Exception as exc:  # noqa: BLE001
         return failed_rows(
             f"R27 grammar-topology runner integration failure: {exc}"
+        )
+
+
+def r28_formatter_lsp_incremental_workspace_checks(
+    root: Path,
+) -> list[dict[str, Any]]:
+    """Bind the exact-main R28 tooling contract without product claims."""
+
+    def failed_rows(detail: str) -> list[dict[str, Any]]:
+        return [
+            {"check_id": check_id, "pass": False, "detail": detail}
+            for check_id in R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS
+        ]
+
+    runner = root / "tools/validators/validate_formatter_lsp_incremental_parsing.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            return failed_rows(
+                "R28 formatter/LSP/incremental runner nonzero exit "
+                f"{completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            return failed_rows(
+                "R28 formatter/LSP/incremental runner emitted unexpected stderr"
+            )
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        rows = receipt.get("checks")
+        expected_ids = list(R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS)
+        if (
+            receipt.get("schema")
+            != "deeplus.r28-formatter-lsp-incremental-validation-receipt/r1"
+            or receipt.get("result") != "PASS"
+            or receipt.get("mode") != "VALIDATE"
+            or receipt.get("evidence_level") != "E2_STATIC_CLOSURE"
+            or receipt.get("check_scope")
+            != "R28_FORMATTER_LSP_INCREMENTAL_EXACT"
+            or receipt.get("check_count") != len(expected_ids)
+            or receipt.get("passed_check_count") != len(expected_ids)
+            or receipt.get("grammar_production_count") != 644
+            or receipt.get("formatting_rule_count") != 6
+            or receipt.get("formatting_rule_counts")
+            != {
+                "FD-01": 56,
+                "FD-02": 35,
+                "FD-03": 320,
+                "FD-04": 204,
+                "FD-05": 10,
+                "FD-06": 19,
+            }
+            or receipt.get("unclassified_production_count") != 0
+            or receipt.get("multiply_classified_production_count") != 0
+            or receipt.get("identity_domain_count") != 8
+            or receipt.get("forbidden_identity_conflation_count") != 6
+            or receipt.get("acceptance_case_count") != 9
+            or receipt.get("acceptance_class_counts")
+            != {"boundary": 3, "negative": 3, "positive": 3}
+            or receipt.get("successor_acceptance_case_count") != 34
+            or receipt.get("mutation_count") != 12
+            or receipt.get("rejected_mutation_count") != 12
+            or receipt.get("source_syntax_change_count") != 0
+            or receipt.get("grammar_production_change_count") != 0
+            or receipt.get("language_semantic_change_count") != 0
+            or receipt.get("new_final_diagnostic_id_count") != 0
+            or receipt.get("product_execution") != "NOT_RUN"
+            or receipt.get("github_publication")
+            != "SUSPENDED_UNTIL_FURTHER_USER_INSTRUCTION"
+            or receipt.get("errors") != []
+            or not isinstance(rows, list)
+            or [row.get("check_id") for row in rows] != expected_ids
+            or any(
+                not isinstance(row, dict)
+                or set(row) != {"check_id", "pass"}
+                or row.get("pass") is not True
+                for row in rows
+            )
+        ):
+            return failed_rows(
+                "R28 formatter/LSP/incremental receipt-contract drift"
+            )
+        detail = json.dumps(
+            {
+                "grammar_productions": 644,
+                "formatting_rules": 6,
+                "identity_domains": 8,
+                "oracle_cases": 9,
+                "successor_acceptance_cases": 34,
+                "mutations_rejected": 12,
+                "source_syntax_changes": 0,
+                "semantic_changes": 0,
+                "product_execution": "NOT_RUN",
+            },
+            sort_keys=True,
+        )
+        return [
+            {"check_id": row["check_id"], "pass": True, "detail": detail}
+            for row in rows
+        ]
+    except Exception as exc:  # noqa: BLE001
+        return failed_rows(
+            f"R28 formatter/LSP/incremental runner integration failure: {exc}"
         )
 
 
@@ -12199,6 +12352,85 @@ def r23_actor_protocol_binding_workspace_check(root: Path) -> dict[str, Any]:
         }
 
 
+def r22_actor_lifecycle_workspace_check(root: Path) -> dict[str, Any]:
+    """Run the exact-main R22 lifecycle validator without product overclaim."""
+
+    runner = root / "tools/validators/validate_actor_minimum_lifecycle.py"
+    expected = (
+        "ACTOR_MINIMUM_LIFECYCLE_PASS: rules=20 fixtures=10 admit=5 "
+        "reject=5 guards=12 trace=complete restart=0 interleaving=0 "
+        "product=NOT_RUN"
+    )
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            raise ValueError(
+                f"focused validator nonzero exit {completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr or completed.stdout.strip() != expected:
+            raise ValueError("focused lifecycle receipt-contract drift")
+        return {
+            "check_id": "R22_ACTOR_MINIMUM_LIFECYCLE",
+            "pass": True,
+            "detail": expected,
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "check_id": "R22_ACTOR_MINIMUM_LIFECYCLE",
+            "pass": False,
+            "detail": f"R22 Actor lifecycle integration failure: {exc}",
+        }
+
+
+def r51_actor_lifecycle_guard_workspace_check(root: Path) -> dict[str, Any]:
+    """Run the exact 12-guard in-memory evidence partition."""
+
+    runner = root / "tools/validators/run_actor_lifecycle_guard_mutation_tests.py"
+    expected = (
+        "ACTOR_LIFECYCLE_GUARD_MUTATION_PASS: guards=12 direct=5 "
+        "mutation=7 uncovered=0 product=NOT_RUN"
+    )
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            raise ValueError(
+                f"guard mutation runner nonzero exit {completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr or completed.stdout.strip() != expected:
+            raise ValueError("guard mutation receipt-contract drift")
+        return {
+            "check_id": "R51_ACTOR_LIFECYCLE_GUARD_PARTITION",
+            "pass": True,
+            "detail": expected,
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "check_id": "R51_ACTOR_LIFECYCLE_GUARD_PARTITION",
+            "pass": False,
+            "detail": f"R51 Actor lifecycle guard integration failure: {exc}",
+        }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -12242,6 +12474,11 @@ def main() -> int:
     )
     for row in r27_grammar_topology_check_results:
         check(row["pass"], row["check_id"], row["detail"])
+    r28_formatter_lsp_incremental_check_results = (
+        r28_formatter_lsp_incremental_workspace_checks(root)
+    )
+    for row in r28_formatter_lsp_incremental_check_results:
+        check(row["pass"], row["check_id"], row["detail"])
     r40_manual_grammar_count_check_results = (
         r40_manual_grammar_count_workspace_checks(root)
     )
@@ -12260,6 +12497,20 @@ def main() -> int:
         r23_actor_protocol_binding_check_result["pass"],
         r23_actor_protocol_binding_check_result["check_id"],
         r23_actor_protocol_binding_check_result["detail"],
+    )
+    r22_actor_lifecycle_check_result = r22_actor_lifecycle_workspace_check(root)
+    check(
+        r22_actor_lifecycle_check_result["pass"],
+        r22_actor_lifecycle_check_result["check_id"],
+        r22_actor_lifecycle_check_result["detail"],
+    )
+    r51_actor_lifecycle_guard_check_result = (
+        r51_actor_lifecycle_guard_workspace_check(root)
+    )
+    check(
+        r51_actor_lifecycle_guard_check_result["pass"],
+        r51_actor_lifecycle_guard_check_result["check_id"],
+        r51_actor_lifecycle_guard_check_result["detail"],
     )
 
     try:
@@ -12301,9 +12552,9 @@ def main() -> int:
                 language_coherence_contract.get("schema")
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
-                and fixed_counts.get("features") == 722
-                and fixed_counts.get("predicates") == 281
-                and fixed_counts.get("predicate_fixtures") == 864
+                and fixed_counts.get("features") == 723
+                and fixed_counts.get("predicates") == 283
+                and fixed_counts.get("predicate_fixtures") == 877
                 and fixed_counts.get("no_go") == 156
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -12343,6 +12594,11 @@ def main() -> int:
         "tests/fixtures/current/actor-protocol-binding-table-r1.json",
         "tools/generators/bind_actor_protocol_binding_tables.py",
         "tools/validators/validate_actor_protocol_binding_descriptors.py",
+        "tools/validators/validate_actor_minimum_lifecycle.py",
+        "tools/validators/run_actor_lifecycle_guard_mutation_tests.py",
+        "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
+        "tests/conformance/actor-lifecycle-guards-r1.json",
+        "decisions/language/Design_Deeplus_Actor_Minimum_Lifecycle_Implementation_Handoff_R1.md",
         "spec/diagnostics/catalog/chunks/part-0029.json",
         "spec/diagnostics/relations/chunks/part-0009.json",
         "tests/conformance/checker-predicates/chunks/part-0031.json",
@@ -12377,6 +12633,168 @@ def main() -> int:
         "release/evidence/current-publication-m1.3-predecessor-receipt.json",
         "release/evidence/current-publication-m1.3-git-binding-receipt.json",
         "release/evidence/current-publication-m1.3-role-review-index.json",
+        "decisions/language/Design_Deeplus_Ownership_Tooling_Projection_R1.md",
+        "spec/contracts/ownership-tooling-obligations-r1.json",
+        "schemas/language/ownership-tooling-obligations-r1.schema.json",
+        "schemas/language/ownership-tooling-obligations-fixtures-r1.schema.json",
+        "tests/fixtures/current/ownership-tooling-obligations-r1.json",
+        "spec/diagnostics/catalog/chunks/part-0033.json",
+        "tools/validators/validate_ownership_tooling_obligations.py",
+        "decisions/language/Design_Deeplus_Contract_Authority_Status_Reconciliation_R1.md",
+        "spec/contracts/current-contract-authority-status-r1.json",
+        "schemas/language/current-contract-authority-status-r1.schema.json",
+        "tools/validators/validate_current_contract_authority_status.py",
+        "tools/validators/run_current_contract_authority_status_mutation_tests.py",
+        "spec/traceability/implementation-target-profile-r1/catalog-metadata.json",
+        "schemas/language/implementation-target-traceability-r1.schema.json",
+        "tools/generators/build_implementation_target_traceability.py",
+        "tools/validators/validate_implementation_target_traceability.py",
+        "tools/validators/run_implementation_target_traceability_mutation_tests.py",
+        "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+        "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
+        "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
+        "tools/validators/run_scalar_numeric_fixed_operator_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R54_Scalar_Numeric_Fixed_Operator_Trace_Closure_R1.md",
+        "spec/contracts/lexical-trivia-source-root-attachment-r1.json",
+        "schemas/language/lexical-trivia-source-root-attachment-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/lexical-trivia-source-root-evidence-r1.json",
+        "schemas/language/lexical-trivia-source-root-evidence-r1.schema.json",
+        "tools/generators/build_lexical_trivia_source_root_evidence.py",
+        "tools/validators/validate_lexical_trivia_source_root_trace.py",
+        "tools/validators/run_lexical_trivia_source_root_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R55_Lexical_Trivia_Source_Root_Closure_R1.md",
+        "spec/contracts/numeric-array-shape-inferred-literal-r1.json",
+        "schemas/language/numeric-array-shape-inferred-literal-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/numeric-array-shape-inferred-evidence-r1.json",
+        "schemas/language/numeric-array-shape-inferred-evidence-r1.schema.json",
+        "tools/generators/build_numeric_array_shape_inferred_evidence.py",
+        "tools/validators/validate_numeric_array_shape_inferred_trace.py",
+        "tools/validators/run_numeric_array_shape_inferred_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R56_NumericArray_Shape_Inferred_Trace_Closure_R1.md",
+        "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+        "schemas/language/unified-call-tilde-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/unified-call-tilde-evidence-r1.json",
+        "schemas/language/unified-call-tilde-evidence-r1.schema.json",
+        "tools/generators/build_unified_call_tilde_evidence.py",
+        "tools/validators/validate_unified_call_tilde_trace.py",
+        "tools/validators/run_unified_call_tilde_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R57_Unified_Call_Tilde_Trace_Closure_R1.md",
+        "spec/contracts/member-visibility-trace-closure-r1.json",
+        "schemas/language/member-visibility-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/member-visibility-evidence-r1.json",
+        "schemas/language/member-visibility-evidence-r1.schema.json",
+        "tools/generators/build_member_visibility_evidence.py",
+        "tools/validators/validate_member_visibility_trace.py",
+        "tools/validators/run_member_visibility_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R58_Member_Visibility_Trace_Closure_R1.md",
+        "spec/contracts/pattern-dynamic-lowering-trace-closure-r1.json",
+        "schemas/language/pattern-dynamic-lowering-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/pattern-dynamic-lowering-evidence-r1.json",
+        "schemas/language/pattern-dynamic-lowering-evidence-r1.schema.json",
+        "tools/generators/build_pattern_dynamic_lowering_evidence.py",
+        "tools/validators/validate_pattern_dynamic_lowering_trace.py",
+        "tools/validators/run_pattern_dynamic_lowering_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
+        "spec/contracts/pattern-match-ownership-split-trace-closure-r1.json",
+        "schemas/language/pattern-match-ownership-split-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/pattern-match-ownership-split-evidence-r1.json",
+        "schemas/language/pattern-match-ownership-split-evidence-r1.schema.json",
+        "tools/generators/build_pattern_match_ownership_split_evidence.py",
+        "tools/validators/validate_pattern_match_ownership_split_trace.py",
+        "tools/validators/run_pattern_match_ownership_split_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R60_Pattern_Match_Ownership_Split_Trace_Closure_R1.md",
+        "spec/contracts/pattern-clause-exhaustiveness-trace-closure-r1.json",
+        "schemas/language/pattern-clause-exhaustiveness-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/pattern-clause-exhaustiveness-evidence-r1.json",
+        "schemas/language/pattern-clause-exhaustiveness-evidence-r1.schema.json",
+        "tools/generators/build_pattern_clause_exhaustiveness_evidence.py",
+        "tools/validators/validate_pattern_clause_exhaustiveness_trace.py",
+        "tools/validators/run_pattern_clause_exhaustiveness_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R61_Pattern_Clause_Exhaustiveness_Trace_Closure_R1.md",
+        "spec/contracts/trait-qualified-associated-static-selection-trace-closure-r1.json",
+        "schemas/language/trait-qualified-associated-static-selection-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/trait-qualified-associated-static-selection-evidence-r1.json",
+        "schemas/language/trait-qualified-associated-static-selection-evidence-r1.schema.json",
+        "tools/generators/build_trait_qualified_associated_static_selection_evidence.py",
+        "tools/validators/validate_trait_qualified_associated_static_selection_trace.py",
+        "tools/validators/run_trait_qualified_associated_static_selection_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R62_Trait_Qualified_Associated_Static_Selection_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/associated-requirement-phase-a-trace-closure-r1.json",
+        "schemas/language/associated-requirement-phase-a-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/associated-requirement-phase-a-evidence-r1.json",
+        "schemas/language/associated-requirement-phase-a-evidence-r1.schema.json",
+        "tools/validators/validate_associated_requirement_phase_a_trace_closure.py",
+        "tools/validators/run_associated_requirement_phase_a_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R64_Associated_Requirement_Phase_A_Trace_Closure_R1.md",
+        "spec/traceability/implementation-target-profile-r1/associated-requirement-ast-diagnostic-parity-evidence-r1.json",
+        "schemas/language/associated-requirement-ast-diagnostic-parity-evidence-r1.schema.json",
+        "tools/validators/validate_associated_requirement_ast_diagnostic_parity.py",
+        "tools/validators/run_associated_requirement_ast_diagnostic_parity_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R65_Associated_Requirement_AST_Diagnostic_Parity_R1.md",
+        "spec/traceability/implementation-target-profile-r1/responsibility-identity-dynamic-trace-evidence-r1.json",
+        "schemas/language/responsibility-identity-dynamic-trace-evidence-r1.schema.json",
+        "tools/validators/validate_responsibility_identity_dynamic_trace.py",
+        "tools/validators/run_responsibility_identity_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R66_Responsibility_Identity_Dynamic_Trace_Closure_R1.md",
+        "spec/traceability/implementation-target-profile-r1/closure-capture-dynamic-trace-evidence-r1.json",
+        "schemas/language/closure-capture-dynamic-trace-evidence-r1.schema.json",
+        "tools/validators/validate_closure_capture_dynamic_trace.py",
+        "tools/validators/run_closure_capture_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R67_Closure_Capture_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/region-lifetime-mir-projection-r1.json",
+        "schemas/language/region-lifetime-mir-projection-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/region-lifetime-dynamic-trace-evidence-r1.json",
+        "schemas/language/region-lifetime-dynamic-trace-evidence-r1.schema.json",
+        "tools/validators/validate_region_lifetime_dynamic_trace.py",
+        "tools/validators/run_region_lifetime_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R68_Region_Lifetime_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/managed-reference-dynamic-projection-r1.json",
+        "schemas/language/managed-reference-dynamic-projection-r1.schema.json",
+        "schemas/language/managed-reference-runtime-root-receipt-r1.schema.json",
+        "tests/fixtures/current/managed-reference-dynamic-projection-r1.json",
+        "schemas/language/managed-reference-dynamic-projection-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/managed-reference-dynamic-trace-evidence-r1.json",
+        "schemas/language/managed-reference-dynamic-trace-evidence-r1.schema.json",
+        "tools/validators/validate_managed_reference_dynamic_trace.py",
+        "tools/validators/run_managed_reference_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R69_Managed_Reference_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/static-runtime-member-boundary-trace-closure-r1.json",
+        "schemas/language/static-runtime-member-boundary-trace-closure-r1.schema.json",
+        "tests/fixtures/current/static-runtime-member-boundary-trace-closure-r1.json",
+        "schemas/language/static-runtime-member-boundary-trace-closure-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/static-runtime-member-boundary-evidence-r1.json",
+        "schemas/language/static-runtime-member-boundary-evidence-r1.schema.json",
+        "tools/validators/validate_static_runtime_member_boundary_trace.py",
+        "tools/validators/run_static_runtime_member_boundary_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R70_Static_Runtime_Member_Boundary_Trace_Closure_R1.md",
+        "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json",
+        "schemas/language/method-extension-resolution-dynamic-trace-closure-r1.schema.json",
+        "tests/fixtures/current/method-extension-resolution-dynamic-trace-closure-r1.json",
+        "schemas/language/method-extension-resolution-dynamic-trace-closure-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/method-extension-resolution-dynamic-evidence-r1.json",
+        "schemas/language/method-extension-resolution-dynamic-evidence-r1.schema.json",
+        "tools/validators/validate_method_extension_resolution_dynamic_trace.py",
+        "tools/validators/run_method_extension_resolution_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R71_Method_Extension_Resolution_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json",
+        "schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json",
+        "tests/fixtures/current/member-extension-collision-dynamic-trace-closure-r1.json",
+        "schemas/language/member-extension-collision-dynamic-trace-closure-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/member-extension-collision-dynamic-evidence-r1.json",
+        "schemas/language/member-extension-collision-dynamic-evidence-r1.schema.json",
+        "tools/validators/validate_member_extension_collision_dynamic_trace.py",
+        "tools/validators/run_member_extension_collision_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R72_Member_Extension_Collision_Dynamic_Trace_Closure_R1.md",
+        "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json",
+        "schemas/language/member-extension-collision-conformance-evidence-r1.schema.json",
+        "tools/validators/validate_member_extension_collision_conformance_trace.py",
+        "tools/validators/run_member_extension_collision_conformance_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R73_Member_Extension_Collision_Conformance_Trace_Closure_R1.md",
+        "tools/validators/validate_member_extension_collision_diagnostic_trace.py",
+        "tools/validators/run_member_extension_collision_diagnostic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R74_Member_Extension_Collision_Diagnostic_Trace_Closure_R1.md",
+        "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
+        "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -12439,6 +12857,277 @@ def main() -> int:
         check((root / rel).is_file(), "REQUIRED_PATH", rel)
     check(not (root / ("current/current-pointer.json" if args.candidate else "release/candidate-state.json")).exists(),
           "RELEASE_STATE_EXCLUSIVE", "candidate and published current states are mutually exclusive")
+
+    r69_validator = (
+        root / "tools/validators/validate_managed_reference_dynamic_trace.py"
+    )
+    r69_process = subprocess.run(
+        [sys.executable, str(r69_validator), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r69_detail = (
+        r69_process.stdout.strip()
+        if r69_process.returncode == 0
+        else r69_process.stderr.strip() or r69_process.stdout.strip()
+    )
+    check(
+        r69_process.returncode == 0,
+        "R69_MANAGED_REFERENCE_DYNAMIC_TRACE",
+        r69_detail[-4000:],
+    )
+
+    r69_mutation_runner = (
+        root
+        / "tools/validators/run_managed_reference_dynamic_trace_mutation_tests.py"
+    )
+    r69_mutation_process = subprocess.run(
+        [sys.executable, str(r69_mutation_runner)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r69_mutation_detail = (
+        r69_mutation_process.stdout.strip()
+        if r69_mutation_process.returncode == 0
+        else r69_mutation_process.stderr.strip()
+        or r69_mutation_process.stdout.strip()
+    )
+    check(
+        r69_mutation_process.returncode == 0,
+        "R69_MANAGED_REFERENCE_DYNAMIC_TRACE_MUTATIONS",
+        r69_mutation_detail[-4000:],
+    )
+
+    r70_validator = (
+        root / "tools/validators/validate_static_runtime_member_boundary_trace.py"
+    )
+    r70_process = subprocess.run(
+        [sys.executable, str(r70_validator), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r70_detail = (
+        r70_process.stdout.strip()
+        if r70_process.returncode == 0
+        else r70_process.stderr.strip() or r70_process.stdout.strip()
+    )
+    check(
+        r70_process.returncode == 0,
+        "R70_STATIC_RUNTIME_MEMBER_BOUNDARY_TRACE",
+        r70_detail[-4000:],
+    )
+
+    r70_mutation_runner = (
+        root
+        / "tools/validators/run_static_runtime_member_boundary_trace_mutation_tests.py"
+    )
+    r70_mutation_process = subprocess.run(
+        [sys.executable, str(r70_mutation_runner), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r70_mutation_detail = (
+        r70_mutation_process.stdout.strip()
+        if r70_mutation_process.returncode == 0
+        else r70_mutation_process.stderr.strip()
+        or r70_mutation_process.stdout.strip()
+    )
+    check(
+        r70_mutation_process.returncode == 0,
+        "R70_STATIC_RUNTIME_MEMBER_BOUNDARY_TRACE_MUTATIONS",
+        r70_mutation_detail[-4000:],
+    )
+
+    r71_validator = (
+        root
+        / "tools/validators/validate_method_extension_resolution_dynamic_trace.py"
+    )
+    r71_process = subprocess.run(
+        [sys.executable, str(r71_validator), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r71_detail = (
+        r71_process.stdout.strip()
+        if r71_process.returncode == 0
+        else r71_process.stderr.strip() or r71_process.stdout.strip()
+    )
+    check(
+        r71_process.returncode == 0,
+        "R71_METHOD_EXTENSION_RESOLUTION_DYNAMIC_TRACE",
+        r71_detail[-4000:],
+    )
+
+    r71_mutation_runner = (
+        root
+        / "tools/validators/run_method_extension_resolution_dynamic_trace_mutation_tests.py"
+    )
+    r71_mutation_process = subprocess.run(
+        [sys.executable, str(r71_mutation_runner), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r71_mutation_detail = (
+        r71_mutation_process.stdout.strip()
+        if r71_mutation_process.returncode == 0
+        else r71_mutation_process.stderr.strip()
+        or r71_mutation_process.stdout.strip()
+    )
+    check(
+        r71_mutation_process.returncode == 0,
+        "R71_METHOD_EXTENSION_RESOLUTION_DYNAMIC_TRACE_MUTATIONS",
+        r71_mutation_detail[-4000:],
+    )
+
+    r72_validator = (
+        root / "tools/validators/validate_member_extension_collision_dynamic_trace.py"
+    )
+    r72_process = subprocess.run(
+        [sys.executable, str(r72_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r72_detail = (
+        r72_process.stdout.strip()
+        if r72_process.returncode == 0
+        else r72_process.stderr.strip() or r72_process.stdout.strip()
+    )
+    check(
+        r72_process.returncode == 0,
+        "R72_MEMBER_EXTENSION_COLLISION_DYNAMIC_TRACE",
+        r72_detail[-4000:],
+    )
+
+    r72_mutation_runner = (
+        root
+        / "tools/validators/run_member_extension_collision_dynamic_trace_mutation_tests.py"
+    )
+    r72_mutation_process = subprocess.run(
+        [sys.executable, str(r72_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r72_mutation_detail = (
+        r72_mutation_process.stdout.strip()
+        if r72_mutation_process.returncode == 0
+        else r72_mutation_process.stderr.strip()
+        or r72_mutation_process.stdout.strip()
+    )
+    check(
+        r72_mutation_process.returncode == 0,
+        "R72_MEMBER_EXTENSION_COLLISION_DYNAMIC_TRACE_MUTATIONS",
+        r72_mutation_detail[-4000:],
+    )
+
+    r73_validator = (
+        root / "tools/validators/validate_member_extension_collision_conformance_trace.py"
+    )
+    r73_process = subprocess.run(
+        [sys.executable, str(r73_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r73_detail = (
+        r73_process.stdout.strip()
+        if r73_process.returncode == 0
+        else r73_process.stderr.strip() or r73_process.stdout.strip()
+    )
+    check(
+        r73_process.returncode == 0,
+        "R73_MEMBER_EXTENSION_COLLISION_CONFORMANCE_TRACE",
+        r73_detail[-4000:],
+    )
+
+    r73_mutation_runner = (
+        root
+        / "tools/validators/run_member_extension_collision_conformance_trace_mutation_tests.py"
+    )
+    r73_mutation_process = subprocess.run(
+        [sys.executable, str(r73_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r73_mutation_detail = (
+        r73_mutation_process.stdout.strip()
+        if r73_mutation_process.returncode == 0
+        else r73_mutation_process.stderr.strip()
+        or r73_mutation_process.stdout.strip()
+    )
+    check(
+        r73_mutation_process.returncode == 0,
+        "R73_MEMBER_EXTENSION_COLLISION_CONFORMANCE_TRACE_MUTATIONS",
+        r73_mutation_detail[-4000:],
+    )
+
+    r74_validator = (
+        root / "tools/validators/validate_member_extension_collision_diagnostic_trace.py"
+    )
+    r74_process = subprocess.run(
+        [sys.executable, str(r74_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r74_detail = (
+        r74_process.stdout.strip()
+        if r74_process.returncode == 0
+        else r74_process.stderr.strip() or r74_process.stdout.strip()
+    )
+    check(
+        r74_process.returncode == 0,
+        "R74_MEMBER_EXTENSION_COLLISION_DIAGNOSTIC_TRACE",
+        r74_detail[-4000:],
+    )
+
+    r74_mutation_runner = (
+        root
+        / "tools/validators/run_member_extension_collision_diagnostic_trace_mutation_tests.py"
+    )
+    r74_mutation_process = subprocess.run(
+        [sys.executable, str(r74_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r74_mutation_detail = (
+        r74_mutation_process.stdout.strip()
+        if r74_mutation_process.returncode == 0
+        else r74_mutation_process.stderr.strip()
+        or r74_mutation_process.stdout.strip()
+    )
+    check(
+        r74_mutation_process.returncode == 0,
+        "R74_MEMBER_EXTENSION_COLLISION_DIAGNOSTIC_TRACE_MUTATIONS",
+        r74_mutation_detail[-4000:],
+    )
 
     if revision in CURRENT_MACHINE_REVISIONS:
         r10_validator = (
@@ -12548,6 +13237,56 @@ def main() -> int:
             r35_process.returncode == 0,
             "R35_SHARED_MUTEX_PAYLOAD_BOUND",
             r35_detail[-4000:],
+        )
+
+    ownership_tooling_validator = (
+        root / "tools/validators/validate_ownership_tooling_obligations.py"
+    )
+    if ownership_tooling_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(ownership_tooling_validator),
+                "--root",
+                str(root),
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        try:
+            receipt = json.loads(process.stdout)
+        except (json.JSONDecodeError, TypeError):
+            receipt = {}
+        receipt_ok = (
+            process.returncode == 0
+            and not process.stderr
+            and receipt.get("schema")
+            == "deeplus.r39-ownership-tooling-validation/r1"
+            and receipt.get("result") == "PASS"
+            and receipt.get("evidence_level") == "E2_STATIC_CLOSURE"
+            and receipt.get("check_scope")
+            == "R39_OWNERSHIP_TOOLING_OBLIGATIONS_EXACT"
+            and receipt.get("check_count") == 37
+            and receipt.get("passed_check_count") == 37
+            and receipt.get("failed") == 0
+            and receipt.get("mutation_count") == 10
+            and receipt.get("rejected_mutation_count") == 10
+            and receipt.get("semantic_change_count") == 0
+            and receipt.get("product_execution") == "NOT_RUN"
+            and receipt.get("errors") == []
+        )
+        check(
+            receipt_ok,
+            "R39_OWNERSHIP_TOOLING_OBLIGATIONS",
+            detail[-4000:],
         )
 
     generator = root / "tools/generators/generate_example_projections.py"
@@ -13731,7 +14470,7 @@ def main() -> int:
         is False
         and cranelift_projection.get("symbol_or_link_order_selects_semantics")
         is False
-        and len(cranelift_contract.get("required_receipt_inputs", [])) == 22
+        and len(cranelift_contract.get("required_receipt_inputs", [])) == 23
         and cranelift_outcomes.get("native_exception_semantic_authority")
         is False
         and cranelift_outcomes.get("host_unwind_semantic_authority") is False
@@ -13766,7 +14505,7 @@ def main() -> int:
                 "required_native_projection_receipt_fields", []
             )
         )
-        == 12
+        == 13
         and cranelift_managed.get("raw_pointer_fallback") is False
         and cranelift_debug.get("separate_debug_digest") is True
         and cranelift_debug.get("debug_info_is_semantic_authority") is False
@@ -18121,7 +18860,7 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            62
+            63
             if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
             else 61
             if revision == R46_MANAGED_ROOT_RUNTIME_REVISION
@@ -19709,6 +20448,52 @@ def main() -> int:
         check((crate / "Cargo.toml").is_file() and bool(list((crate / "src").glob("*.rs"))), "CRATE_SCAFFOLD", crate.name)
     manifest = parsed.get(root / "release/source-tree-manifest.json", {})
     listed = manifest.get("files", [])
+    source_manifest_process = subprocess.run(
+        [
+            sys.executable,
+            str(root / "tools/generators/refresh_source_tree_manifest.py"),
+            "--root",
+            str(root),
+            "--check",
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    source_manifest_detail = (
+        source_manifest_process.stdout.strip()
+        if source_manifest_process.returncode == 0
+        else source_manifest_process.stderr.strip()
+        or source_manifest_process.stdout.strip()
+    )
+    check(
+        source_manifest_process.returncode == 0,
+        "SOURCE_TREE_INDEX_PROJECTION",
+        source_manifest_detail[-4000:],
+    )
+    worktree_index_process = subprocess.run(
+        [
+            "git",
+            "-c",
+            f"safe.directory={root.as_posix()}",
+            "-C",
+            str(root),
+            "diff",
+            "--quiet",
+            "--",
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    check(
+        worktree_index_process.returncode == 0,
+        "SOURCE_TREE_WORKTREE_INDEX_PARITY",
+        worktree_index_process.stderr.strip()
+        or "Git clean-filter parity between worktree and index",
+    )
     actual_files = sorted(
         p for p in root.rglob("*")
         if p.is_file()
@@ -19717,10 +20502,6 @@ def main() -> int:
     )
     listed_map = {row["path"]: row for row in listed}
     check(set(listed_map) == {p.relative_to(root).as_posix() for p in actual_files}, "SOURCE_TREE_MEMBERSHIP", f"listed={len(listed_map)} actual={len(actual_files)}")
-    for path in actual_files:
-        rel = path.relative_to(root).as_posix()
-        row = listed_map.get(rel, {})
-        check(row.get("sha256") == file_sha(path) and row.get("bytes") == path.stat().st_size, "SOURCE_TREE_FILE_IDENTITY", rel)
     tree_material = "\n".join(f"{row['path']}\0{row['sha256']}" for row in sorted(listed, key=lambda x: x["path"])).encode()
     check(manifest.get("revision") == revision and manifest.get("tree_sha256") == hashlib.sha256(tree_material).hexdigest(), "SOURCE_TREE_AGGREGATE", str(manifest.get("tree_sha256")))
 
@@ -19785,6 +20566,17 @@ def main() -> int:
         ],
         "r27_grammar_topology_check_results":
             r27_grammar_topology_check_results,
+        "r28_formatter_lsp_incremental_check_scope":
+            "R28_FORMATTER_LSP_INCREMENTAL_EXACT",
+        "r28_formatter_lsp_incremental_check_count":
+            len(R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS),
+        "r28_formatter_lsp_incremental_passed_check_ids": [
+            row["check_id"]
+            for row in r28_formatter_lsp_incremental_check_results
+            if row["pass"]
+        ],
+        "r28_formatter_lsp_incremental_check_results":
+            r28_formatter_lsp_incremental_check_results,
         "r40_manual_grammar_count_check_scope":
             "R40_MANUAL_GRAMMAR_COUNT_AUTHORITY_EXACT",
         "r40_manual_grammar_count_check_count":

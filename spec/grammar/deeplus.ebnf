@@ -61,6 +61,9 @@ DashRun ::= "-" "-"* ;
 BlockCommentItem ::= NestedBlockComment | BlockCommentScalar ;
 DocBlockComment ::= "//!!" DocBlockCommentScalar* "!!//" ;
 WordComment ::= "`" WordCommentScalar+ ;
+(* WordCommentScalar is the external scanner primitive UnicodeXIDContinue.
+   The maximal body is nonempty; its first non-XID-continue scalar is left
+   unconsumed and reprocessed by the caller's lexical goal. *)
 
 NUMERIC_LITERAL ::= FLOAT_LITERAL | INTEGER_LITERAL ;
 (* Attached imaginary literals are scanner-owned single tokens. The marker is
@@ -291,9 +294,9 @@ LawAssertion ::= ("requires" | "ensures" | "invariant")? PredicateExpr ;
 
 Deeplus ::= LibrarySourceFile | ExecutableSourceFile | ScriptSourceFile ;
 
-LibrarySourceFile ::= ModuleDecl? LibrarySourceItem* ;
-ExecutableSourceFile ::= ModuleDecl? ExecutableSourceItem* ;
-ScriptSourceFile ::= Shebang? ModuleDecl? ScriptSourceItem* ;
+LibrarySourceFile ::= ModuleDecl? LibrarySourceItem* EOF_TOKEN ;
+ExecutableSourceFile ::= ModuleDecl? ExecutableSourceItem* EOF_TOKEN ;
+ScriptSourceFile ::= Shebang? ModuleDecl? ScriptSourceItem* EOF_TOKEN ;
 
 LibrarySourceItem ::= AnnotationAttachment LibraryAnnotatableDecl
                     | ImportOrUseDecl
@@ -1296,7 +1299,7 @@ UnfoldClause ::= "for" "..." Pattern "in" Expr ;
 NumericArrayLiteral ::= ShapeInferredArrayLiteral
                       | ShapeInferredColumnVectorLiteral
                       | ExactShapeArrayLiteral ;
-ShapeInferredArrayLiteral ::= "#" "[" ExpressionList? "]" ;
+ShapeInferredArrayLiteral ::= "#" "[" Expr ("," Expr)* ","? "]" ;
 ShapeInferredColumnVectorLiteral ::= "#" "[" Expr (";" Expr)+ "]" ;
 ExactShapeArrayLiteral ::= "#" StaticDimensionList "[" ArrayInitializer? "]" ;
 ArrayInitializer ::= ShapedRepeatInitializer
@@ -1324,9 +1327,9 @@ PrattUnitExpr ::= UNIT_PRATT_ENTRY ;
    documentary and has no source production until separately activated. *)
 
 DeeplusPreview ::= PreviewLibrarySourceFile | PreviewExecutableSourceFile | PreviewScriptSourceFile ;
-PreviewLibrarySourceFile ::= PreviewGate ModuleDecl? PreviewLibraryItem* ;
-PreviewExecutableSourceFile ::= PreviewGate ModuleDecl? PreviewExecutableItem* ;
-PreviewScriptSourceFile ::= Shebang? PreviewGate ModuleDecl? PreviewScriptItem* ;
+PreviewLibrarySourceFile ::= PreviewGate ModuleDecl? PreviewLibraryItem* EOF_TOKEN ;
+PreviewExecutableSourceFile ::= PreviewGate ModuleDecl? PreviewExecutableItem* EOF_TOKEN ;
+PreviewScriptSourceFile ::= Shebang? PreviewGate ModuleDecl? PreviewScriptItem* EOF_TOKEN ;
 
 PreviewLibraryItem ::= LibrarySourceItem | PreviewFfiDecl ;
 PreviewExecutableItem ::= ExecutableSourceItem | PreviewFfiDecl ;

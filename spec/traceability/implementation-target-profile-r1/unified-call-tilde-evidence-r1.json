@@ -1,0 +1,311 @@
+{
+  "$schema": "../../../schemas/language/unified-call-tilde-evidence-r1.schema.json",
+  "schema": "deeplus.unified-call-tilde-evidence/r1",
+  "revision": "r57-local-unified-call-tilde-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "808bf7cd1d28bba737e0744a6f120c71297d7ddd",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_ids": [
+    "actor_declaration_grammar_closed",
+    "actor_protocol_family",
+    "data_shaping_callshape_model",
+    "unified_call_expression_and_tilde_modes"
+  ],
+  "evidence_entries": [
+    {
+      "evidence_key": "R57:actor_declaration_grammar_closed:CONFORMANCE_TESTS:BOUNDARY",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/actor_declaration_grammar_closed/BOUNDARY",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "R57:actor_declaration_grammar_closed:CONFORMANCE_TESTS:REJECT",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/actor_declaration_grammar_closed/REJECT",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "R57:actor_protocol_family:DYNAMIC_LOWERING:STRUCTURAL",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "UCTC-R014",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "R57:data_shaping_callshape_model:CONFORMANCE_TESTS:BOUNDARY",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/data_shaping_callshape_model/BOUNDARY",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "R57:data_shaping_callshape_model:CONFORMANCE_TESTS:REJECT",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/data_shaping_callshape_model/REJECT",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "R57:unified_call_expression_and_tilde_modes:CONFORMANCE_TESTS:BOUNDARY",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/unified_call_expression_and_tilde_modes/BOUNDARY",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "R57:unified_call_expression_and_tilde_modes:CONFORMANCE_TESTS:POSITIVE",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/unified_call_expression_and_tilde_modes/POSITIVE",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "R57:unified_call_expression_and_tilde_modes:CONFORMANCE_TESTS:REJECT",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/unified_call_expression_and_tilde_modes/REJECT",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    },
+    {
+      "evidence_key": "R57:unified_call_expression_and_tilde_modes:DYNAMIC_LOWERING:STRUCTURAL",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "UCTC-R011",
+      "stage_role": "DYNAMIC_LOWERING"
+    }
+  ],
+  "bindings": [
+    {
+      "feature_id": "actor_declaration_grammar_closed",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:actor_declaration_grammar_closed:CONFORMANCE_TESTS:BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "actor_declaration_grammar_closed",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DELEGATED",
+      "evidence_keys": [
+        "R57:actor_declaration_grammar_closed:CONFORMANCE_TESTS:REJECT"
+      ],
+      "delegate_feature_id": "actor_mailbox_capacity",
+      "not_applicable": null
+    },
+    {
+      "feature_id": "actor_protocol_family",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:actor_protocol_family:DYNAMIC_LOWERING:STRUCTURAL"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "data_shaping_callshape_model",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:data_shaping_callshape_model:CONFORMANCE_TESTS:BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "data_shaping_callshape_model",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:data_shaping_callshape_model:CONFORMANCE_TESTS:REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:unified_call_expression_and_tilde_modes:CONFORMANCE_TESTS:BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "POSITIVE",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:unified_call_expression_and_tilde_modes:CONFORMANCE_TESTS:POSITIVE"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:unified_call_expression_and_tilde_modes:CONFORMANCE_TESTS:REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R57:unified_call_expression_and_tilde_modes:DYNAMIC_LOWERING:STRUCTURAL"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R57-TRACE-001",
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "outcome": "POSITIVE",
+      "contract_pointer": "/acceptance_bindings/unified_call_expression_and_tilde_modes/POSITIVE",
+      "acceptance_case_ids": [
+        "UCTC-AC-001",
+        "UCTC-AC-002",
+        "UCTC-AC-003"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R57-TRACE-002",
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "outcome": "BOUNDARY",
+      "contract_pointer": "/acceptance_bindings/unified_call_expression_and_tilde_modes/BOUNDARY",
+      "acceptance_case_ids": [
+        "UCTC-AC-004",
+        "UCTC-AC-005",
+        "UCTC-AC-006"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R57-TRACE-003",
+      "feature_id": "unified_call_expression_and_tilde_modes",
+      "outcome": "REJECT",
+      "contract_pointer": "/acceptance_bindings/unified_call_expression_and_tilde_modes/REJECT",
+      "acceptance_case_ids": [
+        "UCTC-AC-007",
+        "UCTC-AC-008",
+        "UCTC-AC-009",
+        "UCTC-AC-010",
+        "UCTC-AC-011"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R57-TRACE-004",
+      "feature_id": "data_shaping_callshape_model",
+      "outcome": "BOUNDARY",
+      "contract_pointer": "/acceptance_bindings/data_shaping_callshape_model/BOUNDARY",
+      "acceptance_case_ids": [
+        "UCTC-AC-012"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R57-TRACE-005",
+      "feature_id": "data_shaping_callshape_model",
+      "outcome": "REJECT",
+      "contract_pointer": "/acceptance_bindings/data_shaping_callshape_model/REJECT",
+      "acceptance_case_ids": [
+        "UCTC-AC-013"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R57-TRACE-006",
+      "feature_id": "actor_declaration_grammar_closed",
+      "outcome": "BOUNDARY",
+      "contract_pointer": "/acceptance_bindings/actor_declaration_grammar_closed/BOUNDARY",
+      "acceptance_case_ids": [
+        "UCTC-AC-014"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R57-TRACE-007",
+      "feature_id": "actor_declaration_grammar_closed",
+      "outcome": "REJECT",
+      "contract_pointer": "/acceptance_bindings/actor_declaration_grammar_closed/REJECT",
+      "acceptance_case_ids": [
+        "UCTC-AC-015"
+      ],
+      "disposition": "BOUND_DELEGATED",
+      "delegate_feature_id": "actor_mailbox_capacity",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "counts": {
+    "feature_count": 4,
+    "evidence_entry_count": 9,
+    "binding_count": 9,
+    "predecessor_blocked_cell_count": 10,
+    "catalog_direct_transition_count": 1,
+    "overlay_bound_direct_transition_count": 8,
+    "overlay_bound_delegated_transition_count": 1,
+    "predecessor_total_blocked_cell_count": 1291,
+    "post_overlay_total_blocked_cell_count": 1281,
+    "acceptance_binding_count": 7,
+    "acceptance_case_count": 15
+  },
+  "guards": {
+    "target_feature_count": 469,
+    "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+    "excluded_feature_count": 254,
+    "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+    "source_activation": "none",
+    "surface_change_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/method-extension-resolution-dynamic-evidence-r1.schema.json",
+  "title": "Deeplus R71 method/extension resolution dynamic trace evidence overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "candidate_status", "feature_ids", "evidence_entries", "bindings", "acceptance_cases", "counts", "guards"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/method-extension-resolution-dynamic-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.method-extension-resolution-dynamic-evidence/r1"},
+    "revision": {"const": "r71-local-method-extension-resolution-dynamic-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "7babf6b0d6a3c806784ef052308cf7026f3fecb2"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["method_extension_resolution_policy"]},
+    "evidence_entries": {"const": [{"evidence_key": "R71:method_extension_resolution_policy:DYNAMIC_LOWERING:UNIFIED_CALL_DELEGATE", "class": "CONTRACT_RULE_ID", "path": "spec/contracts/unified-call-tilde-trace-closure-r1.json", "locator_kind": "REGISTRY_ID", "locator": "UCTC-R011", "stage_role": "DYNAMIC_LOWERING"}]},
+    "bindings": {"const": [{"feature_id": "method_extension_resolution_policy", "stage": "DYNAMIC_LOWERING", "outcome": null, "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP", "disposition": "BOUND_DELEGATED", "evidence_keys": ["R71:method_extension_resolution_policy:DYNAMIC_LOWERING:UNIFIED_CALL_DELEGATE"], "delegate_feature_id": "unified_call_expression_and_tilde_modes", "not_applicable": null}]},
+    "acceptance_cases": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "object", "required": ["case_id", "feature_id", "stage", "outcome", "contract_pointer", "acceptance_case_ids", "disposition", "delegate_feature_id", "execution_state"], "properties": {"case_id": {"const": "R71-TRACE-001"}, "feature_id": {"const": "method_extension_resolution_policy"}, "stage": {"const": "DYNAMIC_LOWERING"}, "outcome": {"type": "null"}, "disposition": {"const": "BOUND_DELEGATED"}, "delegate_feature_id": {"const": "unified_call_expression_and_tilde_modes"}, "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}}}},
+    "counts": {"type": "object"},
+    "guards": {"type": "object", "required": ["transitioned_cell_count", "other_atomic_cell_sha256", "projected_evidence_registry_id", "product_lanes"], "properties": {"transitioned_cell_count": {"const": 1}, "other_atomic_cell_sha256": {"const": "79510a1255de566d0dffe331717e2833b426ebc8ef871e07bce0d9a85e7a798a"}, "projected_evidence_registry_id": {"const": "EV-8612c9785d1ec77315d24c4f6700d39e07b38f8c115155f519c698e406770b5b"}, "product_lanes": {"const": "15_OF_15_NOT_RUN"}}}
+  }
+}

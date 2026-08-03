@@ -76,8 +76,39 @@ comment를 닫으며 opener와 dash 수가 같지 않아도 된다. 불일치는
 warning 대상이 될 수 있다. 공백, comment, 물리적 줄 끝은 lossless
 trivia이며 newline의 statement/layout boundary 판단은 parent 문맥이 한다.
 
+같은 접두사에서 시작하는 주석은 `//!!` 문서 블록, `//!` 문서 줄,
+`//-` 중첩 블록, `//` 일반 줄 주석 순서로 판별한다. 이는 가장 구체적인
+opener를 먼저 인식하는 고정 규칙이며, 연산자나 더 짧은 주석으로
+임의 분해하지 않는다.
+
+`WordCommentScalar`는 외부 어휘 원시 규칙 `UnicodeXIDContinue`다.
+따라서 backtick 뒤의 비어 있지 않은 XID-continue 열을 최대로 소비하고,
+그 다음 구분 문자는 소비하지 않은 채 바깥 scanner goal에서 다시 읽는다.
+word comment는 이미 완성된 expression, type, pattern, argument,
+declaration-name atom 또는 postfix tail의 마지막 source byte에 바로 붙어야
+한다. CST에는 lossless trivia로 정확히 한 번 남지만 AST, 호출 label,
+overload key, 이름 조회 또는 실행 의미에는 들어가지 않는다.
+
+연속된 문서 주석은 같은 declaration container 안에서 하나의 `DocGroup`을
+이룬다. 주석 사이와 마지막 주석에서 소유 선언까지는 수평 공백과 최대 한
+번의 물리적 줄바꿈만 허용한다. 빈 줄, 일반 주석, word comment, shebang,
+container 경계와 EOF는 결합을 끊는다. annotation 묶음은 같은 선언에
+붙는 prefix이므로 문서 결합을 끊지 않는다. 공개·비공개 선언은 모두 문서
+소유자가 될 수 있지만 import/use/export 지시문, grouping wrapper, 개별
+accessor, block-local 선언, reserved slot과 recovery node는 소유자가 아니다.
+결합되지 않은 문서 주석은 CST에는 남고 parser attachment pass가
+`DOC_COMMENT_NOT_ATTACHED_TO_DECL`을 보고한다.
+
 shebang은 `#!`로 시작해 첫 line terminator에서 끝나며 script source의
 처음에서만 허용한다.
+
+Stable과 Preview의 library, executable, script 여섯 직접 source root는
+모두 마지막에 `EOF_TOKEN`을 소유한다. 성공하려면 trailing trivia가 정확히
+한 번 root에 속하고, parser의 다음 token이 EOF이며, scanner byte cursor가
+입력 끝과 같아야 한다. 구체적인 lexical 또는 item 오류가 있으면 그 진단이
+우선하고, 그 밖의 유효한 잔여 token에는 `SOURCE_TRAILING_TOKENS`를
+보고한다. 실패한 root는 recovery CST를 남길 수 있으나 canonical source
+AST를 만들지 않는다.
 
 ### 숫자 literal
 

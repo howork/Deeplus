@@ -173,13 +173,17 @@ policy. Plain `let`/`var`, bare `for`, callable/lambda parameter decomposition,
 and direct-local Pattern assignment require irrefutability; guarded
 `let`/`var`, `if let`, `while let`, `for let`, ordered `catch`, and `match`
 admit refutable patterns under their own failure dispositions. `let!`/`var!`
-are explicitly refutable and raise `PatternMatchDefect` on mismatch. The
-subject is evaluated once, structural testing is nonconsuming, probe binders
-are nonowning, the optional guard is terminating/pure/Bool, and final
-moves/borrows/bindings commit atomically only after success. Failure commits no
-binding, partial move, irreversible borrow, rest view, escape, suspension, or
-authority. `while let` failure completes the loop, `for let` failure skips the
-candidate, and an unmatched catch continues or propagates.
+are explicitly refutable and raise `PatternMatchDefect` on mismatch. Each
+refutable owner creates one `PatternAttempt`: the subject is evaluated once;
+structural probing is pure and nonconsuming; probe binders are read-only and
+nonescaping; and zero or one terminating pure Bool guard runs exactly once
+after structural success. Only final guarded success performs exactly one
+logical commit of all bindings, moves, loans, views, and authority. Child
+pattern-row `BINDING_COMMIT` entries are compositional requirements that
+collapse into that single top-level commit, not separate executable commits.
+Failure or a false guard publishes none of those results. `if let` takes its
+false branch, `while let` exits the loop, `for let` skips the candidate, and an
+unmatched catch continues or propagates.
 
 Current coverage domains include enum/union/Option/Result alternatives, exact
 Tuple products, exact/open Record and Map rows, closed List length/rest cells,
@@ -330,6 +334,56 @@ residue cannot mention a narrower identity, `common` residue cannot be
 externally exported or re-exported, and `public` residue enters external API
 only through a separately admitted export or module interface.
 
+Member visibility is a separate three-point order:
+
+```text
+rank(-) = 0 < rank(#) = 1 < rank(+) = 2
+```
+
+The fifteen current grammar owners are `MemberFunctionDecl`,
+`TypeSideMemberFunctionDecl`, `ConstructorDecl`, `StoredParameter`,
+`FieldDecl`, `TypeSideFieldDecl`, `AccessorDecl`, `ForwardDecl`,
+`TraitMethodDecl`, `ConformanceMethodDecl`, `ExtensionSetFunctionDecl`,
+`ActorOnDecl`, `ActorRequestDecl`, `BitfieldNamedSlot`, and `FlagNamedSlot`.
+Each carries the existing `MemberVisibility?`; this list adds no production or
+spelling. Frontend projection is lossless:
+
+```text
+MemberVisibilitySurface ::= EXPLICIT_MINUS | EXPLICIT_HASH | EXPLICIT_PLUS | OMITTED
+OMITTED                  ::= null
+```
+
+`OMITTED` is not an element of the three-point order. R58 supplies no global
+default. The immediate parent-owner contract must preserve, resolve, or reject
+it before a judgment that needs a concrete member domain.
+
+For a concrete visibility `v`, static access is admitted exactly when both
+`OwnerReachable(owner, site)` and `MemberDomainAdmits(v, anchor, site)` hold.
+`-` requires the access context's nominal identity to equal the original
+declaring nominal anchor; `#` permits that identity or a transitive nominal
+subclass; `+` adds no member-local restriction. Same-module and same-package
+peers, conformers, witness holders, extensions, and structurally similar types
+do not satisfy the subclass predicate. Thus effective member visibility is an
+intersection, never an escape from top-level owner visibility.
+
+An override retains `(OriginalSlotId, OriginalDeclaringNominalId)` as its
+access anchor. Once omission has been handled by the immediate owner contract,
+slot admission requires `rank(override_visibility) >= rank(slot_visibility)`.
+It may preserve or widen visibility, but may neither narrow the slot nor
+replace the original anchor with the overriding type. Narrowing emits
+`OVERRIDE_VISIBILITY_CANNOT_NARROW`. A separate Trait requirement comparison
+continues to emit `TRAIT_REQUIREMENT_VISIBILITY_MISMATCH` when a well-formed
+witness does not satisfy the requirement.
+
+Primary diagnostics follow declaration admission order. On a member callable,
+the wrong word `public`, `common`, `private`, or `protected` emits
+`CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` before any slot comparison. With a
+valid sigil, override narrowing emits `OVERRIDE_VISIBILITY_CANNOT_NARROW`
+before a later Trait requirement visibility comparison. The visibility proof
+is compile-time metadata only: it introduces no runtime lookup, check, registry,
+MIR operation, xVM instruction, or backend instruction. A rejected declaration
+or access produces no HIR residue.
+
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
 
 For an ordinary member selector, nominal and active-extension applicability are
@@ -408,6 +462,17 @@ state begins from an explicit value owner. The checker must not make
 `T::item` search imported Traits. A selected Trait-associated value/function
 retains `TraitId`, `RequirementId`, `ConformanceId`, `TraitWitnessId`,
 `ImplementationId`, substitution and responsibility through HIR/API/MIR.
+These fields are carried by one non-structural
+`TraitAssociatedStaticSelection` keyed by `SelectionId`; substitution and
+responsibility are explicit `SubstitutionId` and `ResponsibilityId`, not
+implicit checker state. For an associated function, representation metadata
+maps `ImplementationId` to the exact `CallableImplementationId` and preserves
+the direct static symbol. An associated type has no runtime operation; an
+associated value or bare function reference uses the existing static-reference
+lowering; an invoked function uses the existing
+`ORDINARY::TRAIT_WITNESS` static-reference-plus-`INVOKE` lowering. The MIR
+static identity table preserves the descriptor exactly and cannot reconstruct,
+search, reorder, specialize, fall back, or replace its witness.
 Initial associated `let::` values must be immutable, Shareable, no-drop,
 authority-free, acyclic and statically materializable. No companion object,
 metatype value, activation trigger, fallback, provider order, or runtime lookup
@@ -827,12 +892,20 @@ rest, without moving, escaping, suspending, mutating through, publishing a
 final view, or acquiring authority from them. Enum cases use `::case` or
 `Type::case`.
 
-Exhaustiveness succeeds only when the finite current pattern partition is
-covered. Redundant or unreachable arms are diagnosed deterministically. A
-sealed Class may prove nominal-family closure for other checker judgments, but
-that proof is not a substitute for absent constructor-pattern syntax. Clause
-functions and declarative clauses reuse the same partition engine but preserve
-their own input-supply and return-totality rules.
+Exhaustiveness succeeds only when the normalized current pattern partition is
+covered. That partition is finite either by closed constructor/type identity or
+by an admitted symbolic scalar split with one complement cell. For each arm the
+checker intersects structural coverage with the subject domain and removes only
+coverage from earlier reachable unguarded arms. An empty result is
+`MATCH_ARM_UNREACHABLE`; an `otherwise` arm after an empty residual is
+`OTHERWISE_UNREACHABLE`. Guarded arms remain useful but do not subtract
+coverage. `MATCH_NONEXHAUSTIVE_AFTER_GUARDS` applies only when every final
+residual cell was structurally mentioned by guarded arms; a never-mentioned
+residual instead selects `MATCH_NOT_EXHAUSTIVE`. A sealed Class may prove
+nominal-family closure for other checker judgments, but that proof is not a
+substitute for absent constructor-pattern syntax. Clause functions and
+declarative clauses reuse the same partition engine while preserving their own
+input-supply, overlap, and return-totality rules.
 
 The flow-proof environment `Phi` records closed-union alternative identities, enum-case identities, admitted finite R0 refinement facts, and usable-place state without changing a declaration's normalized semantic type. Structural success narrows an arm to the intersection of `Phi` and its coverage cell. Join is set intersection across incoming paths. Assignment, aliasing mutation, exclusive borrow, escape or capture, consume, and calls whose responsibility summary may mutate the subject kill the affected facts.
 
@@ -1009,7 +1082,34 @@ Dynamic conversion admission is the conjunction `ProfileActive ∧ ProviderBound
 
 Field punning elaborates `label` to `label: label` before construction-row checking, without inserting clone, move, authority or lookup. Grouped forwarding elaborates to a finite ordered list of ordinary forwarding declarations and rejects duplicate or colliding names. Scoped import/use grouping pushes exactly one compile-time lexical frame for its `in` block and pops it on every exit. Enum comma lists, multiline indentation, and the single-guard law are parser/scanner obligations whose normalized HIR is identical to their unsugared forms.
 
-`if let`, `while let`, and `for let` use one transactional pattern-commit judgment: evaluate once, acquire, compile a nonconsuming TestPlan, test, expose probe binders, evaluate zero or one guard, commit atomically, expose final binders, execute, and exit/join. Failed `for let` matching or a false guard skips the current element; it is not an error or loop failure.
+`if let`, `while let`, and `for let` use one transactional `PatternAttempt`
+judgment: evaluate once, acquire, compile and run a pure nonconsuming TestPlan,
+expose read-only nonescaping probe binders, evaluate zero or one pure Bool
+guard once after structural success, collapse every child `BINDING_COMMIT`
+requirement into exactly one final logical commit, expose final binders,
+execute, and exit/join. An Or probe selects the first source-ordered structural
+success and never retries or backtracks. Every alternative must expose the same
+normalized binder interface `(name, canonical type, ownership mode, mutability,
+usable region, capability set)` or the checker emits
+`OR_PATTERN_BINDINGS_INCONSISTENT`.
+
+An Alias probe preserves subject identity, performs no clone, and stages a
+shared borrow. It is incompatible with a moved or exclusively borrowed
+descendant of the same subject. A borrowed subject cannot move an affine
+payload; `move PatternPrimary` requires consuming owner authority. Probe and
+guard failure publish no binding, move, loan, view, or authority and cancel
+every prepared move reservation. Final success first performs the admitted
+moves and loan acquisitions and then crosses one infallible group
+`BINDING_COMMIT` publication barrier. A resulting loan ends at the earliest
+mutation, move, replacement, cleanup, or enclosing-region frontier that
+invalidates it. `if let` takes the false branch, `while let` exits the loop,
+and failed `for let` matching or a false guard skips the current element.
+
+Normally returning Pattern arms may join only when their place identities and
+ownership states are compatible. The capability intersection is computed only
+after that compatibility proof; divergent arms are excluded. Otherwise the
+checker emits `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH` and does not infer a
+clone, implicit move, or ownership join.
 
 The quarantine-scope predicate is design-seed-only and nonemitting. Even its minimum sound profile requires a typed immutable export and rejects pointer, authority, borrow, resource, closure, run, actor, suspension and outer-mutation escape. No source profile activates it and no product support is claimed.
 

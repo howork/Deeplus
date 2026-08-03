@@ -1,0 +1,441 @@
+{
+  "schema": "deeplus.formatter-lsp-incremental-parsing-fixtures/r1",
+  "status": "DESIGN_STATIC",
+  "contract": "spec/contracts/formatter-lsp-incremental-parsing-contract-r1.json",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+    "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
+  },
+  "grammar_domain": {
+    "grammar_sha256": "e43bcbc96084de1dc7aaae4bdabb9596dc568f784d5f09b26360e9123af5be9e",
+    "production_count": 644,
+    "formatting_rule_counts": {
+      "FD-01": 56,
+      "FD-02": 35,
+      "FD-03": 320,
+      "FD-04": 204,
+      "FD-05": 10,
+      "FD-06": 19
+    }
+  },
+  "cases": [
+    {
+      "test_id": "IR-R3-GAP-10-P",
+      "class": "positive",
+      "operation": "WHOLE_FILE_FORMAT",
+      "input": {
+        "recovery_taint_empty": true,
+        "normalized_ast_equal": true,
+        "second_pass_edit_count": 0
+      },
+      "expected_result": "ACCEPT_AST_EQUIVALENCE",
+      "reason_code_or_null": null
+    },
+    {
+      "test_id": "R28-P-REUSE-001",
+      "class": "positive",
+      "operation": "INCREMENTAL_NODE_REUSE",
+      "input": {
+        "document_revision_matches": true,
+        "contract_digests_match": true,
+        "production_and_content_match": true,
+        "token_trivia_partition_match": true,
+        "recovery_taint_identity_match": true,
+        "outside_replaced_interval_or_unchanged_child": true,
+        "parent_reuse_or_selected_root": true,
+        "mapping_cardinality": "ONE_TO_ONE"
+      },
+      "expected_result": "ACCEPT_REUSE_HANDLE",
+      "reason_code_or_null": null
+    },
+    {
+      "test_id": "R28-P-LSP-001",
+      "class": "positive",
+      "operation": "LSP_SEMANTIC_TOKENS",
+      "input": {
+        "document_revision_matches": true,
+        "snapshot_binding_matches": true,
+        "exact_tokens_or_recovery_free_fragments": true
+      },
+      "expected_result": "ACCEPT_VERSION_BOUND_RESULT",
+      "reason_code_or_null": null
+    },
+    {
+      "test_id": "IR-R3-GAP-10-B",
+      "class": "boundary",
+      "operation": "RANGE_FORMAT",
+      "input": {
+        "complete_token_boundary": true,
+        "one_smallest_recovery_free_owner": true,
+        "outside_interval_bytes_unchanged": true,
+        "normalized_ast_equal": true,
+        "second_pass_edit_count": 0
+      },
+      "expected_result": "ACCEPT_BOUNDED_FORMAT",
+      "reason_code_or_null": null
+    },
+    {
+      "test_id": "R28-B-ASCENT-001",
+      "class": "boundary",
+      "operation": "INCREMENTAL_REPARSE",
+      "input": {
+        "document_revision_matches": true,
+        "edit_set_valid": true,
+        "initial_owner_splice_gate_passes": false,
+        "eligible_parent_exists": true,
+        "parent_splice_gate_passes": true,
+        "root_fallback_required": false
+      },
+      "expected_result": "ACCEPT_AFTER_DETERMINISTIC_ASCENT",
+      "reason_code_or_null": "INCREMENTAL_REPARSE_ASCENDED"
+    },
+    {
+      "test_id": "R28-B-RECOVERY-SIBLING-001",
+      "class": "boundary",
+      "operation": "RANGE_FORMAT",
+      "input": {
+        "complete_token_boundary": true,
+        "one_smallest_recovery_free_owner": true,
+        "outside_interval_bytes_unchanged": true,
+        "normalized_ast_equal": true,
+        "second_pass_edit_count": 0,
+        "recovered_sibling_outside_owner": true
+      },
+      "expected_result": "ACCEPT_BOUNDED_FORMAT",
+      "reason_code_or_null": null
+    },
+    {
+      "test_id": "IR-R3-GAP-10-N",
+      "class": "negative",
+      "operation": "NODE_HANDLE_LOOKUP",
+      "input": {
+        "document_revision_matches": false,
+        "mapping_cardinality": "NONE"
+      },
+      "expected_result": "REJECT_STALE_INCREMENTAL_NODE",
+      "reason_code_or_null": "INCREMENTAL_STALE_DOCUMENT_REVISION"
+    },
+    {
+      "test_id": "R28-N-RANGE-001",
+      "class": "negative",
+      "operation": "RANGE_FORMAT",
+      "input": {
+        "complete_token_boundary": true,
+        "one_smallest_recovery_free_owner": false,
+        "outside_interval_bytes_unchanged": true,
+        "normalized_ast_equal": false,
+        "second_pass_edit_count": 0
+      },
+      "expected_result": "REJECT_RANGE_INTERSECTS_RECOVERY_TAINT",
+      "reason_code_or_null": "FORMAT_RANGE_INTERSECTS_RECOVERY_TAINT"
+    },
+    {
+      "test_id": "R28-N-REUSE-001",
+      "class": "negative",
+      "operation": "INCREMENTAL_NODE_REUSE",
+      "input": {
+        "document_revision_matches": true,
+        "contract_digests_match": true,
+        "production_and_content_match": true,
+        "token_trivia_partition_match": true,
+        "recovery_taint_identity_match": true,
+        "outside_replaced_interval_or_unchanged_child": true,
+        "parent_reuse_or_selected_root": true,
+        "mapping_cardinality": "ONE_TO_MANY"
+      },
+      "expected_result": "REJECT_AMBIGUOUS_NODE_REUSE",
+      "reason_code_or_null": "INCREMENTAL_NODE_REUSE_AMBIGUOUS"
+    }
+  ],
+  "successor_acceptance_matrix": [
+    {
+      "test_id": "R28R-T01",
+      "class": "positive",
+      "scenario": "Classify the exact R47 publication-closure grammar-production registry at 39a5d50cc770341c4b9776d00d84520b780d0c62.",
+      "expected": "ACCEPT_EXACT_644_WITH_FD_COUNTS_56_35_320_204_10_19"
+    },
+    {
+      "test_id": "R28R-T02",
+      "class": "negative",
+      "scenario": "One of the five R41 Actor Protocol productions is unclassified or multiply classified.",
+      "expected": "REJECT_FORMATTING_DOMAIN_DRIFT"
+    },
+    {
+      "test_id": "R28R-T03",
+      "class": "positive",
+      "scenario": "Format an Actor header containing a physical-line-boundary conforms clause.",
+      "expected": "ACCEPT_SAME_NORMALIZED_AST_AND_REQUIRED_LINE_BOUNDARY"
+    },
+    {
+      "test_id": "R28R-T04",
+      "class": "positive",
+      "scenario": "Range-format one recovery-free Actor Protocol conform block.",
+      "expected": "ACCEPT_ONE_CONTAINED_REPLACEMENT_OUTSIDE_BYTES_IDENTICAL"
+    },
+    {
+      "test_id": "R28R-T05",
+      "class": "positive",
+      "scenario": "Format a valid whole file twice.",
+      "expected": "ACCEPT_AST_EQUIVALENCE_SECOND_PASS_ZERO_EDITS"
+    },
+    {
+      "test_id": "R28R-T06",
+      "class": "negative",
+      "scenario": "Whole-file formatting receives a recovery-tainted snapshot.",
+      "expected": "REJECT_FORMAT_WHOLE_FILE_RECOVERY_TAINTED"
+    },
+    {
+      "test_id": "R28R-T07",
+      "class": "boundary",
+      "scenario": "Range-format a recovery-free sibling next to a recovered subtree.",
+      "expected": "ACCEPT_BOUNDED_FORMAT_WITH_RECOVERED_SIBLING_UNCHANGED"
+    },
+    {
+      "test_id": "R28R-T08",
+      "class": "negative",
+      "scenario": "The requested range intersects recovery ownership.",
+      "expected": "REJECT_RANGE_INTERSECTS_RECOVERY_TAINT"
+    },
+    {
+      "test_id": "R28R-T09",
+      "class": "boundary",
+      "scenario": "A formatter edit would move a comment newline that participates in a contextual parser boundary.",
+      "expected": "ASCEND_OR_REJECT_WITHOUT_SEMANTIC_DRIFT"
+    },
+    {
+      "test_id": "R28R-T10",
+      "class": "positive",
+      "scenario": "Apply a valid ordered nonoverlapping multi-edit transaction to one expected old snapshot.",
+      "expected": "ACCEPT_SIMULTANEOUS_OLD_SNAPSHOT_APPLICATION"
+    },
+    {
+      "test_id": "R28R-T11",
+      "class": "negative",
+      "scenario": "An edit set is overlapping, unsorted, or outside the old source-byte interval.",
+      "expected": "REJECT_INVALID_EDIT_SET"
+    },
+    {
+      "test_id": "R28R-T12",
+      "class": "boundary",
+      "scenario": "An edit changes interpolation or scanner exit state outside the initial owner.",
+      "expected": "ACCEPT_ONLY_AFTER_DETERMINISTIC_PARENT_ASCENT"
+    },
+    {
+      "test_id": "R28R-T13",
+      "class": "boundary",
+      "scenario": "Grammar, source role/profile, scanner goal, or frontend-contract digest changes.",
+      "expected": "REPARSE_SOURCE_ROOT_WITH_ZERO_OLD_HANDLE_REUSE"
+    },
+    {
+      "test_id": "R28R-T14",
+      "class": "boundary",
+      "scenario": "Two duplicate subtrees have equal token, child, and trivia content.",
+      "expected": "EQUAL_CONTENT_IDS_DISTINCT_OCCURRENCE_AND_HANDLE_IDENTITIES"
+    },
+    {
+      "test_id": "R28R-T15",
+      "class": "boundary",
+      "scenario": "A recovery episode recurs at the same token index in a later document revision.",
+      "expected": "DISTINCT_PARSE_SNAPSHOT_BOUND_RECOVERY_IDENTITY"
+    },
+    {
+      "test_id": "R28R-T16",
+      "class": "boundary",
+      "scenario": "Two concurrent edit transactions compare-and-swap from the same old revision.",
+      "expected": "EXACTLY_ONE_COMMIT_AND_ONE_STALE_REJECTION"
+    },
+    {
+      "test_id": "R28R-T17",
+      "class": "negative",
+      "scenario": "An older parse completes after a newer revision and snapshot were published.",
+      "expected": "REJECT_LATE_STALE_PARSE_RESULT"
+    },
+    {
+      "test_id": "R28R-T18",
+      "class": "positive",
+      "scenario": "Equivalent parse tasks complete in different worker orders.",
+      "expected": "SAME_OWNER_CST_CONTENT_AND_DIAGNOSTIC_ORDER"
+    },
+    {
+      "test_id": "R28R-T19",
+      "class": "negative",
+      "scenario": "A rename or target move changes canonical SourceFileId.",
+      "expected": "REJECT_CROSS_SOURCE_FILE_HANDLE_REUSE"
+    },
+    {
+      "test_id": "R28R-T20",
+      "class": "positive",
+      "scenario": "Convert a valid negotiated LSP position through the snapshot-bound line map.",
+      "expected": "ACCEPT_EXACT_ZERO_BASED_HALF_OPEN_SOURCE_BYTE_INTERVAL"
+    },
+    {
+      "test_id": "R28R-T21",
+      "class": "negative",
+      "scenario": "An LSP coordinate is mid-scalar, invalid for the negotiated encoding, or uses a stale line map.",
+      "expected": "REJECT_POSITION_WITHOUT_CLAMPING"
+    },
+    {
+      "test_id": "R28R-T22",
+      "class": "negative",
+      "scenario": "A formatter replacement, fix-it, or code action is applied after its bound interval changed.",
+      "expected": "REJECT_STALE_TOOLING_ACTION"
+    },
+    {
+      "test_id": "R28R-T23",
+      "class": "positive",
+      "scenario": "Apply one exact recovery-contract fix-it to its bound revision.",
+      "expected": "ACCEPT_NEW_REVISION_AND_REQUIRE_NEW_PARSE"
+    },
+    {
+      "test_id": "R28R-T24",
+      "class": "negative",
+      "scenario": "A formatter or checker directly clears recovery taint.",
+      "expected": "REJECT_RECOVERY_AUTHORITY_VIOLATION"
+    },
+    {
+      "test_id": "R28R-T25",
+      "class": "positive",
+      "scenario": "Compare incremental diagnostics with a full parse of the same snapshot.",
+      "expected": "ACCEPT_EXACT_ORDERED_DIAGNOSTIC_PARITY"
+    },
+    {
+      "test_id": "R28R-T26",
+      "class": "positive",
+      "scenario": "Recovery workers return diagnostic fragments in reverse completion order.",
+      "expected": "CANONICAL_DIAGNOSTIC_ORDER_UNCHANGED"
+    },
+    {
+      "test_id": "R28R-T27",
+      "class": "boundary",
+      "scenario": "A recovery cascade or skipped span crosses the incremental splice boundary.",
+      "expected": "RERUN_GLOBAL_CASCADE_SUPPRESSION"
+    },
+    {
+      "test_id": "R28R-T28",
+      "class": "negative",
+      "scenario": "An analysis-only recovered fragment is advertised as canonical semantic information.",
+      "expected": "REJECT_TAINTED_SEMANTIC_RESULT"
+    },
+    {
+      "test_id": "R28R-T29",
+      "class": "negative",
+      "scenario": "LSP results from distinct document revisions are merged.",
+      "expected": "REJECT_CROSS_REVISION_RESULT_MERGE"
+    },
+    {
+      "test_id": "R28R-T30",
+      "class": "negative",
+      "scenario": "A tooling reason code is emitted as a final source-diagnostic registry identity.",
+      "expected": "REJECT_FINAL_DIAGNOSTIC_ID_INVENTION"
+    },
+    {
+      "test_id": "R28R-T31",
+      "class": "negative",
+      "scenario": "Snapshot storage is reclaimed while a current-document, read-request, or reuse-receipt lease remains.",
+      "expected": "REJECT_LIVE_SNAPSHOT_RECLAMATION"
+    },
+    {
+      "test_id": "R28R-T32",
+      "class": "negative",
+      "scenario": "The design-static fixture claims production formatter, LSP, or incremental-parser PASS.",
+      "expected": "REJECT_PRODUCT_SUPPORT_OVERCLAIM"
+    },
+    {
+      "test_id": "R28R-T33",
+      "class": "negative",
+      "scenario": "R28 successor materialization removes or rewrites canonical R41 or R23 residue.",
+      "expected": "REJECT_CANONICAL_ACTOR_CONTRACT_DRIFT"
+    },
+    {
+      "test_id": "R28R-T34",
+      "class": "negative",
+      "scenario": "Historical pointer, generated documentation, manifest, or workspace-validator bytes are transplanted from 44cb.",
+      "expected": "REJECT_HISTORICAL_GENERATED_BYTE_TRANSPLANT"
+    }
+  ],
+  "mutations": [
+    {
+      "mutation_id": "R28-M-01-DROP-FORMATTING-RULE",
+      "axis": "formatting totality",
+      "mutation": "drop one formatting disposition rule",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-02-OVERLAP-FORMATTING-RULE",
+      "axis": "formatting disjointness",
+      "mutation": "make two formatting predicates overlap",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-03-ALLOW-FORMATTER-TAINT-CLEAR",
+      "axis": "recovery authority",
+      "mutation": "allow formatter or checker recovery-taint clearing",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-04-ALLOW-OUTSIDE-RANGE-EDIT",
+      "axis": "range edit fence",
+      "mutation": "allow a range-format replacement to change an outside byte",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-05-CONFLATE-IDENTITY-DOMAINS",
+      "axis": "semantic and tooling identity separation",
+      "mutation": "conflate a tooling content or occurrence digest with DeclId, HirId, or another semantic identity",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-06-ACCEPT-STALE-REVISION",
+      "axis": "document revision fence",
+      "mutation": "accept a stale edit, parse, result, replacement, fix-it, or code action",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-07-ALLOW-AMBIGUOUS-REUSE",
+      "axis": "reuse cardinality",
+      "mutation": "allow one-to-many or many-to-one incremental handle reuse",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-08-CLAIM-PRODUCT-PASS",
+      "axis": "evidence honesty",
+      "mutation": "claim production formatter, LSP, or incremental-parser PASS",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-09-CONFLATE-AST-OCCURRENCE-SEMANTIC",
+      "axis": "snapshot ownership",
+      "mutation": "reclaim or reuse a snapshot while a current-document, read-request, or reuse-receipt lease is live",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-10-OMIT-SNAPSHOT-LEASE",
+      "axis": "Actor Protocol grammar parity",
+      "mutation": "change, omit, or multiply classify one of the five R41 Actor Protocol productions",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-11-ALLOW-ACTOR-TOKEN-REWRITE",
+      "axis": "canonical R41 and R23 preservation",
+      "mutation": "remove or rewrite canonical Actor Protocol conformance or binding residue while applying R28",
+      "expected": "REJECT"
+    },
+    {
+      "mutation_id": "R28-M-12-ALLOW-R23-ID-FROM-TOOLING-ID",
+      "axis": "historical generated-byte fence",
+      "mutation": "transplant historical pointer, generated documentation, manifest, or validator bytes from 44cb",
+      "expected": "REJECT"
+    }
+  ],
+  "execution": {
+    "design_static_projection": "PASS",
+    "production_formatter": "NOT_RUN",
+    "production_lsp": "NOT_RUN",
+    "production_incremental_parser": "NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "semantic_p0": 0,
+    "open_feature_p1_count": 22
+  }
+}

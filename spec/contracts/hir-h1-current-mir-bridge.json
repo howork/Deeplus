@@ -182,7 +182,12 @@
       "ActorProtocolRequirementId",
       "ActorProtocolBindingId",
       "ActorHandlerId",
-      "ActorRequestId"
+      "ActorRequestId",
+      "TraitAssociatedStaticSelectionId",
+      "TraitWitnessId",
+      "ImplementationId",
+      "SubstitutionId",
+      "ResponsibilityId"
     ],
     "mir_lowerer_forbidden_decisions": [
       "name_or_selector_lookup",
@@ -256,6 +261,13 @@
     "canonical_identity": "HIR-H1/EXPR/CALL",
     "canonical_arguments": "one ordered HirCallPlan.arguments array containing all seven argument kinds, including TrailingClosure",
     "canonical_trailing_closure_array_count": 0,
+    "optional_trait_associated_static_selection": {
+      "admitted_mode_target_pair": "ORDINARY::TRAIT_WITNESS",
+      "item_kind": "ASSOCIATED_FUNCTION",
+      "representation_kind": "TRAIT_WITNESS_CALL",
+      "selection_identity_equality": "EXACT_MATCH_WITH_STATIC_IDENTITY_TABLE_TRAIT_ASSOCIATED_STATIC_SELECTION_ENTRY",
+      "runtime_reselection_count": 0
+    },
     "valid_mode_target_pairs": [
       "ORDINARY::DIRECT_IMPLEMENTATION",
       "ORDINARY::VIRTUAL_SLOT",
@@ -268,6 +280,79 @@
       "MESSAGE::RESERVED_OPERATION",
       "ACTOR_MESSAGE::ACTOR_TRANSPORT"
     ]
+  },
+  "trait_associated_static_selection_bridge": {
+    "descriptor": "TraitAssociatedStaticSelection",
+    "descriptor_kind": "NON_STRUCTURAL_SELECTED_IDENTITY_RESIDUE",
+    "new_hir_node_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "selection_identity": "SelectionId",
+    "exact_identity_residue": [
+      "TraitId",
+      "RequirementId",
+      "ConformanceId",
+      "TraitWitnessId",
+      "ImplementationId",
+      "SubstitutionId",
+      "ResponsibilityId"
+    ],
+    "exact_identity_residue_count": 7,
+    "representation_metadata": {
+      "item_kind": "ASSOCIATED_TYPE_OR_ASSOCIATED_VALUE_OR_ASSOCIATED_FUNCTION",
+      "direct_static_symbol": "direct_static_symbol_id_or_null",
+      "callable_implementation": "callable_implementation_id_or_null",
+      "implementation_to_callable_mapping": "ASSOCIATED_FUNCTION_IMPLEMENTATION_ID_EQUALS_CALLABLE_IMPLEMENTATION_ID"
+    },
+    "item_kind_lowering": {
+      "ASSOCIATED_TYPE": {
+        "representation_kind": "NO_RUNTIME_EMISSION",
+        "lowering_row_ids": [],
+        "runtime_operation_count": 0
+      },
+      "ASSOCIATED_VALUE": {
+        "representation_kind": "STATIC_REF",
+        "lowering_row_ids": [
+          "HM-LR-REF-002",
+          "HM-LR-TOP-002"
+        ],
+        "operation_kinds": [
+          "STATIC_REF",
+          "TOTAL_PROJECTION"
+        ]
+      },
+      "ASSOCIATED_FUNCTION_BARE_REFERENCE": {
+        "representation_kind": "STATIC_REF",
+        "lowering_row_ids": [
+          "HM-LR-REF-002",
+          "HM-LR-TOP-002"
+        ],
+        "operation_kinds": [
+          "STATIC_REF",
+          "TOTAL_PROJECTION"
+        ]
+      },
+      "ASSOCIATED_FUNCTION_INVOKED": {
+        "representation_kind": "TRAIT_WITNESS_CALL",
+        "lowering_row_ids": [
+          "HM-LR-CALL-003"
+        ],
+        "operation_kinds": [
+          "STATIC_REF"
+        ],
+        "terminator_kinds": [
+          "INVOKE"
+        ]
+      }
+    },
+    "mir_static_identity_domain": "TRAIT_ASSOCIATED_STATIC_SELECTION",
+    "static_identity_equality": "MIR_IDENTITY_ID_EQUALS_SELECTION_ID_AND_DESCRIPTOR_IS_EXACT_CANONICAL_COPY",
+    "runtime_reconstruction_count": 0,
+    "runtime_search_count": 0,
+    "fallback_count": 0,
+    "provider_order_count": 0,
+    "specialization_count": 0,
+    "child_local_replacement_count": 0,
+    "responsibility_projection": "PRESERVE_ALL_ELEVEN_AXES_AND_EXACT_RESPONSIBILITY_ID"
   },
   "deferred_call_plan_contract": {
     "status": "CURRENT_STABLE_DESIGN_MACHINE_SCHEMA_NOT_PRODUCT_EXECUTION",
@@ -556,7 +641,13 @@
         "normalized_type_id",
         "responsibility_profile_id"
       ],
-      "reference_capture": "ResolvedRef plus BORROW, INOUT, MOVE, COPY, CLONE, DEEP, or ONCE mode and its ordered preparation/evidence residue",
+      "reference_required_fields": [
+        "captured_ref",
+        "mode",
+        "preparations",
+        "responsibility_evidence_id_or_null"
+      ],
+      "reference_capture": "ResolvedRef plus BORROW, INOUT, MOVE, COPY, CLONE, or ONCE mode; COPY and CLONE carry one exact ResponsibilityEvidenceId while every other admitted mode carries null and DEEP is rejected before typed HIR",
       "initializer_capture": "one owning initializer_expr_id tagged with initializer_binding_kind LET or VAR and one result_eval_id"
     },
     "plan_identity_and_state": {
@@ -605,11 +696,18 @@
         "committed_construction_id",
         "environment_value_id",
         "capture_field_ids_in_source_order"
-      ]
+      ],
+      "responsibility_evidence_projection": "COPY_OR_CLONE_EXACT_RESPONSIBILITY_EVIDENCE_ID_PRESERVED; OTHER_ADMITTED_REFERENCE_MODES_NULL",
+      "callable_profile_separation": "responsibility_profile_id never substitutes for ResponsibilityEvidenceId",
+      "deep_typed_hir_or_mir_row_count": 0
     },
     "transaction": {
       "evaluation": "LEFT_TO_RIGHT_EXACTLY_ONCE",
-      "failure_before_commit": "CHECKED_OR_LEAVE_TO_REVERSE_ACQUISITION_ROLLBACK",
+      "fallible_preparation": "MOVE_AND_ONCE_USE_MOVE_RESERVE_ONLY; PLACE_MOVE_IS_FORBIDDEN_WHILE_ANY_FALLIBLE_WORK_REMAINS",
+      "failure_before_commit": "CHECKED_OR_LEAVE_TO_REVERSE_ACQUISITION_ROLLBACK_WITH_SOURCE_OWNERS_UNCONSUMED",
+      "final_infallible_commit_interval": "AFTER_ALL_FALLIBLE_PREPARATION_SOURCE_ORDER_PLACE_MOVE_AND_BUILDER_STAGE_FOR_MOVE_OR_ONCE_THEN_BUILDER_COMMIT_THEN_CLOSURE_MAKE",
+      "final_interval_failure_edge_count": 0,
+      "final_interval_suspend_or_branch_count": 0,
       "commit": "BUILDER_COMMIT_PRECEDES_CLOSURE_MAKE",
       "closure_make_after_commit": "INFALLIBLE",
       "publication": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
@@ -626,6 +724,7 @@
         "RegionId",
         "LoanId",
         "MoveReservationId",
+        "ResponsibilityEvidenceId",
         "CleanupRegistrationId",
         "ConstructionId",
         "ClosureId"
@@ -686,7 +785,7 @@
     "schema": "schemas/language/suspension-frame-responsibility.schema.json",
     "continuation_interface_contract": "spec/contracts/continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
+    "continuation_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
     "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
     "hir_structural_plan": "ContinuationFramePlan",
     "static_identity_count": 3,
@@ -747,6 +846,30 @@
     "backend_specific_hir_field_count": 0,
     "product_execution_receipt_count": 0
   },
+  "region_lifetime_projection_contract": {
+    "contract": "spec/contracts/region-lifetime-mir-projection-r1.json",
+    "hir_region_owner": "HirBodyBase.region_table plus place_region_bindings",
+    "hir_borrow_identity_owner": "PlacePlan.result_region_id_or_null plus loan_id_or_null",
+    "mir_projection": "region_table place_table loan_table value_table and existing LOAN_BEGIN or LOAN_END operations",
+    "type_identity_axis": "NormalizedTypeDescriptor.region_profile_id_or_null",
+    "value_identity_axis": "PlacePlan and MirValue concrete RegionId plus LoanId",
+    "exact_identity_preservation": true,
+    "runtime_or_backend_relookup_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "managed_reference_dynamic_projection_contract": {
+    "contract": "spec/contracts/managed-reference-dynamic-projection-r1.json",
+    "hir_descriptor_table": "CanonicalModuleBase.managed_trace_descriptors keyed by existing NormalizedTypeId",
+    "mir_descriptor_table": "managed_trace_descriptor_table keyed by existing TypeId",
+    "static_plan_descriptor_identity": "ManagedTraceDescriptorId derived deterministically from TypeId",
+    "static_plan_schema": "deeplus.managed-memory-plan/r1",
+    "runtime_root_receipt_schema": "deeplus.managed-reference-runtime-root-receipt/r1",
+    "exact_descriptor_identity_preservation": true,
+    "runtime_generation_in_hir_or_mir_count": 0,
+    "root_id_region_id_or_loan_id_alias_count": 0,
+    "borrowed_or_inout_view_creates_independent_root_count": 0,
+    "product_execution": "NOT_RUN"
+  },
   "native_projection_contract": {
     "input": "Verified<DeeplusMirR1>",
     "common_lowering": "deterministic verified MIR to backend-private CLIF",
@@ -773,6 +896,7 @@
       "runtime_helper_and_safepoint_capability_digest",
       "managed_memory_profile_digest",
       "managed_memory_plan_digest",
+      "managed_root_receipt_schema_digest",
       "continuation_root_interface_digest",
       "target_root_projection_digest",
       "runtime_root_registry_digest",
@@ -824,6 +948,9 @@
       "memory_profile_id": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1",
       "profile_contract": "spec/contracts/managed-reference-memory-profile-r1.json",
       "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
+      "managed_root_receipt_schema": "deeplus.managed-reference-runtime-root-receipt/r1",
+      "dynamic_projection_contract": "spec/contracts/managed-reference-dynamic-projection-r1.json",
+      "static_plan_contains_runtime_generation_or_receipt_lifecycle": false,
       "native_projection_receipt_schema": "deeplus.managed-reference-native-projection-receipt/r1",
       "plan_is_deterministically_recomputed_from_verified_mir": true,
       "target_locations_are_semantic_identity": false,
@@ -832,6 +959,7 @@
       "required_native_projection_receipt_fields": [
         "managed_memory_profile_digest",
         "managed_memory_plan_digest",
+        "managed_root_receipt_schema_digest",
         "continuation_root_interface_digest",
         "handle_abi_digest",
         "shadow_root_frame_abi_digest",
@@ -877,8 +1005,8 @@
     "active_conditional_managed_helper_count": 3,
     "runtime_callback_count": 0,
     "external_ffi_included": false,
-    "managed_reference_profile_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7",
-    "continuation_interface_digest_or_null": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
+    "managed_reference_profile_digest_or_null": "3fed473841661ef3d25e01cddd313611b0853b49826a0051b7bde2c4442a381a",
+    "continuation_interface_digest_or_null": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
     "canonical_promotion_ready": true,
     "release_verifier_diagnostic_count": 12,
     "product_support": "NOT_RUN",
@@ -998,7 +1126,7 @@
     {
       "rule_id": "H1MB-R021",
       "title": "closure capture construction is transactional without new MIR operations",
-      "contract": "Tagged ReferenceCapture and InitializerCapture fields evaluate left-to-right exactly once into a private builder, failure uses CHECKED or LEAVE and reverse rollback through existing move, loan, and cleanup machinery, BUILDER_COMMIT precedes infallible CLOSURE_MAKE, partial publication is forbidden, and no capture/value identity enters module API bytes."
+      "contract": "Tagged ReferenceCapture and InitializerCapture fields evaluate left-to-right exactly once into a private builder; COPY and CLONE preserve one exact ResponsibilityEvidenceId disjoint from callable ResponsibilityProfileId; MOVE and ONCE reserve without PLACE_MOVE while fallible work remains; failure uses CHECKED or LEAVE and reverse rollback with source owners unconsumed; after all fallible preparation one straight-line nonsuspending interval performs source-ordered PLACE_MOVE and BUILDER_STAGE for MOVE or ONCE, BUILDER_COMMIT, and infallible CLOSURE_MAKE; DEEP has zero typed-HIR/MIR rows, partial publication is forbidden, and no capture/value identity enters module API bytes."
     }
   ],
   "machine_acceptance": {

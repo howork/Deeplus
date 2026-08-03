@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.invalid/schemas/language/formatter-lsp-incremental-parsing.schema.json",
+  "title": "Deeplus Formatter, LSP, and Incremental Parsing Contract R1",
+  "type": "object",
+  "required": [
+    "schema",
+    "status",
+    "candidate_class",
+    "baseline",
+    "gap_id",
+    "dependencies",
+    "inputs",
+    "responsibility_separation",
+    "formatting_disposition_function",
+    "explicit_owner_rule_gate",
+    "recovery_and_malformed_cst",
+    "identity_domains",
+    "incremental_reparse",
+    "range_format",
+    "lsp_snapshot_fence",
+    "reason_codes",
+    "diagnostic_policy",
+    "acceptance",
+    "governance"
+  ],
+  "properties": {
+    "schema": {
+      "const": "deeplus.formatter-lsp-incremental-parsing-contract/r1"
+    },
+    "status": {
+      "const": "STABLE_DESIGN_IMPLEMENTATION_READINESS_CANDIDATE"
+    },
+    "candidate_class": {
+      "const": "LOCAL_NONCANONICAL_NONACTIVATABLE"
+    },
+    "baseline": {
+      "type": "object",
+      "required": [
+        "repository",
+        "branch",
+        "commit",
+        "tree"
+      ],
+      "properties": {
+        "repository": {
+          "const": "howork/Deeplus"
+        },
+        "branch": {
+          "const": "main"
+        },
+        "commit": {
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "tree": {
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gap_id": {
+      "const": "IR-FE-P1-037"
+    },
+    "dependencies": {
+      "const": [
+        "IR-FE-P0-028",
+        "IR-FE-P1-034"
+      ]
+    },
+    "inputs": {
+      "type": "object",
+      "minProperties": 7
+    },
+    "responsibility_separation": {
+      "type": "object",
+      "minProperties": 6
+    },
+    "formatting_disposition_function": {
+      "type": "object",
+      "required": [
+        "input_domain",
+        "ordered_first_match",
+        "total_and_disjoint",
+        "rules",
+        "expected_total_row_count",
+        "unclassified_row_count",
+        "multiply_classified_row_count",
+        "default_rewrite",
+        "undeclared_style_preference_count"
+      ],
+      "properties": {
+        "ordered_first_match": {
+          "const": true
+        },
+        "total_and_disjoint": {
+          "const": true
+        },
+        "rules": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "rule_id",
+              "when",
+              "formatting_disposition",
+              "expected_row_count"
+            ]
+          }
+        },
+        "expected_total_row_count": {
+          "const": 644
+        },
+        "unclassified_row_count": {
+          "const": 0
+        },
+        "multiply_classified_row_count": {
+          "const": 0
+        },
+        "undeclared_style_preference_count": {
+          "const": 0
+        }
+      }
+    },
+    "explicit_owner_rule_gate": {
+      "type": "object",
+      "required": [
+        "admission",
+        "current_owner_paths",
+        "missing_or_ambiguous_owner_rule",
+        "semantic_auto_rewrite_count",
+        "profile_activation_count"
+      ]
+    },
+    "recovery_and_malformed_cst": {
+      "type": "object",
+      "required": [
+        "whole_file_format",
+        "range_format",
+        "formatter_may_clear_taint",
+        "checker_may_clear_taint",
+        "taint_clear_owner",
+        "recovery_nodes_rewritten_or_removed_by_formatter",
+        "analysis_only_fragments_advertised_as_canonical",
+        "fixit_scope"
+      ]
+    },
+    "identity_domains": {
+      "type": "object",
+      "required": [
+        "DocumentSessionId",
+        "DocumentRevisionId",
+        "ParseSnapshotId",
+        "CstContentId",
+        "CstOccurrenceId",
+        "IncrementalNodeHandleId",
+        "NodeReuseReceipt",
+        "NormalizedAstSemanticDigest",
+        "forbidden_identity_conflations"
+      ]
+    },
+    "incremental_reparse": {
+      "type": "object",
+      "required": [
+        "edit_input",
+        "edit_coordinate_transform",
+        "boundary_insertion_rule",
+        "concurrent_edit_publication",
+        "lexical_expansion",
+        "reparse_owner_eligibility",
+        "owner_selection",
+        "mandatory_ascent_conditions",
+        "ascent",
+        "root_fallback",
+        "splice_gate",
+        "snapshot_read_lease",
+        "snapshot_reclamation_gate",
+        "late_result_publication",
+        "recovery_episode_identity",
+        "diagnostic_parity",
+        "diagnostic_merge_order",
+        "evaluation_or_parse_order",
+        "whole_document_mix_of_snapshot_count"
+      ]
+    },
+    "range_format": {
+      "type": "object",
+      "required": [
+        "selection",
+        "token_split",
+        "replacement_count",
+        "replacement_interval",
+        "outside_interval_bytes_unchanged",
+        "source_role_profile_unchanged",
+        "parse_format_parse_normalized_ast_equivalence",
+        "second_pass_edit_count",
+        "no_recovery_free_owner",
+        "request_spans_multiple_sibling_owners"
+      ]
+    },
+    "lsp_snapshot_fence": {
+      "type": "object",
+      "required": [
+        "request_binding",
+        "result_binding",
+        "stale_request_or_result",
+        "semantic_tokens",
+        "rename_navigation",
+        "code_action",
+        "internal_span_domain",
+        "position_conversion",
+        "invalid_position",
+        "replacement_and_action_binding",
+        "stale_action_application",
+        "cross_revision_result_merge_count"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true
+    },
+    "diagnostic_policy": {
+      "type": "object",
+      "required": [
+        "reason_codes_are_final_registry_ids",
+        "new_final_diagnostic_id_count",
+        "primary_diagnostic_selection",
+        "tooling_failure_precedence",
+        "incremental_full_parse_diagnostic_order_parity",
+        "automatic_semantic_fix_count"
+      ]
+    },
+    "acceptance": {
+      "type": "object",
+      "required": [
+        "fixture",
+        "schema",
+        "required_case_ids",
+        "successor_case_range",
+        "successor_case_count",
+        "mutation_ids"
+      ],
+      "properties": {
+        "successor_case_range": {
+          "const": "R28R-T01..R28R-T34"
+        },
+        "successor_case_count": {
+          "const": 34
+        },
+        "mutation_ids": {
+          "type": "array",
+          "minItems": 12,
+          "maxItems": 12,
+          "uniqueItems": true
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "required": [
+        "semantic_p0",
+        "canonical_feature_p1",
+        "separate_m13_actions",
+        "product_lanes",
+        "source_syntax_change_count",
+        "grammar_production_change_count",
+        "language_semantic_change_count",
+        "production_formatter_lsp_incremental_parser",
+        "github_publication"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

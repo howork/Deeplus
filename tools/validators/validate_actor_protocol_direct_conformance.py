@@ -311,7 +311,16 @@ def main(root: Path = ROOT) -> None:
         "ACC-G002 R41 rebased design status",
     )
     require(gate["status"] == "BLOCKS_PRODUCT_EXECUTION", "ACC-G002 product fence")
-    require(actor["machine_acceptance"]["rule_count"] == len(actor["rules"]) == 19, "actor rule count")
+    rule_ids = [row["rule_id"] for row in actor["rules"]]
+    require(
+        actor["machine_acceptance"]["rule_count"] == len(actor["rules"])
+        and rule_ids
+        in (
+            [f"ACC-R{i:03d}" for i in range(1, 20)],
+            [f"ACC-R{i:03d}" for i in range(1, 21)],
+        ),
+        "actor rule set must be exact R41 or R41+R22",
+    )
     passed.append("actor coherence binding")
 
     predicate = next(row for row in predicates if row["predicate_id"] == "ActorProtocolGateAdmitted")
@@ -351,7 +360,15 @@ def main(root: Path = ROOT) -> None:
     call_plan = hir_schema["$defs"]["CallPlan"]
     actor_fields = set(required_fields)
     require(actor_fields <= set(call_plan["properties"]), "HIR actor transport properties")
-    actor_branch = call_plan["allOf"][0]
+    actor_branch = next(
+        branch
+        for branch in call_plan["allOf"]
+        if branch.get("if", {})
+        .get("properties", {})
+        .get("mode_target_pair", {})
+        .get("const")
+        == "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+    )
     require(
         actor_branch["if"]["properties"]["mode_target_pair"]["const"]
         == "ACTOR_MESSAGE::ACTOR_TRANSPORT",

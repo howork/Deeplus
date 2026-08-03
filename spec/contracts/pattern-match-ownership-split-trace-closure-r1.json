@@ -1,0 +1,463 @@
+{
+  "$schema": "../../schemas/language/pattern-match-ownership-split-trace-closure-r1.schema.json",
+  "schema": "deeplus.pattern-match-ownership-split-trace-closure/r1",
+  "revision": "r60-local-pattern-match-ownership-split-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "e120f83db380ee182f0117713a67e97886bfcd11",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_ids": [
+    "pattern_match_ownership_split"
+  ],
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "scope_fence": {
+    "transitioned_cells": [
+      {
+        "feature_id": "pattern_match_ownership_split",
+        "stage": "STATIC_SEMANTICS",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      },
+      {
+        "feature_id": "pattern_match_ownership_split",
+        "stage": "DYNAMIC_LOWERING",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      }
+    ],
+    "excluded_reverse_dependents": [
+      "clause_pattern_heads",
+      "match_exhaustiveness_phase_a"
+    ],
+    "excluded_reverse_dependent_transition_count": 0,
+    "preview_pattern_row_transition_count": 0,
+    "other_target_cell_transition_count": 0
+  },
+  "existing_operation_alignment": {
+    "new_operation_count": 0,
+    "admitted_operations": [
+      "MOVE_RESERVE",
+      "MOVE_CANCEL",
+      "PLACE_MOVE",
+      "LOAN_BEGIN_SHARED",
+      "LOAN_BEGIN_EXCLUSIVE",
+      "LOAN_BEGIN_REBORROW",
+      "LOAN_END",
+      "BINDING_COMMIT"
+    ],
+    "pattern_attempt_row_id": "HM-LR-TOP-016",
+    "move_pattern_row_id": "HM-LR-PAT-029",
+    "or_pattern_row_id": "HM-LR-PAT-027",
+    "alias_pattern_row_id": "HM-LR-PAT-028"
+  },
+  "ownership_interface": {
+    "binding_modes": [
+      "BORROWED",
+      "OWNED"
+    ],
+    "borrowed_binding": {
+      "probe_consumption": "NONE",
+      "final_commit_effect": "ACQUIRE_SHARED_LOAN",
+      "move_count": 0
+    },
+    "owned_binding": {
+      "probe_consumption": "NONE",
+      "preparation": "MOVE_RESERVE",
+      "final_commit_effect": "PLACE_MOVE",
+      "move_count_on_success": 1
+    },
+    "normalized_binder_interface_fields": [
+      "binder_name",
+      "binder_type",
+      "ownership_mode",
+      "mutability",
+      "usable_region",
+      "capability_set"
+    ],
+    "excluded_interface_fields": [
+      "projection_path",
+      "source_order"
+    ]
+  },
+  "probe_guard_commit_law": {
+    "subject_evaluation_count": 1,
+    "structural_probe": {
+      "purity": "PURE",
+      "consumption": "NONCONSUMING",
+      "suspension": "NONE",
+      "acquisition_count": 0,
+      "publication_count": 0
+    },
+    "guard": {
+      "required_result_type": "Bool",
+      "purity": "PURE",
+      "consumption": "NONCONSUMING",
+      "suspension": "NONE",
+      "mutation_count": 0,
+      "acquisition_count": 0,
+      "evaluation_count_on_structural_success": 1,
+      "evaluation_count_on_structural_failure": 0,
+      "ownership_publication_count": 0
+    },
+    "final_commit": {
+      "logical_commit_count_on_success": 1,
+      "atomic": true,
+      "fallibility": "INFALLIBLE_AFTER_PREPARATION",
+      "timing": "AFTER_STRUCTURAL_AND_GUARD_SUCCESS",
+      "pending_acquisition_order": "SOURCE_PATTERN_PREORDER",
+      "operation_order": [
+        "MOVE_RESERVE",
+        "PLACE_MOVE_OR_LOAN_BEGIN_SHARED_OR_LOAN_BEGIN_EXCLUSIVE",
+        "BINDING_COMMIT"
+      ]
+    },
+    "preparation_abort": {
+      "operation": "MOVE_CANCEL",
+      "required_on_structural_mismatch_or_false_guard": false,
+      "required_on_preparation_failure": true,
+      "reverse_acquisition_order": true
+    },
+    "failure_residue": {
+      "binding_count": 0,
+      "move_count": 0,
+      "loan_count": 0,
+      "view_count": 0,
+      "authority_count": 0,
+      "reservation_count": 0
+    }
+  },
+  "or_alias_ownership_law": {
+    "or_pattern": {
+      "required_branch_contract": "EXACT_EQUAL_NORMALIZED_BINDER_INTERFACE",
+      "selection": "FIRST_SOURCE_ORDERED_SUCCESSFUL_BRANCH",
+      "backtracking_count": 0,
+      "retry_count": 0,
+      "later_branch_probe_after_success_count": 0
+    },
+    "alias_pattern": {
+      "alias_mode": "SHARED_LOAN_OF_SAME_SUBJECT",
+      "clone_count": 0,
+      "conflicts_with_moved_descendant": true,
+      "conflicts_with_exclusive_borrow_descendant": true,
+      "loan_acquisition": "FINAL_ATOMIC_COMMIT_ONLY"
+    }
+  },
+  "loan_lifetime_and_arm_join_law": {
+    "loan_end_frontier": "EARLIEST_OWNER_MUTATION_MOVE_REPLACEMENT_CLEANUP_OR_REGION_FRONTIER",
+    "returning_arm_join": {
+      "required_place_identity": "COMPATIBLE",
+      "required_place_state": "COMPATIBLE",
+      "result_capabilities": "INTERSECTION",
+      "divergent_place_contract": "EXCLUDED_FROM_R60"
+    }
+  },
+  "rules": [
+    {
+      "rule_id": "PMOSTC-R001",
+      "text": "R60 transitions exactly pattern_match_ownership_split/STATIC_SEMANTICS and pattern_match_ownership_split/DYNAMIC_LOWERING from APPLICABLE_BLOCKED_BY_GAP to BOUND_DIRECT."
+    },
+    {
+      "rule_id": "PMOSTC-R002",
+      "text": "The normalized binder interface consists exactly of binder name, type, ownership mode, mutability, usable region, and capabilities; projection path and source order are not interface fields."
+    },
+    {
+      "rule_id": "PMOSTC-R003",
+      "text": "Every Or alternative must expose an exactly equal normalized binder interface; the first source-ordered successful alternative wins and no retry or backtracking is permitted."
+    },
+    {
+      "rule_id": "PMOSTC-R004",
+      "text": "A BORROWED binder never moves its source and an OWNED binder is admitted only when its exact source place can be reserved and moved once at final commit."
+    },
+    {
+      "rule_id": "PMOSTC-R005",
+      "text": "An Alias pattern is a same-subject shared borrow with no clone and conflicts with a moved or exclusively borrowed child."
+    },
+    {
+      "rule_id": "PMOSTC-R006",
+      "text": "Structural probing and optional guard evaluation acquire and publish no ownership state."
+    },
+    {
+      "rule_id": "PMOSTC-R007",
+      "text": "A pattern guard is read-only and nonescaping and must not consume, mutate, suspend, or acquire ownership state."
+    },
+    {
+      "rule_id": "PMOSTC-R008",
+      "text": "After structural and guard success, pending moves and loans are ordered by source-pattern preorder before the group commit."
+    },
+    {
+      "rule_id": "PMOSTC-R009",
+      "text": "One infallible group commit orders MOVE_RESERVE before PLACE_MOVE, LOAN_BEGIN_SHARED, or LOAN_BEGIN_EXCLUSIVE and publishes bindings only with the final BINDING_COMMIT."
+    },
+    {
+      "rule_id": "PMOSTC-R010",
+      "text": "Preparation abort uses MOVE_CANCEL in reverse acquisition order and publishes no binding, move, loan, view, authority, or reservation residue."
+    },
+    {
+      "rule_id": "PMOSTC-R011",
+      "text": "LOAN_END occurs at the earliest owner mutation, move, replacement, cleanup, or region frontier."
+    },
+    {
+      "rule_id": "PMOSTC-R012",
+      "text": "Normally returning arms require compatible place identity and place state and join by capability intersection; divergent arm contracts remain excluded."
+    },
+    {
+      "rule_id": "PMOSTC-R013",
+      "text": "clause_pattern_heads and match_exhaustiveness_phase_a are reverse dependents outside this bounded transition and no cell belonging to either feature changes."
+    },
+    {
+      "rule_id": "PMOSTC-R014",
+      "text": "R60 introduces no source surface, AST identity, HIR identity, or MIR operation kind; semantic P0 remains zero, feature P1 remains exactly 22 OPEN, M13 actions remain exactly four OPEN, all product lanes remain NOT_RUN, and GitHub publication remains suspended."
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "PMOSTC-AC-001",
+      "audit_case_id": "OWN1",
+      "class": "POSITIVE",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "owned binder over one live movable source place",
+      "expected": "ADMIT_ONE_FINAL_PLACE_MOVE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "move_reserve_count": 1,
+        "place_move_count": 1,
+        "logical_commit_count": 1
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-002",
+      "audit_case_id": "OWN2",
+      "class": "POSITIVE",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "borrowed binder over a live source place",
+      "expected": "ADMIT_SHARED_LOAN_AT_FINAL_COMMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "place_move_count": 0,
+        "shared_loan_count": 1,
+        "logical_commit_count": 1
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-003",
+      "audit_case_id": "OWN3",
+      "class": "POSITIVE",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "Alias over one subject with read-only borrowed descendants",
+      "expected": "ADMIT_SAME_SUBJECT_SHARED_ALIAS",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "same_subject": true,
+        "clone_count": 0,
+        "shared_loan_count": 1
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-004",
+      "audit_case_id": "OWN4",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "structural mismatch before ownership preparation",
+      "expected": "MISMATCH_WITH_ZERO_RESIDUE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "move_cancel_count": 0,
+        "logical_commit_count": 0,
+        "residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-005",
+      "audit_case_id": "OWN5",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "structural success followed by a pure false guard before ownership preparation",
+      "expected": "FALSE_GUARD_WITH_ZERO_RESIDUE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "move_cancel_count": 0,
+        "logical_commit_count": 0,
+        "residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-006",
+      "audit_case_id": "OWN6",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "normally returning match arms with compatible place identity and state plus one terminating arm",
+      "expected": "JOIN_BY_CAPABILITY_INTERSECTION",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "place_identity_compatible": true,
+        "place_state_compatible": true,
+        "capability_join": "INTERSECTION",
+        "terminating_arm_in_return_join_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-007",
+      "audit_case_id": "OWN7",
+      "class": "BOUNDARY",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "ownership preparation reserves two moves after guard success and then aborts before publication",
+      "expected": "PREPARATION_ABORT_REVERSE_MOVE_CANCEL_WITH_ZERO_RESIDUE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "prepared_reservation_count": 2,
+        "move_cancel_count": 2,
+        "move_cancel_order": "REVERSE_ACQUISITION_ORDER",
+        "logical_commit_count": 0,
+        "residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-008",
+      "audit_case_id": "OWN8",
+      "class": "REJECT",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "an owned payload move is requested through a borrowed affine match subject",
+      "expected": "REJECT_BEFORE_COMMIT",
+      "diagnostic_or_null": "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
+      "assertions": {
+        "move_reserve_count": 0,
+        "place_move_count": 0,
+        "residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-009",
+      "audit_case_id": "OWN9",
+      "class": "REJECT",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "Alias shared loan with a moved descendant",
+      "expected": "REJECT_BEFORE_COMMIT",
+      "diagnostic_or_null": "ALIAS_PATTERN_OWNERSHIP_CONFLICT",
+      "assertions": {
+        "place_move_count": 0,
+        "shared_loan_count": 0,
+        "residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-010",
+      "audit_case_id": "OWN10",
+      "class": "REJECT",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "Or alternatives with unequal normalized binder interfaces",
+      "expected": "REJECT_OR_INTERFACE_BEFORE_BRANCH_SELECTION",
+      "diagnostic_or_null": "OR_PATTERN_BINDINGS_INCONSISTENT",
+      "assertions": {
+        "normalized_binder_interface_equal": false,
+        "logical_commit_count": 0,
+        "retry_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-011",
+      "audit_case_id": "OWN11",
+      "class": "REJECT",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "normally returning match arms expose incompatible place identities or states",
+      "expected": "REJECT_RETURNING_PLACE_JOIN",
+      "diagnostic_or_null": "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH",
+      "assertions": {
+        "capability_intersection_count": 0,
+        "logical_commit_count": 0,
+        "join_output_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PMOSTC-AC-012",
+      "audit_case_id": "OWN12",
+      "class": "REJECT",
+      "feature_id": "pattern_match_ownership_split",
+      "source_or_subject": "a pattern guard consumes or moves a tentative binder",
+      "expected": "REJECT_GUARD_BEFORE_LOWERING",
+      "diagnostic_or_null": "MATCH_GUARD_CONSUME_NOT_ALLOWED",
+      "assertions": {
+        "hir_residue_count": 0,
+        "mir_residue_count": 0,
+        "ownership_publication_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "acceptance_bindings": {
+    "pattern_match_ownership_split": {
+      "POSITIVE": [
+        "PMOSTC-AC-001",
+        "PMOSTC-AC-002",
+        "PMOSTC-AC-003"
+      ],
+      "BOUNDARY": [
+        "PMOSTC-AC-004",
+        "PMOSTC-AC-005",
+        "PMOSTC-AC-006",
+        "PMOSTC-AC-007"
+      ],
+      "REJECT": [
+        "PMOSTC-AC-008",
+        "PMOSTC-AC-009",
+        "PMOSTC-AC-010",
+        "PMOSTC-AC-011",
+        "PMOSTC-AC-012"
+      ]
+    }
+  },
+  "machine_acceptance": {
+    "feature_count": 1,
+    "rule_count": 14,
+    "acceptance_case_count": 12,
+    "positive_case_count": 3,
+    "boundary_case_count": 4,
+    "reject_case_count": 5,
+    "overlay_binding_count": 2,
+    "predecessor_blocked_cell_count": 2,
+    "overlay_bound_direct_transition_count": 2,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 0,
+    "predecessor_cumulative_overlay_binding_count": 113,
+    "post_overlay_cumulative_binding_count": 115,
+    "predecessor_total_bound_direct_cell_count": 2450,
+    "predecessor_total_bound_delegated_cell_count": 3,
+    "predecessor_total_not_applicable_cell_count": 502,
+    "predecessor_total_blocked_cell_count": 1266,
+    "post_overlay_total_bound_direct_cell_count": 2452,
+    "post_overlay_total_bound_delegated_cell_count": 3,
+    "post_overlay_total_not_applicable_cell_count": 502,
+    "post_overlay_total_blocked_cell_count": 1264,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0,
+    "new_operation_count": 0,
+    "logical_final_commit_count_on_success": 1,
+    "failure_residue_count": 0,
+    "or_retry_count": 0,
+    "excluded_reverse_dependent_transition_count": 0,
+    "other_target_cell_transition_count": 0
+  }
+}

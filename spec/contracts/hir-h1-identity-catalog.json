@@ -37,6 +37,41 @@
     "POWER_OPERATION_KIND": 6,
     "PATTERN_KIND": 38
   },
+  "nonstructural_descriptor_contracts": {
+    "TraitAssociatedStaticSelection": {
+      "host_identity_ids": [
+        "HIR-H1/RESOLVED_REF/DIRECT_DECL",
+        "HIR-H1/EXPR/CALL"
+      ],
+      "new_structural_identity_count": 0,
+      "selection_identity": "SelectionId",
+      "required_identity_residue": [
+        "TraitId",
+        "RequirementId",
+        "ConformanceId",
+        "TraitWitnessId",
+        "ImplementationId",
+        "SubstitutionId",
+        "ResponsibilityId"
+      ],
+      "required_identity_residue_count": 7,
+      "item_kinds": [
+        "ASSOCIATED_TYPE",
+        "ASSOCIATED_VALUE",
+        "ASSOCIATED_FUNCTION"
+      ],
+      "representation_metadata": [
+        "representation_kind",
+        "direct_static_symbol_id_or_null",
+        "callable_implementation_id_or_null"
+      ],
+      "implementation_to_callable_mapping": "ASSOCIATED_FUNCTION_IMPLEMENTATION_ID_EQUALS_CALLABLE_IMPLEMENTATION_ID",
+      "associated_type_runtime_operation_count": 0,
+      "associated_value_or_bare_function_lowering_row": "HM-LR-REF-002",
+      "invoked_associated_function_lowering_row": "HM-LR-CALL-003",
+      "runtime_reconstruction_or_search_count": 0
+    }
+  },
   "role_counts": {
     "TOP_LEVEL_DIRECT": 31,
     "TOP_LEVEL_ORCHESTRATOR": 4,
@@ -2006,6 +2041,8 @@
         "value_type_id",
         "logical_domain_id",
         "region_constraints",
+        "result_region_id_or_null",
+        "loan_id_or_null",
         "replace_responsibility_profile_id_or_null"
       ],
       "owning_reference_slots": [
@@ -2063,6 +2100,16 @@
           "reference_domain": "HIR_REGION_CONSTRAINT",
           "cardinality": "N*",
           "ordering": "CANONICAL_CONSTRAINT_ORDER"
+        },
+        {
+          "slot": "result_region_id_or_null",
+          "reference_domain": "REGION_ID",
+          "cardinality": "N1_FOR_BORROW_SHARED_OR_BORROW_INOUT_ELSE_NULL"
+        },
+        {
+          "slot": "loan_id_or_null",
+          "reference_domain": "LOAN_ID",
+          "cardinality": "N1_FOR_BORROW_SHARED_OR_BORROW_INOUT_ELSE_NULL"
         },
         {
           "slot": "replace_responsibility_profile_id_or_null",
@@ -2590,10 +2637,10 @@
           "cardinality": "N1_PER_PREPARATION"
         },
         {
-          "slot": "captures_in_source_order[ReferenceCapture].selected_evidence_id_or_null",
-          "reference_domain": "RESOLVED_EVIDENCE_ID",
+          "slot": "captures_in_source_order[ReferenceCapture].responsibility_evidence_id_or_null",
+          "reference_domain": "RESPONSIBILITY_EVIDENCE_ID",
           "cardinality": "N?_PER_REFERENCE_CAPTURE",
-          "condition": "N1_IFF_MODE_CLONE_OR_DEEP"
+          "condition": "N1_IFF_MODE_COPY_OR_CLONE"
         },
         {
           "slot": "captures_in_source_order[InitializerCapture].result_eval_id",
@@ -2642,11 +2689,12 @@
       "cross_field_rules": [
         "CaptureDescriptor is the exact tagged ReferenceCapture | InitializerCapture sum; initializer_binding_kind is exactly LET or VAR",
         "CaptureFieldId and source_ordinal are body-local, pairwise unique, zero-based, contiguous, and in exact source order; normalized_type_id equals the closed field type",
-        "ReferenceCapture preparation ordinals are source ordered and contiguous; CLONE and DEEP require evidence and every other reference mode requires null evidence",
+        "ReferenceCapture preparation ordinals are source ordered and contiguous; COPY and CLONE require one exact ResponsibilityEvidenceId whose descriptor matches normalized_type_id and the canonical CopyValue or Clone rule, every other admitted reference mode requires null evidence, and DEEP is rejected before typed HIR",
+        "ReferenceCapture responsibility_profile_id is a callable ResponsibilityProfileId and never substitutes for responsibility_evidence_id_or_null",
         "capture_list_state preserves ABSENT, PRESENT_EMPTY, or PRESENT_NONEMPTY independently of inferred capture discovery; PRESENT_EMPTY has zero fields and PRESENT_NONEMPTY has at least one field",
         "FrameIndependent or a true closed_ancestor_frame_assertion has no lexical dependencies; nonempty lexical dependencies imply RegionBound and false closed assertion",
         "lexical dependencies are sorted unique rows keyed by ancestor callable body, ancestor place, depth, region, Read, and LiveReadable",
-        "evaluation is LEFT_TO_RIGHT_EXACTLY_ONCE, rollback is REVERSE_ACQUISITION_ORDER, and publication commits the complete environment before infallible closure creation with no partial publication",
+        "evaluation is LEFT_TO_RIGHT_EXACTLY_ONCE; MOVE and ONCE reserve without PLACE_MOVE while fallible work remains; rollback is REVERSE_ACQUISITION_ORDER before source consumption; after all fallible preparation succeeds one straight-line nonsuspending interval performs source-ordered PLACE_MOVE and BUILDER_STAGE, BUILDER_COMMIT, and infallible CLOSURE_MAKE with no failure edge or partial publication",
         "CapturePlanId, CaptureFieldId, evaluation, place, region, loan, reservation, cleanup, and value identities are value-level semantic residue and never module API identities"
       ]
     },
@@ -3471,10 +3519,10 @@
           "cardinality": "N1_PER_PREPARATION"
         },
         {
-          "slot": "captures_in_source_order[*].selected_evidence_id_or_null",
-          "reference_domain": "RESOLVED_EVIDENCE_ID",
+          "slot": "captures_in_source_order[*].responsibility_evidence_id_or_null",
+          "reference_domain": "RESPONSIBILITY_EVIDENCE_ID",
           "cardinality": "N?_PER_CAPTURE",
-          "condition": "N1_IFF_MODE_CLONE_OR_DEEP"
+          "condition": "N1_IFF_MODE_COPY_OR_CLONE"
         },
         {
           "slot": "captures_in_source_order[*].responsibility_profile_id",
@@ -3489,7 +3537,7 @@
       ],
       "cross_field_rules": [
         "capture and preparation ordinals are source ordered and contiguous",
-        "CLONE and DEEP require evidence; every other capture mode requires null evidence"
+        "COPY and CLONE require one exact ResponsibilityEvidenceId; every other admitted reference mode requires null evidence; callable ResponsibilityProfileId is disjoint; DEEP is rejected before typed HIR"
       ]
     }
   ],
@@ -4179,13 +4227,14 @@
     "identity_recipe": [
       "type_ownership_qualifier",
       "base_normalized_type_id",
-      "region relation class but not runtime RegionId syntax"
+      "region_profile_id_or_null relation class but not concrete RegionId"
     ],
     "parameter_mode_is_distinct_identity_field": true,
     "qualifier_depth_after_alias_expansion": "ZERO_OR_ONE",
     "variance": "INVARIANT",
     "public_api_residue": "EXACT_QUALIFIER_PLUS_REGION_ORIGIN_CHANNEL_RELATION",
     "concrete_region_id_exported": false,
+    "concrete_value_identity_owner": "PlacePlan.result_region_id_or_null plus PlacePlan.loan_id_or_null",
     "missing_or_erased_descriptor": "REJECT_BEFORE_HIR_SEAL"
   },
   "focused_verifier_obligations": [
@@ -4204,6 +4253,8 @@
     "Every lowering-row hir_identity_ids value resolves to exactly one of the 128 identity rows and exactly matches the lowering dispatch key.",
     "Only LOWER and NO_RUNTIME_EMISSION lowering rows exist; capability insufficiency preserves the verified HIR digest exactly and prevents ExecutableHirH1 creation.",
     "Every normalized type ID has exactly one descriptor; qualifier, base type, parameter mode, region relation, API residue, and MIR projection remain separate, and a borrowed or inout descriptor has one required region while owner descriptors have none.",
+    "Every body region table is a finite reference-closed acyclic forest; entry and end-frontier nodes resolve in the same body, and every place-region binding resolves one storage RegionId.",
+    "Every borrowed or inout PlacePlan has exactly one checker-sealed concrete RegionId and LoanId, every other PlacePlan has null for both, and neither identity participates in normalized TypeId construction.",
     "A verification receipt validates against deeplus.canonical-hir-h1-verification-receipt/r1 with exact input digests, profile and feature set, PASS-only root/profile/cross-reference/payload/structural-plan results, zero recovery/unknown identities, deterministic RFC 8949 CBOR, and no additional fields."
   ]
 }

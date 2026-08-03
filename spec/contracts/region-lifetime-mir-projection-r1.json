@@ -1,0 +1,126 @@
+{
+  "$schema": "../../schemas/language/region-lifetime-mir-projection-r1.schema.json",
+  "schema": "deeplus.region-lifetime-mir-projection/r1",
+  "revision": "r68-local-region-lifetime-dynamic-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "11d9df3e1ce148be5c73f227376470fff114723d",
+  "gap_id": "IR-XCUT-P1-054",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_CONTRACT",
+  "projection_contract": {
+    "input_tuple": [
+      "HirExprKind::PlaceAccess with PlacePlan.access",
+      "HirBodyBase.region_table and place_region_bindings",
+      "PlacePlan.region_constraints plus exact result RegionId and LoanId",
+      "verified OwnershipDecisionInputR1.loan_region_graph",
+      "verified HIR use, suspension, isolation and CFG facts"
+    ],
+    "input_closure": "EVERY_REGION_OWNER_LOAN_PLACE_NODE_DOMAIN_AND_PROOF_REFERENCE_RESOLVES_EXACTLY_ONCE_BEFORE_LOWERING",
+    "region_graph": {
+      "accepted_region_kinds": ["Lexical", "Invocation", "ProcessStaticImmutable"],
+      "mir_kind_map": {
+        "Lexical": "LEXICAL",
+        "Invocation": "INVOCATION",
+        "ProcessStaticImmutable": "PROCESS_STATIC_IMMUTABLE"
+      },
+      "parent_rule": "FINITE_REFERENCE_CLOSED_ACYCLIC_FOREST_WITH_EXACT_IMMEDIATE_PARENT",
+      "constraint_normalization": "SOURCE_ORDER_INDEPENDENT_SORTED_UNIQUE_TRANSITIVE_CLOSURE_WITH_UNIQUE_TRANSITIVE_REDUCTION",
+      "outlives_rule": "OUTLIVES_LONGER_REGION_IS_THE_EQUAL_OR_PROPER_ANCESTOR_OF_SHORTER_REGION",
+      "contains_use_rule": "EVERY_CONTAINS_USE_NODE_IS_REACHABLE_AFTER_REGION_ENTRY_AND_BEFORE_EVERY_REACHABLE_REGION_END_FRONTIER",
+      "hir_to_mir_extent_projection": "REGION_ID_KIND_PARENT_ISOLATION_ENTRY_AND_END_FRONTIERS_ARE_EXACTLY_PRESERVED",
+      "context_anchor_region_or_loan_creation_count": 0
+    },
+    "place_access_dispatch": {
+      "READ": "NO_NEW_LOAN_OR_BEGIN_OPERATION",
+      "MOVE": "NO_NEW_LOAN_OR_BEGIN_OPERATION",
+      "REPLACE": "NO_NEW_LOAN_OR_BEGIN_OPERATION",
+      "BORROW_SHARED": "ONE_SHARED_LOAN_AND_ONE_LOAN_BEGIN_SHARED_AT_THE_STATIC_SITE",
+      "BORROW_INOUT": "ONE_EXCLUSIVE_LOAN_AND_ONE_LOAN_BEGIN_EXCLUSIVE_AT_THE_STATIC_SITE"
+    },
+    "loan_projection": {
+      "loan_id_selection_stage": "CHECKER_BEFORE_TYPED_HIR_SEALING",
+      "static_site_cardinality": "EXACTLY_ONE_CHECKER_SEALED_LOAN_ID_PER_ADMITTED_STATIC_BORROW_SITE_PRESERVED_HIR_TO_MIR",
+      "base_rule": "BASE_ID_IS_THE_ULTIMATE_NON_VIEW_SOURCE_PLACE_OR_VALUE_AND_PROJECTION_IDENTITY_BINDS_THE_CANONICAL_ROOT_PLUS_PROJECTION_PATH",
+      "root_parent_rule": "ROOT_LOAN_PARENT_IS_NULL",
+      "reborrow_rule": "LOAN_BEGIN_REBORROW_REQUIRES_ONE_EXACT_ACTIVE_PARENT_LOAN_AND_A_STRICT_CHILD_REGION",
+      "shared_overlap_rule": "SHARED_MAY_OVERLAP_ONLY_SHARED_IN_THE_SAME_PROJECTION_DOMAIN",
+      "exclusive_overlap_rule": "EXCLUSIVE_MAY_OVERLAP_NO_OTHER_LIVE_LOAN_IN_THE_SAME_PROJECTION_DOMAIN",
+      "constraint_projection": {
+        "OUTLIVES": "VALIDATE_GRAPH_RELATION_BEFORE_EMISSION",
+        "CONTAINS_USE": "CONSTRAIN_LAST_USE_AND_CLOSE_FRONTIER",
+        "EXCLUSIVE_AT": "REQUIRE_BORROW_INOUT_AND_EXACT_LOGICAL_DOMAIN",
+        "MUST_END_BEFORE_SUSPEND": "REQUIRE_R34_END_BEFORE_UNADMITTED_SUSPENSION",
+        "TRANSFER_ACROSS_ISOLATION_REQUIRES": "CONSUME_THE_EXACT_EXISTING_PROOF_ID_OR_REJECT"
+      },
+      "type_value_separation": "NORMALIZED_TYPE_DESCRIPTOR_CARRIES_REGION_PROFILE_ID_ONLY_WHILE_PLACE_PLAN_AND_MIR_VALUE_CARRY_CONCRETE_REGION_ID_AND_LOAN_ID",
+      "body_wide_phase": "AFTER_NODE_ROW_LOWERING_BEFORE_R34_RELEASE_VERIFICATION",
+      "node_row_fence": "HM-LR-TOP-006_REMAINS_PLACE_VALUE_OBSERVATION_AND_DOES_NOT_OWN_LOAN_BEGIN_OR_END"
+    },
+    "close_delegation": {
+      "contract": "spec/contracts/loan-close-operation-r1.json",
+      "frontier": "EARLIEST_POST_USE_PATH_FRONTIER_BEFORE_OWNER_BARRIER_REGION_EXIT_OR_UNADMITTED_SUSPEND",
+      "static_end_site_cardinality": "ONE_OR_MORE_PATH_EXCLUSIVE",
+      "dynamic_end_cardinality": "EXACTLY_ONE_PER_BEGIN_PER_REACHABLE_PATH",
+      "child_order": "LEAF_FIRST",
+      "loan_end_failure_or_suspension_count": 0
+    },
+    "suspension_and_isolation": {
+      "ordinary_or_exclusive_cross_suspension": "REJECT",
+      "process_static_immutable_shared_exception": "ONLY_WITH_THE_EXACT_EXISTING_ADMITTED_PROOF",
+      "unproved_cross_isolation": "REJECT",
+      "runtime_or_backend_relookup_count": 0
+    },
+    "diagnostic_order": [
+      "SOURCE_BORROW_ESCAPE_OR_SUSPENSION_DIAGNOSTIC",
+      "EXCLUSIVE_ALIAS_DIAGNOSTIC",
+      "MIR_LOAN_UNBALANCED_RELEASE_VERIFIER"
+    ],
+    "diagnostic_bindings": {
+      "escape_or_unresolved_region_relation": "BORROW_ESCAPE_OWNER_REGION",
+      "exclusive_overlap_or_domain_mismatch": "INOUT_ALIAS_CONFLICT",
+      "ordinary_live_loan_at_suspension": "BORROW_CROSSES_SUSPENSION",
+      "facet_live_loan_at_suspension": "FACET_BORROW_CROSSES_SUSPENSION",
+      "malformed_emitted_mir": "MIR_LOAN_UNBALANCED"
+    },
+    "erasure_fence": {
+      "region_and_loan_identity_class": "COMPILER_LOCAL_VALUE_LEVEL_VERIFIER_IDENTITY",
+      "erase_after_verified_projection_and_balance": true,
+      "runtime_region_object_count": 0,
+      "new_hir_identity_count": 0,
+      "new_mir_operation_kind_count": 0,
+      "new_linear_token_kind_count": 0,
+      "backend_inference_count": 0
+    }
+  },
+  "acceptance_matrix": [
+    {"case_id": "R68-RL-ACC-001", "role": "REGION_GRAPH_TO_MIR", "evidence_ids": ["OWN-PLACE-P-010"], "expected": "ACCEPT"},
+    {"case_id": "R68-RL-ACC-002", "role": "ROOT_SHARED", "evidence_ids": ["OWN-PLACE-P-010", "R34-LOAN-POS-001"], "expected": "ACCEPT"},
+    {"case_id": "R68-RL-ACC-003", "role": "ROOT_EXCLUSIVE", "evidence_ids": ["OWN-PLACE-P-011"], "expected": "ACCEPT"},
+    {"case_id": "R68-RL-ACC-004", "role": "REBORROW", "evidence_ids": ["OWN-PLACE-P-012", "R34-LOAN-BND-004"], "expected": "ACCEPT"},
+    {"case_id": "R68-RL-ACC-005", "role": "LAST_USE_REGION_EXIT", "evidence_ids": ["OWN-PLACE-B-013", "R34-LOAN-POS-001"], "expected": "ACCEPT"},
+    {"case_id": "R68-RL-ACC-006", "role": "PATH_SPLIT_JOIN", "evidence_ids": ["R34-LOAN-POS-002", "R34-LOAN-BND-005"], "expected": "ACCEPT"},
+    {"case_id": "R68-RL-ACC-007", "role": "FAILURE_ORDER", "evidence_ids": ["R34-LOAN-BND-006", "R34-LOAN-NEG-008"], "expected": "ACCEPT_OR_EXACT_REJECT"},
+    {"case_id": "R68-RL-ACC-008", "role": "OWNER_AND_SUSPEND_BARRIERS", "evidence_ids": ["R34-LOAN-NEG-011", "R20-SUS-N-001", "R20-SUS-N-002"], "expected": "REJECT"},
+    {"case_id": "R68-RL-ACC-009", "role": "ESCAPE_DIAGNOSTIC", "evidence_ids": ["BORROW_ESCAPE_REASON_1", "BORROW_ESCAPE_REASON_2", "BORROW_ESCAPE_REASON_3", "BORROW_ESCAPE_REASON_4"], "expected": "BORROW_ESCAPE_OWNER_REGION"},
+    {"case_id": "R68-RL-ACC-010", "role": "RELEASE_VERIFIER", "evidence_ids": ["R34-LOAN-NEG-007", "R34-LOAN-NEG-008", "R34-LOAN-NEG-009", "R34-LOAN-NEG-010", "R34-LOAN-NEG-011", "R34-LOAN-NEG-012"], "expected": "MIR_LOAN_UNBALANCED"},
+    {"case_id": "R68-RL-ACC-011", "role": "IDENTITY_PAYLOAD", "evidence_ids": ["OWN-PLACE-P-012", "R34-LOAN-BND-004"], "expected": "EXACT_IDENTITY_PROJECTION"},
+    {"case_id": "R68-RL-ACC-012", "role": "CONTEXT_AMPERSAND_ZERO", "evidence_ids": ["borrow-context-anchor-disambiguation"], "expected": "ZERO_REGION_LOAN_OR_RUNTIME_RESIDUE"}
+  ],
+  "counts": {
+    "acceptance_case_count": 12,
+    "positive_or_boundary_reference_count": 7,
+    "rejection_oracle_group_count": 4,
+    "context_anchor_zero_case_count": 1,
+    "new_public_diagnostic_count": 0,
+    "new_source_surface_count": 0,
+    "new_runtime_service_count": 0
+  },
+  "guards": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}

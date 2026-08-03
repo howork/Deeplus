@@ -1658,7 +1658,8 @@
     "depends_on": [
       "labeled_aggregate_layout_separator",
       "lexical_policy_artifact",
-      "trailing_closure_argument_msp"
+      "trailing_closure_argument_msp",
+      "hir_h1_current_mir_bridge_design"
     ],
     "display_name": "Formatter/LSP responsibility card",
     "feature_id": "formatter_lsp_responsibility_card",
@@ -1666,7 +1667,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Official tooling",
-    "notes": "Promoted tooling obligation for hover/fix-it/canonicalization around layout, gate diagnostics, trailing closures, and call-domain punctuation. Formatter/LSP product support remains NOT_RUN.",
+    "notes": "Promoted tooling obligation for hover/fix-it/canonicalization around layout, gate diagnostics, trailing closures, call-domain punctuation, total grammar formatting disposition, revision-bound LSP requests, and deterministic incremental reparse. Ownership-aware hover, diagnostics, formatter, rename, code-action and debugger surfaces are read-only projections of the exact ParseSnapshotId plus checker and ownership evidence; they cannot manufacture owner, loan, cleanup, witness, root or continuation authority. Unknown or ambiguous style preserves exact source bytes. Formatter/LSP, incremental-parser and debugger product support remain NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1678,13 +1679,24 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "tooling",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "OWNERSHIP_TOOLING_PROJECTION_DRIFT"
+      ],
       "predicates": [],
       "examples": [],
       "productions": [],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/formatter-lsp-incremental-parsing-contract-r1.json",
+      "schemas/language/formatter-lsp-incremental-parsing.schema.json",
+      "tests/fixtures/current/formatter-lsp-incremental-parsing-r1.json",
+      "spec/contracts/ownership-tooling-obligations-r1.json",
+      "schemas/language/ownership-tooling-obligations-r1.schema.json",
+      "schemas/language/ownership-tooling-obligations-fixtures-r1.schema.json",
+      "tests/fixtures/current/ownership-tooling-obligations-r1.json",
+      "decisions/language/Design_Deeplus_Ownership_Tooling_Projection_R1.md"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

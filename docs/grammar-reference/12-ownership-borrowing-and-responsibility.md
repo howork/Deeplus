@@ -412,6 +412,32 @@ identity는 별도 activation authority 전까지 `PREVIEW_NONACTIVATABLE`이다
 - type equality는 ownership, effect, error, cancellation, suspension,
   isolation, cleanup residue를 지우지 않는다.
 
+## 소유권 정보를 도구에 표시하는 규칙
+
+포매터, LSP, 디버거는 소유권을 새로 판단하는 주체가 아니다. 이들은 한
+소스 revision과 checker snapshot에 결속된 `PlaceId`, `OwnerId`, `LoanId`,
+`RegionId`, `CleanupTokenId` 증거를 읽기 전용으로 표시한다. 증거가 없거나
+recovery 상태이면 임의로 추론하지 않고 `사용할 수 없음`으로 표시한다.
+
+- hover는 정규화된 타입, 매개변수/소유권 mode, place 상태, 활성 loan,
+  cleanup 책임과 escape/suspension 의무를 함께 보여 준다.
+- 각 진단의 규칙이 primary 역할과 필요한 관련 위치 수를 결정한다. 같은
+  역할의 후보가 여럿이면 안정적인 `SourceOriginId`와 typed identity로
+  정렬하며 소스·CFG 순회 순서로 승자를 고르지 않는다.
+- 포매터는 `move`, `borrow`, `inout`, `owned`, `borrowed`, `mut`, capture,
+  `defer`의 의미와 순서를 바꾸지 않는다. 두 번째 실행은 edit 0개여야 한다.
+- 자동 수정은 clone/share/transfer/move/capture/region/cleanup/Trait 증거를
+  만들어 내지 않는다. 이런 변경은 사용자가 의미를 검토해야 한다.
+- actor 전송은 `enqueue_committed`에서만 sender owner를 receiver owner 또는
+  shared evidence로 한 번 이전한다. 도구는 commit 전 owner나 channel 순서를
+  만들어 내지 않는다.
+- 디버거의 register, stack slot, machine address는 정확한 pause receipt가
+  있을 때만 보이는 일시적인 정보이며 owner, root, continuation identity가
+  아니다.
+
+현재 이 계약은 설계·정적 검증 계약이다. 실제 formatter, LSP, debugger와
+15개 product lane은 모두 `NOT_RUN`이다.
+
 ## 정본 근거
 
 - ownership 문법:
@@ -432,8 +458,6 @@ identity는 별도 activation authority 전까지 `PREVIEW_NONACTIVATABLE`이다
   [`spec/language.md`](../../spec/language.md)
 - 예제 원본:
   [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)
-
-
 <!-- IR-OWN-R8-REF-12 -->
 <!-- IR-OWN-R34-LOAN-CLOSE -->
 ### 경로별 loan 종료

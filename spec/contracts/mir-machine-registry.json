@@ -322,7 +322,7 @@
     "unknown_type_kind_rejected": true
   },
   "closed_static_identity_contract": {
-    "static_identity_domain_count": 33,
+    "static_identity_domain_count": 34,
     "static_identity_domains": [
       "DECLARATION",
       "TYPE",
@@ -356,14 +356,16 @@
       "ERROR_SET",
       "EFFECT_ROW",
       "RESULT_ACQUISITION_PLAN",
-      "CLEANUP_PLAN"
+      "CLEANUP_PLAN",
+      "TRAIT_ASSOCIATED_STATIC_SELECTION"
     ],
     "foreign_identity_rule": "LOGICAL_SOURCE_OR_MODULE_INTERFACE_IDENTITY_ONLY_NO_NATIVE_SYMBOL_ADDRESS_REGISTER_LAYOUT_OR_ABI",
     "module_interface_rule": "CANONICAL_MODULE_AND_EXPORTED_INTERFACE_IDENTITY_WITHOUT_OBJECT_FORMAT_IDENTITY",
     "provider_identity_rule": "PROVIDER_OPERATION_VERSION_AUTHORITY_AND_REPLAY_IDENTITIES_CANNOT_DEFAULT",
     "opaque_catch_all_static_domain_admitted": false,
     "unknown_static_identity_domain_rejected": true,
-    "responsibility_identity_rule": "RESPONSIBILITY_RULE stores canonical ResponsibilityRuleId; RESPONSIBILITY_EVIDENCE stores one exact typed-HIR-selected ResponsibilityEvidenceId; both are disjoint from callable ResponsibilityProfileId and runtime or backend relookup is forbidden"
+    "responsibility_identity_rule": "RESPONSIBILITY_RULE stores canonical ResponsibilityRuleId; RESPONSIBILITY_EVIDENCE stores one exact typed-HIR-selected ResponsibilityEvidenceId; both are disjoint from callable ResponsibilityProfileId and runtime or backend relookup is forbidden",
+    "trait_associated_static_selection_rule": "TRAIT_ASSOCIATED_STATIC_SELECTION stores identity_id=SelectionId plus exact TraitId, RequirementId, ConformanceId, TraitWitnessId, ImplementationId, SubstitutionId, ResponsibilityId, item kind, direct-static-symbol metadata, and CallableImplementationId mapping; associated types emit zero runtime operations and no runtime reconstruction, search, fallback, provider ordering, specialization, or child-local replacement is admitted"
   },
   "identity_reference_domain_rules": {
     "field_identity_id": "FIELD",
@@ -394,6 +396,7 @@
     "effect_row_id_or_null": "EFFECT_ROW_OR_NULL",
     "result_acquisition_plan_id_or_null": "RESULT_ACQUISITION_PLAN_OR_NULL",
     "cleanup_plan_id_or_null": "CLEANUP_PLAN_OR_NULL",
+    "trait_associated_static_selection_id": "TRAIT_ASSOCIATED_STATIC_SELECTION",
     "verifier_rule": "RESOLVE_EVERY_ID_TO_EXACT_STATIC_IDENTITY_TABLE_ENTRY_AND_REJECT_DOMAIN_MISMATCH_UNKNOWN_ID_OR_TARGET_BOUND_IDENTITY"
   },
   "target_identity_fence": {
@@ -1296,7 +1299,19 @@
       "common_fields": [
         "capture_field_id",
         "source_ordinal",
-        "normalized_type_id",
+        "normalized_type_id"
+      ],
+      "reference_fields": [
+        "source_place_id",
+        "capture_mode",
+        "responsibility_evidence_id_or_null",
+        "responsibility_profile_id"
+      ],
+      "reference_responsibility_evidence": "COPY_OR_CLONE_REQUIRE_EXACT_RESPONSIBILITY_EVIDENCE_ID_OTHER_ADMITTED_MODES_REQUIRE_NULL",
+      "callable_profile_separation": "responsibility_profile_id never substitutes for ResponsibilityEvidenceId",
+      "deep_typed_hir_or_mir_row_count": 0,
+      "initializer_fields": [
+        "initializer_value_id",
         "responsibility_id"
       ],
       "initializer_binding_kinds": [
@@ -1357,6 +1372,15 @@
         "CHECKED",
         "LEAVE"
       ],
+      "fallible_preparation": "MOVE_AND_ONCE_USE_MOVE_RESERVE_ONLY; PLACE_MOVE_AND_BUILDER_STAGE_FOR_THE_RESERVED_FIELD_ARE_FORBIDDEN_WHILE_ANY_FALLIBLE_WORK_REMAINS",
+      "precommit_failure": "REVERSE_ACQUISITION_ROLLBACK_CANCELS_ACTIVE_MOVE_RESERVATIONS_AND_PRESERVES_SOURCE_OWNERS",
+      "final_infallible_commit_interval": [
+        "SOURCE_ORDER_PLACE_MOVE_THEN_BUILDER_STAGE_FOR_EACH_MOVE_OR_ONCE_RESERVATION",
+        "BUILDER_COMMIT",
+        "CLOSURE_MAKE"
+      ],
+      "final_interval_failure_edge_count": 0,
+      "final_interval_suspend_or_branch_count": 0,
       "commit_before": "CLOSURE_MAKE",
       "closure_make_after_commit": "INFALLIBLE",
       "publication": "NO_PARTIAL_ENVIRONMENT_OR_CLOSURE_PUBLICATION"
@@ -2472,6 +2496,10 @@
         "AUTHORITY"
       ],
       "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
+      "managed_root_receipt_schema": "deeplus.managed-reference-runtime-root-receipt/r1",
+      "managed_dynamic_projection_contract": "spec/contracts/managed-reference-dynamic-projection-r1.json",
+      "static_plan_runtime_generation_field_count": 0,
+      "root_id_region_id_or_loan_id_alias_count": 0,
       "verification_result_contract": "RECOMPUTE_EXACT_LOGICAL_SAFEPOINT_ROOT_TRACE_ALLOCATION_INTERIOR_AND_SUSPENSION_TABLES_AND_BIND_PLAN_DIGEST"
     },
     {
@@ -2577,17 +2605,37 @@
     "runtime_observable_event_count": 0,
     "product_execution": "NOT_RUN"
   },
+  "region_lifetime_projection_contract": {
+    "contract": "spec/contracts/region-lifetime-mir-projection-r1.json",
+    "region_decl_fields": [
+      "region_id",
+      "kind",
+      "parent_region_id_or_null",
+      "isolation_domain_id",
+      "entry_point_id",
+      "end_point_ids"
+    ],
+    "place_storage_region_field": "storage_region_id",
+    "loan_id_origin": "CHECKER_SEALED_AND_EXACTLY_PRESERVED_HIR_TO_MIR",
+    "region_parent_graph": "FINITE_REFERENCE_CLOSED_ACYCLIC_FOREST",
+    "borrowed_or_inout_value_tuple": "EXACT_MATCH_WITH_LOAN_DECL_REGION_ID_AND_LOAN_ID",
+    "loan_balance_owner": "loan_close_projection_contract",
+    "runtime_region_object_count": 0,
+    "backend_region_or_loan_inference_count": 0,
+    "product_execution": "NOT_RUN"
+  },
   "verifier_contract": {
     "semantic_operation_kind_and_id_bijection": "RECOMPUTE",
     "operation_payload_exact_shape": "RECOMPUTE",
     "terminator_payload_and_successor_shape": "RECOMPUTE",
     "token_kind_and_binding_exact_shape": "RECOMPUTE",
     "type_and_static_identity_domains": "RECOMPUTE_CLOSED_SET",
+    "trait_associated_static_selection_projection": "REQUIRE_IDENTITY_ID_EQUALS_SELECTION_ID_AND_COMPARE_EXACT_SEVEN_IDENTITY_FIELDS_ITEM_KIND_REPRESENTATION_DIRECT_SYMBOL_CALLABLE_IMPLEMENTATION_AND_SEMANTIC_DIGEST_WITH_TYPED_HIR",
     "type_entry_payload_shape": "RECOMPUTE_EXACT_KIND_DISCRIMINATED_LOGICAL_TYPE_REPRESENTATION",
     "target_identity_fence": "RECOMPUTE_AND_REJECT",
     "constant_payload_canonicality": "RECOMPUTE",
-    "closure_environment_plan_table": "RECOMPUTE_UNIQUE_PLAN_AND_CAPTURE_FIELD_IDENTITIES_EXACT_TAGS_TYPES_SOURCE_ORDINALS_LIST_STATE_RESIDENCE_CLOSED_ASSERTION_AND_LEXICAL_DEPENDENCIES",
-    "closure_capture_transaction": "RECOMPUTE_LEFT_TO_RIGHT_ONCE_REVERSE_ROLLBACK_COMMIT_BEFORE_INFALLIBLE_CLOSURE_MAKE_NO_PARTIAL_PUBLICATION_AND_ZERO_NEW_OPERATION_KINDS",
+    "closure_environment_plan_table": "RECOMPUTE_UNIQUE_PLAN_AND_CAPTURE_FIELD_IDENTITIES_EXACT_TAGS_TYPES_SOURCE_ORDINALS_LIST_STATE_RESIDENCE_CLOSED_ASSERTION_LEXICAL_DEPENDENCIES_AND_COPY_OR_CLONE_RESPONSIBILITY_EVIDENCE_BINDINGS; REJECT_DEEP_TYPED_RESIDUE",
+    "closure_capture_transaction": "RECOMPUTE_LEFT_TO_RIGHT_ONCE_MOVE_OR_ONCE_RESERVE_ONLY_WHILE_FALLIBLE_WORK_REMAINS_REVERSE_ROLLBACK_WITH_SOURCE_OWNERS_UNCONSUMED_THEN_SOURCE_ORDER_PLACE_MOVE_AND_BUILDER_STAGE_IN_ONE_STRAIGHT_LINE_NONSUSPENDING_ZERO_FAILURE_EDGE_INTERVAL_BEFORE_BUILDER_COMMIT_AND_INFALLIBLE_CLOSURE_MAKE_NO_PARTIAL_PUBLICATION_AND_ZERO_NEW_OPERATION_KINDS",
     "closure_make_payload_binding": "RESOLVE_EXACT_ENVIRONMENT_PLAN_COMMITTED_CONSTRUCTION_ENVIRONMENT_VALUE_BODY_AND_CAPTURE_FIELD_SOURCE_ORDER",
     "module_api_value_identity_export": "REJECT_ALL_CAPTURE_PLAN_CAPTURE_FIELD_EVAL_VALUE_PLACE_REGION_LOAN_RESERVATION_CLEANUP_CONSTRUCTION_AND_CLOSURE_IDENTITIES",
     "unreachable_proof_validity": "RECOMPUTE",
@@ -2599,7 +2647,9 @@
     "responsibility_evidence_projection": "RESOLVE_EXACT_RULE_EVIDENCE_AND_HELPER_DOMAINS_AND_COMPARE_TYPED_HIR_DESCRIPTOR_WITH_ZERO_RUNTIME_OR_BACKEND_RELOOKUP",
     "deterministic_serialization": "RFC8949_DECODE_REENCODE_BYTE_EQUALITY",
     "cleanup_budget_envelope_projection": "RECOMPUTE_EXACT_HIR_TABLE_PROJECTION_CLOSED_CONTRIBUTION_KINDS_SORTED_UNIQUE_ENVELOPES_AND_SUBSET_PROOF",
-    "loan_close_path_balance": "RECOMPUTE_FROM_LOAN_CLOSE_OPERATION_R1"
+    "loan_close_path_balance": "RECOMPUTE_FROM_LOAN_CLOSE_OPERATION_R1",
+    "region_lifetime_graph": "RECOMPUTE_REFERENCE_CLOSED_ACYCLIC_REGION_FOREST_EXACT_EXTENTS_PLACE_STORAGE_BINDINGS_LOAN_CONTAINMENT_VALUE_TUPLES_OWNER_BARRIERS_AND_SUSPENSION_OR_ISOLATION_FENCES",
+    "managed_reference_dynamic_projection": "RECOMPUTE_EXACT_HIR_TO_MIR_TRACE_DESCRIPTOR_BINDING_CLOSED_SAFEPOINT_SET_LIVENESS_ROOT_ID_RECIPES_STATIC_PLAN_AND_RUNTIME_RECEIPT_SCHEMA_FENCE; REJECT_RUNTIME_GENERATION_IN_STATIC_PLAN"
   },
   "status_fence": {
     "schema_materialization": "R31_CLOSURE_CAPTURE_PLAN_DESIGN",
@@ -2610,6 +2660,7 @@
     "canonical_source_mutation": 0,
     "github_mutation": 0,
     "r32_deferred_call_plan_projection": "DESIGN_ONLY_NOT_RUN",
+    "closure_capture_deep_typed_hir_or_mir_row_count": 0,
     "new_mir_operation_kind_count": 0,
     "module_api_value_level_identity_export_count": 0
   },

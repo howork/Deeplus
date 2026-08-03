@@ -316,7 +316,107 @@
         "evaluation_count": {
           "const": 1
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "normalized_mode": {
+                "const": "COPY"
+              }
+            },
+            "required": [
+              "normalized_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "responsibility_rule_id_or_null": {
+                "const": "CopyValue"
+              },
+              "responsibility_evidence_id_or_null": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trait_witness_id_or_null": {
+                "type": "null"
+              },
+              "construction_error_set": {
+                "maxItems": 0
+              },
+              "construction_effect_row": {
+                "maxItems": 0
+              },
+              "cleanup_obligation_id_or_null": {
+                "type": "null"
+              },
+              "cleanup_disposition": {
+                "const": "NONE"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "normalized_mode": {
+                "const": "CLONE"
+              }
+            },
+            "required": [
+              "normalized_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "responsibility_rule_id_or_null": {
+                "const": "Clone"
+              },
+              "responsibility_evidence_id_or_null": {
+                "type": "string",
+                "minLength": 1
+              },
+              "trait_witness_id_or_null": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "normalized_mode": {
+                "enum": [
+                  "BORROW",
+                  "INOUT",
+                  "MOVE",
+                  "DEEP",
+                  "ONCE",
+                  "INIT_LET",
+                  "INIT_VAR"
+                ]
+              }
+            },
+            "required": [
+              "normalized_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "responsibility_rule_id_or_null": {
+                "type": "null"
+              },
+              "responsibility_evidence_id_or_null": {
+                "type": "null"
+              },
+              "trait_witness_id_or_null": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
     },
     "lexicalDependency": {
       "type": "object",
@@ -345,5 +445,7 @@
       }
     }
   },
+  "x-deeplus-deep-current-profile-disposition": "REJECT_BEFORE_TYPED_HIR_MIR_WITH_FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
+  "x-deeplus-deep-typed-hir-mir-residue-count": 0,
   "x-product-compiler": "NOT_RUN"
 }

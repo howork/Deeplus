@@ -184,7 +184,7 @@
 | `COLLECTION_OPERATOR_REQUIRES_NAMED_MESSAGE` | `checker` | `error` | `seed` | Collection operator requires named message |
 | `COLLECTION_SNAPSHOT_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | snapshot must produce an independent value with explicit copy or copy-on-write responsibility. |
 | `COLLECTION_TRAVERSAL_ROLE_MISMATCH` | `checker` | `error` | `active` | A collection value and a traversal handle are distinct responsibilities and are not automatically interchangeable. |
-| `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` | `checker` | `error` | `active` | Column-vector semicolon form must follow the current profile orientation law: \`#[a,b]\` is rank-1 \`#N[T]\`; \`#[a;b]\` is column \`#N,1[T]\`; explicit row matrix is \`#1,N[...]\`. |
+| `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` | `checker` | `error` | `active` | Shape-inferred vector orientation is exact: \`#[a,b]\` is rank-1 shape \`[N]\` with \`ROW\` orientation; \`#[a;b]\` is rank-1 shape \`[N]\` with \`COLUMN\` orientation; exact rank-2 matrices \`#1,N[...]\` and \`#N,1[...]\` remain distinct. |
 | `COMMA_BINDING_REQUIRES_FIXED_TUPLE` | `checker` | `error` | `active` | A bare comma binding requires one fixed Tuple product; use a bracket Pattern for an admitted List-shaped subject. |
 | `COMPANION_OBJECT_NOT_CURRENT` | `checker` | `error` | `active` | Deeplus has no implicit companion object or singleton; use the exact nominal, extension, Trait-associated, or runtime owner domain. |
 | `COMPARISON_CHAIN_MIXED_DIRECTION_REQUIRES_EXPLICIT_AND` | `checker` | `error` | `active` | Mixed-direction comparison chains require explicit \`and\`. |
@@ -290,7 +290,7 @@
 | `DIRECTED_COROUTINE_GROUP_REQUIRES_FEATURE_GATE` | `parser` | `error` | `active` | Feature \`directed_coroutine_group\` is PREVIEW_DESIGN/nonactivatable and has no current source gate. |
 | `DOCUMENTATION_ONLY_FEATURE_NOT_SOURCE` | `checker` | `error` | `seed` | documentation feature is not ordinary source syntax in R49. |
 | `DOC_BLOCK_COMMENT_UNTERMINATED` | `lexer` | `error` | `active` | Documentation block comment opened by \`//!!\` was not closed by \`!!//\`. |
-| `DOC_COMMENT_NOT_ATTACHED_TO_DECL` | `lexer` | `error` | `active` | Documentation comment is not attached to a documentable declaration. |
+| `DOC_COMMENT_NOT_ATTACHED_TO_DECL` | `parser` | `error` | `active` | Documentation comment must form a contiguous DocGroup attached to the next documentable declaration in the same container. |
 | `DOLLAR_CLASS_SIDE_SEPARATOR_REMOVED_USE_COLON_COLON` | `checker` | `error` | `active` | Type-side structured declaration uses Type::selector; Type$$selector is removed. |
 | `DOLLAR_CONSTRUCTION_LHS_MUST_BE_TYPE` | `checker` | `error` | `active` | A left-hand side before ${...} is valid only when it resolves as a TypeRef. |
 | `DOLLAR_DECLARATION_SIGIL_REMOVED_USE_LET_VAR` | `checker` | `error` | `active` | Dollar field/member promotion sigils are removed; use let or var. |
@@ -636,7 +636,7 @@
 | `MAP_UNFOLD_SPELLING_AMBIGUOUS` | `parser` | `error` | `active` | Map unfold spelling is \`**expr\` in admitted \`#map{...}\` unfold positions; \`...expr\` map unfold is not current source in the current profile. |
 | `MAP_WILDCARD_KEY_REQUIRES_STRING_LITERAL` | `checker` | `error` | `seed` | Map wildcard key requires string literal |
 | `MATCH_ARM_SINGLE_GUARD_ONLY` | `parser` | `error` | `active` | A match arm admits at most one \`if\` or attached \`!if\` guard. |
-| `MATCH_ARM_UNREACHABLE` | `checker` | `error` | `active` | This match arm is unreachable because an earlier arm already covers it. |
+| `MATCH_ARM_UNREACHABLE` | `checker` | `error` | `active` | This match arm is unreachable because its structural coverage is empty after restriction to the subject domain and earlier unguarded coverage. |
 | `MATCH_CHAIN_BINDER_DIRECTION_MIXED` | `checker` | `error` | `active` | A chained binder Pattern must use one monotone comparison direction. |
 | `MATCH_EXPR_REQUIRES_AT_PREFIX` | `parser` | `error` | `active` | A value-producing match expression must use \`@match\`; bare \`match\` is statement-only. |
 | `MATCH_GUARD_CONSUME_NOT_ALLOWED` | `checker` | `error` | `active` | match/@match guard may not consume or move tentative pattern bindings. |
@@ -717,6 +717,7 @@
 | `NUMARR_ELEMENT_COUNT_MISMATCH` | `checker` | `error` | `active` | NumericArray literal element count does not match shape. |
 | `NUMARR_ELEMENT_NOT_NUMERIC` | `checker` | `error` | `active` | NumericArray element must be an admitted numeric type. |
 | `NUMARR_ELEMENT_NOT_PLAIN_NUMERIC` | `checker` | `error` | `active` | NumericArray element must satisfy numeric/plain/no-drop law. |
+| `NUMARR_ELEMENT_TYPE_MISMATCH` | `checker` | `error` | `active` | Shape-inferred NumericArray elements must have one exact normalized admitted numeric type. |
 | `NUMARR_ELEMENT_TYPE_REQUIRED` | `checker` | `error` | `active` | NumericArray type façade requires an element type. |
 | `NUMARR_EXPECTED_SHAPE_MISMATCH` | `checker` | `error` | `active` | NumericArray literal shape mismatches expected type. |
 | `NUMARR_INFIX_POWER_NOT_ADMITTED` | `checker` | `error` | `active` | NumericArray \`A ^ B\` infix power is not admitted; use \`**\`, \`*+\`, elementwise \`^\` where specified, or a named API. |
@@ -788,6 +789,7 @@
 | `OVERRIDE_VISIBILITY_CANNOT_NARROW` | `checker` | `error` | `active` | Overriding/fulfilling member cannot reduce base slot visibility. |
 | `OWNED_DOWNCAST_OWNER_NOT_PRESERVED` | `checker` | `error` | `active` | An owned downcast must return either the matched target owner or the original unmatched source owner. |
 | `OWNERSHIP_MODE_ADMISSION_FAILED` | `checker` | `error` | `active` | The ownership qualifier or borrow/inout/move mode violates composition, context, exclusivity, lifetime, escape, suspension, or transfer responsibility. |
+| `OWNERSHIP_TOOLING_PROJECTION_DRIFT` | `design_static` | `error` | `active` | An ownership tooling projection changed semantic identity, responsibility, causal spans, or evidence status. |
 | `OWN_CAST_REQUIRES_REUSABLE_SOURCE` | `checker` | `error` | `active` | Owning downcast via as? cannot duplicate affine ownership. Use owner-preserving consuming downcast. |
 | `PACKAGE_ARCHIVE_SHA_MISMATCH` | `design_static` | `error` | `active` | PACKAGE_ARCHIVE_SHA_MISMATCH: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `PACKAGE_DECLARATION_RENAMED_TO_MODULE` | `checker` | `error` | `active` | \`package\` is not a Deeplus source namespace declaration; use \`module\`. |
@@ -799,7 +801,7 @@
 | `PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR` | `checker` | `error` | `active` | Every Stable group-assignment target must resolve to an existing direct mutable local. |
 | `PATTERN_ASSIGNMENT_SHARED_TARGET` | `checker` | `error` | `active` | Shared, actor, FFI, property, member, and index targets are outside Stable local group assignment. |
 | `PATTERN_ASSIGNMENT_TARGET_OVERLAP` | `checker` | `error` | `active` | Group-assignment targets must have pairwise distinct direct LocalPlaceIds. |
-| `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` | `checker` | `error` | `seed` | Borrowed match arm cannot move a payload out of the borrowed subject. |
+| `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` | `checker` | `error` | `active` | Borrowed match arm cannot move a payload out of the borrowed subject. |
 | `PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL` | `checker` | `error` | `active` | Every nonbinding term in a Pattern condition chain must have exact type Bool. |
 | `PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN` | `checker` | `error` | `active` | Pattern-control failure must commit no partial binding or move. |
 | `PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN` | `checker` | `error` | `active` | A pattern-binding control requires a refutable pattern. |
@@ -1289,7 +1291,7 @@
 | `WITNESS_ORPHAN_RULE_VIOLATION` | `checker` | `error` | `active` | Witness declaration violates the trait/type ownership rule. |
 | `WITNESS_REQUIREMENT_MISSING` | `checker` | `error` | `seed` | Witness does not satisfy a required trait member. |
 | `WITNESS_REQUIREMENT_SIGNATURE_MISMATCH` | `checker` | `error` | `seed` | Witness requirement signature does not exactly match required throws/effects/receiver contract. |
-| `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` | `lexer` | `error` | `active` | A Word Comment attachment is ambiguous; use line structure or explicit placement so lossless CST attachment is deterministic. |
+| `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` | `parser` | `error` | `active` | A Word Comment requires exactly one eligible byte-adjacent left anchor. |
 | `WORD_COMMENT_EXPECTED_TEXT` | `lexer` | `error` | `active` | Backtick word comment requires a non-empty word comment body. |
 | `WORD_COMMENT_LOSSLESS_TRIVIA_REQUIRED` | `lexer` | `error` | `active` | Word Comment trivia must be preserved by parser, formatter, and LSP projections. |
 | `WORD_COMMENT_NOT_CALL_LABEL` | `lexer` | `error` | `active` | A word comment is lossless trivia, not a named argument label or overload selector. |
@@ -1350,8 +1352,8 @@
 | `CollectionFreezeAdmitted` | CollectionFreezeAdmitted | require exclusive mutable ownership; transition to a declared immutable/shareable representation; expose copy/allocation/effect residue and do not call this snapshot | `DESIGN_STATIC_NOT_RUN` |
 | `CollectionSnapshotAdmitted` | CollectionSnapshotAdmitted | produce an independent point-in-time value; declare copy or copy-on-write cost; do not freeze or invalidate the source | `DESIGN_STATIC_NOT_RUN` |
 | `CollectionTraversalRoleAdmitted` | CollectionTraversalRoleAdmitted | classify storage/shape/index ownership separately from traversal; retain single-pass/multipass and borrow/consume residue; reject automatic Collection-to-Iterator equivalence | `DESIGN_STATIC_NOT_RUN` |
-| `ColumnVectorSemicolonGateAdmitted` | ColumnVectorSemicolonGateAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `ColumnVectorSemicolonOrientationAdmitted` | Column-vector semicolon orientation | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ColumnVectorSemicolonGateAdmitted` | ColumnVectorSemicolonGateAdmitted | Deterministic shape-inferred NumericArray row/column gate: the first attached top-level separator fixes orientation, mixed separators reject, and element/shape admission completes before lowering; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ColumnVectorSemicolonOrientationAdmitted` | Column-vector semicolon orientation | Deterministic attached-separator orientation algorithm for shape-inferred NumericArray literals; both row and column forms remain rank 1 and exact rank-2 syntax remains distinct; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ComplexLiteralAndOperatorAdmitted` | Complex literal and closed numeric operation | Admit attached floating i literals and the closed Float32/Float64 Complex numeric profile without implicit Rep conversion. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ComputeResidualUnion` | ComputeResidualUnion | Compute exact remaining alternatives after ordered pattern coverage. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ConciseCallableResponsibilityPreviewAdmitted` | Concise callable responsibility Preview admission | Specify closed omission normalization and body-row subset checking without changing current private inference. | `DESIGN_STATIC_NOT_RUN` |
@@ -1444,21 +1446,22 @@
 | `LoopOutcomeExhaustive` | LoopOutcomeExhaustive | ordered branch 1: a value-carrying break without an immediately following outcome match emits BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH; ordered branch 2: a present outcome match using a pattern other than the admitted outcome cases emits LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE; ordered branch 3: a present correctly spelled match that omits any reachable outcome emits LOOP_OUTCOME_MATCH_NON_EXHAUSTIVE; only a present, correctly spelled, exhaustive outcome match admits the value-carrying loop result | `DESIGN_STATIC_NOT_RUN` |
 | `LoopOutcomeHandlerAdmitted` | LoopOutcomeHandlerAdmitted | normalize loop and optional handler to one node; run intermediate cleanup/finally while skipping intermediate handlers; only the final break target handler observes ::break and a terminal continue observes none | `DESIGN_STATIC_NOT_RUN` |
 | `MapUnfoldEntryAdmitted` | MapUnfoldEntryAdmitted | Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and Map unfolds. | `DESIGN_STATIC_NOT_RUN` |
-| `MatchExhaustive` | match exhaustiveness and usefulness | Compute match-arm usefulness and final exhaustiveness over one finite structural partition. | `DESIGN_STATIC_NOT_RUN` |
+| `MatchExhaustive` | match exhaustiveness and usefulness | Compute match-arm usefulness and final exhaustiveness over one normalized structural partition, including symbolic complement cells for admitted open scalar domains. | `DESIGN_STATIC_NOT_RUN` |
 | `MatchGuardPurityAdmitted` | match arm guard purity | Apply the ordinary guard profile, then forbid consuming or escaping probe bindings before atomic commit. | `DESIGN_STATIC_NOT_RUN` |
 | `MaterializationFieldPunAdmitted` | MaterializationFieldPunAdmitted | R51f3 owner-specific static design seed for materialization_derivation_field_punning; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MatrixProductAdmitted` | Matrix product | both operands are rank-2; the left inner dimension equals the right inner dimension; \`**\` participates in the left-to-right LinearProductExpr fold and this predicate is applied independently at the current fold step | `DESIGN_STATIC_NOT_RUN` |
 | `MeasureUnitWitnessAdmitted` | MeasureUnitWitnessAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MemberExtensionCollisionPolicyAdmitted` | MemberExtensionCollisionPolicyAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MemberExtensionCollisionRejected` | MemberExtensionCollisionRejected | Reject ordinary member/extension collisions before within-domain ranking. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `MemberVisibilityAdmitted` | MemberVisibilityAdmitted | R58 exact member-visibility surface, omission, lattice, and original-slot override admission; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `MethodExtensionResolutionAdmitted` | method/extension message resolution | Preserve method/extension domains and defer selection. | `DESIGN_STATIC_NOT_RUN` |
 | `ModuleInterfaceDigestVerified` | module interface and dependency-receipt digest verification | Verify that each dependency receipt binds the exact normalized provider module interface without treating private implementation bytes as interface identity. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ModuleItemSkeletonSetAdmitted` | module item-skeleton merge | Merge all source contributions of one ModuleId into one conflict-free declaration skeleton set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `MutableCallableEnvironmentAdmitted` | MutableCallableEnvironmentAdmitted | require environment_receiver=mutable; acquire exactly one exclusive mutable environment place for the invocation; reject overlapping mutable access and reentrant invocation without a separately admitted proof | `DESIGN_STATIC_NOT_RUN` |
 | `NamedConformanceAdmitted` | NamedConformanceAdmitted | Admit one static named conformance identity without adding it to automatic witness search. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NamedEvidenceExcludedFromAutomaticResolution` | NamedEvidenceExcludedFromAutomaticResolution | Keep named evidence out of the automatic WitnessResolution candidate set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `NamedExtensionSetAdmitted` | named extension set identity | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `NamedExtensionSetAdmitted_R48_48` | NamedExtensionSetCurrentAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NamedExtensionSetAdmitted` | named extension set identity | Deterministic NumericArray literal element admission: nonempty numeric PlainValue elements use one exact normalized type unless an exact expected type admits only contextual numeric-literal representability; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NamedExtensionSetAdmitted_R48_48` | NamedExtensionSetCurrentAdmitted | Deterministic shape-inferred NumericArray element admission algorithm: require a nonempty homogeneous normalized numeric PlainValue sequence, permit only existing contextual literal adaptation, and forbid widening or aggregate rewrites; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NamedRestCollectorAdmitted` | NamedRestCollectorAdmitted | Named-rest parameter and function-type residue use \`***\`; call/materialization named unfold uses \`**\`. Product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NamedRestParameterRecordAndLastPosition` | NamedRestParameterRecordAndLastPosition | named_rest_parameter_count is exactly one; named_rest_parameter_type is exactly Record; named_rest_parameter_index equals parameter_count - 1; dispatch multiple-count before non-Record type before nonfinal position | `DESIGN_STATIC_NOT_RUN` |
 | `NarrowUnionByPattern` | NarrowUnionByPattern | Refine Phi by the alternatives selected by a pattern without changing the declared semantic type. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1469,7 +1472,7 @@
 | `NormalizeUnion` | NormalizeUnion | Admit a closed Union only when every finite R0 alternative pair is proven disjoint. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NullaryLambdaExpectedContextAdmitted` | NullaryLambdaExpectedContextAdmitted | an arrow-elided contextual brace lambda requires an independently fixed zero-parameter callable type; empty body is admitted only when the expected result is Unit; a multiline non-Unit body ends in exactly one FinalRetStmt while a Unit body may fall through; without expected callable context the surface is rejected or uses the separately gated nullary inference route | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayContextAnchorAdmitted` | NumericArray context anchor | Closed NumericArray context-provider polarity and nearest-owner algorithm; product checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `NumericArrayElementAdmitted` | NumericArrayElement | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NumericArrayElementAdmitted` | NumericArrayElement | Deterministic shape-inferred NumericArray element admission algorithm: require a nonempty homogeneous normalized numeric PlainValue sequence, permit only existing contextual literal adaptation, and forbid widening or aggregate rewrites; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NumericArrayElementwiseSameShapeAdmitted` | NumericArrayElementwiseSameShapeAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayInfixPowerRequiresPreview` | NumericArrayInfixPowerRequiresPreview | NumericArray infix \`^\` requires Preview gate. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayPostfixTransposeAdmitted` | NumericArray postfix transpose | Admit owner-bounded readonly NumericArray view. | `DESIGN_STATIC_NOT_RUN` |
@@ -1507,7 +1510,7 @@
 | `ReceiverOwnerResultAdmitted` | ReceiverOwnerResultAdmitted | Admit exactly one explicit Self-compatible owner result from a consuming receiver. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RecordNamedArgumentSpreadAdmitted` | Record named argument spread | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ReferenceCandidateSetResolved` | reference candidate collection | Collect the exact candidate set for one source reference in one namespace before visibility filtering or winner selection. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `ReferenceVisibilityActivationAdmitted` | reference visibility, activation and evidence-origin filter | Filter a collected candidate set by lexical visibility, extension activation, member visibility and witness evidence origin. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ReferenceVisibilityActivationAdmitted` | reference visibility, activation and evidence-origin filter | Filter a collected candidate set by lexical visibility, extension activation, exact member visibility access proof, and witness evidence origin. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RefinementCheckBoundaryAdmitted` | RefinementCheckBoundaryAdmitted | Apply three-valued proof at explicit refinement boundaries. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RefinementR0PredicateAdmitted` | RefinementR0PredicateAdmitted | the predicate syntax belongs to the finite R0 operator/name whitelist; effect_row and authority are empty and suspension is none; the predicate is total for every value in the normalized input domain and cannot throw, allocate observable identity, mutate, perform I/O, query a provider, reflect, or search with a solver; evaluation occurs only at the declared construction, cast, argument, return, or pattern boundary | `DESIGN_STATIC_NOT_RUN` |
 | `RefutableCatchPatternAdmitted` | Refutable catch Pattern admission | Admit source-ordered refutable catch Patterns with pure guards and propagation of unmatched recoverable errors. | `` |
@@ -1572,6 +1575,7 @@
 | `TypeTokenAuthorityAdmitted` | TypeTokenAuthorityAdmitted | source_kind is Type and normalized_type identifies a compile-time type identity; runtime_value_use, storage_use, static_sample_evaluation, and reflection_request are all false; authority is empty; a type token grants no constructor, provider, FFI, filesystem, network, or reflection authority; only type position, static selector, and descriptor projection contexts are admitted | `DESIGN_STATIC_NOT_RUN` |
 | `TypedMaterializationTargetAdmitted` | TypedMaterializationTargetAdmitted | source_kind is Type; normalized_type is resolved; construction_domain is typed_materialization | `DESIGN_STATIC_NOT_RUN` |
 | `TypeofStaticSampleAdmitted` | TypeofStaticSampleAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `UnifiedCallModeAdmitted` | UnifiedCallModeAdmitted | R57 deterministic CallExpr mode, call-shape, candidate-domain and responsibility admission; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `UnitCanonicalizationAdmitted` | UnitCanonicalizationAdmitted | every base unit resolves to a declared dimension vector and exact rational scale; multiplication adds vectors and multiplies scales; division subtracts vectors and divides scales; only StaticInt powers are admitted and multiply dimension exponents while raising the exact scale; zero exponents are removed and dimension entries are sorted by canonical dimension identity; type equality compares the normalized vector and exact scale only; display aliases are excluded | `DESIGN_STATIC_NOT_RUN` |
 | `UnitCatalogExactRatioAdmitted` | UnitCatalogExactRatioAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `UnitOperationPolicyCoreAdmitted` | UnitOperationPolicyCoreAdmitted | R51a1 closed design algorithm for UnitOperationPolicyCoreAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |

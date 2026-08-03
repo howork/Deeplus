@@ -1674,12 +1674,13 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "numeric_array_shape_inferred_column_vector_semicolon_msp"
+      "numeric_array_shape_inferred_column_vector_semicolon_msp",
+      "numeric_array_vector_orientation_witness_msp"
     ],
     "fixit_hint": "none",
     "fixit_kind": "none",
     "fixit_policy": "manual",
-    "message": "Column-vector semicolon form must follow the current profile orientation law: `#[a,b]` is rank-1 `#N[T]`; `#[a;b]` is column `#N,1[T]`; explicit row matrix is `#1,N[...]`.",
+    "message": "Shape-inferred vector orientation is exact: `#[a,b]` is rank-1 shape `[N]` with `ROW` orientation; `#[a;b]` is rank-1 shape `[N]` with `COLUMN` orientation; exact rank-2 matrices `#1,N[...]` and `#N,1[...]` remain distinct.",
     "notes": "Current source diagnostic contract; product lexer/parser/checker emission receipt remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

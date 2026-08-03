@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/static-runtime-member-boundary-trace-closure-fixtures-r1.schema.json",
+  "title": "Deeplus R70 static/runtime member boundary fixture oracles",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "contract", "execution_state", "acceptance_oracles", "mutation_oracles"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/static-runtime-member-boundary-trace-closure-fixtures-r1.schema.json"},
+    "schema": {"const": "deeplus.static-runtime-member-boundary-trace-closure-fixtures/r1"},
+    "revision": {"const": "r70-local-static-runtime-member-boundary-trace-closure-r1"},
+    "contract": {"const": "spec/contracts/static-runtime-member-boundary-trace-closure-r1.json"},
+    "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"},
+    "acceptance_oracles": {
+      "type": "array", "minItems": 9, "maxItems": 9,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["case_id", "class", "expected"],
+        "properties": {
+          "case_id": {"pattern": "^R70-SRMB-ACC-00[1-9]$"},
+          "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+          "expected": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "mutation_oracles": {
+      "type": "array", "minItems": 14, "maxItems": 14,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["mutation_id", "expected_gate", "expected"],
+        "properties": {
+          "mutation_id": {"pattern": "^M(0[1-9]|1[0-4])$"},
+          "expected_gate": {"const": "G06"},
+          "expected": {"const": "MUTANT_KILLED"}
+        }
+      }
+    }
+  }
+}

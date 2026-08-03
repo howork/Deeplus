@@ -779,7 +779,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Or alias pattern. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R59 binds only this feature's DYNAMIC_LOWERING cell to the single-PatternAttempt contract: first source-ordered Or success with an exact equal binder interface and no retry/backtracking; Alias preserves subject identity, clones nothing, stages a borrow, and acquires the loan only at final commit. OR_PATTERN_BINDINGS_INCONSISTENT and ownership conflict remain delegated to pattern_match_ownership_split, whose trace row is unchanged. No source activation or product support is implied.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -802,6 +802,7 @@
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [
+      "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
       "spec/patterns/diagnostic-precedence.json",
       "spec/patterns/pattern-context-policies.json",
       "spec/patterns/pattern-kinds.json",
@@ -938,7 +939,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "downcastOwned returns OwnedDowncast<Target, Source> with matched(Target) or unmatched(Source); failure never destroys or hides the original owner and does not misuse ErrorSet as an owner channel.",
+    "notes": "downcastOwned returns OwnedDowncast<Target, Source> with matched(Target) or unmatched(Source); failure never destroys or hides the original owner and does not misuse ErrorSet as an owner channel. OWN_CAST_REQUIRES_REUSABLE_SOURCE belongs to this owner-preserving downcast contract, not Pattern matching.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -951,7 +952,8 @@
     "trace_class": "library",
     "normative_trace_refs": {
       "diagnostics": [
-        "OWNED_DOWNCAST_OWNER_NOT_PRESERVED"
+        "OWNED_DOWNCAST_OWNER_NOT_PRESERVED",
+        "OWN_CAST_REQUIRES_REUSABLE_SOURCE"
       ],
       "predicates": [
         "OwnedDowncastAdmitted"
@@ -1140,7 +1142,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Bindings are immutable and transactional; failure commits no partial binding. A `for let` pattern first creates noncommitted probe binders, its single GuardClause may read those binders without moving, escaping, suspending, mutating through, or acquiring authority from them, and mismatch or false skips the candidate. Product execution remains NOT_RUN.",
+    "notes": "R59 binds only this feature's DYNAMIC_LOWERING cell to one PatternAttempt: one subject evaluation, a pure nonconsuming structural probe with read-only nonescaping probe binders, zero or one pure Bool guard once after structural success, and one final logical commit after final guarded success. Failure or false guard publishes no binding, move, loan, view, or authority; if/while/for dispositions are false branch/loop exit/candidate skip. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1170,6 +1172,7 @@
     },
     "trace_class": "syntax",
     "artifact_trace_refs": [
+      "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
       "spec/language.md",
       "spec/grammar/deeplus.ebnf",
       "spec/frontend/frontend-model.json",
@@ -1198,7 +1201,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded Pattern decomposition responsibility; product implementation remains NOT_RUN.",
+    "notes": "R59 binds only this feature's DYNAMIC_LOWERING cell to one PatternAttempt. Child pattern-row BINDING_COMMIT entries are compositional commit requirements and collapse into the single top-level commit, never multiple executable commits; structural failure or a false guard publishes no binding, move, loan, view, or authority. Product implementation remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1242,6 +1245,7 @@
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [
+      "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
       "spec/patterns/diagnostic-precedence.json",
       "spec/patterns/pattern-context-policies.json",
       "spec/patterns/pattern-kinds.json",
@@ -1308,7 +1312,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Borrowed/consuming match ownership split. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R60 closes the current checker and lowering contract for Pattern ownership without changing grammar or AST/HIR/MIR identities: normalized binder-interface equality, source-first Or selection without retry, same-subject shared Alias borrowing, borrowed-subject affine-move rejection, failure-atomic reservation cancellation, one final group publication barrier, earliest valid loan close, and compatibility-before-capability-intersection at returning-arm joins. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1321,7 +1325,7 @@
     "normative_trace_refs": {
       "diagnostics": [
         "OR_PATTERN_BINDINGS_INCONSISTENT",
-        "OWN_CAST_REQUIRES_REUSABLE_SOURCE",
+        "ALIAS_PATTERN_OWNERSHIP_CONFLICT",
         "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
         "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"
       ],
@@ -1698,45 +1702,6 @@
       "predicates": [],
       "examples": []
     },
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
-    "authority_set": [
-      "LANGUAGE"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
-    "display_name": "Prefix literal authority law",
-    "feature_id": "prefix_literal_authority_law",
-    "feature_kind": "semantic_law",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Prefix literal authority law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
-      "examples": [],
-      "productions": [
-        "PrimaryExpr"
-      ],
-      "semantic_reference_productions": []
-    },
-    "trace_class": "syntax",
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

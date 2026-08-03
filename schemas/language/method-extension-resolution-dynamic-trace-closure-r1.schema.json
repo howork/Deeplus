@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/method-extension-resolution-dynamic-trace-closure-r1.schema.json",
+  "title": "Deeplus R71 method/extension resolution dynamic trace closure",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "feature_id", "target_cell", "authority_fence", "static_resolution_owner", "selected_identity_seal", "dynamic_delegate", "runtime_backend_residue_fence", "preserved_adjacent_ownership", "diagnostic_fence", "rules", "acceptance_cases", "acceptance_bindings", "mutation_obligations", "machine_acceptance"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/method-extension-resolution-dynamic-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.method-extension-resolution-dynamic-trace-closure/r1"},
+    "revision": {"const": "r71-local-method-extension-resolution-dynamic-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "7babf6b0d6a3c806784ef052308cf7026f3fecb2"},
+    "feature_id": {"const": "method_extension_resolution_policy"},
+    "target_cell": {
+      "type": "object",
+      "required": ["stage", "predecessor_disposition", "predecessor_gap_id", "disposition", "delegate_feature_id", "authority_boundary"],
+      "properties": {
+        "stage": {"const": "DYNAMIC_LOWERING"},
+        "predecessor_disposition": {"const": "APPLICABLE_BLOCKED_BY_GAP"},
+        "predecessor_gap_id": {"const": "IR-XCUT-P1-054"},
+        "disposition": {"const": "BOUND_DELEGATED"},
+        "delegate_feature_id": {"const": "unified_call_expression_and_tilde_modes"},
+        "authority_boundary": {"const": "MIR_RUNTIME_AUTHORITY"}
+      }
+    },
+    "selected_identity_seal": {
+      "type": "object",
+      "required": ["required_identity_domains", "identity_closed_before_mir", "unresolved_identity_count", "candidate_set_residue_count"],
+      "properties": {
+        "required_identity_domains": {"const": ["ExtensionSetId", "ExtensionMemberId", "CallableImplementationId"]},
+        "identity_closed_before_mir": {"const": true},
+        "unresolved_identity_count": {"const": 0},
+        "candidate_set_residue_count": {"const": 0}
+      }
+    },
+    "dynamic_delegate": {
+      "type": "object",
+      "required": ["delegate_feature_id", "ordinary", "message", "context_adapt_precedes_invoke", "dynamic_owner_reselection_count"],
+      "properties": {
+        "delegate_feature_id": {"const": "unified_call_expression_and_tilde_modes"},
+        "ordinary": {"type": "object", "required": ["mode_target_pair", "lowering_row", "operation_sequence", "receiver_evaluation_count"], "properties": {"mode_target_pair": {"const": "ORDINARY::EXTENSION_STATIC"}, "lowering_row": {"const": "HM-LR-CALL-004"}, "operation_sequence": {"const": ["CONTEXT_ADAPT", "INVOKE"]}, "receiver_evaluation_count": {"const": 1}}},
+        "message": {"type": "object", "required": ["mode_target_pair", "lowering_row", "operation_sequence", "receiver_evaluation_count", "reply_correlation_token_count"], "properties": {"mode_target_pair": {"const": "MESSAGE::EXTENSION_STATIC"}, "lowering_row": {"const": "HM-LR-CALL-008"}, "operation_sequence": {"const": ["CONTEXT_ADAPT", "INVOKE"]}, "receiver_evaluation_count": {"const": 1}, "reply_correlation_token_count": {"const": 1}}},
+        "context_adapt_precedes_invoke": {"const": true},
+        "dynamic_owner_reselection_count": {"const": 0}
+      }
+    },
+    "rules": {"type": "array", "minItems": 15, "maxItems": 15, "items": {"type": "object", "required": ["rule_id", "text"], "properties": {"rule_id": {"pattern": "^MERTC-R0(0[1-9]|1[0-5])$"}}}},
+    "acceptance_cases": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"type": "object", "required": ["case_id", "class", "expected", "assertion_ids", "execution_state"], "properties": {"case_id": {"pattern": "^R71-MER-ACC-0(0[1-9]|10)$"}, "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]}, "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}}}},
+    "mutation_obligations": {"type": "array", "minItems": 14, "maxItems": 14, "items": {"type": "object", "required": ["mutation_id", "mutation", "killed_by", "expected"], "properties": {"mutation_id": {"pattern": "^M(0[1-9]|1[0-4])$"}, "expected": {"const": "MUTANT_KILLED"}}}}
+  }
+}

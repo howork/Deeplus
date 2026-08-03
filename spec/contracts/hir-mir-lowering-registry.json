@@ -13,27 +13,27 @@
     "hir_schema": {
       "schema_id": "deeplus.canonical-hir-h1/r1",
       "relative_path": "../../schemas/language/canonical-hir-h1.schema.json",
-      "sha256": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796"
+      "sha256": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080"
     },
     "hir_identity_catalog": {
       "schema_id": "deeplus.hir-h1-identity-catalog/r1",
       "relative_path": "hir-h1-identity-catalog.json",
-      "sha256": "29125ca37c032d8e339d68b3ab42912b4b6388c14906b41e652956fd603e4af6"
+      "sha256": "01e2d8ab4292c9a3d1db6fa1ca26dbd5f1083b4f2b56cd90420c8f9b942f3359"
     },
     "mir_schema": {
       "schema_id": "deeplus.mir/r1",
       "relative_path": "../../schemas/language/deeplus-mir.schema.json",
-      "sha256": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899"
+      "sha256": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d"
     },
     "mir_machine_registry": {
       "schema_id": "deeplus.mir-machine-registry/r1",
       "relative_path": "mir-machine-registry.json",
-      "sha256": "876caf32e4e90fd6043c6cc5741f0f6ade9211b78ffab6949f2c2f8fab71713d"
+      "sha256": "a08e7b4834394611e03542977460236f69915dc2b3153d73b44547ba9673801e"
     },
     "lowering_row_schema": {
       "schema_id": "deeplus.hir-mir-lowering-row/r1",
       "relative_path": "../../schemas/language/hir-mir-lowering-row.schema.json",
-      "sha256": "f064567cb7323e4525a296d0d60ac636512cdbacbd210c51dd9ccf43646bb1ae"
+      "sha256": "9b50cb650e2cc1caf27a30e96b923e4b5da6042290c64081d00d7ddd9484aa3e"
     },
     "fixture_binding_table": {
       "schema_id": "deeplus.hir-mir-machine-contract-fixtures/r1",
@@ -70,6 +70,28 @@
       "runtime_relookup_count": 0,
       "backend_relookup_count": 0,
       "r31_capture_plan_change_count": 0,
+      "product_support": "NOT_RUN"
+    },
+    "trait_associated_static_selection_projection_contract": {
+      "descriptor": "TraitAssociatedStaticSelection",
+      "descriptor_is_non_structural": true,
+      "new_hir_identity_count": 0,
+      "new_mir_operation_kind_count": 0,
+      "mir_static_identity_domain": "TRAIT_ASSOCIATED_STATIC_SELECTION",
+      "exact_identity_residue": [
+        "TraitId",
+        "RequirementId",
+        "ConformanceId",
+        "TraitWitnessId",
+        "ImplementationId",
+        "SubstitutionId",
+        "ResponsibilityId"
+      ],
+      "associated_type": "NO_RUNTIME_EMISSION",
+      "associated_value_or_bare_function": "HM-LR-REF-002_THEN_HM-LR-TOP-002_STATIC_REF_PLUS_TOTAL_PROJECTION",
+      "invoked_associated_function": "HM-LR-CALL-003_STATIC_REF_PLUS_INVOKE",
+      "runtime_reconstruction_or_search_count": 0,
+      "fallback_provider_order_specialization_or_child_replacement_count": 0,
       "product_support": "NOT_RUN"
     }
   },
@@ -110,13 +132,33 @@
   "loan_close_projection_contract": {
     "contract": "spec/contracts/loan-close-operation-r1.json",
     "source_owner": "HirExprKind::PlaceAccess plus verified region constraints",
-    "loan_id_creation_stage": "MIR_LOWERING",
+    "loan_id_creation_stage": "CHECKER_BEFORE_TYPED_HIR_SEALING",
+    "loan_id_projection": "EXACT_PRESERVATION_FROM_PLACE_PLAN_TO_MIR_LOAN_DECL_AND_BORROWED_OR_INOUT_VALUE",
     "close_frontier": "EARLIEST_POST_USE_PATH_FRONTIER_BEFORE_OWNER_BARRIER_REGION_EXIT_OR_UNADMITTED_SUSPEND",
     "static_end_site_cardinality": "ONE_OR_MORE_PATH_EXCLUSIVE",
     "dynamic_end_cardinality": "EXACTLY_ONE_PER_BEGIN_PER_REACHABLE_PATH",
     "new_lowering_row_count": 0,
     "new_hir_identity_count": 0,
     "new_mir_operation_kind_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "region_lifetime_projection_contract": {
+    "contract": "spec/contracts/region-lifetime-mir-projection-r1.json",
+    "composition_layer": "BODY_WIDE_REGION_LOAN_PROJECTION_AFTER_NODE_ROW_LOWERING_BEFORE_RELEASE_VERIFICATION",
+    "node_row_fence": "HM-LR-TOP-006_REMAINS_PLACE_VALUE_OBSERVATION_ONLY",
+    "hir_inputs": [
+      "HirBodyBase.region_table",
+      "HirBodyBase.place_region_bindings",
+      "PlacePlan.region_constraints",
+      "PlacePlan.result_region_id_or_null",
+      "PlacePlan.loan_id_or_null"
+    ],
+    "region_projection": "EXACT_REGION_ID_KIND_PARENT_ISOLATION_ENTRY_AND_END_FRONTIER_PRESERVATION",
+    "loan_projection": "CHECKER_SEALED_LOAN_ID_EXACT_PRESERVATION_WITH_ACCESS_DISPATCH_AND_CANONICAL_PROJECTION_IDENTITY",
+    "close_frontier_owner": "loan_close_projection_contract",
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "runtime_or_backend_relookup_count": 0,
     "product_execution": "NOT_RUN"
   },
   "semantic_operation_mapping": [
@@ -348,7 +390,7 @@
     "contract": "suspension-frame-responsibility-r1.json",
     "continuation_interface_contract": "continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
+    "continuation_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
     "continuation_receipt_schema": "../../schemas/language/continuation-receipt-r1.schema.json",
     "backend_neutral": true,
     "body_entry_operation": "FRAME_CREATE",
@@ -369,6 +411,28 @@
       "InMemoryJit"
     ],
     "arbitrary_runtime_to_generated_callback_authority": false,
+    "product_support": "NOT_RUN"
+  },
+  "managed_reference_dynamic_projection": {
+    "contract": "spec/contracts/managed-reference-dynamic-projection-r1.json",
+    "hir_type_binding": "CanonicalModuleBase.managed_trace_descriptors is keyed exactly by existing NormalizedTypeId",
+    "mir_type_binding": "managed_trace_descriptor_table is keyed exactly by existing TypeId",
+    "identity_preservation": "EXACT_HIR_TO_MIR",
+    "static_plan_schema": "deeplus.managed-memory-plan/r1",
+    "runtime_root_receipt_schema": "deeplus.managed-reference-runtime-root-receipt/r1",
+    "static_root_recipe": "RootId = canonical(BodyId, SafepointId, partition, owner_kind, owner_id, storage_kind, storage_id, TraceDescriptorId)",
+    "lowering_order": [
+      "VERIFY_MIR_AND_REGION_LOAN_BALANCE",
+      "RECOMPUTE_AND_VERIFY_STATIC_MANAGED_MEMORY_PLAN",
+      "PROJECT_LOGICAL_ROOTS_TO_XVM_OR_TARGET_STORAGE",
+      "VERIFY_AND_PUBLISH_RUNTIME_ROOT_RECEIPT",
+      "ENTER_EXACT_MAY_COLLECT_OPERATION",
+      "COMMIT_THE_SELECTED_MIR_OUTCOME",
+      "RELEASE_RUNTIME_ROOT_RECEIPT"
+    ],
+    "runtime_generation_in_static_plan_count": 0,
+    "root_id_equals_region_id_or_loan_id_count": 0,
+    "borrowed_or_inout_view_creates_root_count": 0,
     "product_support": "NOT_RUN"
   },
   "capability_gate_contract": {
@@ -436,8 +500,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -650,8 +714,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -794,8 +858,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -939,8 +1003,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -1087,8 +1151,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -1244,8 +1308,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -1411,8 +1475,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -1648,8 +1712,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -1830,8 +1894,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -2047,8 +2111,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -2191,8 +2255,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -2335,8 +2399,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -2538,8 +2602,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -2682,8 +2746,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -2826,8 +2890,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -2980,8 +3044,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -3183,8 +3247,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -3341,8 +3405,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -3499,8 +3563,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -3670,8 +3734,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -3827,8 +3891,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -4004,8 +4068,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -4206,8 +4270,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -4350,8 +4414,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -4495,8 +4559,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -4640,8 +4704,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -4784,8 +4848,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -4929,8 +4993,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -5073,8 +5137,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -5218,8 +5282,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -5387,8 +5451,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -5601,8 +5665,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -5728,8 +5792,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -5885,8 +5949,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -6012,8 +6076,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "TOP_LEVEL",
@@ -6226,8 +6290,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "RESOLVED_REF",
@@ -6249,7 +6313,7 @@
           "operation_kind": "STATIC_REF",
           "semantic_operation_id": "DM-SEMOP-STATIC-REF-R1",
           "input_roles": [
-            "direct_declaration_identity"
+            "direct_declaration_or_trait_associated_static_selection_identity"
           ],
           "output_roles": [
             "static_declaration_value"
@@ -6370,8 +6434,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "RESOLVED_REF",
@@ -6526,8 +6590,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -6573,19 +6637,15 @@
           ],
           "successor_roles": [
             "NORMAL",
-            "ERROR",
             "DEFECT",
-            "CANCELLATION",
-            "SUSPEND"
+            "CANCELLATION"
           ]
         }
       ],
       "successor_roles": [
         "NORMAL",
-        "ERROR",
         "DEFECT",
-        "CANCELLATION",
-        "SUSPEND"
+        "CANCELLATION"
       ],
       "token_inputs": [
         {
@@ -6599,28 +6659,16 @@
           "token_kind": "AUTHORITY",
           "token_role": "actor_transport_authority",
           "cardinality": 1
-        },
-        {
-          "token_kind": "REPLY",
-          "token_role": "actor_reply_correlation",
-          "cardinality": 1
         }
       ],
-      "token_discharges": [
-        {
-          "token_kind": "REPLY",
-          "token_role": "actor_reply_correlation",
-          "cardinality": 1
-        }
-      ],
+      "token_discharges": [],
       "outcome_families": [
         "NORMAL",
-        "ERROR",
         "DEFECT",
         "CANCELLATION"
       ],
       "cleanup_effect": "NONE",
-      "suspension_effect": "MAY_SUSPEND",
+      "suspension_effect": "NONE",
       "ownership_effect": "FORWARD",
       "responsibility_projection": {
         "axis_order": [
@@ -6730,8 +6778,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -6922,8 +6970,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -7115,8 +7163,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -7307,8 +7355,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -7499,8 +7547,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -7692,8 +7740,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -7872,8 +7920,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -8053,8 +8101,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -8077,7 +8125,7 @@
           "operation_kind": "STATIC_REF",
           "semantic_operation_id": "DM-SEMOP-STATIC-REF-R1",
           "input_roles": [
-            "trait_witness_identity"
+            "trait_witness_or_trait_associated_static_selection_identity"
           ],
           "output_roles": [
             "callable_value"
@@ -8233,8 +8281,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_MODE_TARGET_PAIR",
@@ -8414,8 +8462,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
@@ -8559,8 +8607,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
@@ -8704,8 +8752,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
@@ -8848,8 +8896,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
@@ -8993,8 +9041,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
@@ -9137,8 +9185,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
@@ -9362,8 +9410,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "CALL_ARGUMENT",
@@ -9506,8 +9554,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -9673,8 +9721,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -9840,8 +9888,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -9988,8 +10036,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -10136,8 +10184,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -10284,8 +10332,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -10432,8 +10480,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -10580,8 +10628,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -10747,8 +10795,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -10895,8 +10943,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -11062,8 +11110,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -11229,8 +11277,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -11395,8 +11443,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -11542,8 +11590,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -11709,8 +11757,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -11857,8 +11905,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -12005,8 +12053,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -12153,8 +12201,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -12301,8 +12349,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "INTRINSIC_OPERATION",
@@ -12449,8 +12497,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -12483,11 +12531,25 @@
         },
         {
           "ordinal": 2,
+          "operation_kind": "LOAN_BEGIN_SHARED",
+          "semantic_operation_id": "DM-SEMOP-LOAN-BEGIN-SHARED-R1",
+          "input_roles": [
+            "matched_subject_place",
+            "staged_alias_borrow_requirement"
+          ],
+          "output_roles": [
+            "alias_shared_loan"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 3,
           "operation_kind": "BINDING_COMMIT",
           "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
           "input_roles": [
             "pattern_probe_result",
-            "pending_pattern_bindings"
+            "pending_pattern_bindings",
+            "alias_shared_loan"
           ],
           "output_roles": [
             "committed_pattern_bindings"
@@ -12505,7 +12567,7 @@
       ],
       "cleanup_effect": "NONE",
       "suspension_effect": "NONE",
-      "ownership_effect": "PURE_VALUE",
+      "ownership_effect": "LOAN",
       "responsibility_projection": {
         "axis_order": [
           "value_mode",
@@ -12608,8 +12670,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -12754,8 +12816,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -12913,8 +12975,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -13072,8 +13134,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -13218,8 +13280,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -13391,8 +13453,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -13551,8 +13613,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -13711,8 +13773,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -13884,8 +13946,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -14057,8 +14119,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -14230,8 +14292,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -14376,8 +14438,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -14536,8 +14598,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -14709,8 +14771,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -14869,8 +14931,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -14890,18 +14952,6 @@
       "operation_plan": [
         {
           "ordinal": 1,
-          "operation_kind": "MOVE_RESERVE",
-          "semantic_operation_id": "DM-SEMOP-MOVE-RESERVE-R1",
-          "input_roles": [
-            "matched_place"
-          ],
-          "output_roles": [
-            "pattern_move_reservation"
-          ],
-          "condition": "ALWAYS"
-        },
-        {
-          "ordinal": 2,
           "operation_kind": "PATTERN_PROBE",
           "semantic_operation_id": "DM-SEMOP-PATTERN-PROBE-R1",
           "input_roles": [
@@ -14914,20 +14964,20 @@
           "condition": "ALWAYS"
         },
         {
-          "ordinal": 3,
-          "operation_kind": "BINDING_COMMIT",
-          "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
+          "ordinal": 2,
+          "operation_kind": "MOVE_RESERVE",
+          "semantic_operation_id": "DM-SEMOP-MOVE-RESERVE-R1",
           "input_roles": [
-            "pattern_probe_result",
-            "pending_pattern_bindings"
+            "matched_place",
+            "pattern_probe_result"
           ],
           "output_roles": [
-            "committed_pattern_bindings"
+            "pattern_move_reservation"
           ],
           "condition": "ON_SUCCESS"
         },
         {
-          "ordinal": 4,
+          "ordinal": 3,
           "operation_kind": "PLACE_MOVE",
           "semantic_operation_id": "DM-SEMOP-PLACE-MOVE-R1",
           "input_roles": [
@@ -14938,6 +14988,32 @@
             "moved_binding_value"
           ],
           "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 4,
+          "operation_kind": "BINDING_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
+          "input_roles": [
+            "pattern_probe_result",
+            "pending_pattern_bindings",
+            "moved_binding_value"
+          ],
+          "output_roles": [
+            "committed_pattern_bindings"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 5,
+          "operation_kind": "MOVE_CANCEL",
+          "semantic_operation_id": "DM-SEMOP-MOVE-CANCEL-R1",
+          "input_roles": [
+            "pattern_move_reservation"
+          ],
+          "output_roles": [
+            "cancelled_pattern_move_reservation"
+          ],
+          "condition": "ON_ERROR"
         }
       ],
       "terminator_plan": [],
@@ -15065,8 +15141,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -15225,8 +15301,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -15371,8 +15447,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -15531,8 +15607,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -15562,6 +15638,19 @@
             "pattern_probe_result"
           ],
           "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 2,
+          "operation_kind": "BINDING_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
+          "input_roles": [
+            "pattern_probe_result",
+            "pending_normalized_or_bindings"
+          ],
+          "output_roles": [
+            "committed_pattern_bindings"
+          ],
+          "condition": "ON_SUCCESS"
         }
       ],
       "terminator_plan": [],
@@ -15677,8 +15766,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -15837,8 +15926,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -15983,8 +16072,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -16129,8 +16218,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -16287,8 +16376,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -16433,8 +16522,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -16593,8 +16682,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -16766,8 +16855,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -16926,8 +17015,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -17072,8 +17161,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -17232,8 +17321,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -17392,8 +17481,8 @@
       "profile_gate": "EXPLICIT_PREVIEW",
       "counts_toward_current_102": false,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -17565,8 +17654,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -17724,8 +17813,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -17883,8 +17972,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -18029,8 +18118,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -18189,8 +18278,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -18349,8 +18438,8 @@
       "profile_gate": "CURRENT",
       "counts_toward_current_102": true,
       "counts_toward_preview_111": true,
-      "hir_schema_digest": "b68b6d8c8319961c5954cd6dd0fd68b6814df204581195453081ae3e3b521796",
-      "mir_schema_digest": "056c9b024c1b45d65af12268ee4afb3cbfbe6587b4b403776d7dec2f3e3de899",
+      "hir_schema_digest": "d1f10b36dfca63f35123d1690f80680e83c01c1f28988c9bebc477b7bfb6e080",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
       "lowering_rules_revision": "R31-CLOSURE-CAPTURE-PLAN-R1",
       "lowering_dispatch_key": {
         "kind": "PATTERN",
@@ -18538,7 +18627,10 @@
         "LET",
         "VAR"
       ],
-      "capture_list_state": "EXACTLY_PRESERVE_ABSENT_PRESENT_EMPTY_PRESENT_NONEMPTY"
+      "capture_list_state": "EXACTLY_PRESERVE_ABSENT_PRESENT_EMPTY_PRESENT_NONEMPTY",
+      "responsibility_evidence_id_or_null": "COPY_OR_CLONE_EXACT_RESPONSIBILITY_EVIDENCE_ID_PRESERVED; OTHER_ADMITTED_REFERENCE_MODES_NULL",
+      "callable_profile_separation": "responsibility_profile_id never substitutes for ResponsibilityEvidenceId",
+      "deep_typed_hir_or_mir_row_count": 0
     },
     "residence_projection": {
       "residence": "EXACT_FrameIndependent_OR_RegionBound_RegionId",
@@ -18551,21 +18643,21 @@
         "LOAN_BEGIN_SHARED_OR_EXCLUSIVE",
         "BUILDER_STAGE"
       ],
-      "reference_move": [
+      "reference_move_or_once_preparation": [
         "MOVE_RESERVE",
-        "PLACE_MOVE",
-        "BUILDER_STAGE"
+        "NO_PLACE_MOVE_OR_BUILDER_STAGE_BEFORE_FINAL_INTERVAL"
       ],
-      "reference_copy_clone_deep_once": [
+      "reference_copy_or_clone": [
         "RECURSIVELY_LOWER_PREPARATIONS",
         "BUILDER_STAGE"
       ],
+      "deep": "REJECTED_BEFORE_TYPED_HIR_AND_MIR",
       "initializer_let_or_var": [
         "RECURSIVELY_LOWER_INITIALIZER_ONCE",
         "BUILDER_STAGE"
       ],
-      "fallible_step": "CHECKED_TO_NEXT_SOURCE_ORDINAL_OR_FAILURE",
-      "failure": "LEAVE_THROUGH_REVERSE_ACQUISITION_CLEANUP",
+      "fallible_step": "CHECKED_TO_NEXT_SOURCE_ORDINAL_OR_FAILURE_BEFORE_FINAL_INTERVAL",
+      "failure": "LEAVE_THROUGH_REVERSE_ACQUISITION_CLEANUP_WITH_SOURCE_OWNERS_UNCONSUMED",
       "rollback": [
         "MOVE_CANCEL_IF_RESERVED",
         "LOAN_END_IF_LIVE",
@@ -18575,7 +18667,15 @@
       "rollback_order": "REVERSE_ACQUISITION_ORDER"
     },
     "commit_and_publish": {
-      "environment_commit": "BUILDER_COMMIT_AFTER_ALL_CAPTURE_FIELDS",
+      "fallible_preparation_boundary": "ALL_FALLIBLE_PREPARATION_SUCCEEDS_BEFORE_FIRST_PLACE_MOVE",
+      "final_infallible_commit_interval": [
+        "SOURCE_ORDER_PLACE_MOVE_THEN_BUILDER_STAGE_FOR_EACH_MOVE_OR_ONCE_RESERVATION",
+        "BUILDER_COMMIT_AFTER_ALL_CAPTURE_FIELDS",
+        "INFALLIBLE_CLOSURE_MAKE"
+      ],
+      "final_interval_failure_edge_count": 0,
+      "final_interval_suspend_or_branch_count": 0,
+      "environment_commit": "BUILDER_COMMIT_AFTER_ALL_CAPTURE_FIELDS_AND_ALL_RESERVED_SOURCE_MOVES",
       "closure_make": "INFALLIBLE_CLOSURE_MAKE_AFTER_BUILDER_COMMIT",
       "closure_make_payload_fields": [
         "closure_id",

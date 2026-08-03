@@ -1,0 +1,333 @@
+{
+  "schema": "deeplus.managed-reference-dynamic-projection-fixtures/r1",
+  "fixture_schema": "schemas/language/managed-reference-dynamic-projection-fixtures-r1.schema.json",
+  "revision": "r69-managed-reference-dynamic-projection-r1",
+  "baseline_commit": "a84fd17137b8e2f8f620be8c7f0f96afd627a9e1",
+  "plan_schema": "schemas/language/managed-reference-memory-profile-r1.schema.json",
+  "runtime_root_receipt_schema": "schemas/language/managed-reference-runtime-root-receipt-r1.schema.json",
+  "native_projection_receipt_schema": "schemas/language/managed-reference-native-projection-receipt-r1.schema.json",
+  "evidence_state": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN",
+    "evidence_level": "E2_DESIGN_STATIC"
+  },
+  "static_plan": {
+    "schema": "deeplus.managed-memory-plan/r1",
+    "plan_id": "ManagedMemoryPlanId:r69-compact-suspend",
+    "mir_schema_id": "deeplus.mir/r1",
+    "mir_semantic_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+    "memory_profile_id": "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1",
+    "memory_profile_digest": "3fed473841661ef3d25e01cddd313611b0853b49826a0051b7bde2c4442a381a",
+    "continuation_root_interface_id": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+    "continuation_root_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
+    "trace_descriptor_table": [
+      {
+        "trace_descriptor_id": "ManagedTraceDescriptorId:r69-handle",
+        "type_id": "TypeId:r69-managed-value",
+        "trace_kind": "HANDLE",
+        "ordered_managed_projection_ids": []
+      }
+    ],
+    "bodies": [
+      {
+        "body_id": "BodyId:r69-suspend-body",
+        "safepoint_table": [
+          {
+            "safepoint_id": "SafepointId:r69-after-transfer",
+            "node_id": "MirNodeId:r69-suspend",
+            "site_kind": "SUSPENSION_AFTER_ROOT_TRANSFER",
+            "terminator_kind": "SUSPEND",
+            "root_map_id": "RootMapId:r69-destination",
+            "cancellation_point_id_or_null": null,
+            "collection_permitted": true
+          }
+        ],
+        "root_map_table": [
+          {
+            "root_map_id": "RootMapId:r69-destination",
+            "safepoint_id": "SafepointId:r69-after-transfer",
+            "running_root_ids": [],
+            "frame_root_ids": [
+              "RootId:r69-frame-value0"
+            ],
+            "runtime_root_ids": [],
+            "declared_root_ids": [
+              "RootId:r69-frame-value0"
+            ],
+            "entries": [
+              {
+                "root_id": "RootId:r69-frame-value0",
+                "partition": "FRAME",
+                "owner_kind": "SUSPENDED_FRAME",
+                "owner_id": "ContinuationFrameId:r69-frame0",
+                "storage_kind": "FRAME_SLOT",
+                "storage_id": "FrameSlotId:r69-value0",
+                "trace_descriptor_id": "ManagedTraceDescriptorId:r69-handle"
+              }
+            ],
+            "canonical_root_set_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+          },
+          {
+            "root_map_id": "RootMapId:r69-source",
+            "safepoint_id": "SafepointId:r69-after-transfer",
+            "running_root_ids": [
+              "RootId:r69-running-value0"
+            ],
+            "frame_root_ids": [],
+            "runtime_root_ids": [],
+            "declared_root_ids": [
+              "RootId:r69-running-value0"
+            ],
+            "entries": [
+              {
+                "root_id": "RootId:r69-running-value0",
+                "partition": "RUNNING",
+                "owner_kind": "ACTIVE_FRAME",
+                "owner_id": "ActiveFrameId:r69-active0",
+                "storage_kind": "VALUE",
+                "storage_id": "ValueId:r69-value0",
+                "trace_descriptor_id": "ManagedTraceDescriptorId:r69-handle"
+              }
+            ],
+            "canonical_root_set_digest": "3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        ],
+        "allocation_plan_table": [],
+        "interior_projection_table": [],
+        "suspension_transfer_table": [
+          {
+            "suspend_site_id": "SuspensionPointId:r69-suspend0",
+            "source_root_map_id": "RootMapId:r69-source",
+            "destination_root_map_id": "RootMapId:r69-destination",
+            "transferred_root_ids": [
+              "RootId:r69-running-value0"
+            ],
+            "root_rebind_pairs": [
+              {
+                "source_root_id": "RootId:r69-running-value0",
+                "destination_root_id": "RootId:r69-frame-value0"
+              }
+            ],
+            "transfer_count": 1,
+            "source_residual_count": 0,
+            "continuation_root_interface_id": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+            "continuation_root_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb"
+          }
+        ]
+      }
+    ],
+    "canonicalization": {
+      "encoding": "RFC8949_DETERMINISTIC_CBOR",
+      "sorted_unique_set_fields": true,
+      "digest_rule": "SHA256_OF_DETERMINISTIC_CBOR_WITH_PLAN_SEMANTIC_DIGEST_OMITTED",
+      "decode_reencode_byte_equality": true
+    },
+    "plan_semantic_digest": "4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "runtime_root_receipt": {
+    "schema": "deeplus.managed-reference-runtime-root-receipt/r1",
+    "receipt_id": "RuntimeRootReceiptId:r69-after-transfer",
+    "mir_semantic_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+    "managed_memory_profile_digest": "3fed473841661ef3d25e01cddd313611b0853b49826a0051b7bde2c4442a381a",
+    "continuation_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
+    "managed_memory_plan_id": "ManagedMemoryPlanId:r69-compact-suspend",
+    "managed_memory_plan_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+    "body_id": "BodyId:r69-suspend-body",
+    "safepoint_id": "SafepointId:r69-after-transfer",
+    "root_map_id": "RootMapId:r69-destination",
+    "execution_epoch_id": "ExecutionEpochId:r69-epoch-1",
+    "target_root_projection_digest": "9999999999999999999999999999999999999999999999999999999999999999",
+    "canonical_root_set_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+    "root_entry_order": "ROOT_ID_ASCENDING_UNIQUE",
+    "root_entries": [
+      {
+        "root_id": "RootId:r69-frame-value0",
+        "partition": "FRAME",
+        "owner_kind": "SUSPENDED_FRAME",
+        "owner_id": "ContinuationFrameId:r69-frame0",
+        "storage_kind": "FRAME_SLOT",
+        "storage_id": "FrameSlotId:r69-value0",
+        "trace_descriptor_id": "ManagedTraceDescriptorId:r69-handle",
+        "handle_generation": 7
+      }
+    ],
+    "lifecycle": {
+      "verified_before_publish": true,
+      "published_before_operation_entry": true,
+      "live_through_outcome_commit": true,
+      "released_after_outcome_commit": true
+    },
+    "suspension_rebind_receipts": [
+      {
+        "source_root_id": "RootId:r69-running-value0",
+        "destination_root_id": "RootId:r69-frame-value0",
+        "continuation_receipt_id": "ContinuationReceiptId:r69-suspend-1",
+        "source_runtime_root_receipt_id": "RuntimeRootReceiptId:r69-before-transfer",
+        "source_runtime_root_receipt_digest": "1515151515151515151515151515151515151515151515151515151515151515",
+        "destination_runtime_root_receipt_id": "RuntimeRootReceiptId:r69-after-transfer",
+        "destination_runtime_root_receipt_digest": "5555555555555555555555555555555555555555555555555555555555555555",
+        "source_root_map_id": "RootMapId:r69-source",
+        "source_root_map_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+        "destination_root_map_id": "RootMapId:r69-destination",
+        "destination_root_map_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+        "source_handle_generation": 7,
+        "destination_handle_generation": 7,
+        "distinct_root_ids": true,
+        "same_handle_generation": true
+      }
+    ],
+    "runtime_root_receipt_digest": "5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "native_projection_receipts": [
+    {
+      "schema": "deeplus.managed-reference-native-projection-receipt/r1",
+      "receipt_id": "NativeProjectionReceiptId:r69-object-aot",
+      "mir_semantic_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "managed_memory_profile_digest": "3fed473841661ef3d25e01cddd313611b0853b49826a0051b7bde2c4442a381a",
+      "managed_memory_plan_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+      "managed_root_receipt_schema_digest": "eec84b6eae2a6141c89582e8ad7d53217946220c18f48c0a79add88a99dbdee7",
+      "continuation_root_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
+      "module_kind": "ObjectAot",
+      "target_id": "TargetId:r69-x86_64-test",
+      "handle_abi_digest": "6666666666666666666666666666666666666666666666666666666666666666",
+      "shadow_root_frame_abi_digest": "7777777777777777777777777777777777777777777777777777777777777777",
+      "safepoint_projection_digest": "8888888888888888888888888888888888888888888888888888888888888888",
+      "target_root_projection_digest": "9999999999999999999999999999999999999999999999999999999999999999",
+      "runtime_root_registry_digest": "5555555555555555555555555555555555555555555555555555555555555555",
+      "runtime_abi_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_metadata_lifetime_receipt_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "semantic_parity_trace_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "finalized_image_identity_or_null": null,
+      "finalized_image_is_jit_generation_identity": false,
+      "generation_lease_lifecycle_digest_or_null": null,
+      "retirement_receipt_digest_or_null": null,
+      "target_location_is_semantic_identity": false,
+      "receipt_semantic_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    },
+    {
+      "schema": "deeplus.managed-reference-native-projection-receipt/r1",
+      "receipt_id": "NativeProjectionReceiptId:r69-in-memory-jit",
+      "mir_semantic_digest": "1111111111111111111111111111111111111111111111111111111111111111",
+      "managed_memory_profile_digest": "3fed473841661ef3d25e01cddd313611b0853b49826a0051b7bde2c4442a381a",
+      "managed_memory_plan_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+      "managed_root_receipt_schema_digest": "eec84b6eae2a6141c89582e8ad7d53217946220c18f48c0a79add88a99dbdee7",
+      "continuation_root_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
+      "module_kind": "InMemoryJit",
+      "target_id": "TargetId:r69-x86_64-test",
+      "handle_abi_digest": "6666666666666666666666666666666666666666666666666666666666666666",
+      "shadow_root_frame_abi_digest": "7777777777777777777777777777777777777777777777777777777777777777",
+      "safepoint_projection_digest": "8888888888888888888888888888888888888888888888888888888888888888",
+      "target_root_projection_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "runtime_root_registry_digest": "5555555555555555555555555555555555555555555555555555555555555555",
+      "runtime_abi_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "image_metadata_lifetime_receipt_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "semantic_parity_trace_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "finalized_image_identity_or_null": "JitImageGenerationId:r69-image-1",
+      "finalized_image_is_jit_generation_identity": true,
+      "generation_lease_lifecycle_digest_or_null": "1212121212121212121212121212121212121212121212121212121212121212",
+      "retirement_receipt_digest_or_null": "1313131313131313131313131313131313131313131313131313131313131313",
+      "target_location_is_semantic_identity": false,
+      "receipt_semantic_digest": "1414141414141414141414141414141414141414141414141414141414141414"
+    }
+  ],
+  "declared_mutations": [
+    {
+      "mutation_id": "R69-MRM-MUT-001_STALE_MANAGED_DEPENDENCY_CONTINUATION_DIGEST",
+      "target": "managed profile dependency continuation digest",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-002_STALE_SUSPENSION_CONTINUATION_DIGEST",
+      "target": "static suspension transfer continuation digest",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-003_RUNTIME_DISPATCH_CONTINUATION_DIGEST_DRIFT",
+      "target": "internal runtime bounded continuation dispatcher digest",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-004_ROOT_ID_DOMAIN_ALIAS",
+      "target": "RootId typed identity domain",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-005_DROP_LIVE_ROOT",
+      "target": "runtime root receipt exact static root set",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-006_STALE_HANDLE_GENERATION",
+      "target": "runtime root handle generation",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-007_SAFEPOINT_ROOT_MAP_BINDING_DRIFT",
+      "target": "plan body safepoint root-map binding",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-008_RECEIPT_PUBLISHED_AFTER_ENTRY",
+      "target": "runtime publication lifecycle",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-009_REUSE_SOURCE_ROOT_ID_AT_DESTINATION",
+      "target": "suspension root rebind receipt",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-010_FORBIDDEN_LOAN_CROSSES_SUSPENSION",
+      "target": "R68 RegionId LoanId suspension fence",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-011_POST_TRANSFER_SAFEPOINT_USES_SOURCE_MAP",
+      "target": "post-transfer destination root-map selection",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-012_MANAGED_HELPER_COLLECTION_BINDING_DRIFT",
+      "target": "runtime helper may-collect and registry binding",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-013_NATIVE_RAW_POINTER_OR_RECEIPT_DRIFT",
+      "target": "Cranelift raw-pointer fence and native projection receipt",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    },
+    {
+      "mutation_id": "R69-MRM-MUT-014_TARGET_PARITY_OR_PRODUCT_OVERCLAIM",
+      "target": "ObjectAot InMemoryJit semantic parity and product fence",
+      "expected": "REJECT_STATIC_EVIDENCE",
+      "execution_state": "DECLARED_NOT_RUN"
+    }
+  ],
+  "expected_counts": {
+    "static_plans": 1,
+    "runtime_root_receipts": 1,
+    "native_projection_receipts": 2,
+    "declared_mutations": 14,
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "open_m13_actions": 4,
+    "product_lanes": 15,
+    "product_executed": 0
+  }
+}

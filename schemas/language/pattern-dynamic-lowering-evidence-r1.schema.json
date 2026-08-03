@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/pattern-dynamic-lowering-evidence-r1.schema.json",
+  "title": "Deeplus R59 pattern dynamic-lowering trace evidence overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "candidate_status", "feature_ids", "evidence_entries", "bindings", "acceptance_cases", "counts", "guards"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/pattern-dynamic-lowering-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.pattern-dynamic-lowering-evidence/r1"},
+    "revision": {"const": "r59-local-pattern-dynamic-lowering-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "fb3e98888f947d0e7b45f713efe3b017a55c976a"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["or_alias_pattern", "pattern_binding_control_family", "pattern_decomposition"]},
+    "evidence_entries": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/evidenceEntry"}},
+    "bindings": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"$ref": "#/$defs/binding"}},
+    "acceptance_cases": {"type": "array", "minItems": 12, "maxItems": 12, "uniqueItems": true, "items": {"$ref": "#/$defs/traceCase"}},
+    "counts": {
+      "const": {
+        "feature_count": 3,
+        "evidence_entry_count": 3,
+        "binding_count": 3,
+        "acceptance_case_count": 12,
+        "acceptance_stage_transition_count": 0,
+        "predecessor_blocked_cell_count": 3,
+        "overlay_bound_direct_transition_count": 3,
+        "overlay_bound_delegated_transition_count": 0,
+        "overlay_not_applicable_transition_count": 0,
+        "predecessor_cumulative_overlay_binding_count": 110,
+        "post_overlay_cumulative_binding_count": 113,
+        "predecessor_total_bound_direct_cell_count": 2447,
+        "predecessor_total_bound_delegated_cell_count": 3,
+        "predecessor_total_not_applicable_cell_count": 502,
+        "predecessor_total_blocked_cell_count": 1269,
+        "post_overlay_total_bound_direct_cell_count": 2450,
+        "post_overlay_total_bound_delegated_cell_count": 3,
+        "post_overlay_total_not_applicable_cell_count": 502,
+        "post_overlay_total_blocked_cell_count": 1266,
+        "post_overlay_missing_cell_count": 0,
+        "post_overlay_conflict_cell_count": 0
+      }
+    },
+    "guards": {
+      "const": {
+        "target_feature_count": 469,
+        "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+        "excluded_feature_count": 254,
+        "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+        "transitioned_cell_count": 3,
+        "ownership_split_transition_count": 0,
+        "reverse_dependent_transition_count": 0,
+        "preview_transition_count": 0,
+        "other_cell_transition_count": 0,
+        "source_activation": "none",
+        "surface_change_count": 0,
+        "ast_identity_change_count": 0,
+        "hir_identity_change_count": 0,
+        "mir_operation_kind_change_count": 0,
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED",
+        "product_execution_receipt_count": 0,
+        "implementation_claim": "NONE"
+      }
+    }
+  },
+  "$defs": {
+    "evidenceEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_key", "class", "path", "locator_kind", "locator", "stage_role"],
+      "properties": {
+        "evidence_key": {"type": "string", "pattern": "^R59:(or_alias_pattern|pattern_binding_control_family|pattern_decomposition):DYNAMIC_LOWERING:STRUCTURAL$"},
+        "class": {"const": "CONTRACT_RULE_ID"},
+        "path": {"const": "spec/contracts/pattern-dynamic-lowering-trace-closure-r1.json"},
+        "locator_kind": {"const": "REGISTRY_ID"},
+        "locator": {"type": "string", "pattern": "^PDLTC-R0(0[1-9]|1[0-3])$"},
+        "stage_role": {"const": "DYNAMIC_LOWERING"}
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_id", "stage", "outcome", "predecessor_disposition", "disposition", "evidence_keys", "delegate_feature_id", "not_applicable"],
+      "properties": {
+        "feature_id": {"enum": ["or_alias_pattern", "pattern_binding_control_family", "pattern_decomposition"]},
+        "stage": {"const": "DYNAMIC_LOWERING"},
+        "outcome": {"const": null},
+        "predecessor_disposition": {"const": "APPLICABLE_BLOCKED_BY_GAP"},
+        "disposition": {"const": "BOUND_DIRECT"},
+        "evidence_keys": {"type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^R59:"}},
+        "delegate_feature_id": {"const": null},
+        "not_applicable": {"const": null}
+      }
+    },
+    "traceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "audit_case_id", "feature_id", "class", "contract_pointer", "trace_role", "execution_state"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^PDLTC-AC-0(0[1-9]|1[0-2])$"},
+        "audit_case_id": {"type": "string", "pattern": "^(OA[1-4]|PC[1-5]|PD[1-3])$"},
+        "feature_id": {"enum": ["or_alias_pattern", "pattern_binding_control_family", "pattern_decomposition"]},
+        "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "contract_pointer": {"type": "string", "pattern": "^/acceptance_cases/(0|[1-9]|1[01])$"},
+        "trace_role": {"const": "SUPPORTING_DESIGN_STATIC_NOT_STAGE_TRANSITION"},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

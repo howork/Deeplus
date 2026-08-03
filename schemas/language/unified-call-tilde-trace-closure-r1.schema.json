@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/unified-call-tilde-trace-closure-r1.schema.json",
+  "title": "Deeplus R57 unified call and tilde trace-closure contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "language_status",
+    "source_activation",
+    "current_binding",
+    "feature_ids",
+    "authority_fence",
+    "surface_and_ast",
+    "pratt_contract",
+    "static_semantics",
+    "evaluation_and_failure",
+    "hir_lowering",
+    "actor_transport",
+    "actor_protocol_and_declaration",
+    "diagnostic_priority",
+    "rules",
+    "acceptance_cases",
+    "acceptance_bindings",
+    "machine_acceptance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/unified-call-tilde-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.unified-call-tilde-trace-closure/r1"},
+    "revision": {"const": "r57-local-unified-call-tilde-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "808bf7cd1d28bba737e0744a6f120c71297d7ddd"},
+    "candidate_status": {"const": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE"},
+    "language_status": {"const": "STABLE_DESIGN"},
+    "source_activation": {"const": "none"},
+    "current_binding": {"const": false},
+    "feature_ids": {
+      "const": [
+        "actor_declaration_grammar_closed",
+        "actor_protocol_family",
+        "data_shaping_callshape_model",
+        "unified_call_expression_and_tilde_modes"
+      ]
+    },
+    "authority_fence": {
+      "type": "object",
+      "required": ["new_source_surface_count", "new_ast_identity_count", "new_hir_identity_count", "new_mir_operation_kind_count", "backend_layout_or_abi_selection_count", "semantic_p0", "feature_p1", "m13_actions", "product_lanes", "github_publication", "evidence_level"],
+      "properties": {
+        "new_source_surface_count": {"const": 0},
+        "new_ast_identity_count": {"const": 0},
+        "new_hir_identity_count": {"const": 0},
+        "new_mir_operation_kind_count": {"const": 0},
+        "backend_layout_or_abi_selection_count": {"const": 0},
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED"},
+        "evidence_level": {"const": "E2_STRUCTURED_STATIC"}
+      },
+      "additionalProperties": false
+    },
+    "surface_and_ast": {"type": "object"},
+    "pratt_contract": {"type": "object"},
+    "static_semantics": {"type": "object"},
+    "evaluation_and_failure": {"type": "object"},
+    "hir_lowering": {"type": "object"},
+    "actor_transport": {"type": "object"},
+    "actor_protocol_and_declaration": {"type": "object"},
+    "diagnostic_priority": {
+      "const": [
+        "TILDE_CALL_COMMA_REQUIRES_GROUPING",
+        "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN",
+        "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+        "ACTOR_OPERATION_KIND_COLLISION"
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 17,
+      "maxItems": 17,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rule_id", "text"],
+        "properties": {
+          "rule_id": {"pattern": "^UCTC-R0(0[1-9]|1[0-7])$"},
+          "text": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "acceptance_cases": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {"$ref": "#/$defs/acceptanceCase"}
+    },
+    "acceptance_bindings": {"type": "object"},
+    "machine_acceptance": {
+      "type": "object",
+      "required": ["feature_count", "rule_count", "acceptance_case_count", "positive_case_count", "boundary_case_count", "reject_case_count", "valid_mode_target_pair_count", "new_predicate_count", "diagnostic_relation_count", "dependency_edge_repair_count", "predecessor_blocked_cell_count", "bound_direct_transition_count", "bound_delegated_transition_count", "catalog_direct_transition_count", "overlay_bound_direct_transition_count", "overlay_bound_delegated_transition_count", "post_overlay_total_blocked_cell_count", "semantic_p0", "feature_p1", "m13_actions", "product_lanes", "github_publication"],
+      "properties": {
+        "feature_count": {"const": 4},
+        "rule_count": {"const": 17},
+        "acceptance_case_count": {"const": 15},
+        "positive_case_count": {"const": 3},
+        "boundary_case_count": {"const": 5},
+        "reject_case_count": {"const": 7},
+        "valid_mode_target_pair_count": {"const": 10},
+        "new_predicate_count": {"const": 1},
+        "diagnostic_relation_count": {"const": 4},
+        "dependency_edge_repair_count": {"const": 2},
+        "predecessor_blocked_cell_count": {"const": 10},
+        "bound_direct_transition_count": {"const": 9},
+        "bound_delegated_transition_count": {"const": 1},
+        "catalog_direct_transition_count": {"const": 1},
+        "overlay_bound_direct_transition_count": {"const": 8},
+        "overlay_bound_delegated_transition_count": {"const": 1},
+        "post_overlay_total_blocked_cell_count": {"const": 1281},
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "acceptanceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "class", "feature_id", "source_or_subject", "expected", "diagnostic_or_null", "assertions", "execution_state"],
+      "properties": {
+        "case_id": {"pattern": "^UCTC-AC-0(0[1-9]|1[0-5])$"},
+        "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "feature_id": {"enum": ["actor_declaration_grammar_closed", "data_shaping_callshape_model", "unified_call_expression_and_tilde_modes"]},
+        "source_or_subject": {"type": "string", "minLength": 1},
+        "expected": {"enum": ["ADMIT", "REJECT"]},
+        "diagnostic_or_null": {"type": ["string", "null"]},
+        "assertions": {"type": "object"},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

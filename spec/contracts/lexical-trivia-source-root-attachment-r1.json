@@ -1,0 +1,278 @@
+{
+  "$schema": "../../schemas/language/lexical-trivia-source-root-attachment-r1.schema.json",
+  "schema": "deeplus.lexical-trivia-source-root-attachment/r1",
+  "revision": "r55-local-lexical-trivia-source-root-attachment-r1",
+  "candidate_status": "STABLE_DESIGN_CONTRACT_LOCAL_CANDIDATE",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "89ded1ab5c9110476f7043e5f44b71ddd72d19a1",
+  "surface_change_count": 0,
+  "comment_opener_priority": {
+    "mode": "NORMAL_OR_INTERPOLATION_CODE",
+    "ordered_openers": [
+      "DOC_BLOCK_COMMENT_//!!",
+      "DOC_LINE_COMMENT_//!",
+      "NESTED_BLOCK_COMMENT_//-DASH_RUN",
+      "LINE_COMMENT_//"
+    ],
+    "triple_slash_disposition": "ORDINARY_LINE_COMMENT",
+    "literal_modes_recognize_comment_openers": false,
+    "rule_id": "CommentOpenerPriorityDeterministic"
+  },
+  "documentation_attachment": {
+    "group_id": "DocGroup",
+    "documentable_owner_productions": [
+      "AccessorPropertyDecl",
+      "ActorDecl",
+      "ActorOnDecl",
+      "ActorProtocolDecl",
+      "ActorProtocolRequestRequirement",
+      "ActorProtocolSendRequirement",
+      "ActorRequestDecl",
+      "AssociatedFunctionRequirementDecl",
+      "AssociatedTypeRequirementDecl",
+      "AssociatedValueRequirementDecl",
+      "AutomaticConformanceDecl",
+      "BitfieldDecl",
+      "BitfieldSlotDecl",
+      "CleanupDecl",
+      "ConformanceMethodDecl",
+      "ConstructorDecl",
+      "DataClassDecl",
+      "EntryFunctionDecl",
+      "EnumCaseDecl",
+      "EnumDecl",
+      "EnumVariantSubsetAliasDecl",
+      "ExactRatioUnitConversionDecl",
+      "ExplicitConformanceDecl",
+      "ExportableModuleFunctionDecl",
+      "ExtensionDelegationDecl",
+      "ExtensionFunctionDecl",
+      "ExtensionPackDecl",
+      "ExtensionSetDecl",
+      "ExtensionSetFunctionDecl",
+      "FieldDecl",
+      "FlagSlotDecl",
+      "ForwardDecl",
+      "LawDecl",
+      "LayoutSchemaFieldDecl",
+      "MemberFunctionDecl",
+      "ModuleDecl",
+      "ModuleFunctionDecl",
+      "ModuleSignatureDecl",
+      "NamedEffectCapabilityDecl",
+      "OpaqueModuleFacadeDecl",
+      "OrdinaryClassDecl",
+      "PreviewFfiBlockDecl",
+      "PreviewFfiFunctionDecl",
+      "SchemaDecl",
+      "SchemaFieldDecl",
+      "TopLevelBindingDecl",
+      "TraitDecl",
+      "TraitMethodDecl",
+      "TypeAliasDecl",
+      "TypeSideFieldDecl",
+      "TypeSideMemberFunctionDecl",
+      "TypestateResourceDecl",
+      "TypestateTransitionDecl",
+      "UnitCatalogDecl",
+      "UnitCatalogEntry"
+    ],
+    "documentable_owner_count": 55,
+    "visibility_filter": "NONE_PRIVATE_AND_PUBLIC_ARE_DOCUMENTABLE",
+    "allowed_between_doc_comments": [
+      "HORIZONTAL_SPACE",
+      "AT_MOST_ONE_PHYSICAL_LINE_BREAK"
+    ],
+    "allowed_between_group_and_owner": [
+      "HORIZONTAL_SPACE",
+      "EXACTLY_ONE_PHYSICAL_LINE_BREAK",
+      "OWNER_ANNOTATION_CLUSTER"
+    ],
+    "attachment_fences": [
+      "BLANK_PHYSICAL_LINE",
+      "ORDINARY_LINE_COMMENT",
+      "NESTED_BLOCK_COMMENT",
+      "WORD_COMMENT",
+      "SHEBANG",
+      "CONTAINER_DELIMITER",
+      "EOF"
+    ],
+    "excluded_owner_classes": [
+      "IMPORT_OR_USE_DIRECTIVE",
+      "EXPORT_DIRECTIVE",
+      "ANNOTATION_WRAPPER",
+      "CONFORMANCE_GROUPING_WRAPPER",
+      "ACTOR_PROTOCOL_CONFORMANCE_GROUPING_WRAPPER",
+      "ACCESSOR_CHILD",
+      "BLOCK_LOCAL_DECLARATION_OR_BINDING",
+      "RESERVED_SLOT",
+      "RECOVERY_MISSING_OR_UNEXPECTED_NODE"
+    ],
+    "success_projection": "ORDERED_LEADING_DOC_TRIVIA_ON_ONE_OWNER_CST_NODE",
+    "failure_projection": "PRESERVE_TRIVIA_NO_AST_DOC_ATTACHMENT",
+    "failure_diagnostic": "DOC_COMMENT_NOT_ATTACHED_TO_DECL",
+    "diagnostic_owner": "PARSER_ATTACHMENT_PASS",
+    "rule_id": "DocumentationCommentAttachmentAdmitted"
+  },
+  "word_comment": {
+    "surface": "`WordCommentScalar+",
+    "scanner_primitive": "WordCommentScalar",
+    "scanner_primitive_exact_domain": "UnicodeXIDContinue",
+    "body_consumption": "MAXIMAL_ONE_OR_MORE",
+    "opener_adjacency": "ZERO_BYTES_AFTER_ELIGIBLE_LEFT_ANCHOR_LAST_LEAF",
+    "eligible_left_anchor_node_classes": [
+      "CALL_ARGUMENT",
+      "DECLARATION_NAME",
+      "EXPRESSION_ATOM",
+      "PATTERN_ATOM",
+      "POSTFIX_TAIL",
+      "TYPE_ATOM"
+    ],
+    "eligible_left_anchor_node_class_count": 6,
+    "ineligible_left_contexts": [
+      "SOURCE_OR_LINE_START",
+      "AFTER_TRIVIA",
+      "AFTER_OPENER_SEPARATOR_OR_OPERATOR",
+      "RECOVERY_MISSING_OR_UNEXPECTED_NODE",
+      "SECOND_WORD_COMMENT_IN_SAME_ANCHOR_GAP"
+    ],
+    "terminator_consumption": "ZERO_REPROCESS_IN_CALLER_GOAL",
+    "cst_projection": "EXACTLY_ONCE_TRAILING_TRIVIA_ON_LEFT_ANCHOR",
+    "ast_projection": "ERASED",
+    "semantic_effect_count": 0,
+    "diagnostic_precedence": [
+      "WORD_COMMENT_WHITESPACE_FORBIDDEN_AFTER_BACKTICK",
+      "WORD_COMMENT_EXPECTED_TEXT",
+      "WORD_COMMENT_AMBIGUOUS_ATTACHMENT"
+    ],
+    "ambiguous_attachment_exact_predicate": "VALID_NONEMPTY_BODY_AND_ELIGIBLE_BYTE_ADJACENT_LEFT_ANCHOR_COUNT_NOT_EQUAL_TO_ONE",
+    "rule_id": "WordCommentAttachmentAdmitted"
+  },
+  "source_root_consumption": {
+    "direct_roots": [
+      "LibrarySourceFile",
+      "ExecutableSourceFile",
+      "ScriptSourceFile",
+      "PreviewLibrarySourceFile",
+      "PreviewExecutableSourceFile",
+      "PreviewScriptSourceFile"
+    ],
+    "direct_root_count": 6,
+    "required_terminal": "EOF_TOKEN",
+    "success_predicates": [
+      "SELECTED_ROLE_AND_PROFILE_ROOT_COMPLETED",
+      "ALL_TRAILING_TRIVIA_OWNED_EXACTLY_ONCE",
+      "NEXT_PARSER_TOKEN_IS_EOF_TOKEN",
+      "SCANNER_BYTE_CURSOR_EQUALS_INPUT_BYTE_LENGTH"
+    ],
+    "failure_order": [
+      "COMMITTED_LEXICAL_OR_ITEM_DIAGNOSTIC",
+      "SOURCE_TRAILING_TOKENS_AT_FIRST_UNCONSUMED_VALID_TOKEN"
+    ],
+    "failure_projection": "RECOVERY_CST_ONLY_NO_CANONICAL_SOURCE_AST_COMMIT",
+    "rule_id": "SourceRootFullConsumptionAdmitted"
+  },
+  "stage_fences": {
+    "cst_trivia_in_normalized_ast": false,
+    "lexical_trivia_static_semantic_effect_count": 0,
+    "lexical_trivia_dynamic_lowering_count": 0,
+    "line_comment_distinct_reject_class_count": 0,
+    "rule_ids": [
+      "CstTriviaErasedBeforeNormalizedAst",
+      "LexicalTriviaHasNoStaticSemanticEffect",
+      "LexicalTriviaHasNoDynamicLowering",
+      "LineCommentHasNoDistinctRejectClass"
+    ]
+  },
+  "new_acceptance_cases": [
+    {
+      "case_id": "R55-LEX-P-001",
+      "feature_id": "comment_trivia_lexical_priority_law",
+      "outcome": "POSITIVE",
+      "source": "//! docs\npublic def f() -> Int = return 1\n",
+      "expected": "DOC_LINE_COMMENT_THEN_DECLARATION",
+      "diagnostic_or_null": null
+    },
+    {
+      "case_id": "R55-LEX-B-002",
+      "feature_id": "comment_trivia_lexical_priority_law",
+      "outcome": "BOUNDARY",
+      "source": "/// ordinary line comment\nlet value = 1\n",
+      "expected": "ONE_ORDINARY_LINE_COMMENT",
+      "diagnostic_or_null": null
+    },
+    {
+      "case_id": "R55-LEX-N-003",
+      "feature_id": "comment_trivia_lexical_priority_law",
+      "outcome": "REJECT",
+      "source": "//!! unterminated documentation block",
+      "expected": "REJECT",
+      "diagnostic_or_null": "DOC_BLOCK_COMMENT_UNTERMINATED"
+    },
+    {
+      "case_id": "R55-LEX-B-004",
+      "feature_id": "documentation_comment_trivia",
+      "outcome": "BOUNDARY",
+      "source": "//! first\n//! second\npublic class Item {}\n",
+      "expected": "ONE_ORDERED_DOC_GROUP_ON_ITEM",
+      "diagnostic_or_null": null
+    },
+    {
+      "case_id": "R55-LEX-N-005",
+      "feature_id": "documentation_comment_trivia",
+      "outcome": "REJECT",
+      "source": "//! detached\n\npublic class Item {}\n",
+      "expected": "REJECT_NO_DOC_ATTACHMENT",
+      "diagnostic_or_null": "DOC_COMMENT_NOT_ATTACHED_TO_DECL"
+    },
+    {
+      "case_id": "R55-LEX-N-006",
+      "feature_id": "nested_block_comment_slash_dash_trivia",
+      "outcome": "REJECT",
+      "source": "//- outer //- inner -//",
+      "expected": "REJECT_UNCLOSED_OUTER",
+      "diagnostic_or_null": "BLOCK_COMMENT_NESTING_UNCLOSED"
+    },
+    {
+      "case_id": "R55-LEX-B-007",
+      "feature_id": "shebang_comment_first_line_trivia",
+      "outcome": "BOUNDARY",
+      "source": "#!/usr/bin/env deeplus\r\nmodule demo::script\r\nlet value = 1\r\n",
+      "expected": "BYTE_ZERO_SHEBANG_WITH_CRLF",
+      "diagnostic_or_null": null
+    },
+    {
+      "case_id": "R55-LEX-N-008",
+      "feature_id": "shebang_comment_first_line_trivia",
+      "outcome": "REJECT",
+      "source": "\n#!/usr/bin/env deeplus\nlet value = 1\n",
+      "expected": "REJECT_NONZERO_BYTE_OFFSET",
+      "diagnostic_or_null": "SHEBANG_MUST_BE_FIRST_LINE"
+    },
+    {
+      "case_id": "R55-LEX-N-009",
+      "feature_id": "word_comment_tokenization_law",
+      "outcome": "REJECT",
+      "source": "let value = 1\n`detached\n",
+      "expected": "REJECT_NO_ELIGIBLE_BYTE_ADJACENT_LEFT_ANCHOR",
+      "diagnostic_or_null": "WORD_COMMENT_AMBIGUOUS_ATTACHMENT"
+    },
+    {
+      "case_id": "R55-LEX-B-010",
+      "feature_id": "source_root_full_consumption",
+      "outcome": "BOUNDARY",
+      "source": "let value = 1 // trailing trivia\n\n",
+      "expected": "ACCEPT_TRAILING_TRIVIA_THEN_EOF_TOKEN",
+      "diagnostic_or_null": null
+    }
+  ],
+  "new_acceptance_case_count": 10,
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution_receipt_count": 0,
+    "github_publication": "SUSPENDED"
+  }
+}

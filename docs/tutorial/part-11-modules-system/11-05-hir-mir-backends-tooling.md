@@ -295,7 +295,36 @@ execution PASS로 표현하지 않는다.
 
 이제 Module/API/adapter를 한 library package 설계로 묶는다.
 
-## 13. Current machine-contract checkpoint
+## 13. 소유권 오류를 도구가 설명하는 방법
+
+다음 코드는 `file`의 owner를 `saved`로 옮긴 뒤 원래 place를 다시
+사용하려는 예다.
+
+```deeplus
+let file = openFile("notes.txt")?
+let saved = move file
+file.write("late")
+```
+
+checker가 이 사용을 거부하면 도구는 마지막 호출을 primary 위치로,
+`move file`을 이전 transfer 위치로, 최초 선언을 owner 선언 위치로 보여
+준다. 포매터는 `move`를 지우거나 위치를 바꾸지 않는다. LSP는 자동으로
+`clone`, `share` 또는 다른 owner를 삽입하지 않는다. 그러한 수정은 새로운
+권한이나 수명·cleanup 의미를 만들 수 있기 때문이다.
+
+디버거에서는 같은 owner가 backend마다 서로 다른 register나 stack slot에
+있을 수 있다. Deeplus는 그 기계 위치를 owner identity로 사용하지 않는다.
+값이 최적화로 사라졌다면 `OPTIMIZED_OUT`으로 표시하며 임의의 값을 만들지
+않는다. paused runtime 값은 runtime instance, execution, activation frame,
+pause epoch와 정확한 debug receipt가 모두 맞을 때만 표시한다.
+
+actor message의 owner도 도구가 옮기는 것이 아니다. commit 전이나 거부된
+send에서는 sender가 owner를 유지하고, `enqueue_committed`에서만 한 번
+receiver owner 또는 shared evidence로 전이한다. 이때의 sequence는 해당
+channel 안에서만 의미가 있다. 이 규칙은 설계 계약이며 실제
+formatter/LSP/debugger 지원은 아직 `NOT_RUN`이다.
+
+## 14. Current machine-contract checkpoint
 
 <!-- R10-HIR-MIR-MACHINE-CONTRACT -->
 

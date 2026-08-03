@@ -1,0 +1,112 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "source_name": "UnifiedCallModeAdmitted",
+    "summary": "R57 deterministic CallExpr mode, call-shape, candidate-domain and responsibility admission; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "effect_row",
+      "call_shape",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "unified_call_expression_and_tilde_modes"
+    ],
+    "diagnostic_refs": [
+      "TILDE_CALL_COMMA_REQUIRES_GROUPING",
+      "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN",
+      "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+      "ACTOR_OPERATION_KIND_COLLISION"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(CallPlan) | reject(diagnostic_id)",
+    "requires": [
+      "exactly one CallMode is selected from Ordinary, Message and ActorMessage",
+      "the complete selector path and one ordered CallArgument family are preserved before resolution",
+      "outer-comma ownership, rank-15 associativity and terminal actor-call rules are structurally admitted",
+      "the candidate domain, call shape, ownership, effects, errors, isolation, authority and cleanup close to exactly one CallPlan",
+      "ActorMessage selects ActorTransport only and never falls back to ordinary dispatch"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/type-flow-callable-coherence.json#TFC-R021",
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "effect_row",
+      "call_shape",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-UnifiedCallModeAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the parser has produced one CallExpr and preserved the complete selector and ordered source arguments",
+      "the call mode belongs to the closed Ordinary, Message or ActorMessage enum",
+      "all structural grouping and terminality checks precede candidate ranking"
+    ],
+    "normalization": "normalize selector identity, CallMode, labels, unfold channels, trailing closures, expected formal channels and responsibility axes without synthesizing a message payload aggregate",
+    "decision_procedure": [
+      "validate the closed RCTS-V5 call descriptor",
+      "select the exact mode-owned candidate domain",
+      "reject an unparenthesized nested tilde call before an outer comma",
+      "reject nonterminal or chained ActorMessage syntax",
+      "reject actor operations reached through Message mode",
+      "reject same-selector same-call-shape on/request collisions",
+      "apply StaticCallShapeAdmitted per candidate",
+      "rank fixed arity before repeated positional before named rest",
+      "require exactly one winner",
+      "close ownership, effects, errors, isolation, authority and cleanup",
+      "seal one CallPlan or emit the deterministic diagnostic"
+    ],
+    "termination_metric": "finite preserved argument vector plus finite statically resolved candidate domain",
+    "success_result": "admit(CallPlan) | reject(diagnostic_id)",
+    "active_primary_diagnostic": "TILDE_CALL_COMMA_REQUIRES_GROUPING",
+    "secondary_diagnostics": [
+      "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN",
+      "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+      "ACTOR_OPERATION_KIND_COLLISION"
+    ],
+    "positive_fixture_ids": [
+      "PF-UnifiedCallModeAdmitted-POS",
+      "PF-UnifiedCallModeAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-UnifiedCallModeAdmitted-NEG-COMMA",
+      "PF-UnifiedCallModeAdmitted-NEG-TERMINAL",
+      "PF-UnifiedCallModeAdmitted-NEG-ACTOR-TOKEN",
+      "PF-UnifiedCallModeAdmitted-NEG-KIND-COLLISION"
+    ],
+    "evaluation_order": "structural preconditions -> mode-owned domain -> StaticCallShapeAdmitted -> unique winner -> responsibility closure -> diagnostic",
+    "dependency_predicates": [
+      "StaticCallShapeAdmitted",
+      "ActorProtocolGateAdmitted",
+      "TransferableAcrossIsolation"
+    ],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "baseline": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+      "sha256": "92fd16dc3bc87f43521e6066159015adcde128300dfe9f1bab866a4d04401370",
+      "disposition": "structured_from_type_flow_TFC_R021_and_unified_call_contract"
+    }
+  }
+]

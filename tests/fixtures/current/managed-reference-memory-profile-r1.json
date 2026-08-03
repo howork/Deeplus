@@ -40,10 +40,10 @@
       "case_id": "R36-MRM-P-002",
       "class": "positive",
       "rule_ids": ["MRM-R008", "MRM-R009"],
-      "scenario": "managed allocation fast path is noncollecting and its slow path enters an explicit CHECKED safepoint",
+      "scenario": "managed allocation fast path is noncollecting and its slow path enters an explicit INVOKE safepoint; runtime helper outcome checking remains a separate receipt concern",
       "facts": {
         "site_kind": "MANAGED_ALLOCATION_SLOW_PATH",
-        "terminator_kind": "CHECKED",
+        "terminator_kind": "INVOKE",
         "safepoint_declared": true,
         "running_root_ids": ["Root.alloc.input0"],
         "frame_root_ids": [],

@@ -773,7 +773,7 @@
         "#set{",
         "#mut[",
         "#[",
-        "#dims[",
+        "#StaticDimensionList[",
         "#bytes\"",
         "#raw\""
       ]
@@ -1401,8 +1401,92 @@
         "-",
         "#"
       ],
+      "owner_production_count": 15,
+      "owner_productions": [
+        "MemberFunctionDecl",
+        "TypeSideMemberFunctionDecl",
+        "ConstructorDecl",
+        "StoredParameter",
+        "FieldDecl",
+        "TypeSideFieldDecl",
+        "AccessorDecl",
+        "ForwardDecl",
+        "TraitMethodDecl",
+        "ConformanceMethodDecl",
+        "ExtensionSetFunctionDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl",
+        "BitfieldNamedSlot",
+        "FlagNamedSlot"
+      ],
       "top_level_words_forbidden": true,
-      "hash_domain": "declaring_nominal_type_and_nominal_subclasses"
+      "forbidden_top_level_words": [
+        "common",
+        "private",
+        "protected",
+        "public"
+      ],
+      "exact_normalization": {
+        "+": "PUBLIC",
+        "-": "PRIVATE",
+        "#": "HIERARCHY_PROTECTED"
+      },
+      "omission": {
+        "syntax_state": "OMITTED",
+        "semantic_value": null,
+        "r58_global_default": null,
+        "default_application_count": 0
+      },
+      "semantic_lattice_narrow_to_wide": [
+        "-",
+        "#",
+        "+"
+      ],
+      "access_proof": {
+        "required_fields": [
+          "declaring_nominal_id",
+          "consumer_nominal_id",
+          "consumer_relation"
+        ],
+        "consumer_relation_enums": [
+          "DECLARING_NOMINAL",
+          "NOMINAL_SUBCLASS",
+          "MODULE_PEER",
+          "NOMINAL_CONFORMER_NOT_SUBCLASS",
+          "STRUCTURAL_PEER",
+          "UNRELATED"
+        ]
+      },
+      "domains": {
+        "-": {
+          "admitted_consumer_relations": [
+            "DECLARING_NOMINAL"
+          ]
+        },
+        "#": {
+          "admitted_consumer_relations": [
+            "DECLARING_NOMINAL",
+            "NOMINAL_SUBCLASS"
+          ],
+          "rejected_consumer_relations": [
+            "MODULE_PEER",
+            "NOMINAL_CONFORMER_NOT_SUBCLASS",
+            "STRUCTURAL_PEER"
+          ]
+        },
+        "+": {
+          "admitted_consumer_domain": "ALL_VISIBLE_CONSUMERS"
+        }
+      },
+      "hash_domain": "declaring_nominal_type_and_nominal_subclasses_only",
+      "override_admission": {
+        "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT",
+        "anchor_rewrite_count": 0,
+        "visibility_rule": "OVERRIDE_VISIBILITY_GREATER_THAN_OR_EQUAL_TO_ORIGINAL_SLOT_VISIBILITY",
+        "narrowing": "REJECT",
+        "diagnostic": "OVERRIDE_VISIBILITY_CANNOT_NARROW"
+      },
+      "runtime_behavior": "STATIC_ONLY_NO_RUNTIME_BEHAVIOR"
     }
   },
   "accessor_property_admission": {
@@ -2166,7 +2250,7 @@
         ]
       }
     },
-    "complete_token_lexical_goal_contract": {
+  "complete_token_lexical_goal_contract": {
       "contract": "spec/contracts/complete-token-lexical-goal-contract-r1.json",
       "schema": "deeplus.complete-token-lexical-goal-contract/r1",
       "scanner_mode_count": 6,
@@ -2177,9 +2261,24 @@
       "token_probe": "complete-checkpoint transaction; failed probe consumes zero bytes/tokens and emits zero diagnostics",
       "rational_probe": "expression prefix only in NORMAL or INTERPOLATION_CODE",
       "multiline_rebind": "MULTILINE_ATOMIC owns MultilineStringTokenPayloadV1",
-      "product_execution": "NOT_RUN"
-    },
-    "shorthand_interpolation_state_machine": {
+    "product_execution": "NOT_RUN"
+  },
+  "lexical_trivia_source_root_attachment_contract": {
+    "contract": "spec/contracts/lexical-trivia-source-root-attachment-r1.json",
+    "schema": "deeplus.lexical-trivia-source-root-attachment/r1",
+    "comment_opener_count": 4,
+    "documentable_owner_count": 55,
+    "word_comment_scalar_domain": "UnicodeXIDContinue",
+    "word_comment_left_anchor_node_class_count": 6,
+    "direct_source_root_count": 6,
+    "direct_source_root_terminal": "EOF_TOKEN",
+    "normalized_ast_trivia_count": 0,
+    "static_semantic_effect_count": 0,
+    "dynamic_lowering_count": 0,
+    "new_acceptance_case_count": 10,
+    "product_execution": "NOT_RUN"
+  },
+  "shorthand_interpolation_state_machine": {
       "contract": "spec/contracts/shorthand-interpolation-state-machine-contract-r1.json",
       "schema": "deeplus.shorthand-interpolation-state-machine-contract/r1",
       "state_count": 14,
@@ -2216,6 +2315,94 @@
     "canonical_ast_recovery_node_count": 0,
     "canonical_hir_recovery_node_count": 0,
     "product_execution": "NOT_RUN"
+  },
+  "formatter_lsp_incremental_parsing_contract": {
+    "contract": "spec/contracts/formatter-lsp-incremental-parsing-contract-r1.json",
+    "schema": "schemas/language/formatter-lsp-incremental-parsing.schema.json",
+    "fixtures": "tests/fixtures/current/formatter-lsp-incremental-parsing-r1.json",
+    "gap_id": "IR-FE-P1-037",
+    "baseline": {
+      "repository": "howork/Deeplus",
+      "branch": "main",
+      "commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+      "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
+    },
+    "grammar_production_count": 644,
+    "formatting_rule_count": 6,
+    "formatting_rule_counts": {
+      "FD-01": 56,
+      "FD-02": 35,
+      "FD-03": 320,
+      "FD-04": 204,
+      "FD-05": 10,
+      "FD-06": 19
+    },
+    "identity_domain_count": 8,
+    "existing_oracle_case_count": 9,
+    "successor_acceptance_case_count": 34,
+    "mutation_count": 12,
+    "normalized_ast_semantic_identity": "NormalizedAstSemanticDigest",
+    "tooling_identity_separation": {
+      "content": "CstContentId",
+      "occurrence": "CstOccurrenceId",
+      "incremental_handle": "IncrementalNodeHandleId",
+      "content_occurrence_handle_conflation_count": 0
+    },
+    "snapshot_publication_and_lifetime": {
+      "snapshot_identity": "ParseSnapshotId",
+      "publication": "ATOMIC_COMPARE_AND_SWAP_EXPECTED_DOCUMENT_REVISION_AND_PARSE_SNAPSHOT",
+      "read_lease_required": true,
+      "reclamation_gate": "ZERO_CURRENT_DOCUMENT_ACTIVE_REQUEST_OR_REUSE_RECEIPT_LEASES",
+      "late_result_publication": "REVISION_AND_SNAPSHOT_MUST_STILL_BE_CURRENT"
+    },
+    "lsp_coordinate_and_action_fence": {
+      "internal_span_domain": "ZERO_BASED_HALF_OPEN_BYTE_INTERVAL_IN_EXACT_SNAPSHOT",
+      "position_conversion": "NEGOTIATED_POSITION_ENCODING_PLUS_SNAPSHOT_LINE_MAP_DIGEST",
+      "invalid_position": "REJECT_INVALID_POSITION_WITHOUT_CLAMPING",
+      "action_binding": "EXPECTED_DOCUMENT_REVISION_PARSE_SNAPSHOT_INTERVAL_AND_OLD_INTERVAL_SHA256",
+      "stale_action_application": "REJECT_STALE_TOOLING_ACTION"
+    },
+    "diagnostic_parity_and_precedence": {
+      "incremental_equals_full_parse_for_same_snapshot": true,
+      "merge_order": "CANONICAL_RECOVERY_ORDER_NOT_WORKER_COMPLETION_ORDER",
+      "tooling_failure_precedence": [
+        "REQUEST_SCHEMA_AND_DOCUMENT_IDENTITY",
+        "STALE_REVISION_OR_SNAPSHOT",
+        "EDIT_AND_COORDINATE_VALIDITY",
+        "OWNER_AND_RECOVERY_ADMISSION",
+        "AST_EQUIVALENCE_IDEMPOTENCE_SPLICE_AND_REUSE_PROOF"
+      ]
+    },
+    "actor_protocol_five_row_preservation": {
+      "production_ids": [
+        "ActorProtocolConformanceClause",
+        "ActorMemberDecl",
+        "ActorProtocolConformBlock",
+        "ActorProtocolConformanceBody",
+        "ActorProtocolConformanceItem"
+      ],
+      "production_count": 5,
+      "formatting_rule_counts": {
+        "FD-03": 3,
+        "FD-04": 2
+      },
+      "token_rewrite_count": 0,
+      "tooling_identity_in_r23_actor_or_binding_preimage_count": 0
+    },
+    "formatting_fallback": "PRESERVE_EXACT_SOURCE_BYTES",
+    "recovery_taint_clear_owner": "NEW_PARSE_OF_CHANGED_INPUT_ONLY",
+    "incremental_owner_selection": "SMALLEST_ELIGIBLE_OWNER_WITH_DETERMINISTIC_PARENT_ASCENT_AND_SOURCE_ROOT_FALLBACK",
+    "range_format_outside_byte_change_count": 0,
+    "cross_revision_result_merge_count": 0,
+    "source_syntax_change_count": 0,
+    "grammar_production_change_count": 0,
+    "language_semantic_change_count": 0,
+    "new_final_diagnostic_id_count": 0,
+    "semantic_p0": 0,
+    "canonical_feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "formatter_lsp_execution": "NOT_RUN",
+    "incremental_parser_execution": "NOT_RUN"
   },
   "frontend_primary_diagnostic_identity_contract": {
     "contract": "spec/contracts/frontend-primary-diagnostic-identity-r1.json",
@@ -3050,6 +3237,121 @@
     },
     "context_policy_authority": "spec/patterns/pattern-context-policies.json",
     "lowering_authority": "spec/patterns/pattern-lowering.json",
+    "dynamic_lowering_trace_closure": {
+      "contract_path": "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
+      "feature_ids": [
+        "or_alias_pattern",
+        "pattern_binding_control_family",
+        "pattern_decomposition"
+      ],
+      "trace_stage": "DYNAMIC_LOWERING",
+      "subject_evaluation_count": 1,
+      "structural_probe": "PURE_NONCONSUMING",
+      "probe_binders": "READ_ONLY_NONESCAPING",
+      "guard": {
+        "admission_count": "ZERO_OR_ONE",
+        "type": "Bool",
+        "purity": "PURE",
+        "evaluation_count_after_structural_success": 1
+      },
+      "binding_commit": {
+        "top_pattern_attempt_commit_count_on_success": 1,
+        "child_pattern_row_binding_commit": "COMPOSITIONAL_REQUIREMENT_COLLAPSED_INTO_TOP_PATTERN_ATTEMPT_COMMIT",
+        "multiple_executable_commits": false
+      },
+      "or_pattern": {
+        "branch_selection": "FIRST_SOURCE_ORDERED_STRUCTURAL_SUCCESS",
+        "binder_interface": "EXACT_EQUAL",
+        "retry_or_backtracking": false,
+        "false_guard_retries_later_branch": false
+      },
+      "alias_pattern": {
+        "subject_identity": "SAME",
+        "clone": false,
+        "probe_action": "STAGE_BORROW_REQUIREMENT",
+        "loan_acquisition": "FINAL_PATTERN_ATTEMPT_COMMIT_ONLY"
+      },
+      "failure_publication": {
+        "bindings": 0,
+        "moves": 0,
+        "loans": 0,
+        "views": 0,
+        "authority": 0
+      },
+      "pattern_control_false_dispositions": {
+        "if_let": "FALSE_BRANCH",
+        "while_let": "LOOP_EXIT",
+        "for_let": "CANDIDATE_SKIP"
+      },
+      "ownership_split_contract": "pattern_match_ownership_split_contract",
+      "grammar_changed": false,
+      "source_activation": "none",
+      "product_support": "NOT_RUN"
+    },
+    "pattern_match_ownership_split_contract": {
+      "decision_path": "decisions/language/Design_Deeplus_R60_Pattern_Match_Ownership_Split_Trace_Closure_R1.md",
+      "feature_id": "pattern_match_ownership_split",
+      "checker_judgment": "PatternMatchOwnershipAdmitted",
+      "normalized_binder_interface_fields": [
+        "name",
+        "canonical_type",
+        "ownership_mode",
+        "mutability",
+        "usable_region",
+        "capabilities"
+      ],
+      "or_pattern": {
+        "interface_equality": "EXACT",
+        "selection": "FIRST_SOURCE_ORDERED_STRUCTURAL_SUCCESS",
+        "retry_or_backtracking": false
+      },
+      "alias_pattern": {
+        "subject_identity": "SAME",
+        "borrow_kind": "SHARED",
+        "clone": false,
+        "rejects_moved_descendant": true,
+        "rejects_exclusive_descendant": true
+      },
+      "borrowed_subject": {
+        "affine_payload_move": "REJECT",
+        "move_pattern_requires": "CONSUMING_OWNER_AUTHORITY"
+      },
+      "transaction": {
+        "probe_and_guard_ownership_residue": 0,
+        "preparation_abort": "MOVE_CANCEL_ALL_RESERVATIONS",
+        "preparation_order": "SOURCE_PATTERN_PREORDER",
+        "per_move_order": [
+          "MOVE_RESERVE",
+          "PLACE_MOVE"
+        ],
+        "borrow_operations": [
+          "LOAN_BEGIN_SHARED",
+          "LOAN_BEGIN_EXCLUSIVE"
+        ],
+        "publication_barrier": "BINDING_COMMIT_AFTER_ALL_MOVE_AND_LOAN_ACQUISITIONS",
+        "binding_commit_count": 1,
+        "binding_commit_infallible": true
+      },
+      "loan_close_frontier": "EARLIEST_OF_MUTATION_MOVE_REPLACEMENT_CLEANUP_REGION",
+      "place_join": {
+        "participants": "NORMALLY_RETURNING_ARMS_ONLY",
+        "first_check": "COMPATIBLE_PLACE_IDENTITY_AND_OWNERSHIP_STATE",
+        "then": "CAPABILITY_INTERSECTION",
+        "divergent_arms": "EXCLUDED"
+      },
+      "diagnostics": [
+        "OR_PATTERN_BINDINGS_INCONSISTENT",
+        "ALIAS_PATTERN_OWNERSHIP_CONFLICT",
+        "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
+        "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"
+      ],
+      "grammar_changed": false,
+      "ast_identity_changed": false,
+      "hir_identity_changed": false,
+      "mir_opcode_changed": false,
+      "source_activation": "none",
+      "product_support": "NOT_RUN"
+    },
     "tuple_pattern_current": "exact fixed product; (p) grouping, (p,) one-Tuple, no Tuple rest",
     "record_rest_current": "exact by default; .._ open-ignore; ..name exact residual",
     "map_pattern_current": "exact/open over literal or pinned stable keys and a pure total closed descriptor",
@@ -3842,6 +4144,12 @@
       "ActorProtocolBindingId",
       "ActorProtocolBindingTableId"
     ],
+    "mir_runtime_only_identities": [
+      "ActorInstanceId",
+      "ActorRuntimeRootOwnerId",
+      "ActorTurnId",
+      "DefectId"
+    ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
     "semantic_contract": "spec/contracts/actor-concurrency-coherence.json",
     "message_send_owner": ":~ TildeCallLed normalizes to CallExpr mode ActorMessage with the shared ordered CallArgument and trailing-closure contracts; actor dispatch never falls back to ordinary call resolution",
@@ -3963,6 +4271,44 @@
     "cancellation_phase_split": {
       "before_commit": "abort, sender retains owners, no channel_sequence, Cancellation is not ActorMessageError",
       "after_commit": "message remains actor-owned and admission Result is not rewritten"
+    },
+    "actor_minimum_lifecycle_contract": {
+      "static_actor_identity": "ActorId:STATIC_ACTOR_DECLARATION_ID",
+      "runtime_instance_identity": "one internal ActorInstanceId per Actor incarnation",
+      "runtime_instance_in_module_binding_bytes_count": 0,
+      "root_owner_identity": "one non-forgeable compiler/runtime-only ActorRuntimeRootOwnerId per Actor incarnation",
+      "root_owner_source_constructor_count": 0,
+      "root_owner_is_managed_root_id": false,
+      "supervisor_id_current_value": null,
+      "actor_ref_publication": "actor_publish_committed after state and mailbox initialization commit",
+      "creation_failure": "publish no ActorRef, enter CREATION_ABORTED, reverse-clean every initialized resource exactly once, and report one FailureId to the root owner",
+      "normal_stop_policy": "DRAIN_ALL_COMMITTED_V1",
+      "normal_stop_suspended_turn": "PENDING_WITH_EXACT_CONTINUATION_RECEIPT_WITHOUT_IMPLICIT_CANCELLATION_CLEANUP_OR_TERMINATION",
+      "defect_policy": "STOP_AND_FAIL_PENDING_V1",
+      "defect_cleanup_before_reply_failure_observation": true,
+      "loan_and_cleanup_binding": "LOAN_END precedes overlapping owner cleanup; deferred, capture and owner cleanup tokens discharge exactly once before the enclosing actor cleanup event completes",
+      "managed_root_binding": "managed roots are transferred or removed through exact receipts before root-owner observation; ActorRuntimeRootOwnerId and RootId are disjoint",
+      "continuation_binding": "suspended turns retain exact ContinuationReceiptId and continuation-interface digest; stop does not choose resume or cancel",
+      "pending_reply_failure": "ActorMessageError::receiverClosedBeforeReply",
+      "r23_binding_foreign_key": [
+        "ActorProtocolBindingTableId",
+        "ActorProtocolBindingId"
+      ],
+      "r23_binding_preserved_fields": [
+        "implementation_kind",
+        "ActorHandlerId_or_ActorRequestId",
+        "ResponsibilityId",
+        "binding_row_sha256"
+      ],
+      "lifecycle_binding_creation_or_reselection_count": 0,
+      "runtime_abi_count": 1,
+      "r24_codegen_lifetime_absorbed_count": 0,
+      "defect_as_recoverable_error": false,
+      "queued_handler_start_after_defect_count": 0,
+      "root_observation_before_termination": true,
+      "restart_event_count": 0,
+      "interleaving_event_count": 0,
+      "product_execution": "NOT_RUN"
     },
     "await_owner": "the existing prefix await operator only",
     "detached_execution_node_count": 0,

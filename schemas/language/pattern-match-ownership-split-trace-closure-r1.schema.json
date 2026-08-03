@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/pattern-match-ownership-split-trace-closure-r1.schema.json",
+  "title": "Deeplus R60 Pattern Match Ownership Split Trace Closure",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "language_status",
+    "source_activation",
+    "current_binding",
+    "feature_ids",
+    "authority_fence",
+    "scope_fence",
+    "existing_operation_alignment",
+    "ownership_interface",
+    "probe_guard_commit_law",
+    "or_alias_ownership_law",
+    "loan_lifetime_and_arm_join_law",
+    "rules",
+    "acceptance_cases",
+    "acceptance_bindings",
+    "machine_acceptance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/pattern-match-ownership-split-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.pattern-match-ownership-split-trace-closure/r1"},
+    "revision": {"const": "r60-local-pattern-match-ownership-split-trace-closure-r1"},
+    "canonical_baseline_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "local_predecessor_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "candidate_status": {"const": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE"},
+    "language_status": {"const": "STABLE_DESIGN"},
+    "source_activation": {"const": "none"},
+    "current_binding": {"const": false},
+    "feature_ids": {"const": ["pattern_match_ownership_split"]},
+    "authority_fence": {
+      "const": {
+        "new_source_surface_count": 0,
+        "new_ast_identity_count": 0,
+        "new_hir_identity_count": 0,
+        "new_mir_operation_kind_count": 0,
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED",
+        "evidence_level": "E2_STRUCTURED_STATIC"
+      }
+    },
+    "scope_fence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transitioned_cells", "excluded_reverse_dependents", "excluded_reverse_dependent_transition_count", "preview_pattern_row_transition_count", "other_target_cell_transition_count"],
+      "properties": {
+        "transitioned_cells": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/transitionCell"}},
+        "excluded_reverse_dependents": {"const": ["clause_pattern_heads", "match_exhaustiveness_phase_a"]},
+        "excluded_reverse_dependent_transition_count": {"const": 0},
+        "preview_pattern_row_transition_count": {"const": 0},
+        "other_target_cell_transition_count": {"const": 0}
+      }
+    },
+    "existing_operation_alignment": {"type": "object"},
+    "ownership_interface": {"type": "object"},
+    "probe_guard_commit_law": {"type": "object"},
+    "or_alias_ownership_law": {"type": "object"},
+    "loan_lifetime_and_arm_join_law": {"type": "object"},
+    "rules": {"type": "array", "minItems": 14, "maxItems": 14, "uniqueItems": true, "items": {"$ref": "#/$defs/rule"}},
+    "acceptance_cases": {"type": "array", "minItems": 12, "maxItems": 12, "uniqueItems": true, "items": {"$ref": "#/$defs/acceptanceCase"}},
+    "acceptance_bindings": {"type": "object"},
+    "machine_acceptance": {
+      "const": {
+        "feature_count": 1,
+        "rule_count": 14,
+        "acceptance_case_count": 12,
+        "positive_case_count": 3,
+        "boundary_case_count": 4,
+        "reject_case_count": 5,
+        "overlay_binding_count": 2,
+        "predecessor_blocked_cell_count": 2,
+        "overlay_bound_direct_transition_count": 2,
+        "overlay_bound_delegated_transition_count": 0,
+        "overlay_not_applicable_transition_count": 0,
+        "predecessor_cumulative_overlay_binding_count": 113,
+        "post_overlay_cumulative_binding_count": 115,
+        "predecessor_total_bound_direct_cell_count": 2450,
+        "predecessor_total_bound_delegated_cell_count": 3,
+        "predecessor_total_not_applicable_cell_count": 502,
+        "predecessor_total_blocked_cell_count": 1266,
+        "post_overlay_total_bound_direct_cell_count": 2452,
+        "post_overlay_total_bound_delegated_cell_count": 3,
+        "post_overlay_total_not_applicable_cell_count": 502,
+        "post_overlay_total_blocked_cell_count": 1264,
+        "post_overlay_missing_cell_count": 0,
+        "post_overlay_conflict_cell_count": 0,
+        "new_operation_count": 0,
+        "logical_final_commit_count_on_success": 1,
+        "failure_residue_count": 0,
+        "or_retry_count": 0,
+        "excluded_reverse_dependent_transition_count": 0,
+        "other_target_cell_transition_count": 0
+      }
+    }
+  },
+  "$defs": {
+    "transitionCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_id", "stage", "predecessor_disposition", "disposition"],
+      "properties": {
+        "feature_id": {"const": "pattern_match_ownership_split"},
+        "stage": {"enum": ["STATIC_SEMANTICS", "DYNAMIC_LOWERING"]},
+        "predecessor_disposition": {"const": "APPLICABLE_BLOCKED_BY_GAP"},
+        "disposition": {"const": "BOUND_DIRECT"}
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule_id", "text"],
+      "properties": {
+        "rule_id": {"type": "string", "pattern": "^PMOSTC-R0(0[1-9]|1[0-4])$"},
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "acceptanceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "audit_case_id", "class", "feature_id", "source_or_subject", "expected", "diagnostic_or_null", "assertions", "execution_state"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^PMOSTC-AC-0(0[1-9]|1[0-2])$"},
+        "audit_case_id": {"type": "string", "pattern": "^OWN([1-9]|1[0-2])$"},
+        "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "feature_id": {"const": "pattern_match_ownership_split"},
+        "source_or_subject": {"type": "string", "minLength": 1},
+        "expected": {"type": "string", "minLength": 1},
+        "diagnostic_or_null": {"type": ["string", "null"]},
+        "assertions": {"type": "object"},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

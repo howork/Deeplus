@@ -1524,7 +1524,11 @@
     {
       "kind": "WORD_COMMENT",
       "retained_in_lossless_cst": true,
-      "parser_token": false
+      "parser_token": false,
+      "scanner_primitive": "WordCommentScalar",
+      "scanner_primitive_exact_domain": "UnicodeXIDContinue",
+      "body_consumption": "MAXIMAL_ONE_OR_MORE",
+      "attachment_contract": "spec/contracts/lexical-trivia-source-root-attachment-r1.json#/word_comment"
     },
     {
       "kind": "SHEBANG",
@@ -1559,6 +1563,12 @@
         "//!",
         "//--",
         "//!!"
+      ],
+      "internal_precedence": [
+        "//!!",
+        "//!",
+        "//-DASH_RUN",
+        "//"
       ]
     },
     {

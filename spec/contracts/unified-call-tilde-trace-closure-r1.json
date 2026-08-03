@@ -1,0 +1,290 @@
+{
+  "$schema": "../../schemas/language/unified-call-tilde-trace-closure-r1.schema.json",
+  "schema": "deeplus.unified-call-tilde-trace-closure/r1",
+  "revision": "r57-local-unified-call-tilde-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "808bf7cd1d28bba737e0744a6f120c71297d7ddd",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_ids": [
+    "actor_declaration_grammar_closed",
+    "actor_protocol_family",
+    "data_shaping_callshape_model",
+    "unified_call_expression_and_tilde_modes"
+  ],
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "backend_layout_or_abi_selection_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "surface_and_ast": {
+    "ast_node": "CallExpr",
+    "call_modes": [
+      "Ordinary",
+      "Message",
+      "ActorMessage"
+    ],
+    "surface_to_mode": {
+      "callee(...)": "Ordinary",
+      "receiver ~ selector ...": "Message",
+      "actor :~ selector ...": "ActorMessage"
+    },
+    "ast_argument_kinds": [
+      "Positional",
+      "Named",
+      "PositionalUnfold",
+      "NamedUnfold",
+      "Context",
+      "Witness"
+    ],
+    "hir_argument_kinds": [
+      "POSITIONAL",
+      "NAMED",
+      "POSITIONAL_UNFOLD",
+      "NAMED_UNFOLD",
+      "CONTEXT",
+      "WITNESS",
+      "TRAILING_CLOSURE"
+    ],
+    "message_payload_node_count": 0,
+    "tuple_or_record_payload_projection_count": 0,
+    "trailing_closure_attachment": "MAXIMAL_TRAILING_CLOSURE_GROUP",
+    "trailing_closure_hir_array_count": 0,
+    "selector_path_preserved_before_resolution": true
+  },
+  "pratt_contract": {
+    "rank": 15,
+    "message_associativity": "LEFT",
+    "actor_message_associativity": "TERMINAL_NONASSOCIATIVE",
+    "outer_comma_requires_grouping": true,
+    "await_receiver_parse": "await receiver ~ f x parses as (await receiver) ~ f x",
+    "await_whole_call_parse": "await (receiver ~ f x)",
+    "zero_argument_surface": "receiver ~ ping",
+    "one_unit_argument_surface": "receiver ~ send ()",
+    "one_tuple_argument_surface": "receiver ~ f (x, y)"
+  },
+  "static_semantics": {
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "phase_order": [
+      "select CallMode and preserve selector path",
+      "resolve receiver and selector candidate domain",
+      "reject structural call-shape defects",
+      "bind ordinary channels and trailing closures per candidate",
+      "rank fixed-arity before repeated-positional before named-rest",
+      "require exactly one winner",
+      "close types ownership effects errors isolation authority and cleanup",
+      "seal canonical HIR"
+    ],
+    "winner_inputs_forbidden": [
+      "expected result type",
+      "source order",
+      "import order",
+      "runtime string",
+      "MIR lookup",
+      "backend lookup"
+    ],
+    "actor_to_ordinary_fallback_count": 0,
+    "runtime_selector_lookup_count": 0,
+    "context_or_witness_synthesis_count": 0,
+    "positional_unfold": "tuple or Sequence only; unknown Sequence arity cannot fill fixed formals",
+    "named_unfold": "statically labeled Record only; Map is rejected",
+    "named_rest": "one Record-backed named-rest parameter in final position with unique labels and no double capture"
+  },
+  "evaluation_and_failure": {
+    "evaluation_order": [
+      "callee_or_receiver",
+      "explicit_runtime_arguments_left_to_right_once",
+      "trailing_closure_environments_left_to_right_once",
+      "omitted_defaults_in_formal_declaration_order",
+      "zero_evaluation_witness_bindings",
+      "ownership_and_admission_commit"
+    ],
+    "preparation_failure": {
+      "callee_invocation_count": 0,
+      "actor_envelope_publish_count": 0,
+      "deferred_registration_count": 0,
+      "uncommitted_owner_retained": true,
+      "prepared_prefix_cleanup": "REVERSE_ACQUISITION_ORDER_EXACTLY_ONCE",
+      "external_effect_rollback_claim": false
+    },
+    "mut_contract": "one callee-owned mutable local, no caller alias or writeback",
+    "inout_contract": "one exclusive nonescaping caller-place borrow for the dynamic call extent",
+    "borrow_or_inout_cross_actor_isolation": false
+  },
+  "hir_lowering": {
+    "call_expr_identity": "HIR-H1/EXPR/CALL",
+    "call_plan_schema_identity": "CallPlan",
+    "prose_alias": "HirCallPlan",
+    "valid_mode_target_pairs": [
+      "ORDINARY::DIRECT_IMPLEMENTATION",
+      "ORDINARY::VIRTUAL_SLOT",
+      "ORDINARY::TRAIT_WITNESS",
+      "ORDINARY::EXTENSION_STATIC",
+      "MESSAGE::DIRECT_IMPLEMENTATION",
+      "MESSAGE::VIRTUAL_SLOT",
+      "MESSAGE::TRAIT_WITNESS",
+      "MESSAGE::EXTENSION_STATIC",
+      "MESSAGE::RESERVED_OPERATION",
+      "ACTOR_MESSAGE::ACTOR_TRANSPORT"
+    ],
+    "lowering_rows": [
+      "HM-LR-CALL-001",
+      "HM-LR-CALL-002",
+      "HM-LR-CALL-003",
+      "HM-LR-CALL-004",
+      "HM-LR-CALL-005",
+      "HM-LR-CALL-006",
+      "HM-LR-CALL-007",
+      "HM-LR-CALL-008",
+      "HM-LR-CALL-009",
+      "HM-LR-CALL-010"
+    ],
+    "new_call_input_commit_operation_count": 0
+  },
+  "actor_transport": {
+    "admission": "IMMEDIATE_NONBLOCKING",
+    "implicit_suspend_count": 0,
+    "implicit_retry_count": 0,
+    "prepare_operation": "ACTOR_ENVELOPE_PREPARE",
+    "terminator": "ACTOR_OP",
+    "lowering_row": "HM-LR-CALL-010",
+    "lowering_successor_mapping": {
+      "SUCCESS": "NORMAL_RESULT_OK",
+      "REJECTED": "NORMAL_RESULT_ERR",
+      "DEFECT": "DEFECT",
+      "CANCEL": "CANCELLATION"
+    },
+    "lowering_row_successor_roles": [
+      "NORMAL",
+      "DEFECT",
+      "CANCELLATION"
+    ],
+    "lowering_row_suspension_effect": "NONE",
+    "lowering_row_reply_token_count": 0,
+    "one_way_result": "Result<Unit, error ActorMessageError>",
+    "one_way_reply_identity_count": 0,
+    "request_result": "Result<Reply<T>, error ActorMessageError>",
+    "request_reply_identity_creation": "SUCCESSFUL_ADMISSION_COMMIT_ONLY",
+    "reply_wait": "SEPARATE_ONE_SHOT_EXPLICIT_AWAIT",
+    "admission_errors": [
+      "mailboxFull",
+      "receiverClosedBeforeAdmission"
+    ],
+    "post_admission_reply_errors": [
+      "receiverClosedBeforeReply",
+      "exact normalized handler ErrorSet"
+    ],
+    "precommit_owner_retained": true,
+    "precommit_envelope_publish_count": 0,
+    "precommit_sequence_allocation_count": 0,
+    "successful_envelope_publish_count": 1,
+    "successful_moved_owner_transfer_count_each": 1,
+    "global_fifo_or_fairness_claim": false
+  },
+  "actor_protocol_and_declaration": {
+    "protocol_binding": "EXACT_PREVERIFIED_ACTOR_PROTOCOL_BINDING",
+    "runtime_protocol_lookup_count": 0,
+    "source_or_import_order_winner_count": 0,
+    "required_binding_identities": [
+      "ActorProtocolConformanceId",
+      "ActorProtocolRequirementId",
+      "ActorProtocolBindingId",
+      "ActorHandlerId_or_ActorRequestId"
+    ],
+    "declaration_root": "ActorDecl",
+    "declaration_visibility_required": true,
+    "empty_body_admitted": true,
+    "mailbox_capacity_rejection_owner": "actor_mailbox_capacity"
+  },
+  "diagnostic_priority": [
+    "TILDE_CALL_COMMA_REQUIRES_GROUPING",
+    "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN",
+    "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+    "ACTOR_OPERATION_KIND_COLLISION"
+  ],
+  "rules": [
+    {"rule_id": "UCTC-R001", "text": "Ordinary, message and actor-message invocation surfaces normalize to one CallExpr with exactly one CallMode."},
+    {"rule_id": "UCTC-R002", "text": "The normalized AST preserves the ordered six-kind CallArgument family and a source-structure trailing-closure array; HIR appends trailing closures to one seven-kind argument array."},
+    {"rule_id": "UCTC-R003", "text": "Message ~ is rank-15 left associative; actor :~ is rank-15 terminal and nonassociative."},
+    {"rule_id": "UCTC-R004", "text": "Message calls synthesize no payload aggregate and never project one Tuple or Record payload into multiple formals."},
+    {"rule_id": "UCTC-R005", "text": "A maximal trailing-closure group attaches to the immediately preceding call before static binding."},
+    {"rule_id": "UCTC-R006", "text": "UnifiedCallModeAdmitted performs finite candidate-domain, structural shape, channel binding, ranking and responsibility closure before sealing one CallPlan."},
+    {"rule_id": "UCTC-R007", "text": "Static call shape requires unique labels, ordered channels, Record-backed named unfold and named rest, a single rest capture and no double capture."},
+    {"rule_id": "UCTC-R008", "text": "Runtime-bearing explicit arguments and trailing-closure environments evaluate once in source order before omitted defaults in formal declaration order; witnesses evaluate zero times."},
+    {"rule_id": "UCTC-R009", "text": "Preparation failure invokes and publishes nothing, retains uncommitted owners and cleans the prepared prefix in reverse acquisition order exactly once."},
+    {"rule_id": "UCTC-R010", "text": "Ordinary and message modes use only the closed valid mode-target pairs; actor-message uses ActorTransport only and has no ordinary fallback."},
+    {"rule_id": "UCTC-R011", "text": "The ten existing HM-LR-CALL rows are the complete current CallPlan lowering table; no new HIR identity, MIR operation or runtime lookup is introduced."},
+    {"rule_id": "UCTC-R012", "text": "Actor :~ performs immediate admission and never implicitly suspends, blocks or retries."},
+    {"rule_id": "UCTC-R013", "text": "Actor admission rejection is a Result error on normal expression flow; one-way send creates no reply token and request creates Reply identities only after successful commit."},
+    {"rule_id": "UCTC-R014", "text": "Actor transport consumes one exact preverified protocol binding and never reselects by runtime, source or import order."},
+    {"rule_id": "UCTC-R015", "text": "Actor declarations require explicit top-level visibility, admit an empty body, and delegate invalid mailbox capacity rejection to actor_mailbox_capacity."},
+    {"rule_id": "UCTC-R016", "text": "Formatter and LSP preserve CallMode, selector qualification, comma ownership and trailing-closure attachment without semantic rewrite."},
+    {"rule_id": "UCTC-R017", "text": "This R57 candidate supplies E2 structured static evidence only; all product lanes remain NOT_RUN and GitHub publication remains suspended."}
+  ],
+  "acceptance_cases": [
+    {"case_id": "UCTC-AC-001", "class": "POSITIVE", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "render(value)", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"ast_node": "CallExpr", "call_mode": "Ordinary"}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-002", "class": "POSITIVE", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "receiver ~ moveTo x, y", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"ast_node": "CallExpr", "call_mode": "Message", "argument_count": 2}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-003", "class": "POSITIVE", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "worker :~ submit move job", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"ast_node": "CallExpr", "call_mode": "ActorMessage", "target": "ACTOR_TRANSPORT", "implicit_suspend_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-004", "class": "BOUNDARY", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "compare receiver ~ ping with receiver ~ ping ()", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"first_argument_count": 0, "second_argument_count": 1, "second_argument_type": "Unit"}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-005", "class": "BOUNDARY", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "compare function(x, y) with receiver ~ selector (x, y)", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"ordinary_argument_count": 2, "message_argument_count": 1, "message_argument_type": "Tuple"}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-006", "class": "BOUNDARY", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "combine((receiver ~ f x), y)", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"outer_argument_count": 2, "nested_call_parenthesized": true}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-007", "class": "REJECT", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "combine(receiver ~ f x, y)", "expected": "REJECT", "diagnostic_or_null": "TILDE_CALL_COMMA_REQUIRES_GROUPING", "assertions": {"hir_residue_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-008", "class": "REJECT", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "first :~ ping :~ pong", "expected": "REJECT", "diagnostic_or_null": "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN", "assertions": {"hir_residue_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-009", "class": "REJECT", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "worker ~ submit move job", "expected": "REJECT", "diagnostic_or_null": "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE", "assertions": {"ordinary_fallback_count": 0, "hir_residue_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-010", "class": "REJECT", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "actor declares on ping and request ping with the same canonical call shape", "expected": "REJECT", "diagnostic_or_null": "ACTOR_OPERATION_KIND_COLLISION", "assertions": {"expected_result_selection_count": 0, "hir_residue_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-011", "class": "REJECT", "feature_id": "unified_call_expression_and_tilde_modes", "source_or_subject": "defer worker :~ stop", "expected": "REJECT", "diagnostic_or_null": "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER", "assertions": {"cleanup_registration_count": 0, "actor_envelope_publish_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-012", "class": "BOUNDARY", "feature_id": "data_shaping_callshape_model", "source_or_subject": "(String, String..., Record***) -> Unit", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"repeated_positional_count": 1, "named_rest_count": 1, "named_rest_final": true, "residue_preserved": true}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-013", "class": "REJECT", "feature_id": "data_shaping_callshape_model", "source_or_subject": "Request!(url: first, url: second, agge: 30)", "expected": "REJECT", "diagnostic_or_null": "STATIC_CALL_SHAPE_NOT_ADMITTED", "assertions": {"duplicate_label": "url", "unknown_label": "agge", "winner_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-014", "class": "BOUNDARY", "feature_id": "actor_declaration_grammar_closed", "source_or_subject": "public actor Worker { }", "expected": "ADMIT", "diagnostic_or_null": null, "assertions": {"production": "ActorDecl", "body_item_count": 0, "visibility": "public"}, "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "UCTC-AC-015", "class": "REJECT", "feature_id": "actor_declaration_grammar_closed", "source_or_subject": "public actor #mailbox(capacity: 0) Worker { }", "expected": "REJECT", "diagnostic_or_null": "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT", "assertions": {"delegate_feature_id": "actor_mailbox_capacity", "hir_residue_count": 0}, "execution_state": "DESIGN_STATIC_NOT_RUN"}
+  ],
+  "acceptance_bindings": {
+    "unified_call_expression_and_tilde_modes": {
+      "POSITIVE": ["UCTC-AC-001", "UCTC-AC-002", "UCTC-AC-003"],
+      "BOUNDARY": ["UCTC-AC-004", "UCTC-AC-005", "UCTC-AC-006"],
+      "REJECT": ["UCTC-AC-007", "UCTC-AC-008", "UCTC-AC-009", "UCTC-AC-010", "UCTC-AC-011"]
+    },
+    "data_shaping_callshape_model": {
+      "BOUNDARY": ["UCTC-AC-012"],
+      "REJECT": ["UCTC-AC-013"]
+    },
+    "actor_declaration_grammar_closed": {
+      "BOUNDARY": ["UCTC-AC-014"],
+      "REJECT": ["UCTC-AC-015"]
+    }
+  },
+  "machine_acceptance": {
+    "feature_count": 4,
+    "rule_count": 17,
+    "acceptance_case_count": 15,
+    "positive_case_count": 3,
+    "boundary_case_count": 5,
+    "reject_case_count": 7,
+    "valid_mode_target_pair_count": 10,
+    "new_predicate_count": 1,
+    "diagnostic_relation_count": 4,
+    "dependency_edge_repair_count": 2,
+    "predecessor_blocked_cell_count": 10,
+    "bound_direct_transition_count": 9,
+    "bound_delegated_transition_count": 1,
+    "catalog_direct_transition_count": 1,
+    "overlay_bound_direct_transition_count": 8,
+    "overlay_bound_delegated_transition_count": 1,
+    "post_overlay_total_blocked_cell_count": 1281,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED"
+  }
+}

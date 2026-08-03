@@ -496,6 +496,87 @@
         "acknowledged_fallible_command": "request returning Unit",
         "production_execution": "NOT_RUN"
       }
+    },
+    {
+      "rule_id": "ACC-R020",
+      "domain": "actor_minimum_lifecycle",
+      "title": "actor creation, stop and uncaught Defect have one root-owned terminal order",
+      "contract": {
+        "static_actor_identity": "ActorId in STATIC_ACTOR_DECLARATION_ID domain",
+        "runtime_instance_identity": "one non-forgeable internal ActorInstanceId per Actor incarnation",
+        "runtime_instance_in_module_binding_bytes_count": 0,
+        "root_owner_identity": "one non-forgeable internal ActorRuntimeRootOwnerId per Actor incarnation",
+        "root_owner_source_constructor_count": 0,
+        "root_owner_is_managed_root_id": false,
+        "current_supervisor_id": null,
+        "state_set": [
+          "PREPARING",
+          "CREATION_ABORTED",
+          "LIVE",
+          "STOP_REQUESTED",
+          "ADMISSION_CLOSED",
+          "DRAINING",
+          "DEFECT_STOPPING",
+          "CLEANING",
+          "TERMINATED"
+        ],
+        "actor_ref_publication": "only actor_publish_committed after state_initialized and mailbox_initialized",
+        "creation_failure": "publish no ActorRef; enter CREATION_ABORTED; clean successfully initialized resources exactly once in reverse initialization order; emit one root-owner creation-failure observation carrying FailureId",
+        "normal_stop_policy": "DRAIN_ALL_COMMITTED_V1",
+        "normal_stop_order": [
+          "stop_requested",
+          "admission_closed",
+          "drain_started",
+          "drain_completed",
+          "actor_state_cleanup_completed",
+          "root_owner_observed",
+          "termination_published"
+        ],
+        "normal_stop_suspended_turn": "stop remains pending with no implicit cancellation, fabricated reply, cleanup or termination",
+        "suspended_turn_binding": "retain the exact ContinuationReceiptId, continuation-interface digest, StateRegionId authority, managed roots, loans and cleanup tokens until an independently admitted resume-or-cancel winner; normal stop selects neither winner",
+        "defect_policy": "STOP_AND_FAIL_PENDING_V1",
+        "defect_order": [
+          "defect_observed",
+          "admission_closed",
+          "queued_payload_cleaned",
+          "active_turn_cleanup_completed",
+          "actor_state_cleanup_completed",
+          "pending Reply terminalization",
+          "root_owner_observed",
+          "termination_published"
+        ],
+        "loan_cleanup_rebind": "every active loan ends through the existing infallible LOAN_END before its overlapping owner cleanup; deferred, capture and owner cleanup tokens discharge exactly once before the enclosing actor cleanup event completes",
+        "managed_root_rebind": "every actor-owned managed root is transferred or removed through an exact managed-root receipt before root_owner_observed; ActorRuntimeRootOwnerId and RootId remain disjoint identity domains",
+        "queued_handler_start_after_defect_count": 0,
+        "unterminated_admitted_reply_failure": "ActorMessageError::receiverClosedBeforeReply",
+        "defect_exposed_as_recoverable_error": false,
+        "cleanup_cardinality_per_owned_resource": 1,
+        "root_owner_observation_cardinality": 1,
+        "r41_binding_residue": "preserve exact ActorProtocolConformanceId, ActorProtocolRequirementId, ActorProtocolBindingId and selected handler/request identity without runtime reselection",
+        "r23_binding_residue": "protocol-originated lifecycle events resolve exactly one immutable ActorProtocolBindingTableId and ActorProtocolBindingId foreign key and preserve ResponsibilityId plus binding_row_sha256; concrete non-protocol events carry null binding foreign keys",
+        "binding_verification_before_create_prepare": true,
+        "lifecycle_binding_creation_count": 0,
+        "lifecycle_binding_reselection_count": 0,
+        "runtime_abi_rebind": "lifecycle barriers consume the single exact typed runtime ABI and helper registry; a new helper requires an explicit allowlist and digest rebind and cannot create a second ABI",
+        "r24_codegen_lifetime_absorbed_count": 0,
+        "creation_abort_actor_termination_count": 0,
+        "post_termination_event_count": 0,
+        "primary_defect_replacement_count": 0,
+        "cleanup_defect_suppression_order": "CONTIGUOUS_REVERSE_CLEANUP_EXECUTION_ORDER",
+        "reply_snapshot_point": "defect_observed",
+        "reply_snapshot_terminalization": "each still-open admitted request receives exactly one ActorMessageError::receiverClosedBeforeReply after cleanup with the same R23 request binding, ResponsibilityId and binding-row digest",
+        "send_reply_terminalization_count": 0,
+        "restart_event_count": 0,
+        "interleaving_event_count": 0,
+        "fairness_or_eventual_termination_promise": false,
+        "schema_and_runtime_receipt_status": "NOT_RUN",
+        "feature_id": "actor_minimum_lifecycle_r1",
+        "trace_contract": "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
+        "compiler_source_diagnostic_lane": "NOT_APPLICABLE_INTERNAL_LIFECYCLE_EVIDENCE_INVARIANT",
+        "acceptance_matrix": "tests/conformance/actor-lifecycle-guards-r1.json",
+        "acceptance_guard_coverage": "12_OF_12",
+        "debugger_projection": "RECEIPT_BOUND_READ_ONLY_IDENTITY_STATE_AND_COMMITTED_EVENT_ORDER_PRODUCT_NOT_RUN"
+      }
     }
   ],
   "unclosed_product_gates": [
@@ -527,12 +608,19 @@
       "gate_id": "ACC-G005",
       "topic": "target-bound parser/checker/MIR/xVM and schedule-permutation evidence",
       "status": "BLOCKS_PRODUCT_EXECUTION"
+    },
+    {
+      "gate_id": "ACC-G006",
+      "topic": "target-bound Actor creation publication, DRAIN_ALL_COMMITTED_V1, STOP_AND_FAIL_PENDING_V1, root-owner observation and termination-order evidence",
+      "gate_kind": "TARGET_EXECUTION_GATE",
+      "design_contract_status": "SATISFIED",
+      "status": "BLOCKS_PRODUCT_EXECUTION"
     }
   ],
   "machine_acceptance": {
-    "rule_count": 19,
+    "rule_count": 20,
     "rule_ids_unique": true,
-    "gate_count": 5,
+    "gate_count": 6,
     "new_source_syntax_count": 4,
     "removed_source_syntax_count": 3,
     "normalized_call_node_count": 1,
@@ -571,6 +659,12 @@
     "actor_protocol_runtime_lookup_count": 0,
     "recoverable_send_error_admission_count": 0,
     "actor_protocol_design_fixture_count": 26,
-    "actor_protocol_product_execution_count": 0
+    "actor_protocol_product_execution_count": 0,
+    "actor_runtime_root_owner_identity_count": 1,
+    "actor_runtime_root_owner_source_constructor_count": 0,
+    "normal_stop_policy_count": 1,
+    "defect_stop_policy_count": 1,
+    "restart_event_count": 0,
+    "interleaving_event_count": 0
   }
 }

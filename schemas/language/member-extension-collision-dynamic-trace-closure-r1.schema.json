@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json",
+  "title": "Deeplus R72 member/extension collision dynamic trace closure",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "candidate_status", "feature_id", "target_cell", "authority_fence", "static_collision_owner", "noncollision_boundary", "diagnostic_fence", "pre_hir_rejection_boundary", "runtime_backend_residue_fence", "r71_preservation", "preserved_adjacent_ownership", "rules", "acceptance_cases", "acceptance_bindings", "mutation_obligations", "machine_acceptance"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.member-extension-collision-dynamic-trace-closure/r1"},
+    "revision": {"const": "r72-local-member-extension-collision-dynamic-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "d54633b10c1b92bcd2445afc9906ecf9bafec5c9"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_id": {"const": "member_extension_collision_error_policy"},
+    "target_cell": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["stage", "predecessor_disposition", "predecessor_gap_id", "disposition", "delegate_feature_id", "not_applicable"],
+      "properties": {
+        "stage": {"const": "DYNAMIC_LOWERING"},
+        "predecessor_disposition": {"const": "APPLICABLE_BLOCKED_BY_GAP"},
+        "predecessor_gap_id": {"const": "IR-XCUT-P1-054"},
+        "disposition": {"const": "NOT_APPLICABLE"},
+        "delegate_feature_id": {"type": "null"},
+        "not_applicable": {
+          "type": "object",
+          "required": ["reason_code", "authority_boundary", "rationale"],
+          "properties": {
+            "reason_code": {"const": "NA_DYNAMIC_REJECTED_BEFORE_LOWERING"},
+            "authority_boundary": {"const": "MIR_RUNTIME_AUTHORITY"},
+            "rationale": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "static_collision_owner": {
+      "type": "object",
+      "required": ["owner", "both_domains_nonempty", "within_domain_ranking_before_collision", "selected_count_on_collision", "source_import_use_or_activation_order_winner_count", "generic_or_overload_winner_selected_by_this_contract_count"],
+      "properties": {
+        "owner": {"const": "integrated_checker"},
+        "both_domains_nonempty": {"const": "REJECT_MEMBER_EXTENSION_COLLISION"},
+        "within_domain_ranking_before_collision": {"const": false},
+        "selected_count_on_collision": {"const": 0},
+        "source_import_use_or_activation_order_winner_count": {"const": 0},
+        "generic_or_overload_winner_selected_by_this_contract_count": {"const": 0}
+      }
+    },
+    "noncollision_boundary": {
+      "type": "object",
+      "required": ["one_domain_empty", "qualified_extension_selector", "qualified_selector_within_domain_winner_owned_by_this_contract", "runtime_behavior_owned_by_this_feature"],
+      "properties": {
+        "one_domain_empty": {"const": "ADMIT_AND_DEFER_TO_EXISTING_DOMAIN_OWNER"},
+        "qualified_extension_selector": {"const": "RESTRICT_TO_EXACT_EXTENSION_DOMAIN_AND_BYPASS_ONLY_CROSS_DOMAIN_COLLISION"},
+        "qualified_selector_within_domain_winner_owned_by_this_contract": {"const": false},
+        "runtime_behavior_owned_by_this_feature": {"const": false}
+      }
+    },
+    "diagnostic_fence": {
+      "type": "object",
+      "required": ["sole_active_primary", "secondary_diagnostics", "same_stage_exact_owner_primary_precedes_generic_fallback", "same_stage_generic_fallback_winner_count", "retired_nonemitting", "recovery_admitted_hir_count", "new_diagnostic_count"],
+      "properties": {
+        "sole_active_primary": {"const": "MEMBER_EXTENSION_COLLISION"},
+        "secondary_diagnostics": {"const": []},
+        "same_stage_exact_owner_primary_precedes_generic_fallback": {"const": true},
+        "same_stage_generic_fallback_winner_count": {"const": 0},
+        "retired_nonemitting": {"const": ["EXTENSION_SHADOWED_BY_MEMBER_COMPAT", "STABLE_MEMBER_EXTENSION_COLLISION"]},
+        "recovery_admitted_hir_count": {"const": 0},
+        "new_diagnostic_count": {"const": 0}
+      }
+    },
+    "pre_hir_rejection_boundary": {
+      "type": "object",
+      "required": ["selected_member_count", "selected_extension_count", "hir_call_plan_count", "canonical_hir_node_count", "recovery_hir_count", "runtime_fallback_count"],
+      "properties": {
+        "selected_member_count": {"const": 0},
+        "selected_extension_count": {"const": 0},
+        "hir_call_plan_count": {"const": 0},
+        "canonical_hir_node_count": {"const": 0},
+        "recovery_hir_count": {"const": 0},
+        "runtime_fallback_count": {"const": 0}
+      }
+    },
+    "runtime_backend_residue_fence": {
+      "type": "object",
+      "required": ["mir_operation_count", "mir_terminator_count", "xvm_instruction_count", "runtime_selector_payload_count", "runtime_provider_lookup_count", "runtime_helper_call_count", "cranelift_instruction_count", "cranelift_reselection_count", "address_or_link_order_winner_count"],
+      "properties": {
+        "mir_operation_count": {"const": 0},
+        "mir_terminator_count": {"const": 0},
+        "xvm_instruction_count": {"const": 0},
+        "runtime_selector_payload_count": {"const": 0},
+        "runtime_provider_lookup_count": {"const": 0},
+        "runtime_helper_call_count": {"const": 0},
+        "cranelift_instruction_count": {"const": 0},
+        "cranelift_reselection_count": {"const": 0},
+        "address_or_link_order_winner_count": {"const": 0}
+      }
+    },
+    "r71_preservation": {
+      "type": "object",
+      "required": ["contract", "preserved_rule", "method_extension_resolution_dynamic_disposition", "method_extension_resolution_delegate_feature_id", "selected_call_lowering_change_count", "r71_transition_count"],
+      "properties": {
+        "contract": {"const": "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json"},
+        "preserved_rule": {"const": "MERTC-R003"},
+        "method_extension_resolution_dynamic_disposition": {"const": "BOUND_DELEGATED"},
+        "method_extension_resolution_delegate_feature_id": {"const": "unified_call_expression_and_tilde_modes"},
+        "selected_call_lowering_change_count": {"const": 0},
+        "r71_transition_count": {"const": 0}
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "items": {"type": "object", "required": ["rule_id", "text"], "properties": {"rule_id": {"pattern": "^MECDTC-R0(0[1-9]|1[0-3])$"}, "text": {"type": "string", "minLength": 1}}}
+    },
+    "acceptance_cases": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {"type": "object", "required": ["case_id", "class", "expected", "assertion_ids", "execution_state"], "properties": {"case_id": {"pattern": "^R72-MECD-ACC-00[1-9]$"}, "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]}, "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}}}
+    },
+    "mutation_obligations": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {"type": "object", "required": ["mutation_id", "mutation", "killed_by", "expected"], "properties": {"mutation_id": {"pattern": "^M(0[1-9]|1[0-4])$"}, "killed_by": {"const": "G06"}, "expected": {"const": "MUTANT_KILLED"}}}
+    },
+    "machine_acceptance": {
+      "type": "object",
+      "required": ["transitioned_cell_count", "other_cell_transition_count", "other_atomic_cell_count", "other_atomic_cell_sha256", "selected_count_on_collision", "admitted_hir_residue_count", "mir_runtime_backend_residue_count", "semantic_p0", "feature_p1", "m13_actions", "product_lanes", "github_publication", "product_execution_receipt_count", "implementation_claim"],
+      "properties": {
+        "transitioned_cell_count": {"const": 1},
+        "other_cell_transition_count": {"const": 0},
+        "other_atomic_cell_count": {"const": 4220},
+        "other_atomic_cell_sha256": {"const": "3cdbe4a509df453151f7e4900610acf2acbb6dfe0a8734f52e375a86082299e2"},
+        "selected_count_on_collision": {"const": 0},
+        "admitted_hir_residue_count": {"const": 0},
+        "mir_runtime_backend_residue_count": {"const": 0},
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED"},
+        "product_execution_receipt_count": {"const": 0},
+        "implementation_claim": {"const": "NONE"}
+      }
+    }
+  }
+}

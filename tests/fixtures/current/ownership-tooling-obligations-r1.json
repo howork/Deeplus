@@ -1,0 +1,86 @@
+{
+  "schema": "deeplus.ownership-tooling-obligations-fixtures/r1",
+  "fixture_schema": "schemas/language/ownership-tooling-obligations-fixtures-r1.schema.json",
+  "status": "DESIGN_STATIC_NOT_RUN",
+  "contract": "spec/contracts/ownership-tooling-obligations-r1.json",
+  "expected_counts": {"positive": 1, "boundary": 1, "negative": 1, "mutation_suite": 1, "total": 4, "mutations": 10},
+  "cases": [
+    {
+      "test_id": "OWN-GAP-P-027",
+      "class": "positive",
+      "operation": "MOVE_BORROW_CLEANUP_TOOLING_PROJECTION",
+      "input": {
+        "snapshot_current": true,
+        "formatter_round_trip_equal": true,
+        "formatter_second_pass_edits": 0,
+        "hover_parameter_mode": "move",
+        "hover_region_obligation": "NONESCAPING",
+        "place_state": "Live",
+        "loan_state": "Active",
+        "cleanup_token_state": "Available",
+        "semantic_ids_only": true,
+        "rename_projection": {"target_decl_id_bound": true, "reference_graph_isomorphic": true, "ownership_responsibility_digest_equal": true},
+        "actor_transfer_projection": {"admission_result": "enqueue_committed", "ownership_commit_count": 1, "sender_owner_after_commit": false, "receiver_owner_after_commit": true, "dual_owner_count": 0, "channel_sequence_assigned_at_commit": true, "cross_channel_or_global_order_claim": false, "runtime_debugger_execution": "NOT_RUN"}
+      },
+      "expected": {"result": "ACCEPT_EXACT_READ_ONLY_PROJECTION", "diagnostic_or_null": null, "semantic_mutation_count": 0}
+    },
+    {
+      "test_id": "OWN-GAP-B-027",
+      "class": "boundary",
+      "operation": "OVERLAPPING_INOUT_MULTI_SPAN",
+      "input": {
+        "snapshot_current": true,
+        "primary_count": 1,
+        "primary_role": "PRIMARY_OPERATION",
+        "related_roles": ["CONFLICTING_ACCESS"],
+        "related_span_counts": {"CONFLICTING_ACCESS": 2, "LOAN_ORIGIN": 0},
+        "related_spans": [
+          {"role": "CONFLICTING_ACCESS", "source_origin_id": "SourceOriginId(arg-1)"},
+          {"role": "CONFLICTING_ACCESS", "source_origin_id": "SourceOriginId(arg-2)"}
+        ],
+        "related_source_origin_order_exact": true,
+        "automatic_fix_count": 0
+      },
+      "expected": {"result": "ACCEPT_COMPLETE_DETERMINISTIC_MULTI_SPAN", "diagnostic_or_null": "INOUT_ALIAS_CONFLICT", "semantic_mutation_count": 0}
+    },
+    {
+      "test_id": "OWN-GAP-N-027",
+      "class": "negative",
+      "operation": "AUTO_INSERT_CLONE_WITHOUT_WITNESS",
+      "input": {
+        "snapshot_current": true,
+        "code_action_class": "PROHIBITED_AUTHORITY_MANUFACTURING",
+        "transformation": "INSERT_CLONE",
+        "automatic": true,
+        "clone_witness_present": false
+      },
+      "expected": {"result": "REJECT", "diagnostic_or_null": "OWNERSHIP_TOOLING_PROJECTION_DRIFT", "semantic_mutation_count": 0}
+    },
+    {
+      "test_id": "OWN-TOOL-M-065",
+      "class": "mutation_suite",
+      "operation": "EXACT_MUTATION_REJECTION",
+      "input": {"mutation_ids": ["R39-M-01", "R39-M-02", "R39-M-03", "R39-M-04", "R39-M-05", "R39-M-06", "R39-M-07", "R39-M-08", "R39-M-09", "R39-M-10"]},
+      "expected": {"result": "REJECT_ALL_10_MUTANTS", "diagnostic_or_null": "OWNERSHIP_TOOLING_PROJECTION_DRIFT", "semantic_mutation_count": 0}
+    }
+  ],
+  "mutations": [
+    {"mutation_id": "R39-M-01", "axis": "delete or swap primary span", "expected": "REJECT"},
+    {"mutation_id": "R39-M-02", "axis": "omit duplicate or reorder related span", "expected": "REJECT"},
+    {"mutation_id": "R39-M-03", "axis": "use iteration order or display coordinates as semantic span identity", "expected": "REJECT"},
+    {"mutation_id": "R39-M-04", "axis": "insert clone share transfer move borrow inout capture lifetime cleanup or conformance authority", "expected": "REJECT"},
+    {"mutation_id": "R39-M-05", "axis": "formatter changes ownership token order context role or idempotence", "expected": "REJECT"},
+    {"mutation_id": "R39-M-06", "axis": "accept stale or mixed snapshot or hover fabricates unresolved fact", "expected": "REJECT"},
+    {"mutation_id": "R39-M-07", "axis": "rename changes ownership graph or resolves by spelling only", "expected": "REJECT"},
+    {"mutation_id": "R39-M-08", "axis": "select join predecessor activate nonactive loan or resurrect consumed token", "expected": "REJECT"},
+    {"mutation_id": "R39-M-09", "axis": "emit dependency-bound root or continuation runtime rows without an exact runtime/debug receipt or derive identity from backend address", "expected": "REJECT"},
+    {"mutation_id": "R39-M-10", "axis": "add tool feedback edge, create dual actor owner, or claim product pass", "expected": "REJECT"}
+  ],
+  "execution": {
+    "design_static_projection": "PASS",
+    "production_formatter": "NOT_RUN",
+    "production_lsp": "NOT_RUN",
+    "production_debugger": "NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

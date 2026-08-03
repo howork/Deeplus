@@ -49,10 +49,18 @@ REQUIRED_MIR_OPERATIONS = {
 }
 EXPECTED_FIXTURE_COUNTS = {
     "positive": 9,
-    "boundary": 3,
+    "boundary": 4,
     "negative": 12,
-    "mutation": 11,
-    "total": 35,
+    "mutation": 14,
+    "total": 39,
+}
+CURRENT_TYPED_REFERENCE_MODES = {
+    "BORROW",
+    "INOUT",
+    "MOVE",
+    "COPY",
+    "CLONE",
+    "ONCE",
 }
 EXPECTED_DIAGNOSTICS = {
     "FEATURE_NOT_ACTIVATABLE_IN_CURRENT_PROFILE",
@@ -141,7 +149,11 @@ def decide_capture_input(value: dict[str, Any]) -> tuple[str, str | None]:
             or item.get("trait_witness_id_or_null") is not None
         ):
             return "REJECT", "OWNERSHIP_MODE_ADMISSION_FAILED"
-        if mode == "CLONE" and item.get("trait_witness_id_or_null") is None:
+        if mode == "CLONE" and (
+            item.get("responsibility_rule_id_or_null") != "Clone"
+            or item.get("responsibility_evidence_id_or_null") is None
+            or item.get("trait_witness_id_or_null") is None
+        ):
             return "REJECT", "OWNERSHIP_MODE_ADMISSION_FAILED"
     return "ADMIT", None
 
@@ -164,10 +176,37 @@ def projection_errors(model: dict[str, Any]) -> set[str]:
         errors.add("STABLE_PLACE_BINDING")
     copy_item = next(item for item in items if item["mode"] == "COPY")
     clone_item = next(item for item in items if item["mode"] == "CLONE")
-    if copy_item["rule"] != "CopyValue" or copy_item["evidence_domain"] != "COPY_VALUE":
+    if (
+        copy_item["rule"] != "CopyValue"
+        or copy_item["evidence_domain"] != "RESPONSIBILITY_EVIDENCE"
+        or copy_item["responsibility_evidence_id_or_null"] is None
+        or copy_item["evidence_kind"] != "INTRINSIC_PREDICATE_PROOF"
+        or copy_item["trait_witness_id_or_null"] is not None
+    ):
         errors.add("RESPONSIBILITY_DOMAIN")
-    if clone_item["trait_witness_id_or_null"] is None:
+    if (
+        clone_item["rule"] != "Clone"
+        or clone_item["evidence_domain"] != "RESPONSIBILITY_EVIDENCE"
+        or clone_item["evidence_kind"] != "EXACT_SELECTED_TRAIT_WITNESS"
+        or clone_item["trait_witness_id_or_null"] is None
+    ):
         errors.add("CLONE_WITNESS")
+    if clone_item["responsibility_evidence_id_or_null"] is None:
+        errors.add("CLONE_RESPONSIBILITY_EVIDENCE")
+    if "PLACE_MOVE" in model["fallible_preparation_operations"]:
+        errors.add("PRECOMMIT_PLACE_MOVE")
+    if (
+        model["commit_tail_operations"]
+        != ["PLACE_MOVE", "BUILDER_STAGE", "BUILDER_COMMIT", "CLOSURE_MAKE"]
+        or model["commit_tail_fallible_step_count"] != 0
+    ):
+        errors.add("COMMIT_TAIL")
+    if (
+        "DEEP" in model["typed_hir_modes"]
+        or "DEEP" in model["typed_mir_modes"]
+        or model["deep_typed_hir_mir_residue_count"] != 0
+    ):
+        errors.add("DEEP_TYPED_HIR_MIR_RESIDUE")
     if model["rollback_order"] != list(reversed(ordinals)):
         errors.add("ROLLBACK_ORDER")
     if not model["move_reservation_cancelled"]:
@@ -192,6 +231,8 @@ def base_projection_model() -> dict[str, Any]:
                 "evaluation_count": 1,
                 "rule": "Move",
                 "evidence_domain": "MOVE",
+                "responsibility_evidence_id_or_null": None,
+                "evidence_kind": None,
                 "trait_witness_id_or_null": None,
             },
             {
@@ -201,7 +242,9 @@ def base_projection_model() -> dict[str, Any]:
                 "mode": "COPY",
                 "evaluation_count": 1,
                 "rule": "CopyValue",
-                "evidence_domain": "COPY_VALUE",
+                "evidence_domain": "RESPONSIBILITY_EVIDENCE",
+                "responsibility_evidence_id_or_null": "evidence:copy",
+                "evidence_kind": "INTRINSIC_PREDICATE_PROOF",
                 "trait_witness_id_or_null": None,
             },
             {
@@ -211,11 +254,29 @@ def base_projection_model() -> dict[str, Any]:
                 "mode": "CLONE",
                 "evaluation_count": 1,
                 "rule": "Clone",
-                "evidence_domain": "TRAIT_WITNESS",
+                "evidence_domain": "RESPONSIBILITY_EVIDENCE",
+                "responsibility_evidence_id_or_null": "evidence:clone",
+                "evidence_kind": "EXACT_SELECTED_TRAIT_WITNESS",
                 "trait_witness_id_or_null": "witness:clone",
             },
         ],
         "evaluation_order": [0, 1, 2],
+        "fallible_preparation_operations": [
+            "MOVE_RESERVE",
+            "BUILDER_STAGE",
+            "CHECKED",
+            "BUILDER_STAGE",
+        ],
+        "commit_tail_operations": [
+            "PLACE_MOVE",
+            "BUILDER_STAGE",
+            "BUILDER_COMMIT",
+            "CLOSURE_MAKE",
+        ],
+        "commit_tail_fallible_step_count": 0,
+        "typed_hir_modes": sorted(CURRENT_TYPED_REFERENCE_MODES),
+        "typed_mir_modes": sorted(CURRENT_TYPED_REFERENCE_MODES),
+        "deep_typed_hir_mir_residue_count": 0,
         "rollback_order": [2, 1, 0],
         "move_reservation_cancelled": True,
         "partial_publication_count": 0,
@@ -256,6 +317,23 @@ def mutation_matrix() -> dict[str, tuple[str, Any]]:
             "CLONE_WITNESS",
             lambda m: m["capture_items"][2].__setitem__(
                 "trait_witness_id_or_null", None
+            ),
+        ),
+        "CLONE_RESPONSIBILITY_EVIDENCE_NULL": (
+            "CLONE_RESPONSIBILITY_EVIDENCE",
+            lambda m: m["capture_items"][2].__setitem__(
+                "responsibility_evidence_id_or_null", None
+            ),
+        ),
+        "PRECOMMIT_PLACE_MOVE": (
+            "PRECOMMIT_PLACE_MOVE",
+            lambda m: m["fallible_preparation_operations"].append("PLACE_MOVE"),
+        ),
+        "DEEP_TYPED_HIR_MIR_RESIDUE": (
+            "DEEP_TYPED_HIR_MIR_RESIDUE",
+            lambda m: (
+                m["typed_hir_modes"].append("DEEP"),
+                m.__setitem__("deep_typed_hir_mir_residue_count", 1),
             ),
         ),
         "ROLLBACK_NOT_REVERSE": (
@@ -306,6 +384,7 @@ def main() -> int:
         "api": "schemas/language/module-api-digest.schema.json",
         "predicate_metadata": "spec/types/predicates/catalog-metadata.json",
         "fixture_metadata": "tests/conformance/checker-predicates/catalog-metadata.json",
+        "feature_chunk": "spec/features/catalog/chunks/part-0003.json",
     }
     loaded = {key: load_json(root, rel) for key, rel in paths.items()}
     contract = loaded["contract"]
@@ -314,6 +393,24 @@ def main() -> int:
     mir_defs = loaded["mir"]["$defs"]
     lowering = loaded["lowering"]["closure_capture_plan_lowering_contract"]
     mir_registry = loaded["mir_registry"]["closure_environment_plan_contract"]
+    bridge_contract = loaded["bridge"]["closure_capture_plan_contract"]
+    hir_reference = hir_defs["ReferenceCapture"]
+    mir_reference = mir_defs["closureReferenceCaptureField"]
+    input_capture_item = loaded["input_schema"]["$defs"]["captureItem"]
+    feature_rows = loaded["feature_chunk"]
+    capture_features = [
+        row for row in feature_rows
+        if isinstance(row, dict)
+        and row.get("feature_id") == "closure_capture_descriptor_msp"
+    ] if isinstance(feature_rows, list) else []
+
+    check(
+        len(capture_features) == 1
+        and capture_features[0].get("depends_on")
+        == ["function_signature_exactness", "responsibility_identity_registry_r1"],
+        "CCP-V00_FEATURE_DEPENDENCY",
+        "closure capture explicitly depends on exact signature and responsibility identity",
+    )
 
     check(
         loaded["input_schema"].get("additionalProperties") is False
@@ -349,7 +446,7 @@ def main() -> int:
         contract["profile_gates"]["COPY"]
         == "one exact CopyValue ResponsibilityEvidenceId"
         and contract["profile_gates"]["CLONE"]
-        == "one exact Clone TraitWitnessId and visible normalized error/effect rows",
+        == "one exact Clone ResponsibilityEvidenceId whose descriptor contains one exact TraitWitnessId and visible normalized error/effect/acquisition/cleanup residue",
         "CCP-V05_MODE_RESPONSIBILITY_BINDING",
         "CopyValue evidence and exact Clone witness remain distinct",
     )
@@ -364,7 +461,8 @@ def main() -> int:
     check(
         contract["algorithm"]["failure_atomicity"]["move_reservation_cancelled"] is True
         and contract["algorithm"]["failure_atomicity"]["loans_ended"] is True
-        and contract["algorithm"]["failure_atomicity"]["staged_owned_values_cleaned"] is True,
+        and contract["algorithm"]["failure_atomicity"]["staged_owned_values_cleaned"] is True
+        and contract["algorithm"]["failure_atomicity"]["source_owner_consumed_before_commit_tail_count"] == 0,
         "CCP-V07_OWNER_LOAN_DISPOSITION",
         "move, loan and staged-value disposition",
     )
@@ -398,7 +496,7 @@ def main() -> int:
         and "closureMakePayload" in mir_defs
         and lowering["new_mir_operation_kind_count"] == 0
         and REQUIRED_MIR_OPERATIONS <= set(lowering["reused_operation_kinds"])
-        and loaded["bridge"]["closure_capture_plan_contract"]["product_support"] == "NOT_RUN",
+        and bridge_contract["product_support"] == "NOT_RUN",
         "CCP-V11_HIR_MIR_BINDING",
         "tagged HIR capture sum and existing-op MIR transaction are bound",
     )
@@ -412,6 +510,50 @@ def main() -> int:
         "CCP-V12_PRODUCT_NOT_RUN_FENCE",
         "15/15 product lanes and GitHub publication remain fenced",
     )
+    check(
+        "responsibility_evidence_id_or_null" in hir_reference["required"]
+        and "selected_evidence_id_or_null" not in hir_reference["properties"]
+        and "responsibility_evidence_id_or_null" in mir_reference["required"]
+        and "responsibility_profile_id" in mir_reference["required"]
+        and "responsibility_id" not in mir_reference["properties"]
+        and len(input_capture_item["allOf"]) == 3
+        and lowering["capture_projection"]["responsibility_evidence_id_or_null"].startswith("COPY_OR_CLONE_EXACT_")
+        and mir_registry["capture_sum"]["reference_responsibility_evidence"].startswith("COPY_OR_CLONE_REQUIRE_EXACT_")
+        and bridge_contract["mir_projection"]["callable_profile_separation"].endswith("ResponsibilityEvidenceId"),
+        "CCP-V13_RESPONSIBILITY_EVIDENCE_RESIDUE",
+        "COPY and CLONE preserve one exact ResponsibilityEvidenceId while callable profile identity remains separate",
+    )
+    check(
+        contract["algorithm"]["infallible_commit_tail"]["starts_after_all_fallible_preparations"] is True
+        and contract["algorithm"]["infallible_commit_tail"]["per_reserved_capture_in_source_order"]
+        == ["PLACE_MOVE", "BUILDER_STAGE"]
+        and contract["algorithm"]["infallible_commit_tail"]["fallible_step_count"] == 0
+        and lowering["source_order_expansion"]["reference_move_or_once_preparation"]
+        == ["MOVE_RESERVE", "NO_PLACE_MOVE_OR_BUILDER_STAGE_BEFORE_FINAL_INTERVAL"]
+        and lowering["commit_and_publish"]["fallible_preparation_boundary"]
+        == "ALL_FALLIBLE_PREPARATION_SUCCEEDS_BEFORE_FIRST_PLACE_MOVE"
+        and lowering["commit_and_publish"]["final_interval_failure_edge_count"] == 0
+        and lowering["commit_and_publish"]["final_interval_suspend_or_branch_count"] == 0
+        and bridge_contract["transaction"]["final_interval_failure_edge_count"] == 0
+        and mir_registry["transactional_lowering"]["final_interval_failure_edge_count"] == 0,
+        "CCP-V14_FINAL_INFALLIBLE_MOVE_COMMIT",
+        "MOVE and ONCE reserve during fallible preparation and consume only in the source-ordered infallible commit tail",
+    )
+    hir_modes = set(hir_reference["properties"]["mode"]["enum"])
+    mir_modes = set(mir_reference["properties"]["capture_mode"]["enum"])
+    input_modes = set(input_capture_item["properties"]["normalized_mode"]["enum"])
+    check(
+        hir_modes == CURRENT_TYPED_REFERENCE_MODES
+        and mir_modes == CURRENT_TYPED_REFERENCE_MODES
+        and "DEEP" in input_modes
+        and contract["surface"]["deep_typed_hir_mir_residue_count"] == 0
+        and loaded["input_schema"]["x-deeplus-deep-typed-hir-mir-residue-count"] == 0
+        and lowering["capture_projection"]["deep_typed_hir_or_mir_row_count"] == 0
+        and bridge_contract["mir_projection"]["deep_typed_hir_or_mir_row_count"] == 0
+        and mir_registry["capture_sum"]["deep_typed_hir_or_mir_row_count"] == 0,
+        "CCP-V15_DEEP_ZERO_TYPED_RESIDUE",
+        "DEEP remains an exact current-profile rejection input and cannot appear in typed HIR or MIR",
+    )
 
     case_counts = Counter(row["class"] for row in fixtures["cases"])
     observed_counts = dict(case_counts)
@@ -423,9 +565,9 @@ def main() -> int:
         json.dumps(observed_counts, sort_keys=True),
     )
     check(
-        len({row["case_id"] for row in fixtures["cases"]}) == 35,
+        len({row["case_id"] for row in fixtures["cases"]}) == 39,
         "CCP-FIXTURE-IDENTITY",
-        "35 unique case identities",
+        "39 unique case identities",
     )
     fixture_diagnostics = {
         row["expected_diagnostic_or_null"]
@@ -495,7 +637,7 @@ def main() -> int:
     check(
         all(row["result"] == "PASS" for row in mutation_results),
         "CCP-MUTATION-MATRIX",
-        f"{sum(row['result'] == 'PASS' for row in mutation_results)}/11 rejected",
+        f"{sum(row['result'] == 'PASS' for row in mutation_results)}/14 rejected",
     )
 
     failed = [row for row in checks if row["result"] == "FAIL"]

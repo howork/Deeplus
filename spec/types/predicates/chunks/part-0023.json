@@ -1,0 +1,99 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ContextParameterRoleAdmitted",
+    "source_name": "ContextParameterRoleAdmitted",
+    "summary": "R51a1 closed design algorithm for ContextParameterRoleAdmitted; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "effect_row",
+      "call_shape",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "feature_refs": [
+      "explicit_context_argument_keyword_spelling",
+      "explicit_context_parameter_msp"
+    ],
+    "diagnostic_refs": [
+      "CONTEXT_ARGUMENT_REQUIRED",
+      "CONTEXT_FUNCTION_TYPE_MISMATCH"
+    ],
+    "design_seed_diagnostic_refs": [
+      "CONTEXT_ARGUMENT_REQUIRED",
+      "CONTEXT_FUNCTION_TYPE_MISMATCH"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "the formal parameter is explicitly marked context and the supplied call argument uses the exact context argument channel",
+      "exactly one supplied context value resolves for each required context parameter and their normalized types and role identities match",
+      "missing, duplicate, ordinary-channel, or role-mismatched supply emits CONTEXT_ARGUMENT_REQUIRED before ordinary type conversion"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "effect_row",
+      "call_shape",
+      "source_role",
+      "shape",
+      "rank",
+      "orientation",
+      "element_types"
+    ],
+    "formal_judgment_id": "J-ContextParameterRoleAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "the formal parameter is explicitly marked context and the supplied call argument uses the exact context argument channel",
+      "exactly one supplied context value resolves for each required context parameter and their normalized types and role identities match",
+      "missing, duplicate, ordinary-channel, or role-mismatched supply emits CONTEXT_ARGUMENT_REQUIRED before ordinary type conversion"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the closed RCTS-V5 input variant",
+      "normalize every declared descriptor axis",
+      "the formal parameter is explicitly marked context and the supplied call argument uses the exact context argument channel",
+      "exactly one supplied context value resolves for each required context parameter and their normalized types and role identities match",
+      "missing, duplicate, ordinary-channel, or role-mismatched supply emits CONTEXT_ARGUMENT_REQUIRED before ordinary type conversion",
+      "evaluate finite candidates in canonical identity order",
+      "return admit or the active primary diagnostic"
+    ],
+    "termination_metric": "finite descriptor size plus decreasing candidate count",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "CONTEXT_ARGUMENT_REQUIRED",
+    "secondary_diagnostics": [
+      "CONTEXT_FUNCTION_TYPE_MISMATCH"
+    ],
+    "positive_fixture_ids": [
+      "PF-ContextParameterRoleAdmitted-POS",
+      "PF-ContextParameterRoleAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ContextParameterRoleAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "d8dd44f6ce50795d910b3d4b14e74ff4e8e7ee29436a8ce76f3f0877ff870f66",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  }
+]

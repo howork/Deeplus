@@ -1,0 +1,226 @@
+[
+  {
+    "fixture_id": "PF-UnifiedCallModeAdmitted-POS",
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "CallExpr",
+      "call_mode": "Message",
+      "source": "receiver ~ moveTo x, y",
+      "argument_count": 2
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnifiedCallModeAdmitted-POS"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "Message mode owns one finite ordinary method domain and two ordered positional arguments close one exact CallPlan",
+    "rule_seed": "R57 unified call positive fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-UnifiedCallModeAdmitted-BOUNDARY",
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "CallExpr",
+      "call_mode": "Message",
+      "source": "receiver ~ ping",
+      "argument_count": 0,
+      "unit_argument_alias_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnifiedCallModeAdmitted-BOUNDARY"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the zero-argument Message form stays distinct from one explicit Unit argument",
+    "rule_seed": "R57 unified call zero-argument boundary fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-UnifiedCallModeAdmitted-NEG-COMMA",
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "TILDE_CALL_COMMA_REQUIRES_GROUPING",
+    "diagnostic_disposition": "active_primary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "CallExpr",
+      "source": "combine(receiver ~ f x, y)",
+      "outer_comma_owner_ambiguous": true
+    },
+    "violated_condition": "a nested tilde call followed by an outer comma is not parenthesized",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R57 comma-owner single-fault fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnifiedCallModeAdmitted-NEG-COMMA"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-UnifiedCallModeAdmitted-NEG-TERMINAL",
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "TILDE_CALL_TERMINAL_CHAIN_FORBIDDEN",
+    "diagnostic_disposition": "active_secondary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "CallExpr",
+      "source": "first :~ ping :~ pong",
+      "actor_message_terminal_continuation": true
+    },
+    "violated_condition": "ActorMessage is terminal and nonassociative",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R57 terminal actor-call single-fault fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnifiedCallModeAdmitted-NEG-TERMINAL"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "actor"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-UnifiedCallModeAdmitted-NEG-ACTOR-TOKEN",
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE",
+    "diagnostic_disposition": "active_secondary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "CallExpr",
+      "source": "worker ~ submit move job",
+      "call_mode": "Message",
+      "resolved_target_kind": "ActorOperation"
+    },
+    "violated_condition": "an actor operation requires ActorMessage mode selected by :~",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R57 actor-token single-fault fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnifiedCallModeAdmitted-NEG-ACTOR-TOKEN"
+      },
+      "responsibility": {
+        "ownership": "unique",
+        "cleanup": "drop",
+        "effects": [],
+        "errors": [],
+        "cancellation": "allowed",
+        "authorities": [
+          "actor-send"
+        ],
+        "suspends": false,
+        "isolation": "actor"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-UnifiedCallModeAdmitted-NEG-KIND-COLLISION",
+    "predicate_id": "UnifiedCallModeAdmitted",
+    "expected": "rejected",
+    "expected_primary_diagnostic": "ACTOR_OPERATION_KIND_COLLISION",
+    "diagnostic_disposition": "active_secondary",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "descriptor": {
+      "source_kind": "ActorOperationSet",
+      "selector": "ping",
+      "canonical_call_shape_count": 1,
+      "operation_kinds": [
+        "on",
+        "request"
+      ]
+    },
+    "violated_condition": "one actor selector and canonical call shape cannot be both on and request",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R57 actor operation-kind collision single-fault fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-UnifiedCallModeAdmitted-NEG-KIND-COLLISION"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "actor"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

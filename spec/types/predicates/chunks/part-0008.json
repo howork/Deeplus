@@ -521,7 +521,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MatchExhaustive",
     "source_name": "match exhaustiveness and usefulness",
-    "summary": "Compute match-arm usefulness and final exhaustiveness over one finite structural partition.",
+    "summary": "Compute match-arm usefulness and final exhaustiveness over one normalized structural partition, including symbolic complement cells for admitted open scalar domains.",
     "input_descriptor": "TRNCoherenceDescriptor",
     "descriptor_axes": [
       "source_kind",
@@ -543,7 +543,7 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "normalize the finite closed subject partition",
+      "normalize the subject-restricted structural partition and any admitted symbolic complement cell",
       "compute each arm's structural cells before evaluating its guard",
       "subtract coverage only for unguarded reachable arms",
       "preserve canonical residual witnesses"
@@ -563,7 +563,7 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
     "preconditions": [
-      "normalize the finite closed subject partition",
+      "normalize the subject-restricted structural partition and any admitted symbolic complement cell",
       "compute each arm's structural cells before evaluating its guard",
       "subtract coverage only for unguarded reachable arms",
       "preserve canonical residual witnesses"
@@ -571,12 +571,12 @@
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
       "validate the closed TRN coherence descriptor and its arm records",
-      "normalize the finite constructor/type domain",
-      "for each arm compute new structural cells relative to prior unguarded coverage; emit MATCH_ARM_UNREACHABLE when the set is empty",
-      "guarded arms participate in usefulness but never remove coverage",
+      "normalize the subject domain into finite constructor/type cells or an admitted finite symbolic partition with one complement cell",
+      "for each arm restrict its structural cells to the subject domain, remove prior unguarded coverage, and emit MATCH_ARM_UNREACHABLE when the result is empty",
+      "guarded arms participate in usefulness and guard-mentioned tracking but never remove coverage",
       "emit OTHERWISE_UNREACHABLE when otherwise follows an empty residual",
-      "emit MATCH_NONEXHAUSTIVE_AFTER_GUARDS when every remaining witness was structurally mentioned only by guarded arms",
-      "otherwise emit MATCH_NOT_EXHAUSTIVE with the first canonical uncovered witness",
+      "emit MATCH_NONEXHAUSTIVE_AFTER_GUARDS only when every remaining cell was structurally mentioned by one or more guarded arms",
+      "otherwise emit MATCH_NOT_EXHAUSTIVE; R61 design-static fixtures assert only the primary diagnostic and do not assert residual-witness spelling or order",
       "emit only the first diagnostic selected by the declared deterministic order; otherwise admit"
     ],
     "termination_metric": "finite normalized descriptor plus a strictly decreasing dependency/obligation DAG with a visited-key set",

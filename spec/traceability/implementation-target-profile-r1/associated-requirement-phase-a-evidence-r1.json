@@ -1,0 +1,202 @@
+{
+  "$schema": "../../../schemas/language/associated-requirement-phase-a-evidence-r1.schema.json",
+  "schema": "deeplus.associated-requirement-phase-a-evidence/r1",
+  "revision": "r64-local-associated-requirement-phase-a-dynamic-conformance-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "19d8ea962a884f57e45d16883a128405d419bbe6",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_ids": [
+    "associated_requirement_phase_a"
+  ],
+  "evidence_entries": [
+    {
+      "evidence_key": "R64:associated_requirement_phase_a:DYNAMIC_LOWERING:STATIC_ONLY",
+      "class": "CONTRACT_RULE_ID",
+      "path": "spec/contracts/associated-requirement-phase-a-trace-closure-r1.json",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "ARPTC-R007",
+      "stage_role": "DYNAMIC_LOWERING"
+    },
+    {
+      "evidence_key": "R64:associated_requirement_phase_a:CONFORMANCE_TESTS:POSITIVE",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/associated-requirement-phase-a-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/POSITIVE",
+      "stage_role": "CONFORMANCE_TESTS:POSITIVE"
+    },
+    {
+      "evidence_key": "R64:associated_requirement_phase_a:CONFORMANCE_TESTS:BOUNDARY",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/associated-requirement-phase-a-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/BOUNDARY",
+      "stage_role": "CONFORMANCE_TESTS:BOUNDARY"
+    },
+    {
+      "evidence_key": "R64:associated_requirement_phase_a:CONFORMANCE_TESTS:REJECT",
+      "class": "ACCEPTANCE_CASE_SET",
+      "path": "spec/contracts/associated-requirement-phase-a-trace-closure-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/acceptance_bindings/REJECT",
+      "stage_role": "CONFORMANCE_TESTS:REJECT"
+    }
+  ],
+  "bindings": [
+    {
+      "feature_id": "associated_requirement_phase_a",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "NOT_APPLICABLE",
+      "evidence_keys": [
+        "R64:associated_requirement_phase_a:DYNAMIC_LOWERING:STATIC_ONLY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": {
+        "reason_code": "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
+        "authority_boundary": "MIR_RUNTIME_AUTHORITY",
+        "rationale": "Associated-requirement admission terminates before MIR and creates no runtime artifact; admitted value and function use-site selection remains owned by trait_qualified_associated_static_selection.",
+        "justification_evidence_keys": [
+          "R64:associated_requirement_phase_a:DYNAMIC_LOWERING:STATIC_ONLY"
+        ]
+      }
+    },
+    {
+      "feature_id": "associated_requirement_phase_a",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "POSITIVE",
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R64:associated_requirement_phase_a:CONFORMANCE_TESTS:POSITIVE"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "associated_requirement_phase_a",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "BOUNDARY",
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R64:associated_requirement_phase_a:CONFORMANCE_TESTS:BOUNDARY"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    },
+    {
+      "feature_id": "associated_requirement_phase_a",
+      "stage": "CONFORMANCE_TESTS",
+      "outcome": "REJECT",
+      "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+      "disposition": "BOUND_DIRECT",
+      "evidence_keys": [
+        "R64:associated_requirement_phase_a:CONFORMANCE_TESTS:REJECT"
+      ],
+      "delegate_feature_id": null,
+      "not_applicable": null
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "R64-TRACE-001",
+      "feature_id": "associated_requirement_phase_a",
+      "stage": "DYNAMIC_LOWERING",
+      "outcome": null,
+      "contract_pointer": "/rules/6",
+      "acceptance_case_ids": [],
+      "disposition": "NOT_APPLICABLE",
+      "delegate_feature_id": null,
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R64-TRACE-002",
+      "feature_id": "associated_requirement_phase_a",
+      "outcome": "POSITIVE",
+      "contract_pointer": "/acceptance_bindings/POSITIVE",
+      "acceptance_case_ids": [
+        "ARPTC-AC-001",
+        "ARPTC-AC-002"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "STATIC_REFERENCE_VALIDATOR_PASS"
+    },
+    {
+      "case_id": "R64-TRACE-003",
+      "feature_id": "associated_requirement_phase_a",
+      "outcome": "BOUNDARY",
+      "contract_pointer": "/acceptance_bindings/BOUNDARY",
+      "acceptance_case_ids": [
+        "ARPTC-AC-003"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "STATIC_REFERENCE_VALIDATOR_PASS"
+    },
+    {
+      "case_id": "R64-TRACE-004",
+      "feature_id": "associated_requirement_phase_a",
+      "outcome": "REJECT",
+      "contract_pointer": "/acceptance_bindings/REJECT",
+      "acceptance_case_ids": [
+        "ARPTC-AC-004",
+        "ARPTC-AC-005",
+        "ARPTC-AC-006",
+        "ARPTC-AC-007",
+        "ARPTC-AC-008"
+      ],
+      "disposition": "BOUND_DIRECT",
+      "delegate_feature_id": null,
+      "execution_state": "STATIC_REFERENCE_VALIDATOR_PASS"
+    }
+  ],
+  "counts": {
+    "feature_count": 1,
+    "evidence_entry_count": 4,
+    "binding_count": 4,
+    "acceptance_case_count": 8,
+    "acceptance_stage_transition_count": 3,
+    "predecessor_blocked_cell_count": 4,
+    "overlay_bound_direct_transition_count": 3,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 1,
+    "predecessor_cumulative_overlay_binding_count": 121,
+    "post_overlay_cumulative_binding_count": 125,
+    "predecessor_total_bound_direct_cell_count": 2458,
+    "predecessor_total_bound_delegated_cell_count": 3,
+    "predecessor_total_not_applicable_cell_count": 502,
+    "predecessor_total_blocked_cell_count": 1258,
+    "post_overlay_total_bound_direct_cell_count": 2461,
+    "post_overlay_total_bound_delegated_cell_count": 3,
+    "post_overlay_total_not_applicable_cell_count": 503,
+    "post_overlay_total_blocked_cell_count": 1254,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0
+  },
+  "guards": {
+    "target_feature_count": 469,
+    "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+    "excluded_feature_count": 254,
+    "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+    "transitioned_cell_count": 4,
+    "related_feature_transition_count": 0,
+    "other_cell_transition_count": 0,
+    "stage_cell_count": 3283,
+    "test_outcome_cell_count": 1407,
+    "source_activation": "none",
+    "surface_change_count": 0,
+    "ast_identity_change_count": 0,
+    "hir_identity_change_count": 0,
+    "mir_operation_kind_change_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}

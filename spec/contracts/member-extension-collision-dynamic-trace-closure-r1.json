@@ -1,0 +1,159 @@
+{
+  "$schema": "../../schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json",
+  "schema": "deeplus.member-extension-collision-dynamic-trace-closure/r1",
+  "revision": "r72-local-member-extension-collision-dynamic-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "d54633b10c1b92bcd2445afc9906ecf9bafec5c9",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY",
+  "feature_id": "member_extension_collision_error_policy",
+  "target_cell": {
+    "stage": "DYNAMIC_LOWERING",
+    "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+    "predecessor_gap_id": "IR-XCUT-P1-054",
+    "disposition": "NOT_APPLICABLE",
+    "delegate_feature_id": null,
+    "not_applicable": {
+      "reason_code": "NA_DYNAMIC_REJECTED_BEFORE_LOWERING",
+      "authority_boundary": "MIR_RUNTIME_AUTHORITY",
+      "rationale": "The defining collision branch rejects with selected_count zero before admitted HIR; successful noncollision and qualified-selector paths leave selection and execution to their existing owners."
+    }
+  },
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_grammar_production_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "new_mir_terminator_kind_count": 0,
+    "new_xvm_opcode_count": 0,
+    "new_runtime_helper_count": 0,
+    "new_backend_rule_count": 0,
+    "new_diagnostic_count": 0,
+    "new_p1_count": 0,
+    "closed_p1_count": 0
+  },
+  "static_collision_owner": {
+    "owner": "integrated_checker",
+    "selector_kind": "ORDINARY",
+    "nominal_and_active_extension_sets_collected_independently": true,
+    "both_domains_nonempty": "REJECT_MEMBER_EXTENSION_COLLISION",
+    "within_domain_ranking_before_collision": false,
+    "selected_count_on_collision": 0,
+    "source_import_use_or_activation_order_winner_count": 0,
+    "generic_or_overload_winner_selected_by_this_contract_count": 0
+  },
+  "noncollision_boundary": {
+    "one_domain_empty": "ADMIT_AND_DEFER_TO_EXISTING_DOMAIN_OWNER",
+    "qualified_extension_selector": "RESTRICT_TO_EXACT_EXTENSION_DOMAIN_AND_BYPASS_ONLY_CROSS_DOMAIN_COLLISION",
+    "qualified_selector_within_domain_winner_owned_by_this_contract": false,
+    "runtime_behavior_owned_by_this_feature": false
+  },
+  "diagnostic_fence": {
+    "sole_active_primary": "MEMBER_EXTENSION_COLLISION",
+    "secondary_diagnostics": [],
+    "same_stage_exact_owner_primary_precedes_generic_fallback": true,
+    "same_stage_generic_fallback_winner_count": 0,
+    "retired_nonemitting": [
+      "EXTENSION_SHADOWED_BY_MEMBER_COMPAT",
+      "STABLE_MEMBER_EXTENSION_COLLISION"
+    ],
+    "recovery_admitted_hir_count": 0,
+    "new_diagnostic_count": 0
+  },
+  "pre_hir_rejection_boundary": {
+    "selected_member_count": 0,
+    "selected_extension_count": 0,
+    "hir_call_plan_count": 0,
+    "canonical_hir_node_count": 0,
+    "recovery_hir_count": 0,
+    "runtime_fallback_count": 0
+  },
+  "runtime_backend_residue_fence": {
+    "mir_operation_count": 0,
+    "mir_terminator_count": 0,
+    "xvm_instruction_count": 0,
+    "runtime_selector_payload_count": 0,
+    "runtime_provider_lookup_count": 0,
+    "runtime_helper_call_count": 0,
+    "cranelift_instruction_count": 0,
+    "cranelift_reselection_count": 0,
+    "address_or_link_order_winner_count": 0
+  },
+  "r71_preservation": {
+    "contract": "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json",
+    "preserved_rule": "MERTC-R003",
+    "method_extension_resolution_dynamic_disposition": "BOUND_DELEGATED",
+    "method_extension_resolution_delegate_feature_id": "unified_call_expression_and_tilde_modes",
+    "selected_call_lowering_change_count": 0,
+    "r71_transition_count": 0
+  },
+  "preserved_adjacent_ownership": [
+    {"feature_id": "method_extension_resolution_policy", "responsibility": "DOMAIN_APPLICABILITY_WINNER_IDENTITY_AND_SELECTED_CALL_DYNAMIC_DELEGATION", "r72_transition_count": 0},
+    {"feature_id": "qualified_extension_selector_call_msp", "responsibility": "QUALIFIED_EXTENSION_SELECTOR_ADMISSION", "r72_transition_count": 0},
+    {"feature_id": "unified_call_expression_and_tilde_modes", "responsibility": "SELECTED_CALL_DYNAMIC_EXECUTION", "r72_transition_count": 0},
+    {"feature_id": "trait_witness_coherence_phase_a", "responsibility": "TRAIT_WITNESS_SELECTION_AND_COHERENCE", "r72_transition_count": 0}
+  ],
+  "rules": [
+    {"rule_id": "MECDTC-R001", "text": "Member-extension collision is a static integrated-checker judgment over distinct applicable nominal-member and active-extension sets."},
+    {"rule_id": "MECDTC-R002", "text": "If either applicable set is empty, the collision predicate admits and leaves winner selection to the existing owning domain."},
+    {"rule_id": "MECDTC-R003", "text": "If both applicable sets are nonempty for an ordinary selector, MEMBER_EXTENSION_COLLISION is terminal with selected_count zero."},
+    {"rule_id": "MECDTC-R004", "text": "The cross-domain test precedes within-domain ranking, so no ambiguity or order rule may escape the collision."},
+    {"rule_id": "MECDTC-R005", "text": "An exact qualified-extension selector restricts lookup before the cross-domain predicate and bypasses only that predicate."},
+    {"rule_id": "MECDTC-R006", "text": "MEMBER_EXTENSION_COLLISION is the sole active primary and precedes any same-stage generic fallback."},
+    {"rule_id": "MECDTC-R007", "text": "Retired compatibility diagnostics remain nonemitting and no new diagnostic identity is created."},
+    {"rule_id": "MECDTC-R008", "text": "A rejected collision creates no selected member, selected extension, HirCallPlan, canonical HIR node, or recovery HIR."},
+    {"rule_id": "MECDTC-R009", "text": "A rejected collision creates no MIR operation or terminator and no xVM, runtime-ABI, or backend residue."},
+    {"rule_id": "MECDTC-R010", "text": "Runtime provider, selector, address, link, import, use, activation, source, or nesting order cannot reselect the rejected call."},
+    {"rule_id": "MECDTC-R011", "text": "R71 remains the owner split for already selected calls and is not changed by this rejection-only dynamic disposition."},
+    {"rule_id": "MECDTC-R012", "text": "R72 changes exactly one trace cell and leaves all adjacent feature stages and test outcomes unchanged."},
+    {"rule_id": "MECDTC-R013", "text": "Semantic P0 remains zero, feature P1 remains 22 OPEN, M13 remains four OPEN actions, product lanes remain 15/15 NOT_RUN, and GitHub publication remains suspended."}
+  ],
+  "acceptance_cases": [
+    {"case_id": "R72-MECD-ACC-001", "class": "POSITIVE", "source_or_subject": "ordinary selector with a nonempty nominal domain and empty active-extension domain", "expected": "ADMIT_COLLISION_PREDICATE_WINNER_DEFERRED", "diagnostic_or_null": null, "assertion_ids": ["ONE_DOMAIN_EMPTY", "WINNER_OWNER_UNCHANGED", "RUNTIME_BEHAVIOR_NOT_OWNED"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-002", "class": "POSITIVE", "source_or_subject": "ordinary selector with an empty nominal domain and nonempty active-extension domain", "expected": "ADMIT_COLLISION_PREDICATE_WINNER_DEFERRED", "diagnostic_or_null": null, "assertion_ids": ["ONE_DOMAIN_EMPTY", "WINNER_OWNER_UNCHANGED", "R71_PRESERVED"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-003", "class": "BOUNDARY", "source_or_subject": "exact qualified extension selector with a same-spelling nominal member", "expected": "EXACT_DOMAIN_RESTRICTION_BYPASSES_ONLY_CROSS_DOMAIN_COLLISION", "diagnostic_or_null": null, "assertion_ids": ["QUALIFIED_DOMAIN_EXACT", "WITHIN_DOMAIN_OWNER_UNCHANGED", "RUNTIME_LOOKUP_ZERO"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-004", "class": "BOUNDARY", "source_or_subject": "candidate discovery orders differ while applicable domain sets are identical", "expected": "NO_ORDER_WINNER_OR_SEMANTIC_DRIFT", "diagnostic_or_null": null, "assertion_ids": ["SOURCE_IMPORT_USE_ORDER_WINNER_ZERO", "ADDRESS_LINK_ORDER_WINNER_ZERO"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-005", "class": "BOUNDARY", "source_or_subject": "collision and a same-stage generic fallback are both reportable", "expected": "EXACT_COLLISION_PRIMARY_WINS", "diagnostic_or_null": "MEMBER_EXTENSION_COLLISION", "assertion_ids": ["SOLE_ACTIVE_PRIMARY", "GENERIC_FALLBACK_WINNER_ZERO", "SECONDARY_DIAGNOSTICS_EMPTY"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-006", "class": "REJECT", "source_or_subject": "one applicable nominal member and one applicable active extension", "expected": "REJECT_SELECTED_COUNT_ZERO_BEFORE_HIR", "diagnostic_or_null": "MEMBER_EXTENSION_COLLISION", "assertion_ids": ["BOTH_DOMAINS_NONEMPTY", "SELECTED_COUNT_ZERO", "HIR_RESIDUE_ZERO"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-007", "class": "REJECT", "source_or_subject": "one nonempty domain has multiple applicable candidates and the other is also nonempty", "expected": "CROSS_DOMAIN_COLLISION_PRECEDES_WITHIN_DOMAIN_RANKING", "diagnostic_or_null": "MEMBER_EXTENSION_COLLISION", "assertion_ids": ["WITHIN_DOMAIN_RANKING_BEFORE_COLLISION_FALSE", "SELECTED_COUNT_ZERO"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-008", "class": "REJECT", "source_or_subject": "recovery attempts to construct a call plan after collision", "expected": "RECOVERY_HIR_AND_RUNTIME_FALLBACK_ZERO", "diagnostic_or_null": "MEMBER_EXTENSION_COLLISION", "assertion_ids": ["RECOVERY_HIR_ZERO", "RUNTIME_FALLBACK_ZERO"], "execution_state": "DESIGN_STATIC_NOT_RUN"},
+    {"case_id": "R72-MECD-ACC-009", "class": "REJECT", "source_or_subject": "runtime or backend attempts to reselect the rejected extension call", "expected": "NO_DYNAMIC_OR_BACKEND_RESIDUE", "diagnostic_or_null": "MEMBER_EXTENSION_COLLISION", "assertion_ids": ["MIR_RESIDUE_ZERO", "XVM_RESIDUE_ZERO", "RUNTIME_RESIDUE_ZERO", "CRANELIFT_RESIDUE_ZERO"], "execution_state": "DESIGN_STATIC_NOT_RUN"}
+  ],
+  "acceptance_bindings": {
+    "POSITIVE": ["R72-MECD-ACC-001", "R72-MECD-ACC-002"],
+    "BOUNDARY": ["R72-MECD-ACC-003", "R72-MECD-ACC-004", "R72-MECD-ACC-005"],
+    "REJECT": ["R72-MECD-ACC-006", "R72-MECD-ACC-007", "R72-MECD-ACC-008", "R72-MECD-ACC-009"]
+  },
+  "mutation_obligations": [
+    {"mutation_id": "M01", "mutation": "change target disposition to BOUND_DIRECT", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M02", "mutation": "change reason code to static-only", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M03", "mutation": "change authority boundary", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M04", "mutation": "make selected_count_on_collision nonzero", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M05", "mutation": "rank within a domain before collision", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M06", "mutation": "replace sole primary diagnostic", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M07", "mutation": "emit a retired collision diagnostic", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M08", "mutation": "add recovery HIR residue", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M09", "mutation": "add MIR residue", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M10", "mutation": "add runtime provider fallback", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M11", "mutation": "allow address or link order winner", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M12", "mutation": "change R71 selected-call ownership", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M13", "mutation": "change a non-target trace cell", "killed_by": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M14", "mutation": "claim product execution", "killed_by": "G06", "expected": "MUTANT_KILLED"}
+  ],
+  "machine_acceptance": {
+    "transitioned_cell_count": 1,
+    "other_cell_transition_count": 0,
+    "other_atomic_cell_count": 4220,
+    "other_atomic_cell_sha256": "3cdbe4a509df453151f7e4900610acf2acbb6dfe0a8734f52e375a86082299e2",
+    "selected_count_on_collision": 0,
+    "admitted_hir_residue_count": 0,
+    "mir_runtime_backend_residue_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "product_execution_receipt_count": 0,
+    "implementation_claim": "NONE"
+  }
+}

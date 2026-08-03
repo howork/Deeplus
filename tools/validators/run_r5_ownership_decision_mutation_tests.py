@@ -103,7 +103,7 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "afc0939a529df91226a8aefd2e224a663bea0ae364e44383dc8be8af43382c1b"
+        "b74169e0724791dddc764cc2695474921b93feefd603a305e1021d23365665d2"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
@@ -2401,10 +2401,10 @@ R8_GRAMMAR_SHA256 = (
     "933d0bd8e62e318b23a395f5b7454610bb8e95acc584fb7f31b61d8d49a8071e"
 )
 R41_GRAMMAR_SHA256 = (
-    "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc"
+    "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
 )
 R41_HIR_H1_BRIDGE_SHA256 = (
-    "afc0939a529df91226a8aefd2e224a663bea0ae364e44383dc8be8af43382c1b"
+    "b74169e0724791dddc764cc2695474921b93feefd603a305e1021d23365665d2"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
@@ -2521,15 +2521,15 @@ EXPECTED_FILE_SHA256["conformance_rows"] = (
 R8_CONTEXT_CANONICAL_FENCE = {
     R8_CONTEXT_CONTRACT: (
         8444,
-        "84919d36fc1843bce749d1341d8364936d42ccc551d7a7c9046291f356326a2c",
+        "188078b430a61dcf9ea1178d50a4f4ac31aad700ebb5f89eda72192da5f38fa5",
     ),
     R8_CONTEXT_SCHEMA: (
         5202,
-        "cf6d3e366387436762ca78b5d877751dc8979e5289ad39817c6e2659d0d25232",
+        "bd0509bc26662f1962b76584e6220756914f6f7946d67f36e6ad7eb223d37a75",
     ),
     R8_CONTEXT_FIXTURE: (
         6969,
-        "e00b92a7af2676f87d091d580ce5facd6f7a117bcb9d2194cdb6b07d5af2ab82",
+        "fdfac3808ffee13791d3ab6a8f490086b379f4d026eee56f425ad6dada5bfce1",
     ),
 }
 R8_ESCAPE_CANONICAL_FENCE = {
@@ -3133,8 +3133,8 @@ def _check_context_exact_7(
         ),
         (
             all(
-                row.get("loan_id_created_in_hir") == 0
-                and row.get("loan_id_created_by_mir_lowering") == 1
+                row.get("loan_id_created_in_hir") == 1
+                and row.get("loan_id_created_by_mir_lowering") == 0
                 and row.get("borrow_event_created") == 1
                 for row in borrow_rows
             ),
@@ -3701,9 +3701,9 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1482
-            and relation_metadata_doc.value.get("relation_count") == 597,
-            "diagnostic/relation canonical counts are not exact R47 fusion",
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1484
+            and relation_metadata_doc.value.get("relation_count") == 615,
+            "diagnostic/relation canonical counts are not exact current fusion",
         ),
         (
             set(active_diagnostics)

@@ -131,8 +131,7 @@
         "owner_id",
         "storage_kind",
         "storage_id",
-        "trace_descriptor_id",
-        "handle_generation"
+        "trace_descriptor_id"
       ],
       "properties": {
         "root_id": {"$ref": "#/$defs/rootId"},
@@ -153,8 +152,7 @@
         "owner_id": {"$ref": "#/$defs/ownerId"},
         "storage_kind": {"enum": ["VALUE", "PLACE", "FRAME_SLOT", "RUNTIME_SLOT"]},
         "storage_id": {"$ref": "#/$defs/storageId"},
-        "trace_descriptor_id": {"$ref": "#/$defs/managedTraceDescriptorId"},
-        "handle_generation": {"type": "integer", "minimum": 0}
+        "trace_descriptor_id": {"$ref": "#/$defs/managedTraceDescriptorId"}
       },
       "allOf": [
         {"if": {"properties": {"owner_kind": {"const": "ACTIVE_FRAME"}}}, "then": {"properties": {"owner_id": {"$ref": "#/$defs/activeFrameId"}}}},
@@ -172,22 +170,6 @@
         {"if": {"properties": {"storage_kind": {"const": "RUNTIME_SLOT"}}}, "then": {"properties": {"storage_id": {"$ref": "#/$defs/runtimeRootSlotId"}}}}
       ]
     },
-    "receiptLifecycle": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "verified_before_publish",
-        "published_before_operation_entry",
-        "live_through_outcome_commit",
-        "released_after_outcome_commit"
-      ],
-      "properties": {
-        "verified_before_publish": {"const": true},
-        "published_before_operation_entry": {"const": true},
-        "live_through_outcome_commit": {"const": true},
-        "released_after_outcome_commit": {"const": true}
-      }
-    },
     "rootMap": {
       "type": "object",
       "additionalProperties": false,
@@ -199,8 +181,7 @@
         "runtime_root_ids",
         "declared_root_ids",
         "entries",
-        "canonical_root_set_digest",
-        "receipt_lifecycle"
+        "canonical_root_set_digest"
       ],
       "properties": {
         "root_map_id": {"$ref": "#/$defs/rootMapId"},
@@ -213,8 +194,7 @@
           "type": "array",
           "items": {"$ref": "#/$defs/rootEntry"}
         },
-        "canonical_root_set_digest": {"$ref": "#/$defs/sha256"},
-        "receipt_lifecycle": {"$ref": "#/$defs/receiptLifecycle"}
+        "canonical_root_set_digest": {"$ref": "#/$defs/sha256"}
       }
     },
     "safepoint": {
@@ -358,15 +338,11 @@
       "additionalProperties": false,
       "required": [
         "source_root_id",
-        "destination_root_id",
-        "source_handle_generation",
-        "destination_handle_generation"
+        "destination_root_id"
       ],
       "properties": {
         "source_root_id": {"$ref": "#/$defs/rootId"},
-        "destination_root_id": {"$ref": "#/$defs/rootId"},
-        "source_handle_generation": {"type": "integer", "minimum": 0},
-        "destination_handle_generation": {"type": "integer", "minimum": 0}
+        "destination_root_id": {"$ref": "#/$defs/rootId"}
       }
     },
     "bodyPlan": {

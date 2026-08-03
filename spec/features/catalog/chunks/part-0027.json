@@ -18,7 +18,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "One backend-neutral internal runtime ABI binds fixed scalar versus indirect aggregate channels, four explicit MIR outcomes, one ownership commit, exact helper identities/signatures, target projections, JIT imports and retirement. The exact IR-OWN-P1-025 managed-reference and IR-OWN-P0-017 continuation-interface digests are bound; 22 base helpers plus 3 conditionally admitted managed-memory helpers are active. External FFI and callbacks remain excluded. Product execution is NOT_RUN.",
+    "notes": "One backend-neutral internal runtime ABI binds fixed scalar versus indirect aggregate channels, four explicit MIR outcomes, one ownership commit, exact helper identities/signatures, target projections, JIT imports and retirement. It consumes the exact continuation and managed-reference digests; this binding does not canonically close IR-OWN-P0-017 or any other gap by itself, while existing canonical closure authority remains unchanged. The exact IR-OWN-P1-025 managed-reference and IR-OWN-P0-017 continuation-interface digests are bound; 22 base helpers plus 3 conditionally admitted managed-memory helpers are active. External FFI and callbacks remain excluded. Product execution is NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -58,6 +58,63 @@
       "schemas/language/internal-runtime-target-projection-r1.schema.json",
       "schemas/language/internal-runtime-artifact-binding-receipt-r1.schema.json",
       "tests/fixtures/current/internal-runtime-abi-r1.json"
+    ],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / RUNTIME / VERIFIER",
+    "authority_set": [
+      "LANGUAGE",
+      "RUNTIME",
+      "VERIFIER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [
+      "actor_request_reply",
+      "managed_reference_memory_profile_phase1",
+      "internal_runtime_abi_r1"
+    ],
+    "display_name": "Actor minimum lifecycle R1",
+    "feature_id": "actor_minimum_lifecycle_r1",
+    "feature_kind": "semantic_law",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "One root-owned Actor creation, normal-stop, suspended-turn and uncaught-Defect lifecycle contract with exact cleanup, reply-terminalization and termination order. R51 adds trace and guard evidence only; runtime, debugger and product execution remain NOT_RUN.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "trace_class": "semantic",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [],
+      "productions": [],
+      "semantic_reference_productions": [
+        "ActorDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl"
+      ]
+    },
+    "artifact_trace_refs": [
+      "spec/contracts/actor-concurrency-coherence.json",
+      "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
+      "spec/frontend/frontend-model.json",
+      "schemas/language/mir-responsibility.schema.json",
+      "tests/fixtures/current/actor-concurrency-coherence-r1.json",
+      "tests/conformance/actor-lifecycle-guards-r1.json",
+      "tools/validators/validate_actor_minimum_lifecycle.py",
+      "tools/validators/run_actor_lifecycle_guard_mutation_tests.py",
+      "decisions/language/Design_Deeplus_Actor_Minimum_Lifecycle_Implementation_Handoff_R1.md"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

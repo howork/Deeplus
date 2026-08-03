@@ -23,6 +23,24 @@ closed plan variants are `DirectImplementation`, `VirtualSlot`,
 formal binding order survive lowering and are never recovered from runtime
 selector search, provider order, expected result type, or source order.
 
+A Trait-qualified associated-static selection is a non-structural
+`TraitAssociatedStaticSelection` descriptor, not a new HIR expression or MIR
+operation. It binds one `SelectionId` and the exact `TraitId`, `RequirementId`,
+`ConformanceId`, `TraitWitnessId`, `ImplementationId`, `SubstitutionId`, and
+`ResponsibilityId` selected by the checker. Representation metadata also binds
+the direct static symbol when one exists and maps an associated function's
+`ImplementationId` to its `CallableImplementationId`. An associated type emits
+no runtime operation. An associated value or bare associated-function reference
+reuses `ResolvedRef::DirectDecl`, `HM-LR-REF-002` (`STATIC_REF`), and
+`HM-LR-TOP-002`; an invoked associated function reuses
+`ORDINARY::TRAIT_WITNESS`, `HM-LR-CALL-003`, `STATIC_REF`, and `INVOKE`.
+MIR preserves the same descriptor in the closed
+`TRAIT_ASSOCIATED_STATIC_SELECTION` static-identity domain with
+`identity_id == SelectionId`. Lowering preserves all eleven responsibility
+axes and never reconstructs or searches for a conformance, witness,
+implementation, provider, order winner, specialization, fallback, or
+child-local replacement at runtime.
+
 The nonactivatable concise throws/effects Preview creates no MIR syntax or
 presence bit. If later activated, the frontend normalizes every omitted
 declaration axis before MIR: missing `throws` becomes `Never` and missing
@@ -189,15 +207,26 @@ formatter/LSP, and executable concurrency evidence remain `NOT_RUN`.
 Closure environments are built by one ordered capture plan. `borrow` and
 `inout` create bounded nonescaping observations, `move` transfers one owner,
 and `copy` requires the sealed `CopyValue` responsibility while preserving a
-null Trait witness. `clone` retains one exact `Clone` witness together with its
-normalized ErrorSet, EffectRow, result acquisition, and cleanup plan. `deep`
-requires the distinct nonactivatable `DeepClone` profile and never falls back
-to Clone. The backend receives the already selected responsibility/evidence
+null Trait witness. Both `copy` and `clone` carry one exact
+`ResponsibilityEvidenceId`; their referenced descriptors remain distinct.
+The `CopyValue` descriptor is an intrinsic predicate proof with a null Trait
+witness, while the `Clone` descriptor owns one exact selected witness together
+with its normalized ErrorSet, EffectRow, result acquisition, and cleanup plan.
+`deep` is rejected before typed HIR or MIR because its distinct `DeepClone`
+profile is nonactivatable; it never falls back to Clone and leaves no typed
+lowering residue. Callable responsibility profiles remain a separate identity
+domain. The backend receives the already selected responsibility/evidence
 identities and performs no runtime lookup. A capture-level
 `once` field is one-shot but does not consume the closure's callable right
-unless the closure independently has `#once`. Before environment commit, a
-failed capture acquisition cleans acquired temporaries in reverse order and
-publishes no partial closure.
+unless the closure independently has `#once`. During the fallible preparation
+interval, `move` and capture-level `once` emit only `MOVE_RESERVE`; neither
+`PLACE_MOVE` nor their field `BUILDER_STAGE` may occur. A failed preparation
+cancels reservations, ends loans, and cleans staged values in reverse
+acquisition order without restoring an already consumed source, because no
+source has yet been consumed. After every fallible preparation succeeds, one
+infallible final interval performs source-ordered `PLACE_MOVE` and
+`BUILDER_STAGE` for reserved fields, then `BUILDER_COMMIT`, followed by
+infallible `CLOSURE_MAKE`. It publishes no partial environment or closure.
 
 A proven lexical dependency is not a capture-plan item. The callable descriptor
 keeps residence and environment orthogonal, so a region-bound callable may
@@ -350,6 +379,53 @@ terminal event is admitted. Distributed and exactly-once delivery events have
 no current MIR identity.
 
 The cancellation race is phase-split by enqueue commit. Observation before commit emits the cancellation outcome, aborts admission, retains sender ownership, and allocates no `channel_sequence`; it is not converted into `ActorMessageError`. Observation after commit cannot retract or renumber the message, restore a moved sender place, or rewrite the already produced admission Result. For an admitted request it affects only the correlation-bound reply lifecycle under the existing cancellation law.
+
+One non-forgeable internal `ActorRuntimeRootOwnerId` owns the terminal
+lifecycle observation of each Actor incarnation. Static `ActorId` remains the
+source declaration and R23 binding-table identity; one runtime incarnation has
+a distinct internal `ActorInstanceId`. The provisional instance may exist
+during creation, but no `ActorRef` capability exists before
+`actor_publish_committed`. MIR orders `create_prepare`, state initialization,
+mailbox initialization, and publication; publication happens-before external
+prepare-send or enqueue through that reference. A prepublication failure emits
+no ActorRef, enters `CREATION_ABORTED`, rolls back only initialized resources
+exactly once in reverse initialization order, and reports one `FailureId` to
+the root owner. `supervisor_id` remains null.
+
+Normal stop is `DRAIN_ALL_COMMITTED_V1`. Its observable barriers are
+`stop_requested -> admission_closed -> drain_started -> drain_completed ->
+actor_state_cleanup_completed -> root_owner_observed ->
+termination_published`. The drain set is exactly the envelopes whose enqueue
+committed before admission closure. An indefinitely suspended active turn keeps
+stop pending with its exact `ContinuationReceiptId`, continuation-interface
+digest, state-region authority, managed roots, loans and cleanup tokens; it
+emits no implicit resume, cancel, cancellation, cleanup, root observation,
+reply or termination.
+
+An uncaught Defect is `STOP_AND_FAIL_PENDING_V1`. After `defect_observed`, no
+queued `turn_start` is legal. Admission closes; queued payloads, the active turn,
+and Actor state clean exactly once before a still-open Reply becomes observably
+terminal through `ActorMessageError::receiverClosedBeforeReply`. Every active
+loan ends first through the existing infallible `LOAN_END`; deferred, capture
+and owner cleanup tokens discharge exactly once within the enclosing cleanup
+event. A reply already terminal before the Defect remains terminal and is not
+duplicated. The primary `DefectId` is never replaced; cleanup Defects are
+suppressed in contiguous reverse-cleanup execution order. Before the root owner
+observes that outcome, each actor-owned managed `RootId` has one exact
+transfer-or-removal receipt. `ActorRuntimeRootOwnerId` and managed `RootId`
+remain disjoint identity domains, and termination is published last.
+
+MIR preserves lifecycle policy and state transition, conditional cleanup sets,
+reply-terminal counts and the complete R41/R23 selection residue:
+`ActorProtocolBindingTableId`, `ActorProtocolBindingId`, the typed
+`ActorHandlerId` or `ActorRequestId`, `ResponsibilityId`, and
+`binding_row_sha256`. These fields resolve one already verified selection;
+lifecycle processing performs no lookup, creation, reselection or digest
+mutation. xVM and runtime own policy execution. Cranelift and the single typed
+runtime ABI preserve the barriers but cannot choose policy, add a second ABI,
+absorb R24 code-generation lifetime, or reorder observable events. A lifecycle
+helper not present in the exact typed helper allowlist requires an explicit
+registry and runtime-ABI digest rebind before admission.
 
 `concur` regions record `ConcurId`, their owner `ExecutionId`, ordered
 `ConcurRunId` children, cancellation state, and cleanup barrier. A region exit
@@ -581,13 +657,14 @@ R36 remains an approved local candidate and cannot pass canonical promotion.
 The collector is cooperative stop-the-world, nonmoving, nongenerational and
 nonconcurrent. It has no weak-reference, finalizer, resurrection or pinning
 surface and never performs MIR cleanup or cancellation. Allocation fast paths
-cannot collect. A slow allocation path uses an explicit `CHECKED` safepoint and
+cannot collect. A slow allocation path uses an explicit `INVOKE` whose exact
+call plan selects the sealed `managed.allocate_slow` helper and preserves the
 existing `AllocationError effects allocate`; precommit failure cancels its
 reservation, restores the input owner, reverse-cleans staged resources and
 publishes nothing.
 
 The closed safepoint set consists of non-tail `INVOKE`, managed-allocation
-`CHECKED`, post-transfer `SUSPEND`, `CANCEL_CHECK`, runtime-entry `RUN_OP`,
+slow-path `INVOKE`, post-transfer `SUSPEND`, `CANCEL_CHECK`, runtime-entry `RUN_OP`,
 `ACTOR_OP`, `PROVIDER_OP`, `ONCE_OP` and `SYNC_OP`, CFG backedges, and an FFI
 transition after root publication. No backend-private implicit safepoint is
 admitted. At each site the declared roots are the sorted unique union of
@@ -603,6 +680,16 @@ unpublished state plus zero active activations, suspended continuations and
 outstanding root receipts. xVM, Object AOT and JIT compare logical safepoint,
 root-owner, ownership, cleanup and outcome traces; target addresses, heap
 layout, collection timing and stack offsets are excluded.
+
+The R69 successor seam separates the compile-time managed-memory plan from an
+execution-time managed-root receipt. Static root-map templates contain logical
+storage-location `RootId` and trace-descriptor bindings, never a runtime handle
+generation or receipt lifecycle. At an executed safepoint the runtime receipt
+checks exact generations, is published before the may-collect entry, remains
+live through MIR outcome commit, and is then released. The current continuation
+interface digest is `2ccf2acd...c8b4`; predecessor `0dc489...1271` pointers do
+not select successor semantics. `RegionId` and `LoanId` remain verifier
+identities: a managed root neither creates nor extends a loan.
 
 Source locations and `DebugOrigin` project through a separate nonsemantic debug
 digest. Debug info, unwind tables and profiler metadata do not change program
@@ -675,22 +762,52 @@ copy, language-observable allocation, mutation, adjoint, shareability
 inference, or isolation crossing. Backend representation and incidental
 storage strategy remain unselected.
 
-A successful Pattern owner emits `subject_evaluate`, `subject_acquire`,
-`test_plan_build`, `structural_test`, `probe_bind`, optional
-`guard_evaluate`, `atomic_commit`, `final_bind`, `body`, and
-`exit_or_join`. A structural mismatch terminates after `structural_test`; a
-false guard terminates after `guard_evaluate`. In both cases only the
-context-bound `exit_or_join` edge follows. TestPlan and probe events are
-nonconsuming. Failure before `atomic_commit` has zero ownership commit,
-`pattern_move_count`, irreversible borrow, authority, escape, suspension,
-partial binding, residual-view publication, and final binders. Guarded-binding
-failure transfers to its required `else`; `for let` mismatch or false guard
-filters exactly one candidate; assertive binding emits one
-`PatternMatchDefect`; ordered catch continues to the next handler or
+A Pattern owner lowers to exactly one logical `PatternAttempt`. The attempt
+emits `subject_evaluate` once, then `subject_acquire`, `test_plan_build`, a pure
+nonconsuming `structural_test`, read-only nonescaping `probe_bind` events, zero
+or one `guard_evaluate`, exactly one `atomic_commit` after final guarded
+success, `final_bind`, `body`, and `exit_or_join`. The optional guard has type
+`Bool`, is pure, runs once only after structural success, and may read probe
+binders without moving, escaping, suspending, mutating through, or acquiring a
+loan, view, or authority from them.
+
+Every child pattern-row `BINDING_COMMIT` entry is a compositional commit
+requirement accumulated by the enclosing `PatternAttempt`. All such entries
+collapse into its single top-level `atomic_commit`; they are not nested or
+multiple executable commits. An Or probe chooses the first source-ordered
+branch whose structural probe succeeds, requires the exact same normalized
+binder interface `(name, canonical type, ownership mode, mutability, usable
+region, capability set)` on every branch, and performs no retry or backtracking.
+A false owner guard after that selection does not try another Or branch. An
+Alias probe preserves the same subject identity, performs no clone, and stages
+a shared-borrow requirement. The loan begins only on final success and cannot
+coexist with a moved or exclusively borrowed descendant. A borrowed subject
+cannot execute a `PK-MOVE` affine-payload extraction.
+
+A structural mismatch terminates after `structural_test`; a false guard
+terminates after `guard_evaluate`. Neither publishes bindings, moves, loans,
+views, or authority, and neither leaves final binders. For pattern-control
+owners the context-bound disposition is exact: `if let` takes the false
+branch, `while let` exits the loop, and `for let` skips the current candidate.
+Guarded-binding failure transfers to its required `else`; assertive binding
+emits one `PatternMatchDefect`; ordered catch continues to the next handler or
 propagates. Each phase carries the exact DPM fixture identity and attempt
-disposition. Or-pattern branches expose one canonical binder interface, alias
-binding is a borrow event, and a place join retains only the intersection of
-incoming capabilities.
+disposition. Every failed preparation edge executes `MOVE_CANCEL` for each
+reservation and leaves no loan. On success, admitted `PLACE_MOVE` and
+`LOAN_BEGIN_SHARED` operations complete before one infallible group
+`BINDING_COMMIT` publishes final binders. The resulting loan is closed at the
+earliest invalidating mutation, move, replacement, cleanup, or region frontier.
+A place join first proves compatible place identities and ownership states for
+all normally returning arms, excludes divergent arms, and only then intersects
+capabilities. A failed proof emits `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH`.
+
+Match usefulness and exhaustiveness are checker-only admission judgments and
+create no HIR or MIR node, opcode, runtime branch, or witness object. Rejected
+source produces no MIR. After admission, lowering receives only the established
+source-ordered structural-test and guard plan. Clause heads reuse that same
+static partition analysis, but their clause-owner overlap, input-supply, and
+return-totality obligations are discharged before an admitted ordered clause
+plan reaches lowering; no runtime clause search repairs a rejected partition.
 
 Tuple Pattern lowering is an exact static product projection. Record/Map
 patterns first compare their exact or explicitly open row/key shapes; nominal
@@ -953,8 +1070,11 @@ Refinement boundaries preserve their selected outcome: proven construction has n
 
 `borrow place` reuses
 `HirExprKind::PlaceAccess { plan: HirPlacePlan(access = BorrowShared) }`.
-HIR records the region constraints but creates no `LoanId`; MIR lowering
-creates the exact Shared loan and binds it to the owner region.
+The checker selects one static `RegionId` and `LoanId` before typed-HIR sealing;
+the `HirPlacePlan` preserves both identities, and MIR lowering preserves them
+exactly in the matching value and loan rows. A loop may create multiple dynamic
+activations of that static loan site, represented by the existing linear
+`ACCESS` state machine rather than by inventing another `LoanId`.
 
 Expression context-anchor `&` is not an ownership borrow.  The enclosing
 NumericArray or Measure operation owns one `HirContextAdaptationPlan` with
@@ -1006,6 +1126,36 @@ the loan, then begin overlapping owner cleanup. This ordering rule does not
 activate or import any separate defer candidate. Existing primary outcomes
 remain primary, while later cleanup failures retain the deterministic LIFO
 suppression law in §5. Loan closing contributes no cleanup budget row.
+
+### Region graph and loan projection
+
+The typed HIR body owns a finite, reference-closed region forest and exact
+place-to-storage-region bindings. Its region extent kinds are `LEXICAL`,
+`INVOCATION`, and `PROCESS_STATIC_IMMUTABLE`; borrow, inout, capture, and
+suspension are uses of an extent, not additional extent kinds. Parent links are
+acyclic, entry nodes dominate contained uses, and every reachable path from a
+contained use crosses one declared end frontier before leaving the extent.
+
+`NormalizedTypeDescriptor.region_profile_id_or_null` is a type-level relation
+profile. It is never a concrete per-value `RegionId` and never participates as
+one in a normalized `TypeId`. Concrete value-level identities live in
+`PlacePlan.result_region_id_or_null` and `PlacePlan.loan_id_or_null`, and lower
+exactly to the MIR value and loan tuple. Concrete region or loan identities are
+not exported through a module API.
+
+Region and loan projection is a body-wide pass after ordinary node-row
+lowering and before the release verifier. It preserves region ID, extent kind,
+parent, isolation domain, entry, and end frontiers; maps every place to its
+storage region; and emits one existing loan-begin operation for each admitted
+borrow site. Reborrows require the exact active parent `LoanId` and a strict
+child region. The existing R34 close-frontier contract owns all `LOAN_END`
+placement and path balance.
+
+Region and loan identities are compiler-local value-level verifier identities,
+not runtime region objects, ABI identities, source names, or backend handles.
+After region projection and loan balance verify, xVM and Cranelift may erase
+them when doing so preserves every language observation. Runtime or backend
+relookup, reselection, or inference of either identity is forbidden.
 
 ## 15. Current HIR-H1/MIR R1 machine contract
 
