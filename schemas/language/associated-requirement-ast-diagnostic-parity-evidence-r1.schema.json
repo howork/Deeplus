@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/associated-requirement-ast-diagnostic-parity-evidence-r1.schema.json",
+  "title": "Deeplus R65 Associated Requirement AST and Diagnostic Parity Evidence Overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "feature_ids",
+    "evidence_entries",
+    "bindings",
+    "acceptance_cases",
+    "counts",
+    "guards"
+  ],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/associated-requirement-ast-diagnostic-parity-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.associated-requirement-ast-diagnostic-parity-evidence/r1"},
+    "revision": {"const": "r65-local-associated-requirement-ast-diagnostic-parity-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "f2e7353b1c44fc066eba47f6d013cbe0a20e9239"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["associated_requirement_phase_a"]},
+    "evidence_entries": {
+      "const": [
+        {
+          "evidence_key": "R65:associated_requirement_phase_a:AST_FRONTEND:GRAMMAR_DISPOSITION",
+          "class": "ARTIFACT_POINTER",
+          "path": "spec/contracts/grammar-production-disposition-registry-r1.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/production_rows/237",
+          "stage_role": "AST_FRONTEND"
+        },
+        {
+          "evidence_key": "R65:associated_requirement_phase_a:DIAGNOSTICS:PRIMARY",
+          "class": "CONTRACT_RULE_ID",
+          "path": "spec/contracts/associated-requirement-phase-a-trace-closure-r1.json",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "ARPTC-R006",
+          "stage_role": "DIAGNOSTICS"
+        }
+      ]
+    },
+    "bindings": {
+      "const": [
+        {
+          "feature_id": "associated_requirement_phase_a",
+          "stage": "AST_FRONTEND",
+          "outcome": null,
+          "predecessor_disposition": "NOT_APPLICABLE",
+          "disposition": "BOUND_DIRECT",
+          "evidence_keys": ["R65:associated_requirement_phase_a:AST_FRONTEND:GRAMMAR_DISPOSITION"],
+          "delegate_feature_id": null,
+          "not_applicable": null
+        },
+        {
+          "feature_id": "associated_requirement_phase_a",
+          "stage": "DIAGNOSTICS",
+          "outcome": null,
+          "predecessor_disposition": "NOT_APPLICABLE",
+          "disposition": "BOUND_DIRECT",
+          "evidence_keys": ["R65:associated_requirement_phase_a:DIAGNOSTICS:PRIMARY"],
+          "delegate_feature_id": null,
+          "not_applicable": null
+        }
+      ]
+    },
+    "acceptance_cases": {
+      "const": [
+        {
+          "case_id": "R65-TRACE-001",
+          "feature_id": "associated_requirement_phase_a",
+          "stage": "AST_FRONTEND",
+          "outcome": null,
+          "contract_pointer": "/production_rows/237",
+          "acceptance_case_ids": [],
+          "disposition": "BOUND_DIRECT",
+          "delegate_feature_id": null,
+          "execution_state": "STATIC_REFERENCE_VALIDATOR_PASS"
+        },
+        {
+          "case_id": "R65-TRACE-002",
+          "feature_id": "associated_requirement_phase_a",
+          "stage": "DIAGNOSTICS",
+          "outcome": null,
+          "contract_pointer": "/rules/5",
+          "acceptance_case_ids": [],
+          "disposition": "BOUND_DIRECT",
+          "delegate_feature_id": null,
+          "execution_state": "STATIC_REFERENCE_VALIDATOR_PASS"
+        }
+      ]
+    },
+    "counts": {
+      "const": {
+        "feature_count": 1,
+        "evidence_entry_count": 2,
+        "binding_count": 2,
+        "trace_acceptance_record_count": 2,
+        "predecessor_not_applicable_cell_count": 2,
+        "overlay_bound_direct_transition_count": 2,
+        "overlay_bound_delegated_transition_count": 0,
+        "overlay_not_applicable_transition_count": 0,
+        "predecessor_cumulative_overlay_count": 10,
+        "post_overlay_cumulative_overlay_count": 11,
+        "predecessor_cumulative_overlay_binding_count": 125,
+        "post_overlay_cumulative_binding_count": 127,
+        "predecessor_evidence_registry_count": 3138,
+        "post_overlay_evidence_registry_count": 3140,
+        "predecessor_total_bound_direct_cell_count": 2461,
+        "predecessor_total_bound_delegated_cell_count": 3,
+        "predecessor_total_not_applicable_cell_count": 503,
+        "predecessor_total_blocked_cell_count": 1254,
+        "post_overlay_total_bound_direct_cell_count": 2463,
+        "post_overlay_total_bound_delegated_cell_count": 3,
+        "post_overlay_total_not_applicable_cell_count": 501,
+        "post_overlay_total_blocked_cell_count": 1254,
+        "post_overlay_missing_cell_count": 0,
+        "post_overlay_conflict_cell_count": 0
+      }
+    },
+    "guards": {
+      "const": {
+        "target_feature_count": 469,
+        "target_feature_id_list_sha256": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435",
+        "excluded_feature_count": 254,
+        "excluded_feature_id_list_sha256": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7",
+        "transitioned_cell_count": 2,
+        "other_cell_transition_count": 0,
+        "other_atomic_cell_count": 4219,
+        "stage_cell_count": 3283,
+        "test_outcome_cell_count": 1407,
+        "source_activation": "none",
+        "surface_change_count": 0,
+        "ast_identity_change_count": 0,
+        "diagnostic_registry_change_count": 0,
+        "hir_identity_change_count": 0,
+        "mir_operation_kind_change_count": 0,
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "github_publication": "SUSPENDED",
+        "product_execution_receipt_count": 0,
+        "implementation_claim": "NONE"
+      }
+    }
+  }
+}

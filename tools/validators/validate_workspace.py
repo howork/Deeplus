@@ -12726,6 +12726,11 @@ def main() -> int:
         "tools/validators/validate_associated_requirement_phase_a_trace_closure.py",
         "tools/validators/run_associated_requirement_phase_a_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R64_Associated_Requirement_Phase_A_Trace_Closure_R1.md",
+        "spec/traceability/implementation-target-profile-r1/associated-requirement-ast-diagnostic-parity-evidence-r1.json",
+        "schemas/language/associated-requirement-ast-diagnostic-parity-evidence-r1.schema.json",
+        "tools/validators/validate_associated_requirement_ast_diagnostic_parity.py",
+        "tools/validators/run_associated_requirement_ast_diagnostic_parity_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R65_Associated_Requirement_AST_Diagnostic_Parity_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
