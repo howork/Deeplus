@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r69/managed-reference-dynamic-projection-fixtures-r1.schema.json",
+  "title": "Deeplus managed-reference dynamic projection R1 design-static fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture_schema",
+    "revision",
+    "baseline_commit",
+    "plan_schema",
+    "runtime_root_receipt_schema",
+    "native_projection_receipt_schema",
+    "evidence_state",
+    "static_plan",
+    "runtime_root_receipt",
+    "native_projection_receipts",
+    "declared_mutations",
+    "expected_counts"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.managed-reference-dynamic-projection-fixtures/r1"},
+    "fixture_schema": {"const": "schemas/language/managed-reference-dynamic-projection-fixtures-r1.schema.json"},
+    "revision": {"const": "r69-managed-reference-dynamic-projection-r1"},
+    "baseline_commit": {"const": "a84fd17137b8e2f8f620be8c7f0f96afd627a9e1"},
+    "plan_schema": {"const": "schemas/language/managed-reference-memory-profile-r1.schema.json"},
+    "runtime_root_receipt_schema": {"const": "schemas/language/managed-reference-runtime-root-receipt-r1.schema.json"},
+    "native_projection_receipt_schema": {"const": "schemas/language/managed-reference-native-projection-receipt-r1.schema.json"},
+    "evidence_state": {
+      "const": {
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "product_execution": "NOT_RUN",
+        "evidence_level": "E2_DESIGN_STATIC"
+      }
+    },
+    "static_plan": {
+      "type": "object",
+      "required": ["schema", "plan_id", "bodies", "plan_semantic_digest"]
+    },
+    "runtime_root_receipt": {
+      "type": "object",
+      "required": ["schema", "receipt_id", "root_entries", "lifecycle", "runtime_root_receipt_digest"]
+    },
+    "native_projection_receipts": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "type": "object",
+          "required": ["schema", "module_kind", "receipt_semantic_digest"],
+          "properties": {"module_kind": {"const": "ObjectAot"}}
+        },
+        {
+          "type": "object",
+          "required": ["schema", "module_kind", "receipt_semantic_digest"],
+          "properties": {"module_kind": {"const": "InMemoryJit"}}
+        }
+      ],
+      "items": false
+    },
+    "declared_mutations": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/declaredMutation"}
+    },
+    "expected_counts": {
+      "const": {
+        "static_plans": 1,
+        "runtime_root_receipts": 1,
+        "native_projection_receipts": 2,
+        "declared_mutations": 14,
+        "semantic_p0": 0,
+        "open_feature_p1": 22,
+        "open_m13_actions": 4,
+        "product_lanes": 15,
+        "product_executed": 0
+      }
+    }
+  },
+  "$defs": {
+    "declaredMutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mutation_id", "target", "expected", "execution_state"],
+      "properties": {
+        "mutation_id": {
+          "enum": [
+            "R69-MRM-MUT-001_STALE_MANAGED_DEPENDENCY_CONTINUATION_DIGEST",
+            "R69-MRM-MUT-002_STALE_SUSPENSION_CONTINUATION_DIGEST",
+            "R69-MRM-MUT-003_RUNTIME_DISPATCH_CONTINUATION_DIGEST_DRIFT",
+            "R69-MRM-MUT-004_ROOT_ID_DOMAIN_ALIAS",
+            "R69-MRM-MUT-005_DROP_LIVE_ROOT",
+            "R69-MRM-MUT-006_STALE_HANDLE_GENERATION",
+            "R69-MRM-MUT-007_SAFEPOINT_ROOT_MAP_BINDING_DRIFT",
+            "R69-MRM-MUT-008_RECEIPT_PUBLISHED_AFTER_ENTRY",
+            "R69-MRM-MUT-009_REUSE_SOURCE_ROOT_ID_AT_DESTINATION",
+            "R69-MRM-MUT-010_FORBIDDEN_LOAN_CROSSES_SUSPENSION",
+            "R69-MRM-MUT-011_POST_TRANSFER_SAFEPOINT_USES_SOURCE_MAP",
+            "R69-MRM-MUT-012_MANAGED_HELPER_COLLECTION_BINDING_DRIFT",
+            "R69-MRM-MUT-013_NATIVE_RAW_POINTER_OR_RECEIPT_DRIFT",
+            "R69-MRM-MUT-014_TARGET_PARITY_OR_PRODUCT_OVERCLAIM"
+          ]
+        },
+        "target": {"type": "string", "minLength": 1},
+        "expected": {"const": "REJECT_STATIC_EVIDENCE"},
+        "execution_state": {"const": "DECLARED_NOT_RUN"}
+      }
+    }
+  },
+  "x-deeplus-status-fence": {
+    "fixture_materialization": "DESIGN_STATIC_ONLY",
+    "mutation_execution_count": 0,
+    "product_lanes": "15_OF_15_NOT_RUN"
+  }
+}

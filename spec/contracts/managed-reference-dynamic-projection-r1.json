@@ -1,0 +1,165 @@
+{
+  "$schema": "../../schemas/language/managed-reference-dynamic-projection-r1.schema.json",
+  "schema": "deeplus.managed-reference-dynamic-projection/r1",
+  "revision": "r69-local-managed-reference-dynamic-trace-closure-r1",
+  "canonical_baseline_commit": "a84fd17137b8e2f8f620be8c7f0f96afd627a9e1",
+  "gap_id": "IR-XCUT-P1-054",
+  "feature_id": "managed_reference_memory_profile_phase1",
+  "candidate_status": "NONCANONICAL_DESIGN_STATIC_CONTRACT",
+  "authority_binding": {
+    "continuation_interface_id": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
+    "continuation_interface_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
+    "continuation_contract_path": "spec/contracts/continuation-interface-r1.json",
+    "region_lifetime_contract_path": "spec/contracts/region-lifetime-mir-projection-r1.json",
+    "interpretation": "CURRENT_SUCCESSOR_SEAM_AUTHORITY"
+  },
+  "predecessors": [
+    {
+      "role": "R36_MEMORY_PROFILE",
+      "path": "spec/contracts/managed-reference-memory-profile-r1.json",
+      "file_sha256": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
+    },
+    {
+      "role": "R37_INTERNAL_RUNTIME_ABI",
+      "path": "spec/contracts/internal-runtime-abi-r1.json",
+      "file_sha256": "fa905282037bdda3d3eb122d74f467ae611ea1ca7d355b0efb49c02fb6f93ba0"
+    }
+  ],
+  "stale_pointer_supersession": {
+    "stale_digest": "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271",
+    "successor_digest": "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb",
+    "pointers": [
+      "spec/contracts/managed-reference-memory-profile-r1.json#/dependency_guard/continuation_root_interface_digest",
+      "spec/contracts/managed-reference-memory-profile-r1.json#/suspension_root_transfer/continuation_root_interface_digest",
+      "spec/contracts/internal-runtime-abi-r1.json#/dispatcher_contract/bounded_continuation_dispatch/continuation_interface_digest"
+    ],
+    "pointer_count": 3,
+    "scope": "SUPERSEDED_AT_R69_SUCCESSOR_SEAM_WITHOUT_REWRITING_PREDECESSOR_HISTORY"
+  },
+  "projection_contract": {
+    "semantic_owner": {
+      "verified_mir": "OWNS_BACKEND_NEUTRAL_CONTROL_FLOW_TYPE_OWNERSHIP_REGION_LOAN_LIVENESS_AND_SAFEPOINT_IDENTITIES",
+      "static_managed_memory_plan": "OWNS_DETERMINISTIC_ROOT_MAP_TEMPLATES_TRACE_DESCRIPTORS_AND_ALLOCATION_INTERIOR_SUSPENSION_PROJECTION",
+      "target_projection": "OWNS_TARGET_STORAGE_COORDINATES_ONLY_AND_MUST_NOT_SELECT_ROOTS_OR_SAFEPOINTS",
+      "runtime_root_receipt": "OWNS_EXECUTION_EPOCH_HANDLE_GENERATION_AND_PUBLISH_COMMIT_RELEASE_LIFECYCLE",
+      "collector": "CONSUMES_ONE_VERIFIED_PUBLISHED_RECEIPT_AND_NEVER_OWNS_LANGUAGE_CLEANUP_CANCELLATION_OR_OUTCOME_SELECTION"
+    },
+    "static_plan": {
+      "schema_identity": "deeplus.managed-memory-plan/r1",
+      "input": "Verified<DeeplusMirR1>",
+      "contains": [
+        "mir_semantic_digest",
+        "managed_memory_profile_digest",
+        "continuation_interface_digest",
+        "ordered_trace_descriptor_table",
+        "ordered_safepoint_table",
+        "ordered_root_map_templates",
+        "allocation_interior_and_suspension_projection"
+      ],
+      "root_map_template_entry": [
+        "RootId",
+        "partition",
+        "owner_kind_and_id",
+        "storage_kind_and_id",
+        "TraceDescriptorId"
+      ],
+      "root_id_recipe": "DETERMINISTIC_TYPED_ID_FROM_BODY_SAFEPOINT_PARTITION_OWNER_STORAGE_AND_TRACE_DESCRIPTOR",
+      "runtime_handle_generation_value_count": 0,
+      "runtime_receipt_lifecycle_field_count": 0,
+      "claimed_digest_without_recomputation": "REJECT"
+    },
+    "runtime_root_receipt": {
+      "schema_identity": "deeplus.managed-reference-runtime-root-receipt/r1",
+      "schema_path": "schemas/language/managed-reference-runtime-root-receipt-r1.schema.json",
+      "identity": "RuntimeRootReceiptId",
+      "created_at": "VERIFIED_SAFEPOINT_ENTRY_AFTER_TARGET_ROOT_LOCATION_PROJECTION",
+      "binds": [
+        "exact_mir_and_static_plan_digests",
+        "profile_and_continuation_interface_digests",
+        "BodyId SafepointId RootMapId execution epoch",
+        "sorted unique RootId to TraceDescriptorId and checked handle-generation entries",
+        "verified published live-through-commit released lifecycle",
+        "receipt semantic digest"
+      ],
+      "same_handle_two_storage_locations": "TWO_DISTINCT_ROOT_IDS",
+      "missing_extra_duplicate_unsorted_or_generation_mismatch": "REJECT_BEFORE_MAY_COLLECT_ENTRY",
+      "target_address_is_semantic_identity": false
+    },
+    "lowering_order": [
+      "VERIFY_MIR_AND_REGION_LOAN_BALANCE",
+      "RECOMPUTE_AND_VERIFY_STATIC_MANAGED_MEMORY_PLAN",
+      "PROJECT_LOGICAL_ROOTS_TO_XVM_OR_TARGET_STORAGE",
+      "VERIFY_AND_PUBLISH_RUNTIME_ROOT_RECEIPT",
+      "ENTER_EXACT_MAY_COLLECT_OPERATION",
+      "COMMIT_THE_SELECTED_MIR_OUTCOME",
+      "RELEASE_RUNTIME_ROOT_RECEIPT"
+    ],
+    "region_loan_fence": {
+      "authority": "spec/contracts/region-lifetime-mir-projection-r1.json#/projection_contract",
+      "region_id_or_loan_id_is_root_id": false,
+      "borrowed_or_inout_view_creates_independent_root": false,
+      "root_liveness_extends_region_or_loan": false,
+      "managed_nonmoving_is_static_loan_proof": false,
+      "ordinary_or_exclusive_loan_crosses_suspension": false,
+      "process_static_immutable_shared_exception": "REQUIRES_EXACT_R68_R38_PROOF_AND_EXISTING_FRAME_ROOT_PROJECTION"
+    },
+    "suspension_bridge": {
+      "receipt_schema": "deeplus.continuation-receipt/r1",
+      "suspension_receipt_already_owns": [
+        "source and destination RootId",
+        "checked handle generation",
+        "source and destination RootMapId and digest",
+        "bijective root rebind and zero source residual"
+      ],
+      "ordinary_safepoint_coverage": "REQUIRES_GENERAL_MANAGED_ROOT_RECEIPT",
+      "cross_receipt_rule": "SUSPENSION_ROOT_MAP_AND_GENERATION_FACTS_MATCH_THE_GENERAL_RUNTIME_ROOT_RECEIPTS_EXACTLY"
+    },
+    "cross_path_parity": {
+      "paths": ["Xvm", "ObjectAot", "InMemoryJit"],
+      "exact": ["ordered SafepointId", "logical RootId set", "owner transfer", "cleanup outcome", "terminal outcome"],
+      "excluded": ["target address", "register", "stack offset", "heap layout", "collection timing"],
+      "backend_root_or_safepoint_inference_count": 0
+    },
+    "identity_and_operation_fence": {
+      "new_source_surface_count": 0,
+      "new_hir_identity_kind_count": 0,
+      "new_mir_operation_kind_count": 0,
+      "new_backend_semantic_identity_count": 0,
+      "managed_safepoint_enter_leave": "TARGET_RUNTIME_PROJECTION_AROUND_THE_EXISTING_VERIFIED_SEMANTIC_SAFEPOINT_NOT_NEW_MIR_TERMINATORS",
+      "runtime_or_backend_reselection_count": 0
+    }
+  },
+  "acceptance_matrix": [
+    {"case_id": "R69-MRM-ACC-001", "role": "CURRENT_INTERFACE_DIGEST", "expected": "ALL_SUCCESSOR_EDGES_BIND_THE_RECOMPUTED_R69_INTERFACE_DIGEST"},
+    {"case_id": "R69-MRM-ACC-002", "role": "STALE_DIGEST_REJECTION", "expected": "ANY_SUCCESSOR_EDGE_USING_0DC489_DIGEST_IS_REJECTED"},
+    {"case_id": "R69-MRM-ACC-003", "role": "STATIC_PLAN_SPLIT", "expected": "NO_RUNTIME_GENERATION_OR_RECEIPT_LIFECYCLE_IN_PLAN_DIGEST"},
+    {"case_id": "R69-MRM-ACC-004", "role": "RUNTIME_RECEIPT_LIFECYCLE", "expected": "VERIFY_PUBLISH_ENTER_COMMIT_RELEASE_ORDER_IS_EXACT"},
+    {"case_id": "R69-MRM-ACC-005", "role": "LIVE_OWNED_ROOT", "expected": "ONE_STORAGE_LOCATION_ONE_ROOT_TEMPLATE_AND_ONE_RUNTIME_GENERATION_CHECK"},
+    {"case_id": "R69-MRM-ACC-006", "role": "EMPTY_ROOT_MAP", "expected": "EXPLICIT_SORTED_EMPTY_TEMPLATE_AND_VALID_EMPTY_RUNTIME_RECEIPT"},
+    {"case_id": "R69-MRM-ACC-007", "role": "ALIASING_HANDLE", "expected": "SAME_HANDLE_IN_TWO_LOCATIONS_HAS_TWO_ROOT_IDS"},
+    {"case_id": "R69-MRM-ACC-008", "role": "ROOT_SET_REJECTION", "expected": "MISSING_EXTRA_DUPLICATE_OR_UNSORTED_ROOT_REJECTS_BEFORE_COLLECTION"},
+    {"case_id": "R69-MRM-ACC-009", "role": "GENERATION_REJECTION", "expected": "UNKNOWN_OR_MISMATCHED_HANDLE_GENERATION_REJECTS_BEFORE_COLLECTION"},
+    {"case_id": "R69-MRM-ACC-010", "role": "SAFEPOINT_HELPER_MAPPING", "expected": "ENTER_LEAVE_PROJECT_AROUND_EXISTING_VERIFIED_SAFEPOINT_WITH_NO_NEW_MIR_TERMINATOR"},
+    {"case_id": "R69-MRM-ACC-011", "role": "SUSPENSION_REBIND", "expected": "FRESH_DESTINATION_ROOT_EQUAL_CHECKED_GENERATION_ZERO_SOURCE_RESIDUAL"},
+    {"case_id": "R69-MRM-ACC-012", "role": "R68_REGION_LOAN_FENCE", "expected": "BORROWED_OR_INOUT_VIEW_NEVER_GAINS_ROOT_OWNERSHIP_OR_EXTENDED_LIFETIME"},
+    {"case_id": "R69-MRM-ACC-013", "role": "BACKEND_FENCE", "expected": "IMPLICIT_BACKEND_SAFEPOINT_OR_ROOT_INFERENCE_REJECTED"},
+    {"case_id": "R69-MRM-ACC-014", "role": "CROSS_PATH_PARITY", "expected": "XVM_OBJECT_AOT_AND_IN_MEMORY_JIT_LOGICAL_TRACES_EQUAL"}
+  ],
+  "counts": {
+    "stale_pointer_count": 3,
+    "acceptance_case_count": 14,
+    "new_source_surface_count": 0,
+    "new_hir_identity_kind_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "new_backend_identity_count": 0,
+    "product_execution_receipt_count": 0
+  },
+  "guards": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "implementation_claim": "NONE"
+  }
+}

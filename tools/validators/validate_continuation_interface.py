@@ -20,8 +20,8 @@ from typing import Any
 BASELINE_COMMIT = "e680568057ec9c6b02218dbe153758471734cf44"
 GRAMMAR_SHA256 = "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
 INTERFACE_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
-R36_MANAGED_REFERENCE_DIGEST = "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
-R37_RUNTIME_ABI_DIGEST = "45f40998a052d21393ee324261ad2c1865beaddee435632df30ddb5e8a69833d"
+R36_HISTORICAL_MANAGED_REFERENCE_DIGEST = "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
+R37_HISTORICAL_RUNTIME_ABI_DIGEST = "45f40998a052d21393ee324261ad2c1865beaddee435632df30ddb5e8a69833d"
 FRAME_STATES = ["RUNNING", "SUSPENDED", "CLEANING", "TERMINAL_COMPLETED", "TERMINAL_FAILED", "TERMINAL_CANCELLED"]
 EPOCH_STATES = ["PREPARING", "COMMITTED", "RESUME_WON", "CANCEL_WON", "DISCHARGED"]
 OPERATIONS = ["FRAME_CREATE", "FRAME_SUSPEND_COMMIT", "FRAME_RESUME_COMMIT", "FRAME_CANCEL_COMMIT", "FRAME_CLEANUP_STEP", "FRAME_TERMINATE"]
@@ -136,7 +136,12 @@ def source_manifest_export_binding(
     }
 
 
-def interface_errors(value: dict[str, Any]) -> list[str]:
+def interface_errors(
+    value: dict[str, Any],
+    *,
+    active_r36_digest: str,
+    active_r37_digest: str,
+) -> list[str]:
     errors: list[str] = []
     if value.get("schema") != "deeplus.continuation-interface/r1":
         errors.append("schema")
@@ -202,10 +207,10 @@ def interface_errors(value: dict[str, Any]) -> list[str]:
     seam = value.get("seam_status", {})
     if not (
         seam.get("r36_digest_binding") == "EXACT_LOCAL_FUSION_BOUND"
-        and seam.get("r36_managed_reference_profile_digest") == R36_MANAGED_REFERENCE_DIGEST
+        and seam.get("r36_managed_reference_profile_digest") == active_r36_digest
         and seam.get("r37_helpers_remain_dependency_unbound") is False
         and seam.get("r37_dependency_binding") == "EXACT_LOCAL_FUSION_BOUND"
-        and seam.get("r37_runtime_abi_digest") == R37_RUNTIME_ABI_DIGEST
+        and seam.get("r37_runtime_abi_digest") == active_r37_digest
         and seam.get("silent_candidate_stacking") is False
         and seam.get("future_fusion_required") is False
     ):
@@ -236,6 +241,8 @@ def main() -> int:
         "suspension": root / "spec/contracts/suspension-frame-responsibility-r1.json",
         "suspension_schema": root / "schemas/language/suspension-frame-responsibility.schema.json",
         "fixtures": root / "tests/fixtures/current/continuation-interface-r1.json",
+        "managed_reference_profile": root / "spec/contracts/managed-reference-memory-profile-r1.json",
+        "runtime_abi_fixtures": root / "tests/fixtures/current/internal-runtime-abi-r1.json",
         "fixture_schema": root / "schemas/language/continuation-interface-fixtures-r1.schema.json",
         "legacy_fixtures": root / "tests/fixtures/current/suspension-frame-responsibility-r1.json",
         "hir_schema": root / "schemas/language/canonical-hir-h1.schema.json",
@@ -259,6 +266,8 @@ def main() -> int:
     interface = load(paths["interface"])
     suspension = load(paths["suspension"])
     fixtures = load(paths["fixtures"])
+    active_r36_digest = sha256(paths["managed_reference_profile"])
+    active_r37_digest = load(paths["runtime_abi_fixtures"])["runtime_abi_instance"]["runtime_abi_digest"]
     schema_status: dict[str, str] = {}
     try:
         import jsonschema  # type: ignore
@@ -277,7 +286,11 @@ def main() -> int:
         schema_status["failure"] = repr(exc)
     check("R38_JSON_SCHEMA", "failure" not in schema_status, schema_status)
 
-    failures = interface_errors(interface)
+    failures = interface_errors(
+        interface,
+        active_r36_digest=active_r36_digest,
+        active_r37_digest=active_r37_digest,
+    )
     check("R38_EXACT_INTERFACE", not failures, failures)
 
     bound = {name: sha256(root / relative) for name, relative in ARTIFACTS.items()}
@@ -441,7 +454,16 @@ def main() -> int:
     mutant = copy.deepcopy(interface); mutant["projection_entry_maps"][0]["address_as_identity"] = True; mutants.append(("ADDRESS_IDENTITY", mutant))
     mutant = copy.deepcopy(interface); mutant["dispatch_entry_law"]["arbitrary_runtime_to_generated_callback_authority"] = True; mutants.append(("ARBITRARY_CALLBACK", mutant))
     mutant = copy.deepcopy(interface); mutant["seam_status"]["r37_helpers_remain_dependency_unbound"] = True; mutants.append(("SILENT_SIBLING_STACK", mutant))
-    mutation_results = {name: bool(interface_errors(value)) for name, value in mutants}
+    mutation_results = {
+        name: bool(
+            interface_errors(
+                value,
+                active_r36_digest=active_r36_digest,
+                active_r37_digest=active_r37_digest,
+            )
+        )
+        for name, value in mutants
+    }
     check("R38_MUTATION_REJECTION_12_OF_12", all(mutation_results.values()), mutation_results)
 
     failed = [row for row in checks if not row["pass"]]

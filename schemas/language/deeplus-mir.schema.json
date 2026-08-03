@@ -14,6 +14,7 @@
     "mir_machine_registry_id",
     "mir_machine_registry_digest",
     "type_table",
+    "managed_trace_descriptor_table",
     "static_identity_table",
     "responsibility_evidence_table",
     "constant_table",
@@ -52,6 +53,12 @@
       "items": {
         "$ref": "#/$defs/typeEntry"
       }
+    },
+    "managed_trace_descriptor_table": {
+      "type": "array",
+      "uniqueItems": true,
+      "x-deeplus-unique-by": "type_id",
+      "items": {"$ref": "#/$defs/managedTraceDescriptor"}
     },
     "static_identity_table": {
       "type": "array",
@@ -505,6 +512,24 @@
           }
         }
       ]
+    },
+    "managedTraceDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type_id",
+        "trace_kind",
+        "ordered_managed_projection_ids"
+      ],
+      "properties": {
+        "type_id": {"$ref": "#/$defs/id"},
+        "trace_kind": {"enum": ["NONE", "HANDLE", "AGGREGATE"]},
+        "ordered_managed_projection_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/id"},
+          "uniqueItems": true
+        }
+      }
     },
     "traitAssociatedStaticSelectionDescriptor": {
       "description": "Exact MIR residue of the statically selected <T as Trait>::item. This descriptor is data identity, not a runtime lookup recipe.",

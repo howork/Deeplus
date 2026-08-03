@@ -19,7 +19,7 @@ from typing import Any
 BASELINE = "e680568057ec9c6b02218dbe153758471734cf44"
 BASELINE_TREE = "4d91b75d244f0c6adb5980cee19fec756c337053"
 CONTINUATION_INTERFACE_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
-CONTINUATION_INTERFACE_DIGEST = "0dc4891d1d23da397012f1ec1956ba1a3b52e884dbec604d27c8561a09941271"
+CONTINUATION_PATH = "spec/contracts/continuation-interface-r1.json"
 PROFILE_ID = "STW_NONMOVING_TRACING_WITH_OPAQUE_STABLE_HANDLES_R1"
 FEATURE_ID = "managed_reference_memory_profile_phase1"
 CONTRACT_PATH = "spec/contracts/managed-reference-memory-profile-r1.json"
@@ -47,7 +47,7 @@ CLOSED_SITE_KINDS = [
 ]
 SITE_TERMINATORS = {
     "NONTAIL_INVOKE": "INVOKE",
-    "MANAGED_ALLOCATION_SLOW_PATH": "CHECKED",
+    "MANAGED_ALLOCATION_SLOW_PATH": "INVOKE",
     "SUSPENSION_AFTER_ROOT_TRANSFER": "SUSPEND",
     "CANCELLATION_OBSERVATION": "CANCEL_CHECK",
     "RUN_RUNTIME_ENTRY": "RUN_OP",
@@ -70,6 +70,7 @@ PROJECTION_DIAGNOSTICS = [
 REQUIRED_NATIVE_RECEIPT_FIELDS = [
     "managed_memory_profile_digest",
     "managed_memory_plan_digest",
+    "managed_root_receipt_schema_digest",
     "continuation_root_interface_digest",
     "handle_abi_digest",
     "shadow_root_frame_abi_digest",
@@ -283,7 +284,6 @@ def validate_schema(
             "storage_kind": "VALUE",
             "storage_id": "ValueId:v",
             "trace_descriptor_id": "ManagedTraceDescriptorId:t",
-            "handle_generation": 7,
         }
         if list(root_entry_validator.iter_errors(base_root_entry)):
             errors.append("ROOT_ENTRY_TYPED_DOMAIN_POSITIVE")
@@ -342,6 +342,7 @@ def validate_contract(
     contract: dict[str, Any],
     plan_schema: dict[str, Any],
     native_receipt_schema: dict[str, Any],
+    continuation: dict[str, Any],
 ) -> list[str]:
     errors: list[str] = []
     profile = contract.get("profile", {})
@@ -352,13 +353,15 @@ def validate_contract(
     if contract.get("gap_id") != "IR-OWN-P1-025":
         errors.append("GAP_BINDING")
     dependency = contract.get("dependency_guard", {})
+    continuation_digest = continuation.get("continuation_interface_digest")
     if not (
         dependency.get("gap_id") == "IR-OWN-P0-017"
         and dependency.get("status_at_baseline") == "APPROVED_NOT_INTEGRATED"
         and dependency.get("gap_role") == "GOVERNANCE_TRACKING_ONLY"
         and dependency.get("successor_binding_status") == "EXACT_LOCAL_FUSION_BOUND"
         and dependency.get("continuation_root_interface_id") == CONTINUATION_INTERFACE_ID
-        and dependency.get("continuation_root_interface_digest") == CONTINUATION_INTERFACE_DIGEST
+        and isinstance(continuation_digest, str)
+        and dependency.get("continuation_root_interface_digest") == continuation_digest
         and dependency.get("canonical_promotion_ready") is True
         and dependency.get("r36_replaces_dependency_state_machine") is False
     ):
@@ -457,16 +460,33 @@ def validate_contract(
         errors.append("PLAN_ROOT_ENTRY_DISCRIMINATOR_CLOSURE")
     root_entry = defs.get("rootEntry", {})
     if (
-        "handle_generation" not in set(root_entry.get("required", []))
+        "handle_generation" in set(root_entry.get("required", []))
+        or "handle_generation" in root_entry.get("properties", {})
         or "generation_checked" in root_entry.get("properties", {})
     ):
-        errors.append("PLAN_ROOT_ENTRY_EXACT_GENERATION")
+        errors.append("PLAN_ROOT_ENTRY_RUNTIME_GENERATION_FORBIDDEN")
+    root_map = defs.get("rootMap", {})
+    if (
+        "receipt_lifecycle" in set(root_map.get("required", []))
+        or "receipt_lifecycle" in root_map.get("properties", {})
+        or "receiptLifecycle" in defs
+    ):
+        errors.append("PLAN_RUNTIME_RECEIPT_LIFECYCLE_FORBIDDEN")
     transfer = defs.get("suspensionTransfer", {})
     if (
         "root_rebind_pairs" not in set(transfer.get("required", []))
         or "rootRebindPair" not in defs
     ):
         errors.append("PLAN_ROOT_REBIND_PAIR_CLOSURE")
+    rebind = defs.get("rootRebindPair", {})
+    if any(
+        field in rebind.get("properties", {})
+        for field in ("source_handle_generation", "destination_handle_generation")
+    ):
+        errors.append("PLAN_ROOT_REBIND_RUNTIME_GENERATION_FORBIDDEN")
+    suspension = contract.get("suspension_root_transfer", {})
+    if suspension.get("continuation_root_interface_digest") != continuation_digest:
+        errors.append("SUSPENSION_CONTINUATION_DIGEST")
     native_required = set(native_receipt_schema.get("required", []))
     if not set(REQUIRED_NATIVE_RECEIPT_FIELDS).issubset(native_required):
         errors.append("NATIVE_RECEIPT_REQUIRED_FIELD_BINDING")
@@ -665,6 +685,11 @@ def validate_bound_artifacts(root: Path, contract: dict[str, Any]) -> list[str]:
         guard.get("memory_profile_id") == PROFILE_ID
         and guard.get("managed_memory_plan_schema")
         == "deeplus.managed-memory-plan/r1"
+        and guard.get("managed_root_receipt_schema")
+        == "deeplus.managed-reference-runtime-root-receipt/r1"
+        and guard.get("dynamic_projection_contract")
+        == "spec/contracts/managed-reference-dynamic-projection-r1.json"
+        and guard.get("static_plan_contains_runtime_generation_or_receipt_lifecycle") is False
         and guard.get("missing_or_invalid_plan") == "BLOCK_NATIVE_LOWERING"
         and guard.get("raw_pointer_fallback") is False
     ):
@@ -675,6 +700,14 @@ def validate_bound_artifacts(root: Path, contract: dict[str, Any]) -> list[str]:
     bridge_guard = native.get("managed_reference_guard", {})
     if bridge_guard.get("memory_profile_id") != PROFILE_ID:
         errors.append("HIR_BRIDGE_PROFILE_BINDING")
+    if not (
+        bridge_guard.get("managed_root_receipt_schema")
+        == "deeplus.managed-reference-runtime-root-receipt/r1"
+        and bridge_guard.get("dynamic_projection_contract")
+        == "spec/contracts/managed-reference-dynamic-projection-r1.json"
+        and bridge_guard.get("static_plan_contains_runtime_generation_or_receipt_lifecycle") is False
+    ):
+        errors.append("HIR_BRIDGE_RUNTIME_RECEIPT_BINDING")
     if bridge_guard.get("required_native_projection_receipt_fields") != REQUIRED_NATIVE_RECEIPT_FIELDS:
         errors.append("HIR_BRIDGE_NATIVE_RECEIPT_FIELD_BINDING")
     capabilities = {
@@ -698,6 +731,14 @@ def validate_bound_artifacts(root: Path, contract: dict[str, Any]) -> list[str]:
         errors.append("MIR_CAPABILITY_SAFEPOINT_TERMINATORS")
     if safepoint.get("managed_memory_plan_schema") != "deeplus.managed-memory-plan/r1":
         errors.append("MIR_CAPABILITY_PLAN_SCHEMA")
+    if not (
+        safepoint.get("managed_root_receipt_schema")
+        == "deeplus.managed-reference-runtime-root-receipt/r1"
+        and safepoint.get("managed_dynamic_projection_contract")
+        == "spec/contracts/managed-reference-dynamic-projection-r1.json"
+        and safepoint.get("static_plan_runtime_generation_field_count") == 0
+    ):
+        errors.append("MIR_CAPABILITY_RUNTIME_RECEIPT_SCHEMA")
     mir_schema = read_json(root, "schemas/language/deeplus-mir.schema.json")
     verifier = mir_schema.get("x-deeplus-verifier-contract", {})
     if verifier.get("managed_memory_plan") != (
@@ -735,6 +776,7 @@ def main() -> int:
 
     try:
         contract = read_json(root, CONTRACT_PATH)
+        continuation = read_json(root, CONTINUATION_PATH)
         plan_schema = read_json(root, PLAN_SCHEMA_PATH)
         native_receipt_schema = read_json(root, NATIVE_RECEIPT_SCHEMA_PATH)
         fixture_schema = read_json(root, FIXTURE_SCHEMA_PATH)
@@ -747,7 +789,7 @@ def main() -> int:
         )
         record(
             "R36_PROFILE_AND_DEPENDENCY_CONTRACT",
-            validate_contract(contract, plan_schema, native_receipt_schema),
+            validate_contract(contract, plan_schema, native_receipt_schema, continuation),
         )
         record("R36_SEMANTIC_MATRIX", validate_semantic_cases(fixture))
         mutation_errors, killed = validate_mutations(fixture)

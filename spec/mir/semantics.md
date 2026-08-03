@@ -657,13 +657,14 @@ R36 remains an approved local candidate and cannot pass canonical promotion.
 The collector is cooperative stop-the-world, nonmoving, nongenerational and
 nonconcurrent. It has no weak-reference, finalizer, resurrection or pinning
 surface and never performs MIR cleanup or cancellation. Allocation fast paths
-cannot collect. A slow allocation path uses an explicit `CHECKED` safepoint and
+cannot collect. A slow allocation path uses an explicit `INVOKE` whose exact
+call plan selects the sealed `managed.allocate_slow` helper and preserves the
 existing `AllocationError effects allocate`; precommit failure cancels its
 reservation, restores the input owner, reverse-cleans staged resources and
 publishes nothing.
 
 The closed safepoint set consists of non-tail `INVOKE`, managed-allocation
-`CHECKED`, post-transfer `SUSPEND`, `CANCEL_CHECK`, runtime-entry `RUN_OP`,
+slow-path `INVOKE`, post-transfer `SUSPEND`, `CANCEL_CHECK`, runtime-entry `RUN_OP`,
 `ACTOR_OP`, `PROVIDER_OP`, `ONCE_OP` and `SYNC_OP`, CFG backedges, and an FFI
 transition after root publication. No backend-private implicit safepoint is
 admitted. At each site the declared roots are the sorted unique union of
@@ -679,6 +680,16 @@ unpublished state plus zero active activations, suspended continuations and
 outstanding root receipts. xVM, Object AOT and JIT compare logical safepoint,
 root-owner, ownership, cleanup and outcome traces; target addresses, heap
 layout, collection timing and stack offsets are excluded.
+
+The R69 successor seam separates the compile-time managed-memory plan from an
+execution-time managed-root receipt. Static root-map templates contain logical
+storage-location `RootId` and trace-descriptor bindings, never a runtime handle
+generation or receipt lifecycle. At an executed safepoint the runtime receipt
+checks exact generations, is published before the may-collect entry, remains
+live through MIR outcome commit, and is then released. The current continuation
+interface digest is `2ccf2acd...c8b4`; predecessor `0dc489...1271` pointers do
+not select successor semantics. `RegionId` and `LoanId` remain verifier
+identities: a managed root neither creates nor extends a loan.
 
 Source locations and `DebugOrigin` project through a separate nonsemantic debug
 digest. Debug info, unwind tables and profiler metadata do not change program

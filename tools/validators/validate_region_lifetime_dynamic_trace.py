@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -38,7 +39,7 @@ FEATURE = "region_lifetime_model_phase_a"
 TARGET = (FEATURE, "DYNAMIC_LOWERING", None)
 EVIDENCE_KEY = "R68:region_lifetime_model_phase_a:DYNAMIC_LOWERING:REGION_PROJECTION"
 EVIDENCE_ID = "EV-032750ffa3d95c5598d2adcdaae3048b3c03353353dc2dd3ac6146e7664fd070"
-NON_TARGET_SHA256 = "24bd4668d31d583d421bd5b124e902ac1d7d1271ed263e40afc9660022e8dee3"
+R68_PUBLICATION_COMMIT = "a84fd17137b8e2f8f620be8c7f0f96afd627a9e1"
 
 PROTECTED = {
     "spec/traceability/implementation-target-profile-r1/closure-capture-dynamic-trace-evidence-r1.json": "bd5af3ef5fa6ef92c01376dfcc8f663ac8f6a5451b6b63145ac8fe2a4756bcac",
@@ -82,11 +83,50 @@ def trace_cells(rows: list[dict[str, Any]]) -> tuple[dict[tuple[str, str, str | 
     return cells, duplicates
 
 
-def non_target_digest(cells: dict[tuple[str, str, str | None], dict[str, Any]]) -> tuple[int, str]:
-    material = [[*key, value] for key, value in cells.items() if key != TARGET]
-    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
-    raw = json.dumps(material, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
-    return len(material), hashlib.sha256(raw).hexdigest()
+def git_json(root: Path, commit: str, relative: str) -> Any:
+    completed = subprocess.run(
+        ["git", "-c", f"safe.directory={root.as_posix()}", "show", f"{commit}:{relative}"],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    return json.loads(completed.stdout)
+
+
+def evidence_signature(row: dict[str, Any]) -> tuple[Any, ...]:
+    return tuple(row.get(key) for key in ("class", "path", "locator_kind", "locator", "stage_role"))
+
+
+def projected_cell(
+    binding: dict[str, Any],
+    overlay_evidence: dict[str, dict[str, Any]],
+    evidence_ids: dict[tuple[Any, ...], str],
+) -> dict[str, Any]:
+    refs = sorted({evidence_ids[evidence_signature(overlay_evidence[key])] for key in binding["evidence_keys"]})
+    disposition = binding["disposition"]
+    if disposition == "BOUND_DIRECT":
+        value = {"disposition": disposition, "evidence_refs": refs, "delegate_feature_id": None, "not_applicable": None, "blocked_gap_ids": []}
+    elif disposition == "BOUND_DELEGATED":
+        value = {"disposition": disposition, "evidence_refs": refs, "delegate_feature_id": binding["delegate_feature_id"], "not_applicable": None, "blocked_gap_ids": []}
+    else:
+        detail = binding["not_applicable"]
+        value = {
+            "disposition": "NOT_APPLICABLE",
+            "evidence_refs": [],
+            "delegate_feature_id": None,
+            "not_applicable": {
+                "reason_code": detail["reason_code"],
+                "authority_boundary": detail["authority_boundary"],
+                "justification_evidence_refs": refs,
+                "rationale": detail["rationale"],
+            },
+            "blocked_gap_ids": [],
+        }
+    if binding.get("stage") == "CONFORMANCE_TESTS":
+        return {"outcome": binding.get("outcome"), **value}
+    return {"stage": binding.get("stage"), **value}
 
 
 def validate(
@@ -235,16 +275,111 @@ def validate(
     require(binding.get("predecessor_disposition") == "APPLICABLE_BLOCKED_BY_GAP" and binding.get("disposition") == "BOUND_DIRECT", "G08", "BLOCKED_TO_DIRECT")
     require(binding.get("evidence_keys") == [EVIDENCE_KEY] and binding.get("delegate_feature_id") is None and binding.get("not_applicable") is None, "G08", "DIRECT_ONLY")
 
-    # G09: generated ledger changes only the target cell.
+    # G09: preserve the exact R68 publication and admit only later, declared
+    # successor-overlay transitions.  Global counts may grow after R68; an
+    # unrelated cell may not drift merely because a successor was appended.
     cells, duplicates = trace_cells(rows)
     target = cells.get(TARGET, {})
-    count, digest = non_target_digest(cells)
     derived = metadata.get("derived_counts", {})
-    require(len(rows) == 469 and len(cells) == 4221 and duplicates == 0, "G09", "LEDGER_SHAPE")
     require(target == {"stage": "DYNAMIC_LOWERING", "disposition": "BOUND_DIRECT", "evidence_refs": [EVIDENCE_ID], "delegate_feature_id": None, "not_applicable": None, "blocked_gap_ids": []}, "G09", "TARGET_GENERATED_EXACT")
-    require(count == 4220 and digest == NON_TARGET_SHA256, "G09", "OTHER_4220_EXACT")
-    require((derived.get("bound_direct_cells"), derived.get("bound_delegated_cells"), derived.get("not_applicable_cells"), derived.get("applicable_blocked_cells")) == (2466, 3, 501, 1251), "G09", "COUNTS")
-    require(len(metadata.get("applied_evidence_overlays", [])) == 14 and sum(row.get("binding_count", 0) for row in metadata.get("applied_evidence_overlays", [])) == 130 and len(metadata.get("evidence_registry", [])) == 3143, "G09", "OVERLAY_COUNTS")
+    try:
+        baseline_rows = git_json(root, R68_PUBLICATION_COMMIT, ROWS_REL)
+        baseline_metadata = git_json(root, R68_PUBLICATION_COMMIT, META_REL)
+    except (OSError, subprocess.CalledProcessError, json.JSONDecodeError):
+        baseline_rows = []
+        baseline_metadata = {}
+        require(False, "G09", "R68_PUBLICATION_SNAPSHOT")
+
+    baseline_cells, baseline_duplicates = trace_cells(baseline_rows)
+    require(
+        len(rows) == len(baseline_rows) == 469
+        and len(cells) == len(baseline_cells) == 4221
+        and duplicates == baseline_duplicates == 0,
+        "G09", "LEDGER_SHAPE",
+    )
+
+    baseline_applied = baseline_metadata.get("applied_evidence_overlays", [])
+    current_applied = metadata.get("applied_evidence_overlays", [])
+    prefix_ok = current_applied[:len(baseline_applied)] == baseline_applied
+    successor_applied = current_applied[len(baseline_applied):] if prefix_ok else []
+    require(prefix_ok, "G09", "R68_OVERLAY_PREFIX_EXACT")
+
+    baseline_registry = {row.get("evidence_id"): row for row in baseline_metadata.get("evidence_registry", [])}
+    current_registry = {row.get("evidence_id"): row for row in metadata.get("evidence_registry", [])}
+    signature_ids = {evidence_signature(row): evidence_id for evidence_id, row in current_registry.items()}
+    require(
+        len(baseline_registry) == len(baseline_metadata.get("evidence_registry", []))
+        and len(current_registry) == len(metadata.get("evidence_registry", []))
+        and all(current_registry.get(evidence_id) == row for evidence_id, row in baseline_registry.items()),
+        "G09", "R68_EVIDENCE_REGISTRY_PRESERVED",
+    )
+
+    expected_cells = dict(baseline_cells)
+    successor_keys: set[tuple[str, str, str | None]] = set()
+    successor_evidence_ids: set[str] = set()
+    successor_paths: set[str] = set()
+    successor_ok = True
+    for registration in successor_applied:
+        relative = registration.get("path")
+        if (
+            not isinstance(relative, str)
+            or not relative.startswith("spec/traceability/implementation-target-profile-r1/")
+            or not relative.endswith(".json")
+            or relative in successor_paths
+            or not (root / relative).is_file()
+        ):
+            successor_ok = False
+            continue
+        successor_paths.add(relative)
+        successor = load(root / relative)
+        successor_entries = successor.get("evidence_entries", [])
+        successor_bindings = successor.get("bindings", [])
+        entry_by_key = {row.get("evidence_key"): row for row in successor_entries}
+        successor_ok &= (
+            len(entry_by_key) == len(successor_entries)
+            and registration.get("feature_count") == len(successor.get("feature_ids", []))
+            and registration.get("binding_count") == len(successor_bindings)
+            and set(successor.get("feature_ids", [])) == {row.get("feature_id") for row in successor_bindings}
+        )
+        for successor_binding in successor_bindings:
+            key = (
+                successor_binding.get("feature_id"),
+                successor_binding.get("stage"),
+                successor_binding.get("outcome") if successor_binding.get("stage") == "CONFORMANCE_TESTS" else None,
+            )
+            referenced_entries = {
+                evidence_key: entry_by_key.get(evidence_key)
+                for evidence_key in successor_binding.get("evidence_keys", [])
+            }
+            signatures = [evidence_signature(row) for row in referenced_entries.values() if isinstance(row, dict)]
+            ids = [signature_ids.get(signature) for signature in signatures]
+            successor_ok &= (
+                key != TARGET
+                and key in expected_cells
+                and key not in successor_keys
+                and expected_cells.get(key, {}).get("disposition") == successor_binding.get("predecessor_disposition")
+                and len(referenced_entries) == len(successor_binding.get("evidence_keys", []))
+                and all(isinstance(row, dict) for row in referenced_entries.values())
+                and all(isinstance(evidence_id, str) for evidence_id in ids)
+            )
+            if not successor_ok:
+                continue
+            successor_keys.add(key)
+            successor_evidence_ids.update(ids)
+            expected_cells[key] = projected_cell(successor_binding, referenced_entries, signature_ids)
+    require(successor_ok and cells == expected_cells, "G09", "R68_BASELINE_PLUS_SUCCESSOR_OVERLAYS_EXACT")
+    require(
+        set(current_registry) == set(baseline_registry) | successor_evidence_ids,
+        "G09", "SUCCESSOR_EVIDENCE_ONLY",
+    )
+
+    actual_counts = {
+        "bound_direct_cells": sum(row.get("disposition") == "BOUND_DIRECT" for row in cells.values()),
+        "bound_delegated_cells": sum(row.get("disposition") == "BOUND_DELEGATED" for row in cells.values()),
+        "not_applicable_cells": sum(row.get("disposition") == "NOT_APPLICABLE" for row in cells.values()),
+        "applicable_blocked_cells": sum(row.get("disposition") == "APPLICABLE_BLOCKED_BY_GAP" for row in cells.values()),
+    }
+    require(all(derived.get(key) == value for key, value in actual_counts.items()), "G09", "DERIVED_COUNTS_TRUTHFUL")
 
     # G10: governance is honest and the R67/integrity predecessors stay unchanged.
     guards = overlay.get("guards", {})
@@ -266,6 +401,21 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
     errors = validate(root)
+    current_cells, _ = trace_cells(load(root / ROWS_REL))
+    try:
+        published_cells, _ = trace_cells(git_json(root, R68_PUBLICATION_COMMIT, ROWS_REL))
+    except (OSError, subprocess.CalledProcessError, json.JSONDecodeError):
+        published_cells = {}
+    unchanged_non_target = sum(
+        key != TARGET and published_cells.get(key) == value
+        for key, value in current_cells.items()
+    )
+    projected_counts = {
+        "bound_direct": sum(row.get("disposition") == "BOUND_DIRECT" for row in current_cells.values()),
+        "bound_delegated": sum(row.get("disposition") == "BOUND_DELEGATED" for row in current_cells.values()),
+        "not_applicable": sum(row.get("disposition") == "NOT_APPLICABLE" for row in current_cells.values()),
+        "applicable_blocked": sum(row.get("disposition") == "APPLICABLE_BLOCKED_BY_GAP" for row in current_cells.values()),
+    }
     gates = []
     for gate_id, name in GATES.items():
         gate_errors = [item for item in errors if item.startswith(f"{gate_id}:")]
@@ -280,8 +430,11 @@ def main() -> int:
         "gate_summary": f"{passed}/{len(GATES)}",
         "feature_id": FEATURE,
         "transitioned_cell_count": 1,
-        "unchanged_non_target_cell_count": 4220,
-        "projected_counts": {"bound_direct": 2466, "bound_delegated": 3, "not_applicable": 501, "applicable_blocked": 1251},
+        "unchanged_non_target_cell_count": unchanged_non_target,
+        "successor_transitioned_cell_count": sum(
+            published_cells.get(key) != value for key, value in current_cells.items()
+        ),
+        "projected_counts": projected_counts,
         "product_execution": "15_OF_15_NOT_RUN",
         "github_publication": "SUSPENDED",
         "gates": gates,

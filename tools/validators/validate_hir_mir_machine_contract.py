@@ -536,6 +536,7 @@ def check_schema_and_bindings(
         "deferred_call_plan_projection_contract",
         "type_header_cleanup_budget_projection_contract",
         "shared_mutex_with_lock_projection_contract",
+        "managed_reference_dynamic_projection",
     }
     report.require(
         set(registry) == expected_top_keys,

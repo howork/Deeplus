@@ -1855,6 +1855,15 @@ Cancellation을 관찰하거나 전달하지 않는다.
 
 ## 42. MIR handoff
 
+R69 clarifies the managed-reference dynamic boundary without adding syntax.
+The deterministic managed-memory plan contains static logical root-map
+templates; runtime handle generations and the publish/commit/release lifecycle
+belong only to an execution-time managed-root receipt. The current continuation
+interface digest is `2ccf2acd...c8b4`, and the former `0dc489...1271` binding
+does not select the successor seam. `RegionId` and `LoanId` are never `RootId`:
+a borrowed or `inout` view gains neither an independent root nor a longer
+lifetime merely because its referent uses managed storage.
+
 MIR represents normalized call channels, construction, witness calls, extension resolution, ownership/place operations, cleanup regions, effects/errors, match partitions, async suspension, actor messages, measures, NumericArray operations, and RCTS responsibility events. Surface sugar must be gone or explicitly represented by a responsibility-bearing MIR node.
 
 Named rest lowers with `***` declaration/type residue identity; named unfold lowers from `**record`. The lowered call shape must retain static labels and must never convert runtime Map keys into labels.

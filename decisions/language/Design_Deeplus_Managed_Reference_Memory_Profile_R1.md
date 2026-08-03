@@ -69,7 +69,8 @@ declared_root_ids = sorted_unique(
 
 The three partitions are pairwise disjoint. A root identifies a live storage
 location, so two locations containing the same handle remain two roots. Every
-entry binds owner, storage, trace descriptor and an exact nonnegative handle
+static-plan entry binds owner, storage and trace descriptor. The matching
+runtime root receipt—never the static plan—binds the exact nonnegative handle
 generation value.
 Missing, extra, duplicate, unordered, unknown-generation or unknown-descriptor
 entries reject the projection.
@@ -85,7 +86,8 @@ There are no implicit backend safepoints or standalone Phase-1 GC polls.
 Safepoints are attached only to these semantic sites:
 
 - non-tail `INVOKE`;
-- a managed-allocation slow path represented by `CHECKED`;
+- a managed-allocation slow path represented by an `INVOKE` whose exact call
+  plan selects the sealed `managed.allocate_slow` runtime helper;
 - `SUSPEND`, after continuation roots are installed;
 - `CANCEL_CHECK`, before either successor observes the cancellation state;
 - runtime entries represented by `RUN_OP`, `ACTOR_OP`, `PROVIDER_OP`,

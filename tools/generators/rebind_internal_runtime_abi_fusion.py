@@ -29,10 +29,9 @@ def load(root: Path, relative: str) -> dict[str, Any]:
 
 
 def write(root: Path, relative: str, value: Any) -> None:
-    (root / relative).write_text(
-        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    # Keep the rendered-byte digest stable across host newline conventions.
+    with (root / relative).open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
 
 
 def canonical_bytes(value: Any) -> bytes:
@@ -47,6 +46,12 @@ def digest(value: Any) -> str:
 
 def file_digest(root: Path, relative: str) -> str:
     return hashlib.sha256((root / relative).read_bytes()).hexdigest()
+
+
+def rendered_file_digest(value: Any) -> str:
+    """Digest the exact UTF-8 bytes emitted by ``write``."""
+    rendered = json.dumps(value, ensure_ascii=False, indent=2) + "\n"
+    return hashlib.sha256(rendered.encode("utf-8")).hexdigest()
 
 
 def without(value: dict[str, Any], *keys: str) -> dict[str, Any]:
@@ -65,6 +70,17 @@ def bind_helper(
     row: dict[str, Any], *, continuation_digest: str, memory_digest: str,
     managed_extension: bool,
 ) -> None:
+    row["projection_phase_or_null"] = None
+    if managed_extension:
+        helper_id = row.get("runtime_helper_id")
+        if helper_id == "RuntimeHelperId:managed.allocate_slow":
+            row["terminator_kind"] = "INVOKE"
+        elif helper_id == "RuntimeHelperId:managed.safepoint_enter":
+            row["terminator_kind"] = "TARGET_PROJECTION_STEP"
+            row["projection_phase_or_null"] = "BEFORE_MAY_COLLECT_ENTRY"
+        elif helper_id == "RuntimeHelperId:managed.safepoint_leave":
+            row["terminator_kind"] = "TARGET_PROJECTION_STEP"
+            row["projection_phase_or_null"] = "AFTER_OUTCOME_COMMIT"
     row["parameter_address_classes"] = [
         address_class(mode) for mode in row.get("parameter_modes", [])
     ]
@@ -101,11 +117,14 @@ def recompute(root: Path) -> dict[str, str]:
     contract = load(root, CONTRACT)
     fixtures = load(root, FIXTURES)
     continuation = load(root, CONTINUATION)
+    memory = load(root, MEMORY)
     cranelift = load(root, CRANELIFT)
     hir_bridge = load(root, HIR_BRIDGE)
 
     continuation_digest = continuation["continuation_interface_digest"]
-    memory_digest = file_digest(root, MEMORY)
+    memory["dependency_guard"]["continuation_root_interface_digest"] = continuation_digest
+    memory["suspension_root_transfer"]["continuation_root_interface_digest"] = continuation_digest
+    memory_digest = rendered_file_digest(memory)
     mir_schema_digest = file_digest(root, MIR_SCHEMA)
     mir_registry_digest = file_digest(root, MIR_REGISTRY)
 
@@ -162,6 +181,9 @@ def recompute(root: Path) -> dict[str, str]:
         "dependency_binding_status": "EXACT_LOCAL_FUSION_BOUND",
         "canonical_promotion_ready": True,
     })
+    contract["dispatcher_contract"]["bounded_continuation_dispatch"][
+        "continuation_interface_digest"
+    ] = continuation_digest
     contract["expected_counts"].update({
         "active_base_helpers": 22,
         "active_conditional_helpers": 3,
@@ -241,6 +263,7 @@ def recompute(root: Path) -> dict[str, str]:
     })
 
     for relative, value in (
+        (MEMORY, memory),
         (REGISTRY, registry),
         (CONTRACT, contract),
         (FIXTURES, fixtures),

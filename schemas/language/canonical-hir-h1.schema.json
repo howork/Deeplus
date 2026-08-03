@@ -6561,6 +6561,24 @@
         }
       ]
     },
+    "ManagedTraceDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normalized_type_id",
+        "trace_kind",
+        "ordered_managed_projection_ids"
+      ],
+      "properties": {
+        "normalized_type_id": {"$ref": "#/$defs/Id"},
+        "trace_kind": {"enum": ["NONE", "HANDLE", "AGGREGATE"]},
+        "ordered_managed_projection_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/Id"},
+          "uniqueItems": true
+        }
+      }
+    },
     "CanonicalModuleBase": {
       "type": "object",
       "additionalProperties": false,
@@ -6572,6 +6590,7 @@
         "source_origins",
         "normalized_type_ids",
         "normalized_type_descriptors",
+        "managed_trace_descriptors",
         "responsibility_profile_ids",
         "responsibility_evidence_descriptors",
         "item_headers",
@@ -6616,6 +6635,11 @@
           "items": {
             "$ref": "#/$defs/NormalizedTypeDescriptor"
           }
+        },
+        "managed_trace_descriptors": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/ManagedTraceDescriptor"},
+          "x-deeplus-unique-key": "normalized_type_id"
         },
         "responsibility_profile_ids": {
           "type": "array",

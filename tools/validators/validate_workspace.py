@@ -12748,6 +12748,16 @@ def main() -> int:
         "tools/validators/validate_region_lifetime_dynamic_trace.py",
         "tools/validators/run_region_lifetime_dynamic_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R68_Region_Lifetime_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/managed-reference-dynamic-projection-r1.json",
+        "schemas/language/managed-reference-dynamic-projection-r1.schema.json",
+        "schemas/language/managed-reference-runtime-root-receipt-r1.schema.json",
+        "tests/fixtures/current/managed-reference-dynamic-projection-r1.json",
+        "schemas/language/managed-reference-dynamic-projection-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/managed-reference-dynamic-trace-evidence-r1.json",
+        "schemas/language/managed-reference-dynamic-trace-evidence-r1.schema.json",
+        "tools/validators/validate_managed_reference_dynamic_trace.py",
+        "tools/validators/run_managed_reference_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R69_Managed_Reference_Dynamic_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
@@ -12812,6 +12822,50 @@ def main() -> int:
         check((root / rel).is_file(), "REQUIRED_PATH", rel)
     check(not (root / ("current/current-pointer.json" if args.candidate else "release/candidate-state.json")).exists(),
           "RELEASE_STATE_EXCLUSIVE", "candidate and published current states are mutually exclusive")
+
+    r69_validator = (
+        root / "tools/validators/validate_managed_reference_dynamic_trace.py"
+    )
+    r69_process = subprocess.run(
+        [sys.executable, str(r69_validator), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r69_detail = (
+        r69_process.stdout.strip()
+        if r69_process.returncode == 0
+        else r69_process.stderr.strip() or r69_process.stdout.strip()
+    )
+    check(
+        r69_process.returncode == 0,
+        "R69_MANAGED_REFERENCE_DYNAMIC_TRACE",
+        r69_detail[-4000:],
+    )
+
+    r69_mutation_runner = (
+        root
+        / "tools/validators/run_managed_reference_dynamic_trace_mutation_tests.py"
+    )
+    r69_mutation_process = subprocess.run(
+        [sys.executable, str(r69_mutation_runner)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r69_mutation_detail = (
+        r69_mutation_process.stdout.strip()
+        if r69_mutation_process.returncode == 0
+        else r69_mutation_process.stderr.strip()
+        or r69_mutation_process.stdout.strip()
+    )
+    check(
+        r69_mutation_process.returncode == 0,
+        "R69_MANAGED_REFERENCE_DYNAMIC_TRACE_MUTATIONS",
+        r69_mutation_detail[-4000:],
+    )
 
     if revision in CURRENT_MACHINE_REVISIONS:
         r10_validator = (
@@ -14154,7 +14208,7 @@ def main() -> int:
         is False
         and cranelift_projection.get("symbol_or_link_order_selects_semantics")
         is False
-        and len(cranelift_contract.get("required_receipt_inputs", [])) == 22
+        and len(cranelift_contract.get("required_receipt_inputs", [])) == 23
         and cranelift_outcomes.get("native_exception_semantic_authority")
         is False
         and cranelift_outcomes.get("host_unwind_semantic_authority") is False
@@ -14189,7 +14243,7 @@ def main() -> int:
                 "required_native_projection_receipt_fields", []
             )
         )
-        == 12
+        == 13
         and cranelift_managed.get("raw_pointer_fallback") is False
         and cranelift_debug.get("separate_debug_digest") is True
         and cranelift_debug.get("debug_info_is_semantic_authority") is False
