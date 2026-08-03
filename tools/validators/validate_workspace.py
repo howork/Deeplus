@@ -12719,6 +12719,8 @@ def main() -> int:
         "tools/validators/validate_trait_qualified_associated_static_selection_trace.py",
         "tools/validators/run_trait_qualified_associated_static_selection_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R62_Trait_Qualified_Associated_Static_Selection_Dynamic_Trace_Closure_R1.md",
+        "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
+        "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
