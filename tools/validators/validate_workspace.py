@@ -100,8 +100,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1484, "predicates": 281,
-    "predicate_fixtures": 864, "no_go": 156,
+    "features": 723, "diagnostics": 1484, "predicates": 282,
+    "predicate_fixtures": 870, "no_go": 156,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -12527,8 +12527,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 281
-                and fixed_counts.get("predicate_fixtures") == 864
+                and fixed_counts.get("predicates") == 282
+                and fixed_counts.get("predicate_fixtures") == 870
                 and fixed_counts.get("no_go") == 156
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -12637,6 +12637,22 @@ def main() -> int:
         "tools/validators/validate_lexical_trivia_source_root_trace.py",
         "tools/validators/run_lexical_trivia_source_root_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R55_Lexical_Trivia_Source_Root_Closure_R1.md",
+        "spec/contracts/numeric-array-shape-inferred-literal-r1.json",
+        "schemas/language/numeric-array-shape-inferred-literal-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/numeric-array-shape-inferred-evidence-r1.json",
+        "schemas/language/numeric-array-shape-inferred-evidence-r1.schema.json",
+        "tools/generators/build_numeric_array_shape_inferred_evidence.py",
+        "tools/validators/validate_numeric_array_shape_inferred_trace.py",
+        "tools/validators/run_numeric_array_shape_inferred_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R56_NumericArray_Shape_Inferred_Trace_Closure_R1.md",
+        "spec/contracts/unified-call-tilde-trace-closure-r1.json",
+        "schemas/language/unified-call-tilde-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/unified-call-tilde-evidence-r1.json",
+        "schemas/language/unified-call-tilde-evidence-r1.schema.json",
+        "tools/generators/build_unified_call_tilde_evidence.py",
+        "tools/validators/validate_unified_call_tilde_trace.py",
+        "tools/validators/run_unified_call_tilde_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R57_Unified_Call_Tilde_Trace_Closure_R1.md",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([

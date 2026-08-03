@@ -13,7 +13,7 @@
 | `grammar_productions` | 644 | 644 | `통과` |
 | `features` | 723 | 723 | `통과` |
 | `diagnostics` | 1484 | 1484 | `통과` |
-| `predicates` | 281 | 281 | `통과` |
+| `predicates` | 282 | 282 | `통과` |
 | `prelude_entries` | 77 | 77 | `통과` |
 | `examples` | 752 | 752 | `통과` |
 | `hard_keywords` | 29 | 29 | `통과` |
@@ -49,4 +49,4 @@
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `a83467df9ae86922569a90388c69c44443c5d2f0142cb9ea32fd2e31c8aafdad` |
 | `prelude` | `library/prelude/prelude.md` | `94175d3dd153cb9759cb6b3f4f1d858f8defbab82b5c1431bb57f2d771cf8673` |
 | `current_decisions` | `decisions/language/current-decisions.json` | `a983fd03055ea115ca62d84e4db4a8cfc84d5b2d36faa084997cfd73bdc1df1a` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `16e2fe335504fec5eac0c268c4ca92a66f836a81223bae7ca9003e4da273b60c` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `525fec61162e90a9ee32001da6f0f6aa944d3d7326254f73b2ac07cd342b6324` |

@@ -490,7 +490,38 @@
       "then": {
         "required": [
           "actor_protocol_binding_projection"
-        ]
+        ],
+        "properties": {
+          "successor_roles": {
+            "const": [
+              "NORMAL",
+              "DEFECT",
+              "CANCELLATION"
+            ]
+          },
+          "token_outputs": {
+            "const": [
+              {
+                "token_kind": "AUTHORITY",
+                "token_role": "actor_transport_authority",
+                "cardinality": 1
+              }
+            ]
+          },
+          "token_discharges": {
+            "maxItems": 0
+          },
+          "outcome_families": {
+            "const": [
+              "NORMAL",
+              "DEFECT",
+              "CANCELLATION"
+            ]
+          },
+          "suspension_effect": {
+            "const": "NONE"
+          }
+        }
       },
       "else": {
         "not": {

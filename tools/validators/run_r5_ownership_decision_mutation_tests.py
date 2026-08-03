@@ -3702,7 +3702,7 @@ def _check_overrides_exact_3(
         ),
         (
             diagnostic_metadata_doc.value.get("diagnostic_count") == 1484
-            and relation_metadata_doc.value.get("relation_count") == 609,
+            and relation_metadata_doc.value.get("relation_count") == 613,
             "diagnostic/relation canonical counts are not exact current fusion",
         ),
         (

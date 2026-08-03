@@ -651,8 +651,9 @@ def#guard validPort(port: Int) -> Bool = {
   refutable 구조는 body의 `if let`이나 guarded let에서 처리한다.
 - trailing closure는 capture, effect, error, ownership 검사를 완화하지
   않는다.
-- `~` message call은 ordinary call과 별도 postfix owner이고 payload는
-  0/1 aggregate지만, `TrailingClosureGroup`의 구조 검사는 공유한다.
+- `~` message call은 ordinary call과 별도 postfix owner이지만 ordinary
+  argument channel을 그대로 사용하며 message 전용 payload aggregate를
+  만들지 않는다. `TrailingClosureGroup`의 구조 검사도 같은 계약을 공유한다.
 - actor 경계를 건너는 closure는 독립적으로 transfer/capture/isolation
   검사를 통과해야 하며 trailing 표면이 그 권한을 만들지 않는다.
 - `def#async`와 `await`는 suspension을 숨기지 않으며 structured `concur`

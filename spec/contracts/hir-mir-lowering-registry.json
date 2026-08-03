@@ -33,7 +33,7 @@
     "lowering_row_schema": {
       "schema_id": "deeplus.hir-mir-lowering-row/r1",
       "relative_path": "../../schemas/language/hir-mir-lowering-row.schema.json",
-      "sha256": "f064567cb7323e4525a296d0d60ac636512cdbacbd210c51dd9ccf43646bb1ae"
+      "sha256": "9b50cb650e2cc1caf27a30e96b923e4b5da6042290c64081d00d7ddd9484aa3e"
     },
     "fixture_binding_table": {
       "schema_id": "deeplus.hir-mir-machine-contract-fixtures/r1",
@@ -6573,19 +6573,15 @@
           ],
           "successor_roles": [
             "NORMAL",
-            "ERROR",
             "DEFECT",
-            "CANCELLATION",
-            "SUSPEND"
+            "CANCELLATION"
           ]
         }
       ],
       "successor_roles": [
         "NORMAL",
-        "ERROR",
         "DEFECT",
-        "CANCELLATION",
-        "SUSPEND"
+        "CANCELLATION"
       ],
       "token_inputs": [
         {
@@ -6599,28 +6595,16 @@
           "token_kind": "AUTHORITY",
           "token_role": "actor_transport_authority",
           "cardinality": 1
-        },
-        {
-          "token_kind": "REPLY",
-          "token_role": "actor_reply_correlation",
-          "cardinality": 1
         }
       ],
-      "token_discharges": [
-        {
-          "token_kind": "REPLY",
-          "token_role": "actor_reply_correlation",
-          "cardinality": 1
-        }
-      ],
+      "token_discharges": [],
       "outcome_families": [
         "NORMAL",
-        "ERROR",
         "DEFECT",
         "CANCELLATION"
       ],
       "cleanup_effect": "NONE",
-      "suspension_effect": "MAY_SUSPEND",
+      "suspension_effect": "NONE",
       "ownership_effect": "FORWARD",
       "responsibility_projection": {
         "axis_order": [

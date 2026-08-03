@@ -66,7 +66,7 @@ EXPECTED_COUNTS = {
     "grammar_productions": 644,
     "features": 723,
     "diagnostics": 1484,
-    "predicates": 281,
+    "predicates": 282,
     "prelude_entries": 77,
     "examples": 752,
     "hard_keywords": 29,
