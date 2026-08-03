@@ -33,6 +33,14 @@ R70_OVERLAY = "spec/traceability/implementation-target-profile-r1/static-runtime
 R70_EVIDENCE_ID = "EV-8ab19e684aca7aeae5d3a2c0f9418ff5db42f41bb9f061af7e580d51d3a7c3aa"
 R70_DUAL_EXCLUSION_COUNT = 4219
 R70_DUAL_EXCLUSION_SHA256 = "e3be91c6c360826490c5c88b43864becea7f9b645a34c383a4d27f5742e07553"
+R71_REVISION = "r71-local-method-extension-resolution-dynamic-trace-closure-r1"
+R71_PREDECESSOR = "7babf6b0d6a3c806784ef052308cf7026f3fecb2"
+R71_TARGET = ("method_extension_resolution_policy", "DYNAMIC_LOWERING", None)
+R71_DELEGATE = "unified_call_expression_and_tilde_modes"
+R71_OVERLAY = "spec/traceability/implementation-target-profile-r1/method-extension-resolution-dynamic-evidence-r1.json"
+R71_EVIDENCE_ID = "EV-8612c9785d1ec77315d24c4f6700d39e07b38f8c115155f519c698e406770b5b"
+R71_TRIPLE_EXCLUSION_COUNT = 4218
+R71_TRIPLE_EXCLUSION_SHA256 = "a577c5387c186602bb6d470dc1faa946e3654211591f48a64d4ea2852b3bb89e"
 
 CONTRACT = "spec/contracts/managed-reference-dynamic-projection-r1.json"
 CONTRACT_SCHEMA = "schemas/language/managed-reference-dynamic-projection-r1.schema.json"
@@ -149,6 +157,22 @@ def successor_non_target_digest(
         [*key, value]
         for key, value in cells.items()
         if key not in {TARGET, R70_TARGET}
+    ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), sha256_bytes(raw)
+
+
+def r71_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R69, R70, and R71 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key not in {TARGET, R70_TARGET, R71_TARGET}
     ]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
@@ -531,7 +555,9 @@ def validate(
     target = cells.get(TARGET, {})
     count, digest = non_target_digest(cells)
     successor_count, successor_digest = successor_non_target_digest(cells)
+    r71_successor_count, r71_successor_digest = r71_successor_non_target_digest(cells)
     r70_target = cells.get(R70_TARGET, {})
+    r71_target = cells.get(R71_TARGET, {})
     registrations = [
         row for row in metadata.get("evidence_registry", [])
         if row.get("path") == CONTRACT
@@ -553,7 +579,13 @@ def validate(
         and metadata.get("local_predecessor_commit") == R70_PREDECESSOR
         and R70_OVERLAY in applied_paths
     )
-    if r70_successor:
+    r71_successor = (
+        metadata.get("revision") == R71_REVISION
+        and metadata.get("local_predecessor_commit") == R71_PREDECESSOR
+        and R70_OVERLAY in applied_paths
+        and R71_OVERLAY in applied_paths
+    )
+    if r70_successor or r71_successor:
         r70_detail = r70_target.get("not_applicable") or {}
         require(
             r70_target.get("disposition") == "NOT_APPLICABLE"
@@ -568,6 +600,23 @@ def validate(
             "G09",
             "R70_SUCCESSOR_TARGET_EXACT",
         )
+    if r71_successor:
+        require(
+            r71_target.get("disposition") == "BOUND_DELEGATED"
+            and r71_target.get("evidence_refs") == [R71_EVIDENCE_ID]
+            and r71_target.get("delegate_feature_id") == R71_DELEGATE
+            and r71_target.get("not_applicable") is None
+            and r71_target.get("blocked_gap_ids") == [],
+            "G09",
+            "R71_SUCCESSOR_TARGET_EXACT",
+        )
+        require(
+            r71_successor_count == R71_TRIPLE_EXCLUSION_COUNT
+            and r71_successor_digest == R71_TRIPLE_EXCLUSION_SHA256,
+            "G09",
+            "R71_OTHER_4218_EXACT",
+        )
+    elif r70_successor:
         require(
             successor_count == R70_DUAL_EXCLUSION_COUNT
             and successor_digest == R70_DUAL_EXCLUSION_SHA256,
@@ -590,6 +639,11 @@ def validate(
             r70_successor
             and OVERLAY in applied_paths
             and applied_paths[-1] == R70_OVERLAY
+        )
+        or (
+            r71_successor
+            and OVERLAY in applied_paths
+            and applied_paths[-2:] == [R70_OVERLAY, R71_OVERLAY]
         ),
         "G09", "GENERATED_METADATA",
     )

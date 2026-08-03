@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/language/method-extension-resolution-dynamic-trace-closure-fixtures-r1.schema.json",
+  "schema": "deeplus.method-extension-resolution-dynamic-trace-closure-fixtures/r1",
+  "revision": "r71-local-method-extension-resolution-dynamic-trace-closure-r1",
+  "contract": "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json",
+  "execution_state": "DESIGN_STATIC_NOT_RUN",
+  "acceptance_oracles": [
+    {"case_id": "R71-MER-ACC-001", "class": "POSITIVE", "expected": "EXACT_EXTENSION_STATIC_CALLPLAN_DELEGATES_HM_LR_CALL_004"},
+    {"case_id": "R71-MER-ACC-002", "class": "POSITIVE", "expected": "QUALIFIED_EXACT_DOMAIN_THEN_HM_LR_CALL_004"},
+    {"case_id": "R71-MER-ACC-003", "class": "POSITIVE", "expected": "EXACT_EXTENSION_STATIC_CALLPLAN_DELEGATES_HM_LR_CALL_008"},
+    {"case_id": "R71-MER-ACC-004", "class": "BOUNDARY", "expected": "SOURCE_ORDER_EXACTLY_ONCE_BEFORE_CONTEXT_ADAPT_AND_INVOKE"},
+    {"case_id": "R71-MER-ACC-005", "class": "BOUNDARY", "expected": "EXISTING_OUTCOME_AND_CLEANUP_PROJECTION_PRESERVED"},
+    {"case_id": "R71-MER-ACC-006", "class": "REJECT", "expected": "MEMBER_EXTENSION_COLLISION"},
+    {"case_id": "R71-MER-ACC-007", "class": "REJECT", "expected": "AMBIGUOUS_EXTENSION_CANDIDATE"},
+    {"case_id": "R71-MER-ACC-008", "class": "REJECT", "expected": "EXTENSION_NOT_ACTIVE"},
+    {"case_id": "R71-MER-ACC-009", "class": "REJECT", "expected": "DYNAMIC_EXTENSION_DISPATCH_FORBIDDEN"},
+    {"case_id": "R71-MER-ACC-010", "class": "REJECT", "expected": "EXTENSION_AUTO_WITNESS_FORBIDDEN"}
+  ],
+  "mutation_oracles": [
+    {"mutation_id": "M01", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M02", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M03", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M04", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M05", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M06", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M07", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M08", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M09", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M10", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M11", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M12", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M13", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M14", "expected_gate": "G06", "expected": "MUTANT_KILLED"}
+  ]
+}

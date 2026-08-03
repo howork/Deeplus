@@ -12767,6 +12767,15 @@ def main() -> int:
         "tools/validators/validate_static_runtime_member_boundary_trace.py",
         "tools/validators/run_static_runtime_member_boundary_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R70_Static_Runtime_Member_Boundary_Trace_Closure_R1.md",
+        "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json",
+        "schemas/language/method-extension-resolution-dynamic-trace-closure-r1.schema.json",
+        "tests/fixtures/current/method-extension-resolution-dynamic-trace-closure-r1.json",
+        "schemas/language/method-extension-resolution-dynamic-trace-closure-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/method-extension-resolution-dynamic-evidence-r1.json",
+        "schemas/language/method-extension-resolution-dynamic-evidence-r1.schema.json",
+        "tools/validators/validate_method_extension_resolution_dynamic_trace.py",
+        "tools/validators/run_method_extension_resolution_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R71_Method_Extension_Resolution_Dynamic_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
@@ -12918,6 +12927,51 @@ def main() -> int:
         r70_mutation_process.returncode == 0,
         "R70_STATIC_RUNTIME_MEMBER_BOUNDARY_TRACE_MUTATIONS",
         r70_mutation_detail[-4000:],
+    )
+
+    r71_validator = (
+        root
+        / "tools/validators/validate_method_extension_resolution_dynamic_trace.py"
+    )
+    r71_process = subprocess.run(
+        [sys.executable, str(r71_validator), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r71_detail = (
+        r71_process.stdout.strip()
+        if r71_process.returncode == 0
+        else r71_process.stderr.strip() or r71_process.stdout.strip()
+    )
+    check(
+        r71_process.returncode == 0,
+        "R71_METHOD_EXTENSION_RESOLUTION_DYNAMIC_TRACE",
+        r71_detail[-4000:],
+    )
+
+    r71_mutation_runner = (
+        root
+        / "tools/validators/run_method_extension_resolution_dynamic_trace_mutation_tests.py"
+    )
+    r71_mutation_process = subprocess.run(
+        [sys.executable, str(r71_mutation_runner), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r71_mutation_detail = (
+        r71_mutation_process.stdout.strip()
+        if r71_mutation_process.returncode == 0
+        else r71_mutation_process.stderr.strip()
+        or r71_mutation_process.stdout.strip()
+    )
+    check(
+        r71_mutation_process.returncode == 0,
+        "R71_METHOD_EXTENSION_RESOLUTION_DYNAMIC_TRACE_MUTATIONS",
+        r71_mutation_detail[-4000:],
     )
 
     if revision in CURRENT_MACHINE_REVISIONS:

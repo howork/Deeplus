@@ -26,6 +26,14 @@ NON_TARGET_COUNT = 4220
 NON_TARGET_SHA256 = "a6a56943d6b8b51c177b4ff282ef3db50dcc3f85a950495d80553d4c552bec35"
 EVIDENCE_ID = "EV-8ab19e684aca7aeae5d3a2c0f9418ff5db42f41bb9f061af7e580d51d3a7c3aa"
 OVERLAY = "spec/traceability/implementation-target-profile-r1/static-runtime-member-boundary-evidence-r1.json"
+R71_REVISION = "r71-local-method-extension-resolution-dynamic-trace-closure-r1"
+R71_PREDECESSOR = "7babf6b0d6a3c806784ef052308cf7026f3fecb2"
+R71_TARGET = ("method_extension_resolution_policy", "DYNAMIC_LOWERING", None)
+R71_DELEGATE = "unified_call_expression_and_tilde_modes"
+R71_EVIDENCE_ID = "EV-8612c9785d1ec77315d24c4f6700d39e07b38f8c115155f519c698e406770b5b"
+R71_OVERLAY = "spec/traceability/implementation-target-profile-r1/method-extension-resolution-dynamic-evidence-r1.json"
+R71_DUAL_EXCLUSION_COUNT = 4219
+R71_DUAL_EXCLUSION_SHA256 = "111a60194dc5cc049adcc2e77bb4f2f9e98cc863db3e2e32867fb9f7b0b62a3e"
 OVERLAY_SCHEMA = "schemas/language/static-runtime-member-boundary-evidence-r1.schema.json"
 ROWS = "spec/traceability/implementation-target-profile-r1/rows.json"
 METADATA = "spec/traceability/implementation-target-profile-r1/catalog-metadata.json"
@@ -128,6 +136,21 @@ def non_target_digest(
     return len(material), hashlib.sha256(raw).hexdigest()
 
 
+def r71_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key not in {TARGET, R71_TARGET}
+    ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
 def validate(
     root: Path,
     *,
@@ -159,6 +182,14 @@ def validate(
     fixture = value(FIXTURE)
     fixture_schema = value(FIXTURE_SCHEMA)
     before_rows = predecessor_rows_override or predecessor_rows(root)
+    applied_paths = [
+        row.get("path") for row in metadata.get("applied_evidence_overlays", [])
+    ]
+    r71_successor = (
+        metadata.get("revision") == R71_REVISION
+        and metadata.get("local_predecessor_commit") == R71_PREDECESSOR
+        and R71_OVERLAY in applied_paths
+    )
 
     require(
         overlay_schema.get("$schema")
@@ -322,16 +353,38 @@ def validate(
         "G03",
         "GENERATED_TARGET_EXACT",
     )
-    before_count, before_digest = non_target_digest(before_cells)
-    current_count, current_digest = non_target_digest(current_cells)
-    require(
-        before_duplicates == current_duplicates == 0
-        and len(before_cells) == len(current_cells) == 4221
-        and before_count == current_count == NON_TARGET_COUNT
-        and before_digest == current_digest == NON_TARGET_SHA256,
-        "G03",
-        "NON_TARGET_4220_EXACT",
-    )
+    if r71_successor:
+        r71_target = current_cells.get(R71_TARGET, {})
+        require(
+            r71_target.get("disposition") == "BOUND_DELEGATED"
+            and r71_target.get("evidence_refs") == [R71_EVIDENCE_ID]
+            and r71_target.get("delegate_feature_id") == R71_DELEGATE
+            and r71_target.get("not_applicable") is None
+            and r71_target.get("blocked_gap_ids") == [],
+            "G03",
+            "R71_SUCCESSOR_TARGET_EXACT",
+        )
+        before_count, before_digest = r71_successor_non_target_digest(before_cells)
+        current_count, current_digest = r71_successor_non_target_digest(current_cells)
+        require(
+            before_duplicates == current_duplicates == 0
+            and len(before_cells) == len(current_cells) == 4221
+            and before_count == current_count == R71_DUAL_EXCLUSION_COUNT
+            and before_digest == current_digest == R71_DUAL_EXCLUSION_SHA256,
+            "G03",
+            "R71_OTHER_4219_EXACT",
+        )
+    else:
+        before_count, before_digest = non_target_digest(before_cells)
+        current_count, current_digest = non_target_digest(current_cells)
+        require(
+            before_duplicates == current_duplicates == 0
+            and len(before_cells) == len(current_cells) == 4221
+            and before_count == current_count == NON_TARGET_COUNT
+            and before_digest == current_digest == NON_TARGET_SHA256,
+            "G03",
+            "NON_TARGET_4220_EXACT",
+        )
 
     # G04: generated metadata and registry bind the sixteenth overlay.
     applied = metadata.get("applied_evidence_overlays", [])
@@ -339,20 +392,37 @@ def validate(
     registered = [row for row in registry if row.get("evidence_id") == EVIDENCE_ID]
     derived = metadata.get("derived_counts", {})
     require(
-        metadata.get("revision") == REVISION
-        and metadata.get("canonical_baseline_commit") == CANONICAL
-        and metadata.get("local_predecessor_commit") == PREDECESSOR,
+        metadata.get("canonical_baseline_commit") == CANONICAL
+        and (
+            (
+                metadata.get("revision") == REVISION
+                and metadata.get("local_predecessor_commit") == PREDECESSOR
+            )
+            or r71_successor
+        ),
         "G04",
         "METADATA_IDENTITY",
     )
-    require(
-        len(applied) == 16
-        and sum(row.get("binding_count", 0) for row in applied) == 132
-        and applied[-1]
-        == {"path": OVERLAY, "feature_count": 1, "binding_count": 1},
-        "G04",
-        "OVERLAY_REGISTRATION",
-    )
+    if r71_successor:
+        require(
+            len(applied) == 17
+            and sum(row.get("binding_count", 0) for row in applied) == 133
+            and applied[-2]
+            == {"path": OVERLAY, "feature_count": 1, "binding_count": 1}
+            and applied[-1]
+            == {"path": R71_OVERLAY, "feature_count": 1, "binding_count": 1},
+            "G04",
+            "R71_SUCCESSOR_OVERLAY_REGISTRATION",
+        )
+    else:
+        require(
+            len(applied) == 16
+            and sum(row.get("binding_count", 0) for row in applied) == 132
+            and applied[-1]
+            == {"path": OVERLAY, "feature_count": 1, "binding_count": 1},
+            "G04",
+            "OVERLAY_REGISTRATION",
+        )
     require(
         len(registry) == 3145
         and len(registered) == 1
@@ -361,11 +431,15 @@ def validate(
         "G04",
         "EVIDENCE_REGISTRATION",
     )
+    expected_counts = (2467, 4, 502, 1248) if r71_successor else (2467, 3, 502, 1249)
     require(
-        derived.get("bound_direct_cells") == 2467
-        and derived.get("bound_delegated_cells") == 3
-        and derived.get("not_applicable_cells") == 502
-        and derived.get("applicable_blocked_cells") == 1249
+        (
+            derived.get("bound_direct_cells"),
+            derived.get("bound_delegated_cells"),
+            derived.get("not_applicable_cells"),
+            derived.get("applicable_blocked_cells"),
+        )
+        == expected_counts
         and derived.get("missing_cells") == 0
         and derived.get("conflict_cells") == 0,
         "G04",
@@ -736,18 +810,23 @@ def main() -> int:
         errors = validate(root)
     except Exception as exc:
         errors = ["EXCEPTION:" + type(exc).__name__ + ":" + str(exc)]
+    metadata = load(root / METADATA)
+    derived = metadata.get("derived_counts", {})
+    r71_successor = metadata.get("revision") == R71_REVISION
     receipt = {
         "schema": "deeplus.r70-static-runtime-member-boundary-trace-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL",
         "feature_id": FEATURE,
         "transitioned_cell_count": 1,
         "projected_counts": {
-            "bound_direct": 2467,
-            "bound_delegated": 3,
-            "not_applicable": 502,
-            "applicable_blocked": 1249,
+            "bound_direct": derived.get("bound_direct_cells"),
+            "bound_delegated": derived.get("bound_delegated_cells"),
+            "not_applicable": derived.get("not_applicable_cells"),
+            "applicable_blocked": derived.get("applicable_blocked_cells"),
         },
-        "non_target_cell_count": NON_TARGET_COUNT,
+        "non_target_cell_count": (
+            R71_DUAL_EXCLUSION_COUNT if r71_successor else NON_TARGET_COUNT
+        ),
         "product_execution": "15_OF_15_NOT_RUN",
         "github_publication": "SUSPENDED",
         "errors": errors,
