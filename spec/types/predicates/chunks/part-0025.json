@@ -1,0 +1,91 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "MemberVisibilityAdmitted",
+    "source_name": "MemberVisibilityAdmitted",
+    "summary": "R58 exact member-visibility surface, omission, lattice, and original-slot override admission; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_adapter": "R58MemberVisibilityDescriptor",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "member_owner_production",
+      "member_visibility_surface",
+      "normalized_member_visibility",
+      "omission_state",
+      "declaring_nominal_id",
+      "original_slot_anchor_id",
+      "original_slot_visibility",
+      "override_visibility"
+    ],
+    "rule_facets": [
+      "member_owner_production",
+      "member_visibility_surface",
+      "normalized_member_visibility",
+      "omission_state",
+      "declaring_nominal_id",
+      "original_slot_anchor_id",
+      "original_slot_visibility",
+      "override_visibility"
+    ],
+    "feature_refs": [
+      "member_visibility_sigils_only"
+    ],
+    "diagnostic_refs": [
+      "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+      "OVERRIDE_VISIBILITY_CANNOT_NARROW"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(MemberVisibilityFact) | reject(diagnostic_id)",
+    "requires": [
+      "the shared MemberVisibility surface is exactly +, -, or # on one of the 15 current MemberVisibility? owner productions",
+      "member visibility omission remains OMITTED with normalized visibility null and has no global default",
+      "the comparison lattice is exactly - < # < +",
+      "an override or fulfillment retains the ORIGINAL_DECLARING_NOMINAL_SLOT anchor and cannot select a narrower visibility",
+      "member visibility is a static source and checker law and creates no runtime behavior"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "formal_judgment_id": "J-MemberVisibilityAdmitted",
+    "algorithm_owner": "source_frontend_then_parser_then_integrated_checker",
+    "preconditions": [
+      "the parser preserves the member owner production and the exact optional visibility token",
+      "override resolution, when present, provides the original slot anchor and its admitted visibility"
+    ],
+    "normalization": "preserve +, -, and # exactly and normalize them to PUBLIC, PRIVATE, and HIERARCHY_PROTECTED; preserve omission as OMITTED/null; assign comparison ranks -=0, #=1, +=2 without synthesizing a default",
+    "decision_procedure": [
+      "require the declaration owner to be one of the 15 grammar productions that directly admit MemberVisibility?",
+      "if a member callable uses common, private, protected, or public, reject with CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+      "otherwise preserve an explicit +, -, or # token and normalize it to PUBLIC, PRIVATE, or HIERARCHY_PROTECTED, or preserve absence as omission_state OMITTED and semantic value null",
+      "for a non-override declaration, seal the static MemberVisibilityFact without adding runtime state",
+      "for an override or fulfillment, retain original_slot_anchor_id as the comparison anchor",
+      "compare explicit visibility ranks in the exact lattice - < # < + and reject an override rank below its original slot rank with OVERRIDE_VISIBILITY_CANNOT_NARROW",
+      "otherwise return the admitted static MemberVisibilityFact"
+    ],
+    "termination_metric": "one finite member declaration and at most one original-slot visibility comparison",
+    "success_result": "MemberVisibilityFact",
+    "active_primary_diagnostic": "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+    "secondary_diagnostics": [
+      "OVERRIDE_VISIBILITY_CANNOT_NARROW"
+    ],
+    "positive_fixture_ids": [
+      "PF-MemberVisibilityAdmitted-POS",
+      "PF-MemberVisibilityAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-MemberVisibilityAdmitted-NEG-KEYWORD",
+      "PF-MemberVisibilityAdmitted-NEG-OVERRIDE"
+    ],
+    "evaluation_order": "owner admission -> exact surface or OMITTED/null preservation -> original slot anchor -> lattice comparison -> deterministic diagnostic",
+    "dependency_predicates": [],
+    "diagnostic_dispatch": {
+      "CALLABLE_VISIBILITY_WORD": "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+      "OVERRIDE_NARROWS_ORIGINAL_SLOT": "OVERRIDE_VISIBILITY_CANNOT_NARROW"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  }
+]

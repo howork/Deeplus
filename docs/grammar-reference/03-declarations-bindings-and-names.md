@@ -32,8 +32,90 @@ MemberVisibility   ::= "+" | "-" | "#"
 | 멤버 | `-` | 선언 nominal type 전용 private 멤버 |
 | 멤버 | `#` | 선언 nominal type과 그 nominal subclass에서만 보이는 hierarchy-protected 멤버 |
 
-`#`는 같은 Trait을 만족하거나 구조가 비슷하다는 이유로 접근을 허용하지
-않는다. 공개 API residue는 가시성과 그 서명 의존성을 정확히 기록한다.
+멤버 가시성의 넓이 순서는 `- < # < +`다. `#`는 같은 Trait을 만족하거나
+구조가 비슷하다는 이유로 접근을 허용하지 않는다. 같은 모듈이나 패키지의
+peer, conformer, witness holder도 nominal subclass가 아니면 접근할 수 없다.
+멤버의 유효 가시성은 이 멤버 domain과 최상위 owner reachability의
+교집합이다. 따라서 `private` class의 `+` 멤버가 모듈 밖으로 노출되거나,
+도달할 수 없는 owner의 `#` 멤버가 owner보다 넓게 공개되지 않는다.
+
+현행 정본 문법에서 `MemberVisibility?`를 직접 소유하는 production은 정확히
+15개다: `MemberFunctionDecl`, `TypeSideMemberFunctionDecl`,
+`ConstructorDecl`, `StoredParameter`, `FieldDecl`, `TypeSideFieldDecl`,
+`AccessorDecl`, `ForwardDecl`, `TraitMethodDecl`, `ConformanceMethodDecl`,
+`ExtensionSetFunctionDecl`, `ActorOnDecl`, `ActorRequestDecl`,
+`BitfieldNamedSlot`, `FlagNamedSlot`. 이 목록은 새 표기를 추가하지 않으며
+문법 표기는 계속 `+`, `-`, `#`뿐이다.
+
+`MemberVisibility?`가 생략되면 CST/frontend는 그 상태를 `OMITTED`/`null`로
+보존한다. R58은 전역 기본값을 지정하지 않는다. 바로 위 parent owner의
+계약이 생략을 해석하거나 거부하며, 결정되지 않은 `OMITTED`는
+`- < # < +` 비교에 참여하지 않는다.
+
+override는 최초 slot의 declaring nominal access anchor를 계속 사용한다.
+parent owner가 생략을 처리한 뒤 override는 원래 가시성을 유지하거나 넓힐
+수만 있고 좁힐 수 없다. 좁히면 `OVERRIDE_VISIBILITY_CANNOT_NARROW`다.
+Trait witness가 requirement 가시성을 만족하지 못하는 별도 실패는 기존
+`TRAIT_REQUIREMENT_VISIBILITY_MISMATCH`를 유지한다.
+
+멤버 callable에 `public`, `common`, `private` 또는 `protected`를 쓰면 owner-form 오류인
+`CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN`가 먼저 선택되고 override/Trait 비교는
+하지 않는다. 올바른 sigil을 쓴 override가 좁아지면
+`OVERRIDE_VISIBILITY_CANNOT_NARROW`가 이후 Trait mismatch보다 먼저다.
+가시성은 정적 증명이며 runtime lookup/check, registry, MIR operation, xVM
+instruction 또는 backend instruction을 추가하지 않는다. 공개 API residue는
+owner와 멤버 가시성 및 서명 의존성을 정확히 기록한다. 거부된 선언이나
+접근은 HIR residue를 남기지 않는다.
+
+정상적인 owner 내부 접근:
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/member-visibility-trace-closure-r1.json -->
+```deeplus
+module core::base
+public open class Base {
+    #def hook*+() -> Int = return 1
+    +def value() -> Int = return self ~ hook
+}
+```
+
+다른 source unit과 모듈이어도 nominal subclass이면 `#` 접근이 되는 경계
+예제:
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/member-visibility-trace-closure-r1.json -->
+```deeplus
+module app::derived
+import core::base::Base
+public class Derived derives Base {
+    #def hook*.() -> Int = return 2
+    +def expose() -> Int = return self ~ hook
+}
+```
+
+거부 예제:
+
+<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/contracts/member-visibility-trace-closure-r1.json -->
+```deeplus
+// 같은 모듈의 peer일 뿐 subclass가 아니므로 거부한다.
+module core::base
+
+public class Peer {
+    +def probe(base: Base) -> Int = return base ~ hook
+    // REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION
+}
+
+public class WrongWord {
+    public def value() -> Int = return 1
+    // CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN
+}
+
+public open class WideBase {
+    +def value*+() -> Int = return 1
+}
+public class NarrowChild derives WideBase {
+    #def value*.() -> Int = return 2
+    // OVERRIDE_VISIBILITY_CANNOT_NARROW
+}
+```
 
 ### 바인딩
 

@@ -1401,8 +1401,92 @@
         "-",
         "#"
       ],
+      "owner_production_count": 15,
+      "owner_productions": [
+        "MemberFunctionDecl",
+        "TypeSideMemberFunctionDecl",
+        "ConstructorDecl",
+        "StoredParameter",
+        "FieldDecl",
+        "TypeSideFieldDecl",
+        "AccessorDecl",
+        "ForwardDecl",
+        "TraitMethodDecl",
+        "ConformanceMethodDecl",
+        "ExtensionSetFunctionDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl",
+        "BitfieldNamedSlot",
+        "FlagNamedSlot"
+      ],
       "top_level_words_forbidden": true,
-      "hash_domain": "declaring_nominal_type_and_nominal_subclasses"
+      "forbidden_top_level_words": [
+        "common",
+        "private",
+        "protected",
+        "public"
+      ],
+      "exact_normalization": {
+        "+": "PUBLIC",
+        "-": "PRIVATE",
+        "#": "HIERARCHY_PROTECTED"
+      },
+      "omission": {
+        "syntax_state": "OMITTED",
+        "semantic_value": null,
+        "r58_global_default": null,
+        "default_application_count": 0
+      },
+      "semantic_lattice_narrow_to_wide": [
+        "-",
+        "#",
+        "+"
+      ],
+      "access_proof": {
+        "required_fields": [
+          "declaring_nominal_id",
+          "consumer_nominal_id",
+          "consumer_relation"
+        ],
+        "consumer_relation_enums": [
+          "DECLARING_NOMINAL",
+          "NOMINAL_SUBCLASS",
+          "MODULE_PEER",
+          "NOMINAL_CONFORMER_NOT_SUBCLASS",
+          "STRUCTURAL_PEER",
+          "UNRELATED"
+        ]
+      },
+      "domains": {
+        "-": {
+          "admitted_consumer_relations": [
+            "DECLARING_NOMINAL"
+          ]
+        },
+        "#": {
+          "admitted_consumer_relations": [
+            "DECLARING_NOMINAL",
+            "NOMINAL_SUBCLASS"
+          ],
+          "rejected_consumer_relations": [
+            "MODULE_PEER",
+            "NOMINAL_CONFORMER_NOT_SUBCLASS",
+            "STRUCTURAL_PEER"
+          ]
+        },
+        "+": {
+          "admitted_consumer_domain": "ALL_VISIBLE_CONSUMERS"
+        }
+      },
+      "hash_domain": "declaring_nominal_type_and_nominal_subclasses_only",
+      "override_admission": {
+        "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT",
+        "anchor_rewrite_count": 0,
+        "visibility_rule": "OVERRIDE_VISIBILITY_GREATER_THAN_OR_EQUAL_TO_ORIGINAL_SLOT_VISIBILITY",
+        "narrowing": "REJECT",
+        "diagnostic": "OVERRIDE_VISIBILITY_CANNOT_NARROW"
+      },
+      "runtime_behavior": "STATIC_ONLY_NO_RUNTIME_BEHAVIOR"
     }
   },
   "accessor_property_admission": {

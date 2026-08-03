@@ -383,7 +383,7 @@ def main() -> int:
     check("R38_R20_ACCEPTANCE_PRESERVED", len(legacy) == 24 and len({row.get("test_id") for row in legacy}) == 24, len(legacy))
 
     counts: dict[str, tuple[int, int]] = {}
-    expected_counts = {"diagnostics": 1484, "predicates": 282, "predicate_fixtures": 870, "relations": 613}
+    expected_counts = {"diagnostics": 1484, "predicates": 283, "predicate_fixtures": 877, "relations": 615}
     locations = {
         "diagnostics": ("spec/diagnostics/catalog", "diagnostic_count"),
         "predicates": ("spec/types/predicates", "predicate_count"),

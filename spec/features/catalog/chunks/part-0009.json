@@ -978,7 +978,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Member `#` is visible only in the declaring nominal type and its nominal subclasses. Module peers do not receive access. `+` is public and `-` is declaring-type private.",
+    "notes": "Member `#` is visible only in the declaring nominal type and its nominal subclasses. Module peers, nominal conformers that are not subclasses, and structural peers do not receive access.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -989,15 +989,36 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "productions": [],
+      "productions": [
+        "MemberVisibility",
+        "MemberFunctionDecl",
+        "TypeSideMemberFunctionDecl",
+        "ConstructorDecl",
+        "StoredParameter",
+        "FieldDecl",
+        "TypeSideFieldDecl",
+        "AccessorDecl",
+        "ForwardDecl",
+        "TraitMethodDecl",
+        "ConformanceMethodDecl",
+        "ExtensionSetFunctionDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl",
+        "BitfieldNamedSlot",
+        "FlagNamedSlot"
+      ],
       "semantic_reference_productions": [],
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION"
+      ],
+      "predicates": [
+        "ReferenceVisibilityActivationAdmitted"
+      ],
       "examples": []
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [
-      "spec/language.md"
+      "spec/contracts/member-visibility-trace-closure-r1.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1017,7 +1038,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Member visibility sigil surface phase a. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "The shared MemberVisibility token admits exactly +, -, and # on the 15 current MemberVisibility? owner productions. Omission remains the explicit OMITTED/null state and has no global member default.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1032,13 +1053,29 @@
       "predicates": [],
       "examples": [],
       "productions": [
-        "MemberDecl",
-        "MemberVisibility"
+        "MemberVisibility",
+        "MemberFunctionDecl",
+        "TypeSideMemberFunctionDecl",
+        "ConstructorDecl",
+        "StoredParameter",
+        "FieldDecl",
+        "TypeSideFieldDecl",
+        "AccessorDecl",
+        "ForwardDecl",
+        "TraitMethodDecl",
+        "ConformanceMethodDecl",
+        "ExtensionSetFunctionDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl",
+        "BitfieldNamedSlot",
+        "FlagNamedSlot"
       ],
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/member-visibility-trace-closure-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1057,7 +1094,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "A callable nested in a nominal type uses member visibility +, -, or #, while a nested local function has lexical visibility. This feature does not reject public/common/private on top-level callable owners, where omission normalizes to private under the separate top-level visibility law.",
+    "notes": "A callable nested in a nominal type uses member visibility +, -, or #, while a nested local function has lexical visibility. Member omission stays OMITTED/null without a global default; top-level callable omission follows its separate visibility law.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1072,16 +1109,34 @@
         "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
         "OVERRIDE_VISIBILITY_CANNOT_NARROW"
       ],
-      "predicates": [],
+      "predicates": [
+        "MemberVisibilityAdmitted"
+      ],
       "examples": [],
       "productions": [
-        "MemberDecl",
-        "MemberVisibility"
+        "MemberVisibility",
+        "MemberFunctionDecl",
+        "TypeSideMemberFunctionDecl",
+        "ConstructorDecl",
+        "StoredParameter",
+        "FieldDecl",
+        "TypeSideFieldDecl",
+        "AccessorDecl",
+        "ForwardDecl",
+        "TraitMethodDecl",
+        "ConformanceMethodDecl",
+        "ExtensionSetFunctionDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl",
+        "BitfieldNamedSlot",
+        "FlagNamedSlot"
       ],
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/member-visibility-trace-closure-r1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

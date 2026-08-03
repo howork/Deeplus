@@ -435,7 +435,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ReferenceVisibilityActivationAdmitted",
     "source_name": "reference visibility, activation and evidence-origin filter",
-    "summary": "Filter a collected candidate set by lexical visibility, extension activation, member visibility and witness evidence origin.",
+    "summary": "Filter a collected candidate set by lexical visibility, extension activation, exact member visibility access proof, and witness evidence origin.",
     "input_descriptor": "RCTSDescriptorV5",
     "input_adapter": "R4ReferenceVisibilityActivationDescriptor",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
@@ -443,6 +443,11 @@
       "resolver_scope_id",
       "candidate_identity",
       "visibility_domain",
+      "member_visibility_surface",
+      "normalized_member_visibility",
+      "declaring_nominal_id",
+      "consumer_nominal_id",
+      "consumer_relation",
       "activation_origin_id",
       "evidence_origin_id"
     ],
@@ -450,6 +455,11 @@
       "resolver_scope_id",
       "candidate_identity",
       "visibility_domain",
+      "member_visibility_surface",
+      "normalized_member_visibility",
+      "declaring_nominal_id",
+      "consumer_nominal_id",
+      "consumer_relation",
       "activation_origin_id",
       "evidence_origin_id"
     ],
@@ -465,6 +475,8 @@
     "output": "admit(VisibleActivatedCandidateSet) | reject(reason)",
     "requires": [
       "visibility is checked against the declaring owner and consumer scope",
+      "a member access proof contains declaring_nominal_id, consumer_nominal_id, and consumer_relation",
+      "# admits only the declaring nominal and its nominal subclasses, never a module peer, nominal conformer that is not a subclass, or structural peer",
       "extension activation remains separate from import",
       "witness evidence is reused only from an admitted EvidenceOriginId",
       "public residue cannot expose a less-visible identity"
@@ -478,9 +490,12 @@
       "ReferenceCandidateSetResolved produced a normalized candidate set",
       "name, activation and evidence environments remain separate"
     ],
-    "normalization": "normalize visibility domains and typed activation/evidence origins without creating a new witness",
+    "normalization": "normalize visibility domains, preserve the exact member sigil or OMITTED/null state, and normalize declaring_nominal_id, consumer_nominal_id, consumer_relation, and typed activation/evidence origins without creating a new witness",
     "decision_procedure": [
       "filter candidates outside the lexical or member visibility domain",
+      "for an explicit # candidate require declaring_nominal_id, consumer_nominal_id, and consumer_relation in the access proof",
+      "admit # only when consumer_relation is DECLARING_NOMINAL with identical nominal identities or NOMINAL_SUBCLASS with a nominal subclass proof",
+      "reject # for MODULE_PEER, NOMINAL_CONFORMER_NOT_SUBCLASS, STRUCTURAL_PEER, unrelated, missing, or contradictory access proofs with reason MEMBER_VISIBILITY_DOMAIN",
       "filter extension candidates not active in the current resolver scope",
       "reject activation identity mismatch or scope escape",
       "reject public API leakage and invalid evidence origin",
@@ -492,10 +507,13 @@
     "secondary_diagnostics": [],
     "positive_fixture_ids": [
       "PF-ReferenceVisibilityActivationAdmitted-POS",
-      "PF-ReferenceVisibilityActivationAdmitted-BOUNDARY"
+      "PF-ReferenceVisibilityActivationAdmitted-BOUNDARY",
+      "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-POS",
+      "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-BOUNDARY"
     ],
     "negative_fixture_ids": [
-      "PF-ReferenceVisibilityActivationAdmitted-NEG"
+      "PF-ReferenceVisibilityActivationAdmitted-NEG",
+      "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-NEG"
     ],
     "evaluation_order": "R4 ordinal 6: candidate set -> lexical/member visibility -> activation -> evidence origin -> API closure",
     "dependency_predicates": [
@@ -503,7 +521,8 @@
       "ModuleItemSkeletonSetAdmitted",
       "DependencyInterfaceBindingClosed",
       "ResolverScopeTreeAdmitted",
-      "ReferenceCandidateSetResolved"
+      "ReferenceCandidateSetResolved",
+      "MemberVisibilityAdmitted"
     ],
     "diagnostic_dispatch": {
       "CANDIDATE_NOT_VISIBLE": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",

@@ -1,0 +1,377 @@
+{
+  "$schema": "../../schemas/language/member-visibility-trace-closure-r1.schema.json",
+  "schema": "deeplus.member-visibility-trace-closure/r1",
+  "revision": "r58-local-member-visibility-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "6a0eb950fb46fc061c260445bb0d25dc766117ea",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_ids": [
+    "member_visibility_hierarchy_protected",
+    "member_visibility_sigil_surface_phase_a",
+    "member_visibility_sigils_only"
+  ],
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "runtime_visibility_check_count": 0,
+    "runtime_visibility_instruction_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "surface_contract": {
+    "member_visibility_sigils": [
+      "+",
+      "-",
+      "#"
+    ],
+    "exact_normalization": {
+      "+": "PUBLIC",
+      "-": "PRIVATE",
+      "#": "HIERARCHY_PROTECTED"
+    },
+    "keyword_spellings_forbidden_on_members": [
+      "common",
+      "private",
+      "protected",
+      "public"
+    ],
+    "omitted": {
+      "syntax_state": "OMITTED",
+      "semantic_value": null,
+      "r58_global_default": null,
+      "default_application_count": 0
+    }
+  },
+  "static_semantics": {
+    "access_lattice": [
+      "PRIVATE(-)",
+      "HIERARCHY_PROTECTED(#)",
+      "PUBLIC(+)"
+    ],
+    "strict_order": "- < # < +",
+    "private_access_domain": [
+      "DECLARING_NOMINAL"
+    ],
+    "hierarchy_protected_access_domain": [
+      "DECLARING_NOMINAL",
+      "NOMINAL_SUBCLASS"
+    ],
+    "hierarchy_protected_rejected_consumers": [
+      "MODULE_PEER",
+      "NOMINAL_CONFORMER_NOT_SUBCLASS",
+      "STRUCTURAL_PEER"
+    ],
+    "public_access_domain": "ALL_VISIBLE_CONSUMERS",
+    "conformance_does_not_imply_subclass_access": true,
+    "structural_similarity_does_not_imply_access": true
+  },
+  "override_contract": {
+    "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT",
+    "anchor_rewrite_count": 0,
+    "visibility_rule": "OVERRIDE_VISIBILITY_GREATER_THAN_OR_EQUAL_TO_ORIGINAL_SLOT_VISIBILITY",
+    "cannot_narrow": true,
+    "comparison_order": "- < # < +",
+    "rejection_diagnostic": "OVERRIDE_VISIBILITY_CANNOT_NARROW"
+  },
+  "diagnostic_contract": {
+    "hierarchy_access_rejection": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+    "member_keyword_rejection": "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+    "override_narrowing_rejection": "OVERRIDE_VISIBILITY_CANNOT_NARROW",
+    "rejection_before_hir_residue": true
+  },
+  "lowering_contract": {
+    "classification": "STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
+    "runtime_visibility_check_count": 0,
+    "runtime_visibility_instruction_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "admitted_access_lowering": "UNCHANGED_MEMBER_ACCESS_LOWERING_AFTER_STATIC_ADMISSION",
+    "rejected_access_hir_residue_count": 0
+  },
+  "rules": [
+    {
+      "rule_id": "MVTC-R001",
+      "text": "Member visibility surface spelling is exactly +, -, or #; member visibility keywords are not aliases."
+    },
+    {
+      "rule_id": "MVTC-R002",
+      "text": "The three sigils normalize exactly to PUBLIC, PRIVATE, and HIERARCHY_PROTECTED respectively."
+    },
+    {
+      "rule_id": "MVTC-R003",
+      "text": "An omitted member-visibility sigil remains the explicit syntax state OMITTED with null semantic value; R58 supplies no global default."
+    },
+    {
+      "rule_id": "MVTC-R004",
+      "text": "The access lattice is the strict order private - below hierarchy-protected # below public +."
+    },
+    {
+      "rule_id": "MVTC-R005",
+      "text": "Hierarchy-protected # access is admitted only for the declaring nominal type or one of its nominal subclasses."
+    },
+    {
+      "rule_id": "MVTC-R006",
+      "text": "Module peers, nominal conformers that are not subclasses, and structurally similar peers are rejected for # access with REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION."
+    },
+    {
+      "rule_id": "MVTC-R007",
+      "text": "Conformance and structural similarity never manufacture nominal-subclass visibility authority."
+    },
+    {
+      "rule_id": "MVTC-R008",
+      "text": "An override retains the original declaring nominal slot as its visibility anchor and cannot narrow that slot's visibility."
+    },
+    {
+      "rule_id": "MVTC-R009",
+      "text": "Member visibility is closed statically and emits no runtime visibility check, runtime instruction, HIR identity, or MIR operation kind."
+    },
+    {
+      "rule_id": "MVTC-R010",
+      "text": "A rejected visibility access or declaration leaves no HIR residue."
+    },
+    {
+      "rule_id": "MVTC-R011",
+      "text": "The member-surface keyword rejection is delegated from member_visibility_sigil_surface_phase_a to member_visibility_sigils_only."
+    },
+    {
+      "rule_id": "MVTC-R012",
+      "text": "This R58 candidate is E2 structured static evidence only; product lanes remain NOT_RUN and GitHub publication remains suspended."
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "MVTC-AC-001",
+      "class": "POSITIVE",
+      "feature_id": "member_visibility_hierarchy_protected",
+      "source_or_subject": "the declaring nominal accesses its own # member",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "consumer_domain": "DECLARING_NOMINAL",
+        "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-002",
+      "class": "BOUNDARY",
+      "feature_id": "member_visibility_hierarchy_protected",
+      "source_or_subject": "a nominal subclass accesses an inherited # member through an override",
+      "expected": "ADMIT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "consumer_domain": "NOMINAL_SUBCLASS",
+        "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT",
+        "anchor_rewrite_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-003",
+      "class": "REJECT",
+      "feature_id": "member_visibility_hierarchy_protected",
+      "source_or_subject": "# access attempted by a module peer, a non-subclass conformer, and a structural peer",
+      "expected": "REJECT_ALL",
+      "diagnostic_or_null": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION",
+      "assertions": {
+        "rejected_consumers": [
+          "MODULE_PEER",
+          "NOMINAL_CONFORMER_NOT_SUBCLASS",
+          "STRUCTURAL_PEER"
+        ],
+        "hir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-004",
+      "class": "POSITIVE",
+      "feature_id": "member_visibility_sigil_surface_phase_a",
+      "source_or_subject": "+def open(), -def secret(), #def family()",
+      "expected": "ADMIT_EXACT_SIGILS",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "spellings": [
+          "+",
+          "-",
+          "#"
+        ],
+        "normalized": [
+          "PUBLIC",
+          "PRIVATE",
+          "HIERARCHY_PROTECTED"
+        ]
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-005",
+      "class": "BOUNDARY",
+      "feature_id": "member_visibility_sigil_surface_phase_a",
+      "source_or_subject": "def omittedMember() has no visibility sigil",
+      "expected": "PRESERVE_OMITTED",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "syntax_state": "OMITTED",
+        "semantic_value": null,
+        "r58_global_default": null
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-006",
+      "class": "REJECT",
+      "feature_id": "member_visibility_sigil_surface_phase_a",
+      "source_or_subject": "public def member() inside a nominal type",
+      "expected": "REJECT",
+      "diagnostic_or_null": "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+      "assertions": {
+        "delegate_feature_id": "member_visibility_sigils_only",
+        "keyword_alias_normalization_count": 0,
+        "hir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-007",
+      "class": "POSITIVE",
+      "feature_id": "member_visibility_sigils_only",
+      "source_or_subject": "+def open()",
+      "expected": "ADMIT_PUBLIC_MEMBER",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "visibility": "PUBLIC",
+        "sigil": "+"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-008",
+      "class": "POSITIVE",
+      "feature_id": "member_visibility_sigils_only",
+      "source_or_subject": "-def secret()",
+      "expected": "ADMIT_PRIVATE_MEMBER",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "visibility": "PRIVATE",
+        "sigil": "-",
+        "access_domain": "DECLARING_NOMINAL"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-009",
+      "class": "BOUNDARY",
+      "feature_id": "member_visibility_sigils_only",
+      "source_or_subject": "override visibility matrix at the original slot anchor",
+      "expected": "ADMIT_NON_NARROWING_ONLY",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "access_lattice": "- < # < +",
+        "admitted_transitions": [
+          "-->-",
+          "-->#",
+          "-->+",
+          "#->#",
+          "#->+",
+          "+->+"
+        ],
+        "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "MVTC-AC-010",
+      "class": "REJECT",
+      "feature_id": "member_visibility_sigils_only",
+      "source_or_subject": "override narrows # to - or + to #/-",
+      "expected": "REJECT_NARROWING",
+      "diagnostic_or_null": "OVERRIDE_VISIBILITY_CANNOT_NARROW",
+      "assertions": {
+        "rejected_transitions": [
+          "#->-",
+          "+->#",
+          "+->-"
+        ],
+        "slot_anchor": "ORIGINAL_DECLARING_NOMINAL_SLOT",
+        "hir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "acceptance_bindings": {
+    "member_visibility_hierarchy_protected": {
+      "POSITIVE": [
+        "MVTC-AC-001"
+      ],
+      "BOUNDARY": [
+        "MVTC-AC-002"
+      ],
+      "REJECT": [
+        "MVTC-AC-003"
+      ]
+    },
+    "member_visibility_sigil_surface_phase_a": {
+      "POSITIVE": [
+        "MVTC-AC-004"
+      ],
+      "BOUNDARY": [
+        "MVTC-AC-005"
+      ],
+      "REJECT": [
+        "MVTC-AC-006"
+      ]
+    },
+    "member_visibility_sigils_only": {
+      "POSITIVE": [
+        "MVTC-AC-007",
+        "MVTC-AC-008"
+      ],
+      "BOUNDARY": [
+        "MVTC-AC-009"
+      ],
+      "REJECT": [
+        "MVTC-AC-010"
+      ]
+    }
+  },
+  "machine_acceptance": {
+    "feature_count": 3,
+    "rule_count": 12,
+    "acceptance_case_count": 10,
+    "positive_case_count": 4,
+    "boundary_case_count": 3,
+    "reject_case_count": 3,
+    "acceptance_binding_count": 9,
+    "overlay_binding_count": 13,
+    "predecessor_blocked_cell_count": 12,
+    "predecessor_not_applicable_to_direct_count": 1,
+    "overlay_bound_direct_transition_count": 9,
+    "overlay_bound_delegated_transition_count": 1,
+    "overlay_not_applicable_transition_count": 3,
+    "predecessor_total_bound_direct_cell_count": 2438,
+    "predecessor_total_bound_delegated_cell_count": 2,
+    "predecessor_total_not_applicable_cell_count": 500,
+    "predecessor_total_blocked_cell_count": 1281,
+    "post_overlay_total_bound_direct_cell_count": 2447,
+    "post_overlay_total_bound_delegated_cell_count": 3,
+    "post_overlay_total_not_applicable_cell_count": 502,
+    "post_overlay_total_blocked_cell_count": 1269,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED"
+  }
+}

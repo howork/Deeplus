@@ -100,8 +100,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1484, "predicates": 282,
-    "predicate_fixtures": 870, "no_go": 156,
+    "features": 723, "diagnostics": 1484, "predicates": 283,
+    "predicate_fixtures": 877, "no_go": 156,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -1364,11 +1364,21 @@ def r4_nrm_contract_results(
     observed_predicate_ids = [
         row.get("predicate_id") for row in new_predicates
     ]
+    expected_dependency_predicates = {
+        predicate_id: precedence_ids[:index]
+        + (
+            ["MemberVisibilityAdmitted"]
+            if predicate_id == "ReferenceVisibilityActivationAdmitted"
+            else []
+        )
+        for index, predicate_id in enumerate(precedence_ids)
+    }
     record(
         observed_predicate_ids == precedence_ids
         and all(
-            row.get("dependency_predicates") == precedence_ids[:index]
-            for index, row in enumerate(new_predicates)
+            row.get("dependency_predicates")
+            == expected_dependency_predicates[row.get("predicate_id")]
+            for row in new_predicates
         ),
         "R4_NRM_PRECEDENCE",
         f"observed={observed_predicate_ids}",
@@ -1394,12 +1404,28 @@ def r4_nrm_contract_results(
             and row.get("evidence_status")
             == "DESIGN_ALGORITHM_STATIC_NOT_RUN"
             and row.get("positive_fixture_ids")
-            == [
-                f"PF-{predicate_id}-POS",
-                f"PF-{predicate_id}-BOUNDARY",
-            ]
+            == (
+                [
+                    f"PF-{predicate_id}-POS",
+                    f"PF-{predicate_id}-BOUNDARY",
+                    "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-POS",
+                    "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-BOUNDARY",
+                ]
+                if predicate_id == "ReferenceVisibilityActivationAdmitted"
+                else [
+                    f"PF-{predicate_id}-POS",
+                    f"PF-{predicate_id}-BOUNDARY",
+                ]
+            )
             and row.get("negative_fixture_ids")
-            == [f"PF-{predicate_id}-NEG"]
+            == (
+                [
+                    f"PF-{predicate_id}-NEG",
+                    "PF-ReferenceVisibilityActivationAdmitted-MEMBER-HASH-NEG",
+                ]
+                if predicate_id == "ReferenceVisibilityActivationAdmitted"
+                else [f"PF-{predicate_id}-NEG"]
+            )
         )
     record(
         reason_contract,
@@ -12527,8 +12553,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 282
-                and fixed_counts.get("predicate_fixtures") == 870
+                and fixed_counts.get("predicates") == 283
+                and fixed_counts.get("predicate_fixtures") == 877
                 and fixed_counts.get("no_go") == 156
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -12653,6 +12679,14 @@ def main() -> int:
         "tools/validators/validate_unified_call_tilde_trace.py",
         "tools/validators/run_unified_call_tilde_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R57_Unified_Call_Tilde_Trace_Closure_R1.md",
+        "spec/contracts/member-visibility-trace-closure-r1.json",
+        "schemas/language/member-visibility-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/member-visibility-evidence-r1.json",
+        "schemas/language/member-visibility-evidence-r1.schema.json",
+        "tools/generators/build_member_visibility_evidence.py",
+        "tools/validators/validate_member_visibility_trace.py",
+        "tools/validators/run_member_visibility_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R58_Member_Visibility_Trace_Closure_R1.md",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([

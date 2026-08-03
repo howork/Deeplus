@@ -240,12 +240,110 @@ syntax. API closure is checked after normalization: a wider visibility domain
 cannot expose a dependency identity from a narrower domain, and a `public`
 declaration is not externally exported merely because it is public.
 
-Member declarations use `+`, `-`, and `#`, not top-level visibility words. The
-hierarchy-protected `#` member visibility is visible in the declaring nominal
-type and its nominal subclasses, not in arbitrary conforming or structurally
-similar types. Public API residue records visibility exactly. The structural
-Grammar never turns an omitted type-producing-owner visibility into an implicit
-`private` declaration.
+Member declarations use the exact sigils `+`, `-`, and `#`, not top-level
+visibility words. Their widening order is `- < # < +`: `-` admits only the
+declaring nominal type, `#` admits that declaring nominal type and its nominal
+subclasses, and `+` admits every site at which the owning top-level declaration
+is itself reachable. Module or package co-location, friendship by import,
+Trait conformance, witness availability, and structural similarity do not make
+a site a nominal subclass and therefore do not satisfy `#`.
+
+The effective access domain is the intersection of the member domain and the
+reachability domain of its top-level owner. A `+` member of a `private` class is
+not reachable outside the declaring module, and a `#` member does not expose an
+otherwise unreachable owner. Public API residue records both domains exactly
+and never widens the owner merely because a member is `+`.
+
+The exact Grammar has fifteen productions carrying `MemberVisibility?`, without
+introducing another spelling: `MemberFunctionDecl`,
+`TypeSideMemberFunctionDecl`, `ConstructorDecl`, `StoredParameter`,
+`FieldDecl`, `TypeSideFieldDecl`, `AccessorDecl`, `ForwardDecl`,
+`TraitMethodDecl`, `ConformanceMethodDecl`, `ExtensionSetFunctionDecl`,
+`ActorOnDecl`, `ActorRequestDecl`, `BitfieldNamedSlot`, and `FlagNamedSlot`.
+The optional grammar term is a source-preservation boundary, not a defaulting
+rule. When the sigil is absent, CST and frontend normalization preserve
+`MemberVisibility = OMITTED` (serialized as `null`). R58 assigns no global
+member default; the immediate parent-owner contract must either resolve the
+omission or reject it. An unresolved omission never participates in the
+`- < # < +` comparison.
+
+An inherited slot retains its original declaring-nominal access anchor through
+every override. After the parent-owner contract has resolved any omission, an
+override must preserve or widen the inherited slot visibility; it cannot
+narrow it or re-anchor `#` at the overriding subclass. A valid narrowing is
+rejected with `OVERRIDE_VISIBILITY_CANNOT_NARROW`. Trait witness visibility is
+checked independently against the requirement and retains the existing
+`TRAIT_REQUIREMENT_VISIBILITY_MISMATCH` identity.
+
+Diagnostic precedence is owner-first and deterministic. A top-level visibility
+word on a member callable, or the unsupported word `protected`, is rejected
+first with `CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN`; `public def` is the canonical
+wrong-word example. No override or Trait visibility comparison is attempted for
+that malformed owner. For a callable with a valid member sigil,
+inherited-slot narrowing is diagnosed next with
+`OVERRIDE_VISIBILITY_CANNOT_NARROW`, before a later Trait requirement mismatch.
+A well-formed, non-narrowing witness that still fails its requirement uses
+`TRAIT_REQUIREMENT_VISIBILITY_MISMATCH`.
+
+Member visibility is entirely static. It adds no runtime member search,
+visibility check, registry entry, MIR operation, xVM instruction, or backend
+instruction. A rejected declaration or access produces no HIR residue.
+Successful access lowers the already selected member exactly as it would after
+any other static admission proof.
+
+Normal owner-local access:
+
+```deeplus
+module core::base
+
+public open class Base {
+    -let nonce: Int = 0
+    #def hook*+() -> Int = return nonce
+    +def value() -> Int = return self ~ hook
+}
+```
+
+Boundary access from a separate source unit and module is admitted by nominal
+ancestry, not module identity:
+
+```deeplus
+module app::derived
+import core::base::Base
+
+public class Derived derives Base {
+    #def hook*.() -> Int = return 2
+    +def expose() -> Int = return self ~ hook
+}
+```
+
+Rejection examples:
+
+```deeplus
+// Same-module peer access is not nominal subclass access.
+module core::base
+
+public class Peer {
+    +def probe(base: Base) -> Int = return base ~ hook
+    // REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION
+}
+
+public class WrongWord {
+    public def value() -> Int = return 1
+    // CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN
+}
+
+public open class WideBase {
+    +def value*+() -> Int = return 1
+}
+
+public class NarrowChild derives WideBase {
+    #def value*.() -> Int = return 2
+    // OVERRIDE_VISIBILITY_CANNOT_NARROW
+}
+```
+
+The structural Grammar also never turns an omitted type-producing-owner
+visibility into an implicit `private` declaration.
 
 Annotations are structural attachments and must not float to a different declaration after an error. Modifier sequences are closed by declaration owner. Duplicate or reordered modifiers that are not in the owner matrix are rejected.
 

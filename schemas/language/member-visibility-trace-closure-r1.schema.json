@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/member-visibility-trace-closure-r1.schema.json",
+  "title": "Deeplus R58 member-visibility trace-closure contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "language_status",
+    "source_activation",
+    "current_binding",
+    "feature_ids",
+    "authority_fence",
+    "surface_contract",
+    "static_semantics",
+    "override_contract",
+    "diagnostic_contract",
+    "lowering_contract",
+    "rules",
+    "acceptance_cases",
+    "acceptance_bindings",
+    "machine_acceptance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/member-visibility-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.member-visibility-trace-closure/r1"},
+    "revision": {"const": "r58-local-member-visibility-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "6a0eb950fb46fc061c260445bb0d25dc766117ea"},
+    "candidate_status": {"const": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE"},
+    "language_status": {"const": "STABLE_DESIGN"},
+    "source_activation": {"const": "none"},
+    "current_binding": {"const": false},
+    "feature_ids": {
+      "const": [
+        "member_visibility_hierarchy_protected",
+        "member_visibility_sigil_surface_phase_a",
+        "member_visibility_sigils_only"
+      ]
+    },
+    "authority_fence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "new_source_surface_count",
+        "new_ast_identity_count",
+        "new_hir_identity_count",
+        "new_mir_operation_kind_count",
+        "runtime_visibility_check_count",
+        "runtime_visibility_instruction_count",
+        "semantic_p0",
+        "feature_p1",
+        "m13_actions",
+        "product_lanes",
+        "github_publication",
+        "evidence_level"
+      ],
+      "properties": {
+        "new_source_surface_count": {"const": 0},
+        "new_ast_identity_count": {"const": 0},
+        "new_hir_identity_count": {"const": 0},
+        "new_mir_operation_kind_count": {"const": 0},
+        "runtime_visibility_check_count": {"const": 0},
+        "runtime_visibility_instruction_count": {"const": 0},
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED"},
+        "evidence_level": {"const": "E2_STRUCTURED_STATIC"}
+      }
+    },
+    "surface_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["member_visibility_sigils", "exact_normalization", "keyword_spellings_forbidden_on_members", "omitted"],
+      "properties": {
+        "member_visibility_sigils": {"const": ["+", "-", "#"]},
+        "exact_normalization": {
+          "const": {
+            "+": "PUBLIC",
+            "-": "PRIVATE",
+            "#": "HIERARCHY_PROTECTED"
+          }
+        },
+        "keyword_spellings_forbidden_on_members": {"const": ["common", "private", "protected", "public"]},
+        "omitted": {
+          "const": {
+            "syntax_state": "OMITTED",
+            "semantic_value": null,
+            "r58_global_default": null,
+            "default_application_count": 0
+          }
+        }
+      }
+    },
+    "static_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["access_lattice", "strict_order", "private_access_domain", "hierarchy_protected_access_domain", "hierarchy_protected_rejected_consumers", "public_access_domain", "conformance_does_not_imply_subclass_access", "structural_similarity_does_not_imply_access"],
+      "properties": {
+        "access_lattice": {"const": ["PRIVATE(-)", "HIERARCHY_PROTECTED(#)", "PUBLIC(+)"]},
+        "strict_order": {"const": "- < # < +"},
+        "private_access_domain": {"const": ["DECLARING_NOMINAL"]},
+        "hierarchy_protected_access_domain": {"const": ["DECLARING_NOMINAL", "NOMINAL_SUBCLASS"]},
+        "hierarchy_protected_rejected_consumers": {"const": ["MODULE_PEER", "NOMINAL_CONFORMER_NOT_SUBCLASS", "STRUCTURAL_PEER"]},
+        "public_access_domain": {"const": "ALL_VISIBLE_CONSUMERS"},
+        "conformance_does_not_imply_subclass_access": {"const": true},
+        "structural_similarity_does_not_imply_access": {"const": true}
+      }
+    },
+    "override_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot_anchor", "anchor_rewrite_count", "visibility_rule", "cannot_narrow", "comparison_order", "rejection_diagnostic"],
+      "properties": {
+        "slot_anchor": {"const": "ORIGINAL_DECLARING_NOMINAL_SLOT"},
+        "anchor_rewrite_count": {"const": 0},
+        "visibility_rule": {"const": "OVERRIDE_VISIBILITY_GREATER_THAN_OR_EQUAL_TO_ORIGINAL_SLOT_VISIBILITY"},
+        "cannot_narrow": {"const": true},
+        "comparison_order": {"const": "- < # < +"},
+        "rejection_diagnostic": {"const": "OVERRIDE_VISIBILITY_CANNOT_NARROW"}
+      }
+    },
+    "diagnostic_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["hierarchy_access_rejection", "member_keyword_rejection", "override_narrowing_rejection", "rejection_before_hir_residue"],
+      "properties": {
+        "hierarchy_access_rejection": {"const": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION"},
+        "member_keyword_rejection": {"const": "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN"},
+        "override_narrowing_rejection": {"const": "OVERRIDE_VISIBILITY_CANNOT_NARROW"},
+        "rejection_before_hir_residue": {"const": true}
+      }
+    },
+    "lowering_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "runtime_visibility_check_count", "runtime_visibility_instruction_count", "new_hir_identity_count", "new_mir_operation_kind_count", "admitted_access_lowering", "rejected_access_hir_residue_count"],
+      "properties": {
+        "classification": {"const": "STATIC_ONLY_NO_RUNTIME_BEHAVIOR"},
+        "runtime_visibility_check_count": {"const": 0},
+        "runtime_visibility_instruction_count": {"const": 0},
+        "new_hir_identity_count": {"const": 0},
+        "new_mir_operation_kind_count": {"const": 0},
+        "admitted_access_lowering": {"const": "UNCHANGED_MEMBER_ACCESS_LOWERING_AFTER_STATIC_ADMISSION"},
+        "rejected_access_hir_residue_count": {"const": 0}
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {"$ref": "#/$defs/rule"}
+    },
+    "acceptance_cases": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {"$ref": "#/$defs/acceptanceCase"}
+    },
+    "acceptance_bindings": {"type": "object"},
+    "machine_acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_count", "rule_count", "acceptance_case_count", "positive_case_count", "boundary_case_count", "reject_case_count", "acceptance_binding_count", "overlay_binding_count", "predecessor_blocked_cell_count", "predecessor_not_applicable_to_direct_count", "overlay_bound_direct_transition_count", "overlay_bound_delegated_transition_count", "overlay_not_applicable_transition_count", "predecessor_total_bound_direct_cell_count", "predecessor_total_bound_delegated_cell_count", "predecessor_total_not_applicable_cell_count", "predecessor_total_blocked_cell_count", "post_overlay_total_bound_direct_cell_count", "post_overlay_total_bound_delegated_cell_count", "post_overlay_total_not_applicable_cell_count", "post_overlay_total_blocked_cell_count", "post_overlay_missing_cell_count", "post_overlay_conflict_cell_count", "semantic_p0", "feature_p1", "m13_actions", "product_lanes", "github_publication"],
+      "properties": {
+        "feature_count": {"const": 3},
+        "rule_count": {"const": 12},
+        "acceptance_case_count": {"const": 10},
+        "positive_case_count": {"const": 4},
+        "boundary_case_count": {"const": 3},
+        "reject_case_count": {"const": 3},
+        "acceptance_binding_count": {"const": 9},
+        "overlay_binding_count": {"const": 13},
+        "predecessor_blocked_cell_count": {"const": 12},
+        "predecessor_not_applicable_to_direct_count": {"const": 1},
+        "overlay_bound_direct_transition_count": {"const": 9},
+        "overlay_bound_delegated_transition_count": {"const": 1},
+        "overlay_not_applicable_transition_count": {"const": 3},
+        "predecessor_total_bound_direct_cell_count": {"const": 2438},
+        "predecessor_total_bound_delegated_cell_count": {"const": 2},
+        "predecessor_total_not_applicable_cell_count": {"const": 500},
+        "predecessor_total_blocked_cell_count": {"const": 1281},
+        "post_overlay_total_bound_direct_cell_count": {"const": 2447},
+        "post_overlay_total_bound_delegated_cell_count": {"const": 3},
+        "post_overlay_total_not_applicable_cell_count": {"const": 502},
+        "post_overlay_total_blocked_cell_count": {"const": 1269},
+        "post_overlay_missing_cell_count": {"const": 0},
+        "post_overlay_conflict_cell_count": {"const": 0},
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED"}
+      }
+    }
+  },
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule_id", "text"],
+      "properties": {
+        "rule_id": {"type": "string", "pattern": "^MVTC-R0(0[1-9]|1[0-2])$"},
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "acceptanceCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "class", "feature_id", "source_or_subject", "expected", "diagnostic_or_null", "assertions", "execution_state"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^MVTC-AC-0(0[1-9]|10)$"},
+        "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "feature_id": {"enum": ["member_visibility_hierarchy_protected", "member_visibility_sigil_surface_phase_a", "member_visibility_sigils_only"]},
+        "source_or_subject": {"type": "string", "minLength": 1},
+        "expected": {"type": "string", "minLength": 1},
+        "diagnostic_or_null": {"type": ["string", "null"]},
+        "assertions": {"type": "object"},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

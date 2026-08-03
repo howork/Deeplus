@@ -22,6 +22,7 @@ OVERLAYS = [
     OUT / "lexical-trivia-source-root-evidence-r1.json",
     OUT / "numeric-array-shape-inferred-evidence-r1.json",
     OUT / "unified-call-tilde-evidence-r1.json",
+    OUT / "member-visibility-evidence-r1.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -183,9 +184,13 @@ def main() -> None:
         binding = overlay_bindings.get((feature_id, stage, outcome))
         if binding is None:
             return value
-        if value.get("disposition") != "APPLICABLE_BLOCKED_BY_GAP":
+        expected_predecessor = binding.get(
+            "predecessor_disposition", "APPLICABLE_BLOCKED_BY_GAP"
+        )
+        if value.get("disposition") != expected_predecessor:
             raise ValueError(
-                f"OVERLAY_EXPECTED_BLOCKED:{feature_id}:{stage}:{outcome}"
+                f"OVERLAY_PREDECESSOR_DISPOSITION:{feature_id}:{stage}:{outcome}:"
+                f"{expected_predecessor}"
             )
         refs = []
         for key in binding["evidence_keys"]:
@@ -364,9 +369,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r57-local-unified-call-tilde-trace-closure-r1",
+        "revision": "r58-local-member-visibility-trace-closure-r1",
         "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "808bf7cd1d28bba737e0744a6f120c71297d7ddd",
+        "local_predecessor_commit": "6a0eb950fb46fc061c260445bb0d25dc766117ea",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),

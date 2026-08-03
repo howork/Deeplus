@@ -330,6 +330,56 @@ residue cannot mention a narrower identity, `common` residue cannot be
 externally exported or re-exported, and `public` residue enters external API
 only through a separately admitted export or module interface.
 
+Member visibility is a separate three-point order:
+
+```text
+rank(-) = 0 < rank(#) = 1 < rank(+) = 2
+```
+
+The fifteen current grammar owners are `MemberFunctionDecl`,
+`TypeSideMemberFunctionDecl`, `ConstructorDecl`, `StoredParameter`,
+`FieldDecl`, `TypeSideFieldDecl`, `AccessorDecl`, `ForwardDecl`,
+`TraitMethodDecl`, `ConformanceMethodDecl`, `ExtensionSetFunctionDecl`,
+`ActorOnDecl`, `ActorRequestDecl`, `BitfieldNamedSlot`, and `FlagNamedSlot`.
+Each carries the existing `MemberVisibility?`; this list adds no production or
+spelling. Frontend projection is lossless:
+
+```text
+MemberVisibilitySurface ::= EXPLICIT_MINUS | EXPLICIT_HASH | EXPLICIT_PLUS | OMITTED
+OMITTED                  ::= null
+```
+
+`OMITTED` is not an element of the three-point order. R58 supplies no global
+default. The immediate parent-owner contract must preserve, resolve, or reject
+it before a judgment that needs a concrete member domain.
+
+For a concrete visibility `v`, static access is admitted exactly when both
+`OwnerReachable(owner, site)` and `MemberDomainAdmits(v, anchor, site)` hold.
+`-` requires the access context's nominal identity to equal the original
+declaring nominal anchor; `#` permits that identity or a transitive nominal
+subclass; `+` adds no member-local restriction. Same-module and same-package
+peers, conformers, witness holders, extensions, and structurally similar types
+do not satisfy the subclass predicate. Thus effective member visibility is an
+intersection, never an escape from top-level owner visibility.
+
+An override retains `(OriginalSlotId, OriginalDeclaringNominalId)` as its
+access anchor. Once omission has been handled by the immediate owner contract,
+slot admission requires `rank(override_visibility) >= rank(slot_visibility)`.
+It may preserve or widen visibility, but may neither narrow the slot nor
+replace the original anchor with the overriding type. Narrowing emits
+`OVERRIDE_VISIBILITY_CANNOT_NARROW`. A separate Trait requirement comparison
+continues to emit `TRAIT_REQUIREMENT_VISIBILITY_MISMATCH` when a well-formed
+witness does not satisfy the requirement.
+
+Primary diagnostics follow declaration admission order. On a member callable,
+the wrong word `public`, `common`, `private`, or `protected` emits
+`CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` before any slot comparison. With a
+valid sigil, override narrowing emits `OVERRIDE_VISIBILITY_CANNOT_NARROW`
+before a later Trait requirement visibility comparison. The visibility proof
+is compile-time metadata only: it introduces no runtime lookup, check, registry,
+MIR operation, xVM instruction, or backend instruction. A rejected declaration
+or access produces no HIR residue.
+
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
 
 For an ordinary member selector, nominal and active-extension applicability are
