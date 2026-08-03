@@ -103,7 +103,7 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "a0e63833b94de2bf39b5a9f4a974091903b7fab9cc515062a81656f573c73d2b"
+        "8c503cd4ba871198e04b560876d618fc82a7d33c832f502ae82f50fcad720540"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
@@ -2404,7 +2404,7 @@ R41_GRAMMAR_SHA256 = (
     "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
 )
 R41_HIR_H1_BRIDGE_SHA256 = (
-    "a0e63833b94de2bf39b5a9f4a974091903b7fab9cc515062a81656f573c73d2b"
+    "8c503cd4ba871198e04b560876d618fc82a7d33c832f502ae82f50fcad720540"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
@@ -2521,15 +2521,15 @@ EXPECTED_FILE_SHA256["conformance_rows"] = (
 R8_CONTEXT_CANONICAL_FENCE = {
     R8_CONTEXT_CONTRACT: (
         8444,
-        "84919d36fc1843bce749d1341d8364936d42ccc551d7a7c9046291f356326a2c",
+        "188078b430a61dcf9ea1178d50a4f4ac31aad700ebb5f89eda72192da5f38fa5",
     ),
     R8_CONTEXT_SCHEMA: (
         5202,
-        "cf6d3e366387436762ca78b5d877751dc8979e5289ad39817c6e2659d0d25232",
+        "bd0509bc26662f1962b76584e6220756914f6f7946d67f36e6ad7eb223d37a75",
     ),
     R8_CONTEXT_FIXTURE: (
         6969,
-        "e00b92a7af2676f87d091d580ce5facd6f7a117bcb9d2194cdb6b07d5af2ab82",
+        "fdfac3808ffee13791d3ab6a8f490086b379f4d026eee56f425ad6dada5bfce1",
     ),
 }
 R8_ESCAPE_CANONICAL_FENCE = {
@@ -3133,8 +3133,8 @@ def _check_context_exact_7(
         ),
         (
             all(
-                row.get("loan_id_created_in_hir") == 0
-                and row.get("loan_id_created_by_mir_lowering") == 1
+                row.get("loan_id_created_in_hir") == 1
+                and row.get("loan_id_created_by_mir_lowering") == 0
                 and row.get("borrow_event_created") == 1
                 for row in borrow_rows
             ),

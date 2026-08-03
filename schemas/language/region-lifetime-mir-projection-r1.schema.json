@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/region-lifetime-mir-projection-r1.schema.json",
+  "title": "Deeplus R68 region lifetime MIR projection contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "gap_id", "candidate_status", "projection_contract", "acceptance_matrix", "counts", "guards"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/region-lifetime-mir-projection-r1.schema.json"},
+    "schema": {"const": "deeplus.region-lifetime-mir-projection/r1"},
+    "revision": {"const": "r68-local-region-lifetime-dynamic-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "11d9df3e1ce148be5c73f227376470fff114723d"},
+    "gap_id": {"const": "IR-XCUT-P1-054"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_CONTRACT"},
+    "projection_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_tuple", "input_closure", "region_graph", "place_access_dispatch", "loan_projection", "close_delegation", "suspension_and_isolation", "diagnostic_order", "diagnostic_bindings", "erasure_fence"],
+      "properties": {
+        "input_tuple": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "string"}},
+        "input_closure": {"type": "string"},
+        "region_graph": {"type": "object"},
+        "place_access_dispatch": {"type": "object"},
+        "loan_projection": {"type": "object"},
+        "close_delegation": {"type": "object"},
+        "suspension_and_isolation": {"type": "object"},
+        "diagnostic_order": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "string"}},
+        "diagnostic_bindings": {"type": "object"},
+        "erasure_fence": {"type": "object"}
+      }
+    },
+    "acceptance_matrix": {"type": "array", "minItems": 12, "maxItems": 12, "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["case_id", "role", "evidence_ids", "expected"], "properties": {"case_id": {"pattern": "^R68-RL-ACC-[0-9]{3}$"}, "role": {"type": "string"}, "evidence_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}, "expected": {"type": "string"}}}},
+    "counts": {"const": {"acceptance_case_count": 12, "positive_or_boundary_reference_count": 7, "rejection_oracle_group_count": 4, "context_anchor_zero_case_count": 1, "new_public_diagnostic_count": 0, "new_source_surface_count": 0, "new_runtime_service_count": 0}},
+    "guards": {"const": {"semantic_p0": 0, "feature_p1": "22_OPEN_UNCHANGED", "m13_actions": "4_OPEN_UNCHANGED", "product_lanes": "15_OF_15_NOT_RUN", "github_publication": "SUSPENDED", "product_execution_receipt_count": 0, "implementation_claim": "NONE"}}
+  }
+}

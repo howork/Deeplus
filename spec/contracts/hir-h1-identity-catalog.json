@@ -2041,6 +2041,8 @@
         "value_type_id",
         "logical_domain_id",
         "region_constraints",
+        "result_region_id_or_null",
+        "loan_id_or_null",
         "replace_responsibility_profile_id_or_null"
       ],
       "owning_reference_slots": [
@@ -2098,6 +2100,16 @@
           "reference_domain": "HIR_REGION_CONSTRAINT",
           "cardinality": "N*",
           "ordering": "CANONICAL_CONSTRAINT_ORDER"
+        },
+        {
+          "slot": "result_region_id_or_null",
+          "reference_domain": "REGION_ID",
+          "cardinality": "N1_FOR_BORROW_SHARED_OR_BORROW_INOUT_ELSE_NULL"
+        },
+        {
+          "slot": "loan_id_or_null",
+          "reference_domain": "LOAN_ID",
+          "cardinality": "N1_FOR_BORROW_SHARED_OR_BORROW_INOUT_ELSE_NULL"
         },
         {
           "slot": "replace_responsibility_profile_id_or_null",
@@ -4215,13 +4227,14 @@
     "identity_recipe": [
       "type_ownership_qualifier",
       "base_normalized_type_id",
-      "region relation class but not runtime RegionId syntax"
+      "region_profile_id_or_null relation class but not concrete RegionId"
     ],
     "parameter_mode_is_distinct_identity_field": true,
     "qualifier_depth_after_alias_expansion": "ZERO_OR_ONE",
     "variance": "INVARIANT",
     "public_api_residue": "EXACT_QUALIFIER_PLUS_REGION_ORIGIN_CHANNEL_RELATION",
     "concrete_region_id_exported": false,
+    "concrete_value_identity_owner": "PlacePlan.result_region_id_or_null plus PlacePlan.loan_id_or_null",
     "missing_or_erased_descriptor": "REJECT_BEFORE_HIR_SEAL"
   },
   "focused_verifier_obligations": [
@@ -4240,6 +4253,8 @@
     "Every lowering-row hir_identity_ids value resolves to exactly one of the 128 identity rows and exactly matches the lowering dispatch key.",
     "Only LOWER and NO_RUNTIME_EMISSION lowering rows exist; capability insufficiency preserves the verified HIR digest exactly and prevents ExecutableHirH1 creation.",
     "Every normalized type ID has exactly one descriptor; qualifier, base type, parameter mode, region relation, API residue, and MIR projection remain separate, and a borrowed or inout descriptor has one required region while owner descriptors have none.",
+    "Every body region table is a finite reference-closed acyclic forest; entry and end-frontier nodes resolve in the same body, and every place-region binding resolves one storage RegionId.",
+    "Every borrowed or inout PlacePlan has exactly one checker-sealed concrete RegionId and LoanId, every other PlacePlan has null for both, and neither identity participates in normalized TypeId construction.",
     "A verification receipt validates against deeplus.canonical-hir-h1-verification-receipt/r1 with exact input digests, profile and feature set, PASS-only root/profile/cross-reference/payload/structural-plan results, zero recovery/unknown identities, deterministic RFC 8949 CBOR, and no additional fields."
   ]
 }

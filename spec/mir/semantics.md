@@ -1059,8 +1059,11 @@ Refinement boundaries preserve their selected outcome: proven construction has n
 
 `borrow place` reuses
 `HirExprKind::PlaceAccess { plan: HirPlacePlan(access = BorrowShared) }`.
-HIR records the region constraints but creates no `LoanId`; MIR lowering
-creates the exact Shared loan and binds it to the owner region.
+The checker selects one static `RegionId` and `LoanId` before typed-HIR sealing;
+the `HirPlacePlan` preserves both identities, and MIR lowering preserves them
+exactly in the matching value and loan rows. A loop may create multiple dynamic
+activations of that static loan site, represented by the existing linear
+`ACCESS` state machine rather than by inventing another `LoanId`.
 
 Expression context-anchor `&` is not an ownership borrow.  The enclosing
 NumericArray or Measure operation owns one `HirContextAdaptationPlan` with
@@ -1112,6 +1115,36 @@ the loan, then begin overlapping owner cleanup. This ordering rule does not
 activate or import any separate defer candidate. Existing primary outcomes
 remain primary, while later cleanup failures retain the deterministic LIFO
 suppression law in §5. Loan closing contributes no cleanup budget row.
+
+### Region graph and loan projection
+
+The typed HIR body owns a finite, reference-closed region forest and exact
+place-to-storage-region bindings. Its region extent kinds are `LEXICAL`,
+`INVOCATION`, and `PROCESS_STATIC_IMMUTABLE`; borrow, inout, capture, and
+suspension are uses of an extent, not additional extent kinds. Parent links are
+acyclic, entry nodes dominate contained uses, and every reachable path from a
+contained use crosses one declared end frontier before leaving the extent.
+
+`NormalizedTypeDescriptor.region_profile_id_or_null` is a type-level relation
+profile. It is never a concrete per-value `RegionId` and never participates as
+one in a normalized `TypeId`. Concrete value-level identities live in
+`PlacePlan.result_region_id_or_null` and `PlacePlan.loan_id_or_null`, and lower
+exactly to the MIR value and loan tuple. Concrete region or loan identities are
+not exported through a module API.
+
+Region and loan projection is a body-wide pass after ordinary node-row
+lowering and before the release verifier. It preserves region ID, extent kind,
+parent, isolation domain, entry, and end frontiers; maps every place to its
+storage region; and emits one existing loan-begin operation for each admitted
+borrow site. Reborrows require the exact active parent `LoanId` and a strict
+child region. The existing R34 close-frontier contract owns all `LOAN_END`
+placement and path balance.
+
+Region and loan identities are compiler-local value-level verifier identities,
+not runtime region objects, ABI identities, source names, or backend handles.
+After region projection and loan balance verify, xVM and Cranelift may erase
+them when doing so preserves every language observation. Runtime or backend
+relookup, reselection, or inference of either identity is forbidden.
 
 ## 15. Current HIR-H1/MIR R1 machine contract
 

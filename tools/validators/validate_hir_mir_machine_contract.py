@@ -523,6 +523,7 @@ def check_schema_and_bindings(
         "profile_contract",
         "coverage_contract",
         "loan_close_projection_contract",
+        "region_lifetime_projection_contract",
         "semantic_operation_mapping",
         "nominal_construction_lifecycle_mapping",
         "continuation_frame_mapping",

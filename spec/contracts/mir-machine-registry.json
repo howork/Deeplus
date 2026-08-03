@@ -2601,6 +2601,25 @@
     "runtime_observable_event_count": 0,
     "product_execution": "NOT_RUN"
   },
+  "region_lifetime_projection_contract": {
+    "contract": "spec/contracts/region-lifetime-mir-projection-r1.json",
+    "region_decl_fields": [
+      "region_id",
+      "kind",
+      "parent_region_id_or_null",
+      "isolation_domain_id",
+      "entry_point_id",
+      "end_point_ids"
+    ],
+    "place_storage_region_field": "storage_region_id",
+    "loan_id_origin": "CHECKER_SEALED_AND_EXACTLY_PRESERVED_HIR_TO_MIR",
+    "region_parent_graph": "FINITE_REFERENCE_CLOSED_ACYCLIC_FOREST",
+    "borrowed_or_inout_value_tuple": "EXACT_MATCH_WITH_LOAN_DECL_REGION_ID_AND_LOAN_ID",
+    "loan_balance_owner": "loan_close_projection_contract",
+    "runtime_region_object_count": 0,
+    "backend_region_or_loan_inference_count": 0,
+    "product_execution": "NOT_RUN"
+  },
   "verifier_contract": {
     "semantic_operation_kind_and_id_bijection": "RECOMPUTE",
     "operation_payload_exact_shape": "RECOMPUTE",
@@ -2624,7 +2643,8 @@
     "responsibility_evidence_projection": "RESOLVE_EXACT_RULE_EVIDENCE_AND_HELPER_DOMAINS_AND_COMPARE_TYPED_HIR_DESCRIPTOR_WITH_ZERO_RUNTIME_OR_BACKEND_RELOOKUP",
     "deterministic_serialization": "RFC8949_DECODE_REENCODE_BYTE_EQUALITY",
     "cleanup_budget_envelope_projection": "RECOMPUTE_EXACT_HIR_TABLE_PROJECTION_CLOSED_CONTRIBUTION_KINDS_SORTED_UNIQUE_ENVELOPES_AND_SUBSET_PROOF",
-    "loan_close_path_balance": "RECOMPUTE_FROM_LOAN_CLOSE_OPERATION_R1"
+    "loan_close_path_balance": "RECOMPUTE_FROM_LOAN_CLOSE_OPERATION_R1",
+    "region_lifetime_graph": "RECOMPUTE_REFERENCE_CLOSED_ACYCLIC_REGION_FOREST_EXACT_EXTENTS_PLACE_STORAGE_BINDINGS_LOAN_CONTAINMENT_VALUE_TUPLES_OWNER_BARRIERS_AND_SUSPENSION_OR_ISOLATION_FENCES"
   },
   "status_fence": {
     "schema_materialization": "R31_CLOSURE_CAPTURE_PLAN_DESIGN",

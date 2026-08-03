@@ -12741,6 +12741,13 @@ def main() -> int:
         "tools/validators/validate_closure_capture_dynamic_trace.py",
         "tools/validators/run_closure_capture_dynamic_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R67_Closure_Capture_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/region-lifetime-mir-projection-r1.json",
+        "schemas/language/region-lifetime-mir-projection-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/region-lifetime-dynamic-trace-evidence-r1.json",
+        "schemas/language/region-lifetime-dynamic-trace-evidence-r1.schema.json",
+        "tools/validators/validate_region_lifetime_dynamic_trace.py",
+        "tools/validators/run_region_lifetime_dynamic_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R68_Region_Lifetime_Dynamic_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]

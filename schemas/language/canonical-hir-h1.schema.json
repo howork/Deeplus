@@ -1192,6 +1192,8 @@
             "value_type_id",
             "logical_domain_id",
             "region_constraints",
+            "result_region_id_or_null",
+            "loan_id_or_null",
             "replace_responsibility_profile_id_or_null"
           ],
           "properties": {
@@ -1234,11 +1236,52 @@
                 "$ref": "#/$defs/HirRegionConstraint"
               }
             },
+            "result_region_id_or_null": {
+              "$ref": "#/$defs/NullableId"
+            },
+            "loan_id_or_null": {
+              "$ref": "#/$defs/NullableId"
+            },
             "replace_responsibility_profile_id_or_null": {
               "$ref": "#/$defs/NullableId"
             }
           },
           "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "access": {
+                    "enum": [
+                      "BORROW_SHARED",
+                      "BORROW_INOUT"
+                    ]
+                  }
+                },
+                "required": [
+                  "access"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "result_region_id_or_null": {
+                    "$ref": "#/$defs/Id"
+                  },
+                  "loan_id_or_null": {
+                    "$ref": "#/$defs/Id"
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "result_region_id_or_null": {
+                    "type": "null"
+                  },
+                  "loan_id_or_null": {
+                    "type": "null"
+                  }
+                }
+              }
+            },
             {
               "if": {
                 "properties": {
@@ -6300,6 +6343,47 @@
         }
       ]
     },
+    "HirRegionDef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "region_id",
+        "kind",
+        "isolation_domain_id",
+        "parent_region_id_or_null",
+        "entry_node_id",
+        "end_frontier_node_ids"
+      ],
+      "properties": {
+        "region_id": {"$ref": "#/$defs/Id"},
+        "kind": {"enum": ["LEXICAL", "INVOCATION", "PROCESS_STATIC_IMMUTABLE"]},
+        "isolation_domain_id": {"$ref": "#/$defs/Id"},
+        "parent_region_id_or_null": {"$ref": "#/$defs/NullableId"},
+        "entry_node_id": {"$ref": "#/$defs/Id"},
+        "end_frontier_node_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/Id"}
+        }
+      }
+    },
+    "HirPlaceRegionBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "place_id",
+        "owner_id_or_null",
+        "storage_region_id",
+        "cleanup_plan_id_or_null"
+      ],
+      "properties": {
+        "place_id": {"$ref": "#/$defs/Id"},
+        "owner_id_or_null": {"$ref": "#/$defs/NullableId"},
+        "storage_region_id": {"$ref": "#/$defs/Id"},
+        "cleanup_plan_id_or_null": {"$ref": "#/$defs/NullableId"}
+      }
+    },
     "HirBodyBase": {
       "type": "object",
       "additionalProperties": false,
@@ -6312,7 +6396,9 @@
         "statements",
         "expressions",
         "generic_payloads",
-        "structural_plans"
+        "structural_plans",
+        "region_table",
+        "place_region_bindings"
       ],
       "properties": {
         "structural_identity_id": {
@@ -6354,6 +6440,17 @@
           "items": {
             "$ref": "#/$defs/StructuralPlan"
           }
+        },
+        "region_table": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/HirRegionDef"}
+        },
+        "place_region_bindings": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/HirPlaceRegionBinding"}
         }
       }
     },
@@ -6396,7 +6493,7 @@
         "normalized_type_id",
         "base_normalized_type_id",
         "type_ownership_qualifier",
-        "region_id_or_null",
+        "region_profile_id_or_null",
         "variance",
         "public_residue"
       ],
@@ -6416,7 +6513,7 @@
             "INOUT"
           ]
         },
-        "region_id_or_null": {
+        "region_profile_id_or_null": {
           "$ref": "#/$defs/NullableId"
         },
         "variance": {
@@ -6449,14 +6546,14 @@
           },
           "then": {
             "properties": {
-              "region_id_or_null": {
+              "region_profile_id_or_null": {
                 "$ref": "#/$defs/Id"
               }
             }
           },
           "else": {
             "properties": {
-              "region_id_or_null": {
+              "region_profile_id_or_null": {
                 "type": "null"
               }
             }

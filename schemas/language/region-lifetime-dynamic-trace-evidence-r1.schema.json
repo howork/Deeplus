@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/region-lifetime-dynamic-trace-evidence-r1.schema.json",
+  "title": "Deeplus R68 region lifetime dynamic trace evidence overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "local_predecessor_commit", "candidate_status", "feature_ids", "evidence_entries", "bindings", "acceptance_cases", "counts", "guards"],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/region-lifetime-dynamic-trace-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.region-lifetime-dynamic-trace-evidence/r1"},
+    "revision": {"const": "r68-local-region-lifetime-dynamic-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "11d9df3e1ce148be5c73f227376470fff114723d"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["region_lifetime_model_phase_a"]},
+    "evidence_entries": {"type": "array", "minItems": 1, "maxItems": 1},
+    "bindings": {"type": "array", "minItems": 1, "maxItems": 1},
+    "acceptance_cases": {"type": "array", "minItems": 1, "maxItems": 1},
+    "counts": {"type": "object"},
+    "guards": {"type": "object"}
+  }
+}

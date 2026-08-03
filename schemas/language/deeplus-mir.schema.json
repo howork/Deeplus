@@ -2024,6 +2024,7 @@
         "initialization",
         "move_path_id",
         "owner_id_or_null",
+        "storage_region_id",
         "cleanup_obligation_id_or_null"
       ],
       "properties": {
@@ -2052,6 +2053,9 @@
         },
         "owner_id_or_null": {
           "$ref": "#/$defs/nullableId"
+        },
+        "storage_region_id": {
+          "$ref": "#/$defs/id"
         },
         "cleanup_obligation_id_or_null": {
           "$ref": "#/$defs/nullableId"
@@ -2097,7 +2101,10 @@
       "required": [
         "region_id",
         "kind",
-        "parent_region_id_or_null"
+        "parent_region_id_or_null",
+        "isolation_domain_id",
+        "entry_point_id",
+        "end_point_ids"
       ],
       "properties": {
         "region_id": {
@@ -2106,16 +2113,24 @@
         "kind": {
           "enum": [
             "LEXICAL",
-            "BORROW",
-            "INOUT",
-            "CAPTURE",
-            "SUSPENSION_BOUNDARY",
             "INVOCATION",
             "PROCESS_STATIC_IMMUTABLE"
           ]
         },
         "parent_region_id_or_null": {
           "$ref": "#/$defs/nullableId"
+        },
+        "isolation_domain_id": {
+          "$ref": "#/$defs/id"
+        },
+        "entry_point_id": {
+          "$ref": "#/$defs/id"
+        },
+        "end_point_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/id"}
         }
       }
     },

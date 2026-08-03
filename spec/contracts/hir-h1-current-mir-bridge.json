@@ -785,7 +785,7 @@
     "schema": "schemas/language/suspension-frame-responsibility.schema.json",
     "continuation_interface_contract": "spec/contracts/continuation-interface-r1.json",
     "continuation_interface_identity": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-    "continuation_interface_digest": "42b925ea39769f9eb85310d333e0c43f866c72d0541dcdd6b7966c4bd1ed8562",
+    "continuation_interface_digest": "2ccf2acd730a57cab6c099598243be4ed2d21a8f03f9cff5c59244133640c8b4",
     "continuation_receipt_schema": "schemas/language/continuation-receipt-r1.schema.json",
     "hir_structural_plan": "ContinuationFramePlan",
     "static_identity_count": 3,
@@ -845,6 +845,17 @@
     "backend_switch_count": 0,
     "backend_specific_hir_field_count": 0,
     "product_execution_receipt_count": 0
+  },
+  "region_lifetime_projection_contract": {
+    "contract": "spec/contracts/region-lifetime-mir-projection-r1.json",
+    "hir_region_owner": "HirBodyBase.region_table plus place_region_bindings",
+    "hir_borrow_identity_owner": "PlacePlan.result_region_id_or_null plus loan_id_or_null",
+    "mir_projection": "region_table place_table loan_table value_table and existing LOAN_BEGIN or LOAN_END operations",
+    "type_identity_axis": "NormalizedTypeDescriptor.region_profile_id_or_null",
+    "value_identity_axis": "PlacePlan and MirValue concrete RegionId plus LoanId",
+    "exact_identity_preservation": true,
+    "runtime_or_backend_relookup_count": 0,
+    "product_execution": "NOT_RUN"
   },
   "native_projection_contract": {
     "input": "Verified<DeeplusMirR1>",
@@ -977,7 +988,7 @@
     "runtime_callback_count": 0,
     "external_ffi_included": false,
     "managed_reference_profile_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7",
-    "continuation_interface_digest_or_null": "42b925ea39769f9eb85310d333e0c43f866c72d0541dcdd6b7966c4bd1ed8562",
+    "continuation_interface_digest_or_null": "2ccf2acd730a57cab6c099598243be4ed2d21a8f03f9cff5c59244133640c8b4",
     "canonical_promotion_ready": true,
     "release_verifier_diagnostic_count": 12,
     "product_support": "NOT_RUN",
