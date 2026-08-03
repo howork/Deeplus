@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/static-runtime-member-boundary-trace-closure-r1.schema.json",
+  "title": "Deeplus R70 static/runtime member boundary trace closure",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "$schema", "schema", "revision", "canonical_baseline_commit",
+    "local_predecessor_commit", "feature_id", "target_cell",
+    "authority_fence", "boundary_definition", "lookup_domain_fence",
+    "resolver_hir_fence", "terminal_selection_handoff",
+    "runtime_backend_residue_fence", "diagnostic_ownership", "rules",
+    "acceptance_cases", "acceptance_bindings", "mutation_obligations",
+    "machine_acceptance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/static-runtime-member-boundary-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.static-runtime-member-boundary-trace-closure/r1"},
+    "revision": {"const": "r70-local-static-runtime-member-boundary-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "29059c1b23de7d32398f582d2a37d5ce24d31341"},
+    "feature_id": {"const": "static_runtime_member_boundary_law"},
+    "target_cell": {
+      "type": "object",
+      "required": ["stage", "predecessor_disposition", "disposition", "reason_code", "authority_boundary"],
+      "properties": {
+        "stage": {"const": "DYNAMIC_LOWERING"},
+        "predecessor_disposition": {"const": "APPLICABLE_BLOCKED_BY_GAP"},
+        "disposition": {"const": "NOT_APPLICABLE"},
+        "reason_code": {"const": "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR"},
+        "authority_boundary": {"const": "MIR_RUNTIME_AUTHORITY"}
+      }
+    },
+    "rules": {
+      "type": "array", "minItems": 14, "maxItems": 14,
+      "items": {"type": "object", "required": ["rule_id", "text"]}
+    },
+    "acceptance_cases": {
+      "type": "array", "minItems": 9, "maxItems": 9,
+      "items": {
+        "type": "object",
+        "required": ["case_id", "class", "expected", "assertion_ids", "execution_state"],
+        "properties": {
+          "case_id": {"pattern": "^R70-SRMB-ACC-00[1-9]$"},
+          "class": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+          "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+        }
+      }
+    },
+    "mutation_obligations": {
+      "type": "array", "minItems": 14, "maxItems": 14,
+      "items": {
+        "type": "object",
+        "required": ["mutation_id", "mutation", "killed_by", "expected"],
+        "properties": {
+          "mutation_id": {"pattern": "^M(0[1-9]|1[0-4])$"},
+          "expected": {"const": "MUTANT_KILLED"}
+        }
+      }
+    }
+  }
+}

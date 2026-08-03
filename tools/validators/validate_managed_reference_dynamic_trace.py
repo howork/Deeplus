@@ -26,6 +26,13 @@ CONTINUATION_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
 R36_SHA256 = "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
 R37_SHA256 = "fa905282037bdda3d3eb122d74f467ae611ea1ca7d355b0efb49c02fb6f93ba0"
 NON_TARGET_SHA256 = "d29120dc5d88c5381ba1ca09ed927720deba9f20a05ba6f9cca325049f777165"
+R70_REVISION = "r70-local-static-runtime-member-boundary-trace-closure-r1"
+R70_PREDECESSOR = "29059c1b23de7d32398f582d2a37d5ce24d31341"
+R70_TARGET = ("static_runtime_member_boundary_law", "DYNAMIC_LOWERING", None)
+R70_OVERLAY = "spec/traceability/implementation-target-profile-r1/static-runtime-member-boundary-evidence-r1.json"
+R70_EVIDENCE_ID = "EV-8ab19e684aca7aeae5d3a2c0f9418ff5db42f41bb9f061af7e580d51d3a7c3aa"
+R70_DUAL_EXCLUSION_COUNT = 4219
+R70_DUAL_EXCLUSION_SHA256 = "e3be91c6c360826490c5c88b43864becea7f9b645a34c383a4d27f5742e07553"
 
 CONTRACT = "spec/contracts/managed-reference-dynamic-projection-r1.json"
 CONTRACT_SCHEMA = "schemas/language/managed-reference-dynamic-projection-r1.schema.json"
@@ -127,6 +134,22 @@ def trace_cells(rows: List[Dict[str, Any]]) -> Tuple[Dict[Tuple[str, str, Option
 
 def non_target_digest(cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]]) -> Tuple[int, str]:
     material = [[*key, value] for key, value in cells.items() if key != TARGET]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), sha256_bytes(raw)
+
+
+def successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R69 and R70 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key not in {TARGET, R70_TARGET}
+    ]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
         material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -507,6 +530,8 @@ def validate(
     cells, duplicates = trace_cells(rows)
     target = cells.get(TARGET, {})
     count, digest = non_target_digest(cells)
+    successor_count, successor_digest = successor_non_target_digest(cells)
+    r70_target = cells.get(R70_TARGET, {})
     registrations = [
         row for row in metadata.get("evidence_registry", [])
         if row.get("path") == CONTRACT
@@ -523,11 +548,49 @@ def validate(
         and evidence_id in target.get("evidence_refs", []),
         "G09", "TARGET_BOUND_DIRECT",
     )
-    require(count == 4220 and digest == NON_TARGET_SHA256, "G09", "OTHER_4220_EXACT")
+    r70_successor = (
+        metadata.get("revision") == R70_REVISION
+        and metadata.get("local_predecessor_commit") == R70_PREDECESSOR
+        and R70_OVERLAY in applied_paths
+    )
+    if r70_successor:
+        r70_detail = r70_target.get("not_applicable") or {}
+        require(
+            r70_target.get("disposition") == "NOT_APPLICABLE"
+            and r70_target.get("evidence_refs") == []
+            and r70_target.get("delegate_feature_id") is None
+            and r70_target.get("blocked_gap_ids") == []
+            and r70_detail.get("reason_code")
+            == "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR"
+            and r70_detail.get("authority_boundary") == "MIR_RUNTIME_AUTHORITY"
+            and r70_detail.get("justification_evidence_refs")
+            == [R70_EVIDENCE_ID],
+            "G09",
+            "R70_SUCCESSOR_TARGET_EXACT",
+        )
+        require(
+            successor_count == R70_DUAL_EXCLUSION_COUNT
+            and successor_digest == R70_DUAL_EXCLUSION_SHA256,
+            "G09",
+            "R70_OTHER_4219_EXACT",
+        )
+    else:
+        require(
+            count == 4220 and digest == NON_TARGET_SHA256,
+            "G09",
+            "OTHER_4220_EXACT",
+        )
     require(
-        metadata.get("revision") == REVISION
-        and metadata.get("local_predecessor_commit") == BASELINE
-        and OVERLAY in applied_paths,
+        (
+            metadata.get("revision") == REVISION
+            and metadata.get("local_predecessor_commit") == BASELINE
+            and OVERLAY in applied_paths
+        )
+        or (
+            r70_successor
+            and OVERLAY in applied_paths
+            and applied_paths[-1] == R70_OVERLAY
+        ),
         "G09", "GENERATED_METADATA",
     )
 

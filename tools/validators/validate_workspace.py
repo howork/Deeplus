@@ -12758,6 +12758,15 @@ def main() -> int:
         "tools/validators/validate_managed_reference_dynamic_trace.py",
         "tools/validators/run_managed_reference_dynamic_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R69_Managed_Reference_Dynamic_Trace_Closure_R1.md",
+        "spec/contracts/static-runtime-member-boundary-trace-closure-r1.json",
+        "schemas/language/static-runtime-member-boundary-trace-closure-r1.schema.json",
+        "tests/fixtures/current/static-runtime-member-boundary-trace-closure-r1.json",
+        "schemas/language/static-runtime-member-boundary-trace-closure-fixtures-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/static-runtime-member-boundary-evidence-r1.json",
+        "schemas/language/static-runtime-member-boundary-evidence-r1.schema.json",
+        "tools/validators/validate_static_runtime_member_boundary_trace.py",
+        "tools/validators/run_static_runtime_member_boundary_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R70_Static_Runtime_Member_Boundary_Trace_Closure_R1.md",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]
@@ -12865,6 +12874,50 @@ def main() -> int:
         r69_mutation_process.returncode == 0,
         "R69_MANAGED_REFERENCE_DYNAMIC_TRACE_MUTATIONS",
         r69_mutation_detail[-4000:],
+    )
+
+    r70_validator = (
+        root / "tools/validators/validate_static_runtime_member_boundary_trace.py"
+    )
+    r70_process = subprocess.run(
+        [sys.executable, str(r70_validator), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r70_detail = (
+        r70_process.stdout.strip()
+        if r70_process.returncode == 0
+        else r70_process.stderr.strip() or r70_process.stdout.strip()
+    )
+    check(
+        r70_process.returncode == 0,
+        "R70_STATIC_RUNTIME_MEMBER_BOUNDARY_TRACE",
+        r70_detail[-4000:],
+    )
+
+    r70_mutation_runner = (
+        root
+        / "tools/validators/run_static_runtime_member_boundary_trace_mutation_tests.py"
+    )
+    r70_mutation_process = subprocess.run(
+        [sys.executable, str(r70_mutation_runner), "--root", str(root)],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    r70_mutation_detail = (
+        r70_mutation_process.stdout.strip()
+        if r70_mutation_process.returncode == 0
+        else r70_mutation_process.stderr.strip()
+        or r70_mutation_process.stdout.strip()
+    )
+    check(
+        r70_mutation_process.returncode == 0,
+        "R70_STATIC_RUNTIME_MEMBER_BOUNDARY_TRACE_MUTATIONS",
+        r70_mutation_detail[-4000:],
     )
 
     if revision in CURRENT_MACHINE_REVISIONS:

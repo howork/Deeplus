@@ -1,0 +1,34 @@
+{
+  "$schema": "../../../schemas/language/static-runtime-member-boundary-trace-closure-fixtures-r1.schema.json",
+  "schema": "deeplus.static-runtime-member-boundary-trace-closure-fixtures/r1",
+  "revision": "r70-local-static-runtime-member-boundary-trace-closure-r1",
+  "contract": "spec/contracts/static-runtime-member-boundary-trace-closure-r1.json",
+  "execution_state": "DESIGN_STATIC_NOT_RUN",
+  "acceptance_oracles": [
+    {"case_id": "R70-SRMB-ACC-001", "class": "POSITIVE", "expected": "STATIC_TERMINAL_DIRECT_DECL_HANDOFF"},
+    {"case_id": "R70-SRMB-ACC-002", "class": "POSITIVE", "expected": "STATIC_TERMINAL_CALLPLAN_HANDOFF"},
+    {"case_id": "R70-SRMB-ACC-003", "class": "POSITIVE", "expected": "ORDINARY_DOT_PLACEPLAN_OR_CALLPLAN_SEPARATE_OWNER"},
+    {"case_id": "R70-SRMB-ACC-004", "class": "BOUNDARY", "expected": "ASSOCIATED_TYPE_ZERO_RUNTIME_THEN_NOMINAL_TYPE_SIDE"},
+    {"case_id": "R70-SRMB-ACC-005", "class": "BOUNDARY", "expected": "EXACT_EXISTING_CALLPLAN_ROUTE_WITHOUT_RUNTIME_SEARCH"},
+    {"case_id": "R70-SRMB-ACC-006", "class": "REJECT", "expected": "MODULE_IS_NOT_A_VALUE"},
+    {"case_id": "R70-SRMB-ACC-007", "class": "REJECT", "expected": "DOT_NOT_ALLOWED_FOR_TYPE_SIDE_SELECTOR"},
+    {"case_id": "R70-SRMB-ACC-008", "class": "REJECT", "expected": "STATIC_SELECTOR_RESOLUTION_FAILED"},
+    {"case_id": "R70-SRMB-ACC-009", "class": "REJECT", "expected": "STATIC_ALIAS_CONFLICTS_WITH_LOCAL_BINDING"}
+  ],
+  "mutation_oracles": [
+    {"mutation_id": "M01", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M02", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M03", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M04", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M05", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M06", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M07", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M08", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M09", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M10", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M11", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M12", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M13", "expected_gate": "G06", "expected": "MUTANT_KILLED"},
+    {"mutation_id": "M14", "expected_gate": "G06", "expected": "MUTANT_KILLED"}
+  ]
+}
