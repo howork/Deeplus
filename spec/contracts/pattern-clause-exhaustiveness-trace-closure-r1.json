@@ -1,0 +1,645 @@
+{
+  "$schema": "../../schemas/language/pattern-clause-exhaustiveness-trace-closure-r1.schema.json",
+  "schema": "deeplus.pattern-clause-exhaustiveness-trace-closure/r1",
+  "revision": "r61-local-pattern-clause-exhaustiveness-trace-closure-r1",
+  "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
+  "local_predecessor_commit": "2db4f483ffdcb281ef765def67e510e63917500c",
+  "candidate_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+  "language_status": "STABLE_DESIGN",
+  "source_activation": "none",
+  "current_binding": false,
+  "feature_ids": [
+    "clause_pattern_heads",
+    "match_exhaustiveness_phase_a"
+  ],
+  "authority_fence": {
+    "new_source_surface_count": 0,
+    "new_ast_identity_count": 0,
+    "new_hir_identity_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "SUSPENDED",
+    "evidence_level": "E2_STRUCTURED_STATIC"
+  },
+  "scope_fence": {
+    "transitioned_cells": [
+      {
+        "feature_id": "clause_pattern_heads",
+        "stage": "DYNAMIC_LOWERING",
+        "outcome": null,
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      },
+      {
+        "feature_id": "clause_pattern_heads",
+        "stage": "CONFORMANCE_TESTS",
+        "outcome": "BOUNDARY",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      },
+      {
+        "feature_id": "clause_pattern_heads",
+        "stage": "CONFORMANCE_TESTS",
+        "outcome": "REJECT",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      },
+      {
+        "feature_id": "match_exhaustiveness_phase_a",
+        "stage": "CONFORMANCE_TESTS",
+        "outcome": "BOUNDARY",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      },
+      {
+        "feature_id": "match_exhaustiveness_phase_a",
+        "stage": "CONFORMANCE_TESTS",
+        "outcome": "REJECT",
+        "predecessor_disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "disposition": "BOUND_DIRECT"
+      }
+    ],
+    "excluded_related_features": [
+      "clause_pattern_head_semantic_partition_core",
+      "declarative_clause_pattern_head_law",
+      "declarative_function_clause_block_msp",
+      "match_otherwise_default_arm",
+      "pattern_match_ownership_split"
+    ],
+    "excluded_related_feature_transition_count": 0,
+    "other_target_cell_transition_count": 0
+  },
+  "existing_operation_alignment": {
+    "new_operation_count": 0,
+    "match_row_id": "HM-LR-TOP-010",
+    "pattern_attempt_row_id": "HM-LR-TOP-016",
+    "return_to_row_id": "HM-LR-TOP-026",
+    "child_pattern_row_ids": [
+      "HM-LR-PAT-009",
+      "HM-LR-PAT-010",
+      "HM-LR-PAT-021",
+      "HM-LR-PAT-022",
+      "HM-LR-PAT-027",
+      "HM-LR-PAT-028",
+      "HM-LR-PAT-029"
+    ],
+    "admitted_operations": [
+      "PATTERN_PROBE",
+      "TOTAL_PROJECTION",
+      "MOVE_RESERVE",
+      "PLACE_MOVE",
+      "MOVE_CANCEL",
+      "LOAN_BEGIN_SHARED",
+      "LOAN_END",
+      "BINDING_COMMIT"
+    ],
+    "admitted_terminators": [
+      "COND_BR",
+      "SWITCH_ENUM",
+      "LEAVE"
+    ]
+  },
+  "clause_dispatch_and_failure_law": {
+    "input_supply_id": "CLAUSE_FUNCTION_SUBJECT",
+    "input_owner": "MatchArmSequence",
+    "input_supply": "ImplicitParent(function parameter subject)",
+    "subject_evaluation_count": 1,
+    "source_order_role": "DETERMINISTIC_PROBE_ORDER_NOT_SEMANTIC_TIEBREAKER",
+    "per_clause_order": [
+      "PATTERN_ATTEMPT",
+      "CHILD_PATTERN_PROBE_AND_PROJECTION",
+      "OPTIONAL_PURE_R0_GUARD",
+      "R60_ATOMIC_OWNERSHIP_AND_BINDING_COMMIT",
+      "SELECTED_BODY_ONCE",
+      "DECLARED_RETURN_CHECK",
+      "RETURN_TO_LEAVE"
+    ],
+    "pattern_mismatch_runtime_edge": "NEXT_DECLARATIVE_CLAUSE",
+    "false_guard_runtime_edge": "NEXT_DECLARATIVE_CLAUSE",
+    "selected_body_evaluation_count": 1,
+    "selected_clause_retry_count": 0,
+    "backtracking_count": 0,
+    "terminal_all_failed_edge": "UNREACHABLE_AFTER_STATIC_ADMISSION",
+    "implicit_fallback_count": 0,
+    "pattern_match_defect_count": 0
+  },
+  "declarative_partition_admission_law": {
+    "controlling_predicate_id": "DeclarativeClausePartitionAdmitted",
+    "supporting_noncontrolling_predicate_id": "DeclarativeClauseExhaustive",
+    "context_policy_id": "PCTX-DECLARATIVE-CLAUSE",
+    "serialized_compile_time_disposition": "DECLARATIVE_PARTITION_REJECTION",
+    "runtime_failure_disposition": "NEXT_DECLARATIVE_CLAUSE",
+    "admission_order": [
+      "NORMALIZE_FINITE_SUBJECT_PARTITION",
+      "INTERSECT_SOURCE_ORDERED_HEADS_AND_R0_GUARDS",
+      "REJECT_FIRST_NONEMPTY_OVERLAP",
+      "REJECT_UNDECIDABLE_DISJOINTNESS",
+      "SUBTRACT_UNCONDITIONAL_COVERAGE",
+      "FINAL_OTHERWISE_COVERS_EXACT_REMAINDER",
+      "REJECT_NONEMPTY_REMAINDER",
+      "ADMIT"
+    ],
+    "carrier_rule": "EXACT_CURRENT_PCTX_PATTERN_KINDS_SUBJECT_TO_FINITE_CLOSED_CELL_REPRESENTABILITY",
+    "guard_unconditional_coverage_count": 0,
+    "implicit_option_result_throws_arm_count": 0
+  },
+  "match_exhaustiveness_law": {
+    "controlling_predicate_id": "MatchExhaustive",
+    "subject_partition": "NORMALIZED_SUBJECT_RESTRICTED_FINITE_STRUCTURAL_PARTITION",
+    "unguarded_reachable_arm_coverage_effect": "SUBTRACT",
+    "guarded_arm_coverage_effect": "MENTION_ONLY_NO_SUBTRACTION",
+    "ordinary_arm_empty_residual_diagnostic": "MATCH_ARM_UNREACHABLE",
+    "otherwise_empty_residual_diagnostic": "OTHERWISE_UNREACHABLE",
+    "all_residual_cells_guard_mentioned_diagnostic": "MATCH_NONEXHAUSTIVE_AFTER_GUARDS",
+    "any_residual_cell_never_mentioned_diagnostic": "MATCH_NOT_EXHAUSTIVE",
+    "sealed_class_without_constructor_pattern_cell_count": 0,
+    "implicit_default_arm_count": 0
+  },
+  "diagnostic_selection_law": {
+    "clause_diagnostics": [
+      "DECL_CLAUSE_GUARD_NOT_GUARD_SAFE",
+      "DECL_CLAUSE_DISJOINTNESS_UNPROVEN",
+      "DECL_CLAUSE_OVERLAP",
+      "DECL_CLAUSE_NONEXHAUSTIVE",
+      "DECL_CLAUSE_RESULT_TYPE_MISMATCH"
+    ],
+    "match_diagnostics": [
+      "MATCH_ARM_UNREACHABLE",
+      "OTHERWISE_UNREACHABLE",
+      "MATCH_NONEXHAUSTIVE_AFTER_GUARDS",
+      "MATCH_NOT_EXHAUSTIVE",
+      "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH"
+    ],
+    "foreign_case_or_payload_precedence": "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH_BEFORE_COVERAGE_DIAGNOSTICS",
+    "single_primary_diagnostic": true,
+    "product_checker_execution": "NOT_RUN"
+  },
+  "failure_residue_law": {
+    "binding_count": 0,
+    "move_count": 0,
+    "loan_count": 0,
+    "view_count": 0,
+    "authority_count": 0,
+    "reservation_count": 0,
+    "prepared_move_abort_operation": "MOVE_CANCEL",
+    "prepared_move_abort_order": "REVERSE_ACQUISITION_ORDER",
+    "loan_acquisition_timing": "FINAL_COMMIT_ONLY",
+    "ownership_contract_ref": "spec/contracts/pattern-match-ownership-split-trace-closure-r1.json"
+  },
+  "rules": [
+    {
+      "rule_id": "PCETC-R001",
+      "text": "Only the five cells enumerated by scope_fence transition from APPLICABLE_BLOCKED_BY_GAP to BOUND_DIRECT."
+    },
+    {
+      "rule_id": "PCETC-R002",
+      "text": "R61 adds no source syntax, grammar production, AST/HIR identity, MIR operation kind, source activation, or product-support claim."
+    },
+    {
+      "rule_id": "PCETC-R003",
+      "text": "A declarative clause family receives the CLAUSE_FUNCTION_SUBJECT implicit parent parameter subject exactly once."
+    },
+    {
+      "rule_id": "PCETC-R004",
+      "text": "DeclarativeClausePartitionAdmitted is the controlling static judgment and admits only the exact current PCTX pattern kinds whose subject coverage is a finite closed cell set."
+    },
+    {
+      "rule_id": "PCETC-R005",
+      "text": "Source order is deterministic clause probe order only; overlap is rejected statically and source order never chooses an overlap winner."
+    },
+    {
+      "rule_id": "PCETC-R006",
+      "text": "Each admitted clause lowers as PatternAttempt, child probes and projections, one optional pure R0 guard, the R60 atomic commit, one selected body evaluation, declared return checking, and RETURN_TO LEAVE."
+    },
+    {
+      "rule_id": "PCETC-R007",
+      "text": "A pattern mismatch or false guard takes NEXT_DECLARATIVE_CLAUSE with zero published binding, move, loan, view, authority, or reservation residue."
+    },
+    {
+      "rule_id": "PCETC-R008",
+      "text": "A successful clause commits once, evaluates its body once, and never retries, backtracks, or probes a later clause."
+    },
+    {
+      "rule_id": "PCETC-R009",
+      "text": "Every normally returning clause body is assignable to the declared return type and exits the function through the existing RETURN_TO LEAVE contract."
+    },
+    {
+      "rule_id": "PCETC-R010",
+      "text": "Static exhaustive admission makes the all-clauses-failed edge unreachable and creates no implicit arm, fallback result, PatternMatchDefect, or runtime error residue."
+    },
+    {
+      "rule_id": "PCETC-R011",
+      "text": "Clause ownership, Or, Alias, move, loan, cancellation, and single-publication behavior import the exact R60 pattern-match ownership contract without reinterpretation."
+    },
+    {
+      "rule_id": "PCETC-R012",
+      "text": "Match usefulness and exhaustiveness use one normalized subject-restricted partition pass; guarded arms record mentions but never subtract coverage."
+    },
+    {
+      "rule_id": "PCETC-R013",
+      "text": "Match empty-arm, empty-otherwise, guard-only residual, and never-mentioned residual conditions select the four exact active diagnostics recorded by match_exhaustiveness_law."
+    },
+    {
+      "rule_id": "PCETC-R014",
+      "text": "Enum owner and payload admission precede coverage, so a foreign or malformed case selects ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH before any exhaustiveness diagnostic."
+    },
+    {
+      "rule_id": "PCETC-R015",
+      "text": "Related feature cells, including pattern ownership, clause partition core, clause block syntax, and otherwise syntax, remain unchanged."
+    },
+    {
+      "rule_id": "PCETC-R016",
+      "text": "Semantic P0 remains zero, feature P1 remains exactly 22 OPEN, M13 remains four OPEN actions, product lanes remain 15/15 NOT_RUN, and GitHub publication remains suspended."
+    }
+  ],
+  "acceptance_cases": [
+    {
+      "case_id": "PCETC-AC-001",
+      "audit_case_id": "CLAUSE1",
+      "class": "POSITIVE",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "Option subject with ::some(payload) and ::none declarative clauses",
+      "expected": "ADMIT_EXACT_EXHAUSTIVE_PARTITION_AND_ONE_SELECTED_RETURN",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "subject_evaluation_count": 1,
+        "selected_body_count": 1,
+        "return_to_leave_count": 1
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-002",
+      "audit_case_id": "CLAUSE2",
+      "class": "POSITIVE",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "List subject partitioned by [] and [head, .._]",
+      "expected": "ADMIT_CURRENT_FINITE_LIST_LENGTH_PARTITION",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "empty_cell_count": 1,
+        "nonempty_cell_count": 1,
+        "implicit_cell_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-003",
+      "audit_case_id": "CLAUSE3",
+      "class": "POSITIVE",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "admitted borrowed and owned clause binders with a successful pure guard",
+      "expected": "IMPORT_R60_ONE_ATOMIC_COMMIT_THEN_RETURN",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "logical_commit_count": 1,
+        "selected_body_count": 1,
+        "ownership_contract": "R60_EXACT_IMPORT"
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-004",
+      "audit_case_id": "CLAUSE4",
+      "class": "BOUNDARY",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "first admitted clause structurally mismatches and the next clause succeeds",
+      "expected": "NEXT_DECLARATIVE_CLAUSE_WITH_ZERO_FIRST_ATTEMPT_RESIDUE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "next_clause_edge_count": 1,
+        "failed_attempt_commit_count": 0,
+        "failed_attempt_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-005",
+      "audit_case_id": "CLAUSE5",
+      "class": "BOUNDARY",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "first clause structurally succeeds, its pure guard is false, and the next clause succeeds",
+      "expected": "NEXT_DECLARATIVE_CLAUSE_AFTER_FALSE_GUARD_WITH_ZERO_RESIDUE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "guard_evaluation_count": 1,
+        "failed_attempt_commit_count": 0,
+        "failed_attempt_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-006",
+      "audit_case_id": "CLAUSE6",
+      "class": "BOUNDARY",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "one final otherwise follows a proper unconditional prefix partition",
+      "expected": "OTHERWISE_COVERS_EXACT_NONEMPTY_REMAINDER",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "otherwise_count": 1,
+        "otherwise_is_final": true,
+        "uncovered_cell_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-007",
+      "audit_case_id": "CLAUSE7",
+      "class": "BOUNDARY",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "compatible normally returning bodies plus one terminating body",
+      "expected": "TERMINATING_BODY_EXCLUDED_FROM_RETURN_VALUE_JOIN",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "terminating_body_in_return_join_count": 0,
+        "normal_return_type_compatible": true,
+        "return_to_leave_per_normal_result": 1
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-008",
+      "audit_case_id": "CLAUSE8",
+      "class": "REJECT",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "two declarative clause cells have a provable nonempty intersection",
+      "expected": "REJECT_FIRST_SOURCE_ORDERED_OVERLAP_BEFORE_LOWERING",
+      "diagnostic_or_null": "DECL_CLAUSE_OVERLAP",
+      "assertions": {
+        "lowered_clause_count": 0,
+        "order_winner_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-009",
+      "audit_case_id": "CLAUSE9",
+      "class": "REJECT",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "the checker cannot decide whether two clause cells are disjoint",
+      "expected": "REJECT_UNKNOWN_DISJOINTNESS_BEFORE_LOWERING",
+      "diagnostic_or_null": "DECL_CLAUSE_DISJOINTNESS_UNPROVEN",
+      "assertions": {
+        "lowered_clause_count": 0,
+        "assumed_disjoint_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-010",
+      "audit_case_id": "CLAUSE10",
+      "class": "REJECT",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "an Option declarative family omits ::none and has no final otherwise",
+      "expected": "REJECT_NONEMPTY_REMAINDER_BEFORE_LOWERING",
+      "diagnostic_or_null": "DECL_CLAUSE_NONEXHAUSTIVE",
+      "assertions": {
+        "implicit_arm_count": 0,
+        "lowered_clause_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-011",
+      "audit_case_id": "CLAUSE11",
+      "class": "REJECT",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "a clause guard is effectful, throwing, suspending, or ownership-acquiring",
+      "expected": "REJECT_NON_R0_GUARD_BEFORE_PARTITION_LOWERING",
+      "diagnostic_or_null": "DECL_CLAUSE_GUARD_NOT_GUARD_SAFE",
+      "assertions": {
+        "guard_runtime_count": 0,
+        "ownership_publication_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-012",
+      "audit_case_id": "CLAUSE12",
+      "class": "REJECT",
+      "feature_id": "clause_pattern_heads",
+      "source_or_subject": "one normally returning clause body is not assignable to the declared return type",
+      "expected": "REJECT_RESULT_TYPE_BEFORE_MIR_EMISSION",
+      "diagnostic_or_null": "DECL_CLAUSE_RESULT_TYPE_MISMATCH",
+      "assertions": {
+        "return_to_leave_count": 0,
+        "mir_residue_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-013",
+      "audit_case_id": "MATCHB1",
+      "class": "BOUNDARY",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "all cases of a closed payload Enum are covered without otherwise",
+      "expected": "ADMIT_EXACT_CLOSED_ENUM_COVERAGE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "final_residual_cell_count": 0,
+        "implicit_default_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-014",
+      "audit_case_id": "MATCHB2",
+      "class": "BOUNDARY",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "all cases of an exact Enum subset owner are covered within that restricted owner",
+      "expected": "ADMIT_SUBJECT_RESTRICTED_SUBSET_COVERAGE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "parent_owner_extra_cell_count": 0,
+        "final_residual_cell_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-015",
+      "audit_case_id": "MATCHB3",
+      "class": "BOUNDARY",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "a useful guarded arm is followed by an unguarded arm over the same structural cell",
+      "expected": "GUARDED_ARM_MENTIONS_WITHOUT_SUBTRACTION_AND_UNGUARDED_ARM_REMAINS_REACHABLE",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "guarded_subtraction_count": 0,
+        "later_unguarded_arm_reachable": true
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-016",
+      "audit_case_id": "MATCHB4",
+      "class": "BOUNDARY",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "a final otherwise follows a proper partial unguarded partition",
+      "expected": "ADMIT_OTHERWISE_AS_EXACT_REMAINDER",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "otherwise_count": 1,
+        "otherwise_is_final": true,
+        "final_residual_cell_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-017",
+      "audit_case_id": "MATCHB5",
+      "class": "BOUNDARY",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "an admitted scalar interval partition includes one explicit complement arm",
+      "expected": "ADMIT_FINITE_SYMBOLIC_SPLIT_WITH_COMPLEMENT",
+      "diagnostic_or_null": null,
+      "assertions": {
+        "symbolic_interval_partition": "FINITE",
+        "complement_cell_count": 1,
+        "final_residual_cell_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-018",
+      "audit_case_id": "MATCHR1",
+      "class": "REJECT",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "an ordinary arm has an empty residual after earlier reachable unguarded coverage",
+      "expected": "REJECT_UNREACHABLE_ORDINARY_ARM",
+      "diagnostic_or_null": "MATCH_ARM_UNREACHABLE",
+      "assertions": {
+        "arm_residual_cell_count": 0,
+        "coverage_revival_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-019",
+      "audit_case_id": "MATCHR2",
+      "class": "REJECT",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "otherwise appears after earlier unguarded arms already cover the subject partition",
+      "expected": "REJECT_UNREACHABLE_OTHERWISE",
+      "diagnostic_or_null": "OTHERWISE_UNREACHABLE",
+      "assertions": {
+        "residual_before_otherwise_count": 0,
+        "implicit_remainder_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-020",
+      "audit_case_id": "MATCHR3",
+      "class": "REJECT",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "every final residual cell was structurally mentioned only by guarded arms",
+      "expected": "REJECT_GUARD_ONLY_COVERAGE",
+      "diagnostic_or_null": "MATCH_NONEXHAUSTIVE_AFTER_GUARDS",
+      "assertions": {
+        "all_residual_cells_guard_mentioned": true,
+        "guarded_subtraction_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-021",
+      "audit_case_id": "MATCHR4",
+      "class": "REJECT",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "at least one final residual subject cell was never mentioned by any arm",
+      "expected": "REJECT_NEVER_MENTIONED_RESIDUAL",
+      "diagnostic_or_null": "MATCH_NOT_EXHAUSTIVE",
+      "assertions": {
+        "never_mentioned_residual_cell_count": 1,
+        "implicit_default_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "PCETC-AC-022",
+      "audit_case_id": "MATCHR5",
+      "class": "REJECT",
+      "feature_id": "match_exhaustiveness_phase_a",
+      "source_or_subject": "a foreign or unknown Enum case or invalid payload shape coexists with incomplete surviving coverage",
+      "expected": "REJECT_CASE_OR_PAYLOAD_BEFORE_COVERAGE_DIAGNOSTIC",
+      "diagnostic_or_null": "ENUM_PATTERN_CASE_OR_PAYLOAD_MISMATCH",
+      "assertions": {
+        "case_payload_admission_precedes_coverage": true,
+        "secondary_exhaustiveness_primary_count": 0
+      },
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "acceptance_bindings": {
+    "clause_pattern_heads": {
+      "BOUNDARY": [
+        "PCETC-AC-004",
+        "PCETC-AC-005",
+        "PCETC-AC-006",
+        "PCETC-AC-007"
+      ],
+      "REJECT": [
+        "PCETC-AC-008",
+        "PCETC-AC-009",
+        "PCETC-AC-010",
+        "PCETC-AC-011",
+        "PCETC-AC-012"
+      ]
+    },
+    "match_exhaustiveness_phase_a": {
+      "BOUNDARY": [
+        "PCETC-AC-013",
+        "PCETC-AC-014",
+        "PCETC-AC-015",
+        "PCETC-AC-016",
+        "PCETC-AC-017"
+      ],
+      "REJECT": [
+        "PCETC-AC-018",
+        "PCETC-AC-019",
+        "PCETC-AC-020",
+        "PCETC-AC-021",
+        "PCETC-AC-022"
+      ]
+    }
+  },
+  "machine_acceptance": {
+    "feature_count": 2,
+    "rule_count": 16,
+    "acceptance_case_count": 22,
+    "positive_case_count": 3,
+    "boundary_case_count": 9,
+    "reject_case_count": 10,
+    "acceptance_binding_set_count": 4,
+    "acceptance_bound_case_count": 19,
+    "overlay_binding_count": 5,
+    "predecessor_blocked_cell_count": 5,
+    "overlay_bound_direct_transition_count": 5,
+    "overlay_bound_delegated_transition_count": 0,
+    "overlay_not_applicable_transition_count": 0,
+    "predecessor_cumulative_overlay_binding_count": 115,
+    "post_overlay_cumulative_binding_count": 120,
+    "predecessor_total_bound_direct_cell_count": 2452,
+    "predecessor_total_bound_delegated_cell_count": 3,
+    "predecessor_total_not_applicable_cell_count": 502,
+    "predecessor_total_blocked_cell_count": 1264,
+    "post_overlay_total_bound_direct_cell_count": 2457,
+    "post_overlay_total_bound_delegated_cell_count": 3,
+    "post_overlay_total_not_applicable_cell_count": 502,
+    "post_overlay_total_blocked_cell_count": 1259,
+    "post_overlay_missing_cell_count": 0,
+    "post_overlay_conflict_cell_count": 0,
+    "new_operation_count": 0,
+    "subject_evaluation_count": 1,
+    "logical_final_commit_count_on_clause_success": 1,
+    "failure_residue_count": 0,
+    "source_order_overlap_winner_count": 0,
+    "terminal_no_match_runtime_residue_count": 0,
+    "excluded_related_feature_transition_count": 0,
+    "other_target_cell_transition_count": 0
+  }
+}

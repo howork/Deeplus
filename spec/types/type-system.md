@@ -881,12 +881,20 @@ rest, without moving, escaping, suspending, mutating through, publishing a
 final view, or acquiring authority from them. Enum cases use `::case` or
 `Type::case`.
 
-Exhaustiveness succeeds only when the finite current pattern partition is
-covered. Redundant or unreachable arms are diagnosed deterministically. A
-sealed Class may prove nominal-family closure for other checker judgments, but
-that proof is not a substitute for absent constructor-pattern syntax. Clause
-functions and declarative clauses reuse the same partition engine but preserve
-their own input-supply and return-totality rules.
+Exhaustiveness succeeds only when the normalized current pattern partition is
+covered. That partition is finite either by closed constructor/type identity or
+by an admitted symbolic scalar split with one complement cell. For each arm the
+checker intersects structural coverage with the subject domain and removes only
+coverage from earlier reachable unguarded arms. An empty result is
+`MATCH_ARM_UNREACHABLE`; an `otherwise` arm after an empty residual is
+`OTHERWISE_UNREACHABLE`. Guarded arms remain useful but do not subtract
+coverage. `MATCH_NONEXHAUSTIVE_AFTER_GUARDS` applies only when every final
+residual cell was structurally mentioned by guarded arms; a never-mentioned
+residual instead selects `MATCH_NOT_EXHAUSTIVE`. A sealed Class may prove
+nominal-family closure for other checker judgments, but that proof is not a
+substitute for absent constructor-pattern syntax. Clause functions and
+declarative clauses reuse the same partition engine while preserving their own
+input-supply, overlap, and return-totality rules.
 
 The flow-proof environment `Phi` records closed-union alternative identities, enum-case identities, admitted finite R0 refinement facts, and usable-place state without changing a declaration's normalized semantic type. Structural success narrows an arm to the intersection of `Phi` and its coverage cell. Join is set intersection across incoming paths. Assignment, aliasing mutation, exclusive borrow, escape or capture, consume, and calls whose responsibility summary may mutate the subject kill the affected facts.
 

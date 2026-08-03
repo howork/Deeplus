@@ -8,9 +8,9 @@
   "properties": {
     "$schema": {"const": "../../../schemas/language/implementation-target-traceability-r1.schema.json"},
     "schema": {"const": "deeplus.implementation-target-traceability/r1"},
-    "revision": {"const": "r60-local-pattern-match-ownership-split-trace-closure-r1"},
+    "revision": {"const": "r61-local-pattern-clause-exhaustiveness-trace-closure-r1"},
     "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
-    "local_predecessor_commit": {"const": "e120f83db380ee182f0117713a67e97886bfcd11"},
+    "local_predecessor_commit": {"const": "2db4f483ffdcb281ef765def67e510e63917500c"},
     "external_post_commit_receipt_required": {"const": true},
     "catalog_feature_count": {"const": 723},
     "base_statuses": {"const": ["STABLE_DESIGN", "STDLIB_PROFILE"]},
@@ -31,7 +31,8 @@
       {"path": "spec/traceability/implementation-target-profile-r1/unified-call-tilde-evidence-r1.json", "feature_count": 4, "binding_count": 9},
       {"path": "spec/traceability/implementation-target-profile-r1/member-visibility-evidence-r1.json", "feature_count": 3, "binding_count": 13},
       {"path": "spec/traceability/implementation-target-profile-r1/pattern-dynamic-lowering-evidence-r1.json", "feature_count": 3, "binding_count": 3},
-      {"path": "spec/traceability/implementation-target-profile-r1/pattern-match-ownership-split-evidence-r1.json", "feature_count": 1, "binding_count": 2}
+      {"path": "spec/traceability/implementation-target-profile-r1/pattern-match-ownership-split-evidence-r1.json", "feature_count": 1, "binding_count": 2},
+      {"path": "spec/traceability/implementation-target-profile-r1/pattern-clause-exhaustiveness-evidence-r1.json", "feature_count": 2, "binding_count": 5}
     ]},
     "evidence_registry": {"type": "array", "minItems": 469, "items": {"$ref": "#/$defs/evidence"}},
     "derived_counts": {"type": "object"},
@@ -44,7 +45,7 @@
       "required": ["evidence_id", "class", "path", "locator_kind", "locator", "stage_role", "evidence_level"],
       "properties": {
         "evidence_id": {"type": "string", "pattern": "^EV-[0-9a-f]{64}$"},
-        "class": {"enum": ["FEATURE_REGISTRY_ROW", "ARTIFACT_POINTER", "GRAMMAR_PRODUCTION_ID", "CHECKER_PREDICATE_ID", "DIAGNOSTIC_REGISTRY_ID", "TEACHING_EXAMPLE_ID", "FIXTURE_CASE_ID", "CONTRACT_RULE_ID", "MIR_RULE_ID", "TRACE_ACCEPTANCE_CASE_ID"]},
+        "class": {"enum": ["FEATURE_REGISTRY_ROW", "ARTIFACT_POINTER", "GRAMMAR_PRODUCTION_ID", "CHECKER_PREDICATE_ID", "DIAGNOSTIC_REGISTRY_ID", "TEACHING_EXAMPLE_ID", "FIXTURE_CASE_ID", "CONTRACT_RULE_ID", "MIR_RULE_ID", "TRACE_ACCEPTANCE_CASE_ID", "ACCEPTANCE_CASE", "ACCEPTANCE_CASE_SET"]},
         "path": {"type": "string"},
         "locator_kind": {"enum": ["FILE", "JSON_POINTER", "REGISTRY_ID"]},
         "locator": {"type": "string"},

@@ -1182,10 +1182,10 @@
       "match_otherwise_default_arm",
       "match_exhaustiveness_phase_a"
     ],
-    "fixit_hint": "remove the arm or make its structural coverage distinct",
+    "fixit_hint": "remove the arm, use a pattern admitted by the subject domain, or make its structural coverage distinct from earlier unguarded arms",
     "fixit_kind": "manual_review",
-    "fixit_policy": "never use source order, a guard, or a runtime test to make an empty structural partition reachable",
-    "message": "This match arm is unreachable because an earlier arm already covers it.",
+    "fixit_policy": "never use source order, a guard, or a runtime test to manufacture a nonempty structural partition",
+    "message": "This match arm is unreachable because its structural coverage is empty after restriction to the subject domain and earlier unguarded coverage.",
     "notes": "Current finite-partition usefulness diagnostic; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

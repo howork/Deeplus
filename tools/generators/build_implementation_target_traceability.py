@@ -25,6 +25,7 @@ OVERLAYS = [
     OUT / "member-visibility-evidence-r1.json",
     OUT / "pattern-dynamic-lowering-evidence-r1.json",
     OUT / "pattern-match-ownership-split-evidence-r1.json",
+    OUT / "pattern-clause-exhaustiveness-evidence-r1.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -391,9 +392,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r60-local-pattern-match-ownership-split-trace-closure-r1",
+        "revision": "r61-local-pattern-clause-exhaustiveness-trace-closure-r1",
         "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "e120f83db380ee182f0117713a67e97886bfcd11",
+        "local_predecessor_commit": "2db4f483ffdcb281ef765def67e510e63917500c",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),

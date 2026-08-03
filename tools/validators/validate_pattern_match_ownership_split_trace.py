@@ -406,16 +406,35 @@ def validate(
     require(len(trace_rows) == 469 and len({row.get("feature_id") for row in trace_rows}) == 469, "TRACE_FEATURES_EXACT_469")
     require(len(trace) == 4221 and duplicate_count == 0, "TRACE_CELLS_EXACT_UNIQUE_4221")
     raw = {cell: row.get("disposition") for cell, row in trace.items()}
-    require(disposition_counts(raw) in {(2450, 3, 502, 1266), (2452, 3, 502, 1264)}, "TRACE_INSTALLED_PRE_OR_POST_COUNTS")
+    installed_counts = disposition_counts(raw)
+    require(
+        installed_counts
+        in {
+            (2450, 3, 502, 1266),  # R60 pre-state
+            (2452, 3, 502, 1264),  # R60 post-state
+            (2457, 3, 502, 1259),  # R61 post-state
+        },
+        "TRACE_INSTALLED_PRE_OR_POST_COUNTS",
+    )
     pre = dict(raw)
     for cell in TARGET_CELLS:
         require(raw.get(cell) in {"APPLICABLE_BLOCKED_BY_GAP", "BOUND_DIRECT"}, f"TRACE_TARGET_PRE_OR_POST:{cell[1]}")
         pre[cell] = "APPLICABLE_BLOCKED_BY_GAP"
-    require(disposition_counts(pre) == (2450, 3, 502, 1266), "TRACE_PREDECESSOR_COUNTS_EXACT")
+    pre_counts = disposition_counts(pre)
+    target_direct_count = sum(raw.get(cell) == "BOUND_DIRECT" for cell in TARGET_CELLS)
+    require(
+        pre_counts
+        == (installed_counts[0] - target_direct_count, installed_counts[1], installed_counts[2], installed_counts[3] + target_direct_count),
+        "TRACE_PREDECESSOR_COUNTS_EXACT",
+    )
     post = dict(pre)
     for cell in TARGET_CELLS:
         post[cell] = "BOUND_DIRECT"
-    require(disposition_counts(post) == (2452, 3, 502, 1264), "TRACE_POST_COUNTS_EXACT")
+    require(
+        disposition_counts(post)
+        == (pre_counts[0] + len(TARGET_CELLS), pre_counts[1], pre_counts[2], pre_counts[3] - len(TARGET_CELLS)),
+        "TRACE_POST_COUNTS_EXACT",
+    )
     require({cell for cell in pre if pre[cell] != post[cell]} == TARGET_CELLS, "TRACE_ONLY_TWO_TARGET_CELLS_CHANGED")
     require(all(pre[cell] == post[cell] for cell in pre if cell not in TARGET_CELLS), "TRACE_ALL_OTHER_CELLS_UNCHANGED")
     for feature in EXCLUDED_FEATURES:

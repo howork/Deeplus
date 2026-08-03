@@ -12703,6 +12703,14 @@ def main() -> int:
         "tools/validators/validate_pattern_match_ownership_split_trace.py",
         "tools/validators/run_pattern_match_ownership_split_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R60_Pattern_Match_Ownership_Split_Trace_Closure_R1.md",
+        "spec/contracts/pattern-clause-exhaustiveness-trace-closure-r1.json",
+        "schemas/language/pattern-clause-exhaustiveness-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/pattern-clause-exhaustiveness-evidence-r1.json",
+        "schemas/language/pattern-clause-exhaustiveness-evidence-r1.schema.json",
+        "tools/generators/build_pattern_clause_exhaustiveness_evidence.py",
+        "tools/validators/validate_pattern_clause_exhaustiveness_trace.py",
+        "tools/validators/run_pattern_clause_exhaustiveness_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R61_Pattern_Clause_Exhaustiveness_Trace_Closure_R1.md",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([

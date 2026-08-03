@@ -1012,11 +1012,16 @@ The checker owns target depth, payload type, and cleanup order. A control transf
 ## 20. Declarative clause functions
 
 Declarative clause functions partition a finite normalized subject domain.
-Phase A admits the pattern carriers that have exact current productions and
-context rows: Enum, Option, and Result variants; literal equality; and exact
-closed-Union alternative binders. Sealed-Class constructor patterns and
-scalar-interval patterns have no current production and are not inferred from
-type closure or range expressions. Guards must be R0-pure and terminating.
+Phase A admits exactly the current pattern kinds listed by
+`PCTX-DECLARATIVE-CLAUSE`, subject to the stronger requirement that their
+normalized cells form a finite decidable partition. The current carrier set
+therefore includes the admitted Tuple, List, Record/Map row, Enum/Option/Result,
+closed-Union alternative, literal, pin, range/relational, Or, Alias, and Move
+forms when their exact child cells and ownership interface are statically
+closed. Merely having an admitted Pattern production is not enough: an open or
+undecidable carrier is rejected by the partition procedure. Sealed-Class
+closure does not manufacture constructor-pattern syntax. Guards must be
+R0-pure and terminating.
 
 The checker constructs a finite partition, intersects each source-ordered arm, rejects the first nonempty overlap, subtracts covered cells, lets one final `otherwise` cover the exact remainder, and rejects a nonempty remainder. Option, Result, and `throws` do not add implicit arms.
 
@@ -1571,7 +1576,7 @@ performs backtracking.
 
 The checker maintains a flow-proof environment `Phi` separately from each binding's declared semantic type. A successful structural pattern intersects `Phi` with its exact enum case or union alternative; an inline admitted R0 guard may add finite facts on its true edge. Every admitted `def#guard` has one verified, versioned `GuardSummaryV1` containing a finite normalized R0 Boolean formula bound to its exact `CallableImplementationId`, parameter types, body digest, summary digest, and profile version. A direct truth-test of that exact guard over stable actual places substitutes the actuals into the summary once: the true edge adds `P` and the false edge adds the exact logical `not(P)` to `Phi`. The runtime Bool call still executes exactly once; no proof object or second predicate evaluation exists, and the declared type is unchanged. Stored Bool results, wrappers, dynamic dispatch, first-class callable erasure, arbitrary helpers, and unstable actuals add no fact. For IEEE values the complement remains logical negation and is never rewritten into an algebraically stronger comparison that erases NaN behavior. Guard facts do not make a guarded match arm exhaustive. Summary construction failure is a declaration error rather than an opaque fallback; use `def#pure` for a pure Bool helper that intentionally exports no narrowing proof. Joins retain only facts present on every incoming edge, and assignment, aliasing mutation, exclusive borrow, escape, mutable capture, consume, suspension, or a call permitted to mutate or consume the subject kills affected facts.
 
-Usefulness and exhaustiveness are one ordered finite-partition pass. An arm with no new structural cell is `MATCH_ARM_UNREACHABLE`. A guard is checked for usefulness but never subtracts coverage; a witness left only because all covering arms are guarded is `MATCH_NONEXHAUSTIVE_AFTER_GUARDS`. `otherwise` after an empty residual is `OTHERWISE_UNREACHABLE`; any other final residual is `MATCH_NOT_EXHAUSTIVE`.
+Usefulness and exhaustiveness are one ordered structural-partition pass. The checker first restricts every arm to the normalized subject domain, which is either a finite constructor/type partition or an admitted finite symbolic scalar partition with a complement cell, and then removes cells already covered by earlier reachable unguarded arms. An empty result is `MATCH_ARM_UNREACHABLE`. A guarded arm is checked for usefulness and recorded as mentioning its structural cells, but it never subtracts coverage. `MATCH_NONEXHAUSTIVE_AFTER_GUARDS` is selected only when every final residual cell was mentioned by one or more guarded arms; if even one residual cell was never mentioned, the diagnostic is `MATCH_NOT_EXHAUSTIVE`. `otherwise` after an empty residual is `OTHERWISE_UNREACHABLE`. These design-static rules determine the primary diagnostic; they do not yet claim a product checker's residual-witness spelling or ordering. A sealed Class may prove nominal-family closure for other judgments, but absent constructor-pattern syntax that proof does not manufacture match cells.
 
 Enum pattern admission resolves the `VariantId` in the scrutinee's Enum owner and checks the active payload arity, labels or positions, and child-pattern types before any guard or ownership commit. A foreign or unknown case and any inactive-payload projection reject at that boundary. Or-pattern alternatives must bind identical names, canonical types, modes, mutability, usable lifetimes, and capabilities; projection paths may differ. Structural failure and false guards commit no binding, move, exclusive borrow, or authority.
 

@@ -636,7 +636,7 @@
 | `MAP_UNFOLD_SPELLING_AMBIGUOUS` | `parser` | `error` | `active` | Map unfold spelling is \`**expr\` in admitted \`#map{...}\` unfold positions; \`...expr\` map unfold is not current source in the current profile. |
 | `MAP_WILDCARD_KEY_REQUIRES_STRING_LITERAL` | `checker` | `error` | `seed` | Map wildcard key requires string literal |
 | `MATCH_ARM_SINGLE_GUARD_ONLY` | `parser` | `error` | `active` | A match arm admits at most one \`if\` or attached \`!if\` guard. |
-| `MATCH_ARM_UNREACHABLE` | `checker` | `error` | `active` | This match arm is unreachable because an earlier arm already covers it. |
+| `MATCH_ARM_UNREACHABLE` | `checker` | `error` | `active` | This match arm is unreachable because its structural coverage is empty after restriction to the subject domain and earlier unguarded coverage. |
 | `MATCH_CHAIN_BINDER_DIRECTION_MIXED` | `checker` | `error` | `active` | A chained binder Pattern must use one monotone comparison direction. |
 | `MATCH_EXPR_REQUIRES_AT_PREFIX` | `parser` | `error` | `active` | A value-producing match expression must use \`@match\`; bare \`match\` is statement-only. |
 | `MATCH_GUARD_CONSUME_NOT_ALLOWED` | `checker` | `error` | `active` | match/@match guard may not consume or move tentative pattern bindings. |
@@ -1446,7 +1446,7 @@
 | `LoopOutcomeExhaustive` | LoopOutcomeExhaustive | ordered branch 1: a value-carrying break without an immediately following outcome match emits BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH; ordered branch 2: a present outcome match using a pattern other than the admitted outcome cases emits LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE; ordered branch 3: a present correctly spelled match that omits any reachable outcome emits LOOP_OUTCOME_MATCH_NON_EXHAUSTIVE; only a present, correctly spelled, exhaustive outcome match admits the value-carrying loop result | `DESIGN_STATIC_NOT_RUN` |
 | `LoopOutcomeHandlerAdmitted` | LoopOutcomeHandlerAdmitted | normalize loop and optional handler to one node; run intermediate cleanup/finally while skipping intermediate handlers; only the final break target handler observes ::break and a terminal continue observes none | `DESIGN_STATIC_NOT_RUN` |
 | `MapUnfoldEntryAdmitted` | MapUnfoldEntryAdmitted | Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and Map unfolds. | `DESIGN_STATIC_NOT_RUN` |
-| `MatchExhaustive` | match exhaustiveness and usefulness | Compute match-arm usefulness and final exhaustiveness over one finite structural partition. | `DESIGN_STATIC_NOT_RUN` |
+| `MatchExhaustive` | match exhaustiveness and usefulness | Compute match-arm usefulness and final exhaustiveness over one normalized structural partition, including symbolic complement cells for admitted open scalar domains. | `DESIGN_STATIC_NOT_RUN` |
 | `MatchGuardPurityAdmitted` | match arm guard purity | Apply the ordinary guard profile, then forbid consuming or escaping probe bindings before atomic commit. | `DESIGN_STATIC_NOT_RUN` |
 | `MaterializationFieldPunAdmitted` | MaterializationFieldPunAdmitted | R51f3 owner-specific static design seed for materialization_derivation_field_punning; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MatrixProductAdmitted` | Matrix product | both operands are rank-2; the left inner dimension equals the right inner dimension; \`**\` participates in the left-to-right LinearProductExpr fold and this predicate is applied independently at the current fold step | `DESIGN_STATIC_NOT_RUN` |

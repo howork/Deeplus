@@ -259,7 +259,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Value-producing matching is `@match`; bare `match` is statement-only. Exhaustiveness and ownership totality apply to enum/Option/Result/sealed families.",
+    "notes": "Value-producing matching is `@match`; bare `match` is statement-only. Exhaustiveness and ownership totality operate on the normalized subject-restricted structural partition: Enum and exact subset owners, Option/Result, closed Union, admitted products/rows/list cells, and admitted scalar-interval partitions. A sealed Class may prove nominal-family closure for other judgments but, without constructor-pattern syntax, does not itself create match cells. Guarded arms are useful but never subtract coverage. Product checker execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

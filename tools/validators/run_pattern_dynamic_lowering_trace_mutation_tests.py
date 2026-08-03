@@ -74,10 +74,15 @@ def transition_excluded_row(
     contexts: dict[str, Any],
 ) -> None:
     cell = find_trace_cell(trace, "pattern_match_ownership_split", "DYNAMIC_LOWERING")
+    mutated_disposition = (
+        "APPLICABLE_BLOCKED_BY_GAP"
+        if cell.get("disposition") == "BOUND_DIRECT"
+        else "BOUND_DIRECT"
+    )
     cell.update(
         {
-            "disposition": "BOUND_DIRECT",
-            "blocked_gap_ids": [],
+            "disposition": mutated_disposition,
+            "blocked_gap_ids": ["IR-XCUT-P1-054"] if mutated_disposition == "APPLICABLE_BLOCKED_BY_GAP" else [],
             "not_applicable": None,
         }
     )

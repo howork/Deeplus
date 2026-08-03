@@ -761,6 +761,14 @@ A place join first proves compatible place identities and ownership states for
 all normally returning arms, excludes divergent arms, and only then intersects
 capabilities. A failed proof emits `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH`.
 
+Match usefulness and exhaustiveness are checker-only admission judgments and
+create no HIR or MIR node, opcode, runtime branch, or witness object. Rejected
+source produces no MIR. After admission, lowering receives only the established
+source-ordered structural-test and guard plan. Clause heads reuse that same
+static partition analysis, but their clause-owner overlap, input-supply, and
+return-totality obligations are discharged before an admitted ordered clause
+plan reaches lowering; no runtime clause search repairs a rejected partition.
+
 Tuple Pattern lowering is an exact static product projection. Record/Map
 patterns first compare their exact or explicitly open row/key shapes; nominal
 patterns require one statically selected pattern-transparent descriptor. Pin,

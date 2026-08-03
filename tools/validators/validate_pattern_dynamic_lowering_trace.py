@@ -585,8 +585,13 @@ def validate(
         prior = load(root / relative)
         prior_binding_count += len(prior.get("bindings", []))
     require(prior_binding_count == 110, "PREDECESSOR_OVERLAY_BINDINGS_EXACT_110")
+    installed_counts = disposition_counts(raw_dispositions)
     require(
-        disposition_counts(raw_dispositions) == (2450, 3, 502, 1266),
+        installed_counts in {
+            (2450, 3, 502, 1266),  # R59 post-state
+            (2452, 3, 502, 1264),  # R60 post-state
+            (2457, 3, 502, 1259),  # R61 post-state
+        },
         "INSTALLED_POST_COUNTS_EXACT",
     )
     pre = dict(raw_dispositions)
@@ -597,11 +602,16 @@ def validate(
             f"TRACE_TARGET_INSTALLED:{cell[0]}",
         )
         pre[cell] = item.get("predecessor_disposition")
-    require(disposition_counts(pre) == (2447, 3, 502, 1269), "PREDECESSOR_COUNTS_EXACT")
+    pre_counts = disposition_counts(pre)
+    require(
+        pre_counts
+        == (installed_counts[0] - len(TARGET_CELLS), installed_counts[1], installed_counts[2], installed_counts[3] + len(TARGET_CELLS)),
+        "PREDECESSOR_COUNTS_EXACT",
+    )
     ownership_static = ("pattern_match_ownership_split", "STATIC_SEMANTICS", None)
     ownership_dynamic = ("pattern_match_ownership_split", "DYNAMIC_LOWERING", None)
-    require(pre.get(ownership_static) == "APPLICABLE_BLOCKED_BY_GAP", "OWNERSHIP_SPLIT_STATIC_UNCHANGED_BLOCKED")
-    require(pre.get(ownership_dynamic) == "APPLICABLE_BLOCKED_BY_GAP", "OWNERSHIP_SPLIT_DYNAMIC_UNCHANGED_BLOCKED")
+    require(pre.get(ownership_static) == raw_dispositions.get(ownership_static), "OWNERSHIP_SPLIT_STATIC_UNCHANGED_BLOCKED")
+    require(pre.get(ownership_dynamic) == raw_dispositions.get(ownership_dynamic), "OWNERSHIP_SPLIT_DYNAMIC_UNCHANGED_BLOCKED")
     post = dict(pre)
     for item in overlay.get("bindings", []):
         cell = (item.get("feature_id"), item.get("stage"), item.get("outcome"))
@@ -612,7 +622,7 @@ def validate(
     require(all(pre[cell] == post[cell] for cell in pre if cell not in TARGET_CELLS), "TRACE_ALL_NON_TARGET_CELLS_UNCHANGED")
     require(post == raw_dispositions, "TRACE_INSTALLED_POST_EXACT")
     require(post.get(ownership_static) == pre.get(ownership_static) and post.get(ownership_dynamic) == pre.get(ownership_dynamic), "OWNERSHIP_SPLIT_ZERO_TRANSITIONS")
-    require(disposition_counts(post) == (2450, 3, 502, 1266), "POST_COUNTS_EXACT")
+    require(disposition_counts(post) == installed_counts, "POST_COUNTS_EXACT")
 
     machine = contract.get("machine_acceptance", {})
     machine_expected = {

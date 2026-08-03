@@ -812,15 +812,15 @@
         "PK-ALIAS",
         "PK-MOVE"
       ],
-      "pattern_failure_disposition": "DECLARATIVE_PARTITION_REJECTION",
-      "guard_false_disposition": "DECLARATIVE_PARTITION_REJECTION",
+      "pattern_failure_disposition": "NEXT_DECLARATIVE_CLAUSE",
+      "guard_false_disposition": "NEXT_DECLARATIVE_CLAUSE",
       "subject_failure_policy": "DECLARATIVE_INPUT_DISPOSITION_OWNED_BY_CALL_CONTRACT",
       "guard_binder_access": "PROBE_BINDERS_READ_ONLY_NO_ESCAPE",
       "binding_scope": "SELECTED_CLAUSE_ONLY",
       "commit_policy": "AFTER_OPTIONAL_GUARD_SUCCESS_IN_INFALLIBLE_ATOMIC_COMMIT",
       "coverage_duty": "DISJOINT_FINITE_PARTITION",
       "suspension_policy": "NO_SUSPENSION_IN_PATTERN_OR_GUARD",
-      "notes": "Overlap is an error and source order is never a winner; guarded clauses add no unconditional coverage.",
+      "notes": "Overlap, undecidable disjointness, nonexhaustiveness, and a non-R0 guard reject the declarative partition at compile time. After a clause family is admitted, source order is deterministic probe order but never an overlap winner: a runtime pattern mismatch or false guard takes NEXT_DECLARATIVE_CLAUSE with zero binding, move, loan, view, authority, or reservation residue. Guarded clauses add no unconditional coverage.",
       "product_execution": "NOT_RUN"
     },
     {
