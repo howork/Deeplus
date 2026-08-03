@@ -1069,14 +1069,28 @@ expose read-only nonescaping probe binders, evaluate zero or one pure Bool
 guard once after structural success, collapse every child `BINDING_COMMIT`
 requirement into exactly one final logical commit, expose final binders,
 execute, and exit/join. An Or probe selects the first source-ordered structural
-success with an exactly equal binder interface and never retries or
-backtracks. An Alias probe preserves subject identity, performs no clone, and
-stages a borrow; the loan is acquired only at final commit. Failure or a false
-guard publishes no binding, move, loan, view, or authority. `if let` takes the
-false branch, `while let` exits the loop, and failed `for let` matching or a
-false guard skips the current element. `OR_PATTERN_BINDINGS_INCONSISTENT` and
-Alias ownership conflict remain delegated to `pattern_match_ownership_split`,
-whose trace row is unchanged.
+success and never retries or backtracks. Every alternative must expose the same
+normalized binder interface `(name, canonical type, ownership mode, mutability,
+usable region, capability set)` or the checker emits
+`OR_PATTERN_BINDINGS_INCONSISTENT`.
+
+An Alias probe preserves subject identity, performs no clone, and stages a
+shared borrow. It is incompatible with a moved or exclusively borrowed
+descendant of the same subject. A borrowed subject cannot move an affine
+payload; `move PatternPrimary` requires consuming owner authority. Probe and
+guard failure publish no binding, move, loan, view, or authority and cancel
+every prepared move reservation. Final success first performs the admitted
+moves and loan acquisitions and then crosses one infallible group
+`BINDING_COMMIT` publication barrier. A resulting loan ends at the earliest
+mutation, move, replacement, cleanup, or enclosing-region frontier that
+invalidates it. `if let` takes the false branch, `while let` exits the loop,
+and failed `for let` matching or a false guard skips the current element.
+
+Normally returning Pattern arms may join only when their place identities and
+ownership states are compatible. The capability intersection is computed only
+after that compatibility proof; divergent arms are excluded. Otherwise the
+checker emits `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH` and does not infer a
+clone, implicit move, or ownership join.
 
 The quarantine-scope predicate is design-seed-only and nonemitting. Even its minimum sound profile requires a typed immutable export and rejects pointer, authority, borrow, resource, closure, run, actor, suspension and outer-mutation escape. No source profile activates it and no product support is claimed.
 

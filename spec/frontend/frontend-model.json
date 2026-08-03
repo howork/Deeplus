@@ -3283,12 +3283,72 @@
         "while_let": "LOOP_EXIT",
         "for_let": "CANDIDATE_SKIP"
       },
-      "delegated_to_pattern_match_ownership_split": [
-        "OR_PATTERN_BINDINGS_INCONSISTENT",
-        "ALIAS_PATTERN_OWNERSHIP_CONFLICT"
-      ],
-      "pattern_match_ownership_split_trace_row_changed": false,
+      "ownership_split_contract": "pattern_match_ownership_split_contract",
       "grammar_changed": false,
+      "source_activation": "none",
+      "product_support": "NOT_RUN"
+    },
+    "pattern_match_ownership_split_contract": {
+      "decision_path": "decisions/language/Design_Deeplus_R60_Pattern_Match_Ownership_Split_Trace_Closure_R1.md",
+      "feature_id": "pattern_match_ownership_split",
+      "checker_judgment": "PatternMatchOwnershipAdmitted",
+      "normalized_binder_interface_fields": [
+        "name",
+        "canonical_type",
+        "ownership_mode",
+        "mutability",
+        "usable_region",
+        "capabilities"
+      ],
+      "or_pattern": {
+        "interface_equality": "EXACT",
+        "selection": "FIRST_SOURCE_ORDERED_STRUCTURAL_SUCCESS",
+        "retry_or_backtracking": false
+      },
+      "alias_pattern": {
+        "subject_identity": "SAME",
+        "borrow_kind": "SHARED",
+        "clone": false,
+        "rejects_moved_descendant": true,
+        "rejects_exclusive_descendant": true
+      },
+      "borrowed_subject": {
+        "affine_payload_move": "REJECT",
+        "move_pattern_requires": "CONSUMING_OWNER_AUTHORITY"
+      },
+      "transaction": {
+        "probe_and_guard_ownership_residue": 0,
+        "preparation_abort": "MOVE_CANCEL_ALL_RESERVATIONS",
+        "preparation_order": "SOURCE_PATTERN_PREORDER",
+        "per_move_order": [
+          "MOVE_RESERVE",
+          "PLACE_MOVE"
+        ],
+        "borrow_operations": [
+          "LOAN_BEGIN_SHARED",
+          "LOAN_BEGIN_EXCLUSIVE"
+        ],
+        "publication_barrier": "BINDING_COMMIT_AFTER_ALL_MOVE_AND_LOAN_ACQUISITIONS",
+        "binding_commit_count": 1,
+        "binding_commit_infallible": true
+      },
+      "loan_close_frontier": "EARLIEST_OF_MUTATION_MOVE_REPLACEMENT_CLEANUP_REGION",
+      "place_join": {
+        "participants": "NORMALLY_RETURNING_ARMS_ONLY",
+        "first_check": "COMPATIBLE_PLACE_IDENTITY_AND_OWNERSHIP_STATE",
+        "then": "CAPABILITY_INTERSECTION",
+        "divergent_arms": "EXCLUDED"
+      },
+      "diagnostics": [
+        "OR_PATTERN_BINDINGS_INCONSISTENT",
+        "ALIAS_PATTERN_OWNERSHIP_CONFLICT",
+        "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
+        "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"
+      ],
+      "grammar_changed": false,
+      "ast_identity_changed": false,
+      "hir_identity_changed": false,
+      "mir_opcode_changed": false,
       "source_activation": "none",
       "product_support": "NOT_RUN"
     },

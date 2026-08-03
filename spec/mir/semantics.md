@@ -735,11 +735,14 @@ Every child pattern-row `BINDING_COMMIT` entry is a compositional commit
 requirement accumulated by the enclosing `PatternAttempt`. All such entries
 collapse into its single top-level `atomic_commit`; they are not nested or
 multiple executable commits. An Or probe chooses the first source-ordered
-branch whose structural probe succeeds, requires the exact same canonical
-binder interface on every branch, and performs no retry or backtracking. A
-false owner guard after that selection does not try another Or branch. An
+branch whose structural probe succeeds, requires the exact same normalized
+binder interface `(name, canonical type, ownership mode, mutability, usable
+region, capability set)` on every branch, and performs no retry or backtracking.
+A false owner guard after that selection does not try another Or branch. An
 Alias probe preserves the same subject identity, performs no clone, and stages
-a borrow requirement; the actual loan is acquired only by the final commit.
+a shared-borrow requirement. The loan begins only on final success and cannot
+coexist with a moved or exclusively borrowed descendant. A borrowed subject
+cannot execute a `PK-MOVE` affine-payload extraction.
 
 A structural mismatch terminates after `structural_test`; a false guard
 terminates after `guard_evaluate`. Neither publishes bindings, moves, loans,
@@ -749,10 +752,14 @@ branch, `while let` exits the loop, and `for let` skips the current candidate.
 Guarded-binding failure transfers to its required `else`; assertive binding
 emits one `PatternMatchDefect`; ordered catch continues to the next handler or
 propagates. Each phase carries the exact DPM fixture identity and attempt
-disposition. `OR_PATTERN_BINDINGS_INCONSISTENT` and Alias ownership conflict
-remain delegated to `pattern_match_ownership_split`; that feature's trace row
-is unchanged. A place join retains only the intersection of incoming
-capabilities.
+disposition. Every failed preparation edge executes `MOVE_CANCEL` for each
+reservation and leaves no loan. On success, admitted `PLACE_MOVE` and
+`LOAN_BEGIN_SHARED` operations complete before one infallible group
+`BINDING_COMMIT` publishes final binders. The resulting loan is closed at the
+earliest invalidating mutation, move, replacement, cleanup, or region frontier.
+A place join first proves compatible place identities and ownership states for
+all normally returning arms, excludes divergent arms, and only then intersects
+capabilities. A failed proof emits `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH`.
 
 Tuple Pattern lowering is an exact static product projection. Record/Map
 patterns first compare their exact or explicitly open row/key shapes; nominal

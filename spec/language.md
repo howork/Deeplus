@@ -1502,16 +1502,30 @@ Pin Patterns read one stable place or static value exactly once. Bounded range
 and relational Patterns are current only for closed exactly ordered domains
 such as Int, UInt, Char and an ordered Enum; Float ranges remain Preview. An
 Or-pattern probes branches in source order, selects the first structurally
-successful branch, and requires an exactly equal binder interface: names,
-canonical types, ownership modes, mutability, and regions. There is no retry or
-backtracking, including after a false owner guard. Path/source order is not
-identity. `pattern as name` preserves the same subject identity, performs no
-clone, and stages a borrow whose actual loan is acquired only by the enclosing
-`PatternAttempt` final commit; it cannot coexist with a moved or exclusive
-descendant. `OR_PATTERN_BINDINGS_INCONSISTENT` and Alias ownership conflict
-remain delegated to `pattern_match_ownership_split`, whose trace row is
-unchanged. Cross-arm place joins preserve only capabilities valid on every
-incoming arm.
+successful branch, and requires an exactly equal normalized binder interface:
+name, canonical type, ownership mode, mutability, usable region, and capability
+set must agree for every binder. There is no retry or backtracking, including
+after a false owner guard. Path/source order is not identity. A mismatch emits
+`OR_PATTERN_BINDINGS_INCONSISTENT` before lowering.
+
+`pattern as name` preserves the same subject identity, performs no clone, and
+stages a shared borrow. It conflicts with any moved or exclusively borrowed
+descendant of that subject and emits `ALIAS_PATTERN_OWNERSHIP_CONFLICT`. A
+borrowed subject cannot use `move PatternPrimary` to extract an affine payload;
+that rejection emits `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD`. The move
+Pattern is admitted only when the attempted subject supplies consuming owner
+authority.
+
+Ownership preparation is failure-atomic. Probing and the optional guard leave
+no ownership residue. Move reservations are cancelled on every preparation
+abort; on final success the required moves and shared loans are acquired before
+one infallible group `BINDING_COMMIT` publishes the binders. A pattern loan ends
+at the earliest mutation, move, replacement, cleanup, or enclosing-region
+frontier that invalidates it. At a join, normally returning arms must preserve
+compatible place identity and ownership state before their capability sets are
+intersected. Divergent arms do not participate. Incompatible returning arms
+emit `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH`; the checker never synthesizes a
+clone or ownership join.
 
 A match head may use the bounded-binder Pattern
 `lower OrderedRelOp name OrderedRelOp upper`. The match subject is evaluated
@@ -3137,6 +3151,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `PARALLEL_ASSIGNMENT_TARGET_OVERLAP` [error]: Every parallel-assignment target must be a distinct mutable LocalPlaceId.
 - `PARALLEL_ASSIGNMENT_TARGET_PROFILE_NOT_ADMITTED` [error]: Resource, nonlocal, member, index, property, shared, actor, or FFI targets require a separately activated Preview profile.
 - `ALIAS_PATTERN_OWNERSHIP_CONFLICT` [error]: A Pattern alias cannot coexist with a moved or exclusively borrowed descendant of the same subject.
+- `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` [error]: A borrowed Pattern subject cannot move an affine payload; `move PatternPrimary` requires consuming owner authority.
 - `PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH` [error]: Normally returning Pattern arms leave incompatible usable-place states at the join.
 - `PATTERN_ANALYSIS_RESOURCE_LIMIT` [error]: Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness.
 - `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` [error]: An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress.

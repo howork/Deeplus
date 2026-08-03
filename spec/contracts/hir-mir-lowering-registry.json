@@ -12467,11 +12467,25 @@
         },
         {
           "ordinal": 2,
+          "operation_kind": "LOAN_BEGIN_SHARED",
+          "semantic_operation_id": "DM-SEMOP-LOAN-BEGIN-SHARED-R1",
+          "input_roles": [
+            "matched_subject_place",
+            "staged_alias_borrow_requirement"
+          ],
+          "output_roles": [
+            "alias_shared_loan"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 3,
           "operation_kind": "BINDING_COMMIT",
           "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
           "input_roles": [
             "pattern_probe_result",
-            "pending_pattern_bindings"
+            "pending_pattern_bindings",
+            "alias_shared_loan"
           ],
           "output_roles": [
             "committed_pattern_bindings"
@@ -12489,7 +12503,7 @@
       ],
       "cleanup_effect": "NONE",
       "suspension_effect": "NONE",
-      "ownership_effect": "PURE_VALUE",
+      "ownership_effect": "LOAN",
       "responsibility_projection": {
         "axis_order": [
           "value_mode",
@@ -14874,18 +14888,6 @@
       "operation_plan": [
         {
           "ordinal": 1,
-          "operation_kind": "MOVE_RESERVE",
-          "semantic_operation_id": "DM-SEMOP-MOVE-RESERVE-R1",
-          "input_roles": [
-            "matched_place"
-          ],
-          "output_roles": [
-            "pattern_move_reservation"
-          ],
-          "condition": "ALWAYS"
-        },
-        {
-          "ordinal": 2,
           "operation_kind": "PATTERN_PROBE",
           "semantic_operation_id": "DM-SEMOP-PATTERN-PROBE-R1",
           "input_roles": [
@@ -14898,20 +14900,20 @@
           "condition": "ALWAYS"
         },
         {
-          "ordinal": 3,
-          "operation_kind": "BINDING_COMMIT",
-          "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
+          "ordinal": 2,
+          "operation_kind": "MOVE_RESERVE",
+          "semantic_operation_id": "DM-SEMOP-MOVE-RESERVE-R1",
           "input_roles": [
-            "pattern_probe_result",
-            "pending_pattern_bindings"
+            "matched_place",
+            "pattern_probe_result"
           ],
           "output_roles": [
-            "committed_pattern_bindings"
+            "pattern_move_reservation"
           ],
           "condition": "ON_SUCCESS"
         },
         {
-          "ordinal": 4,
+          "ordinal": 3,
           "operation_kind": "PLACE_MOVE",
           "semantic_operation_id": "DM-SEMOP-PLACE-MOVE-R1",
           "input_roles": [
@@ -14922,6 +14924,32 @@
             "moved_binding_value"
           ],
           "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 4,
+          "operation_kind": "BINDING_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
+          "input_roles": [
+            "pattern_probe_result",
+            "pending_pattern_bindings",
+            "moved_binding_value"
+          ],
+          "output_roles": [
+            "committed_pattern_bindings"
+          ],
+          "condition": "ON_SUCCESS"
+        },
+        {
+          "ordinal": 5,
+          "operation_kind": "MOVE_CANCEL",
+          "semantic_operation_id": "DM-SEMOP-MOVE-CANCEL-R1",
+          "input_roles": [
+            "pattern_move_reservation"
+          ],
+          "output_roles": [
+            "cancelled_pattern_move_reservation"
+          ],
+          "condition": "ON_ERROR"
         }
       ],
       "terminator_plan": [],
@@ -15546,6 +15574,19 @@
             "pattern_probe_result"
           ],
           "condition": "ALWAYS"
+        },
+        {
+          "ordinal": 2,
+          "operation_kind": "BINDING_COMMIT",
+          "semantic_operation_id": "DM-SEMOP-BINDING-COMMIT-R1",
+          "input_roles": [
+            "pattern_probe_result",
+            "pending_normalized_or_bindings"
+          ],
+          "output_roles": [
+            "committed_pattern_bindings"
+          ],
+          "condition": "ON_SUCCESS"
         }
       ],
       "terminator_plan": [],

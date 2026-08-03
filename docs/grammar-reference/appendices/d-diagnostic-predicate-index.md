@@ -801,7 +801,7 @@
 | `PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR` | `checker` | `error` | `active` | Every Stable group-assignment target must resolve to an existing direct mutable local. |
 | `PATTERN_ASSIGNMENT_SHARED_TARGET` | `checker` | `error` | `active` | Shared, actor, FFI, property, member, and index targets are outside Stable local group assignment. |
 | `PATTERN_ASSIGNMENT_TARGET_OVERLAP` | `checker` | `error` | `active` | Group-assignment targets must have pairwise distinct direct LocalPlaceIds. |
-| `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` | `checker` | `error` | `seed` | Borrowed match arm cannot move a payload out of the borrowed subject. |
+| `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` | `checker` | `error` | `active` | Borrowed match arm cannot move a payload out of the borrowed subject. |
 | `PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL` | `checker` | `error` | `active` | Every nonbinding term in a Pattern condition chain must have exact type Bool. |
 | `PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN` | `checker` | `error` | `active` | Pattern-control failure must commit no partial binding or move. |
 | `PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN` | `checker` | `error` | `active` | A pattern-binding control requires a refutable pattern. |

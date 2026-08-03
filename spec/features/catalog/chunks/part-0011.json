@@ -939,7 +939,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "downcastOwned returns OwnedDowncast<Target, Source> with matched(Target) or unmatched(Source); failure never destroys or hides the original owner and does not misuse ErrorSet as an owner channel.",
+    "notes": "downcastOwned returns OwnedDowncast<Target, Source> with matched(Target) or unmatched(Source); failure never destroys or hides the original owner and does not misuse ErrorSet as an owner channel. OWN_CAST_REQUIRES_REUSABLE_SOURCE belongs to this owner-preserving downcast contract, not Pattern matching.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -952,7 +952,8 @@
     "trace_class": "library",
     "normative_trace_refs": {
       "diagnostics": [
-        "OWNED_DOWNCAST_OWNER_NOT_PRESERVED"
+        "OWNED_DOWNCAST_OWNER_NOT_PRESERVED",
+        "OWN_CAST_REQUIRES_REUSABLE_SOURCE"
       ],
       "predicates": [
         "OwnedDowncastAdmitted"
@@ -1311,7 +1312,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Borrowed/consuming match ownership split. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R60 closes the current checker and lowering contract for Pattern ownership without changing grammar or AST/HIR/MIR identities: normalized binder-interface equality, source-first Or selection without retry, same-subject shared Alias borrowing, borrowed-subject affine-move rejection, failure-atomic reservation cancellation, one final group publication barrier, earliest valid loan close, and compatibility-before-capability-intersection at returning-arm joins. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1324,7 +1325,7 @@
     "normative_trace_refs": {
       "diagnostics": [
         "OR_PATTERN_BINDINGS_INCONSISTENT",
-        "OWN_CAST_REQUIRES_REUSABLE_SOURCE",
+        "ALIAS_PATTERN_OWNERSHIP_CONFLICT",
         "PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD",
         "PATTERN_CROSS_ARM_PLACE_STATE_MISMATCH"
       ],
@@ -1701,45 +1702,6 @@
       "predicates": [],
       "examples": []
     },
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
-    "authority_set": [
-      "LANGUAGE"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [],
-    "display_name": "Prefix literal authority law",
-    "feature_id": "prefix_literal_authority_law",
-    "feature_kind": "semantic_law",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Prefix literal authority law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
-      "examples": [],
-      "productions": [
-        "PrimaryExpr"
-      ],
-      "semantic_reference_productions": []
-    },
-    "trace_class": "syntax",
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

@@ -12695,6 +12695,14 @@ def main() -> int:
         "tools/validators/validate_pattern_dynamic_lowering_trace.py",
         "tools/validators/run_pattern_dynamic_lowering_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R59_Pattern_Dynamic_Lowering_Trace_Closure_R1.md",
+        "spec/contracts/pattern-match-ownership-split-trace-closure-r1.json",
+        "schemas/language/pattern-match-ownership-split-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/pattern-match-ownership-split-evidence-r1.json",
+        "schemas/language/pattern-match-ownership-split-evidence-r1.schema.json",
+        "tools/generators/build_pattern_match_ownership_split_evidence.py",
+        "tools/validators/validate_pattern_match_ownership_split_trace.py",
+        "tools/validators/run_pattern_match_ownership_split_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R60_Pattern_Match_Ownership_Split_Trace_Closure_R1.md",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([

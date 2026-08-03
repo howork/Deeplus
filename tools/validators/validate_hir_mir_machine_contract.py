@@ -1288,6 +1288,22 @@ def expected_semantic_plan(
         return ["PURE_INTRINSIC"], terminators, "LOWER"
     if kind == "PATTERN":
         identity = dispatch["identity_id"]
+        if identity == "PK-OR":
+            return ["PATTERN_PROBE", "BINDING_COMMIT"], [], "LOWER"
+        if identity == "PK-ALIAS":
+            return [
+                "PATTERN_PROBE",
+                "LOAN_BEGIN_SHARED",
+                "BINDING_COMMIT",
+            ], [], "LOWER"
+        if identity == "PK-MOVE":
+            return [
+                "PATTERN_PROBE",
+                "MOVE_RESERVE",
+                "PLACE_MOVE",
+                "BINDING_COMMIT",
+                "MOVE_CANCEL",
+            ], [], "LOWER"
         operations = ["PATTERN_PROBE"]
         if identity in AGGREGATE_PATTERNS:
             operations.append("TOTAL_PROJECTION")
@@ -1295,9 +1311,6 @@ def expected_semantic_plan(
             operations.append("BINDING_COMMIT")
         if identity == "PK-PIN":
             operations.insert(0, "PLACE_LOAD")
-        elif identity == "PK-MOVE":
-            operations.insert(0, "MOVE_RESERVE")
-            operations.append("PLACE_MOVE")
         return operations, [], "LOWER"
     raise KeyError(canonical(dispatch))
 
