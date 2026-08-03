@@ -11509,8 +11509,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "be302f2b616b61e978d8d889ae3ab3c49bced3df8f1ef60fea66e124bde1d1cc"
-            and len(grammar_bytes) == 67902
+            == "e43bcbc96084de1dc7aaae4bdabb9596dc568f784d5f09b26360e9123af5be9e"
+            and len(grammar_bytes) == 68175
             and len(production_names) == 644
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
@@ -11961,9 +11961,9 @@ def r27_grammar_topology_workspace_checks(
             or receipt.get("declared_reference_binding_count") != 644
             or receipt.get("external_symbol_count") != 40
             or receipt.get("source_root_count") != 6
-            or receipt.get("six_root_union_count") != 492
-            or receipt.get("six_root_shared_count") != 465
-            or receipt.get("six_root_unreachable_count") != 152
+            or receipt.get("six_root_union_count") != 494
+            or receipt.get("six_root_shared_count") != 467
+            or receipt.get("six_root_unreachable_count") != 150
             or receipt.get("aggregate_entry_root_count") != 2
             or receipt.get("unowned_orphan_count") != 0
             or receipt.get("illegal_cross_profile_edge_count") != 0
@@ -11993,8 +11993,8 @@ def r27_grammar_topology_workspace_checks(
                 "productions": 644,
                 "external_symbols": 40,
                 "source_roots": 6,
-                "six_root_union": 492,
-                "six_root_shared": 465,
+                "six_root_union": 494,
+                "six_root_shared": 467,
                 "unowned_orphans": 0,
                 "illegal_profile_edges": 0,
                 "mutations_rejected": 6,
@@ -12629,6 +12629,14 @@ def main() -> int:
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
         "tools/validators/run_scalar_numeric_fixed_operator_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R54_Scalar_Numeric_Fixed_Operator_Trace_Closure_R1.md",
+        "spec/contracts/lexical-trivia-source-root-attachment-r1.json",
+        "schemas/language/lexical-trivia-source-root-attachment-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/lexical-trivia-source-root-evidence-r1.json",
+        "schemas/language/lexical-trivia-source-root-evidence-r1.schema.json",
+        "tools/generators/build_lexical_trivia_source_root_evidence.py",
+        "tools/validators/validate_lexical_trivia_source_root_trace.py",
+        "tools/validators/run_lexical_trivia_source_root_trace_mutation_tests.py",
+        "decisions/language/Design_Deeplus_R55_Lexical_Trivia_Source_Root_Closure_R1.md",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([

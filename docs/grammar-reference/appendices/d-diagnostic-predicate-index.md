@@ -290,7 +290,7 @@
 | `DIRECTED_COROUTINE_GROUP_REQUIRES_FEATURE_GATE` | `parser` | `error` | `active` | Feature \`directed_coroutine_group\` is PREVIEW_DESIGN/nonactivatable and has no current source gate. |
 | `DOCUMENTATION_ONLY_FEATURE_NOT_SOURCE` | `checker` | `error` | `seed` | documentation feature is not ordinary source syntax in R49. |
 | `DOC_BLOCK_COMMENT_UNTERMINATED` | `lexer` | `error` | `active` | Documentation block comment opened by \`//!!\` was not closed by \`!!//\`. |
-| `DOC_COMMENT_NOT_ATTACHED_TO_DECL` | `lexer` | `error` | `active` | Documentation comment is not attached to a documentable declaration. |
+| `DOC_COMMENT_NOT_ATTACHED_TO_DECL` | `parser` | `error` | `active` | Documentation comment must form a contiguous DocGroup attached to the next documentable declaration in the same container. |
 | `DOLLAR_CLASS_SIDE_SEPARATOR_REMOVED_USE_COLON_COLON` | `checker` | `error` | `active` | Type-side structured declaration uses Type::selector; Type$$selector is removed. |
 | `DOLLAR_CONSTRUCTION_LHS_MUST_BE_TYPE` | `checker` | `error` | `active` | A left-hand side before ${...} is valid only when it resolves as a TypeRef. |
 | `DOLLAR_DECLARATION_SIGIL_REMOVED_USE_LET_VAR` | `checker` | `error` | `active` | Dollar field/member promotion sigils are removed; use let or var. |
@@ -1290,7 +1290,7 @@
 | `WITNESS_ORPHAN_RULE_VIOLATION` | `checker` | `error` | `active` | Witness declaration violates the trait/type ownership rule. |
 | `WITNESS_REQUIREMENT_MISSING` | `checker` | `error` | `seed` | Witness does not satisfy a required trait member. |
 | `WITNESS_REQUIREMENT_SIGNATURE_MISMATCH` | `checker` | `error` | `seed` | Witness requirement signature does not exactly match required throws/effects/receiver contract. |
-| `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` | `lexer` | `error` | `active` | A Word Comment attachment is ambiguous; use line structure or explicit placement so lossless CST attachment is deterministic. |
+| `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` | `parser` | `error` | `active` | A Word Comment requires exactly one eligible byte-adjacent left anchor. |
 | `WORD_COMMENT_EXPECTED_TEXT` | `lexer` | `error` | `active` | Backtick word comment requires a non-empty word comment body. |
 | `WORD_COMMENT_LOSSLESS_TRIVIA_REQUIRED` | `lexer` | `error` | `active` | Word Comment trivia must be preserved by parser, formatter, and LSP projections. |
 | `WORD_COMMENT_NOT_CALL_LABEL` | `lexer` | `error` | `active` | A word comment is lossless trivia, not a named argument label or overload selector. |

@@ -15,8 +15,18 @@ from typing import Any
 
 META_REL = "spec/traceability/implementation-target-profile-r1/catalog-metadata.json"
 SCHEMA_REL = "schemas/language/implementation-target-traceability-r1.schema.json"
-OVERLAY_REL = "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json"
-OVERLAY_SCHEMA_REL = "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json"
+OVERLAY_SPECS = [
+    (
+        "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
+        "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
+        40,
+    ),
+    (
+        "spec/traceability/implementation-target-profile-r1/lexical-trivia-source-root-evidence-r1.json",
+        "schemas/language/lexical-trivia-source-root-evidence-r1.schema.json",
+        38,
+    ),
+]
 FEATURE_DIR = "spec/features/catalog/chunks"
 STAGES = ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]
 OUTCOMES = ["POSITIVE", "BOUNDARY", "REJECT"]
@@ -143,25 +153,24 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
         if not condition:
             errors.append(code)
 
-    overlay = load(root / OVERLAY_REL)
-    overlay_entries = {
-        item["evidence_key"]: item for item in overlay.get("evidence_entries", [])
-    }
-    overlay_evidence_ids = {
-        evidence_id(item) for item in overlay.get("evidence_entries", [])
-    }
-    overlay_bindings = {
-        (item.get("feature_id"), item.get("stage"), item.get("outcome")): item
-        for item in overlay.get("bindings", [])
-    }
-    require(
-        len(overlay_entries) == len(overlay.get("evidence_entries", [])),
-        "OVERLAY_EVIDENCE_UNIQUE",
-    )
-    require(
-        len(overlay_bindings) == len(overlay.get("bindings", [])) == 40,
-        "OVERLAY_BINDING_EXACT_40",
-    )
+    overlays = [(rel, load(root / rel), expected) for rel, _, expected in OVERLAY_SPECS]
+    overlay_entries: dict[str, dict[str, Any]] = {}
+    overlay_bindings: dict[tuple[Any, Any, Any], dict[str, Any]] = {}
+    overlay_evidence_ids: set[str] = set()
+    for rel, overlay, expected in overlays:
+        entries = overlay.get("evidence_entries", [])
+        bindings = overlay.get("bindings", [])
+        require(len(bindings) == expected, f"OVERLAY_BINDING_EXACT:{rel}:{expected}")
+        for item in entries:
+            key = item.get("evidence_key")
+            require(key not in overlay_entries, f"OVERLAY_EVIDENCE_UNIQUE:{rel}:{key}")
+            overlay_entries[key] = item
+            overlay_evidence_ids.add(evidence_id(item))
+        for item in bindings:
+            cell = (item.get("feature_id"), item.get("stage"), item.get("outcome"))
+            require(cell not in overlay_bindings, f"OVERLAY_BINDING_UNIQUE:{rel}:{cell}")
+            overlay_bindings[cell] = item
+    require(len(overlay_bindings) == 78, "OVERLAY_BINDING_EXACT_TOTAL_78")
 
     feature_rows: list[dict[str, Any]] = []
     for path in sorted((root / FEATURE_DIR).glob("part-*.json")):
@@ -187,7 +196,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
         path = item.get("path", "")
         require(safe_rel(path), f"EVIDENCE_PATH_SAFE:{ev_id}")
         require((root / path).exists(), f"EVIDENCE_PATH_EXISTS:{ev_id}")
-        # R54 adds locator-resolution enforcement for its new evidence only.
+        # Bounded evidence-closure overlays add locator-resolution enforcement.
         # Legacy registry rows retain their R53 existence-level validation until
         # their own bounded evidence-closure cluster upgrades them.
         if ev_id in overlay_evidence_ids:
@@ -263,8 +272,8 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (2398, 1, 481, 1341),
-        "R54_EXACT_POST_OVERLAY_COUNTS",
+        (direct, delegated, na, blocked) == (2416, 1, 501, 1303),
+        "R55_EXACT_POST_OVERLAY_COUNTS",
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")
@@ -292,9 +301,10 @@ def main() -> int:
     try:
         import jsonschema
         jsonschema.Draft202012Validator(load(root / SCHEMA_REL)).validate(metadata)
-        jsonschema.Draft202012Validator(load(root / OVERLAY_SCHEMA_REL)).validate(
-            load(root / OVERLAY_REL)
-        )
+        for overlay_rel, overlay_schema_rel, _ in OVERLAY_SPECS:
+            jsonschema.Draft202012Validator(load(root / overlay_schema_rel)).validate(
+                load(root / overlay_rel)
+            )
         schema_error = None
     except ImportError:
         schema_error = None

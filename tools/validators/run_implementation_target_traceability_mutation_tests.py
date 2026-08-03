@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused mutation oracles for the R53 target traceability ledger."""
+"""Focused mutation oracles for the R55 target traceability ledger."""
 
 from __future__ import annotations
 
@@ -67,6 +67,36 @@ def main() -> int:
         "not_applicable": None,
     })
     mutants.append(("R54_OVERLAY_CELL_REBLOCKED", metadata, value))
+    meta = copy.deepcopy(metadata)
+    pointer = next(
+        item for item in meta["evidence_registry"]
+        if item.get("locator_kind") == "JSON_POINTER"
+        and item.get("path", "").endswith(
+            "lexical-trivia-source-root-attachment-r1.json"
+        )
+    )
+    pointer["locator"] = "/__missing_r55_pointer__"
+    mutants.append(("R55_EVIDENCE_LOCATOR_MISSING", meta, rows))
+    value = copy.deepcopy(rows)
+    overlay_row = next(
+        row for row in value
+        if row["feature_id"] == "comment_trivia_lexical_priority_law"
+    )
+    test_stage = next(
+        stage for stage in overlay_row["stages"]
+        if stage["stage"] == "CONFORMANCE_TESTS"
+    )
+    overlay_cell = next(
+        cell for cell in test_stage["outcomes"]
+        if cell["outcome"] == "POSITIVE"
+    )
+    overlay_cell.update({
+        "disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "evidence_refs": [],
+        "blocked_gap_ids": ["IR-XCUT-P1-054"],
+        "not_applicable": None,
+    })
+    mutants.append(("R55_OVERLAY_CELL_REBLOCKED", metadata, value))
 
     results = []
     for mutation_id, meta, candidate_rows in mutants:

@@ -17,7 +17,10 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "spec/traceability/implementation-target-profile-r1"
 CHUNKS = OUT / "chunks"
-OVERLAY = OUT / "scalar-numeric-fixed-operator-evidence-r1.json"
+OVERLAYS = [
+    OUT / "scalar-numeric-fixed-operator-evidence-r1.json",
+    OUT / "lexical-trivia-source-root-evidence-r1.json",
+]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
     "callable_responsibility_profile_core",
@@ -67,18 +70,20 @@ def evidence_id(evidence_class: str, path: str, locator_kind: str, locator: str,
 
 
 def main() -> None:
-    overlay = read_json(OVERLAY)
-    overlay_evidence = {
-        item["evidence_key"]: item for item in overlay["evidence_entries"]
-    }
-    overlay_bindings = {
-        (item["feature_id"], item["stage"], item["outcome"]): item
-        for item in overlay["bindings"]
-    }
-    if len(overlay_evidence) != len(overlay["evidence_entries"]):
-        raise ValueError("R54_OVERLAY_EVIDENCE_KEYS_NOT_UNIQUE")
-    if len(overlay_bindings) != len(overlay["bindings"]):
-        raise ValueError("R54_OVERLAY_BINDING_CELLS_NOT_UNIQUE")
+    overlays = [(path, read_json(path)) for path in OVERLAYS]
+    overlay_evidence: dict[str, dict[str, Any]] = {}
+    overlay_bindings: dict[tuple[str, str, str | None], dict[str, Any]] = {}
+    for path, overlay in overlays:
+        for item in overlay["evidence_entries"]:
+            key = item["evidence_key"]
+            if key in overlay_evidence:
+                raise ValueError(f"OVERLAY_EVIDENCE_KEY_DUPLICATE:{path.name}:{key}")
+            overlay_evidence[key] = item
+        for item in overlay["bindings"]:
+            cell = (item["feature_id"], item["stage"], item["outcome"])
+            if cell in overlay_bindings:
+                raise ValueError(f"OVERLAY_BINDING_CELL_DUPLICATE:{path.name}:{cell}")
+            overlay_bindings[cell] = item
 
     feature_rows: list[dict[str, Any]] = []
     source_locations: dict[str, tuple[str, int]] = {}
@@ -178,7 +183,7 @@ def main() -> None:
             return value
         if value.get("disposition") != "APPLICABLE_BLOCKED_BY_GAP":
             raise ValueError(
-                f"R54_OVERLAY_EXPECTED_BLOCKED:{feature_id}:{stage}:{outcome}"
+                f"OVERLAY_EXPECTED_BLOCKED:{feature_id}:{stage}:{outcome}"
             )
         refs = []
         for key in binding["evidence_keys"]:
@@ -357,9 +362,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r54-local-scalar-numeric-fixed-operator-trace-closure-r1",
+        "revision": "r55-local-lexical-trivia-source-root-closure-r1",
         "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "7f540c2c593911ec19003b43ff48652615becfc6",
+        "local_predecessor_commit": "89ded1ab5c9110476f7043e5f44b71ddd72d19a1",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),
@@ -374,10 +379,10 @@ def main() -> None:
         "test_outcome_order": OUTCOMES,
         "chunks": chunks,
         "applied_evidence_overlays": [{
-            "path": OVERLAY.relative_to(ROOT).as_posix(),
+            "path": path.relative_to(ROOT).as_posix(),
             "feature_count": len(overlay["feature_ids"]),
             "binding_count": len(overlay["bindings"]),
-        }],
+        } for path, overlay in overlays],
         "evidence_registry": [evidence[key] for key in sorted(evidence)],
         "derived_counts": {
             "feature_rows": len(rows_out),

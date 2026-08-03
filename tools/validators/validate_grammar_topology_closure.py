@@ -549,12 +549,13 @@ def mutation_receipts(documents: dict[str, Any], generator: Any) -> list[dict[st
 
     def detach_library_items(docs: dict[str, Any]) -> None:
         docs["grammar_text"] = docs["grammar_text"].replace(
-            "LibrarySourceFile ::= ModuleDecl? LibrarySourceItem* ;",
-            "LibrarySourceFile ::= ModuleDecl? ;",
+            "LibrarySourceFile ::= ModuleDecl? LibrarySourceItem* EOF_TOKEN ;",
+            "LibrarySourceFile ::= ModuleDecl? EOF_TOKEN ;",
             1,
         )
         disposition_row(docs, "LibrarySourceFile")["referenced_productions"] = [
-            "ModuleDecl"
+            "EOF_TOKEN",
+            "ModuleDecl",
         ]
 
     def add_stable_to_preview_edge(docs: dict[str, Any]) -> None:

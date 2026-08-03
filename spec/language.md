@@ -106,6 +106,10 @@ No whitespace, newline, or comment may appear between `.`, `\`, and the escaped 
 
 Whitespace and comments are trivia except where a boundary policy requires attachment. Line comments, block comments, documentation comments, and word comments follow scanner priority; comment openers win over operator decompositions.
 
+At a shared comment prefix, the scanner uses the fixed longest/specific-first order `//!!` documentation block, `//!` documentation line, `//-` nested block, then `//` ordinary line comment. A word comment consumes the maximal nonempty `UnicodeXIDContinue` sequence after its backtick. Its terminator is not consumed and is scanned again in the enclosing goal. The backtick must be byte-adjacent to exactly one already completed eligible left anchor; the comment is preserved once as CST trivia and contributes no AST, name, label, overload key, lookup fact, or runtime behavior.
+
+Consecutive documentation comments form one `DocGroup` only inside the same declaration container. Horizontal whitespace and at most one physical line break may separate adjacent documentation comments or the final comment from its owner. A blank line, ordinary comment, word comment, shebang, container boundary, or EOF is an attachment fence. An annotation cluster may intervene when it is itself attached to the same underlying declaration. Public and private documentable declarations may own a group; import/use/export directives, grouping wrappers, accessor children, local declarations, reserved slots, and recovery nodes may not. The parser attachment pass diagnoses a detached group and preserves its trivia without manufacturing an AST attachment.
+
 The parser may admit horizontal whitespace and comments between `#` and a role word only on the same physical line. A physical line break is rejected. The formatter rehomes comments safely and prints canonical attached spelling such as `#get`, `#pure`, and `#entry`. Literal sigils are different: `#raw`, `#bytes`, collection literal sigils, and NumericArray literal sigils are attached scanner/parser owners and must not be reconstructed from a separated `#` plus identifier.
 
 ## 4. Numeric, character, string, and bytes literals
@@ -1837,7 +1841,7 @@ domains below:
 | call/materialization named unfold | `**options` |
 | linear product expression | spaced infix `a ** b` |
 
-The CST must keep these owners distinguishable even if a downstream AST normalizes punctuation. Source roots must consume EOF, and a parser receipt must identify the exact Grammar hash, feature profile, source role, and input bytes.
+The CST must keep these owners distinguishable even if a downstream AST normalizes punctuation. Each of the six direct source roots—Stable and Preview variants of `LibrarySourceFile`, `ExecutableSourceFile`, and `ScriptSourceFile`—owns an explicit final `EOF_TOKEN`. Success requires every trailing trivia occurrence to be owned exactly once, the next parser token to be EOF, and the scanner byte cursor to equal the input byte length. A committed lexical or source-item error wins over the generic `SOURCE_TRAILING_TOKENS` fallback, which points at the first otherwise valid residual token. A failed root may retain a recovery CST but commits no canonical source-unit AST. A parser receipt must identify the exact Grammar hash, feature profile, source role, and input bytes.
 
 The source carrier fixes one role (`library`, `executable`, or `script`) and one
 activation profile (`stable` or `preview`) before scanning or parsing. These two
@@ -1848,7 +1852,7 @@ its dependency closure atomically. It cannot select or rewrite a role, profile,
 or root. A mismatch produces no activated feature and no canonical source-unit
 AST.
 
-The exact 643 Grammar productions are bound by the canonical production-
+The exact 644 Grammar productions are bound by the canonical production-
 disposition registry. Every production has exactly one disposition: lossless
 CST-only, canonical AST node, deterministic normalization, external parser
 entry, or reject-before-AST recovery. The lossless CST preserves every source
@@ -3157,7 +3161,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `CONFORMS_REQUIRES_KEYWORD` [error]: Trait/capability conformance must use `conforms` in the stable profile.
 - `CONTEXT_KEYWORD_RESERVED_FOR_CONTEXT_ROLE` [error]: `context` is recognized only in the Stable explicit context parameter, argument, and function-type role positions; it never requests ambient lookup.
 - `DOC_BLOCK_COMMENT_UNTERMINATED` [error]: Documentation block comment opened by `//!!` was not closed by `!!//`.
-- `DOC_COMMENT_NOT_ATTACHED_TO_DECL` [error]: Documentation comment is not attached to a documentable declaration.
+- `DOC_COMMENT_NOT_ATTACHED_TO_DECL` [error]: A contiguous documentation-comment group is not attached to the next documentable declaration in the same declaration container.
 - `CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED` [error]: A callable writes one nonempty effect term per repeated `effects` clause; `effects {}` is reserved for the explicit empty row.
 - `CALLABLE_THROWS_CLAUSE_REPETITION_REQUIRED` [error]: A callable writes one error-set term per repeated `throws` clause; `|` remains type-level ErrorSet algebra rather than callable-list punctuation.
 - `CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED` [error]: `conform Trait { ... }` must be nested in a Class or Enum body whose header declares the same `conforms Trait`; it has no `for` clause.
@@ -3182,7 +3186,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `UNICODE_ESCAPE_OUT_OF_RANGE` [error]: Unicode scalar escape is above U+10FFFF.
 - `UNICODE_ESCAPE_SURROGATE_NOT_ALLOWED` [error]: Unicode scalar escape cannot encode a surrogate.
 - `UNKNOWN_NUMERIC_LITERAL_SUFFIX` [error]: Unknown numeric literal suffix; use the closed integer or float suffix table.
-- `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` [error]: A Word Comment attachment is ambiguous; use line structure or explicit placement so lossless CST attachment is deterministic.
+- `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` [error]: A Word Comment must be byte-adjacent to exactly one eligible completed left anchor; its lossless CST owner is otherwise ambiguous.
 - `WORD_COMMENT_EXPECTED_TEXT` [error]: Backtick word comment requires a non-empty word comment body.
 - `WORD_COMMENT_LOSSLESS_TRIVIA_REQUIRED` [error]: Word Comment trivia must be preserved by parser, formatter, and LSP projections.
 - `WORD_COMMENT_NOT_CALL_LABEL` [error]: A word comment is lossless trivia, not a named argument label or overload selector.

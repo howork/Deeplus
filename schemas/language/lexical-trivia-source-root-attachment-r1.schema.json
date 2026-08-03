@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/lexical-trivia-source-root-attachment-r1.schema.json",
+  "title": "Deeplus R55 lexical trivia and source-root attachment contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "candidate_status",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "surface_change_count",
+    "comment_opener_priority",
+    "documentation_attachment",
+    "word_comment",
+    "source_root_consumption",
+    "stage_fences",
+    "new_acceptance_cases",
+    "new_acceptance_case_count",
+    "governance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/lexical-trivia-source-root-attachment-r1.schema.json"},
+    "schema": {"const": "deeplus.lexical-trivia-source-root-attachment/r1"},
+    "revision": {"const": "r55-local-lexical-trivia-source-root-attachment-r1"},
+    "candidate_status": {"const": "STABLE_DESIGN_CONTRACT_LOCAL_CANDIDATE"},
+    "canonical_baseline_commit": {"const": "39a5d50cc770341c4b9776d00d84520b780d0c62"},
+    "local_predecessor_commit": {"const": "89ded1ab5c9110476f7043e5f44b71ddd72d19a1"},
+    "surface_change_count": {"const": 0},
+    "comment_opener_priority": {"type": "object"},
+    "documentation_attachment": {
+      "type": "object",
+      "required": ["documentable_owner_productions", "documentable_owner_count", "attachment_fences", "failure_diagnostic", "diagnostic_owner", "rule_id"]
+    },
+    "word_comment": {
+      "type": "object",
+      "required": ["scanner_primitive_exact_domain", "eligible_left_anchor_node_classes", "eligible_left_anchor_node_class_count", "diagnostic_precedence", "ambiguous_attachment_exact_predicate", "rule_id"]
+    },
+    "source_root_consumption": {
+      "type": "object",
+      "required": ["direct_roots", "direct_root_count", "required_terminal", "success_predicates", "failure_order", "rule_id"]
+    },
+    "stage_fences": {"type": "object"},
+    "new_acceptance_cases": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {"$ref": "#/$defs/case"}
+    },
+    "new_acceptance_case_count": {"const": 10},
+    "governance": {
+      "type": "object",
+      "required": ["semantic_p0", "feature_p1", "m13_actions", "product_lanes", "product_execution_receipt_count", "github_publication"]
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "feature_id", "outcome", "source", "expected", "diagnostic_or_null"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^R55-LEX-[PBN]-[0-9]{3}$"},
+        "feature_id": {"type": "string"},
+        "outcome": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "source": {"type": "string", "minLength": 1},
+        "expected": {"type": "string", "minLength": 1},
+        "diagnostic_or_null": {"type": ["string", "null"]}
+      }
+    }
+  }
+}
