@@ -32,8 +32,9 @@ shape admission을 분리한다.
 
 ## 5. 핵심 모델
 
-- `#[1, 2, 3]`: inferred row vector
-- `#[1; 2; 3]`: inferred column vector
+- `#[1, 2, 3]`: rank 1, shape `[3]`, `ROW` orientation
+- `#[1; 2; 3]`: rank 1, shape `[3]`, `COLUMN` orientation
+- `#1,3[...]` / `#3,1[...]`: 서로 구별되는 exact rank-2 matrix
 - `#2,3[...]`: exact rank-2 shape
 - `a * b`: admitted same-shape elementwise multiply
 - `u *+ v`: equal-length rank-1 dot product
@@ -41,7 +42,10 @@ shape admission을 분리한다.
 - `A^`: attached transpose readonly view
 - `A ~ adjoint`: named complex conjugate transpose
 
-implicit broadcasting, rank conversion, element widening은 없다.
+`#`와 `[`는 붙여 쓴다. 두 inferred form의 orientation은 separator가
+결정하며 expected result type이 다시 고르지 않는다. ordinary List를
+NumericArray로 바꾸거나 implicit broadcasting, nested-rank inference,
+element widening을 삽입하지 않는다.
 
 ## 6. 단계별 예제
 
@@ -69,9 +73,10 @@ view provenance 또는 allocation owner, element failure 정책을 차례로
 남긴다. 계산값이 맞아도 이 다섯 항목 중 하나가 암묵적이면 Deeplus다운
 수치 계약으로 완성되지 않은 것이다.
 
-shape trace를 표처럼 읽어 보자. row vector는 rank 1과 row orientation,
-column vector는 rank 1과 column orientation을 함께 보존한다. exact
-matrix `#2,3[...]`은 두 axis 길이가 각각 2와 3이다. `u *+ v`에서는 두
+shape trace를 표처럼 읽어 보자. row vector와 column vector는 모두
+rank 1, shape `[N]`이며 각각 `ROW`와 `COLUMN` orientation을 함께
+보존한다. exact `#1,N[...]`과 `#N,1[...]`은 이들과 동일시되지 않는
+rank-2 matrix다. `#2,3[...]`은 두 axis 길이가 각각 2와 3이다. `u *+ v`에서는 두
 vector 길이를 같게 증명한 뒤 scalar result를 만들고, `A ** B`에서는
 inner dimension을 같게 증명한 뒤 outer dimension으로 result shape를
 정한다. orientation이나 rank가 맞지 않으면 element 값이 같은 배열도

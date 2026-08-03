@@ -100,7 +100,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1483, "predicates": 281,
+    "features": 723, "diagnostics": 1484, "predicates": 281,
     "predicate_fixtures": 864, "no_go": 156,
     "hard_keywords": 29, "contextual_words": 105,
 }
@@ -11509,8 +11509,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "e43bcbc96084de1dc7aaae4bdabb9596dc568f784d5f09b26360e9123af5be9e"
-            and len(grammar_bytes) == 68175
+            == "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
+            and len(grammar_bytes) == 68181
             and len(production_names) == 644
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {

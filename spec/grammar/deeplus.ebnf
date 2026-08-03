@@ -1299,7 +1299,7 @@ UnfoldClause ::= "for" "..." Pattern "in" Expr ;
 NumericArrayLiteral ::= ShapeInferredArrayLiteral
                       | ShapeInferredColumnVectorLiteral
                       | ExactShapeArrayLiteral ;
-ShapeInferredArrayLiteral ::= "#" "[" ExpressionList? "]" ;
+ShapeInferredArrayLiteral ::= "#" "[" Expr ("," Expr)* ","? "]" ;
 ShapeInferredColumnVectorLiteral ::= "#" "[" Expr (";" Expr)+ "]" ;
 ExactShapeArrayLiteral ::= "#" StaticDimensionList "[" ArrayInitializer? "]" ;
 ArrayInitializer ::= ShapedRepeatInitializer

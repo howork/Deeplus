@@ -628,7 +628,7 @@
 | `IfLetClause` | `"if" "let" Pattern "=" Expr` | 1295 |
 | `UnfoldClause` | `"for" "..." Pattern "in" Expr` | 1296 |
 | `NumericArrayLiteral` | `ShapeInferredArrayLiteral \| ShapeInferredColumnVectorLiteral \| ExactShapeArrayLiteral` | 1299 |
-| `ShapeInferredArrayLiteral` | `"#" "[" ExpressionList? "]"` | 1302 |
+| `ShapeInferredArrayLiteral` | `"#" "[" Expr ("," Expr)* ","? "]"` | 1302 |
 | `ShapeInferredColumnVectorLiteral` | `"#" "[" Expr (";" Expr)+ "]"` | 1303 |
 | `ExactShapeArrayLiteral` | `"#" StaticDimensionList "[" ArrayInitializer? "]"` | 1304 |
 | `ArrayInitializer` | `ShapedRepeatInitializer \| ShapedGeneratorInitializer \| ShapedElementSequence` | 1305 |

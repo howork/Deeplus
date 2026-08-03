@@ -20,6 +20,7 @@ CHUNKS = OUT / "chunks"
 OVERLAYS = [
     OUT / "scalar-numeric-fixed-operator-evidence-r1.json",
     OUT / "lexical-trivia-source-root-evidence-r1.json",
+    OUT / "numeric-array-shape-inferred-evidence-r1.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -362,9 +363,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r55-local-lexical-trivia-source-root-closure-r1",
+        "revision": "r56-local-numeric-array-shape-inferred-closure-r1",
         "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "89ded1ab5c9110476f7043e5f44b71ddd72d19a1",
+        "local_predecessor_commit": "f4e194d414a024b1fbf93549cdbe3d0cc59fb810",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),

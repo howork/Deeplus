@@ -184,7 +184,7 @@
 | `COLLECTION_OPERATOR_REQUIRES_NAMED_MESSAGE` | `checker` | `error` | `seed` | Collection operator requires named message |
 | `COLLECTION_SNAPSHOT_PROFILE_NOT_ADMITTED` | `checker` | `error` | `active` | snapshot must produce an independent value with explicit copy or copy-on-write responsibility. |
 | `COLLECTION_TRAVERSAL_ROLE_MISMATCH` | `checker` | `error` | `active` | A collection value and a traversal handle are distinct responsibilities and are not automatically interchangeable. |
-| `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` | `checker` | `error` | `active` | Column-vector semicolon form must follow the current profile orientation law: \`#[a,b]\` is rank-1 \`#N[T]\`; \`#[a;b]\` is column \`#N,1[T]\`; explicit row matrix is \`#1,N[...]\`. |
+| `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` | `checker` | `error` | `active` | Shape-inferred vector orientation is exact: \`#[a,b]\` is rank-1 shape \`[N]\` with \`ROW\` orientation; \`#[a;b]\` is rank-1 shape \`[N]\` with \`COLUMN\` orientation; exact rank-2 matrices \`#1,N[...]\` and \`#N,1[...]\` remain distinct. |
 | `COMMA_BINDING_REQUIRES_FIXED_TUPLE` | `checker` | `error` | `active` | A bare comma binding requires one fixed Tuple product; use a bracket Pattern for an admitted List-shaped subject. |
 | `COMPANION_OBJECT_NOT_CURRENT` | `checker` | `error` | `active` | Deeplus has no implicit companion object or singleton; use the exact nominal, extension, Trait-associated, or runtime owner domain. |
 | `COMPARISON_CHAIN_MIXED_DIRECTION_REQUIRES_EXPLICIT_AND` | `checker` | `error` | `active` | Mixed-direction comparison chains require explicit \`and\`. |
@@ -717,6 +717,7 @@
 | `NUMARR_ELEMENT_COUNT_MISMATCH` | `checker` | `error` | `active` | NumericArray literal element count does not match shape. |
 | `NUMARR_ELEMENT_NOT_NUMERIC` | `checker` | `error` | `active` | NumericArray element must be an admitted numeric type. |
 | `NUMARR_ELEMENT_NOT_PLAIN_NUMERIC` | `checker` | `error` | `active` | NumericArray element must satisfy numeric/plain/no-drop law. |
+| `NUMARR_ELEMENT_TYPE_MISMATCH` | `checker` | `error` | `active` | Shape-inferred NumericArray elements must have one exact normalized admitted numeric type. |
 | `NUMARR_ELEMENT_TYPE_REQUIRED` | `checker` | `error` | `active` | NumericArray type façade requires an element type. |
 | `NUMARR_EXPECTED_SHAPE_MISMATCH` | `checker` | `error` | `active` | NumericArray literal shape mismatches expected type. |
 | `NUMARR_INFIX_POWER_NOT_ADMITTED` | `checker` | `error` | `active` | NumericArray \`A ^ B\` infix power is not admitted; use \`**\`, \`*+\`, elementwise \`^\` where specified, or a named API. |
@@ -1351,8 +1352,8 @@
 | `CollectionFreezeAdmitted` | CollectionFreezeAdmitted | require exclusive mutable ownership; transition to a declared immutable/shareable representation; expose copy/allocation/effect residue and do not call this snapshot | `DESIGN_STATIC_NOT_RUN` |
 | `CollectionSnapshotAdmitted` | CollectionSnapshotAdmitted | produce an independent point-in-time value; declare copy or copy-on-write cost; do not freeze or invalidate the source | `DESIGN_STATIC_NOT_RUN` |
 | `CollectionTraversalRoleAdmitted` | CollectionTraversalRoleAdmitted | classify storage/shape/index ownership separately from traversal; retain single-pass/multipass and borrow/consume residue; reject automatic Collection-to-Iterator equivalence | `DESIGN_STATIC_NOT_RUN` |
-| `ColumnVectorSemicolonGateAdmitted` | ColumnVectorSemicolonGateAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `ColumnVectorSemicolonOrientationAdmitted` | Column-vector semicolon orientation | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ColumnVectorSemicolonGateAdmitted` | ColumnVectorSemicolonGateAdmitted | Deterministic shape-inferred NumericArray row/column gate: the first attached top-level separator fixes orientation, mixed separators reject, and element/shape admission completes before lowering; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ColumnVectorSemicolonOrientationAdmitted` | Column-vector semicolon orientation | Deterministic attached-separator orientation algorithm for shape-inferred NumericArray literals; both row and column forms remain rank 1 and exact rank-2 syntax remains distinct; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ComplexLiteralAndOperatorAdmitted` | Complex literal and closed numeric operation | Admit attached floating i literals and the closed Float32/Float64 Complex numeric profile without implicit Rep conversion. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ComputeResidualUnion` | ComputeResidualUnion | Compute exact remaining alternatives after ordered pattern coverage. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ConciseCallableResponsibilityPreviewAdmitted` | Concise callable responsibility Preview admission | Specify closed omission normalization and body-row subset checking without changing current private inference. | `DESIGN_STATIC_NOT_RUN` |
@@ -1458,8 +1459,8 @@
 | `MutableCallableEnvironmentAdmitted` | MutableCallableEnvironmentAdmitted | require environment_receiver=mutable; acquire exactly one exclusive mutable environment place for the invocation; reject overlapping mutable access and reentrant invocation without a separately admitted proof | `DESIGN_STATIC_NOT_RUN` |
 | `NamedConformanceAdmitted` | NamedConformanceAdmitted | Admit one static named conformance identity without adding it to automatic witness search. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NamedEvidenceExcludedFromAutomaticResolution` | NamedEvidenceExcludedFromAutomaticResolution | Keep named evidence out of the automatic WitnessResolution candidate set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `NamedExtensionSetAdmitted` | named extension set identity | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `NamedExtensionSetAdmitted_R48_48` | NamedExtensionSetCurrentAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NamedExtensionSetAdmitted` | named extension set identity | Deterministic NumericArray literal element admission: nonempty numeric PlainValue elements use one exact normalized type unless an exact expected type admits only contextual numeric-literal representability; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NamedExtensionSetAdmitted_R48_48` | NamedExtensionSetCurrentAdmitted | Deterministic shape-inferred NumericArray element admission algorithm: require a nonempty homogeneous normalized numeric PlainValue sequence, permit only existing contextual literal adaptation, and forbid widening or aggregate rewrites; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NamedRestCollectorAdmitted` | NamedRestCollectorAdmitted | Named-rest parameter and function-type residue use \`***\`; call/materialization named unfold uses \`**\`. Product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NamedRestParameterRecordAndLastPosition` | NamedRestParameterRecordAndLastPosition | named_rest_parameter_count is exactly one; named_rest_parameter_type is exactly Record; named_rest_parameter_index equals parameter_count - 1; dispatch multiple-count before non-Record type before nonfinal position | `DESIGN_STATIC_NOT_RUN` |
 | `NarrowUnionByPattern` | NarrowUnionByPattern | Refine Phi by the alternatives selected by a pattern without changing the declared semantic type. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1470,7 +1471,7 @@
 | `NormalizeUnion` | NormalizeUnion | Admit a closed Union only when every finite R0 alternative pair is proven disjoint. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NullaryLambdaExpectedContextAdmitted` | NullaryLambdaExpectedContextAdmitted | an arrow-elided contextual brace lambda requires an independently fixed zero-parameter callable type; empty body is admitted only when the expected result is Unit; a multiline non-Unit body ends in exactly one FinalRetStmt while a Unit body may fall through; without expected callable context the surface is rejected or uses the separately gated nullary inference route | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayContextAnchorAdmitted` | NumericArray context anchor | Closed NumericArray context-provider polarity and nearest-owner algorithm; product checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `NumericArrayElementAdmitted` | NumericArrayElement | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NumericArrayElementAdmitted` | NumericArrayElement | Deterministic shape-inferred NumericArray element admission algorithm: require a nonempty homogeneous normalized numeric PlainValue sequence, permit only existing contextual literal adaptation, and forbid widening or aggregate rewrites; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NumericArrayElementwiseSameShapeAdmitted` | NumericArrayElementwiseSameShapeAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayInfixPowerRequiresPreview` | NumericArrayInfixPowerRequiresPreview | NumericArray infix \`^\` requires Preview gate. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayPostfixTransposeAdmitted` | NumericArray postfix transpose | Admit owner-bounded readonly NumericArray view. | `DESIGN_STATIC_NOT_RUN` |

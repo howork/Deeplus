@@ -83,7 +83,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NamedExtensionSetAdmitted",
     "source_name": "named extension set identity",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Deterministic NumericArray literal element admission: nonempty numeric PlainValue elements use one exact normalized type unless an exact expected type admits only contextual numeric-literal representability; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -176,7 +176,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NamedExtensionSetAdmitted_R48_48",
     "source_name": "NamedExtensionSetCurrentAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Deterministic shape-inferred NumericArray element admission algorithm: require a nonempty homogeneous normalized numeric PlainValue sequence, permit only existing contextual literal adaptation, and forbid widening or aggregate rewrites; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1003,7 +1003,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NumericArrayElementAdmitted",
     "source_name": "NumericArrayElement",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Deterministic shape-inferred NumericArray element admission algorithm: require a nonempty homogeneous normalized numeric PlainValue sequence, permit only existing contextual literal adaptation, and forbid widening or aggregate rewrites; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1017,20 +1017,27 @@
       "element_types"
     ],
     "feature_refs": [
+      "numeric_array_shape_inferred_value_literal",
       "numeric_array_lsp_responsibility_card",
       "numeric_array_sharp_shape_literal_msp"
     ],
     "diagnostic_refs": [
-      "RCTS_V5_VARIANT_MISMATCH"
+      "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "NUMARR_ELEMENT_NOT_NUMERIC",
+      "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+      "NUMARR_ELEMENT_TYPE_MISMATCH",
+      "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "builtin numeric initial slice",
-      "PlainValue-admissible",
-      "no lifecycle or backend authority"
+      "element_count is at least one",
+      "every normalized element type belongs to the admitted numeric domain and satisfies PlainValue with no drop responsibility",
+      "without an expected element type every normalized element type is exactly identical",
+      "with an exact expected element type only existing contextual numeric-literal representability may adapt a literal",
+      "Union synthesis, widening, broadcast, List rewrite, nested-rank inference, result-directed orientation, and runtime inference are forbidden"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -1048,33 +1055,46 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "builtin numeric initial slice",
-      "PlainValue-admissible",
-      "no lifecycle or backend authority"
+      "element expressions are typed without evaluating them",
+      "aliases are normalized before exact identity comparison",
+      "an expected element type, when present, is one exact admitted numeric PlainValue type"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize aliases and exact numeric type identities for every element; preserve numeric-literal kind and exact value; preserve an exact expected element type without constructing a Union, common supertype, widened type, broadcast, List, nested rank, or runtime inference request",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record NumericArrayElementAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the closed RCTS-V5 descriptor and reject an empty element list",
+      "scan source-ordered elements once and reject the first nonnumeric element, then the first element that is not PlainValue or has drop responsibility",
+      "when no expected element type exists require every normalized element type to equal the first exactly",
+      "when an exact expected element type exists require nonliteral elements to have that exact type and permit literals only through the existing contextual numeric-literal representability rule",
+      "reject the first contextually adapted numeric literal whose exact value is not representable, otherwise seal the exact element type before lowering"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+    "secondary_diagnostics": [
+      "NUMARR_ELEMENT_NOT_NUMERIC",
+      "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+      "NUMARR_ELEMENT_TYPE_MISMATCH",
+      "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE"
+    ],
     "positive_fixture_ids": [
       "PF-NumericArrayElementAdmitted-POS"
     ],
     "negative_fixture_ids": [
       "PF-NumericArrayElementAdmitted-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "evaluation_order": "empty -> numeric -> PlainValue/no-drop -> exact normalized type -> contextual literal representability -> seal",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "diagnostic_dispatch": {
+      "1_empty_element_list": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+      "2_first_nonnumeric_element": "NUMARR_ELEMENT_NOT_NUMERIC",
+      "3_first_nonplain_or_drop_element": "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+      "4_exact_normalized_element_type_mismatch": "NUMARR_ELEMENT_TYPE_MISMATCH",
+      "5_contextual_numeric_literal_not_representable": "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE"
+    },
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "60ed6b924fbc91f7dbaa3ac0bf4277484d78dad042861e6d1344fe5f51df893a",

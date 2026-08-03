@@ -980,9 +980,22 @@ An explicitly bounded List `[L..U: elements]` preserves the declared `L..U` logi
 
 Prefix/postfix `++` and `--` expressions do not exist. Mutation is written as an explicit assignment under the single-place transaction law in §17. NumericArray axes, suffix coordinates, and shape coordinates are separate typed domains. Each built-in default source-visible NumericArray axis nevertheless has the explicit domain `1..dimension`; its axis type is not supplied by an ordinary sequence witness. A complete rank-matching coordinate list selects one element. Wrong axis type/count is rejected statically, and a dynamic coordinate outside its axis domain raises `IndexError::outOfLogicalDomain`.
 
-NumericArray literals are `#[...]` and rank-qualified `#N[...]`. `array` and
-`case` are ordinary identifiers with no special token, parser role, resolver
-namespace, checker intrinsic, or formatter rule. Deeplus supplies no
+NumericArray literals are shape-inferred `#[...]` forms and exact-shape
+`#N[...]` forms. In every NumericArray literal head, `#` and the following `[` or
+static dimension list are attached with no intervening trivia. The comma form
+`#[e1, e2, ...]` is nonempty and produces rank 1, shape `[N]`, with `ROW`
+orientation; one trailing comma is permitted. The semicolon form
+`#[e1; e2; ...]` is nonempty and produces the same rank 1, shape `[N]`, with
+`COLUMN` orientation. Orientation is therefore selected solely by the literal
+separator, never by the expected result type. The exact forms `#1,N[...]` and
+`#N,1[...]` remain distinct rank-2 matrices and are not alternate spellings of
+the two rank-1 forms. Neither an expected type nor element context may rewrite
+an ordinary List, insert broadcasting, or infer nested rank for these literals.
+All shape-inferred elements must have one exact normalized admitted numeric type;
+otherwise the checker emits `NUMARR_ELEMENT_TYPE_MISMATCH`.
+
+`array` and `case` are ordinary identifiers with no special token, parser role,
+resolver namespace, checker intrinsic, or formatter rule. Deeplus supplies no
 predeclared or intrinsic `Array<T>` or `Case` type binding, but either spelling
 may be introduced by an ordinary user declaration and then resolves normally.
 Enum alternatives remain variants identified by their declared name and nominal
@@ -2369,7 +2382,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `COLLECTION_GET_REQUIRES_REUSABLE_VALUE` [error]: By-value collection get requires reusable value law.
 - `COLLECTION_SNAPSHOT_PROFILE_NOT_ADMITTED` [error]: snapshot must produce an independent value with explicit copy or copy-on-write responsibility.
 - `COLLECTION_TRAVERSAL_ROLE_MISMATCH` [error]: A collection value and a traversal handle are distinct responsibilities and are not automatically interchangeable.
-- `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` [error]: Column-vector semicolon form must follow the current profile orientation law: `#[a,b]` is rank-1 `#N[T]`; `#[a;b]` is column `#N,1[T]`; explicit row matrix is `#1,N[...]`.
+- `COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED` [error]: Column-vector semicolon form must follow the current profile orientation law: `#[a,b]` is rank 1, shape `[N]`, with `ROW` orientation; `#[a;b]` is rank 1, shape `[N]`, with `COLUMN` orientation; exact `#1,N[...]` and `#N,1[...]` are distinct rank-2 matrices.
 - `COMPARISON_CHAIN_MIXED_DIRECTION_REQUIRES_EXPLICIT_AND` [error]: Mixed-direction comparison chains require explicit `and`.
 - `COMPARISON_CHAIN_OPERAND_HAS_EFFECTS` [error]: Comparison chain operands should not hide effects inside mathematical-looking predicates.
 - `COMPARISON_CHAIN_OPERATOR_MUST_BE_PURE` [error]: Comparison chain operators must be pure and no-throw.
@@ -2698,6 +2711,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMARR_ELEMENT_COUNT_MISMATCH` [error]: NumericArray literal element count does not match shape.
 - `NUMARR_ELEMENT_NOT_NUMERIC` [error]: NumericArray element must be an admitted numeric type.
 - `NUMARR_ELEMENT_NOT_PLAIN_NUMERIC` [error]: NumericArray element must satisfy numeric/plain/no-drop law.
+- `NUMARR_ELEMENT_TYPE_MISMATCH` [error]: Shape-inferred NumericArray elements must have one exact normalized admitted numeric type; use an explicit conversion when element types differ.
 - `NUMARR_ELEMENT_TYPE_REQUIRED` [error]: NumericArray type façade requires an element type.
 - `NUMARR_EXPECTED_SHAPE_MISMATCH` [error]: NumericArray literal shape mismatches expected type.
 - `NUMARR_INFIX_POWER_NOT_ADMITTED` [error]: NumericArray `A ^ B` infix power is not admitted; use `**`, `*+`, elementwise `^` where specified, or a named API.

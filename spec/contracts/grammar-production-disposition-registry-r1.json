@@ -10,8 +10,8 @@
   },
   "grammar": {
     "path": "spec/grammar/deeplus.ebnf",
-    "bytes": 68175,
-    "sha256": "e43bcbc96084de1dc7aaae4bdabb9596dc568f784d5f09b26360e9123af5be9e",
+    "bytes": 68181,
+    "sha256": "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a",
     "production_count": 644,
     "external_symbol_count": 40
   },
@@ -13003,10 +13003,10 @@
       "production_id": "ShapeInferredArrayLiteral",
       "profile": "STABLE",
       "source_line": 1302,
-      "normalized_rhs": "\"#\" \"[\" ExpressionList? \"]\"",
-      "rhs_sha256": "c17bd971dbe5c457ec128ca674a186f1bed5b57edd717bb0f15a00f5593a4c54",
+      "normalized_rhs": "\"#\" \"[\" Expr (\",\" Expr)* \",\"? \"]\"",
+      "rhs_sha256": "44aa300875818bfa59d9624ed518ada6e6cda07fd45ca4aab2386f112b55684c",
       "referenced_productions": [
-        "ExpressionList"
+        "Expr"
       ],
       "reachability_owner": "HANDWRITTEN_PARSER_REGISTRY",
       "disposition": "ast_node",

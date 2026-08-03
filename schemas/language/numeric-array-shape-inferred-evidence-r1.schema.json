@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/numeric-array-shape-inferred-evidence-r1.schema.json",
+  "title": "Deeplus R56 shape-inferred NumericArray trace overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "feature_ids",
+    "evidence_entries",
+    "bindings",
+    "acceptance_cases",
+    "counts",
+    "guards"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "../../../schemas/language/numeric-array-shape-inferred-evidence-r1.schema.json"
+    },
+    "schema": {
+      "const": "deeplus.numeric-array-shape-inferred-evidence/r1"
+    },
+    "revision": {
+      "const": "r56-local-numeric-array-shape-inferred-closure-r1"
+    },
+    "canonical_baseline_commit": {
+      "const": "39a5d50cc770341c4b9776d00d84520b780d0c62"
+    },
+    "local_predecessor_commit": {
+      "const": "f4e194d414a024b1fbf93549cdbe3d0cc59fb810"
+    },
+    "candidate_status": {
+      "const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"
+    },
+    "feature_ids": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "numeric_array_shape_inferred_column_vector_semicolon_msp",
+          "numeric_array_shape_inferred_value_literal",
+          "numeric_array_vector_orientation_witness_msp"
+        ]
+      }
+    },
+    "evidence_entries": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "$ref": "#/$defs/binding"
+      }
+    },
+    "acceptance_cases": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "$ref": "#/$defs/case"
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_count",
+        "evidence_entry_count",
+        "binding_count",
+        "predecessor_blocked_cell_count",
+        "catalog_direct_transition_count",
+        "bound_direct_transition_count",
+        "predecessor_total_blocked_cell_count",
+        "post_overlay_total_blocked_cell_count",
+        "acceptance_case_count"
+      ],
+      "properties": {
+        "feature_count": {"const": 3},
+        "evidence_entry_count": {"const": 10},
+        "binding_count": {"const": 10},
+        "predecessor_blocked_cell_count": {"const": 12},
+        "catalog_direct_transition_count": {"const": 2},
+        "bound_direct_transition_count": {"const": 10},
+        "predecessor_total_blocked_cell_count": {"const": 1303},
+        "post_overlay_total_blocked_cell_count": {"const": 1291},
+        "acceptance_case_count": {"const": 7}
+      }
+    },
+    "guards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_feature_count",
+        "target_feature_id_list_sha256",
+        "excluded_feature_count",
+        "excluded_feature_id_list_sha256",
+        "source_activation",
+        "surface_change_count",
+        "semantic_p0",
+        "feature_p1",
+        "m13_actions",
+        "product_lanes",
+        "github_publication",
+        "product_execution_receipt_count",
+        "implementation_claim"
+      ],
+      "properties": {
+        "target_feature_count": {"const": 469},
+        "target_feature_id_list_sha256": {"const": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435"},
+        "excluded_feature_count": {"const": 254},
+        "excluded_feature_id_list_sha256": {"const": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7"},
+        "source_activation": {"const": "none"},
+        "surface_change_count": {"const": 0},
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "SUSPENDED"},
+        "product_execution_receipt_count": {"const": 0},
+        "implementation_claim": {"const": "NONE"}
+      }
+    }
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_key", "class", "path", "locator_kind", "locator", "stage_role"],
+      "properties": {
+        "evidence_key": {"type": "string", "pattern": "^R56:"},
+        "class": {"enum": ["CONTRACT_RULE_ID", "ACCEPTANCE_CASE"]},
+        "path": {"const": "spec/contracts/numeric-array-shape-inferred-literal-r1.json"},
+        "locator_kind": {"enum": ["REGISTRY_ID", "JSON_POINTER"]},
+        "locator": {"type": "string", "minLength": 1},
+        "stage_role": {
+          "enum": [
+            "DYNAMIC_LOWERING",
+            "CONFORMANCE_TESTS:POSITIVE",
+            "CONFORMANCE_TESTS:BOUNDARY",
+            "CONFORMANCE_TESTS:REJECT"
+          ]
+        }
+      }
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["feature_id", "stage", "outcome", "disposition", "evidence_keys", "delegate_feature_id", "not_applicable"],
+      "properties": {
+        "feature_id": {"type": "string"},
+        "stage": {"enum": ["DYNAMIC_LOWERING", "CONFORMANCE_TESTS"]},
+        "outcome": {"type": ["string", "null"]},
+        "disposition": {"const": "BOUND_DIRECT"},
+        "evidence_keys": {"type": "array", "minItems": 1, "maxItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+        "delegate_feature_id": {"type": "null"},
+        "not_applicable": {"type": "null"}
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "feature_id", "outcome", "contract_pointer", "expected", "diagnostic_or_null", "execution_state"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^R56-TRACE-"},
+        "feature_id": {"type": "string"},
+        "outcome": {"enum": ["POSITIVE", "BOUNDARY", "REJECT"]},
+        "contract_pointer": {"type": "string", "pattern": "^/acceptance_cases/"},
+        "expected": {"type": "string", "minLength": 1},
+        "diagnostic_or_null": {"type": ["string", "null"]},
+        "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}
+      }
+    }
+  }
+}

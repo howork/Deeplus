@@ -452,14 +452,62 @@
   {
     "violation_id": "ColumnVectorSemicolonGateAdmitted:default",
     "predicate_id": "ColumnVectorSemicolonGateAdmitted",
-    "diagnostic_id": "SOURCE_TRUTH_PROJECTION_CONFLICT",
+    "diagnostic_id": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
     "relation": "primary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonGateAdmitted:expected_shape_or_orientation_conflict",
+    "predicate_id": "ColumnVectorSemicolonGateAdmitted",
+    "diagnostic_id": "NUMARR_EXPECTED_SHAPE_MISMATCH",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonGateAdmitted:mixed_attached_top_level_separator_kinds",
+    "predicate_id": "ColumnVectorSemicolonGateAdmitted",
+    "diagnostic_id": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonGateAdmitted:element_not_numeric",
+    "predicate_id": "ColumnVectorSemicolonGateAdmitted",
+    "diagnostic_id": "NUMARR_ELEMENT_NOT_NUMERIC",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonGateAdmitted:element_not_plain_value_or_has_drop",
+    "predicate_id": "ColumnVectorSemicolonGateAdmitted",
+    "diagnostic_id": "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonGateAdmitted:normalized_element_type_mismatch",
+    "predicate_id": "ColumnVectorSemicolonGateAdmitted",
+    "diagnostic_id": "NUMARR_ELEMENT_TYPE_MISMATCH",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonGateAdmitted:contextual_numeric_literal_not_representable",
+    "predicate_id": "ColumnVectorSemicolonGateAdmitted",
+    "diagnostic_id": "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE",
+    "relation": "secondary"
   },
   {
     "violation_id": "ColumnVectorSemicolonOrientationAdmitted:default",
     "predicate_id": "ColumnVectorSemicolonOrientationAdmitted",
     "diagnostic_id": "COLUMN_VECTOR_SEMICOLON_ORIENTATION_LAW_REQUIRED",
     "relation": "primary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonOrientationAdmitted:empty_element_list",
+    "predicate_id": "ColumnVectorSemicolonOrientationAdmitted",
+    "diagnostic_id": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "ColumnVectorSemicolonOrientationAdmitted:expected_shape_or_orientation_conflict",
+    "predicate_id": "ColumnVectorSemicolonOrientationAdmitted",
+    "diagnostic_id": "NUMARR_EXPECTED_SHAPE_MISMATCH",
+    "relation": "secondary"
   },
   {
     "violation_id": "ComputeResidualUnion:default",
@@ -1653,8 +1701,32 @@
   {
     "violation_id": "NumericArrayElementAdmitted:default",
     "predicate_id": "NumericArrayElementAdmitted",
-    "diagnostic_id": "RCTS_V5_VARIANT_MISMATCH",
+    "diagnostic_id": "SHARP_SHAPE_LITERAL_EMPTY_FORBIDDEN",
     "relation": "primary"
+  },
+  {
+    "violation_id": "NumericArrayElementAdmitted:first_nonnumeric_element",
+    "predicate_id": "NumericArrayElementAdmitted",
+    "diagnostic_id": "NUMARR_ELEMENT_NOT_NUMERIC",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "NumericArrayElementAdmitted:first_nonplain_or_drop_element",
+    "predicate_id": "NumericArrayElementAdmitted",
+    "diagnostic_id": "NUMARR_ELEMENT_NOT_PLAIN_NUMERIC",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "NumericArrayElementAdmitted:exact_normalized_element_type_mismatch",
+    "predicate_id": "NumericArrayElementAdmitted",
+    "diagnostic_id": "NUMARR_ELEMENT_TYPE_MISMATCH",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": "NumericArrayElementAdmitted:contextual_numeric_literal_not_representable",
+    "predicate_id": "NumericArrayElementAdmitted",
+    "diagnostic_id": "NUMARR_LITERAL_ELEMENT_OUT_OF_RANGE",
+    "relation": "secondary"
   },
   {
     "violation_id": "NumericArrayElementwiseSameShapeAdmitted:default",
@@ -1847,65 +1919,5 @@
     "predicate_id": "OptionSurfaceCanonicalAdmitted",
     "diagnostic_id": "OPTION_IMPLICIT_LIFT_NOT_ALLOWED",
     "relation": "secondary"
-  },
-  {
-    "violation_id": "OptionalSuffixSingleLayerAdmitted:default",
-    "predicate_id": "OptionalSuffixSingleLayerAdmitted",
-    "diagnostic_id": "OPTIONAL_SUFFIX_REPEATED",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "OrdinaryLocalBindingAdmitted:default",
-    "predicate_id": "OrdinaryLocalBindingAdmitted",
-    "diagnostic_id": "FLOW_BINDING_TARGET_MUST_BE_NEW_LOCAL",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "OrdinaryLocalBindingAdmitted",
-    "diagnostic_id": "FLOW_BINDING_TYPE_ANNOTATION_MISMATCH",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "OwnedDowncastAdmitted:default",
-    "predicate_id": "OwnedDowncastAdmitted",
-    "diagnostic_id": "OWNED_DOWNCAST_OWNER_NOT_PRESERVED",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "OwnershipModeAdmitted:default",
-    "predicate_id": "OwnershipModeAdmitted",
-    "diagnostic_id": "OWNERSHIP_MODE_ADMISSION_FAILED",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "PatternBindingControlAdmitted:default",
-    "predicate_id": "PatternBindingControlAdmitted",
-    "diagnostic_id": "PATTERN_CONTROL_REQUIRES_REFUTABLE_PATTERN",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "PatternBindingControlAdmitted",
-    "diagnostic_id": "PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "PatternBindingControlAdmitted",
-    "diagnostic_id": "FOR_LET_FILTER_GUARD_NOT_BOOL",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "PlaceReplaceAdmitted:default",
-    "predicate_id": "PlaceReplaceAdmitted",
-    "diagnostic_id": "PLACE_REPLACE_NOT_ADMITTED",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "PreviewFeatureGateAdmitted:default",
-    "predicate_id": "PreviewFeatureGateAdmitted",
-    "diagnostic_id": "PREVIEW_GATE_UNKNOWN_FEATURE",
-    "relation": "primary"
   }
 ]
