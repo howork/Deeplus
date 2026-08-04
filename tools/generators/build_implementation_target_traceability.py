@@ -38,6 +38,7 @@ OVERLAYS = [
     OUT / "member-extension-collision-dynamic-evidence-r1.json",
     OUT / "member-extension-collision-conformance-evidence-r1.json",
     OUT / "actor-cranelift-projection-dynamic-evidence-r1.json",
+    OUT / "global-trace-closure-evidence-r1.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -404,9 +405,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r75-local-actor-cranelift-projection-trace-closure-r1",
-        "canonical_baseline_commit": "c016871d5aa1c7515fd8a8df181744916f1e1849",
-        "local_predecessor_commit": "c016871d5aa1c7515fd8a8df181744916f1e1849",
+        "revision": "r76-global-implementation-target-trace-closure-r1",
+        "canonical_baseline_commit": "40a826af29410af1a14c6a7dec3193cd59ba9b12",
+        "local_predecessor_commit": "40a826af29410af1a14c6a7dec3193cd59ba9b12",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),
@@ -440,12 +441,12 @@ def main() -> None:
         },
         "governance": {
             "gap_id": "IR-XCUT-P1-054",
-            "gap_status": "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE",
+            "gap_status": "INTEGRATED_UNVERIFIED_LOCAL_CANDIDATE",
             "semantic_p0": 0,
             "feature_p1": "22_OPEN_UNCHANGED",
             "m13_actions": "4_OPEN_UNCHANGED",
             "product_lanes": "15_OF_15_NOT_RUN",
-            "github_publication": "SUSPENDED",
+            "github_publication": "NOT_YET_PUBLISHED",
             "e4_e5_evidence_count": 0,
         },
     }

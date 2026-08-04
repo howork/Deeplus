@@ -56,6 +56,11 @@ R75_TARGETS = {
 }
 R75_NON_TARGET_COUNT = 4213
 R75_NON_TARGET_SHA256 = "8f3e54a1850f7a1408c7aa05cf3a7d08144035d000a97ab655db711cb2cd57cc"
+R76_REVISION = "r76-global-implementation-target-trace-closure-r1"
+R76_PREDECESSOR = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
+R76_OVERLAY = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
+R76_COUNTS = (3709, 4, 508, 0)
+R76_NON_TARGET_SHA256 = "b4eb10826c4d155175dac8153adfc16b579ce7508ae5406ee70e6fc9b54fb0ca"
 
 CONTRACT = "spec/contracts/method-extension-resolution-dynamic-trace-closure-r1.json"
 CONTRACT_SCHEMA = "schemas/language/method-extension-resolution-dynamic-trace-closure-r1.schema.json"
@@ -359,6 +364,7 @@ def validate(
     )
 
     cells, duplicates = trace_cells(rows)
+    current_count, current_digest = non_target_digest(cells)
     target = cells.get(TARGET, {})
     applied = [row.get("path") for row in metadata.get("applied_evidence_overlays", [])]
     evidence_registry = {
@@ -384,6 +390,11 @@ def validate(
         metadata.get("revision") == R75_REVISION
         and metadata.get("local_predecessor_commit") == R75_PREDECESSOR
         and applied[-1:] == [R75_OVERLAY]
+    )
+    r76_successor = (
+        metadata.get("revision") == R76_REVISION
+        and metadata.get("local_predecessor_commit") == R76_PREDECESSOR
+        and applied[-1:] == [R76_OVERLAY]
     )
     require(
         duplicates == 0
@@ -423,12 +434,18 @@ def validate(
                 ) == 139
                 and len(evidence_registry) == 3151
             )
+            or (
+                r76_successor
+                and len(applied) == 21
+                and sum(row.get("binding_count", 0) for row in metadata.get("applied_evidence_overlays", [])) == 1381
+                and len(evidence_registry) == 4393
+            )
         )
         and EVIDENCE_ID in evidence_registry,
         "G03",
         "GENERATED_METADATA_EXACT",
     )
-    if r72_successor or r73_successor or r74_successor or r75_successor:
+    if r72_successor or r73_successor or r74_successor or r75_successor or r76_successor:
         r72_target = cells.get(R72_TARGET, {})
         r72_detail = r72_target.get("not_applicable") or {}
         successor_count, successor_digest = (
@@ -454,6 +471,11 @@ def validate(
         )
         require(
             (
+                r76_successor
+                and current_count == NON_TARGET_COUNT
+                and current_digest == R76_NON_TARGET_SHA256
+            )
+            or (
                 r75_successor
                 and successor_count == R75_NON_TARGET_COUNT
                 and successor_digest == R75_NON_TARGET_SHA256
@@ -476,7 +498,7 @@ def validate(
             "G03",
             "R72_R73_SUCCESSOR_OTHER_EXACT",
         )
-    if r73_successor or r74_successor or r75_successor:
+    if r73_successor or r74_successor or r75_successor or r76_successor:
         boundary = cells.get(R73_BOUNDARY_TARGET, {})
         reject = cells.get(R73_REJECT_TARGET, {})
         require(
@@ -493,7 +515,7 @@ def validate(
             "G03",
             "R73_SUCCESSOR_TARGETS_EXACT",
         )
-    if r74_successor or r75_successor:
+    if r74_successor or r75_successor or r76_successor:
         r74_target = cells.get(R74_TARGET, {})
         require(
             r74_target.get("disposition") == "BOUND_DIRECT"
@@ -506,12 +528,12 @@ def validate(
         )
     require(
         counts.get("bound_direct_cells")
-        == (2473 if r75_successor else 2470 if r74_successor else 2469 if r73_successor else 2467)
+        == (R76_COUNTS[0] if r76_successor else 2473 if r75_successor else 2470 if r74_successor else 2469 if r73_successor else 2467)
         and counts.get("bound_delegated_cells") == 4
         and counts.get("not_applicable_cells")
-        == (502 if (r74_successor or r75_successor) else 503 if (r72_successor or r73_successor) else 502)
+        == (R76_COUNTS[2] if r76_successor else 502 if (r74_successor or r75_successor) else 503 if (r72_successor or r73_successor) else 502)
         and counts.get("applicable_blocked_cells")
-        == (1242 if r75_successor else 1245 if (r73_successor or r74_successor) else (1247 if r72_successor else 1248))
+        == (R76_COUNTS[3] if r76_successor else 1242 if r75_successor else 1245 if (r73_successor or r74_successor) else (1247 if r72_successor else 1248))
         and counts.get("missing_cells") == 0
         and counts.get("conflict_cells") == 0,
         "G03",

@@ -116,6 +116,11 @@ OVERLAY_SPECS = [
         "schemas/language/actor-cranelift-projection-dynamic-evidence-r1.schema.json",
         3,
     ),
+    (
+        "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json",
+        "schemas/language/implementation-target-global-trace-evidence-r1.schema.json",
+        1242,
+    ),
 ]
 FEATURE_DIR = "spec/features/catalog/chunks"
 STAGES = ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]
@@ -203,6 +208,18 @@ def registry_strings(path_text: str) -> frozenset[str]:
     return frozenset(output)
 
 
+@functools.lru_cache(maxsize=None)
+def cached_json_document(path_text: str) -> Any:
+    """Parse a locator target once per validator process.
+
+    R76 adds 1,242 pointers into one immutable contract.  Re-reading and
+    reparsing that same document for every pointer has no evidentiary value and
+    made the bounded mutation suite quadratic in artifact size.
+    """
+
+    return load(Path(path_text))
+
+
 def evidence_locator_resolves(root: Path, item: dict[str, Any]) -> bool:
     path = root / item.get("path", "")
     kind = item.get("locator_kind")
@@ -216,7 +233,7 @@ def evidence_locator_resolves(root: Path, item: dict[str, Any]) -> bool:
         if not path.is_file():
             return False
         try:
-            resolve_json_pointer(load(path), locator)
+            resolve_json_pointer(cached_json_document(str(path.resolve())), locator)
             return True
         except (OSError, ValueError, KeyError, IndexError, TypeError, json.JSONDecodeError):
             return False
@@ -260,7 +277,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
             cell = (item.get("feature_id"), item.get("stage"), item.get("outcome"))
             require(cell not in overlay_bindings, f"OVERLAY_BINDING_UNIQUE:{rel}:{cell}")
             overlay_bindings[cell] = item
-    require(len(overlay_bindings) == 139, "OVERLAY_BINDING_EXACT_TOTAL_139")
+    require(len(overlay_bindings) == 1381, "OVERLAY_BINDING_EXACT_TOTAL_1381")
 
     feature_rows: list[dict[str, Any]] = []
     for path in sorted((root / FEATURE_DIR).glob("part-*.json")):
@@ -444,15 +461,15 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (2473, 4, 502, 1242),
-            "R75_EXACT_POST_FEATURE_ROW_COUNTS",
+        (direct, delegated, na, blocked) == (3709, 4, 508, 0),
+            "R76_EXACT_GLOBAL_TRACE_CLOSURE_COUNTS",
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")
-    require(governance.get("gap_status") == "APPROVED_NOT_INTEGRATED_LOCAL_CANDIDATE", "GOVERNANCE_STATUS")
+    require(governance.get("gap_status") == "INTEGRATED_UNVERIFIED_LOCAL_CANDIDATE", "GOVERNANCE_STATUS")
     require(governance.get("semantic_p0") == 0 and governance.get("feature_p1") == "22_OPEN_UNCHANGED", "GOVERNANCE_SEMANTIC")
     require(governance.get("product_lanes") == "15_OF_15_NOT_RUN" and governance.get("e4_e5_evidence_count") == 0, "GOVERNANCE_PRODUCT")
-    require(governance.get("github_publication") == "SUSPENDED", "GOVERNANCE_GITHUB")
+    require(governance.get("github_publication") == "NOT_YET_PUBLISHED", "GOVERNANCE_GITHUB")
     return errors
 
 

@@ -12782,6 +12782,13 @@ def main() -> int:
         "tools/generators/build_implementation_target_traceability.py",
         "tools/validators/validate_implementation_target_traceability.py",
         "tools/validators/run_implementation_target_traceability_mutation_tests.py",
+        "spec/contracts/implementation-target-global-trace-closure-r1.json",
+        "schemas/language/implementation-target-global-trace-closure-r1.schema.json",
+        "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json",
+        "schemas/language/implementation-target-global-trace-evidence-r1.schema.json",
+        "tools/generators/build_global_implementation_target_trace_closure.py",
+        "tools/validators/validate_global_implementation_target_trace_closure.py",
+        "tools/validators/run_global_implementation_target_trace_closure_mutation_tests.py",
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
         "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
@@ -13261,6 +13268,53 @@ def main() -> int:
         r74_mutation_process.returncode == 0,
         "R74_MEMBER_EXTENSION_COLLISION_DIAGNOSTIC_TRACE_MUTATIONS",
         r74_mutation_detail[-4000:],
+    )
+
+    r76_validator = (
+        root
+        / "tools/validators/validate_global_implementation_target_trace_closure.py"
+    )
+    r76_process = subprocess.run(
+        [sys.executable, str(r76_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r76_detail = (
+        r76_process.stdout.strip()
+        if r76_process.returncode == 0
+        else r76_process.stderr.strip() or r76_process.stdout.strip()
+    )
+    check(
+        r76_process.returncode == 0,
+        "R76_GLOBAL_IMPLEMENTATION_TARGET_TRACE_CLOSURE",
+        r76_detail[-4000:],
+    )
+
+    r76_mutation_runner = (
+        root
+        / "tools/validators/run_global_implementation_target_trace_closure_mutation_tests.py"
+    )
+    r76_mutation_process = subprocess.run(
+        [sys.executable, str(r76_mutation_runner)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r76_mutation_detail = (
+        r76_mutation_process.stdout.strip()
+        if r76_mutation_process.returncode == 0
+        else r76_mutation_process.stderr.strip()
+        or r76_mutation_process.stdout.strip()
+    )
+    check(
+        r76_mutation_process.returncode == 0,
+        "R76_GLOBAL_IMPLEMENTATION_TARGET_TRACE_CLOSURE_MUTATIONS",
+        r76_mutation_detail[-4000:],
     )
 
     if revision in CURRENT_MACHINE_REVISIONS:
