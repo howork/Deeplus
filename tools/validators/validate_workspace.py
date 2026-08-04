@@ -12482,6 +12482,58 @@ def r51_actor_lifecycle_guard_workspace_check(root: Path) -> dict[str, Any]:
         }
 
 
+def r75_actor_cranelift_projection_workspace_check(root: Path) -> dict[str, Any]:
+    """Bind the R75 Actor-to-Cranelift design-static projection receipt."""
+
+    runner = root / "tools/validators/validate_actor_cranelift_projection.py"
+    try:
+        completed = subprocess.run(
+            [sys.executable, str(runner), "--root", str(root)],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="strict",
+            timeout=120,
+        )
+        if completed.returncode != 0:
+            raise ValueError(
+                f"focused validator nonzero exit {completed.returncode}: "
+                f"{completed.stderr.strip() or completed.stdout.strip()}"
+            )
+        if completed.stderr:
+            raise ValueError("focused validator emitted unexpected stderr")
+        receipt = _r5_strict_receipt_json(completed.stdout)
+        if (
+            receipt.get("result") != "PASS"
+            or receipt.get("checks") != 56
+            or receipt.get("acceptance_cases") != 30
+            or receipt.get("mutations") != 16
+            or receipt.get("trace_features") != 3
+            or receipt.get("base_receipt_inputs") != 23
+            or receipt.get("owner_kinds") != 7
+            or receipt.get("partial_order_invariants") != 7
+            or receipt.get("diagnostic_guards") != 13
+            or receipt.get("post_overlay_blocked_cells") != 1242
+            or receipt.get("product_support") != "NOT_RUN"
+            or receipt.get("github_publication") != "NOT_AUTHORIZED_FOR_R75"
+            or receipt.get("errors") != []
+        ):
+            raise ValueError("focused receipt-contract drift")
+        return {
+            "check_id": "R75_ACTOR_CRANELIFT_PROJECTION",
+            "pass": True,
+            "detail": json.dumps(receipt, ensure_ascii=False, sort_keys=True),
+        }
+    except Exception as exc:  # noqa: BLE001
+        return {
+            "check_id": "R75_ACTOR_CRANELIFT_PROJECTION",
+            "pass": False,
+            "detail": f"R75 Actor Cranelift projection integration failure: {exc}",
+        }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[2])
@@ -12562,6 +12614,14 @@ def main() -> int:
         r51_actor_lifecycle_guard_check_result["pass"],
         r51_actor_lifecycle_guard_check_result["check_id"],
         r51_actor_lifecycle_guard_check_result["detail"],
+    )
+    r75_actor_cranelift_projection_check_result = (
+        r75_actor_cranelift_projection_workspace_check(root)
+    )
+    check(
+        r75_actor_cranelift_projection_check_result["pass"],
+        r75_actor_cranelift_projection_check_result["check_id"],
+        r75_actor_cranelift_projection_check_result["detail"],
     )
 
     try:
@@ -12650,6 +12710,11 @@ def main() -> int:
         "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
         "tests/conformance/actor-lifecycle-guards-r1.json",
         "decisions/language/Design_Deeplus_Actor_Minimum_Lifecycle_Implementation_Handoff_R1.md",
+        "spec/contracts/actor-cranelift-projection-r1.json",
+        "schemas/language/actor-cranelift-projection-receipt-r1.schema.json",
+        "tests/conformance/actor-cranelift-projection-r1.json",
+        "tools/validators/validate_actor_cranelift_projection.py",
+        "governance/reports/Design_Deeplus_R75_Actor_Cranelift_Projection_Rebase_R1.md",
         "spec/diagnostics/catalog/chunks/part-0029.json",
         "spec/diagnostics/relations/chunks/part-0009.json",
         "tests/conformance/checker-predicates/chunks/part-0031.json",
@@ -12844,6 +12909,8 @@ def main() -> int:
         "tools/validators/validate_member_extension_collision_diagnostic_trace.py",
         "tools/validators/run_member_extension_collision_diagnostic_trace_mutation_tests.py",
         "decisions/language/Design_Deeplus_R74_Member_Extension_Collision_Diagnostic_Trace_Closure_R1.md",
+        "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json",
+        "schemas/language/actor-cranelift-projection-dynamic-evidence-r1.schema.json",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
     ]

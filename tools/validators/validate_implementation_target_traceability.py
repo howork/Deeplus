@@ -111,6 +111,11 @@ OVERLAY_SPECS = [
         "schemas/language/member-extension-collision-conformance-evidence-r1.schema.json",
         2,
     ),
+    (
+        "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json",
+        "schemas/language/actor-cranelift-projection-dynamic-evidence-r1.schema.json",
+        3,
+    ),
 ]
 FEATURE_DIR = "spec/features/catalog/chunks"
 STAGES = ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]
@@ -255,7 +260,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
             cell = (item.get("feature_id"), item.get("stage"), item.get("outcome"))
             require(cell not in overlay_bindings, f"OVERLAY_BINDING_UNIQUE:{rel}:{cell}")
             overlay_bindings[cell] = item
-    require(len(overlay_bindings) == 136, "OVERLAY_BINDING_EXACT_TOTAL_136")
+    require(len(overlay_bindings) == 139, "OVERLAY_BINDING_EXACT_TOTAL_139")
 
     feature_rows: list[dict[str, Any]] = []
     for path in sorted((root / FEATURE_DIR).glob("part-*.json")):
@@ -439,8 +444,8 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (2470, 4, 502, 1245),
-            "R74_EXACT_POST_FEATURE_ROW_COUNTS",
+        (direct, delegated, na, blocked) == (2473, 4, 502, 1242),
+            "R75_EXACT_POST_FEATURE_ROW_COUNTS",
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")

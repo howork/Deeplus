@@ -66,6 +66,16 @@ R74_EVIDENCE_REFS = [
 ]
 R74_SEPT_EXCLUSION_COUNT = 4214
 R74_SEPT_EXCLUSION_SHA256 = "76bfae0600a5bedf9d68b16b633ccad0bbaf1c7da53c7b64a8c38cea428e621d"
+R75_REVISION = "r75-local-actor-cranelift-projection-trace-closure-r1"
+R75_PREDECESSOR = "c016871d5aa1c7515fd8a8df181744916f1e1849"
+R75_OVERLAY = "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json"
+R75_TARGETS = {
+    ("actor_mailbox_capacity", "DYNAMIC_LOWERING", None),
+    ("actor_minimum_lifecycle_r1", "DYNAMIC_LOWERING", None),
+    ("actor_request_reply", "DYNAMIC_LOWERING", None),
+}
+R75_DEC_EXCLUSION_COUNT = 4211
+R75_DEC_EXCLUSION_SHA256 = "bba43aec022d1cc7a44799d2951b3f5d7ffd65887f2e884248c04c49098c36bd"
 
 CONTRACT = "spec/contracts/managed-reference-dynamic-projection-r1.json"
 CONTRACT_SCHEMA = "schemas/language/managed-reference-dynamic-projection-r1.schema.json"
@@ -264,6 +274,27 @@ def r74_successor_non_target_digest(
             R74_TARGET,
         }
     ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), sha256_bytes(raw)
+
+
+def r75_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R69-R75 targets."""
+    excluded = {
+        TARGET,
+        R70_TARGET,
+        R71_TARGET,
+        R72_TARGET,
+        R73_BOUNDARY_TARGET,
+        R73_REJECT_TARGET,
+        R74_TARGET,
+    } | R75_TARGETS
+    material = [[*key, value] for key, value in cells.items() if key not in excluded]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
         material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -649,6 +680,7 @@ def validate(
     r72_successor_count, r72_successor_digest = r72_successor_non_target_digest(cells)
     r73_successor_count, r73_successor_digest = r73_successor_non_target_digest(cells)
     r74_successor_count, r74_successor_digest = r74_successor_non_target_digest(cells)
+    r75_successor_count, r75_successor_digest = r75_successor_non_target_digest(cells)
     r70_target = cells.get(R70_TARGET, {})
     r71_target = cells.get(R71_TARGET, {})
     r72_target = cells.get(R72_TARGET, {})
@@ -699,7 +731,12 @@ def validate(
         and applied_paths[-4:]
         == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY]
     )
-    if r70_successor or r71_successor or r72_successor or r73_successor or r74_successor:
+    r75_successor = (
+        metadata.get("revision") == R75_REVISION
+        and metadata.get("local_predecessor_commit") == R75_PREDECESSOR
+        and applied_paths[-1:] == [R75_OVERLAY]
+    )
+    if r70_successor or r71_successor or r72_successor or r73_successor or r74_successor or r75_successor:
         r70_detail = r70_target.get("not_applicable") or {}
         require(
             r70_target.get("disposition") == "NOT_APPLICABLE"
@@ -714,7 +751,7 @@ def validate(
             "G09",
             "R70_SUCCESSOR_TARGET_EXACT",
         )
-    if r71_successor or r72_successor or r73_successor or r74_successor:
+    if r71_successor or r72_successor or r73_successor or r74_successor or r75_successor:
         require(
             r71_target.get("disposition") == "BOUND_DELEGATED"
             and r71_target.get("evidence_refs") == [R71_EVIDENCE_ID]
@@ -724,7 +761,7 @@ def validate(
             "G09",
             "R71_SUCCESSOR_TARGET_EXACT",
         )
-        if r72_successor or r73_successor or r74_successor:
+        if r72_successor or r73_successor or r74_successor or r75_successor:
             r72_detail = r72_target.get("not_applicable") or {}
             require(
                 r72_target.get("disposition") == "NOT_APPLICABLE"
@@ -739,7 +776,7 @@ def validate(
                 "G09",
                 "R72_SUCCESSOR_TARGET_EXACT",
             )
-            if r73_successor or r74_successor:
+            if r73_successor or r74_successor or r75_successor:
                 require(
                     r73_boundary_target.get("disposition") == "BOUND_DIRECT"
                     and r73_boundary_target.get("evidence_refs")
@@ -756,7 +793,7 @@ def validate(
                     "G09",
                     "R73_SUCCESSOR_TARGETS_EXACT",
                 )
-                if r74_successor:
+                if r74_successor or r75_successor:
                     require(
                         r74_target.get("disposition") == "BOUND_DIRECT"
                         and r74_target.get("evidence_refs") == R74_EVIDENCE_REFS
@@ -768,6 +805,11 @@ def validate(
                     )
                 require(
                     (
+                        r75_successor
+                        and r75_successor_count == R75_DEC_EXCLUSION_COUNT
+                        and r75_successor_digest == R75_DEC_EXCLUSION_SHA256
+                    )
+                    or (
                         r74_successor
                         and r74_successor_count == R74_SEPT_EXCLUSION_COUNT
                         and r74_successor_digest == R74_SEPT_EXCLUSION_SHA256
@@ -839,26 +881,34 @@ def validate(
             and OVERLAY in applied_paths
             and applied_paths[-4:]
             == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY]
+        )
+        or (
+            r75_successor
+            and OVERLAY in applied_paths
+            and applied_paths[-5:]
+            == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY, R75_OVERLAY]
         ),
         "G09", "GENERATED_METADATA",
     )
-    if r74_successor:
+    if r74_successor or r75_successor:
         derived = metadata.get("derived_counts", {})
         require(
-            len(metadata.get("applied_evidence_overlays", [])) == 19
+            len(metadata.get("applied_evidence_overlays", []))
+            == (20 if r75_successor else 19)
             and sum(
                 row.get("binding_count", 0)
                 for row in metadata.get("applied_evidence_overlays", [])
             )
-            == 136
-            and len(metadata.get("evidence_registry", [])) == 3148
+            == (139 if r75_successor else 136)
+            and len(metadata.get("evidence_registry", []))
+            == (3151 if r75_successor else 3148)
             and (
                 derived.get("bound_direct_cells"),
                 derived.get("bound_delegated_cells"),
                 derived.get("not_applicable_cells"),
                 derived.get("applicable_blocked_cells"),
             )
-            == (2470, 4, 502, 1245),
+            == ((2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245)),
             "G09",
             "R74_GENERATED_CARDINALITY_EXACT",
         )

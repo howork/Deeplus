@@ -476,7 +476,7 @@ def main() -> int:
         "xVM runtime",
         "Debugger projection",
         "Conformance execution",
-        "R24 remains held",
+        "R24 dependency hold is discharged",
     ):
         if marker not in handoff:
             fail(f"R51 implementation handoff missing {marker}")

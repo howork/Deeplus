@@ -36,6 +36,16 @@ R74_EVIDENCE_REFS = [
 ]
 R74_TRIPLE_EXCLUSION_COUNT = 4218
 R74_TRIPLE_EXCLUSION_SHA256 = "aa4a204990a660ffcef3477ac2f0d1405182c813276349f9934f7cab6b5fb968"
+R75_REVISION = "r75-local-actor-cranelift-projection-trace-closure-r1"
+R75_PREDECESSOR = "c016871d5aa1c7515fd8a8df181744916f1e1849"
+R75_OVERLAY = "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json"
+R75_TARGETS = {
+    ("actor_mailbox_capacity", "DYNAMIC_LOWERING", None),
+    ("actor_minimum_lifecycle_r1", "DYNAMIC_LOWERING", None),
+    ("actor_request_reply", "DYNAMIC_LOWERING", None),
+}
+R75_NON_TARGET_COUNT = 4215
+R75_NON_TARGET_SHA256 = "fb2e67e12bb3b6fd1c29f15d9c49ae2de6d84ba260070e606d19938afa265c2a"
 
 OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json"
 OVERLAY_SCHEMA = "schemas/language/member-extension-collision-conformance-evidence-r1.schema.json"
@@ -146,6 +156,19 @@ def r74_successor_non_target_digest(
         for key, value in cells.items()
         if key not in TARGETS | {R74_TARGET}
     ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
+def r75_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R73-R75 targets."""
+    excluded = TARGETS | {R74_TARGET} | R75_TARGETS
+    material = [[*key, value] for key, value in cells.items() if key not in excluded]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
         material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -300,38 +323,52 @@ def validate(
         metadata.get("revision") == R74_REVISION
         and metadata.get("local_predecessor_commit") == R74_PREDECESSOR
     )
+    r75_successor = (
+        metadata.get("revision") == R75_REVISION
+        and metadata.get("local_predecessor_commit") == R75_PREDECESSOR
+        and applied[-1]
+        == {"path": R75_OVERLAY, "feature_count": 3, "binding_count": 3}
+    )
     r74_target = current_cells.get(R74_TARGET, {})
     require(
         current_duplicates == 0
         and (
             (
+                r75_successor
+                and r75_successor_non_target_digest(current_cells)
+                == (R75_NON_TARGET_COUNT, R75_NON_TARGET_SHA256)
+            )
+            or (
                 r74_successor
                 and r74_successor_non_target_digest(current_cells)
                 == (R74_TRIPLE_EXCLUSION_COUNT, R74_TRIPLE_EXCLUSION_SHA256)
             )
             or (
-                not r74_successor
+                not (r74_successor or r75_successor)
                 and current_count == NON_TARGET_COUNT
                 and current_digest == NON_TARGET_SHA256
             )
         )
-        and (metadata.get("revision") == REVISION or r74_successor)
-        and metadata.get("canonical_baseline_commit") == CANONICAL
+        and (metadata.get("revision") == REVISION or r74_successor or r75_successor)
+        and metadata.get("canonical_baseline_commit")
+        == (R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             metadata.get("local_predecessor_commit") == PREDECESSOR
             or r74_successor
+            or r75_successor
         )
-        and len(applied) == 19
-        and applied[-1]
+        and len(applied) == (20 if r75_successor else 19)
+        and applied[-2 if r75_successor else -1]
         == {"path": OVERLAY, "feature_count": 1, "binding_count": 2}
-        and sum(row.get("binding_count", 0) for row in applied) == 136
-        and len(registry) == 3148
+        and sum(row.get("binding_count", 0) for row in applied)
+        == (139 if r75_successor else 136)
+        and len(registry) == (3151 if r75_successor else 3148)
         and {BOUNDARY_EVIDENCE_ID, REJECT_EVIDENCE_ID}
         <= {row.get("evidence_id") for row in registry},
         "G03",
         "GENERATED_METADATA_EXACT",
     )
-    if r74_successor:
+    if r74_successor or r75_successor:
         require(
             r74_target.get("disposition") == "BOUND_DIRECT"
             and r74_target.get("evidence_refs") == R74_EVIDENCE_REFS
@@ -348,7 +385,13 @@ def validate(
             derived.get("not_applicable_cells"),
             derived.get("applicable_blocked_cells"),
         )
-        == ((2470, 4, 502, 1245) if r74_successor else (2469, 4, 503, 1245))
+        == (
+            (2473, 4, 502, 1242)
+            if r75_successor
+            else (2470, 4, 502, 1245)
+            if r74_successor
+            else (2469, 4, 503, 1245)
+        )
         and derived.get("missing_cells") == 0
         and derived.get("conflict_cells") == 0,
         "G03",
@@ -539,7 +582,9 @@ def main() -> int:
             "applicable_blocked": load(root / METADATA).get("derived_counts", {}).get("applicable_blocked_cells"),
         },
         "non_target_cell_count": (
-            R74_TRIPLE_EXCLUSION_COUNT
+            R75_NON_TARGET_COUNT
+            if load(root / METADATA).get("revision") == R75_REVISION
+            else R74_TRIPLE_EXCLUSION_COUNT
             if load(root / METADATA).get("revision") == R74_REVISION
             else NON_TARGET_COUNT
         ),

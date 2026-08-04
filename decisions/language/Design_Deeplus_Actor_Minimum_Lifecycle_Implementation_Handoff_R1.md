@@ -5,8 +5,10 @@
 This handoff binds the already frozen `ACC-R020` Actor lifecycle semantics to
 implementation responsibilities. It adds no source syntax and changes no R49
 lifecycle rule. Production implementation is not authorized by this document.
-`IR-ACTOR-P1-005` remains `APPROVED_NOT_INTEGRATED` until canonical promotion
-and post-merge readback.
+`IR-ACTOR-P1-005` is `VERIFIED_CLOSED` by the cumulative R48-R74 semantic
+publication and exact post-merge readback at
+`c016871d5aa1c7515fd8a8df181744916f1e1849`. This closure is implementation-
+readiness design authority; runtime and product execution remain `NOT_RUN`.
 
 ## Exact implementation order
 
@@ -52,7 +54,9 @@ program text.
 - formatter/LSP work is N/A because no source spelling changes;
 - runtime, backend, debugger and product execution remain `NOT_RUN` until a
   target-bound receipt exists;
-- R24 remains held until R22 is canonically `VERIFIED_CLOSED`.
+- the R24 dependency hold is discharged; its successor projection must consume
+  this lifecycle contract without reselecting policy or weakening terminal
+  cleanup order.
 
 ## Validation commands
 

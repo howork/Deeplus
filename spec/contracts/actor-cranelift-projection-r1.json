@@ -1,0 +1,284 @@
+{
+  "schema": "deeplus.actor-cranelift-projection-contract/r1",
+  "revision": "r75-local-actor-cranelift-projection-rebase-r1",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT",
+  "gap_id": "IR-ACTOR-P1-007",
+  "semantic_authority": "Deeplus MIR",
+  "evidence_status": "DESIGN_STATIC_NOT_RUN",
+  "product_support": "NOT_RUN",
+  "product_lanes": "15/15_NOT_RUN",
+  "source_syntax_change_count": 0,
+  "semantic_p0": 0,
+  "open_feature_p1_count": 22,
+  "closed_feature_p1_count": 0,
+  "new_feature_p1_count": 0,
+  "authority": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "candidate_baseline_commit": "c016871d5aa1c7515fd8a8df181744916f1e1849",
+    "candidate_baseline_tree": "46df9b097b3010768932ad88617d24b6a7b5e933",
+    "canonical_byte_algorithm": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "production_implementation_authorized": false,
+    "github_publication_authorized": false
+  },
+  "dependencies": [
+    {
+      "gap_id": "IR-ACTOR-P1-005",
+      "status": "VERIFIED_CLOSED",
+      "closure_commit": "c016871d5aa1c7515fd8a8df181744916f1e1849",
+      "contract": "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
+      "consumed_residue": [
+        "ActorInstanceId and ActorTurnId remain distinct",
+        "queued envelope to active turn transfer is explicit",
+        "request terminal decision and cleanup order are explicit",
+        "Defect primary and suppressed cleanup order are explicit"
+      ]
+    },
+    {
+      "gap_id": "IR-ACTOR-P1-006",
+      "status": "VERIFIED_CLOSED",
+      "closure_commit": "53bbc11cf4b4b5980ae07c04f97a41d7bdd12012",
+      "contract": "spec/contracts/actor-protocol-binding-descriptor.json",
+      "consumed_residue": [
+        "ExecutableImageId owns the executable binding projection",
+        "ActorProtocolBindingTableId and ActorProtocolBindingId are retained",
+        "binding_row_sha256 and ResponsibilityId survive terminal processing",
+        "runtime lookup fallback and link-order selection remain zero"
+      ]
+    }
+  ],
+  "inherited_cranelift_contract": {
+    "contract": "spec/contracts/cranelift-backend-current.json",
+    "rule_ids": [
+      "CLB-R001",
+      "CLB-R002",
+      "CLB-R003",
+      "CLB-R004",
+      "CLB-R005",
+      "CLB-R006",
+      "CLB-R007",
+      "CLB-R008",
+      "CLB-R009",
+      "CLB-R010",
+      "CLB-R011",
+      "CLB-R012"
+    ],
+    "required_receipt_inputs": [
+      "mir_semantic_digest",
+      "target_triple",
+      "target_isa_and_settings",
+      "cranelift_family_and_lockfile_digest",
+      "module_kind",
+      "pointer_width_and_endianness",
+      "object_format_and_code_relocation_model",
+      "calling_convention",
+      "internal_runtime_abi_id",
+      "internal_runtime_abi_schema_id",
+      "runtime_abi_digest",
+      "runtime_helper_registry_digest",
+      "internal_runtime_target_projection_digest",
+      "internal_runtime_artifact_binding_receipt_schema_id",
+      "optimization_settings_digest",
+      "runtime_helper_and_safepoint_capability_digest",
+      "managed_memory_profile_digest",
+      "managed_memory_plan_digest",
+      "managed_root_receipt_schema_digest",
+      "continuation_root_interface_digest",
+      "target_root_projection_digest",
+      "runtime_root_registry_digest",
+      "object_linker_or_jit_import_map_identity"
+    ],
+    "module_kinds": [
+      "ObjectAot",
+      "InMemoryJit"
+    ],
+    "managed_reference_failure": "BLOCK_NATIVE_LOWERING",
+    "raw_pointer_fallback": false,
+    "backend_semantic_reselection_count": 0
+  },
+  "external_binding_projection": {
+    "schema": "deeplus.actor-protocol-binding-table-set/r1",
+    "required_projection_kind": "EXECUTABLE_IMAGE",
+    "owner_domain": "ExecutableImageId",
+    "validator": "tools/validators/validate_actor_protocol_binding_descriptors.py",
+    "receipt_fields": [
+      "executable_image_id",
+      "actor_protocol_binding_table_set_sha256",
+      "binding_row_sha256s",
+      "origin_coverage_sha256",
+      "verified_binding_projection_sha256"
+    ],
+    "free_table_or_binding_id_array_is_authority": false,
+    "loader_recomputes_before_projection": true,
+    "runtime_selector_lookup_count": 0,
+    "runtime_fallback_count": 0,
+    "link_order_winner_count": 0
+  },
+  "identity": {
+    "actor_code_generation_id": "ActorCodeGenerationId",
+    "domain_separator": "deeplus.actor-code-generation/v1",
+    "preimage": [
+      "base_receipt_inputs",
+      "executable_image_id",
+      "actor_protocol_binding_table_set_sha256",
+      "binding_row_sha256s",
+      "origin_coverage_sha256"
+    ],
+    "module_kind_occurrence_count": 1,
+    "module_kind_location": "base_receipt_inputs.module_kind",
+    "table_and_row_digest_sort": "UTF8_ORDINAL_ASCENDING",
+    "source_import_object_link_order_in_identity": false,
+    "target_projection_identity_only": true,
+    "distinct_identity_domains": [
+      "ActorId",
+      "ActorInstanceId",
+      "ExecutableImageId",
+      "ActorCodeGenerationId",
+      "ActorCodeLeaseId",
+      "backend code-object identity",
+      "runtime entry handle",
+      "symbol",
+      "machine address"
+    ]
+  },
+  "generation_lifetime": {
+    "receipt_model": "EXACT_LEASE_EVENT_REPLAY",
+    "owner_kinds": [
+      "PUBLISHED_BINDING_TABLE",
+      "QUEUED_ENVELOPE",
+      "ACTIVE_OR_SUSPENDED_TURN",
+      "ACTOR_REQUEST_TERMINAL_OBLIGATION",
+      "CALLER_REPLY_CONTINUATION",
+      "EXECUTING_FRAME",
+      "CODE_DEPENDENT_METADATA"
+    ],
+    "event_kinds": [
+      "ACQUIRE",
+      "TRANSFER",
+      "RELEASE",
+      "PUBLISH",
+      "UNPUBLISH",
+      "RETIRE"
+    ],
+    "aggregate_counter_only_receipt_admitted": false,
+    "publish_acquires_table_lease_before_visibility": true,
+    "enqueue_commit_acquires_envelope_lease_before_observable_transfer": true,
+    "dequeue_is_single_lease_transfer": true,
+    "actor_request_lease_releases_after_terminal_cleanup": true,
+    "caller_reply_continuation_generation_may_differ": true,
+    "send_creates_reply_continuation_lease": false,
+    "jit_retirement_gate": "UNPUBLISHED_AND_ZERO_EXACT_LEASES_AND_ZERO_EXECUTING_FRAMES_AND_ZERO_CODE_METADATA_USERS",
+    "object_aot_retirement": "IMAGE_UNLOAD_OR_PROCESS_LIFETIME_ONLY",
+    "replacement_order": "PUBLISH_NEW_BEFORE_UNPUBLISH_OLD",
+    "existing_owner_rebind_count": 0,
+    "retired_reentry_count": 0
+  },
+  "managed_reference_guard": {
+    "proven_capability": "PROVEN",
+    "not_required_admission": "ZERO_SAFEPOINT_ROOT_CALLBACK_SUSPENDED_FRAME_AND_CLEANUP_ENTRY_OBLIGATIONS",
+    "not_required_zero_fields": [
+      "safepoint_obligation_count",
+      "root_map_obligation_count",
+      "generated_callback_count",
+      "suspended_frame_count",
+      "cleanup_entry_count"
+    ],
+    "trap_stack_unwind_and_cleanup_metadata_lifetime": "THROUGH_LAST_DEFECT_CLEANUP_AND_SUPPRESSED_FAILURE_OBSERVATION",
+    "missing_or_invalid_capability": "BLOCK_NATIVE_LOWERING",
+    "raw_pointer_fallback": false
+  },
+  "outcome_guard": {
+    "mir_outcomes_preserved": [
+      "Error",
+      "Defect",
+      "Cancellation",
+      "suspension",
+      "cleanup",
+      "enqueue commit",
+      "ActorTurn",
+      "Reply terminality"
+    ],
+    "host_unwind_semantic_authority": false,
+    "arbitrary_backend_trap_semantic_authority": false,
+    "trap_requires_preselected_defect_or_verified_unreachable": true
+  },
+  "differential_comparison": {
+    "receipt_schema": "deeplus.actor-cranelift-differential-comparison-receipt/r1",
+    "projection_receipt_alone_proves_cross_backend_equivalence": false,
+    "modes": [
+      "EXACT_TOTAL_ORDER",
+      "REQUIRED_PARTIAL_ORDER"
+    ],
+    "exact_total_order_requires": "shared non-null DeterministicScheduleTraceId or one independently proven single-channel total order",
+    "default_without_replay_identity": "REQUIRED_PARTIAL_ORDER",
+    "partial_order_invariants": [
+      "per_channel_fifo",
+      "enqueue_commit_sequence",
+      "one_active_state_mutating_turn",
+      "suspend_resume_identity",
+      "reply_terminal_exactly_once",
+      "mir_primary_suppressed_failure_order",
+      "cleanup_and_generation_lease_release_exactly_once"
+    ],
+    "scheduler_completion_order_is_authority": false,
+    "worker_identity_is_authority": false,
+    "unrelated_cross_sender_order_is_authority": false,
+    "xvm_is_semantic_authority": false
+  },
+  "feature_trace": {
+    "actor_mailbox_capacity": {
+      "stage": "DYNAMIC_LOWERING",
+      "binding": "mailbox capacity and enqueue admission remain selected MIR inputs; native projection cannot change capacity or admission order"
+    },
+    "actor_minimum_lifecycle_r1": {
+      "stage": "DYNAMIC_LOWERING",
+      "binding": "R22 lifecycle events and exact lease events preserve creation stop Defect cleanup and terminal ordering"
+    },
+    "actor_request_reply": {
+      "stage": "DYNAMIC_LOWERING",
+      "binding": "request binding responsibility and row digest persist through exactly one terminal reply and cleanup"
+    }
+  },
+  "diagnostic_precedence": [
+    "ACTOR_CRANELIFT_BASE_RECEIPT_INCOMPLETE",
+    "ACTOR_CRANELIFT_BINDING_PROJECTION_INVALID",
+    "ACTOR_CRANELIFT_BINDING_RESELECTION_FORBIDDEN",
+    "ACTOR_CRANELIFT_MANAGED_REFERENCE_CAPABILITY_MISSING",
+    "ACTOR_CRANELIFT_OUTCOME_MAPPING_INVALID",
+    "ACTOR_CRANELIFT_GENERATION_ID_MISMATCH",
+    "ACTOR_CRANELIFT_LEASE_EVENT_INVALID",
+    "ACTOR_CRANELIFT_GENERATION_LIFETIME_VIOLATION",
+    "ACTOR_CRANELIFT_CALLER_GENERATION_COUPLING_INVALID",
+    "ACTOR_CRANELIFT_SCHEDULE_COMPARISON_INVALID",
+    "ACTOR_CRANELIFT_OBSERVATION_INVARIANT_MISMATCH",
+    "ACTOR_CRANELIFT_MODULE_OUTPUT_MISMATCH",
+    "ACTOR_CRANELIFT_RECEIPT_DIGEST_MISMATCH"
+  ],
+  "excluded": [
+    "new source syntax",
+    "binding creation reselection or runtime lookup during MIR-to-CLIF lowering",
+    "raw-pointer managed-reference fallback",
+    "aggregate owner counters without exact event replay",
+    "existing envelope turn request or Reply generation rewrite",
+    "forced equality of Actor and caller continuation generations",
+    "independent per-generation Object AOT physical retirement",
+    "LLVM IR bitcode pass personality or ORC as current authority",
+    "production xVM runtime ObjectModule JITModule linker loader or backend implementation"
+  ],
+  "machine_acceptance": {
+    "inherited_rule_count": 12,
+    "base_receipt_input_count": 23,
+    "external_binding_projection_field_count": 5,
+    "generation_preimage_field_count": 5,
+    "owner_kind_count": 7,
+    "lease_event_kind_count": 6,
+    "partial_order_invariant_count": 7,
+    "diagnostic_guard_count": 13,
+    "trace_feature_count": 3,
+    "backend_semantic_reselection_count": 0,
+    "runtime_selector_lookup_count": 0,
+    "closed_feature_p1_count": 0,
+    "new_feature_p1_count": 0,
+    "product_execution_receipt_count": 0
+  }
+}

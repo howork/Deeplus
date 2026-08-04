@@ -44,6 +44,16 @@ R74_EVIDENCE_REFS = [
 ]
 R74_QUAD_EXCLUSION_COUNT = 4217
 R74_QUAD_EXCLUSION_SHA256 = "478376c682a3556f09b3b26aec31390e760fa6196f4cb78ec44e43c56c96d93e"
+R75_REVISION = "r75-local-actor-cranelift-projection-trace-closure-r1"
+R75_PREDECESSOR = "c016871d5aa1c7515fd8a8df181744916f1e1849"
+R75_OVERLAY = "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json"
+R75_TARGETS = {
+    ("actor_mailbox_capacity", "DYNAMIC_LOWERING", None),
+    ("actor_minimum_lifecycle_r1", "DYNAMIC_LOWERING", None),
+    ("actor_request_reply", "DYNAMIC_LOWERING", None),
+}
+R75_NON_TARGET_COUNT = 4214
+R75_NON_TARGET_SHA256 = "5be7b8f181e34054e226e97efdb85e008fec2e08a3e74357d4a5ec05538bfc45"
 
 CONTRACT = "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json"
 CONTRACT_SCHEMA = "schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json"
@@ -185,6 +195,24 @@ def r74_successor_non_target_digest(
         for key, value in cells.items()
         if key not in {TARGET, R73_BOUNDARY_TARGET, R73_REJECT_TARGET, R74_TARGET}
     ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
+def r75_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R72-R75 targets."""
+    excluded = {
+        TARGET,
+        R73_BOUNDARY_TARGET,
+        R73_REJECT_TARGET,
+        R74_TARGET,
+    } | R75_TARGETS
+    material = [[*key, value] for key, value in cells.items() if key not in excluded]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(
         material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -356,8 +384,18 @@ def validate(
         and metadata.get("local_predecessor_commit") == R74_PREDECESSOR
         and applied_paths[-2:] == [OVERLAY, R73_OVERLAY]
     )
+    r75_successor = (
+        metadata.get("revision") == R75_REVISION
+        and metadata.get("local_predecessor_commit") == R75_PREDECESSOR
+        and applied_paths[-1:] == [R75_OVERLAY]
+    )
     require(
         (
+            r75_successor
+            and r75_successor_non_target_digest(current_cells)
+            == (R75_NON_TARGET_COUNT, R75_NON_TARGET_SHA256)
+        )
+        or (
             r74_successor
             and r74_successor_non_target_digest(current_cells)
             == (R74_QUAD_EXCLUSION_COUNT, R74_QUAD_EXCLUSION_SHA256)
@@ -376,7 +414,8 @@ def validate(
         "GENERATED_NON_TARGET_SUCCESSOR_EXACT",
     )
     require(
-        metadata.get("canonical_baseline_commit") == CANONICAL
+        metadata.get("canonical_baseline_commit")
+        == (R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             (
                 metadata.get("revision") == REVISION
@@ -392,12 +431,20 @@ def validate(
                 and sum(row.get("binding_count", 0) for row in applied) == 136
                 and len(registry) == 3148
             )
+            or (
+                r75_successor
+                and len(applied) == 20
+                and sum(row.get("binding_count", 0) for row in applied) == 139
+                and len(registry) == 3151
+                and applied[-1]
+                == {"path": R75_OVERLAY, "feature_count": 3, "binding_count": 3}
+            )
         )
         and len(registered) == 1,
         "G03",
         "GENERATED_METADATA_EXACT",
     )
-    if r73_successor or r74_successor:
+    if r73_successor or r74_successor or r75_successor:
         boundary = current_cells.get(R73_BOUNDARY_TARGET, {})
         reject = current_cells.get(R73_REJECT_TARGET, {})
         successor_count, successor_digest = r73_successor_non_target_digest(
@@ -417,7 +464,7 @@ def validate(
             "G03",
             "R73_SUCCESSOR_TARGETS_EXACT",
         )
-    if r74_successor:
+    if r74_successor or r75_successor:
         r74_target = current_cells.get(R74_TARGET, {})
         require(
             r74_target.get("disposition") == "BOUND_DIRECT"
@@ -430,6 +477,11 @@ def validate(
         )
         require(
             (
+                r75_successor
+                and r75_successor_non_target_digest(current_cells)
+                == (R75_NON_TARGET_COUNT, R75_NON_TARGET_SHA256)
+            )
+            or (
                 r74_successor
                 and r74_successor_non_target_digest(current_cells)
                 == (R74_QUAD_EXCLUSION_COUNT, R74_QUAD_EXCLUSION_SHA256)
@@ -450,7 +502,9 @@ def validate(
             derived.get("applicable_blocked_cells"),
         )
         == (
-            (2470, 4, 502, 1245)
+            (2473, 4, 502, 1242)
+            if r75_successor
+            else (2470, 4, 502, 1245)
             if r74_successor
             else (2469, 4, 503, 1245)
             if r73_successor
@@ -699,6 +753,11 @@ def validate(
         == [f"MECDTC-R{index:03d}" for index in range(1, 14)]
         and (
             (
+                r75_successor
+                and r75_successor_non_target_digest(current_cells)
+                == (R75_NON_TARGET_COUNT, R75_NON_TARGET_SHA256)
+            )
+            or (
                 r74_successor
                 and r74_successor_non_target_digest(current_cells)
                 == (R74_QUAD_EXCLUSION_COUNT, R74_QUAD_EXCLUSION_SHA256)
@@ -709,7 +768,7 @@ def validate(
                 == (R73_TRIPLE_EXCLUSION_COUNT, R73_TRIPLE_EXCLUSION_SHA256)
             )
             or (
-                not (r73_successor or r74_successor)
+                not (r73_successor or r74_successor or r75_successor)
                 and current_count == NON_TARGET_COUNT
                 and current_digest == NON_TARGET_SHA256
             )
@@ -730,6 +789,7 @@ def main() -> int:
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
     metadata = load(root / METADATA)
+    derived = metadata.get("derived_counts", {})
     r73_successor = metadata.get("revision") == R73_REVISION
     r74_successor = metadata.get("revision") == R74_REVISION
     receipt = {
@@ -741,13 +801,15 @@ def main() -> int:
         "reason_code": REASON,
         "authority_boundary": AUTHORITY,
         "projected_counts": {
-            "bound_direct": 2470 if r74_successor else 2469 if r73_successor else 2467,
-            "bound_delegated": 4,
-            "not_applicable": 502 if r74_successor else 503,
-            "applicable_blocked": 1245 if (r73_successor or r74_successor) else 1247,
+            "bound_direct": derived.get("bound_direct_cells"),
+            "bound_delegated": derived.get("bound_delegated_cells"),
+            "not_applicable": derived.get("not_applicable_cells"),
+            "applicable_blocked": derived.get("applicable_blocked_cells"),
         },
         "non_target_cell_count": (
-            R74_QUAD_EXCLUSION_COUNT
+            R75_NON_TARGET_COUNT
+            if metadata.get("revision") == R75_REVISION
+            else R74_QUAD_EXCLUSION_COUNT
             if r74_successor
             else R73_TRIPLE_EXCLUSION_COUNT
             if r73_successor
