@@ -12819,6 +12819,10 @@ def main() -> int:
         "governance/reports/Design_Deeplus_R76_Global_Implementation_Target_Trace_Publication_Closure_R1.md",
         "release/evidence/r76-global-implementation-target-trace-publication-closure-receipt.json",
         "release/evidence/r76-global-implementation-target-trace-independent-verification.json",
+        "decisions/language/Design_Deeplus_G4_Independent_Implementation_Readiness_Audit_R1.md",
+        "spec/contracts/implementation-readiness-g4-audit-r1.json",
+        "schemas/language/implementation-readiness-g4-audit-r1.schema.json",
+        "tools/validators/validate_implementation_readiness_g4_audit.py",
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
         "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
@@ -13321,6 +13325,26 @@ def main() -> int:
         r76_process.returncode == 0,
         "R76_GLOBAL_IMPLEMENTATION_TARGET_TRACE_CLOSURE",
         r76_detail[-4000:],
+    )
+
+    g4_validator = root / "tools/validators/validate_implementation_readiness_g4_audit.py"
+    g4_process = subprocess.run(
+        [sys.executable, str(g4_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    g4_detail = (
+        g4_process.stdout.strip()
+        if g4_process.returncode == 0
+        else g4_process.stderr.strip() or g4_process.stdout.strip()
+    )
+    check(
+        g4_process.returncode == 0,
+        "G4_INDEPENDENT_IMPLEMENTATION_READINESS_AUDIT",
+        g4_detail[-4000:],
     )
 
     r76_mutation_runner = (
