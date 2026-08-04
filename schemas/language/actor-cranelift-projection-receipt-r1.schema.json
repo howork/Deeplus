@@ -1,0 +1,498 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/actor-cranelift-projection-receipt-r1.schema.json",
+  "title": "Deeplus Actor Cranelift projection and differential receipts R1",
+  "oneOf": [
+    {"$ref": "#/$defs/projectionReceipt"},
+    {"$ref": "#/$defs/differentialReceipt"}
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "typedId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9]*Id:[^\\s]+$"
+    },
+    "baseReceiptInputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mir_semantic_digest",
+        "target_triple",
+        "target_isa_and_settings",
+        "cranelift_family_and_lockfile_digest",
+        "module_kind",
+        "pointer_width_and_endianness",
+        "object_format_and_code_relocation_model",
+        "calling_convention",
+        "internal_runtime_abi_id",
+        "internal_runtime_abi_schema_id",
+        "runtime_abi_digest",
+        "runtime_helper_registry_digest",
+        "internal_runtime_target_projection_digest",
+        "internal_runtime_artifact_binding_receipt_schema_id",
+        "optimization_settings_digest",
+        "runtime_helper_and_safepoint_capability_digest",
+        "managed_memory_profile_digest",
+        "managed_memory_plan_digest",
+        "managed_root_receipt_schema_digest",
+        "continuation_root_interface_digest",
+        "target_root_projection_digest",
+        "runtime_root_registry_digest",
+        "object_linker_or_jit_import_map_identity"
+      ],
+      "properties": {
+        "mir_semantic_digest": {"$ref": "#/$defs/sha256"},
+        "target_triple": {"type": "string", "minLength": 1},
+        "target_isa_and_settings": {"$ref": "#/$defs/sha256"},
+        "cranelift_family_and_lockfile_digest": {"$ref": "#/$defs/sha256"},
+        "module_kind": {"enum": ["ObjectAot", "InMemoryJit"]},
+        "pointer_width_and_endianness": {"type": "string", "minLength": 1},
+        "object_format_and_code_relocation_model": {"type": "string", "minLength": 1},
+        "calling_convention": {"type": "string", "minLength": 1},
+        "internal_runtime_abi_id": {"type": "string", "minLength": 1},
+        "internal_runtime_abi_schema_id": {"type": "string", "minLength": 1},
+        "runtime_abi_digest": {"$ref": "#/$defs/sha256"},
+        "runtime_helper_registry_digest": {"$ref": "#/$defs/sha256"},
+        "internal_runtime_target_projection_digest": {"$ref": "#/$defs/sha256"},
+        "internal_runtime_artifact_binding_receipt_schema_id": {"type": "string", "minLength": 1},
+        "optimization_settings_digest": {"$ref": "#/$defs/sha256"},
+        "runtime_helper_and_safepoint_capability_digest": {"$ref": "#/$defs/sha256"},
+        "managed_memory_profile_digest": {"$ref": "#/$defs/sha256"},
+        "managed_memory_plan_digest": {"$ref": "#/$defs/sha256"},
+        "managed_root_receipt_schema_digest": {"$ref": "#/$defs/sha256"},
+        "continuation_root_interface_digest": {"$ref": "#/$defs/sha256"},
+        "target_root_projection_digest": {"$ref": "#/$defs/sha256"},
+        "runtime_root_registry_digest": {"$ref": "#/$defs/sha256"},
+        "object_linker_or_jit_import_map_identity": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "verifiedBindingProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executable_image_id",
+        "actor_protocol_binding_table_set_sha256",
+        "binding_row_sha256s",
+        "origin_coverage_sha256",
+        "verified_binding_projection_sha256"
+      ],
+      "properties": {
+        "executable_image_id": {"type": "string", "pattern": "^ExecutableImageId:[^\\s]+$"},
+        "actor_protocol_binding_table_set_sha256": {"$ref": "#/$defs/sha256"},
+        "binding_row_sha256s": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/sha256"}
+        },
+        "origin_coverage_sha256": {"$ref": "#/$defs/sha256"},
+        "verified_binding_projection_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "leaseOwner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_kind",
+        "owner_id",
+        "actor_instance_id_or_null",
+        "responsibility_id_or_null",
+        "binding_row_sha256_or_null"
+      ],
+      "properties": {
+        "owner_kind": {
+          "enum": [
+            "PUBLISHED_BINDING_TABLE",
+            "QUEUED_ENVELOPE",
+            "ACTIVE_OR_SUSPENDED_TURN",
+            "ACTOR_REQUEST_TERMINAL_OBLIGATION",
+            "CALLER_REPLY_CONTINUATION",
+            "EXECUTING_FRAME",
+            "CODE_DEPENDENT_METADATA"
+          ]
+        },
+        "owner_id": {"$ref": "#/$defs/typedId"},
+        "actor_instance_id_or_null": {
+          "type": ["string", "null"],
+          "pattern": "^ActorInstanceId:[^\\s]+$"
+        },
+        "responsibility_id_or_null": {
+          "type": ["string", "null"],
+          "pattern": "^ResponsibilityId:[^\\s]+$"
+        },
+        "binding_row_sha256_or_null": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        }
+      }
+    },
+    "leaseEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "sequence",
+        "event_kind",
+        "generation_id",
+        "lease_id_or_null",
+        "from_owner_or_null",
+        "to_owner_or_null",
+        "lifecycle_event_id_or_null"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "pattern": "^ActorCodeLeaseEventId:[^\\s]+$"},
+        "sequence": {"type": "integer", "minimum": 0},
+        "event_kind": {"enum": ["ACQUIRE", "TRANSFER", "RELEASE", "PUBLISH", "UNPUBLISH", "RETIRE"]},
+        "generation_id": {"type": "string", "pattern": "^ActorCodeGenerationId:[0-9a-f]{64}$"},
+        "lease_id_or_null": {
+          "type": ["string", "null"],
+          "pattern": "^ActorCodeLeaseId:[^\\s]+$"
+        },
+        "from_owner_or_null": {
+          "oneOf": [
+            {"$ref": "#/$defs/leaseOwner"},
+            {"type": "null"}
+          ]
+        },
+        "to_owner_or_null": {
+          "oneOf": [
+            {"$ref": "#/$defs/leaseOwner"},
+            {"type": "null"}
+          ]
+        },
+        "lifecycle_event_id_or_null": {
+          "type": ["string", "null"],
+          "pattern": "^ActorLifecycleEventId:[^\\s]+$"
+        }
+      }
+    },
+    "managedReferenceCapability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capability",
+        "capability_digest",
+        "safepoint_obligation_count",
+        "root_map_obligation_count",
+        "generated_callback_count",
+        "suspended_frame_count",
+        "cleanup_entry_count",
+        "metadata_lifetime_receipt_sha256"
+      ],
+      "properties": {
+        "capability": {"enum": ["PROVEN", "NOT_REQUIRED"]},
+        "capability_digest": {"$ref": "#/$defs/sha256"},
+        "safepoint_obligation_count": {"type": "integer", "minimum": 0},
+        "root_map_obligation_count": {"type": "integer", "minimum": 0},
+        "generated_callback_count": {"type": "integer", "minimum": 0},
+        "suspended_frame_count": {"type": "integer", "minimum": 0},
+        "cleanup_entry_count": {"type": "integer", "minimum": 0},
+        "metadata_lifetime_receipt_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"capability": {"const": "NOT_REQUIRED"}},
+            "required": ["capability"]
+          },
+          "then": {
+            "properties": {
+              "safepoint_obligation_count": {"const": 0},
+              "root_map_obligation_count": {"const": 0},
+              "generated_callback_count": {"const": 0},
+              "suspended_frame_count": {"const": 0},
+              "cleanup_entry_count": {"const": 0}
+            }
+          }
+        }
+      ]
+    },
+    "finalLifetimeState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "publication_state",
+        "open_lease_ids",
+        "executing_frame_count",
+        "code_metadata_user_count",
+        "retired",
+        "physical_retirement"
+      ],
+      "properties": {
+        "publication_state": {"enum": ["PUBLISHED", "UNPUBLISHED"]},
+        "open_lease_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^ActorCodeLeaseId:[^\\s]+$"}
+        },
+        "executing_frame_count": {"type": "integer", "minimum": 0},
+        "code_metadata_user_count": {"type": "integer", "minimum": 0},
+        "retired": {"type": "boolean"},
+        "physical_retirement": {"enum": ["NOT_RETIRED", "JIT_RETIRED", "OBJECT_IMAGE_LIVE", "OBJECT_IMAGE_UNLOADED"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"retired": {"const": true}}, "required": ["retired"]},
+          "then": {
+            "properties": {
+              "publication_state": {"const": "UNPUBLISHED"},
+              "open_lease_ids": {"maxItems": 0},
+              "executing_frame_count": {"const": 0},
+              "code_metadata_user_count": {"const": 0}
+            }
+          }
+        }
+      ]
+    },
+    "replyContinuationBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "operation_kind",
+        "mode",
+        "actor_code_generation_id",
+        "caller_code_generation_id_or_null",
+        "continuation_lease_receipt_sha256_or_null",
+        "equal_generation_required"
+      ],
+      "properties": {
+        "operation_kind": {"enum": ["SEND", "REQUEST"]},
+        "mode": {"enum": ["NONE_FOR_SEND", "DISTINCT_GENERATION_RECEIPT"]},
+        "actor_code_generation_id": {"type": "string", "pattern": "^ActorCodeGenerationId:[0-9a-f]{64}$"},
+        "caller_code_generation_id_or_null": {
+          "type": ["string", "null"],
+          "pattern": "^ActorCodeGenerationId:[0-9a-f]{64}$"
+        },
+        "continuation_lease_receipt_sha256_or_null": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "equal_generation_required": {"const": false}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"operation_kind": {"const": "SEND"}}, "required": ["operation_kind"]},
+          "then": {
+            "properties": {
+              "mode": {"const": "NONE_FOR_SEND"},
+              "caller_code_generation_id_or_null": {"type": "null"},
+              "continuation_lease_receipt_sha256_or_null": {"type": "null"}
+            }
+          },
+          "else": {
+            "properties": {
+              "mode": {"const": "DISTINCT_GENERATION_RECEIPT"},
+              "caller_code_generation_id_or_null": {"type": "string"},
+              "continuation_lease_receipt_sha256_or_null": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        }
+      ]
+    },
+    "outcomeProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "error",
+        "defect",
+        "cancellation",
+        "suspension",
+        "cleanup",
+        "host_unwind_semantic_authority",
+        "arbitrary_backend_trap_semantic_authority",
+        "trap_map_digest"
+      ],
+      "properties": {
+        "error": {"const": "EXPLICIT_MIR_EDGE"},
+        "defect": {"const": "EXPLICIT_MIR_EDGE"},
+        "cancellation": {"const": "EXPLICIT_MIR_EDGE"},
+        "suspension": {"const": "EXPLICIT_MIR_TRANSITION"},
+        "cleanup": {"const": "EXPLICIT_MIR_ACTION_ORDER"},
+        "host_unwind_semantic_authority": {"const": false},
+        "arbitrary_backend_trap_semantic_authority": {"const": false},
+        "trap_map_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "objectOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "object_bytes_digest",
+        "object_format",
+        "linker_identity",
+        "linker_arguments_digest",
+        "final_artifact_digest",
+        "image_metadata_lifetime_receipt_digest"
+      ],
+      "properties": {
+        "kind": {"const": "ObjectAot"},
+        "object_bytes_digest": {"$ref": "#/$defs/sha256"},
+        "object_format": {"type": "string", "minLength": 1},
+        "linker_identity": {"type": "string", "minLength": 1},
+        "linker_arguments_digest": {"$ref": "#/$defs/sha256"},
+        "final_artifact_digest": {"$ref": "#/$defs/sha256"},
+        "image_metadata_lifetime_receipt_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "jitOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "import_allowlist_digest",
+        "resolved_import_map_digest",
+        "executable_memory_policy",
+        "finalized_image_identity",
+        "lifetime_and_retirement_receipt",
+        "image_metadata_lifetime_receipt_digest"
+      ],
+      "properties": {
+        "kind": {"const": "InMemoryJit"},
+        "import_allowlist_digest": {"$ref": "#/$defs/sha256"},
+        "resolved_import_map_digest": {"$ref": "#/$defs/sha256"},
+        "executable_memory_policy": {"type": "string", "minLength": 1},
+        "finalized_image_identity": {"type": "string", "pattern": "^JitImageId:[^\\s]+$"},
+        "lifetime_and_retirement_receipt": {"$ref": "#/$defs/sha256"},
+        "image_metadata_lifetime_receipt_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "projectionReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "base_receipt_inputs",
+        "verified_binding_projection",
+        "actor_code_generation_id",
+        "managed_reference_capability",
+        "reply_continuation_binding",
+        "outcome_projection",
+        "lease_events",
+        "final_lifetime_state",
+        "lifecycle_trace_sha256",
+        "observation_trace_sha256",
+        "backend_semantic_reselection_count",
+        "runtime_selector_lookup_count",
+        "module_output",
+        "product_execution",
+        "receipt_sha256"
+      ],
+      "properties": {
+        "schema": {"const": "deeplus.actor-cranelift-projection-receipt/r1"},
+        "base_receipt_inputs": {"$ref": "#/$defs/baseReceiptInputs"},
+        "verified_binding_projection": {"$ref": "#/$defs/verifiedBindingProjection"},
+        "actor_code_generation_id": {"type": "string", "pattern": "^ActorCodeGenerationId:[0-9a-f]{64}$"},
+        "managed_reference_capability": {"$ref": "#/$defs/managedReferenceCapability"},
+        "reply_continuation_binding": {"$ref": "#/$defs/replyContinuationBinding"},
+        "outcome_projection": {"$ref": "#/$defs/outcomeProjection"},
+        "lease_events": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/leaseEvent"}
+        },
+        "final_lifetime_state": {"$ref": "#/$defs/finalLifetimeState"},
+        "lifecycle_trace_sha256": {"$ref": "#/$defs/sha256"},
+        "observation_trace_sha256": {"$ref": "#/$defs/sha256"},
+        "backend_semantic_reselection_count": {"const": 0},
+        "runtime_selector_lookup_count": {"const": 0},
+        "module_output": {
+          "oneOf": [
+            {"$ref": "#/$defs/objectOutput"},
+            {"$ref": "#/$defs/jitOutput"}
+          ]
+        },
+        "product_execution": {"const": "NOT_RUN"},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "base_receipt_inputs": {
+                "properties": {"module_kind": {"const": "ObjectAot"}},
+                "required": ["module_kind"]
+              }
+            },
+            "required": ["base_receipt_inputs"]
+          },
+          "then": {"properties": {"module_output": {"$ref": "#/$defs/objectOutput"}}},
+          "else": {"properties": {"module_output": {"$ref": "#/$defs/jitOutput"}}}
+        }
+      ]
+    },
+    "differentialReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "xvm_observation_trace_sha256",
+        "object_projection_receipt_sha256",
+        "jit_projection_receipt_sha256",
+        "comparison_mode",
+        "deterministic_schedule_trace_id_or_null",
+        "single_channel_precondition_receipt_sha256_or_null",
+        "partial_order_invariants",
+        "execution_state",
+        "receipt_sha256"
+      ],
+      "properties": {
+        "schema": {"const": "deeplus.actor-cranelift-differential-comparison-receipt/r1"},
+        "xvm_observation_trace_sha256": {"$ref": "#/$defs/sha256"},
+        "object_projection_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "jit_projection_receipt_sha256": {"$ref": "#/$defs/sha256"},
+        "comparison_mode": {"enum": ["EXACT_TOTAL_ORDER", "REQUIRED_PARTIAL_ORDER"]},
+        "deterministic_schedule_trace_id_or_null": {
+          "type": ["string", "null"],
+          "pattern": "^DeterministicScheduleTraceId:[^\\s]+$"
+        },
+        "single_channel_precondition_receipt_sha256_or_null": {
+          "oneOf": [
+            {"$ref": "#/$defs/sha256"},
+            {"type": "null"}
+          ]
+        },
+        "partial_order_invariants": {
+          "const": [
+            "per_channel_fifo",
+            "enqueue_commit_sequence",
+            "one_active_state_mutating_turn",
+            "suspend_resume_identity",
+            "reply_terminal_exactly_once",
+            "mir_primary_suppressed_failure_order",
+            "cleanup_and_generation_lease_release_exactly_once"
+          ]
+        },
+        "execution_state": {"enum": ["NOT_RUN", "EXECUTED_PASS", "EXECUTED_FAIL"]},
+        "receipt_sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"comparison_mode": {"const": "EXACT_TOTAL_ORDER"}}, "required": ["comparison_mode"]},
+          "then": {
+            "anyOf": [
+              {"properties": {"deterministic_schedule_trace_id_or_null": {"type": "string"}}},
+              {"properties": {"single_channel_precondition_receipt_sha256_or_null": {"$ref": "#/$defs/sha256"}}}
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "x-deeplus-identity-contract": {
+    "canonical_bytes": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
+    "actor_code_generation_id_domain": "deeplus.actor-code-generation/v1",
+    "receipt_self_hash_excludes": ["receipt_sha256"],
+    "module_kind_occurs_only_in_base_receipt_inputs": true,
+    "binding_row_sha256s_sorted": true,
+    "lease_events_sorted_by_sequence": true
+  },
+  "x-deeplus-product-backend": "NOT_RUN"
+}

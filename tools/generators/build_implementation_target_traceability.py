@@ -37,6 +37,7 @@ OVERLAYS = [
     OUT / "method-extension-resolution-dynamic-evidence-r1.json",
     OUT / "member-extension-collision-dynamic-evidence-r1.json",
     OUT / "member-extension-collision-conformance-evidence-r1.json",
+    OUT / "actor-cranelift-projection-dynamic-evidence-r1.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -403,9 +404,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r74-local-member-extension-collision-diagnostic-trace-closure-r1",
-        "canonical_baseline_commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
-        "local_predecessor_commit": "f6581b6fba8f0f48e8b3ac2ea893298e7713d51d",
+        "revision": "r75-local-actor-cranelift-projection-trace-closure-r1",
+        "canonical_baseline_commit": "c016871d5aa1c7515fd8a8df181744916f1e1849",
+        "local_predecessor_commit": "c016871d5aa1c7515fd8a8df181744916f1e1849",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),

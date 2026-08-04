@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/actor-cranelift-projection-dynamic-evidence-r1.schema.json",
+  "title": "Deeplus R75 Actor Cranelift dynamic trace evidence overlay",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "feature_ids",
+    "evidence_entries",
+    "bindings",
+    "acceptance_cases",
+    "counts",
+    "guards"
+  ],
+  "properties": {
+    "$schema": {"const": "../../../schemas/language/actor-cranelift-projection-dynamic-evidence-r1.schema.json"},
+    "schema": {"const": "deeplus.actor-cranelift-projection-dynamic-evidence/r1"},
+    "revision": {"const": "r75-local-actor-cranelift-projection-rebase-r1"},
+    "canonical_baseline_commit": {"const": "c016871d5aa1c7515fd8a8df181744916f1e1849"},
+    "local_predecessor_commit": {"const": "c016871d5aa1c7515fd8a8df181744916f1e1849"},
+    "candidate_status": {"const": "NONCANONICAL_DESIGN_STATIC_EVIDENCE_OVERLAY"},
+    "feature_ids": {"const": ["actor_mailbox_capacity", "actor_minimum_lifecycle_r1", "actor_request_reply"]},
+    "evidence_entries": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_key", "class", "path", "locator_kind", "locator", "stage_role"],
+        "properties": {
+          "evidence_key": {"pattern": "^R75:actor_(mailbox_capacity|minimum_lifecycle_r1|request_reply):DYNAMIC_LOWERING:ACTOR_CRANELIFT_PROJECTION$"},
+          "class": {"const": "CONTRACT_RULE_ID"},
+          "path": {"const": "spec/contracts/actor-cranelift-projection-r1.json"},
+          "locator_kind": {"const": "JSON_POINTER"},
+          "locator": {"pattern": "^/feature_trace/actor_(mailbox_capacity|minimum_lifecycle_r1|request_reply)$"},
+          "stage_role": {"const": "DYNAMIC_LOWERING"}
+        }
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["feature_id", "stage", "outcome", "predecessor_disposition", "disposition", "evidence_keys", "delegate_feature_id", "not_applicable"],
+        "properties": {
+          "feature_id": {"enum": ["actor_mailbox_capacity", "actor_minimum_lifecycle_r1", "actor_request_reply"]},
+          "stage": {"const": "DYNAMIC_LOWERING"},
+          "outcome": {"type": "null"},
+          "predecessor_disposition": {"const": "APPLICABLE_BLOCKED_BY_GAP"},
+          "disposition": {"const": "BOUND_DIRECT"},
+          "evidence_keys": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "string"}},
+          "delegate_feature_id": {"type": "null"},
+          "not_applicable": {"type": "null"}
+        }
+      }
+    },
+    "acceptance_cases": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "feature_id", "stage", "outcome", "contract_pointer", "acceptance_case_ids", "disposition", "execution_state"],
+        "properties": {
+          "case_id": {"pattern": "^R75-TRACE-00[1-3]$"},
+          "feature_id": {"enum": ["actor_mailbox_capacity", "actor_minimum_lifecycle_r1", "actor_request_reply"]},
+          "stage": {"const": "DYNAMIC_LOWERING"},
+          "outcome": {"type": "null"},
+          "contract_pointer": {"pattern": "^/feature_trace/actor_(mailbox_capacity|minimum_lifecycle_r1|request_reply)$"},
+          "acceptance_case_ids": {"type": "array", "minItems": 4, "uniqueItems": true, "items": {"pattern": "^R24R-T(0[1-9]|[12][0-9]|30)$"}},
+          "disposition": {"const": "BOUND_DIRECT"},
+          "execution_state": {"const": "STATIC_REFERENCE_VALIDATOR_PASS"}
+        }
+      }
+    },
+    "counts": {
+      "const": {
+        "feature_count": 3,
+        "evidence_entry_count": 3,
+        "binding_count": 3,
+        "trace_acceptance_record_count": 3,
+        "predecessor_blocked_cell_count": 3,
+        "overlay_bound_direct_transition_count": 3,
+        "overlay_bound_delegated_transition_count": 0,
+        "overlay_not_applicable_transition_count": 0,
+        "predecessor_cumulative_overlay_count": 19,
+        "post_overlay_cumulative_overlay_count": 20,
+        "predecessor_cumulative_overlay_binding_count": 136,
+        "post_overlay_cumulative_binding_count": 139,
+        "predecessor_evidence_registry_count": 3148,
+        "post_overlay_evidence_registry_count": 3151,
+        "predecessor_total_bound_direct_cell_count": 2470,
+        "predecessor_total_bound_delegated_cell_count": 4,
+        "predecessor_total_not_applicable_cell_count": 502,
+        "predecessor_total_blocked_cell_count": 1245,
+        "post_overlay_total_bound_direct_cell_count": 2473,
+        "post_overlay_total_bound_delegated_cell_count": 4,
+        "post_overlay_total_not_applicable_cell_count": 502,
+        "post_overlay_total_blocked_cell_count": 1242,
+        "post_overlay_missing_cell_count": 0,
+        "post_overlay_conflict_cell_count": 0
+      }
+    },
+    "guards": {
+      "type": "object",
+      "required": ["target_feature_count", "target_feature_id_list_sha256", "excluded_feature_count", "excluded_feature_id_list_sha256", "transitioned_cell_count", "other_cell_transition_count", "other_atomic_cell_count", "stage_cell_count", "test_outcome_cell_count", "source_syntax_change_count", "new_hir_identity_count", "new_mir_operation_kind_count", "runtime_or_backend_relookup_count", "semantic_p0", "feature_p1", "m13_actions", "product_lanes", "github_publication", "product_execution_receipt_count", "implementation_claim"],
+      "properties": {
+        "target_feature_count": {"const": 469},
+        "target_feature_id_list_sha256": {"const": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435"},
+        "excluded_feature_count": {"const": 254},
+        "excluded_feature_id_list_sha256": {"const": "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7"},
+        "transitioned_cell_count": {"const": 3},
+        "other_cell_transition_count": {"const": 0},
+        "other_atomic_cell_count": {"const": 4217},
+        "stage_cell_count": {"const": 3283},
+        "test_outcome_cell_count": {"const": 1407},
+        "source_syntax_change_count": {"const": 0},
+        "new_hir_identity_count": {"const": 0},
+        "new_mir_operation_kind_count": {"const": 0},
+        "runtime_or_backend_relookup_count": {"const": 0},
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "m13_actions": {"const": "4_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "NOT_AUTHORIZED_FOR_R75"},
+        "product_execution_receipt_count": {"const": 0},
+        "implementation_claim": {"const": "NONE"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

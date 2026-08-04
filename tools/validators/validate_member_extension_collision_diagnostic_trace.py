@@ -20,6 +20,16 @@ EVIDENCE_ID = "EV-55d02c2cea739b77d7d95070b34e6b350f4aa3b3c0b838597263a576b85115
 FEATURE_REF_ID = "EV-c3f43ca9fc5692e6da578ae1a0701cc340951ff85144c9263e69c60a0d358bb4"
 NON_TARGET_COUNT = 4220
 NON_TARGET_SHA256 = "0f134da58b8045ad157b08b5a3eb7ce32509716eb7ab95fd67ce3e551299d827"
+R75_REVISION = "r75-local-actor-cranelift-projection-trace-closure-r1"
+R75_PREDECESSOR = "c016871d5aa1c7515fd8a8df181744916f1e1849"
+R75_OVERLAY = "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json"
+R75_TARGETS = {
+    ("actor_mailbox_capacity", "DYNAMIC_LOWERING", None),
+    ("actor_minimum_lifecycle_r1", "DYNAMIC_LOWERING", None),
+    ("actor_request_reply", "DYNAMIC_LOWERING", None),
+}
+R75_NON_TARGET_COUNT = 4217
+R75_NON_TARGET_SHA256 = "d8b2b490eae91d1926c0a30a70951325638c6545c327e2f1d911d1d1e3104417"
 
 FEATURE_CATALOG = "spec/features/catalog/chunks/part-0009.json"
 ROWS = "spec/traceability/implementation-target-profile-r1/rows.json"
@@ -87,6 +97,22 @@ def non_target_digest(cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, A
     material = [[*key, value] for key, value in cells.items() if key != TARGET]
     material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
     raw = json.dumps(material, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return len(material), hashlib.sha256(raw).hexdigest()
+
+
+def r75_successor_non_target_digest(
+    cells: Mapping[Tuple[str, str, Optional[str]], Dict[str, Any]],
+) -> Tuple[int, str]:
+    """Fence every atomic cell except the exact R74 and R75 targets."""
+    material = [
+        [*key, value]
+        for key, value in cells.items()
+        if key not in ({TARGET} | R75_TARGETS)
+    ]
+    material.sort(key=lambda row: (row[0], row[1], row[2] or ""))
+    raw = json.dumps(
+        material, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
     return len(material), hashlib.sha256(raw).hexdigest()
 
 
@@ -169,23 +195,43 @@ def validate(root: Path, *, overrides: Optional[Mapping[str, Any]] = None,
     applied = metadata.get("applied_evidence_overlays", [])
     registry = metadata.get("evidence_registry", [])
     derived = metadata.get("derived_counts", {})
+    r75_successor = (
+        metadata.get("revision") == R75_REVISION
+        and metadata.get("local_predecessor_commit") == R75_PREDECESSOR
+        and applied[-1]
+        == {"path": R75_OVERLAY, "feature_count": 3, "binding_count": 3}
+    )
     require(
-        current_duplicates == 0 and current_count == NON_TARGET_COUNT
-        and current_digest == NON_TARGET_SHA256
-        and metadata.get("revision") == REVISION
-        and metadata.get("canonical_baseline_commit") == CANONICAL
-        and metadata.get("local_predecessor_commit") == PREDECESSOR
-        and len(applied) == 19
-        and applied[-1] == {"path": R73_OVERLAY, "feature_count": 1, "binding_count": 2}
-        and sum(row.get("binding_count", 0) for row in applied) == 136
-        and len(registry) == 3148
+        current_duplicates == 0
+        and (
+            (
+                r75_successor
+                and r75_successor_non_target_digest(current_cells)
+                == (R75_NON_TARGET_COUNT, R75_NON_TARGET_SHA256)
+            )
+            or (
+                not r75_successor
+                and current_count == NON_TARGET_COUNT
+                and current_digest == NON_TARGET_SHA256
+            )
+        )
+        and (metadata.get("revision") == REVISION or r75_successor)
+        and metadata.get("canonical_baseline_commit")
+        == (R75_PREDECESSOR if r75_successor else CANONICAL)
+        and (metadata.get("local_predecessor_commit") == PREDECESSOR or r75_successor)
+        and len(applied) == (20 if r75_successor else 19)
+        and applied[-2 if r75_successor else -1]
+        == {"path": R73_OVERLAY, "feature_count": 1, "binding_count": 2}
+        and sum(row.get("binding_count", 0) for row in applied)
+        == (139 if r75_successor else 136)
+        and len(registry) == (3151 if r75_successor else 3148)
         and sum(row.get("evidence_id") == EVIDENCE_ID for row in registry) == 1,
         "G03", "GENERATED_METADATA_EXACT",
     )
     require(
         (derived.get("bound_direct_cells"), derived.get("bound_delegated_cells"),
          derived.get("not_applicable_cells"), derived.get("applicable_blocked_cells"))
-        == (2470, 4, 502, 1245)
+        == ((2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245))
         and derived.get("missing_cells") == 0 and derived.get("conflict_cells") == 0,
         "G03", "GENERATED_COUNTS_EXACT",
     )
@@ -248,14 +294,19 @@ def main() -> int:
         errors = validate(root)
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
+    metadata = load(root / METADATA)
+    derived = metadata.get("derived_counts", {})
+    r75_successor = metadata.get("revision") == R75_REVISION
     receipt = {
         "schema": "deeplus.r74-member-extension-collision-diagnostic-trace-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL", "feature_id": FEATURE,
         "transitioned_cell_count": 1, "stage": "DIAGNOSTICS",
         "disposition": "BOUND_DIRECT", "projected_counts": {
-            "bound_direct": 2470, "bound_delegated": 4,
-            "not_applicable": 502, "applicable_blocked": 1245,
-        }, "non_target_cell_count": NON_TARGET_COUNT,
+            "bound_direct": derived.get("bound_direct_cells"),
+            "bound_delegated": derived.get("bound_delegated_cells"),
+            "not_applicable": derived.get("not_applicable_cells"),
+            "applicable_blocked": derived.get("applicable_blocked_cells"),
+        }, "non_target_cell_count": R75_NON_TARGET_COUNT if r75_successor else NON_TARGET_COUNT,
         "product_execution": "15_OF_15_NOT_RUN", "github_publication": "SUSPENDED",
         "gates": GATES, "errors": errors,
     }
