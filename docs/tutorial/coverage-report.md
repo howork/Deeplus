@@ -2,7 +2,7 @@
 
 # Deeplus 튜토리얼 coverage 보고서
 
-- revision: `r51f3-current-implementation-readiness-r74-r1`
+- revision: `r51f3-current-actor-cranelift-projection-r75-r1`
 - Part 안내: 12
 - 개념 장: 60
 - 안내 실습: 12
@@ -14,8 +14,8 @@
 - Deeplus 코드 블록: 375
 - 연습 prompt 표식: 261
 - 로컬 링크 오류: 0
-- contract SHA-256: `8c9d1ee6fb06fb04ed19d42eca61656be7913be6e85e187bca1a66245551750e`
-- coverage schema SHA-256: `6baab55882ca9de0f6eb650317f90410cdd08bd1a9446261158680d9a9a0f6d7`
+- contract SHA-256: `c6cfc586505844c2c8974fe2713195d544b65aaf83d3ef40b6441791e9b9eec2`
+- coverage schema SHA-256: `12637517ff1e978dab7152ec284ea5f9c23ff365739bacffbc7f09a24bc4232f`
 
 ## authority 울타리
 

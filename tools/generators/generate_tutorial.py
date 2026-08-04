@@ -24,7 +24,7 @@ SCHEMA_REL = "schemas/language/tutorial-coverage.schema.json"
 MANIFEST_REL = "docs/tutorial/coverage-manifest.json"
 REPORT_REL = "docs/tutorial/coverage-report.md"
 MANIFEST_SCHEMA = "deeplus.tutorial-coverage/r1"
-REVISION = "r51f3-current-implementation-readiness-r74-r1"
+REVISION = "r51f3-current-actor-cranelift-projection-r75-r1"
 POINTER_REL = "current/current-pointer.json"
 SOURCE_BINDING_RELS = (
     "spec/language.md",

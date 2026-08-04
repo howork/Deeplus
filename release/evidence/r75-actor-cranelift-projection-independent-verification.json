@@ -1,0 +1,42 @@
+{
+  "schema": "deeplus.r75-actor-cranelift-projection-independent-verification/v1",
+  "recorded_at": "2026-08-04T11:29:38+09:00",
+  "repository": "https://github.com/howork/Deeplus.git",
+  "semantic_merge_commit": "420ccdcbe9dae1b267d9fa0277239195f0d72d1b",
+  "scope": "READ_ONLY_DESIGN_STATIC_REVIEW",
+  "verdict": "PASS",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "review_results": [
+    {
+      "review": "SEMANTIC_PUBLICATION_IDENTITY",
+      "verdict": "PASS",
+      "observations": [
+        "PR #69 merged exact source commit d0e3f459b55f4eeb9bf884ccf982d90602f0d2b7 as merge commit 420ccdcbe9dae1b267d9fa0277239195f0d72d1b.",
+        "The source and merge trees are exactly 2c3b690cee13a28f89130728c5a8d0d9d39cccc9, with exact parents c016871d5aa1c7515fd8a8df181744916f1e1849 and d0e3f459b55f4eeb9bf884ccf982d90602f0d2b7.",
+        "The semantic delta contains 27 files and no production crate implementation."
+      ]
+    },
+    {
+      "review": "R75_ACTOR_CRANELIFT_PROJECTION",
+      "verdict": "PASS",
+      "observations": [
+        "Deeplus MIR remains the sole execution-semantic authority and backend semantic reselection remains zero.",
+        "ActorCodeGenerationId, exact lease-event replay, managed-reference fail-closed behavior, outcome preservation, and partial-order comparison are closed as deterministic design/static contracts.",
+        "Exactly three Actor Dynamic Lowering cells transition from APPLICABLE_BLOCKED_BY_GAP to BOUND_DIRECT."
+      ]
+    },
+    {
+      "review": "GOVERNANCE_AND_EVIDENCE_HONESTY",
+      "verdict": "PASS",
+      "observations": [
+        "IR-ACTOR-P1-007 closes only after publication-closure merge and exact live-main readback.",
+        "IR-ACTOR-P2-008 remains EXPLICITLY_DEFERRED and IR-XCUT-P1-054 remains OPEN with 1,242 blocked cells.",
+        "The exact feature P1 set remains 22 OPEN, four M13 actions remain separately OPEN, and all 15 product lanes remain NOT_RUN."
+      ]
+    }
+  ],
+  "canonical_source_mutation_by_independent_review": 0,
+  "github_mutation_by_independent_review": 0,
+  "product_execution": "NOT_RUN",
+  "closure_effect": "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK"
+}
