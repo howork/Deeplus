@@ -45,6 +45,9 @@ R75_ACTOR_CRANELIFT_PROJECTION_REVISION = (
 R76_GLOBAL_TRACE_CLOSURE_REVISION = (
     "r51f3-current-global-implementation-target-trace-closure-r76-r1"
 )
+G4_INDEPENDENT_READINESS_REVISION = (
+    "r51f3-current-implementation-readiness-g4-audit-r1"
+)
 FRONTEND_SUCCESSOR_REVISIONS = {
     R11_R19_FRONTEND_REVISION,
     R41_ACTOR_PROTOCOL_REVISION,
@@ -54,6 +57,7 @@ FRONTEND_SUCCESSOR_REVISIONS = {
     R74_IMPLEMENTATION_READINESS_REVISION,
     R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
     R76_GLOBAL_TRACE_CLOSURE_REVISION,
+    G4_INDEPENDENT_READINESS_REVISION,
 }
 CURRENT_MACHINE_REVISIONS = {
     R10_HIR_MIR_REVISION,
@@ -96,7 +100,10 @@ R75_SEMANTIC_PUBLICATION_TREE = "2c3b690cee13a28f89130728c5a8d0d9d39cccc9"
 R76_SEMANTIC_SOURCE_COMMIT = "adfff280c015640ccb2a6c87812c984162b4b008"
 R76_SEMANTIC_PUBLICATION_COMMIT = "f550338a9daf9cae64f4dc8933dfb4219ee76dcd"
 R76_SEMANTIC_PUBLICATION_TREE = "7c663efaaadf8733a65d73a9540bcdb5700147fb"
-CURRENT_PUBLICATION_TARGET_COMMIT = R76_SEMANTIC_PUBLICATION_COMMIT
+G4_SEMANTIC_SOURCE_COMMIT = "df5d22f7db267519ebb16685b68fb6c8cb6b9d61"
+G4_SEMANTIC_PUBLICATION_COMMIT = "f07424425929b1bf1abe0fff3ad39dfe09c0f52f"
+G4_SEMANTIC_PUBLICATION_TREE = "611a303363d71f4b27daddf02b56752ac6e8e75d"
+CURRENT_PUBLICATION_TARGET_COMMIT = G4_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -252,6 +259,10 @@ R48_R74_DECISION_PATHS = [
 R76_DECISION_PATH = (
     "decisions/language/"
     "Design_Deeplus_R76_Global_Implementation_Target_Trace_Closure_R1.md"
+)
+G4_DECISION_PATH = (
+    "decisions/language/"
+    "Design_Deeplus_G4_Independent_Implementation_Readiness_Audit_R1.md"
 )
 R10_DECISION_ID = "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
 AUTHORITY_TRANSITION_REPORT = (
@@ -489,6 +500,22 @@ R76_INDEPENDENT_VERIFICATION_RECEIPT = (
 )
 R76_PUBLICATION_CLOSURE_DECISION_ID = (
     "DSGN-CURRENT-R76-GLOBAL-IMPLEMENTATION-TARGET-TRACE-PUBLICATION-CLOSURE"
+)
+G4_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_G4_Independent_Implementation_Readiness_"
+    "Publication_Closure_R1.md"
+)
+G4_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "g4-independent-implementation-readiness-publication-closure-receipt.json"
+)
+G4_INDEPENDENT_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "g4-independent-implementation-readiness-independent-verification.json"
+)
+G4_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-G4-INDEPENDENT-IMPLEMENTATION-READINESS-PUBLICATION-CLOSURE"
 )
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
@@ -12819,6 +12846,9 @@ def main() -> int:
         "governance/reports/Design_Deeplus_R76_Global_Implementation_Target_Trace_Publication_Closure_R1.md",
         "release/evidence/r76-global-implementation-target-trace-publication-closure-receipt.json",
         "release/evidence/r76-global-implementation-target-trace-independent-verification.json",
+        "governance/reports/Design_Deeplus_G4_Independent_Implementation_Readiness_Publication_Closure_R1.md",
+        "release/evidence/g4-independent-implementation-readiness-publication-closure-receipt.json",
+        "release/evidence/g4-independent-implementation-readiness-independent-verification.json",
         "decisions/language/Design_Deeplus_G4_Independent_Implementation_Readiness_Audit_R1.md",
         "spec/contracts/implementation-readiness-g4-audit-r1.json",
         "schemas/language/implementation-readiness-g4-audit-r1.schema.json",
@@ -17141,6 +17171,7 @@ def main() -> int:
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
+                G4_INDEPENDENT_READINESS_REVISION,
             }
             else []
         )
@@ -17150,10 +17181,12 @@ def main() -> int:
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
+                G4_INDEPENDENT_READINESS_REVISION,
             }
             else []
         )
-        + ([R76_DECISION_PATH] if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION else [])
+        + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION} else [])
+        + ([G4_DECISION_PATH] if revision == G4_INDEPENDENT_READINESS_REVISION else [])
     ]
     indexed_governance_paths = re.findall(
         r"^  - (governance/\S+)$",
@@ -17189,6 +17222,7 @@ def main() -> int:
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
+            G4_INDEPENDENT_READINESS_REVISION,
         }
         else []
     ) + (
@@ -17200,6 +17234,7 @@ def main() -> int:
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
+            G4_INDEPENDENT_READINESS_REVISION,
         }
         else []
     ) + (
@@ -17210,6 +17245,7 @@ def main() -> int:
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
+            G4_INDEPENDENT_READINESS_REVISION,
         }
         else []
     ) + (
@@ -17219,6 +17255,7 @@ def main() -> int:
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
+            G4_INDEPENDENT_READINESS_REVISION,
         }
         else []
     ) + (
@@ -17227,6 +17264,7 @@ def main() -> int:
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
+            G4_INDEPENDENT_READINESS_REVISION,
         }
         else []
     ) + (
@@ -17234,11 +17272,16 @@ def main() -> int:
         if revision in {
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
+            G4_INDEPENDENT_READINESS_REVISION,
         }
         else []
     ) + (
         [R76_PUBLICATION_CLOSURE_REPORT]
-        if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION
+        if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION}
+        else []
+    ) + (
+        [G4_PUBLICATION_CLOSURE_REPORT]
+        if revision == G4_INDEPENDENT_READINESS_REVISION
         else []
     )
     check(
@@ -17252,6 +17295,7 @@ def main() -> int:
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
+                G4_INDEPENDENT_READINESS_REVISION,
             }
             else []
         )
@@ -17261,10 +17305,12 @@ def main() -> int:
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
+                G4_INDEPENDENT_READINESS_REVISION,
             }
             else []
         )
-        + ([R76_DECISION_PATH] if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION else [])
+        + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION} else [])
+        + ([G4_DECISION_PATH] if revision == G4_INDEPENDENT_READINESS_REVISION else [])
         and indexed_decision_rows == expected_decision_rows
         and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS
                 + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
@@ -17276,6 +17322,7 @@ def main() -> int:
                         R74_IMPLEMENTATION_READINESS_REVISION,
                         R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                         R76_GLOBAL_TRACE_CLOSURE_REVISION,
+                        G4_INDEPENDENT_READINESS_REVISION,
                     }
                     else []
                 )
@@ -17285,10 +17332,12 @@ def main() -> int:
                         R74_IMPLEMENTATION_READINESS_REVISION,
                         R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                         R76_GLOBAL_TRACE_CLOSURE_REVISION,
+                        G4_INDEPENDENT_READINESS_REVISION,
                     }
                     else []
                 )
-                + ([R76_DECISION_PATH] if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION else []))
+                + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION} else [])
+                + ([G4_DECISION_PATH] if revision == G4_INDEPENDENT_READINESS_REVISION else []))
         and indexed_governance_paths == expected_governance_paths
         and all(
             (root / relative).is_file()
@@ -19299,6 +19348,146 @@ def main() -> int:
             }
         ),
     )
+    g4_report_path = root / G4_PUBLICATION_CLOSURE_REPORT
+    g4_receipt_path = root / G4_PUBLICATION_CLOSURE_RECEIPT
+    g4_independent_path = root / G4_INDEPENDENT_VERIFICATION_RECEIPT
+    g4_receipt = parsed.get(g4_receipt_path, {})
+    g4_publication = g4_receipt.get("semantic_publication", {})
+    g4_pr_ci = g4_receipt.get("semantic_pr_github_ci", [])
+    g4_main_ci = g4_receipt.get("semantic_merge_main_ci", [])
+    g4_validation = g4_receipt.get("semantic_validation", {})
+    g4_readiness = g4_receipt.get("readiness", {})
+    g4_transition = g4_receipt.get("publication_transition", {})
+    g4_governance = g4_receipt.get("governance", {})
+    g4_pointer_target = g4_receipt.get("pointer_target", {})
+    g4_independent = parsed.get(g4_independent_path, {})
+    check(
+        g4_report_path.is_file()
+        and g4_receipt_path.is_file()
+        and g4_independent_path.is_file()
+        and g4_receipt.get("schema")
+        == "deeplus.g4-independent-implementation-readiness-publication-closure-receipt/v1"
+        and g4_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and g4_publication
+        == {
+            "pull_request": 73,
+            "url": "https://github.com/howork/Deeplus/pull/73",
+            "branch": "codex/g4-independent-readiness-audit",
+            "source_commit": G4_SEMANTIC_SOURCE_COMMIT,
+            "source_tree": G4_SEMANTIC_PUBLICATION_TREE,
+            "merge_commit": G4_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": G4_SEMANTIC_PUBLICATION_TREE,
+            "parents": [
+                "6782bcb576b7685a706b410620db8ea495aab901",
+                G4_SEMANTIC_SOURCE_COMMIT,
+            ],
+            "merged_at": "2026-08-04T05:50:53Z",
+            "post_merge_readback": "PASS",
+        }
+        and len(g4_pr_ci) == len(g4_main_ci) == 2
+        and {row.get("workflow") for row in g4_pr_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and {row.get("workflow") for row in g4_main_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == G4_SEMANTIC_SOURCE_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in g4_pr_ci
+        )
+        and all(
+            row.get("head_sha") == G4_SEMANTIC_PUBLICATION_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in g4_main_ci
+        ),
+        "G4_PUBLICATION_CLOSURE_IDENTITY",
+        repr(g4_publication),
+    )
+    check(
+        g4_validation
+        == {
+            "change_scope": {
+                "changed_file_count": 7,
+                "production_crate_change_count": 0,
+                "language_semantic_change_count": 0,
+            },
+            "focused_validation": {
+                "g4_gate_count": 5,
+                "workspace_checks": 7725,
+                "verdict": "PASS",
+            },
+            "source_manifest": {
+                "path": "release/source-tree-manifest.json",
+                "file_count_excluding_manifest": 1035,
+                "total_bytes_excluding_manifest": 32600586,
+                "tree_sha256": (
+                    "5e92e493cd41adc5978084bf9dd7b4bd89228627ea111f7571ae7e6d9288fef2"
+                ),
+                "binding": "SEMANTIC_MERGE_TREE_BOUND",
+                "hash_domain": "SHA256_CANONICAL_BYTES",
+            },
+            "evidence_level": "E2_DESIGN_STATIC",
+            "production_execution": "NOT_RUN",
+        }
+        and g4_readiness
+        == {
+            "catalog_features": 723,
+            "target_feature_rows": 469,
+            "excluded_feature_rows": 254,
+            "stage_cells": 3283,
+            "test_outcome_cells": 1407,
+            "atomic_cells": 4221,
+            "bound_direct_cells": 3709,
+            "bound_delegated_cells": 4,
+            "not_applicable_cells": 508,
+            "missing_cells": 0,
+            "conflict_cells": 0,
+            "applicable_blocked_cells": 0,
+            "gates": "5_OF_5_PASS_E2",
+            "target_profile_unresolved_p0": 0,
+            "target_profile_unresolved_p1": 0,
+        }
+        and g4_transition
+        == {
+            "publication_unit": "G4_INDEPENDENT_IMPLEMENTATION_READINESS_AUDIT",
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "goal_verdict_after_closure_readback": (
+                "IMPLEMENTATION_TARGET_PROFILE_SPECIFICATION_READY"
+            ),
+            "closed_feature_p1": 0,
+            "new_feature_p1": 0,
+        }
+        and g4_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED_OUTSIDE_TARGET_PROFILE",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "nonblocking_p2": "IR-ACTOR-P2-008_EXPLICITLY_DEFERRED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "current_binding": False,
+        }
+        and g4_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "revision": G4_INDEPENDENT_READINESS_REVISION,
+            "semantic_merge_commit": G4_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and g4_independent.get("schema")
+        == "deeplus.g4-independent-implementation-readiness-independent-verification/v1"
+        and g4_independent.get("semantic_merge_commit")
+        == G4_SEMANTIC_PUBLICATION_COMMIT
+        and g4_independent.get("verdict") == "PASS"
+        and g4_independent.get("evidence_level") == "E2_DESIGN_STATIC"
+        and g4_independent.get("product_execution") == "NOT_RUN"
+        and g4_independent.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+        "G4_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr({"validation": g4_validation, "readiness": g4_readiness}),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -19343,6 +19532,37 @@ def main() -> int:
         for row in current_laws
         if row.get("id") == R76_PUBLICATION_CLOSURE_DECISION_ID
     ]
+    g4_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == G4_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        len(g4_closure_laws) == 1
+        and g4_closure_laws[0].get("status") == "CURRENT"
+        and g4_closure_laws[0].get("authority_origin")
+        == "CODEX_DESIGN_USER_DELEGATED"
+        and g4_closure_laws[0].get("ratification_status")
+        == "CURRENT_USER_DELEGATED_AUTHORITY"
+        and g4_closure_laws[0].get("effective_revision")
+        == G4_INDEPENDENT_READINESS_REVISION
+        and G4_PUBLICATION_CLOSURE_REPORT
+        in g4_closure_laws[0].get("source_evidence", "")
+        and G4_PUBLICATION_CLOSURE_RECEIPT
+        in g4_closure_laws[0].get("source_evidence", "")
+        and G4_INDEPENDENT_VERIFICATION_RECEIPT
+        in g4_closure_laws[0].get("source_evidence", "")
+        and G4_SEMANTIC_SOURCE_COMMIT in g4_closure_laws[0].get("law", "")
+        and G4_SEMANTIC_PUBLICATION_COMMIT in g4_closure_laws[0].get("law", "")
+        and G4_SEMANTIC_PUBLICATION_TREE in g4_closure_laws[0].get("law", "")
+        and "5/5 PASS_E2" in g4_closure_laws[0].get("law", "")
+        and "22 canonical feature P1 actions remain OPEN"
+        in g4_closure_laws[0].get("law", "")
+        and "15 product lanes remain NOT_RUN"
+        in g4_closure_laws[0].get("law", ""),
+        "G4_PUBLICATION_CLOSURE_DECISION",
+        repr(g4_closure_laws),
+    )
     check(
         len(r76_closure_laws) == 1
         and r76_closure_laws[0].get("status") == "CURRENT"
@@ -19517,7 +19737,9 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            66
+            67
+            if revision == G4_INDEPENDENT_READINESS_REVISION
+            else 66
             if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION
             else 65
             if revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION
@@ -20356,7 +20578,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION:
+        if revision == G4_INDEPENDENT_READINESS_REVISION:
+            expected_predecessor = R76_GLOBAL_TRACE_CLOSURE_REVISION
+        elif revision == R76_GLOBAL_TRACE_CLOSURE_REVISION:
             expected_predecessor = R75_ACTOR_CRANELIFT_PROJECTION_REVISION
         elif revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION:
             expected_predecessor = R74_IMPLEMENTATION_READINESS_REVISION
