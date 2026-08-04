@@ -76,6 +76,11 @@ R75_TARGETS = {
 }
 R75_DEC_EXCLUSION_COUNT = 4211
 R75_DEC_EXCLUSION_SHA256 = "bba43aec022d1cc7a44799d2951b3f5d7ffd65887f2e884248c04c49098c36bd"
+R76_REVISION = "r76-global-implementation-target-trace-closure-r1"
+R76_PREDECESSOR = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
+R76_OVERLAY = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
+R76_COUNTS = (3709, 4, 508, 0)
+R76_NON_TARGET_SHA256 = "91cdaab8d247c5f9a43079e3520ad40452118125a7fe0869984b6b3f41e7933b"
 
 CONTRACT = "spec/contracts/managed-reference-dynamic-projection-r1.json"
 CONTRACT_SCHEMA = "schemas/language/managed-reference-dynamic-projection-r1.schema.json"
@@ -736,7 +741,12 @@ def validate(
         and metadata.get("local_predecessor_commit") == R75_PREDECESSOR
         and applied_paths[-1:] == [R75_OVERLAY]
     )
-    if r70_successor or r71_successor or r72_successor or r73_successor or r74_successor or r75_successor:
+    r76_successor = (
+        metadata.get("revision") == R76_REVISION
+        and metadata.get("local_predecessor_commit") == R76_PREDECESSOR
+        and applied_paths[-1:] == [R76_OVERLAY]
+    )
+    if r70_successor or r71_successor or r72_successor or r73_successor or r74_successor or r75_successor or r76_successor:
         r70_detail = r70_target.get("not_applicable") or {}
         require(
             r70_target.get("disposition") == "NOT_APPLICABLE"
@@ -751,7 +761,7 @@ def validate(
             "G09",
             "R70_SUCCESSOR_TARGET_EXACT",
         )
-    if r71_successor or r72_successor or r73_successor or r74_successor or r75_successor:
+    if r71_successor or r72_successor or r73_successor or r74_successor or r75_successor or r76_successor:
         require(
             r71_target.get("disposition") == "BOUND_DELEGATED"
             and r71_target.get("evidence_refs") == [R71_EVIDENCE_ID]
@@ -761,7 +771,7 @@ def validate(
             "G09",
             "R71_SUCCESSOR_TARGET_EXACT",
         )
-        if r72_successor or r73_successor or r74_successor or r75_successor:
+        if r72_successor or r73_successor or r74_successor or r75_successor or r76_successor:
             r72_detail = r72_target.get("not_applicable") or {}
             require(
                 r72_target.get("disposition") == "NOT_APPLICABLE"
@@ -776,7 +786,7 @@ def validate(
                 "G09",
                 "R72_SUCCESSOR_TARGET_EXACT",
             )
-            if r73_successor or r74_successor or r75_successor:
+            if r73_successor or r74_successor or r75_successor or r76_successor:
                 require(
                     r73_boundary_target.get("disposition") == "BOUND_DIRECT"
                     and r73_boundary_target.get("evidence_refs")
@@ -793,7 +803,7 @@ def validate(
                     "G09",
                     "R73_SUCCESSOR_TARGETS_EXACT",
                 )
-                if r74_successor or r75_successor:
+                if r74_successor or r75_successor or r76_successor:
                     require(
                         r74_target.get("disposition") == "BOUND_DIRECT"
                         and r74_target.get("evidence_refs") == R74_EVIDENCE_REFS
@@ -805,6 +815,11 @@ def validate(
                     )
                 require(
                     (
+                        r76_successor
+                        and count == 4220
+                        and digest == R76_NON_TARGET_SHA256
+                    )
+                    or (
                         r75_successor
                         and r75_successor_count == R75_DEC_EXCLUSION_COUNT
                         and r75_successor_digest == R75_DEC_EXCLUSION_SHA256
@@ -887,28 +902,36 @@ def validate(
             and OVERLAY in applied_paths
             and applied_paths[-5:]
             == [R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY, R75_OVERLAY]
+        )
+        or (
+            r76_successor
+            and OVERLAY in applied_paths
+            and all(
+                path in applied_paths
+                for path in (R70_OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY, R75_OVERLAY)
+            )
         ),
         "G09", "GENERATED_METADATA",
     )
-    if r74_successor or r75_successor:
+    if r74_successor or r75_successor or r76_successor:
         derived = metadata.get("derived_counts", {})
         require(
             len(metadata.get("applied_evidence_overlays", []))
-            == (20 if r75_successor else 19)
+            == (21 if r76_successor else 20 if r75_successor else 19)
             and sum(
                 row.get("binding_count", 0)
                 for row in metadata.get("applied_evidence_overlays", [])
             )
-            == (139 if r75_successor else 136)
+            == (1381 if r76_successor else 139 if r75_successor else 136)
             and len(metadata.get("evidence_registry", []))
-            == (3151 if r75_successor else 3148)
+            == (4393 if r76_successor else 3151 if r75_successor else 3148)
             and (
                 derived.get("bound_direct_cells"),
                 derived.get("bound_delegated_cells"),
                 derived.get("not_applicable_cells"),
                 derived.get("applicable_blocked_cells"),
             )
-            == ((2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245)),
+            == (R76_COUNTS if r76_successor else (2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245)),
             "G09",
             "R74_GENERATED_CARDINALITY_EXACT",
         )
@@ -931,7 +954,8 @@ def validate(
         and all(metadata_governance.get(key) == item for key, item in expected_governance.items())
         and contract_guards.get("github_publication") == "SUSPENDED"
         and overlay_guards.get("github_publication") == "SUSPENDED"
-        and metadata_governance.get("github_publication") == "SUSPENDED"
+        and metadata_governance.get("github_publication")
+        == ("NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
         and fixture_state.get("product_execution") == "NOT_RUN"
         and contract.get("counts", {}).get("product_execution_receipt_count") == 0
         and overlay_guards.get("product_execution_receipt_count") == 0,

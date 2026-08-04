@@ -2,9 +2,9 @@
   "schema": "deeplus.source-tree-manifest/v1",
   "revision": "r51f3-current-actor-cranelift-projection-r75-r1",
   "source_baseline": "0.1.2-baseline.r51f3",
-  "file_count_excluding_manifest": 1020,
-  "total_bytes_excluding_manifest": 29949540,
-  "tree_sha256": "7dab7a3f05294002e0b18d9854136a14d192fdb7e48b1e12f8a576a82e69797d",
+  "file_count_excluding_manifest": 1028,
+  "total_bytes_excluding_manifest": 32559800,
+  "tree_sha256": "cf0c1e89997c45612edd0e0c53d3aee4cfca28b6c431a39b0a2b4bfc010a9823",
   "self_hash_policy": "manifest is excluded; archive digest is recorded externally",
   "files": [
     {
@@ -706,6 +706,11 @@
       "path": "decisions/language/Design_Deeplus_R74_Member_Extension_Collision_Diagnostic_Trace_Closure_R1.md",
       "bytes": 4515,
       "sha256": "69f8ea654901e1dc741fc3adbe937e10454836ba526312c30c22d819ecf02ab8"
+    },
+    {
+      "path": "decisions/language/Design_Deeplus_R76_Global_Implementation_Target_Trace_Closure_R1.md",
+      "bytes": 5032,
+      "sha256": "61a350076aa67e62f3ed354f5f7afc464d8488c4d1084f76c2d01df6924e1e4b"
     },
     {
       "path": "decisions/language/Design_Deeplus_Responsibility_Identity_Registry_R1.md",
@@ -2333,9 +2338,19 @@
       "sha256": "642ff6cdb472064cd1852980cd39c84fbd79f1cff55be825a1ab551e57f6bd47"
     },
     {
+      "path": "schemas/language/implementation-target-global-trace-closure-r1.schema.json",
+      "bytes": 3229,
+      "sha256": "6b0ebf3eae02c4682bbfe1fca37d28298f57bc7d3034d4e4d07fa0a4fb5f45f8"
+    },
+    {
+      "path": "schemas/language/implementation-target-global-trace-evidence-r1.schema.json",
+      "bytes": 2380,
+      "sha256": "c7ba511e3cdbae24f07304702ee6e95bd36e469984258a7233cebeb1680f85da"
+    },
+    {
       "path": "schemas/language/implementation-target-traceability-r1.schema.json",
-      "bytes": 6728,
-      "sha256": "25d74e48ccd4214c1426ca68197123171c2c5f632b6feb0964c5f7168199984e"
+      "bytes": 6916,
+      "sha256": "fe3a10715e1764724dfff5722d595ed2527eb292ad96ed7fb964c9ba257517c8"
     },
     {
       "path": "schemas/language/internal-runtime-abi-fixtures-r1.schema.json",
@@ -2988,6 +3003,11 @@
       "sha256": "235e093b78fb9d6ac23106ef3829cd6b1c438378d9f8a524d1fe5e3cabac7f0d"
     },
     {
+      "path": "spec/contracts/implementation-target-global-trace-closure-r1.json",
+      "bytes": 1566300,
+      "sha256": "052a455e21219d1f02003294e99296b39a95f2615346bf472fb281ae54b821ce"
+    },
+    {
       "path": "spec/contracts/internal-runtime-abi-r1.json",
       "bytes": 16326,
       "sha256": "22f850efd67e650c33a3a0a087282d42b7592cab1aecc156977f2e1d48972d46"
@@ -2995,7 +3015,7 @@
     {
       "path": "spec/contracts/language-coherence-current-integrity-r1.json",
       "bytes": 35586,
-      "sha256": "e4cf697420dc619f1c20de2170ee165aa5cb6c388dd9b38b9868fd30596cd1be"
+      "sha256": "bfd06b2c431514a41f40694bc73eb7747b2f611d3f911cb716a2f87347ababe7"
     },
     {
       "path": "spec/contracts/lexical-trivia-source-root-attachment-r1.json",
@@ -3714,13 +3734,18 @@
     },
     {
       "path": "spec/traceability/implementation-target-profile-r1/catalog-metadata.json",
-      "bytes": 945194,
-      "sha256": "ecae95e5680ff6d00f63c6cd354007aa98119014016f785abde82d3740749c59"
+      "bytes": 1366560,
+      "sha256": "be615db7458d802d5f1b7269efaeaa4eca13901fa621c9e23648aee15d328f03"
     },
     {
       "path": "spec/traceability/implementation-target-profile-r1/closure-capture-dynamic-trace-evidence-r1.json",
       "bytes": 4297,
       "sha256": "bd5af3ef5fa6ef92c01376dfcc8f663ac8f6a5451b6b63145ac8fe2a4756bcac"
+    },
+    {
+      "path": "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json",
+      "bytes": 767119,
+      "sha256": "bd647c96d0ca187face9f4fabad691ab08d7a1ad7365eb4c95c92c9845cce394"
     },
     {
       "path": "spec/traceability/implementation-target-profile-r1/lexical-trivia-source-root-evidence-r1.json",
@@ -3784,8 +3809,8 @@
     },
     {
       "path": "spec/traceability/implementation-target-profile-r1/rows.json",
-      "bytes": 1868114,
-      "sha256": "866876442ee993c13ffd7da84da159734e2fec83bb73d45f5bcca2edd4ca69e7"
+      "bytes": 1673018,
+      "sha256": "ee2d32b89fd2b21a0b260ac2aadad013a5820ac0fc69455f38c6882916e5dca9"
     },
     {
       "path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
@@ -4533,9 +4558,14 @@
       "sha256": "fa2c9b38afef089207e096c232e8e6b788dd0fd0d5ffe16a2a4054e5c0c0aaad"
     },
     {
+      "path": "tools/generators/build_global_implementation_target_trace_closure.py",
+      "bytes": 16077,
+      "sha256": "e2ba3b397589f711efbbf26fcbf58edd006157e611375e0b9370acc809499bbc"
+    },
+    {
       "path": "tools/generators/build_implementation_target_traceability.py",
-      "bytes": 22559,
-      "sha256": "3ad9bc02340207294f4d2f525d277911c9df6704059987ccf45e4ee33cacc2e8"
+      "bytes": 22612,
+      "sha256": "d248d67160db620f4f995cf222a20adbdc51d6628ae1ce98e780606ac975825e"
     },
     {
       "path": "tools/generators/build_lexical_trivia_source_root_evidence.py",
@@ -4733,14 +4763,19 @@
       "sha256": "7f37005d1702d8adb39bf140051a70e8a0db80ec63e1884d214cd6cf313daf11"
     },
     {
+      "path": "tools/validators/run_global_implementation_target_trace_closure_mutation_tests.py",
+      "bytes": 2717,
+      "sha256": "1ab6ef6100591f8ad0f01ea0374a6ec2dd3dbabf998e63367b1d9315e023f2e2"
+    },
+    {
       "path": "tools/validators/run_grammar_reference_generator_tests.py",
       "bytes": 34036,
       "sha256": "438d24377fface6ecdbdbfba6e31be6bef720e0b9fc0b51ee6d5e0634be5e588"
     },
     {
       "path": "tools/validators/run_implementation_target_traceability_mutation_tests.py",
-      "bytes": 4904,
-      "sha256": "d4f7f42ca16214c576a1bd988800306edd0994d8eb33cd7d28f9660186833ca9"
+      "bytes": 5025,
+      "sha256": "76d74a351018d98079a03d5ff5cd0d8f31b448633c0a6f716c9057459b70e359"
     },
     {
       "path": "tools/validators/run_legacy_current_integrity_compatibility_tests.py",
@@ -4953,6 +4988,11 @@
       "sha256": "18a9883163cacaa2fee0dc75662a9628de5dbcfe7fefb17e6f50f234c3a4f8b3"
     },
     {
+      "path": "tools/validators/validate_global_implementation_target_trace_closure.py",
+      "bytes": 10589,
+      "sha256": "16a1d572c54f5098cd4145ad1f7540aba067a389e9bfb356136e2a11d20c3f34"
+    },
+    {
       "path": "tools/validators/validate_grammar_topology_closure.py",
       "bytes": 26652,
       "sha256": "f1166b5fcbcd392e435665ff43a81f3f5c876875aaaa0447f88e2ec05490c460"
@@ -4964,8 +5004,8 @@
     },
     {
       "path": "tools/validators/validate_implementation_target_traceability.py",
-      "bytes": 24460,
-      "sha256": "e3f5877da2663cc79b06ba50b01bedac48bd5d8c3738f720e49a9abc3f31f6e9"
+      "bytes": 25118,
+      "sha256": "1b4cb8f86707f2869456a5a96e6b3a6712e8a9aa55c9a47a372e89717ce670be"
     },
     {
       "path": "tools/validators/validate_internal_runtime_abi.py",
@@ -4984,8 +5024,8 @@
     },
     {
       "path": "tools/validators/validate_managed_reference_dynamic_trace.py",
-      "bytes": 48255,
-      "sha256": "8538865d02b30a7a2086607f9194aaa5dd821ac7ea9705ba504ef7f07e8e4d8e"
+      "bytes": 49517,
+      "sha256": "031201469de52eadc0c8a3800b5019cd5b48c73ad2fd2f5bb4fbf34988742a7f"
     },
     {
       "path": "tools/validators/validate_managed_reference_memory_profile.py",
@@ -4999,18 +5039,18 @@
     },
     {
       "path": "tools/validators/validate_member_extension_collision_conformance_trace.py",
-      "bytes": 24999,
-      "sha256": "d90c5520d7a64e103cbfecc3549ab0a8fbece4fd00a7a43692daebec0dc6b20f"
+      "bytes": 26057,
+      "sha256": "c363e7cb14fb5ed94bacee50edae10d4efb6bf3e16b4e240337a975f5c0a3dd9"
     },
     {
       "path": "tools/validators/validate_member_extension_collision_diagnostic_trace.py",
-      "bytes": 14303,
-      "sha256": "70388ecd45fee3c9b9d5e18631457e4f458d91043d0a4ee828a3190efab5fff8"
+      "bytes": 15310,
+      "sha256": "e4665b78e9c00cc34eca7c8e292076927d10a39cb0140d57c6b3187c26eee17f"
     },
     {
       "path": "tools/validators/validate_member_extension_collision_dynamic_trace.py",
-      "bytes": 34033,
-      "sha256": "f75236234704261acc738db43d1c18b2a88ee0e6e7a3e6c35677c3184bd80fa1"
+      "bytes": 35492,
+      "sha256": "4f44a12575f676535fd3c47836f1bbc86152da3bfbf5406d1f2cca53dc028570"
     },
     {
       "path": "tools/validators/validate_member_visibility_trace.py",
@@ -5019,8 +5059,8 @@
     },
     {
       "path": "tools/validators/validate_method_extension_resolution_dynamic_trace.py",
-      "bytes": 30455,
-      "sha256": "a598c68f7da529707b0a52a67ec292c397a842ce1fa023141bc909b2bdc93745"
+      "bytes": 31665,
+      "sha256": "32c183c5adcb479ee5f4dea1b3e3ae6b910ebfbe870da1a6bf263da9b0d654de"
     },
     {
       "path": "tools/validators/validate_numeric_array_shape_inferred_trace.py",
@@ -5079,8 +5119,8 @@
     },
     {
       "path": "tools/validators/validate_static_runtime_member_boundary_trace.py",
-      "bytes": 48022,
-      "sha256": "9b48a008c43f746bc5d2728291d71ccba63cb37d9ba1304c89bf245acd01c4dc"
+      "bytes": 49528,
+      "sha256": "adabcbb2c6db1ed398234f26e07f89d43a8d8b1a3f109e8ce8499a96116678b3"
     },
     {
       "path": "tools/validators/validate_suspension_frame_responsibility.py",
@@ -5104,8 +5144,8 @@
     },
     {
       "path": "tools/validators/validate_workspace.py",
-      "bytes": 843802,
-      "sha256": "92d58a2fe31f02ecd5193a6d1886f748b9790c10cf7389dc83ee0c904eae2e8b"
+      "bytes": 845827,
+      "sha256": "cb710dad30f6e645afa75de86868f2e4f5cd774a720e0514250cc5b6e266c19b"
     }
   ]
 }

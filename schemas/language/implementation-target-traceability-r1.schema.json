@@ -8,9 +8,9 @@
   "properties": {
     "$schema": {"const": "../../../schemas/language/implementation-target-traceability-r1.schema.json"},
     "schema": {"const": "deeplus.implementation-target-traceability/r1"},
-    "revision": {"const": "r75-local-actor-cranelift-projection-trace-closure-r1"},
-    "canonical_baseline_commit": {"const": "c016871d5aa1c7515fd8a8df181744916f1e1849"},
-    "local_predecessor_commit": {"const": "c016871d5aa1c7515fd8a8df181744916f1e1849"},
+    "revision": {"const": "r76-global-implementation-target-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "40a826af29410af1a14c6a7dec3193cd59ba9b12"},
+    "local_predecessor_commit": {"const": "40a826af29410af1a14c6a7dec3193cd59ba9b12"},
     "external_post_commit_receipt_required": {"const": true},
     "catalog_feature_count": {"const": 723},
     "base_statuses": {"const": ["STABLE_DESIGN", "STDLIB_PROFILE"]},
@@ -44,7 +44,8 @@
       {"path": "spec/traceability/implementation-target-profile-r1/method-extension-resolution-dynamic-evidence-r1.json", "feature_count": 1, "binding_count": 1},
       {"path": "spec/traceability/implementation-target-profile-r1/member-extension-collision-dynamic-evidence-r1.json", "feature_count": 1, "binding_count": 1},
       {"path": "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json", "feature_count": 1, "binding_count": 2},
-      {"path": "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json", "feature_count": 3, "binding_count": 3}
+      {"path": "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json", "feature_count": 3, "binding_count": 3},
+      {"path": "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json", "feature_count": 409, "binding_count": 1242}
     ]},
     "evidence_registry": {"type": "array", "minItems": 469, "items": {"$ref": "#/$defs/evidence"}},
     "derived_counts": {"type": "object"},
@@ -57,7 +58,7 @@
       "required": ["evidence_id", "class", "path", "locator_kind", "locator", "stage_role", "evidence_level"],
       "properties": {
         "evidence_id": {"type": "string", "pattern": "^EV-[0-9a-f]{64}$"},
-        "class": {"enum": ["FEATURE_REGISTRY_ROW", "ARTIFACT_POINTER", "GRAMMAR_PRODUCTION_ID", "CHECKER_PREDICATE_ID", "DIAGNOSTIC_REGISTRY_ID", "TEACHING_EXAMPLE_ID", "FIXTURE_CASE_ID", "CONTRACT_RULE_ID", "MIR_RULE_ID", "TRACE_ACCEPTANCE_CASE_ID", "ACCEPTANCE_CASE", "ACCEPTANCE_CASE_SET"]},
+        "class": {"enum": ["FEATURE_REGISTRY_ROW", "ARTIFACT_POINTER", "GRAMMAR_PRODUCTION_ID", "CHECKER_PREDICATE_ID", "DIAGNOSTIC_REGISTRY_ID", "TEACHING_EXAMPLE_ID", "FIXTURE_CASE_ID", "CONTRACT_RULE_ID", "MIR_RULE_ID", "TRACE_ACCEPTANCE_CASE_ID", "ACCEPTANCE_CASE", "ACCEPTANCE_CASE_SET", "IMPLEMENTATION_TARGET_CELL_CONTRACT"]},
         "path": {"type": "string"},
         "locator_kind": {"enum": ["FILE", "JSON_POINTER", "REGISTRY_ID"]},
         "locator": {"type": "string"},

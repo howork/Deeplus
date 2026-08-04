@@ -46,6 +46,11 @@ R75_TARGETS = {
 }
 R75_NON_TARGET_COUNT = 4215
 R75_NON_TARGET_SHA256 = "fb2e67e12bb3b6fd1c29f15d9c49ae2de6d84ba260070e606d19938afa265c2a"
+R76_REVISION = "r76-global-implementation-target-trace-closure-r1"
+R76_PREDECESSOR = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
+R76_OVERLAY = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
+R76_COUNTS = (3709, 4, 508, 0)
+R76_NON_TARGET_SHA256 = "3eb0bacfd34e09ccd0b07601675d057ce7c2c9b5ff1dbe42da88b72e51363646"
 
 OVERLAY = "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json"
 OVERLAY_SCHEMA = "schemas/language/member-extension-collision-conformance-evidence-r1.schema.json"
@@ -329,11 +334,22 @@ def validate(
         and applied[-1]
         == {"path": R75_OVERLAY, "feature_count": 3, "binding_count": 3}
     )
+    r76_successor = (
+        metadata.get("revision") == R76_REVISION
+        and metadata.get("local_predecessor_commit") == R76_PREDECESSOR
+        and applied[-1]
+        == {"path": R76_OVERLAY, "feature_count": 409, "binding_count": 1242}
+    )
     r74_target = current_cells.get(R74_TARGET, {})
     require(
         current_duplicates == 0
         and (
             (
+                r76_successor
+                and current_count == NON_TARGET_COUNT
+                and current_digest == R76_NON_TARGET_SHA256
+            )
+            or (
                 r75_successor
                 and r75_successor_non_target_digest(current_cells)
                 == (R75_NON_TARGET_COUNT, R75_NON_TARGET_SHA256)
@@ -344,31 +360,32 @@ def validate(
                 == (R74_TRIPLE_EXCLUSION_COUNT, R74_TRIPLE_EXCLUSION_SHA256)
             )
             or (
-                not (r74_successor or r75_successor)
+                not (r74_successor or r75_successor or r76_successor)
                 and current_count == NON_TARGET_COUNT
                 and current_digest == NON_TARGET_SHA256
             )
         )
-        and (metadata.get("revision") == REVISION or r74_successor or r75_successor)
+        and (metadata.get("revision") == REVISION or r74_successor or r75_successor or r76_successor)
         and metadata.get("canonical_baseline_commit")
-        == (R75_PREDECESSOR if r75_successor else CANONICAL)
+        == (R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             metadata.get("local_predecessor_commit") == PREDECESSOR
             or r74_successor
             or r75_successor
+            or r76_successor
         )
-        and len(applied) == (20 if r75_successor else 19)
-        and applied[-2 if r75_successor else -1]
-        == {"path": OVERLAY, "feature_count": 1, "binding_count": 2}
+        and len(applied) == (21 if r76_successor else 20 if r75_successor else 19)
+        and {"path": OVERLAY, "feature_count": 1, "binding_count": 2}
+        in applied
         and sum(row.get("binding_count", 0) for row in applied)
-        == (139 if r75_successor else 136)
-        and len(registry) == (3151 if r75_successor else 3148)
+        == (1381 if r76_successor else 139 if r75_successor else 136)
+        and len(registry) == (4393 if r76_successor else 3151 if r75_successor else 3148)
         and {BOUNDARY_EVIDENCE_ID, REJECT_EVIDENCE_ID}
         <= {row.get("evidence_id") for row in registry},
         "G03",
         "GENERATED_METADATA_EXACT",
     )
-    if r74_successor or r75_successor:
+    if r74_successor or r75_successor or r76_successor:
         require(
             r74_target.get("disposition") == "BOUND_DIRECT"
             and r74_target.get("evidence_refs") == R74_EVIDENCE_REFS
@@ -386,7 +403,9 @@ def validate(
             derived.get("applicable_blocked_cells"),
         )
         == (
-            (2473, 4, 502, 1242)
+            R76_COUNTS
+            if r76_successor
+            else (2473, 4, 502, 1242)
             if r75_successor
             else (2470, 4, 502, 1245)
             if r74_successor
@@ -552,7 +571,8 @@ def validate(
         and guards.get("product_execution_receipt_count") == 0
         and guards.get("implementation_claim") == "NONE"
         and governance.get("product_lanes") == "15_OF_15_NOT_RUN"
-        and governance.get("github_publication") == "SUSPENDED",
+        and governance.get("github_publication")
+        == ("NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED"),
         "G06",
         "GOVERNANCE_AND_PRODUCT_FENCE",
     )

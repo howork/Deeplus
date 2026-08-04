@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Focused mutation oracles for the R55 target traceability ledger."""
+"""Focused mutation oracles for the current target traceability ledger."""
 
 from __future__ import annotations
 
@@ -35,9 +35,13 @@ def main() -> int:
     na["not_applicable"]["reason_code"] = "UNREGISTERED_REASON"
     mutants.append(("NA_REASON", metadata, value))
     value = copy.deepcopy(rows)
-    blocked = next(cell for row in value for stage in row["stages"] for cell in stage.get("outcomes", [stage]) if cell.get("disposition") == "APPLICABLE_BLOCKED_BY_GAP")
-    blocked["blocked_gap_ids"] = []
-    mutants.append(("BLOCKED_GAP_REMOVED", metadata, value))
+    rebound = next(cell for row in value for stage in row["stages"] for cell in stage.get("outcomes", [stage]) if cell.get("disposition") == "BOUND_DIRECT")
+    rebound.update({
+        "disposition": "APPLICABLE_BLOCKED_BY_GAP",
+        "blocked_gap_ids": ["IR-XCUT-P1-054"],
+        "not_applicable": None,
+    })
+    mutants.append(("R76_ZERO_BLOCKED_INVARIANT", metadata, value))
     value = copy.deepcopy(rows); value[0]["stages"][-1]["outcomes"].pop()
     mutants.append(("TEST_OUTCOME_DELETE", metadata, value))
     value = copy.deepcopy(rows); value[0]["product_execution"] = "PASS"

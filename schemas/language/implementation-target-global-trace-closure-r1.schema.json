@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/implementation-target-global-trace-closure-r1.schema.json",
+  "title": "Deeplus R76 global implementation-target trace closure contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "canonical_baseline_commit", "candidate_status", "scope", "authority_fence", "policy", "cells"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/implementation-target-global-trace-closure-r1.schema.json"},
+    "schema": {"const": "deeplus.implementation-target-global-trace-closure/r1"},
+    "revision": {"const": "r76-global-implementation-target-trace-closure-r1"},
+    "canonical_baseline_commit": {"const": "40a826af29410af1a14c6a7dec3193cd59ba9b12"},
+    "candidate_status": {"const": "LOCAL_CANDIDATE_NOT_PRODUCT_EXECUTION"},
+    "scope": {
+      "type": "object",
+      "required": ["feature_rows", "predecessor_blocked_cells", "closed_by_contract_cells", "remaining_blocked_cells", "affected_feature_count", "stage_counts", "outcome_counts", "reused_existing_example_count"],
+      "properties": {
+        "feature_rows": {"const": 469},
+        "predecessor_blocked_cells": {"const": 1242},
+        "closed_by_contract_cells": {"const": 1242},
+        "remaining_blocked_cells": {"const": 0},
+        "affected_feature_count": {"const": 409},
+        "stage_counts": {"const": {"AST_FRONTEND": 11, "CONFORMANCE_TESTS": 961, "DYNAMIC_LOWERING": 206, "STATIC_SEMANTICS": 64}},
+        "outcome_counts": {"const": {"BOUNDARY": 408, "POSITIVE": 145, "REJECT": 408}},
+        "reused_existing_example_count": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "authority_fence": {
+      "const": {
+        "semantic_p0": 0,
+        "feature_p1": "22_OPEN_UNCHANGED",
+        "m13_actions": "4_OPEN_UNCHANGED",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "production_implementation": "NOT_RUN",
+        "new_language_semantics": 0,
+        "feature_status_change_count": 0,
+        "source_activation_change_count": 0,
+        "e4_e5_evidence_count": 0
+      }
+    },
+    "policy": {"type": "object"},
+    "cells": {
+      "type": "array",
+      "minItems": 1242,
+      "maxItems": 1242,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cell_id", "feature_id", "stage", "outcome", "predecessor", "final_disposition", "feature_contract", "obligation", "evidence_level", "product_execution"],
+        "properties": {
+          "cell_id": {"pattern": "^R76-CELL-[0-9]{4}$"},
+          "feature_id": {"type": "string", "minLength": 1},
+          "stage": {"enum": ["AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "CONFORMANCE_TESTS"]},
+          "outcome": {"type": ["string", "null"]},
+          "predecessor": {"type": "object"},
+          "final_disposition": {"enum": ["BOUND_DIRECT", "NOT_APPLICABLE"]},
+          "feature_contract": {"type": "object"},
+          "obligation": {"type": "object"},
+          "evidence_level": {"const": "E2_STRUCTURED_STATIC"},
+          "product_execution": {"const": "NOT_RUN"}
+        }
+      }
+    }
+  }
+}
