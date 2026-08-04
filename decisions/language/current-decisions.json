@@ -2,7 +2,7 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 64,
+  "law_count": 65,
   "laws": [
     {
       "id": "DSGN-CURRENT-CONTRACT-AUTHORITY-STATUS-RECONCILIATION",
@@ -12,6 +12,15 @@
       "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
       "source_evidence": "decisions/language/Design_Deeplus_Contract_Authority_Status_Reconciliation_R1.md; spec/contracts/current-contract-authority-status-r1.json",
       "effective_revision": "r53-local-authority-status-reconciliation-r1"
+    },
+    {
+      "id": "DSGN-CURRENT-R75-ACTOR-CRANELIFT-PROJECTION-PUBLICATION-CLOSURE",
+      "law": "The R75 Actor-to-Cranelift target projection is canonically integrated by semantic PR #69: exact source commit d0e3f459b55f4eeb9bf884ccf982d90602f0d2b7 was merged at 420ccdcbe9dae1b267d9fa0277239195f0d72d1b with exact tree 2c3b690cee13a28f89130728c5a8d0d9d39cccc9 and parents c016871d5aa1c7515fd8a8df181744916f1e1849 and d0e3f459b55f4eeb9bf884ccf982d90602f0d2b7. The publication binds backend-neutral Deeplus MIR semantics to a deterministic Cranelift target projection without reviving LLVM/ORC authority, backend semantic reselection, raw-pointer fallback, or aggregate-only lifetime evidence. The three Actor dynamic-lowering trace cells move from APPLICABLE_BLOCKED_BY_GAP to BOUND_DIRECT, so IR-ACTOR-P1-007 becomes VERIFIED_CLOSED at design/static evidence level E2 only after this separate publication-closure PR is merged and live main is read back; no future closure commit SHA is predicted here. IR-ACTOR-P2-008 remains EXPLICITLY_DEFERRED and umbrella gap IR-XCUT-P1-054 remains OPEN with exactly 1,242 blocked trace cells. This closes no canonical feature P1, leaves semantic P0 at 0, the exact feature P1 set at 22 OPEN, four M13 actions separate and OPEN, all 15 product lanes NOT_RUN, and claims no production implementation.",
+      "status": "CURRENT",
+      "authority_origin": "CODEX_DESIGN_USER_DELEGATED",
+      "ratification_status": "CURRENT_USER_DELEGATED_AUTHORITY",
+      "source_evidence": "governance/reports/Design_Deeplus_R75_Actor_Cranelift_Projection_Rebase_R1.md; governance/reports/Design_Deeplus_R75_Actor_Cranelift_Projection_Rebase_Publication_Closure_R1.md; release/evidence/r75-actor-cranelift-projection-publication-closure-receipt.json; release/evidence/r75-actor-cranelift-projection-independent-verification.json; external audit/implementation-readiness-state post-merge readback receipt",
+      "effective_revision": "r51f3-current-actor-cranelift-projection-r75-r1"
     },
     {
       "id": "DSGN-CURRENT-R48-R74-IMPLEMENTATION-READINESS-TRACE-PUBLICATION-CLOSURE",

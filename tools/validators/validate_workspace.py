@@ -39,6 +39,9 @@ R47_OWNERSHIP_CONTRACT_FUSION_REVISION = (
 R74_IMPLEMENTATION_READINESS_REVISION = (
     "r51f3-current-implementation-readiness-r74-r1"
 )
+R75_ACTOR_CRANELIFT_PROJECTION_REVISION = (
+    "r51f3-current-actor-cranelift-projection-r75-r1"
+)
 FRONTEND_SUCCESSOR_REVISIONS = {
     R11_R19_FRONTEND_REVISION,
     R41_ACTOR_PROTOCOL_REVISION,
@@ -46,6 +49,7 @@ FRONTEND_SUCCESSOR_REVISIONS = {
     R46_MANAGED_ROOT_RUNTIME_REVISION,
     R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
     R74_IMPLEMENTATION_READINESS_REVISION,
+    R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
 }
 CURRENT_MACHINE_REVISIONS = {
     R10_HIR_MIR_REVISION,
@@ -82,7 +86,10 @@ R47_SEMANTIC_PUBLICATION_TREE = "dd631edaf0be77a13664ba83c57bf12512302627"
 R74_SEMANTIC_SOURCE_COMMIT = "ee2ec2e4df5d8a9eb36d938602506b11fc66d52b"
 R74_SEMANTIC_PUBLICATION_COMMIT = "17d90a43908d45b03938006f9dfb5d1cd609e655"
 R74_SEMANTIC_PUBLICATION_TREE = "a9291ef158fa21a473789d5c685dfcf0cb3050d2"
-CURRENT_PUBLICATION_TARGET_COMMIT = R74_SEMANTIC_PUBLICATION_COMMIT
+R75_SEMANTIC_SOURCE_COMMIT = "d0e3f459b55f4eeb9bf884ccf982d90602f0d2b7"
+R75_SEMANTIC_PUBLICATION_COMMIT = "420ccdcbe9dae1b267d9fa0277239195f0d72d1b"
+R75_SEMANTIC_PUBLICATION_TREE = "2c3b690cee13a28f89130728c5a8d0d9d39cccc9"
+CURRENT_PUBLICATION_TARGET_COMMIT = R75_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -446,6 +453,15 @@ R74_INDEPENDENT_VERIFICATION_RECEIPT = (
 )
 R74_PUBLICATION_CLOSURE_DECISION_ID = (
     "DSGN-CURRENT-R48-R74-IMPLEMENTATION-READINESS-TRACE-PUBLICATION-CLOSURE"
+)
+R75_SEMANTIC_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R75_Actor_Cranelift_Projection_Rebase_R1.md"
+)
+R75_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R75_Actor_Cranelift_Projection_Rebase_"
+    "Publication_Closure_R1.md"
 )
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
@@ -17015,12 +17031,16 @@ def main() -> int:
             if revision in {
                 R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
                 R74_IMPLEMENTATION_READINESS_REVISION,
+                R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             }
             else []
         )
         + (
             R48_R74_DECISION_PATHS
-            if revision == R74_IMPLEMENTATION_READINESS_REVISION
+            if revision in {
+                R74_IMPLEMENTATION_READINESS_REVISION,
+                R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            }
             else []
         )
     ]
@@ -17056,6 +17076,7 @@ def main() -> int:
             R46_MANAGED_ROOT_RUNTIME_REVISION,
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
+            R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
         }
         else []
     ) + (
@@ -17065,6 +17086,7 @@ def main() -> int:
             R46_MANAGED_ROOT_RUNTIME_REVISION,
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
+            R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
         }
         else []
     ) + (
@@ -17073,6 +17095,7 @@ def main() -> int:
             R46_MANAGED_ROOT_RUNTIME_REVISION,
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
+            R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
         }
         else []
     ) + (
@@ -17080,11 +17103,19 @@ def main() -> int:
         if revision in {
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
+            R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
         }
         else []
     ) + (
         [R74_PUBLICATION_CLOSURE_REPORT]
-        if revision == R74_IMPLEMENTATION_READINESS_REVISION
+        if revision in {
+            R74_IMPLEMENTATION_READINESS_REVISION,
+            R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+        }
+        else []
+    ) + (
+        [R75_SEMANTIC_REPORT, R75_PUBLICATION_CLOSURE_REPORT]
+        if revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION
         else []
     )
     check(
@@ -17096,12 +17127,16 @@ def main() -> int:
             if revision in {
                 R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
                 R74_IMPLEMENTATION_READINESS_REVISION,
+                R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             }
             else []
         )
         + (
             R48_R74_DECISION_PATHS
-            if revision == R74_IMPLEMENTATION_READINESS_REVISION
+            if revision in {
+                R74_IMPLEMENTATION_READINESS_REVISION,
+                R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            }
             else []
         )
         and indexed_decision_rows == expected_decision_rows
@@ -17113,12 +17148,16 @@ def main() -> int:
                     if revision in {
                         R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
                         R74_IMPLEMENTATION_READINESS_REVISION,
+                        R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                     }
                     else []
                 )
                 + (
                     R48_R74_DECISION_PATHS
-                    if revision == R74_IMPLEMENTATION_READINESS_REVISION
+                    if revision in {
+                        R74_IMPLEMENTATION_READINESS_REVISION,
+                        R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+                    }
                     else []
                 ))
         and indexed_governance_paths == expected_governance_paths
@@ -19157,7 +19196,9 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            64
+            65
+            if revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION
+            else 64
             if revision == R74_IMPLEMENTATION_READINESS_REVISION
             else 63
             if revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION
@@ -19992,7 +20033,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == R74_IMPLEMENTATION_READINESS_REVISION:
+        if revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION:
+            expected_predecessor = R74_IMPLEMENTATION_READINESS_REVISION
+        elif revision == R74_IMPLEMENTATION_READINESS_REVISION:
             expected_predecessor = R47_OWNERSHIP_CONTRACT_FUSION_REVISION
         elif revision == R47_OWNERSHIP_CONTRACT_FUSION_REVISION:
             expected_predecessor = R46_MANAGED_ROOT_RUNTIME_REVISION

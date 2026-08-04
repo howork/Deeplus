@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-implementation-readiness-r74-r1"
-PREVIOUS_REVISION = "r51f3-current-ownership-contract-fusion-r1"
+REVISION = "r51f3-current-actor-cranelift-projection-r75-r1"
+PREVIOUS_REVISION = "r51f3-current-implementation-readiness-r74-r1"
 INHERITED_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
