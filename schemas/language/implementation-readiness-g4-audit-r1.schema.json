@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/implementation-readiness-g4-audit-r1.schema.json",
+  "title": "Deeplus G4 independent implementation readiness audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "canonical_baseline_tree",
+    "candidate_status",
+    "verdict",
+    "evidence_level",
+    "inventory",
+    "traceability",
+    "gates",
+    "authority_fence",
+    "conflict_register",
+    "next_nonblocking_cluster",
+    "external_post_commit_receipt_required"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/implementation-readiness-g4-audit-r1.schema.json"},
+    "schema": {"const": "deeplus.implementation-readiness-g4-audit/r1"},
+    "revision": {"const": "g4-independent-implementation-readiness-audit-r1"},
+    "canonical_baseline_commit": {"const": "6782bcb576b7685a706b410620db8ea495aab901"},
+    "canonical_baseline_tree": {"const": "117d667d1014eb32d03e6723d9ce211a1fe798c7"},
+    "candidate_status": {"const": "APPROVED_NOT_INTEGRATED_EXTERNAL_RECEIPT_REQUIRED"},
+    "verdict": {"const": "IMPLEMENTATION_TARGET_PROFILE_SPECIFICATION_READY"},
+    "evidence_level": {"const": "E2_STRUCTURED_STATIC"},
+    "inventory": {
+      "const": {
+        "catalog_features": 723,
+        "target_features": 469,
+        "excluded_features": 254,
+        "base_status_features": 463,
+        "dependency_closure_features": 6
+      }
+    },
+    "traceability": {
+      "const": {
+        "feature_rows": 469,
+        "stage_cells": 3283,
+        "conformance_outcome_cells": 1407,
+        "atomic_cells": 4221,
+        "bound_direct": 3709,
+        "bound_delegated": 4,
+        "not_applicable": 508,
+        "applicable_blocked": 0,
+        "missing": 0,
+        "conflicting": 0
+      }
+    },
+    "gates": {
+      "const": [
+        {"id": "G0", "verdict": "PASS_E2"},
+        {"id": "G1", "verdict": "PASS_E2"},
+        {"id": "G2", "verdict": "PASS_E2"},
+        {"id": "G3", "verdict": "PASS_E2"},
+        {"id": "G4", "verdict": "PASS_E2"}
+      ]
+    },
+    "authority_fence": {
+      "const": {
+        "semantic_p0": 0,
+        "target_profile_unresolved_p0": 0,
+        "target_profile_unresolved_p1": 0,
+        "feature_p1": "22_OPEN_OUTSIDE_TARGET_PROFILE",
+        "m13_actions": "4_OPEN_SEPARATE",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "production_implementation": "NOT_PERFORMED",
+        "e4_e5_evidence_count": 0,
+        "language_semantic_change_count": 0,
+        "feature_status_change_count": 0
+      }
+    },
+    "conflict_register": {
+      "const": [
+        {
+          "id": "G4-CONFLICT-001",
+          "disposition": "EXPLAINED_TYPED_HISTORICAL_PROMOTION_STATE",
+          "source_repair": "NOT_REQUIRED"
+        }
+      ]
+    },
+    "next_nonblocking_cluster": {
+      "const": {
+        "gap_id": "IR-ACTOR-P2-008",
+        "status": "EXPLICITLY_DEFERRED_NONBLOCKING_REVIEW_ELIGIBLE",
+        "activated": false
+      }
+    },
+    "external_post_commit_receipt_required": {"const": true}
+  }
+}
