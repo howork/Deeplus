@@ -42,6 +42,9 @@ R74_IMPLEMENTATION_READINESS_REVISION = (
 R75_ACTOR_CRANELIFT_PROJECTION_REVISION = (
     "r51f3-current-actor-cranelift-projection-r75-r1"
 )
+R76_GLOBAL_TRACE_CLOSURE_REVISION = (
+    "r51f3-current-global-implementation-target-trace-closure-r76-r1"
+)
 FRONTEND_SUCCESSOR_REVISIONS = {
     R11_R19_FRONTEND_REVISION,
     R41_ACTOR_PROTOCOL_REVISION,
@@ -50,6 +53,7 @@ FRONTEND_SUCCESSOR_REVISIONS = {
     R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
     R74_IMPLEMENTATION_READINESS_REVISION,
     R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+    R76_GLOBAL_TRACE_CLOSURE_REVISION,
 }
 CURRENT_MACHINE_REVISIONS = {
     R10_HIR_MIR_REVISION,
@@ -89,7 +93,10 @@ R74_SEMANTIC_PUBLICATION_TREE = "a9291ef158fa21a473789d5c685dfcf0cb3050d2"
 R75_SEMANTIC_SOURCE_COMMIT = "d0e3f459b55f4eeb9bf884ccf982d90602f0d2b7"
 R75_SEMANTIC_PUBLICATION_COMMIT = "420ccdcbe9dae1b267d9fa0277239195f0d72d1b"
 R75_SEMANTIC_PUBLICATION_TREE = "2c3b690cee13a28f89130728c5a8d0d9d39cccc9"
-CURRENT_PUBLICATION_TARGET_COMMIT = R75_SEMANTIC_PUBLICATION_COMMIT
+R76_SEMANTIC_SOURCE_COMMIT = "adfff280c015640ccb2a6c87812c984162b4b008"
+R76_SEMANTIC_PUBLICATION_COMMIT = "f550338a9daf9cae64f4dc8933dfb4219ee76dcd"
+R76_SEMANTIC_PUBLICATION_TREE = "7c663efaaadf8733a65d73a9540bcdb5700147fb"
+CURRENT_PUBLICATION_TARGET_COMMIT = R76_SEMANTIC_PUBLICATION_COMMIT
 HISTORICAL_PUBLICATION_SOURCE_COMMIT = "b6ff1f6e53ea8a21cfb706864478baa02545d3dd"
 HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT = (
     "4c85d5b923ee0a58ec6993bb0552e4d0aa7e24d9"
@@ -242,6 +249,10 @@ R48_R74_DECISION_PATHS = [
     "decisions/language/Design_Deeplus_R73_Member_Extension_Collision_Conformance_Trace_Closure_R1.md",
     "decisions/language/Design_Deeplus_R74_Member_Extension_Collision_Diagnostic_Trace_Closure_R1.md",
 ]
+R76_DECISION_PATH = (
+    "decisions/language/"
+    "Design_Deeplus_R76_Global_Implementation_Target_Trace_Closure_R1.md"
+)
 R10_DECISION_ID = "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
 AUTHORITY_TRANSITION_REPORT = (
     "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md"
@@ -462,6 +473,22 @@ R75_PUBLICATION_CLOSURE_REPORT = (
     "governance/reports/"
     "Design_Deeplus_R75_Actor_Cranelift_Projection_Rebase_"
     "Publication_Closure_R1.md"
+)
+R76_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R76_Global_Implementation_Target_Trace_"
+    "Publication_Closure_R1.md"
+)
+R76_PUBLICATION_CLOSURE_RECEIPT = (
+    "release/evidence/"
+    "r76-global-implementation-target-trace-publication-closure-receipt.json"
+)
+R76_INDEPENDENT_VERIFICATION_RECEIPT = (
+    "release/evidence/"
+    "r76-global-implementation-target-trace-independent-verification.json"
+)
+R76_PUBLICATION_CLOSURE_DECISION_ID = (
+    "DSGN-CURRENT-R76-GLOBAL-IMPLEMENTATION-TARGET-TRACE-PUBLICATION-CLOSURE"
 )
 R4_PUBLICATION_CLOSURE_GAP_IDS = [
     "IR-RES-P0-040",
@@ -12789,6 +12816,9 @@ def main() -> int:
         "tools/generators/build_global_implementation_target_trace_closure.py",
         "tools/validators/validate_global_implementation_target_trace_closure.py",
         "tools/validators/run_global_implementation_target_trace_closure_mutation_tests.py",
+        "governance/reports/Design_Deeplus_R76_Global_Implementation_Target_Trace_Publication_Closure_R1.md",
+        "release/evidence/r76-global-implementation-target-trace-publication-closure-receipt.json",
+        "release/evidence/r76-global-implementation-target-trace-independent-verification.json",
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
         "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
@@ -17086,6 +17116,7 @@ def main() -> int:
                 R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+                R76_GLOBAL_TRACE_CLOSURE_REVISION,
             }
             else []
         )
@@ -17094,9 +17125,11 @@ def main() -> int:
             if revision in {
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+                R76_GLOBAL_TRACE_CLOSURE_REVISION,
             }
             else []
         )
+        + ([R76_DECISION_PATH] if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION else [])
     ]
     indexed_governance_paths = re.findall(
         r"^  - (governance/\S+)$",
@@ -17131,6 +17164,7 @@ def main() -> int:
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            R76_GLOBAL_TRACE_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17141,6 +17175,7 @@ def main() -> int:
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            R76_GLOBAL_TRACE_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17150,6 +17185,7 @@ def main() -> int:
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            R76_GLOBAL_TRACE_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17158,6 +17194,7 @@ def main() -> int:
             R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            R76_GLOBAL_TRACE_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17165,11 +17202,19 @@ def main() -> int:
         if revision in {
             R74_IMPLEMENTATION_READINESS_REVISION,
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            R76_GLOBAL_TRACE_CLOSURE_REVISION,
         }
         else []
     ) + (
         [R75_SEMANTIC_REPORT, R75_PUBLICATION_CLOSURE_REPORT]
-        if revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION
+        if revision in {
+            R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+            R76_GLOBAL_TRACE_CLOSURE_REVISION,
+        }
+        else []
+    ) + (
+        [R76_PUBLICATION_CLOSURE_REPORT]
+        if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION
         else []
     )
     check(
@@ -17182,6 +17227,7 @@ def main() -> int:
                 R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+                R76_GLOBAL_TRACE_CLOSURE_REVISION,
             }
             else []
         )
@@ -17190,9 +17236,11 @@ def main() -> int:
             if revision in {
                 R74_IMPLEMENTATION_READINESS_REVISION,
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+                R76_GLOBAL_TRACE_CLOSURE_REVISION,
             }
             else []
         )
+        + ([R76_DECISION_PATH] if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION else [])
         and indexed_decision_rows == expected_decision_rows
         and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS
                 + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
@@ -17203,6 +17251,7 @@ def main() -> int:
                         R47_OWNERSHIP_CONTRACT_FUSION_REVISION,
                         R74_IMPLEMENTATION_READINESS_REVISION,
                         R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+                        R76_GLOBAL_TRACE_CLOSURE_REVISION,
                     }
                     else []
                 )
@@ -17211,9 +17260,11 @@ def main() -> int:
                     if revision in {
                         R74_IMPLEMENTATION_READINESS_REVISION,
                         R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
+                        R76_GLOBAL_TRACE_CLOSURE_REVISION,
                     }
                     else []
-                ))
+                )
+                + ([R76_DECISION_PATH] if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION else []))
         and indexed_governance_paths == expected_governance_paths
         and all(
             (root / relative).is_file()
@@ -19068,6 +19119,162 @@ def main() -> int:
             }
         ),
     )
+    r76_report_path = root / R76_PUBLICATION_CLOSURE_REPORT
+    r76_receipt_path = root / R76_PUBLICATION_CLOSURE_RECEIPT
+    r76_independent_path = root / R76_INDEPENDENT_VERIFICATION_RECEIPT
+    r76_receipt = parsed.get(r76_receipt_path, {})
+    r76_publication = r76_receipt.get("semantic_publication", {})
+    r76_validation = r76_receipt.get("semantic_validation", {})
+    r76_traceability = r76_receipt.get("traceability", {})
+    r76_transition = r76_receipt.get("publication_transition", {})
+    r76_gap_disposition = r76_receipt.get("gap_disposition", {})
+    r76_governance = r76_receipt.get("governance", {})
+    r76_pointer_target = r76_receipt.get("pointer_target", {})
+    r76_independent = parsed.get(r76_independent_path, {})
+    r76_pr_ci = r76_receipt.get("semantic_pr_github_ci", [])
+    r76_main_ci = r76_receipt.get("semantic_merge_main_ci", [])
+    check(
+        r76_report_path.is_file()
+        and r76_receipt_path.is_file()
+        and r76_independent_path.is_file()
+        and r76_receipt.get("schema")
+        == "deeplus.r76-global-implementation-target-trace-publication-closure-receipt/v1"
+        and r76_receipt.get("candidate_verdict")
+        == "READY_FOR_PUBLICATION_CLOSURE_MERGE"
+        and r76_publication
+        == {
+            "pull_request": 71,
+            "url": "https://github.com/howork/Deeplus/pull/71",
+            "branch": "codex/r76-global-trace-closure",
+            "source_commit": R76_SEMANTIC_SOURCE_COMMIT,
+            "source_tree": R76_SEMANTIC_PUBLICATION_TREE,
+            "merge_commit": R76_SEMANTIC_PUBLICATION_COMMIT,
+            "tree": R76_SEMANTIC_PUBLICATION_TREE,
+            "parents": [
+                "40a826af29410af1a14c6a7dec3193cd59ba9b12",
+                R76_SEMANTIC_SOURCE_COMMIT,
+            ],
+            "merged_at": "2026-08-04T04:14:37Z",
+            "post_merge_readback": "PASS",
+        }
+        and len(r76_pr_ci) == len(r76_main_ci) == 2
+        and {row.get("workflow") for row in r76_pr_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and {row.get("workflow") for row in r76_main_ci}
+        == {"Canonical integrity", "Rust workspace"}
+        and all(
+            row.get("head_sha") == R76_SEMANTIC_SOURCE_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r76_pr_ci
+        )
+        and all(
+            row.get("head_sha") == R76_SEMANTIC_PUBLICATION_COMMIT
+            and row.get("conclusion") == "SUCCESS"
+            for row in r76_main_ci
+        ),
+        "R76_PUBLICATION_CLOSURE_IDENTITY",
+        repr(r76_publication),
+    )
+    check(
+        r76_validation
+        == {
+            "change_scope": {
+                "changed_file_count": 23,
+                "production_crate_change_count": 0,
+            },
+            "focused_validation": {
+                "global_gate_count": 8,
+                "global_mutation_control_count": 8,
+                "cumulative_mutation_control_count": 14,
+                "predecessor_mutation_control_count": 84,
+                "verdict": "PASS",
+            },
+            "workspace_validation": {
+                "errors": 0,
+                "warnings": 0,
+                "verdict": "PASS",
+            },
+            "source_manifest": {
+                "path": "release/source-tree-manifest.json",
+                "file_count_excluding_manifest": 1028,
+                "total_bytes_excluding_manifest": 32559800,
+                "tree_sha256": (
+                    "cf0c1e89997c45612edd0e0c53d3aee4cfca28b6c431a39b0a2b4bfc010a9823"
+                ),
+                "binding": "SEMANTIC_MERGE_TREE_BOUND",
+                "hash_domain": "SHA256_CANONICAL_BYTES",
+            },
+            "evidence_level": "E2_DESIGN_STATIC",
+            "production_execution": "NOT_RUN",
+        }
+        and r76_traceability
+        == {
+            "target_feature_rows": 469,
+            "stage_cells": 3283,
+            "test_outcome_cells": 1407,
+            "atomic_cells": 4221,
+            "bound_direct_cells": 3709,
+            "bound_delegated_cells": 4,
+            "not_applicable_cells": 508,
+            "applicable_blocked_cells": 0,
+            "evidence_overlays": 21,
+            "evidence_bindings": 1381,
+            "evidence_registry_entries": 4393,
+        }
+        and r76_transition
+        == {
+            "publication_unit": "R76_GLOBAL_IMPLEMENTATION_TARGET_TRACE_CLOSURE",
+            "semantic_merge_state": "INTEGRATED_UNVERIFIED",
+            "closure_state_after_closure_merge_readback": "VERIFIED_CLOSED",
+            "closed_audit_gap": "IR-XCUT-P1-054_AFTER_CLOSURE_READBACK",
+            "closed_feature_p1": 0,
+            "new_feature_p1": 0,
+        }
+        and r76_gap_disposition
+        == {
+            "verified_closed_after_closure_readback": ["IR-XCUT-P1-054"],
+            "remaining_open_audit_p0_p1": [],
+            "explicitly_deferred": ["IR-ACTOR-P2-008"],
+        }
+        and r76_governance
+        == {
+            "semantic_p0": 0,
+            "canonical_feature_p1": "22_OPEN_UNCHANGED",
+            "separate_m13_actions": "4_OPEN_UNCHANGED",
+            "product_lanes": "15_OF_15_NOT_RUN",
+            "production_implementation": "NOT_RUN",
+            "current_binding": False,
+        }
+        and r76_pointer_target
+        == {
+            "role": "publication_authority_source",
+            "revision": R76_GLOBAL_TRACE_CLOSURE_REVISION,
+            "semantic_merge_commit": R76_SEMANTIC_PUBLICATION_COMMIT,
+            "closure_merge_commit": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+            "self_binding_forbidden": True,
+        }
+        and r76_independent.get("schema")
+        == "deeplus.r76-global-implementation-target-trace-independent-verification/v1"
+        and r76_independent.get("semantic_merge_commit")
+        == R76_SEMANTIC_PUBLICATION_COMMIT
+        and r76_independent.get("verdict") == "PASS"
+        and r76_independent.get("evidence_level") == "E2_DESIGN_STATIC"
+        and r76_independent.get("product_execution") == "NOT_RUN"
+        and r76_independent.get("closure_effect")
+        == "CONDITIONAL_ON_CLOSURE_MERGE_AND_LIVE_MAIN_READBACK",
+        "R76_PUBLICATION_CLOSURE_GOVERNANCE",
+        repr(
+            {
+                "validation": r76_validation,
+                "traceability": r76_traceability,
+                "transition": r76_transition,
+                "gap_disposition": r76_gap_disposition,
+                "governance": r76_governance,
+                "pointer_target": r76_pointer_target,
+                "independent": r76_independent,
+            }
+        ),
+    )
     current_decisions = parsed.get(
         root / "decisions/language/current-decisions.json", {}
     )
@@ -19107,6 +19314,42 @@ def main() -> int:
         for row in current_laws
         if row.get("id") == R74_PUBLICATION_CLOSURE_DECISION_ID
     ]
+    r76_closure_laws = [
+        row
+        for row in current_laws
+        if row.get("id") == R76_PUBLICATION_CLOSURE_DECISION_ID
+    ]
+    check(
+        len(r76_closure_laws) == 1
+        and r76_closure_laws[0].get("status") == "CURRENT"
+        and r76_closure_laws[0].get("authority_origin")
+        == "CODEX_DESIGN_USER_DELEGATED"
+        and r76_closure_laws[0].get("ratification_status")
+        == "CURRENT_USER_DELEGATED_AUTHORITY"
+        and r76_closure_laws[0].get("effective_revision")
+        == R76_GLOBAL_TRACE_CLOSURE_REVISION
+        and R76_PUBLICATION_CLOSURE_REPORT
+        in r76_closure_laws[0].get("source_evidence", "")
+        and R76_PUBLICATION_CLOSURE_RECEIPT
+        in r76_closure_laws[0].get("source_evidence", "")
+        and R76_INDEPENDENT_VERIFICATION_RECEIPT
+        in r76_closure_laws[0].get("source_evidence", "")
+        and R76_SEMANTIC_SOURCE_COMMIT
+        in r76_closure_laws[0].get("law", "")
+        and R76_SEMANTIC_PUBLICATION_COMMIT
+        in r76_closure_laws[0].get("law", "")
+        and R76_SEMANTIC_PUBLICATION_TREE
+        in r76_closure_laws[0].get("law", "")
+        and "IR-XCUT-P1-054" in r76_closure_laws[0].get("law", "")
+        and "3,709 BOUND_DIRECT" in r76_closure_laws[0].get("law", "")
+        and "0 APPLICABLE_BLOCKED_BY_GAP"
+        in r76_closure_laws[0].get("law", "")
+        and "22 OPEN" in r76_closure_laws[0].get("law", "")
+        and "15 product lanes NOT_RUN"
+        in r76_closure_laws[0].get("law", ""),
+        "R76_PUBLICATION_CLOSURE_DECISION",
+        repr(r76_closure_laws),
+    )
     check(
         len(r74_closure_laws) == 1
         and r74_closure_laws[0].get("status") == "CURRENT"
@@ -19250,7 +19493,9 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            65
+            66
+            if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION
+            else 65
             if revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION
             else 64
             if revision == R74_IMPLEMENTATION_READINESS_REVISION
@@ -20087,7 +20332,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION:
+        if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION:
+            expected_predecessor = R75_ACTOR_CRANELIFT_PROJECTION_REVISION
+        elif revision == R75_ACTOR_CRANELIFT_PROJECTION_REVISION:
             expected_predecessor = R74_IMPLEMENTATION_READINESS_REVISION
         elif revision == R74_IMPLEMENTATION_READINESS_REVISION:
             expected_predecessor = R47_OWNERSHIP_CONTRACT_FUSION_REVISION
