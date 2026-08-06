@@ -483,7 +483,7 @@ public class UserId {
     }
 }
 
-public trait Display {
+public trait#interpolation Display {
     +def display+() -> String
         throws Never
         effects {}
@@ -770,21 +770,21 @@ let invalid = UserRow${ **values }
 private def describe(row UserRow${id, state, metadata, enabled}: UserRow)
     -> String
 = {
-    let ${sourceName: source, .._} = metadata
+    let ${source: sourceName, _**} = metadata
 
     return @match state {
         ::draft => "${id}:draft:${sourceName}"
         ::active => "${id}:active:${sourceName}"
-        ::blocked${message: reason, .._} => "${id}:blocked:${message}"
+        ::blocked${message: reason, _**} => "${id}:blocked:${reason}"
     }
 }
 ```
 
 parameter의 `UserRow${...}`는 field set이 고정된 schema에 대해
 irrefutable인 body-entry Pattern이다. `metadata`는 확장 가능한 Record로
-취급하므로 `${sourceName: source, .._}`처럼 추가 field를 명시적으로
-허용한다. colon 왼쪽의 `sourceName`이 destination이고 오른쪽 `source`가
-원본 field다.
+취급하므로 label-first `${source: sourceName, _**}`처럼 추가 field를 명시적으로
+허용한다. colon 왼쪽 `source`가 source field label이고 오른쪽
+`sourceName`이 destination binder다.
 
 검사와 commit 순서는 다음과 같다.
 
@@ -798,20 +798,23 @@ irrefutable인 body-entry Pattern이다. `metadata`는 확장 가능한 Record�
 ordinary Class 내부 field, Map runtime key 또는 inactive Enum payload는 이
 경로에 끼어들지 않는다.
 
-## 7. 사례 6 — 1-based collection과 NumericArray
+## 7. 사례 6 — 1-based collection, structural edit와 NumericArray
 
 ### 7.1 요구사항과 전제
 
 ordinary List와 NumericArray의 1-based 논리 좌표를 함께 사용한다.
 List slice는 source coordinate를 보존하는 view이고,
-matrix axis도 각 차원에서 1부터 시작한다.
+matrix axis도 각 차원에서 1부터 시작한다. `MutableList` 구조 변경은
+ordinary bracket assignment가 아닌 닫힌 statement owner를 사용한다.
 
 요구사항은 다음과 같다.
 
 - index `1`이 첫 element다.
-- slice anchor `^`와 `$`는 index suffix 안에서만 쓴다.
+- open slice bound와 `^`/`$` anchor는 index suffix 안에서만 쓴다.
 - NumericArray exact shape와 element count가 일치한다.
-- 다축 index는 semicolon으로 나눈다.
+- 다축 index는 comma로 나눈다.
+- `MutableList` edit는 하나의 exclusive place에서 validation/staging 뒤
+  한 번만 commit한다.
 - matrix product shape가 호환되어야 한다.
 
 ### 7.2 전체 코드
@@ -823,7 +826,13 @@ module demo::coordinates
 let names = ["Ada", "Dee", "Lin"]
 let firstName = names[1]
 let lastName = names[names.length]
-let middleNames = names[^ + 1 ..< $]
+let remainingNames = names[2..]
+
+var queue: MutableList<Int> = #mut[20, 30]
+queue[@^] = 10
+queue[$@] = 40
+queue[@2] = *[11, 12]
+queue[-@(2, 4)] -> $removed
 
 let row = #[1, 2, 3]
 let column = #[4; 5; 6]
@@ -833,7 +842,7 @@ let matrix = #2,3[
 ]
 
 let second = row[2]
-let secondColumn = matrix[*; 2]
+let secondColumn = matrix[.., 2]
 let product = matrix ** column
 ```
 
@@ -847,8 +856,9 @@ let product = matrix ** column
    `names[1]`에서 `IndexSuffix`와 `SliceIndexExpr`를 만든다.
    collection kind가 List이므로 logical domain은 `1..length`다.
 
-3. **anchor parse**
-   `$`와 `^ + 1 ..< $`는 `SliceBound` owner 안에서만 인정한다.
+3. **open slice parse**
+   `2..`는 IndexSuffix의 open-end `SliceRange`이고 일반 expression의
+   one-sided Range `2...`와 다른 owner다.
 
 4. **view type**
    slice 결과는 source owner와 coordinate provenance를 가진
@@ -864,28 +874,42 @@ let product = matrix ** column
    `matrix`는 exact 2×3 shape다.
 
 7. **axis index**
-   `matrix[*; 2]`는 첫 axis full selection과 둘째 axis coordinate 2를
+   `matrix[.., 2]`는 첫 axis full selection과 둘째 axis coordinate 2를
    가진다.
 
-8. **linear product**
+8. **structural-edit owner**
+   각 `queue` statement의 marker를 일반 `IndexSuffix`와 분리하고 exact
+   exclusive `MutableList<Int>` place, selector와 finite bulk payload를
+   검사한다. `removeSelected`의 capture는 `removed: List<Int>`다.
+
+9. **linear product**
    `matrix ** column`의 inner dimension이 3으로 일치하는지 검사한다.
 
-9. **lowering**
+10. **lowering**
    bounds check, element evaluation, view provenance, allocation/backend
-   책임과 failure-before-commit을 보존한다.
+   책임과 failure-before-commit을 보존한다. structural edit는 기존
+   `CallPlan`과 닫힌 Prelude operation으로 낮아지며 새 MIR opcode가 없다.
 
 ### 7.4 평가 추적
 
-`names[^ + 1 ..< $]`:
+`names[2..]`:
 
 1. receiver `names`를 한 번 평가한다.
 2. receiver length와 logical domain을 얻는다.
-3. `^`를 첫 coordinate 1로 해석한다.
-4. offset `+ 1`을 적용해 lower bound 2를 얻는다.
-5. `$`를 마지막 coordinate 3으로 해석한다.
-6. half-open delimiter `..<`를 적용한다.
-7. bound validity를 검사한다.
-8. source coordinate/provenance를 보존한 view를 만든다.
+3. lower bound 2를 얻는다.
+4. open end를 one-past-last boundary identity에 결합한다.
+5. bound validity를 검사한다.
+6. source coordinate/provenance를 보존한 view를 만든다.
+
+`queue[-@(2, 4)] -> $removed`:
+
+1. exact exclusive `queue` place를 한 번 결정한다.
+2. selector 2와 4를 왼쪽부터 한 번 평가한다.
+3. 둘을 같은 pre-mutation coordinate set에서 bounds/duplicate 검사한다.
+4. result storage와 cleanup 책임을 staging한다.
+5. `MutableList::removeSelected` mutation을 정확히 한 번 commit한다.
+6. 제거한 두 값을 selector 순서의 `removed: List<Int>`에 commit하고
+   survivor는 기존 순서를 유지한다.
 
 `matrix ** column`:
 
@@ -919,8 +943,13 @@ let invalid = #2,3[
 // 선언 shape 2×3과 element layout 불일치
 ```
 
-빈 suffix `values[]`는 current full slice가 아니다.
-full axis는 `*`이며 빈 suffix는 `INDEX_SUFFIX_REQUIRES_AXIS`다.
+빈 suffix `values[]`는 current full slice가 아니다. general full slice는
+`values[..]`이고 NumericArray axis에서는 `[*]`도 같은 selector로
+정규화된다. 빈 suffix는 `INDEX_SUFFIX_REQUIRES_AXIS`다.
+
+ordinary `queue[2] = 99`는 `MutableList` bracket replacement로 재해석하지
+않는다. `queue[-@(2, 2)]`도 duplicate pre-mutation selector이므로 commit
+전에 거부한다. 두 경우 모두 structural mutation residue는 0개다.
 
 ### 7.6 상호작용
 
@@ -928,6 +957,9 @@ full axis는 `*`이며 빈 suffix는 `INDEX_SUFFIX_REQUIRES_AXIS`다.
   slicing 결과는 서로 다르다.
 - bounded source나 기존 slice의 view는 원 source coordinate를 보존한다.
 - `Sequence<T>` conformance만으로 `[]`가 자동 활성화되지 않는다.
+- `MutableList` structural edit는 exact marker와 닫힌 13개 Prelude
+  operation만 사용하며 temporary/shared/actor receiver나 hidden copy를
+  허용하지 않는다.
 - NumericArray `^` postfix transpose와 slice anchor `^`는 owner가 다르다.
 - allocation, overflow, bounds failure는 Error/Defect/cleanup 축을
   지우지 않는다.
@@ -1363,14 +1395,14 @@ public actor #mailbox(capacity: 8) Counter {
 public def#async observe(counter: Counter) -> Int
     throws ActorMessageError
 = {
-    let Result::ok(_) = counter :~ add value: 1
-    else Result::err(error) => throw error
+    let? _ = counter :~ add value: 1
+    else error => throw error
 
-    let Result::ok(_) = counter :~ add value: 2
-    else Result::err(error) => throw error
+    let? _ = counter :~ add value: 2
+    else error => throw error
 
-    let Result::ok(reply) = counter :~ current
-    else Result::err(error) => throw error
+    let? reply = counter :~ current
+    else error => throw error
 
     return await reply
 }
@@ -1400,9 +1432,9 @@ public def#async observe(counter: Counter) -> Int
 6. **admission result**
    send와 request에 서로 다른 Result payload type을 부여한다.
 
-7. **guarded binding**
-   각 `let Result::ok(...) = ... else ...`가 성공 edge에서만 payload를
-   bind한다.
+7. **Failable guarded binding**
+   각 `let? ... else ... => exit`가 Result를 한 번 소비하고 성공
+   edge에서만 payload를 bind한다.
 
 8. **reply await**
    마지막 성공 edge의 `reply: Reply<Int>`만 `await`한다.
@@ -1427,7 +1459,7 @@ request:
 2. mailbox admission을 검사한다.
 3. enqueue commit에서 correlation identity를 만든다.
 4. 즉시 `Result::ok(Reply<Int>)`를 반환한다.
-5. guarded binding이 `reply`를 commit한다.
+5. Failable guarded binding이 `reply`를 commit한다.
 6. `await reply`가 actor reply, handler Error 또는 Cancellation을
    기다린다.
 
@@ -1860,7 +1892,8 @@ let reduced: Rational = <6/8>
 let negativeRatio: Rational = -<2/3>
 
 let cartesian: Complex = 3.0 + 4.0i
-let compact: Complex<Float32> = 1.5f32 - 0.25f32i
+let compactReal: Float32 = 1.5
+let compact: Complex<Float32> = compactReal - 0.25i
 let squared: Complex = cartesian ^ 2
 
 let negatedSquare: Float64 = -2.0 ^ 2.0
@@ -1885,9 +1918,11 @@ transactional하게 확인한다. `<6/8>`이 완성되면 Rational literal 후�
 하나 만들지만, 탐사가 실패하면 token을 0개 소비하여 ordinary `<`, `/`,
 `>` 문법에 제어를 돌려준다. 부호는 literal 밖의 prefix `-`가 소유한다.
 
-`4.0i`와 `0.25f32i`는 각각 admitted unsuffixed 또는 `f32` decimal
-floating magnitude와 붙은 ASCII `i`가 만드는 하나의 imaginary literal
-token이다. scanner는 `4i`의 정수 magnitude, `4.0f64i`의 suffix 연쇄,
+`4.0i`와 `0.25i`는 suffix-free decimal floating magnitude와 붙은 ASCII
+`i`가 만드는 imaginary literal token이다. 독립적으로 고정된
+`Complex<Float32>` 문맥에서 직접 `0.25i`가 정확히 적응하며,
+`compactReal`은 nondefault operator domain을 고정하는 typed anchor다.
+scanner는 `4i`의 정수 magnitude, 제거된 `4.0f64i`의 suffix candidate,
 `4.0 i`의 떨어진 identifier를 허수 literal로 보정하지 않는다.
 
 power parselet의 `lbp`는 160, `rbp`는 159이고 numeric prefix `+`/`-`도
@@ -1922,8 +1957,11 @@ floating approximation을 거치지 않는다.
 
 Complex checker는 `cartesian`에서 `3.0`과 `4.0i`를
 `Float64`/`Complex<Float64>`의 sealed `BinaryAdd` row에 결합한다.
-`compact`는 `Float32` component만 사용한다. 이 두 성공은 일반적인
-implicit Float→Complex conversion을 열지 않는다.
+`compactReal`의 exact annotation이 nondefault `Float32` operand domain을
+고정하고 직접 `0.25i`가 `Complex<Float32>`로 정확히 적응하므로 `compact`는
+`Float32` component만 사용한다. 이 두 성공은 일반적인 implicit
+Float→Complex conversion이나 expected-result-directed witness 선택을 열지
+않는다.
 
 power는 operand의 normalized static domain만으로 다음 계획을 고른다.
 
@@ -2035,12 +2073,13 @@ let detached = 4.0 i
 
 let integerImaginary = 4i
 let chainedSuffix = 4.0f64i
-// IMAGINARY_LITERAL_FORM_NOT_ADMITTED
+// 첫 줄: INTEGER_IMAGINARY_LITERAL_NOT_ACTIVATABLE
+// 둘째 줄: NUMERIC_TYPE_SUFFIX_REMOVED
 
 ```
 
 분모 0은 exact literal shape를 성공적으로 인식한 뒤 checker가 거부한다.
-반면 malformed Rational과 잘못된 imaginary suffix는 canonical literal
+반면 malformed Rational과 제거된 numeric suffix는 canonical literal
 node를 만들기 전에 끝난다. 어느 경우도 거부된 node가 HIR/MIR value로
 내려가지 않는다.
 

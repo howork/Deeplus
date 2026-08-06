@@ -163,7 +163,7 @@
     "expected": "admitted",
     "descriptor": {
       "schema": "deeplus.complex-literal-operator-descriptor/r1",
-      "source": "-0.0f32i",
+      "source": "let z: Complex<Float32> = -0.0i",
       "rep": "Float32",
       "outer_prefix_sign": "-",
       "real_bits": "0x00000000"
@@ -186,8 +186,8 @@
         "isolation": "local"
       }
     },
-    "admitted_condition": "the literal keeps Float32 and positive-zero real bits while unary minus applies outside the token",
-    "rule_seed": "signed-zero and suffix boundary",
+    "admitted_condition": "the exact Complex<Float32> target materializes the suffix-free imaginary literal with positive-zero real bits before unary minus applies outside the token",
+    "rule_seed": "signed-zero and exact-target boundary without numeric type suffixes",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
@@ -717,7 +717,7 @@
     "fixture_kind": "concrete_positive",
     "expected": "admitted",
     "descriptor": {
-      "surface": "[first, ..middle.., last]",
+      "surface": "[first, middle.., last]",
       "carrier": "List<Int>",
       "rest_type": "ListRestView<Int>",
       "rank_span": {
@@ -754,7 +754,7 @@
     "expected_primary_diagnostic": "PATTERN_REST_CARRIER_NOT_ADMITTED",
     "violated_condition": "the carrier has no admitted intrinsic Sequence witness",
     "descriptor": {
-      "surface": "[head, ..tail]",
+      "surface": "[head, tail..]",
       "carrier": "OpaqueBag<Int>",
       "sequence_witness": null
     },
@@ -848,7 +848,7 @@
     "fixture_kind": "concrete_positive",
     "expected": "admitted",
     "descriptor": {
-      "record_surface": "${name, renamed:id, ..rest}",
+      "record_surface": "${name, id:renamed, rest**}",
       "map_surface": "#map{value:\"name\", ..rest}",
       "exact_or_open": "explicit_residual"
     },

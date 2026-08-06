@@ -31,8 +31,13 @@ public type Energy = Float64 where >= 0.0
 ```
 
 `3.0 + 4.0i`에서 `4.0i`는 하나의 허수 literal token이며, 덧셈은 닫힌
-same-Rep Complex corridor 안에서 해석된다. `Float32` 성분을 원하면
-`1.5f32 + 0.25f32i`처럼 Rep를 맞춘다.
+same-Rep Complex corridor 안에서 해석된다. `Float32` 성분을 원하면 결과
+annotation으로 두 operand를 역으로 고르지 말고 typed anchor를 둔다.
+
+```deeplus
+let real32: Float32 = 1.5
+let compact: Complex<Float32> = real32 + 0.25i
+```
 
 ## 3. scalar 분석
 
@@ -106,7 +111,8 @@ admission row다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT -->
 ```deeplus
 let a: Complex = i                 // i는 내장 상수가 아님
-let b = 1.0f32 + 2.0i             // Rep 혼합
+let real32: Float32 = 1.0
+let b = real32 + 2.0               // real끼리 더해 Complex가 되지 않음
 let c = samples %% 2               // 임의 custom operator 없음
 ```
 
@@ -150,7 +156,7 @@ public def report(signal: Signal) -> Option<SignalReport>
 | 식 | scalar/array | Rep 또는 element type | shape/orientation | 상태 |
 |---|---|---|---|---|
 | `3.0 + 4.0i` | scalar | `Complex<Float64>` | 해당 없음 | Current |
-| `1.0f32i` | scalar | `Complex<Float32>` | 해당 없음 | Current |
+| `let i32: Complex<Float32> = 1.0i` | scalar | `Complex<Float32>` | 해당 없음 | Current |
 | `samples` | NumericArray | `Complex<Float64>` | literal에서 고정 | Current |
 | `samples^` | NumericArray | 동일 element | transpose orientation | Current |
 | `samples ^ 2` | NumericArray | gate matrix가 결정 | 동일 shape 후보 | Preview gated |

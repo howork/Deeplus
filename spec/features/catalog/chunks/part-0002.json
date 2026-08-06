@@ -750,7 +750,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Function types and public API digests preserve repeated positional `T...` and named-rest `Record***` residues.",
+    "notes": "Function types and public API digests preserve repeated positional `T..` and static named-rest `NamedPack**` residues. Neither channel may be erased to Sequence, Record, Map, a count, or omission.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -764,7 +764,7 @@
     "normative_trace_refs": {
       "diagnostics": [
         "FUNCTION_TYPE_REST_RESIDUE_REQUIRED",
-        "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+        "LEGACY_REST_UNFOLD_SPELLING_REMOVED"
       ],
       "predicates": [
         "FunctionRestResiduePreserved",
@@ -803,7 +803,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "`*expr` in an argument list unfolds a Sequence or statically known tuple into the positional argument channel. A fixed-parameter target requires static arity evidence; NumericArray and ordinary array-shaped storage never supply positional-unfold arity evidence.",
+    "notes": "Owner-bounded `*expr` unfolds only a positional source. In an argument list a Sequence or known tuple supplies that positional channel; static-named projection instead uses `**expr`. The marker fixes the channel before overload selection, and expected formals, expected result or runtime values never choose it. Fixed arity still requires static evidence, and NumericArray never supplies positional-unfold arity.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -831,7 +831,7 @@
         "CallSuffix",
         "ArgumentList",
         "Argument",
-        "PositionalUnfoldArgument"
+        "StructuralUnfoldArgument"
       ],
       "semantic_reference_productions": []
     },

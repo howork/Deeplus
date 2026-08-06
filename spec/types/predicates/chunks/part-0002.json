@@ -693,7 +693,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "CallSideUnfoldStaticEvidence",
     "source_name": "CallSideUnfoldStaticEvidence",
-    "summary": "R51a1 closed design algorithm for CallSideUnfoldStaticEvidence; product checker NOT_RUN.",
+    "summary": "Validate owner-bounded positional *Expr or static-named **Expr after the marker fixes its channel and before overload selection; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -750,12 +750,12 @@
     "preconditions": [
       "RCTSDescriptorV5 fields required by the referenced feature laws"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize aliases, ownership regions, finite rows, labels, source-shape identity and witness identities before overload candidates are enumerated",
     "decision_procedure": [
-      "validate the closed RCTS-V5 input variant",
-      "normalize every declared descriptor axis",
-      "RCTSDescriptorV5 fields required by the referenced feature laws",
-      "evaluate finite candidates in canonical identity order",
+      "validate that *Expr occurs only in an admitted positional call/list/comprehension/insertion position and **Expr only in an admitted static-named call/materialization/Map-entry position rather than as general Pratt prefixes",
+      "preserve the channel fixed by the * versus ** marker and validate its source shape without expected-formal, expected-result, selected-overload, or runtime input",
+      "require static arity for fixed positional formals and a finite static label row for the named channel; reject Map as NamedPack",
+      "only after sealing evaluate finite overload candidates in canonical identity order",
       "return admit or the active primary diagnostic"
     ],
     "termination_metric": "finite descriptor size plus decreasing candidate count",

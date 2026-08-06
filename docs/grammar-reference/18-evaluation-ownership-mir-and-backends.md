@@ -1040,7 +1040,7 @@ static member label이 아니다.
 ### 12.5 Map literal plan과 unfold
 
 exact grammar는 `#map{ **expr }` entry를 허용한다.
-진단은 `...expr`가 current map unfold가 아니며
+진단은 제거된 `...expr`가 current map unfold가 아니며
 call-side Record unfold와 별도임을 닫는다.
 
 정본은 direct entry와 `**base`를
@@ -1109,7 +1109,7 @@ isolation crossing은 없다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/mir/semantics.md -->
 ```deeplus
 private let values = [10, 20, 30, 40]
-private let tail = values[2..$]
+private let tail = values[2..]
 private let originalCoordinate = tail[3]
 ```
 
@@ -1122,7 +1122,7 @@ Pattern으로 borrowed List remainder를 capture하면 별도 closed carrier인
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
 private def inspect(values: List<Int>) -> Unit = {
-    if let [first, ..middle.., last] = values {
+    if let [first, middle.., last] = values {
         consume(middle)
     }
 }
@@ -1143,6 +1143,35 @@ old owner/value를 보존한다.
 conformance to `Sequence`, `Indexable`,
 `LogicalIndexDomain`은
 새 bracket lowering route를 만들지 않는다.
+
+### 13.4 `MutableList` structural-edit commit
+
+statement-only structural edit는 ordinary index assignment가 아니다.
+frontend는 exact marker를 닫힌 Prelude operation 하나로 결정한 뒤 기존
+`CallExpr`/`ResolvedCallPlan`과 `CallableImplementationId`를 사용한다.
+operation set은 `insertBefore`, `insertAfter`, `prepend`, `append`,
+`insertAllBefore`, `insertAllAfter`, `prependAll`, `appendAll`, `removeAt`,
+`removeRange`, `removeSelected`, `popFirst`, `popLast`의 정확한 13개다.
+expected result는 operation을 선택하지 않으며 edit 전용 HIR node나 MIR
+opcode는 없다.
+
+관찰 가능한 순서는 다음과 같다.
+
+1. 하나의 exact exclusive `MutableList<T>` receiver place를 결정한다.
+2. selector와 payload를 source order로 각각 한 번 평가한다.
+3. coordinate, duplicate selector, live borrow/view/iterator,
+   self-alias/`inout` overlap과 bulk-source finiteness/element evidence를
+   검증한다.
+4. payload와 필요한 capacity/result storage를 staging한다.
+5. 성공하면 구조 변경을 정확히 한 번 publish한다.
+6. removal capture가 있으면 point 결과 `T` 또는 multi 결과 `List<T>`를
+   ordinary dollar local에 commit한다.
+
+1–4의 Error, Defect 또는 Cancellation에는 mutation commit이 0개다.
+receiver와 source owner가 그대로 남고, 획득한 temporary만 정상 cleanup
+순서로 정리한다. hidden clone/snapshot/move나 rollback용 두 번째 mutation은
+없다. multi-removal은 모든 selector를 mutation 전 coordinate로 해석하고
+selector 순서의 결과와 survivor 순서를 각각 보존한다.
 
 ## 14. resource와 cleanup
 

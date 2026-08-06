@@ -8,7 +8,7 @@
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "descriptor": {
       "source_kind": "FunctionType",
-      "normalized_type": "(Record***, Record***) -> Unit",
+      "normalized_type": "(NamedPack**, NamedPack**) -> Unit",
       "ownership": null,
       "borrow_region": null,
       "cleanup": null,
@@ -23,7 +23,7 @@
         "parameter_count": 2,
         "named_rest_parameter_count": 2,
         "named_rest_parameter_index": 1,
-        "named_rest_parameter_type": "Record"
+        "named_rest_parameter_type": "NamedPack"
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -81,7 +81,7 @@
     "expected": "rejected",
     "descriptor": {
       "source_kind": "FunctionType",
-      "normalized_type": "(Record***, Int) -> Unit",
+      "normalized_type": "(NamedPack**, Int) -> Unit",
       "ownership": null,
       "borrow_region": null,
       "cleanup": null,
@@ -96,7 +96,7 @@
         "parameter_count": 2,
         "named_rest_parameter_count": 1,
         "named_rest_parameter_index": 0,
-        "named_rest_parameter_type": "Record"
+        "named_rest_parameter_type": "NamedPack"
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -127,7 +127,7 @@
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "expected_primary_diagnostic": "NAMED_REST_PARAMETER_MUST_BE_LAST",
     "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "the sole Record named-rest collector is not the final parameter",
+    "violated_condition": "the sole NamedPack named-rest collector is not the final parameter",
     "fixture_kind": "concrete_negative",
     "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
     "descriptor_v5": {
@@ -157,7 +157,7 @@
     "expected": "rejected",
     "descriptor": {
       "source_kind": "FunctionType",
-      "normalized_type": "(String, Map<String,Int>***) -> Unit",
+      "normalized_type": "(String, Map<String,Int>**) -> Unit",
       "ownership": null,
       "borrow_region": null,
       "cleanup": null,
@@ -203,7 +203,7 @@
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "expected_primary_diagnostic": "NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE",
     "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "the sole named-rest parameter type is not exactly Record",
+    "violated_condition": "the sole named-rest function residue is not exactly NamedPack**",
     "fixture_kind": "concrete_negative",
     "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
     "descriptor_v5": {
@@ -233,7 +233,7 @@
     "expected": "admitted",
     "descriptor": {
       "source_kind": "FunctionType",
-      "normalized_type": "(String, Record***) -> Unit",
+      "normalized_type": "(String, NamedPack**) -> Unit",
       "ownership": null,
       "borrow_region": null,
       "cleanup": null,
@@ -248,7 +248,7 @@
         "parameter_count": 2,
         "named_rest_parameter_count": 1,
         "named_rest_parameter_index": 1,
-        "named_rest_parameter_type": "Record"
+        "named_rest_parameter_type": "NamedPack"
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -276,7 +276,7 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "named_rest_parameter_count is exactly one; named_rest_parameter_type is exactly Record; named_rest_parameter_index equals parameter_count - 1; dispatch multiple-count before non-Record type before nonfinal position",
+    "rule_seed": "named_rest_parameter_count is exactly one; named_rest_parameter_type is exactly NamedPack; named_rest_parameter_index equals parameter_count - 1; dispatch multiple-count before non-NamedPack residue before nonfinal position",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {

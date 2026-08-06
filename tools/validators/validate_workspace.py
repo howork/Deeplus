@@ -64,6 +64,7 @@ CURRENT_MACHINE_REVISIONS = {
     *FRONTEND_SUCCESSOR_REVISIONS,
 }
 TRAIT_OPERATOR_REFINEMENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
+R77_INTEGRATED_SURFACE_REVISION = "r51f3-current-integrated-surface-r77-r1"
 PREVIOUS_LANGUAGE_COHERENCE_REVISION = "r51f3-current-pattern-sequence-multivalue-r1"
 PATTERN_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 AUTHORITY_TRANSITION_BASE_COMMIT = "cfd5946c52571119564b9c8beb430f8dd0356750"
@@ -128,8 +129,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1484, "predicates": 283,
-    "predicate_fixtures": 877, "no_go": 156,
+    "features": 723, "diagnostics": 1486, "predicates": 283,
+    "predicate_fixtures": 877, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -662,7 +663,7 @@ FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS = {
 TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-POS-001": "200a65fcdb4f4048e8ca3a9c47ee9a6a3b064d0e1a4c3cb213cee813eaa93964",
     "TCS-R1-POS-002": "bcf8175f86f6beeb7a2f408fb2c6caf0b01b3d7f22a330359a28c9de9a6bc987",
-    "TCS-R1-POS-003": "702e9ad35b10a6e6423b6fac2ad91ef026aff2401f7b5cc34f913f6aea0ad3fb",
+    "TCS-R1-POS-003": "9c590a40ab916786032584ffa2fd94b900a9d97194293710f15c8a63fb892635",
     "TCS-R1-POS-004": "75e53f203bfc6f8644e443b95bd8093627a69c7bbfdab057185dd3963e7529c3",
     "TCS-R1-POS-005": "a3d5f4ac2214934e98d4c46becf91e46c5c0a5ce85a7ffb4627fe0104c8d8677",
     "TCS-R1-POS-006": "6c9343d277a11511992a25c3d57f2bc442332529ef21e739aa2da664f208becb",
@@ -683,7 +684,7 @@ TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-NEG-007": "077fcf182885bd2998e3d086c5783e237b370bb10f64c17ea20d021771b732e2",
     "TCS-R1-NEG-008": "e41d57a96744f8f40b85900fd9282392fe7eefa1248a9946ef18badb9031369a",
     "TCS-R1-NEG-009": "398a9621caf006a6f21d74388e95865ed43034101acc50ad3a6dfe769d09f9a0",
-    "TCS-R1-NEG-010": "c41174f295f7ce210fb382996f3216dd54e7a678dce7467b2ebd5a066601e769",
+    "TCS-R1-NEG-010": "a2c6c0761757bb0d2fc74330ddb9af587798a29f5c5d3f15b96df8e4d69f8dde",
     "TCS-R1-NEG-011": "d1bf0fe69fa1dc6a3160db99d90c0b9ce0d641a904515fd3bc54f4868ed48c91",
 }
 REFINEMENT_SURFACE_CASE_SHA256 = {
@@ -11117,8 +11118,8 @@ R26_PRIMARY_DIAGNOSTIC_CHECK_IDS = (
 )
 R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
     "R27_CONTRACT_EXACT",
-    "R27_RHS_REFERENCE_BINDING_643",
-    "R27_EXTERNAL_SYMBOL_REGISTRY_EXACT_40",
+    "R77_RHS_REFERENCE_BINDING_656",
+    "R77_EXTERNAL_SYMBOL_REGISTRY_EXACT_41",
     "R27_SIX_ROOT_REACHABILITY_EXACT",
     "R27_UNOWNED_ORPHAN_COUNT_ZERO",
     "R27_PROFILE_EDGE_FENCE",
@@ -11130,7 +11131,7 @@ R27_GRAMMAR_TOPOLOGY_CHECK_IDS = (
 R28_FORMATTER_LSP_INCREMENTAL_CHECK_IDS = (
     "R28_CONTRACT_IDENTITY",
     "R28_SCHEMA_BINDING",
-    "R28_FORMATTING_TOTAL_644",
+    "R77_FORMATTING_TOTAL_656",
     "R28_FORMATTING_DISJOINT_COUNTS",
     "R28_ACTOR_ROWS_EXACT_5",
     "R28_RECOVERY_RANGE_FENCE",
@@ -11656,9 +11657,9 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
-            and len(grammar_bytes) == 68181
-            and len(production_names) == 644
+            == "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
+            and len(grammar_bytes) == 70409
+            and len(production_names) == 656
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
                 "sha256": grammar_sha,
@@ -11668,9 +11669,9 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         )
         emit(
             "FRONTEND_R12_DISPOSITION_TOTALITY",
-            len(production_rows) == 644
+            len(production_rows) == 656
             and [row.get("ordinal") for row in production_rows]
-            == list(range(1, 645))
+            == list(range(1, 657))
             and [row.get("production_id") for row in production_rows]
             == production_names
             and all(
@@ -11687,10 +11688,10 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             and disposition_counts
             == Counter(
                 {
-                    "ast_node": 204,
-                    "cst_only": 411,
+                    "ast_node": 205,
+                    "cst_only": 420,
                     "external_parser_entry": 19,
-                    "normalize_to": 10,
+                    "normalize_to": 12,
                 }
             ),
             {
@@ -11790,7 +11791,7 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             "FRONTEND_R16_TOKEN_LEXICAL_TOTALITY",
             len(r16.get("scanner_modes", [])) == 6
             and len(r16.get("lexical_goals", [])) == 10
-            and len(r16.get("syntax_terminal_registry", [])) == 201
+            and len(r16.get("syntax_terminal_registry", [])) == 200
             and len(r16.get("atomic_token_registry", [])) == 22
             and len(r16.get("trivia_registry", [])) == 8
             and r16.get("token_transaction", {}).get(
@@ -11946,7 +11947,7 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             and frontend_gate_ids == active_gate_ids
             and gate_map.get("nonactivatable")
             == nonactivatable_catalog_ids
-            and len(nonactivatable_catalog_ids) == 115
+            and len(nonactivatable_catalog_ids) == 114
             and source_role_fixture.get("atomic_failure_result")
             == {
                 "activated_features": [],
@@ -12104,12 +12105,12 @@ def r27_grammar_topology_workspace_checks(
             != "R27_GRAMMAR_TOPOLOGY_CLOSURE_EXACT"
             or receipt.get("check_count") != len(expected_ids)
             or receipt.get("passed_check_count") != len(expected_ids)
-            or receipt.get("production_count") != 644
-            or receipt.get("declared_reference_binding_count") != 644
-            or receipt.get("external_symbol_count") != 40
+            or receipt.get("production_count") != 656
+            or receipt.get("declared_reference_binding_count") != 656
+            or receipt.get("external_symbol_count") != 41
             or receipt.get("source_root_count") != 6
-            or receipt.get("six_root_union_count") != 494
-            or receipt.get("six_root_shared_count") != 467
+            or receipt.get("six_root_union_count") != 506
+            or receipt.get("six_root_shared_count") != 479
             or receipt.get("six_root_unreachable_count") != 150
             or receipt.get("aggregate_entry_root_count") != 2
             or receipt.get("unowned_orphan_count") != 0
@@ -12137,11 +12138,11 @@ def r27_grammar_topology_workspace_checks(
             return failed_rows("R27 grammar-topology receipt-contract drift")
         detail = json.dumps(
             {
-                "productions": 644,
-                "external_symbols": 40,
+                "productions": 656,
+                "external_symbols": 41,
                 "source_roots": 6,
-                "six_root_union": 494,
-                "six_root_shared": 467,
+                "six_root_union": 506,
+                "six_root_shared": 479,
                 "unowned_orphans": 0,
                 "illegal_profile_edges": 0,
                 "mutations_rejected": 6,
@@ -12208,15 +12209,15 @@ def r28_formatter_lsp_incremental_workspace_checks(
             != "R28_FORMATTER_LSP_INCREMENTAL_EXACT"
             or receipt.get("check_count") != len(expected_ids)
             or receipt.get("passed_check_count") != len(expected_ids)
-            or receipt.get("grammar_production_count") != 644
+            or receipt.get("grammar_production_count") != 656
             or receipt.get("formatting_rule_count") != 6
             or receipt.get("formatting_rule_counts")
             != {
-                "FD-01": 56,
-                "FD-02": 35,
-                "FD-03": 320,
-                "FD-04": 204,
-                "FD-05": 10,
+                "FD-01": 54,
+                "FD-02": 33,
+                "FD-03": 333,
+                "FD-04": 205,
+                "FD-05": 12,
                 "FD-06": 19,
             }
             or receipt.get("unclassified_production_count") != 0
@@ -12251,7 +12252,7 @@ def r28_formatter_lsp_incremental_workspace_checks(
             )
         detail = json.dumps(
             {
-                "grammar_productions": 644,
+                "grammar_productions": 656,
                 "formatting_rules": 6,
                 "identity_domains": 8,
                 "oracle_cases": 9,
@@ -12319,8 +12320,8 @@ def r40_manual_grammar_count_workspace_checks(
             or receipt.get("check_count") != len(expected_ids)
             or receipt.get("passed_check_count") != len(expected_ids)
             or receipt.get("profile_counts")
-            != {"LEXICAL": 91, "STABLE": 540, "PREVIEW": 13}
-            or receipt.get("production_count") != 644
+            != {"LEXICAL": 87, "STABLE": 556, "PREVIEW": 13}
+            or receipt.get("production_count") != 656
             or receipt.get("manual_claim_count") != 3
             or receipt.get("acceptance_case_count") != 3
             or receipt.get("mutation_count") != 1
@@ -12346,8 +12347,8 @@ def r40_manual_grammar_count_workspace_checks(
             )
         detail = json.dumps(
             {
-                "profiles": {"LEXICAL": 91, "STABLE": 540, "PREVIEW": 13},
-                "productions": 644,
+                "profiles": {"LEXICAL": 87, "STABLE": 556, "PREVIEW": 13},
+                "productions": 656,
                 "manual_claims": 3,
                 "mutations_rejected": 1,
                 "semantic_changes": 0,
@@ -12736,7 +12737,7 @@ def main() -> int:
                 and fixed_counts.get("features") == 723
                 and fixed_counts.get("predicates") == 283
                 and fixed_counts.get("predicate_fixtures") == 877
-                and fixed_counts.get("no_go") == 156
+                and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
                 "LANGUAGE_COHERENCE_CONTRACT",
@@ -15283,8 +15284,8 @@ def main() -> int:
         and psm_contract.get("status") == "CURRENT_STABLE_DESIGN_WITH_PREVIEW_GATES"
         and psm_contract.get("semantic_p0") == 0
         and psm_contract.get("product_lanes") == "15/15_NOT_RUN"
-        and len(psm_contract.get("stable_design", [])) == 20
-        and len(psm_contract.get("preview_gated", [])) == 14
+        and len(psm_contract.get("stable_design", [])) == 21
+        and len(psm_contract.get("preview_gated", [])) == 13
         and len(psm_contract.get("not_admitted", [])) == 10,
         "PSM_CONTRACT_IDENTITY_AND_DECISION_COUNTS",
         f"acceptance={psm_acceptance}",
@@ -15310,7 +15311,7 @@ def main() -> int:
         len(psm_diagnostic_families)
         == len(set(psm_diagnostic_families))
         == psm_acceptance.get("diagnostic_family_count")
-        == 20
+        == 18
         and all(
             diagnostic_id in diagnostic_by_id
             and diagnostic_by_id[diagnostic_id].get("diagnostic_status")
@@ -15809,8 +15810,7 @@ def main() -> int:
     check(
         voi_example_ids.issubset(active_ids)
         and warning_example.get("expected_outcome") == "accept"
-        and warning_example.get("expected_warnings")
-        == ["SLICE_HALF_OPEN_RANGE_NONCANONICAL"],
+        and warning_example.get("expected_warnings") == [],
         "VOI_EXAMPLE_AND_WARNING_BINDING",
         f"missing={sorted(voi_example_ids - active_ids)} warning={warning_example.get('expected_warnings')}",
     )
@@ -15920,10 +15920,10 @@ def main() -> int:
         and "sibling_status_propagation" not in edc_serialized
         and edc_contract.get("trait_contracts", {}).get("Eq<Rhs>", {}).get(
             "canonical_signature"
-        ) == "public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"
+        ) == "public trait#operator Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"
         and edc_contract.get("trait_contracts", {}).get("Ord<Rhs>", {}).get(
             "canonical_signature"
-        ) == "public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"
+        ) == "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"
         and edc_contract.get("machine_acceptance", {}).get(
             "operator_glyph_activation_count"
         ) == 6
@@ -15935,7 +15935,7 @@ def main() -> int:
         ) == 0
         and edc_contract.get("trait_contracts", {}).get("Display", {}).get(
             "canonical_signature"
-        ) == "public trait Display { +def display.() -> String throws Never effects {}; }"
+        ) == "public trait#interpolation Display { +def display.() -> String throws Never effects {}; }"
         and edc.get("open_feature_p1") == edc_expected_p1
         and edc_rule_ids == [f"EDC-R{index:03d}" for index in range(1, 19)]
         and len(edc_rows) == len(edc_ids) == len(set(edc_ids)) == 35
@@ -16172,13 +16172,26 @@ def main() -> int:
         for row in lstc_prelude_rows
         if isinstance(row, dict)
     }
+    mutable_list_signatures = current_prelude.get("MutableList<T>", {}).get(
+        "signatures", []
+    )
+    mutable_list_edit_operations = {
+        "insertBefore", "insertAfter", "prepend", "append",
+        "insertAllBefore", "insertAllAfter", "prependAll", "appendAll",
+        "removeAt", "removeRange", "removeSelected", "popFirst", "popLast",
+    }
     check(
-        current_prelude.get("MutableList<T>", {}).get("signatures")
+        mutable_list_signatures[:3]
         == [
             "prelude intrinsic mutable resource type MutableList<T>",
             "prelude intrinsic def MutableList::snapshot<T>(borrow self: MutableList<T>) -> ListSnapshot<T> throws AllocationError effects allocate",
             "prelude intrinsic def#consume MutableList::freeze<T>(move self: MutableList<T>) -> FrozenList<T> throws AllocationError effects allocate",
         ]
+        and len(mutable_list_signatures) == 16
+        and all(
+            any(f"MutableList::{operation}<T>" in signature for signature in mutable_list_signatures)
+            for operation in mutable_list_edit_operations
+        )
         and "MutableMap<K,V>" not in current_prelude
         and "MutableSet<T>" not in current_prelude
         and "StringBuilder" not in current_prelude
@@ -16289,7 +16302,7 @@ def main() -> int:
     )
     pattern_policies = parsed.get(root / "spec/patterns/pattern-context-policies.json", {})
     expected_union_contexts = {
-        "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET",
+        "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR",
         "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN",
         "PCTX-FOR-LET", "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH",
         "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH",
@@ -19737,7 +19750,7 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            67
+            68
             if revision == G4_INDEPENDENT_READINESS_REVISION
             else 66
             if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION
@@ -20705,7 +20718,7 @@ def main() -> int:
     trait_cases = trait_surface_fixtures.get("cases", [])
     check(
         frontend.get("revision") == revision
-        and trait_surface.get("revision") == TRAIT_OPERATOR_REFINEMENT_REVISION
+        and trait_surface.get("revision") == R77_INTEGRATED_SURFACE_REVISION
         and trait_surface_fixtures.get("revision")
         == TRAIT_OPERATOR_REFINEMENT_REVISION
         and trait_surface.get("current_binding") is False
@@ -20810,11 +20823,11 @@ def main() -> int:
         (row for row in frontend.get("stage_names", []) if row.get("surface") == "..."),
         {},
     )
-    ellipsis_token = next(
+    positional_collect_token = next(
         (
             row
             for row in frontend.get("boundary_policies", [])
-            if row.get("id") == "POSITIONAL_REPEAT"
+            if row.get("id") == "POSITIONAL_COLLECT_SUFFIX"
         ),
         {},
     )
@@ -20824,17 +20837,19 @@ def main() -> int:
         literal_rule is not None
         and "NullLiteral" not in literal_rule.group(1)
         and "RecoveryNullLiteral" not in grammar
-        and 'UnfoldClause ::= "for" "..." Pattern "in" Expr ;' in grammar
+        and 'UnfoldClause ::= "for" Pattern "in" "*" Expr ;' in grammar
         and 'IndexSuffix ::= "[" SliceAxisList "]" ;' in grammar
         and 'BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral'
         in grammar
-        and range_operator.get("tokens") == [[".."], ["..<"]]
+        and range_operator.get("tokens") == [[".."], ["..<"], ["..."]]
         and "rejected_reserved_spellings" not in range_operator
         and assignment_operator.get("tokens")
         == [["="], ["+="], ["-="], ["*="], ["/="], ["%="]]
         and slice_index_owner.get("entry") == "SLICE_INDEX_PRATT_ENTRY"
-        and slice_index_owner.get("bounds_required") is True
-        and slice_index_owner.get("full_axis") == "* (NumericArray axis only)"
+        and slice_index_owner.get("bounds_required") is False
+        and slice_index_owner.get("axis_separator") == ","
+        and slice_index_owner.get("full_axis")
+        == "[..] generally; [*] is a NumericArray-only equivalent full axis"
         and slice_index_owner.get("empty_axis") == "INDEX_SUFFIX_REQUIRES_AXIS"
         and slice_index_owner.get("anchor_outside_slice_bound_diagnostic")
         == {
@@ -20842,12 +20857,11 @@ def main() -> int:
             "stage": "parser",
             "semantic_anchor_node_count": 0,
         }
-        and ellipsis_stage.get("cst_roles")
-        == ["RepeatedPositionalMarker", "UnfoldClause"]
-        and ellipsis_stage.get("ast_roles")
-        == ["RepeatedPositional", "ComprehensionUnfold"]
-        and ellipsis_token.get("contexts")
-        == ["parameter", "function_type", "comprehension_unfold_clause"]
+        and ellipsis_stage.get("cst_roles") == ["OneSidedRangeMarker"]
+        and ellipsis_stage.get("ast_roles") == ["OneSidedRange"]
+        and positional_collect_token.get("surface") == ".."
+        and positional_collect_token.get("contexts")
+        == ["parameter", "function_type", "list_pattern"]
         and "recovery_reserved_words" not in vocabulary
         and "null" not in vocabulary.get("hard_keywords", []),
         "VOI_GRAMMAR_FRONTEND_OWNER_CLOSURE",
@@ -20929,25 +20943,25 @@ def main() -> int:
         and index_error.get("product_support") == "NOT_RUN"
         and "conformance does not activate []" in indexable.get("notes", "")
         and display_entry.get("signatures")
-        == ["public trait Display { +def display.() -> String throws Never effects {}; }"]
+        == ["public trait#interpolation Display { +def display.() -> String throws Never effects {}; }"]
         and eq_entry.get("signatures")
-        == ["public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"]
+        == ["public trait#operator Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"]
         and ord_entry.get("signatures")
-        == ["public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"]
+        == ["public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"]
         and unary_plus_entry.get("signatures")
-        == ["public trait UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"]
+        == ["public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"]
         and unary_minus_entry.get("signatures")
-        == ["public trait UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"]
+        == ["public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"]
         and add_entry.get("signatures")
-        == ["public trait Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"]
         and subtract_entry.get("signatures")
-        == ["public trait Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"]
         and multiply_entry.get("signatures")
-        == ["public trait Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"]
         and divide_entry.get("signatures")
-        == ["public trait Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"]
         and remainder_entry.get("signatures")
-        == ["public trait Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"]
         and all(
             entry.get("kind") == "trait"
             and entry.get("status") == "stable_design"
@@ -21040,12 +21054,19 @@ def main() -> int:
             for field in ("content_lines", "expected_common_prefix", "expected_dedented_lines")
         )
     check(lcp_valid, "CMA_MULTILINE_LCP_FIXTURES", f"cases={len(lcp_cases)}")
-    check("| `*` | call-side positional unfold" in language and 'PositionalUnfoldArgument ::= "*" Expr ;' in grammar, "POSITIONAL_UNFOLD_OWNER", "* in spec and grammar")
+    check(
+        "| `*` | owner-bounded structural unfold" in language
+        and 'PositionalUnfoldArgument ::= "*" Expr ;' in grammar
+        and 'NamedUnfoldArgument ::= "**" Expr ;' in grammar,
+        "STRUCTURAL_UNFOLD_OWNER",
+        "owner-bounded positional and static-named unfold in spec and grammar",
+    )
     check("repeated positional parameter/type residue and positional unfold" not in language, "POSITIONAL_UNFOLD_NO_ELLIPSIS", "... is not call-side unfold")
-    probes = ["options***: Record", "Record***", "**options", "let#lazy", "sealed class"]
+    probes = ["options** requires {", "NamedPack**", "**value", "let#lazy", "sealed class"]
     for probe in probes:
         check(probe in language, "CURRENT_SURFACE_PROBE", probe)
-    check('Identifier "***" TypeAnnotation' in grammar, "NAMED_REST_GRAMMAR", "***")
+    check('Identifier "**" NamedRestRequirementClause?' in grammar, "NAMED_REST_GRAMMAR", "**")
+    check('Identifier ".." TypeAnnotation' in grammar, "POSITIONAL_REST_GRAMMAR", "..")
 
     instruction_chars = len((root / "governance/project-instructions.txt").read_text(encoding="utf-8"))
     check(instruction_chars <= 8000, "PROJECT_INSTRUCTION_LIMIT", str(instruction_chars))

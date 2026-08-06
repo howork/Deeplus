@@ -1,76 +1,88 @@
 {
-  "schema": "deeplus.option-optional-binding-preview-design/r1",
-  "revision": "r51f3-current-numeric-guard-call-enum-coherence-r1",
-  "language_version": "0.1.2-internal",
-  "status": "PREVIEW_DESIGN",
-  "source_activation": "nonactivatable",
+  "schema": "deeplus.failable-guarded-binding/r77-r1",
+  "revision": "r51f3-current-integrated-surface-r77-r1",
+  "language_version": "0.1.3-internal",
+  "status": "STABLE_DESIGN",
+  "source_activation": "CURRENT_DESIGN_NOT_PRODUCT_IMPLEMENTATION",
   "product_lanes": "15/15_NOT_RUN",
   "semantic_p0": 0,
   "open_feature_p1_count": 22,
-  "feature_id": "option_let_question_binding_preview_design",
-  "carrier": {
-    "required_normal_form": "Option<T>",
-    "optional_surface_equivalence": "T? == Option<T>",
-    "layers_removed": 1,
-    "other_carriers": "REJECT"
+  "feature_id": "trait_binding_failable_v1",
+  "supersedes": {
+    "feature_id": "option_let_question_binding_preview_design",
+    "if_let_question": "REMOVED_USE_EXPLICIT_OPTION_PATTERN",
+    "while_let_question": "REMOVED_USE_EXPLICIT_OPTION_PATTERN",
+    "option_only_guarded_local": "GENERALIZED_BY_EXACT_FAILABLE_ROLE"
   },
-  "surfaces": [
-    {
-      "id": "OPTIONAL_BINDING_IF",
-      "surface": "if let? OptionPayloadPattern = Expr Block",
-      "normalizes_to": "if let ::some(OptionPayloadPattern) = Expr Block",
-      "mismatch": "false_branch"
+  "role_contract": {
+    "trait": "Failable",
+    "trait_declaration": "public trait#binding Failable",
+    "role_identity": "TRAIT_LANGUAGE_ROLE_BINDING_R1",
+    "role_owner": "CORE_LANGUAGE_ONLY",
+    "associated_types": ["Success", "Failure"],
+    "associated_operation": "def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}",
+    "operation_kind": "ASSOCIATED_STATIC_FUNCTION",
+    "source_mode": "MOVE_EXACTLY_ONCE",
+    "result": "BindingBranch<Success, Failure>",
+    "direct_global_conformance_required": true,
+    "runtime_lookup_count": 0,
+    "fallback_count": 0
+  },
+  "branch_carrier": {
+    "type": "BindingBranch<S, F>",
+    "alternatives": ["success(value: S)", "failure(reason: F)"],
+    "whole_input_owner_balance": "EXACTLY_ONE_OUTPUT_ALTERNATIVE_OWNS_THE_CONSUMED_SOURCE_RESIDUE"
+  },
+  "surface": {
+    "canonical": "let? SuccessPattern = Expr else FailurePattern => GuardedBindingExit",
+    "else_required": true,
+    "success_pattern": "IRREFUTABLE_FOR_<RhsType_as_Failable>::Success",
+    "failure_pattern": "IRREFUTABLE_FOR_<RhsType_as_Failable>::Failure",
+    "failure_exit": "STRUCTURALLY_UNCONDITIONAL",
+    "rhs_evaluation_count": 1,
+    "branch_invocation_count": 1,
+    "success_commit_count": 1,
+    "failure_success_residue_count": 0,
+    "postfix_propagation": false
+  },
+  "core_conformances": {
+    "Option<T>": {
+      "Success": "T",
+      "Failure": "Unit"
     },
-    {
-      "id": "OPTIONAL_BINDING_WHILE",
-      "surface": "while let? OptionPayloadPattern = Expr Block",
-      "normalizes_to": "while let ::some(OptionPayloadPattern) = Expr Block",
-      "mismatch": "loop_termination"
-    },
-    {
-      "id": "OPTIONAL_BINDING_GUARDED_LOCAL",
-      "surface": "let? OptionPayloadPattern = Expr else GuardedBindingFailure",
-      "normalizes_to": "let ::some(OptionPayloadPattern) = Expr else GuardedBindingFailure",
-      "mismatch": "unconditional_declared_exit"
+    "Result<T, error E>": {
+      "Success": "T",
+      "Failure": "E"
     }
-  ],
-  "annotation_owner_repair": {
-    "payload_production": "OptionPayloadPattern ::= Pattern",
-    "subject_type": "resolved independently before the Option check",
-    "payload_annotation": "an annotation inside OptionPayloadPattern constrains T, not Option<T>",
-    "binding_pattern_subject_annotation_reuse": false
-  },
-  "lexical_contract": {
-    "canonical": "let?",
-    "trivia_between_let_and_question": "FORBIDDEN",
-    "formatter": "print_attached"
   },
   "normalization": {
-    "cst": "preserve question token and sugar origin",
-    "ast": "existing expected-type VariantPattern for Option::some",
-    "hir": "existing TypedVariantPattern with resolved Option::some VariantId",
-    "mir": "NO_NEW_NODE",
-    "runtime": "NO_NEW_OPERATION"
+    "cst": "PRESERVE_LET_QUESTION_AND_ELSE_SURFACE",
+    "ast": "GuardedQuestionBindingStmt",
+    "hir": "SELECTED_FAILABLE_WITNESS_PLUS_ASSOCIATED_TYPE_BINDINGS_PLUS_CLOSED_BRANCH_PLAN",
+    "mir": "EXISTING_STATIC_TRAIT_WITNESS_CALL_AND_BRANCH_AND_BINDING_COMMIT",
+    "new_mir_operation_count": 0,
+    "runtime_role_search_count": 0
   },
   "excluded": [
-    "Result let?",
-    "arbitrary Enum let?",
-    "nullable-reference let?",
-    "truthiness let?",
-    "force unwrap",
-    "failure propagation",
+    "if let?",
+    "while let?",
+    "var?",
     "bare let? without else",
-    "for let?",
-    "comprehension if let?",
-    "match let?",
-    "condition-chain let?",
-    "user-defined extractor"
+    "refutable success pattern",
+    "refutable failure pattern",
+    "borrowed or nonconsuming Failable extraction",
+    "nullable-reference truthiness",
+    "force unwrap",
+    "implicit error propagation",
+    "user-declared trait#binding root",
+    "local runtime VIA AUTO or specialized Failable evidence"
   ],
   "machine_acceptance": {
-    "surface_count": 3,
-    "option_layers_removed": 1,
+    "current_surface_count": 1,
+    "core_role_trait_count": 1,
+    "core_branch_carrier_count": 1,
+    "core_direct_conformance_count": 2,
     "runtime_operation_count": 0,
-    "source_activation_count": 0,
     "product_execution_receipt_count": 0,
     "closed_feature_p1_count": 0,
     "new_feature_p1_count": 0

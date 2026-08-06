@@ -516,17 +516,14 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "SequencePositionalRestAdmitted",
     "source_name": "Sequence positional-rest Pattern admission",
-    "summary": "Admit the three attached positional-rest forms over explicitly witnessed Sequence values and materialize a source-borrowed ListRestView.",
+    "summary": "Admit one attached suffix positional-rest `name..` or `_..` in any List position with required fixed context and materialize a source-borrowed ListRestView.",
     "input_descriptor": "RCTSDescriptorV5",
     "feature_refs": [
       "sequence_positional_rest_pattern"
     ],
     "diagnostic_refs": [
       "PATTERN_REST_CARRIER_NOT_ADMITTED",
-      "PATTERN_PREFIX_REST_MUST_BE_FIRST",
-      "PATTERN_SUFFIX_REST_MUST_BE_LAST",
-      "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
-      "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+      "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
       "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
       "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
     ],
@@ -538,7 +535,7 @@
       "the scrutinee type is normalized",
       "the Pattern contains at most one positional rest"
     ],
-    "normalization": "normalize prefix, suffix or doubly attached middle rest to one ordinal RankSpan and preserve source logical coordinates",
+    "normalization": "normalize the single suffix rest and its fixed prefix/suffix context to one ordinal RankSpan and preserve source logical coordinates",
     "decision_procedure": [
       "validate marker attachment and the positional form",
       "resolve an explicit intrinsic Sequence witness",
@@ -555,10 +552,7 @@
     "success_result": "sequence decomposition and ListRestView binding plan",
     "active_primary_diagnostic": "PATTERN_REST_CARRIER_NOT_ADMITTED",
     "secondary_diagnostics": [
-      "PATTERN_PREFIX_REST_MUST_BE_FIRST",
-      "PATTERN_SUFFIX_REST_MUST_BE_LAST",
-      "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
-      "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+      "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
       "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
       "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
     ],
@@ -640,7 +634,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "StructuredRecordMapPatternAdmitted",
     "source_name": "Record and Map structural Pattern admission",
-    "summary": "Admit exact, open-ignore and residual Record and Map Patterns with explicit field direction and stable Map keys.",
+    "summary": "Admit label-first Record-family exact/static-named-residual patterns and keyed Map patterns without conflating their directions or rest markers.",
     "input_descriptor": "RCTSDescriptorV5",
     "feature_refs": [
       "structured_record_map_pattern"
@@ -659,7 +653,7 @@
       "the Record field domain or Map lookup domain is known",
       "the Pattern has at most one terminal open or residual marker"
     ],
-    "normalization": "normalize ${target:sourceField} and #map{valuePattern:key} to explicit destination-source rows",
+    "normalization": "normalize ${sourceField:target, rest**} and #map{valuePattern:key, ..rest} to distinct explicit destination-source rows",
     "decision_procedure": [
       "validate unique source fields or keys",
       "require parentheses around typed or nested Record targets",

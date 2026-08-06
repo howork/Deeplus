@@ -114,47 +114,48 @@ AST를 만들지 않는다.
 
 ```ebnf
 NUMERIC_LITERAL ::= FLOAT_LITERAL | INTEGER_LITERAL
-INTEGER_LITERAL ::= BinaryInteger IntegerSuffix?
-                  | OctalInteger IntegerSuffix?
-                  | HexInteger IntegerSuffix?
-                  | DECIMAL_INTEGER IntegerSuffix?
-FLOAT_LITERAL   ::= DecimalFraction ExponentPart? FloatSuffix?
-                  | DECIMAL_INTEGER ExponentPart FloatSuffix?
-                  | DECIMAL_INTEGER FloatSuffix
+INTEGER_LITERAL ::= BinaryInteger
+                  | OctalInteger
+                  | HexInteger
+                  | DECIMAL_INTEGER
+FLOAT_LITERAL   ::= DecimalFraction ExponentPart?
+                  | DECIMAL_INTEGER ExponentPart
 
 RATIONAL_LITERAL_CANDIDATE
                 ::= "<" DecimalMagnitude "/" DecimalMagnitude ">"
 IMAGINARY_LITERAL
-                ::= UnsuffixedDecimalFloat AttachedImaginaryMarker
-                  | Float32Literal AttachedImaginaryMarker
-UnsuffixedDecimalFloat
+                ::= DecimalFloatingMagnitude AttachedImaginaryMarker
+DecimalFloatingMagnitude
                 ::= DecimalFraction ExponentPart?
                   | DECIMAL_INTEGER ExponentPart
-Float32Literal  ::= DecimalFraction ExponentPart? "f32"
-                  | DECIMAL_INTEGER ExponentPart "f32"
-                  | DECIMAL_INTEGER "f32"
 AttachedImaginaryMarker ::= "i"
 ```
 
 2진수, 8진수, 16진수 prefix는 `0b`, `0o`, `0x`다. digit 사이에는
-underscore를 둘 수 있다. integer suffix는 다음과 같다.
+underscore를 둘 수 있다. 수치 type suffix는 현행 source에서 제거되었다.
+scanner는 다음 suffix-shaped 후보를 최장 일치로 인식해 정확히 하나의
+`NUMERIC_TYPE_SUFFIX_REMOVED`를 내고 canonical CST/AST/HIR residue를 만들지
+않는다.
 
 ```text
 i8 i16 i32 i64 i128 isize
 u8 u16 u32 u64 u128 usize
+f32 f64
 ```
 
-float suffix는 `f32`, `f64`다. 부호는 숫자 token의 일부가 아니므로 `-1`은
-signless token `1`에 prefix `-`를 적용한 expression이다. NaN과 infinity는
-literal token이 아니며 `Float64::nan`, `Float64::positiveInfinity` 같은
-type-side constant를 사용한다.
+정확한 폭이 필요하면 suffix 없이 선언·매개변수·반환 등 독립적으로 고정된
+target type을 쓴다. 직접 원자 literal은 그 target에서 표현 가능할 때만
+문맥 적응한다. 부호는 숫자 token의 일부가 아니므로 `-1`은 signless token
+`1`에 prefix `-`를 적용한 expression이다. NaN과 infinity는 literal token이
+아니며 `Float64::nan`, `Float64::positiveInfinity` 같은 type-side constant를
+사용한다.
 
 위 EBNF의 두 마지막 형식은 ordinary 숫자 token과 소유 방식이 다르다.
 `<p/q>`는 식의 prefix 또는 primary가 시작될 수 있는 위치에서만
 transactional하게 탐사하는 복합 리터럴이고, 허수 리터럴은 이미 유효한
-unsuffixed 10진 부동소수 또는 `f32` literal 바로 뒤에 ASCII `i`가 붙은
-하나의 최장 일치 scanner token이다. 명시적 `f64` 뒤에 `i`를 다시 붙이는
-suffix 연쇄는 허용하지 않는다. 두 규칙 모두 type parser나 임의 identifier
+suffix-free 10진 부동소수 바로 뒤에 ASCII `i`가 붙은 하나의 최장 일치
+scanner token이다. 수치 type suffix 뒤에 `i`를 다시 붙이는 연쇄도 제거된
+suffix 후보로 거부된다. 두 규칙 모두 type parser나 임의 identifier
 문맥에서 추측으로 켜지지 않는다.
 
 ### 정확한 Rational 복합 리터럴
@@ -164,7 +165,7 @@ suffix 연쇄는 허용하지 않는다. 두 규칙 모두 type parser나 임의
 
 - `+` 또는 `-` 부호
 - `0b`, `0o`, `0x` 기수 prefix
-- `i32`, `u64` 같은 integer suffix
+- 제거된 `i32`, `u64` 같은 numeric type suffix
 - 공백, 줄바꿈 또는 comment
 - `/`가 아닌 다른 separator
 
@@ -213,16 +214,17 @@ let negative: Rational = -<2/3>   // prefix '-' + Rational literal
 
 ### 붙은 `i` 허수 리터럴 marker
 
-허수 리터럴은 admitted unsuffixed 또는 `f32` decimal floating magnitude
-뒤에 공백 없이 `i`가 붙어야 한다.
+허수 리터럴은 suffix-free decimal floating magnitude 뒤에 공백 없이 `i`가
+붙어야 한다.
 `4.0i`는 실수 성분이 `+0.0`, 허수 성분이 `4.0`인
-`Complex<Float64>`이고, `4.0f32i`는 두 성분이 `Float32`인
-`Complex<Float32>`다. bare `Complex`는 닫힌 Prelude 약칭
-`Complex<Float64>`로 정규화된다.
+`Complex<Float64>`로 기본화된다. 독립적으로 고정된
+`Complex<Float32>` target에서는 같은 직접 원자 literal `4.0i`가 두
+`Float32` 성분으로 정확히 표현될 때만 문맥 적응한다. bare `Complex`는
+닫힌 Prelude 약칭 `Complex<Float64>`로 정규화된다.
 
 ```text
 4.0i       -> Complex<Float64>(real: +0.0, imag: 4.0)
-4.0f32i    -> Complex<Float32>(real: +0.0f32, imag: 4.0f32)
+let z: Complex<Float32> = 4.0i  -> exact contextual Complex<Float32>
 3.0 + 4.0i -> canonical Cartesian source expression
 ```
 
@@ -232,22 +234,25 @@ multiplication을 제공하지 않으므로 `4.0 i`를 `4.0 * i`로 보정하지
 않는다.
 
 최장 일치는 유효한 prefix만 떼어 내지 않는다. 따라서 `4.0index`를
-`4.0i`와 `ndex`로 쪼개거나, `4.0f64i`를 `4.0f64`와 `i`로 쪼개지 않는다.
+`4.0i`와 `ndex`로 쪼개거나, 제거된 `4.0f64i`를 `4.0`, `f64`, `i`로
+쪼개지 않는다.
 정수형 `4i`는 별도의 nonactivatable Preview Design에만 속한다.
 bare `i`, 분리된 `4.0 i`, radix 형식 `0x4.0i`,
-suffix 연쇄 `4.0f64i`는 현행에서 거부된다. 진단은 다음 책임을 구분한다.
+제거된 suffix 연쇄 `4.0f64i`는 현행에서 거부된다. 진단은 다음 책임을
+구분한다.
 
 | source | 판정 |
 |---|---|
 | `4.0 i` | `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED` |
 | `4i` | `INTEGER_IMAGINARY_LITERAL_NOT_ACTIVATABLE` |
-| `0x4.0i`, `4.0f64i`, chained suffix | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` |
+| `0x4.0i` | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` |
+| 제거된 `4.0f32i`, `4.0f64i` | `NUMERIC_TYPE_SUFFIX_REMOVED`; canonical literal residue 없음 |
 | bare `i` | ordinary identifier; 허수 literal이 아님 |
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/rational-complex-numeric-coherence.json -->
 ```deeplus
 let axis: Complex = 4.0i
-let compact: Complex<Float32> = 4.0f32i
+let compact: Complex<Float32> = 4.0i
 let cartesian: Complex = 3.0 + 4.0i
 let unit: Complex = Complex::i
 ```
@@ -308,23 +313,28 @@ let letter = """
 ### 최장 일치 구두점
 
 ```text
-::  =>  ->  ..  ..<  ..>  ...  ***  **  *+  *.
+::  =>  ->  ..  ..<  ...  **  *+  *.
 &&  ||  ^^  ?:  $$  ==  !=  <=  >=  +=  -=  *=  /=
 %=  ~~  :=  !!  {{  }}  ${
 ```
 
-token이 존재한다고 모든 문맥에서 의미가 생기는 것은 아니다. `..>`는
-range로 거부되고 `...`는 repeated positional 및 comprehension unfold
-owner만 가진다. `&&`는 Bool conjunction이 아니라 bitwise operator다.
+token이 존재한다고 모든 문맥에서 의미가 생기는 것은 아니다. `...`는
+one-sided expression Range owner만 가진다. positional collect는 붙은 suffix
+`name..`, comprehension source unfold는 `for Pattern in *Expr`다. 제거된
+`..>`와 `***` 후보는 migration 진단만 내고 current token owner나 canonical
+residue를 만들지 않는다. `&&`는 Bool conjunction이 아니라 bitwise
+operator다.
 
 ## 허용과 정적 의미
 
-- unsuffixed integer는 `Int`, unsuffixed float는 `Float64`로 정규화된다.
+- unconstrained integer는 `Int`, real은 `Float64`, imaginary는
+  `Complex<Float64>`로 정규화된다.
 - `UInt`는 기본 부호 없는 core semantic domain `0..2^64-1`이다.
   `UInt64`나 `USize`와 같은 storage/ABI identity를 뜻하지 않는다.
 - `Float`는 정확히 `Float64`로 정규화되는 닫힌 Prelude alias다. 별도의
   정밀도, `TypeId`, 변환, 직렬화 또는 ABI domain을 만들지 않는다.
-- 명시적 suffix는 정확한 numeric domain을 고정한다.
+- 직접 원자 literal은 독립적으로 고정된 exact numeric target에서 표현
+  가능할 때만 문맥 적응하며, 제거된 type suffix는 target을 고정하지 않는다.
 - `Char` literal은 escape 처리 뒤 정확히 하나의 Unicode scalar여야 한다.
 - plain/raw/multiline/interpolated String의 type은 `String`이다.
 - bytes literal의 type은 `Bytes`다.
@@ -348,9 +358,9 @@ identity의 동일성을 다른 영역의 동일성으로 추정해서는 안 �
 원본 `examples/guide/review-corpus.md`:
 
 ```deeplus
-let mask = 0xDEAD_BEEFu32
-let count = 0b1010_0101u8
-let ratio = 6.022_140_76e23f64
+let mask: UInt32 = 0xDEAD_BEEF
+let count: UInt8 = 0b1010_0101
+let ratio: Float64 = 6.022_140_76e23
 let inf = Float64::positiveInfinity
 ```
 
@@ -359,9 +369,9 @@ let inf = Float64::positiveInfinity
 
 ```deeplus
 let count: Int = 42
-let exact: Int32 = 42i32
+let exact: Int32 = 42
 let ratio: Float64 = 1.5
-let compact: Float32 = 1.5f32
+let compact: Float32 = 1.5
 let sum: Int = count + 1
 ```
 
@@ -394,8 +404,10 @@ let path = #raw"C:\temp\$name"
 | `array`, `case`를 hard keyword로 취급 | 잘못된 해석 |
 | `<2/0>` | 전체 Rational literal로 인식한 뒤 `RATIONAL_LITERAL_DENOMINATOR_ZERO` |
 | `<-2/3>`, `<2 / 3>`, `<0x2/3>` | `RATIONAL_LITERAL_MALFORMED`; 부호는 바깥 prefix에 두고 component는 붙은 10진 magnitude로 쓴다 |
+| `42i32`, `255u8`, `1.5f32` | 제거됨; `NUMERIC_TYPE_SUFFIX_REMOVED`, exact target annotation 사용 |
 | `4i` | integer-imaginary literal 확장 Preview Design; 현행 profile에서는 활성화되지 않음 |
-| `0x4.0i`, `4.0f64i` | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED`; 붙은 marker는 현행 10진 `Float64` 또는 `Float32` literal만 허용 |
+| `0x4.0i` | `IMAGINARY_LITERAL_FORM_NOT_ADMITTED`; 붙은 marker는 suffix-free 10진 floating-look literal만 허용 |
+| 제거된 `4.0f64i` | `NUMERIC_TYPE_SUFFIX_REMOVED`; suffix-free `4.0i`와 exact target 사용 |
 | `4.0 i` | `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED`; implicit multiplication 없음 |
 | bare `i`를 내장 허수 단위로 가정 | ordinary identifier다. `Complex::i`를 사용 |
 
@@ -409,8 +421,9 @@ Preview feature를 현행으로 승격하지 않는다.
 `4i`는 `Complex<Float64>(real: +0.0, imag: 4.0)`로 정규화하는
 nonactivatable 설계다. marker는 unsuffixed 10진 정수에 공백 없이
 붙어야 한다. `4index`는 `4i`와 `ndex`로 쪼개지 않고 전체 최장 일치가
-유효한 token이 아니므로 거부한다. `4u8i`, `0x4i` 같은 typed/radix
-정수와 결과 annotation을 이용한 숨은 성분 변환도 허용하지 않는다.
+유효한 token이 아니므로 거부한다. 제거된 suffix를 포함한 `4u8i`는
+`NUMERIC_TYPE_SUFFIX_REMOVED`, `0x4i`는 radix imaginary 형식 거부다. 결과
+annotation을 이용한 숨은 성분 변환도 허용하지 않는다.
 
 <!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/numeric-system-std-math.json -->
 ```deeplus

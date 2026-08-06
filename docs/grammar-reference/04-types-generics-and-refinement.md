@@ -85,16 +85,16 @@ Trait 타입 매개변수 위치에서만 사용할 수 있으며, 생산/소비
 ```ebnf
 ParenTypeSyntax   ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail?
 ParenTypeItemList ::= ParenTypeItem ("," ParenTypeItem)* ","?
-ParenTypeItem     ::= TypeRef | TypeRef "..." | TypeRef "***"
+ParenTypeItem     ::= TypeRef | TypeRef ".." | TypeRef "**"
 FunctionTypeTail  ::= "->" NonFunctionTypeRef ThrowsClause* EffectsClause*
 ```
 
 - `(T)`는 괄호 타입이다.
 - `(T,)`와 `(T, U)`는 tuple 타입이다.
 - `(T) -> U throws E effects Eff`는 함수 타입이다.
-- `T...`는 반복 positional residue이고 `Record***`는 named-rest
+- `T..`는 반복 positional residue이고 `NamedPack**`는 static named-rest
   residue이다. 둘은 public API identity에 남는다.
-- `Record***`와 `Map`은 같은 호출 채널이 아니다.
+- `NamedPack**`와 `Record` 또는 `Map`은 같은 호출 채널이 아니다.
 
 ### 특수 타입 표면
 
@@ -329,7 +329,7 @@ type을 먼저 명시해야 한다.
 단, 다음 조건을 모두 만족할 때만 checker가
 `UnionAlternativeBindPattern`으로 정규화한다.
 
-1. 소유자가 `match`, guarded binding 등 refutable pattern 문맥이다.
+1. 소유자가 `match`, `if let` 등 refutable pattern 문맥이다.
 2. subject의 정규화된 타입이 이미 선언된 closed Union이다.
 3. `TypeRef`가 그 Union의 정확한 대안 identity 하나를 가리킨다.
 4. 검사는 이미 저장된 Union injection identity만 읽는다.

@@ -308,10 +308,10 @@
     "feature_refs": [
       "record_named_argument_spread_msp"
     ],
-    "fixit_hint": "pass explicit named arguments or construct a Record `${...}`",
+    "fixit_hint": "pass explicit named arguments or unfold a finite static Record/NamedPack source with `**expr`",
     "fixit_kind": "suggestion",
-    "fixit_policy": "pass explicit named arguments or construct a Record `${...}`",
-    "message": "`**expr` in an argument list requires a structural Record with statically known labels.",
+    "fixit_policy": "offer only when the source projection row is statically known before overload selection",
+    "message": "Named structural unfold `**expr` requires a finite static Record/NamedPack projection row.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

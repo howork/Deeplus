@@ -8,7 +8,7 @@ A step state contains the current MIR frame, ordered operand stack, places and o
 
 ## 2. Evaluation and calls
 
-Operands, arguments, guards, interpolation segments, collection entries and cleanup registrations evaluate left-to-right unless a named law fixes another order. Calls preserve value, context, witness, repeated positional and named channels. `options***: Record` declares a named-rest channel; `**record` supplies static labels. Labels, witness ids, extension ids and providers are fixed before MIR execution.
+Operands, arguments, guards, interpolation segments, collection entries and cleanup registrations evaluate left-to-right unless a named law fixes another order. Calls preserve value, context, witness, repeated positional and named channels. `values..: T` declares a repeated-positional channel, while `options**: NamedPack<rho>` declares a finite, nonescaping named-rest row; `*sequence` and `**namedPack` are the corresponding positional and named unfolds. The checker seals source order, labels, row identity and normalized row digest before overload selection or MIR emission. Labels, witness ids, extension ids and providers are fixed before MIR execution.
 
 Every ordinary, message, and actor-transport surface normalizes to one
 `CallExpr` carrying one `CallMode` (`Ordinary`, `Message`, or `ActorMessage`),
@@ -276,8 +276,10 @@ division. Construction and checked named division distinguish
 
 An imaginary literal lowers as one Complex constant with exact
 `ComplexTypeId`, `RepTypeId`, positive-zero real component and validated
-imaginary component. `4.0i` therefore has exact Float64 component values and
-`4.0f32i` exact Float32 values. Complex arithmetic preserves
+imaginary component. `4.0i` defaults to exact Float64 component values; an
+atomic unsuffixed imaginary literal may instead adapt directly to an exact
+contextual target such as `Complex<Float32>`. Numeric type suffixes never reach
+MIR, and the expected result type never selects an operator witness. Complex arithmetic preserves
 `OperatorId`, selected `ConformanceId`/`WitnessId`/`MethodId` where the
 Stable `+`/`-`/`*` corridor is used, `ImplementationId`, substitutions,
 responsibility and numeric-semantics profile. It must not erase the value to
@@ -843,11 +845,35 @@ cross-thread atomicity.
 
 ## 12. Removed-surface MIR boundary
 
-Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through the single-place transaction in §2; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union. Arbitrary custom operator declarations and fixed-glyph conformance attempts outside the exact 13 unary, arithmetic, equality, and ordering roles create no MIR operation; admitted fixed-glyph calls use the sealed node defined in §2. `!=` and the four ordering glyphs preserve the selected `Eq`/`Ord` evidence identity, compound assignment creates no independent witness, and range never becomes an operator hook. `...` preserves only repeated-positional residue or the admitted comprehension-unfold structure and never creates a range; rejected `..>` and empty `[]` create no MIR.
+Map indexing lowers through the ordinary index/API contract; dot member selection never becomes a runtime key lookup. Explicit assignments lower through the single-place transaction in §2; there is no increment/decrement MIR opcode. Recursive calls remain ordinary calls and carry no tail-recursion source contract. Regex construction is a library call from `String` or `Bytes`, not a literal MIR constant kind. An explicitly expected List union lowers the declared element type and injections; MIR never receives an automatically inferred heterogeneous List union. Arbitrary custom operator declarations and fixed-glyph conformance attempts outside the exact 13 unary, arithmetic, equality, and ordering roles create no MIR operation; admitted fixed-glyph calls use the sealed node defined in §2. `!=` and the four ordering glyphs preserve the selected `Eq`/`Ord` evidence identity, compound assignment creates no independent witness, and range never becomes an operator hook. `...` is the one-sided Range delimiter, while `..` and `..<` are the closed and half-open two-sided forms; repeated positional residue and comprehension unfold use their owner-bound `..`/`*` spellings and cannot be reinterpreted as Range. Rejected `..>` and empty `[]` create no MIR.
 
 Built-in indexing evaluates the owner and each index once, left-to-right, then validates the declared logical domain before projecting storage. `List`, `String`, and `Bytes` use `1..length` with offset `index - 1`; an explicitly bounded List retains `L..U`. Every `ReadonlyView` carries its source owner's declared logical domain, coordinate-to-storage mapping, and provenance, so no view construction independently rebases it. A missing Map key emits `IndexError::keyNotFound`; any type-correct dynamic built-in positional or NumericArray coordinate outside its logical domain emits `IndexError::outOfLogicalDomain`. Both are precommit failures. Map uses the exact key type; tuple ordinals and Record labels are resolved before MIR and never become dynamic bracket lookup. Conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not add a lowering route.
 
-An ordinary closed slice carrier accepts exactly one bounded range selector. A rank-complete NumericArray coordinate list preserves typed axis identity, and every built-in default source-visible axis is `1..dimension`; only NumericArray admits semicolon-separated multi-axis selection and full-axis `*`. Slice lowering first evaluates and validates every scalar/range/full-axis selector, including `^`/`$` anchor resolution, without mutating the owner. Success creates one readonly view carrying the source owner region, provenance, and selected logical coordinates. There is no implicit rebase, hidden copy, mutable slice assignment, isolation crossing, or owner-lifetime escape. A named explicit rebase/copy call is an ordinary visible operation with its own allocation and ownership observations.
+An ordinary slice carrier accepts exactly one range selector, including the open forms `..<j`, `..j`, `i..`, and `..`. A rank-complete NumericArray coordinate list uses comma-separated axes, preserves typed axis identity, and gives every built-in default source-visible axis the domain `1..dimension`. NumericArray alone admits multiple axes and full-axis `*`; every scalar selector removes exactly its selected result axis, while range and full-axis selectors preserve theirs. Slice lowering first evaluates and validates every scalar/range/full-axis selector, including `^`/`$` anchor resolution, without mutating the owner. An omitted lower or upper endpoint is the corresponding owner-domain boundary identity, not an invented numeric sentinel. Success creates one readonly view carrying the source owner region, provenance, and selected logical coordinates. There is no implicit rebase, hidden copy, mutable slice assignment, isolation crossing, gather/linear-index fallback, or owner-lifetime escape. A named explicit rebase/copy call is an ordinary visible operation with its own allocation and ownership observations.
+
+### 12.1 R77 integrated surface lowering boundary
+
+Core-owned Trait language roles are static metadata identified by
+`TraitLanguageRoleId`; they do not create runtime lookup, a new witness kind, or
+a new MIR operation. In particular, `trait#operator` classifies only the closed
+thirteen-glyph conformance law and cannot select or widen that glyph set.
+
+Guarded binding lowers `Failable::branch(move source)` through the statically
+selected `TraitWitness` call with the exact signature
+`def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}`.
+MIR branches over the returned `BindingBranch`; only the success arm performs
+the existing binding commit. The failure arm binds the typed failure payload and
+executes the explicit exit. There is no runtime protocol search, hidden fallback,
+or Failable-specific MIR opcode.
+
+Each admitted `MutableList` structural edit lowers as an ordinary direct call
+selected in `CallExpr`/`ResolvedCallPlan` and bound to one
+`CallableImplementationId`. The closed operation set is `insertBefore`,
+`insertAfter`, `prepend`, `append`, `insertAllBefore`, `insertAllAfter`,
+`prependAll`, `appendAll`, `removeAt`, `removeRange`, `removeSelected`,
+`popFirst`, and `popLast`. Selection consumes no result context, performs no
+hidden copy, and adds no opcode; each successful operation publishes exactly one
+structural commit after all validation and element acquisition succeeds.
 
 
 ## 13. R51f3 tooling/profile observability

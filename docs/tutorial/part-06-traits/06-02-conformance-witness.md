@@ -89,7 +89,7 @@ child-local 대체 evidence가 같은 결과 문자열을 만들더라도 이 ch
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public trait Display {
+public trait#interpolation Display {
     +def display.() -> String
         throws Never
         effects {}

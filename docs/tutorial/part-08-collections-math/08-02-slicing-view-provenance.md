@@ -4,13 +4,12 @@
 
 ## 1. 상태와 읽는 법
 
-inclusive slice, `^`/`$` anchor, NumericArray axis wildcard와
-owner-bounded `ReadonlyView`는 현행 설계다. stepped/descending/mutable
-slice는 현행이 아니다.
+inclusive/half-open/open slice, `^`/`$` anchor, NumericArray axis wildcard와
+owner-bounded `ReadonlyView`는 현행 설계다. mutable slice는 현행이 아니다.
 
 ## 2. 학습 목표
 
-- canonical inclusive `i..j` slice를 쓴다.
+- inclusive `i..j`, half-open `i..<j`, open-bound slice를 구분한다.
 - `^`와 `$`를 첫/마지막 coordinate anchor로 사용한다.
 - view가 copy/rebase가 아님을 이해한다.
 - provenance, lifetime, mutation 충돌을 설명한다.
@@ -27,8 +26,10 @@ mapping을 보존한다.
 
 ## 5. 핵심 모델
 
-- `value[i..j]`: 양 끝 포함, canonical
-- `value[i..<j]`: 허용되지만 noncanonical warning
+- `value[i..j]`: 양 끝 포함
+- `value[i..<j]`: 끝 제외, canonical
+- `value[..<j]`, `value[..j]`, `value[i..]`: 한쪽 경계를 연 slice
+- `value[..]`: general full slice
 - `^`: slice owner의 첫 coordinate
 - `$`: 마지막 coordinate
 - `*`: 허용된 NumericArray axis 전체
@@ -63,6 +64,11 @@ coordinate를 뜻한다. 따라서 bounded source에서는 `^`가 반드시 `1`�
 “누가 소유하고, 어느 coordinate를 유지하며, 언제 더는 사용할 수
 없는가”를 한 문장으로 답할 수 있어야 한다.
 
+open exclusive end는 마지막 coordinate에 1을 더한 정수로 만들지 않는다.
+별도 boundary identity가 one-past-last를 나타내므로 최대 폭 정수 domain도
+overflow하지 않는다. 빈 view 역시 source owner, region, coordinate domain,
+삽입 경계를 잃지 않는다.
+
 view 사용을 끝낼 때에는 별도 rebase 결과를 남기는 것이 아니라 borrow
 region을 닫는다. 그 뒤 source owner는 다시 허용된 mutation이나 move를
 수행할 수 있다. 반대로 view를 반환하거나 저장하려면 반환값의 lifetime이
@@ -94,6 +100,9 @@ view를 `1..3`으로 rebase하지 않는다.
 ```deeplus
 let all = values[^..$]
 let withoutFirst = values[^ + 1 .. $]
+let prefix = values[..<4]
+let suffix = values[2..]
+let full = values[..]
 ```
 
 receiver와 length를 한 번 얻고 anchor offset과 bounds를 검사한 뒤 view를
@@ -108,19 +117,29 @@ let matrix = #2,3[
     4, 5, 6;
 ]
 
-let secondColumn = matrix[*; 2]
-let lowerRight = matrix[2; 2..3]
+let secondColumn = matrix[*, 2]
+let lowerRight = matrix[2, 2..3]
 ```
 
-semicolon은 axis를 나눈다. scalar가 아닌 axis가 남으면 rank/shape와
+top-level comma가 index axis를 나눈다. NumericArray 리터럴의 semicolon은
+row/orientation owner이므로 그대로 남는다. scalar가 아닌 axis가 남으면 rank/shape와
 provenance를 보존한 view다.
 
 ## 7. 허용·거부·경계 사례
 
-<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR; product: NOT_RUN -->
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let all = values[..]
-// SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR
+```
+
+`[..]`는 모든 slice-capable owner의 full slice다. NumericArray axis에서는
+`[..]`와 `[*]`가 같은 full-axis selector로 정규화되지만 ordinary List에는
+`[*]`를 사용하지 않는다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: SLICE_EXCLUSIVE_OPEN_END_REDUNDANT; product: NOT_RUN -->
+```deeplus
+let invalid = values[2..<]
+// SLICE_EXCLUSIVE_OPEN_END_REDUNDANT
 ```
 
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: SLICE_VIEW_ESCAPES_OWNER; product: NOT_RUN -->
@@ -132,21 +151,37 @@ private def invalidView() -> ReadonlyView<Int> = {
 // SLICE_VIEW_ESCAPES_OWNER
 ```
 
-`i..<j`는 accepted지만 `SLICE_HALF_OPEN_RANGE_NONCANONICAL` warning을
-내므로 새 canonical 예제에는 inclusive `..`를 쓴다. descending/step,
-negative-from-end, mutable slice assignment는 없다.
+`i..<j`는 warning 없는 canonical 표면이다. `i..<`는 `i..`와 구별되는
+계약이 없으므로 거부한다. negative-from-end와 mutable slice assignment는
+없다.
+
+### 7.1 expression Range와 slice owner를 섞지 않는다
+
+괄호 밖 expression Range는 `start..end`, `start..<end`, `start...`와
+각각의 `:step` 형식을 가진다.
+
+```deeplus
+let odds = 1..10:2
+let countdown = 10..1:-1
+let naturals = 1...
+```
+
+start, end, step은 왼쪽부터 정확히 한 번 평가한다. step 0이나 end와
+반대 방향인 step은 거부하고, bounded range는 overflow 전에 종료한다.
+유한 ordered Enum에는 one-sided `...`를 쓸 수 없다. 이 `:step`은 Range
+parselet 소유이며 slice step을 자동 활성화하지 않는다.
 
 ## 8. 다른 기능과의 연결
 
 - attached `A^` transpose도 owner-bounded readonly coordinate view다.
-- pattern의 List `.._`는 slice가 아니라 ignored remainder Pattern이다.
+- pattern의 List `_..`는 slice가 아니라 ignored remainder Pattern이다.
 - live view는 source move/freeze/mutation과 충돌한다.
 - Actor message에 view를 보내도 자동 snapshot/Transferable evidence가
   생기지 않는다.
 
 ## 9. Deeplus다운 작성 관례
 
-- canonical 문서에는 inclusive `..`를 쓴다.
+- end 포함 여부를 API 의도에 맞춰 `..` 또는 `..<`로 분명히 쓴다.
 - API가 view를 반환하면 owner region을 signature와 설명에 드러낸다.
 - 독립된 수명이 필요하면 명시적 snapshot/copy API를 선택한다.
 - `^`/`$`는 slice/index owner 안에서만 쓴다.
@@ -165,7 +200,7 @@ negative-from-end, mutable slice assignment는 없다.
 - view는 source coordinate와 provenance를 보존한다.
 - `^`는 first, `$`는 last anchor다.
 - owner보다 오래 살거나 isolation을 넘을 수 없다.
-- half-open은 허용되지만 noncanonical이다.
+- `..<`와 open-bound slice는 warning 없는 canonical 표면이다.
 
 ## 12. 정본 근거와 다음 장
 

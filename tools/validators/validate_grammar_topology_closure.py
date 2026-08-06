@@ -24,8 +24,8 @@ REFERENCE_CONTRACT_REL = "spec/contracts/grammar-reference-r1.json"
 
 CHECK_IDS = [
     "R27_CONTRACT_EXACT",
-    "R27_RHS_REFERENCE_BINDING_643",
-    "R27_EXTERNAL_SYMBOL_REGISTRY_EXACT_40",
+    "R77_RHS_REFERENCE_BINDING_656",
+    "R77_EXTERNAL_SYMBOL_REGISTRY_EXACT_41",
     "R27_SIX_ROOT_REACHABILITY_EXACT",
     "R27_UNOWNED_ORPHAN_COUNT_ZERO",
     "R27_PROFILE_EDGE_FENCE",
@@ -34,6 +34,47 @@ CHECK_IDS = [
     "R27_MUTATIONS_EXACT_6",
     "R27_GOVERNANCE_FENCE",
 ]
+
+def cst_only(owner: str = "CURRENT_SOURCE_GRAPH") -> dict[str, Any]:
+    return {
+        "reachability_owner": owner,
+        "disposition": "cst_only",
+        "cst_shape": "INLINE_IN_PARENT_PRODUCTION_NODE",
+        "cst_kind": None,
+        "cst_owner_rule": (
+            "nearest enclosing production node retains the exact child tokens and order"
+        ),
+        "ast_target": None,
+        "ast_output_cardinality": "ZERO",
+        "invalid_or_recovery_ast_count": 0,
+    }
+
+
+def ast_node(production_id: str) -> dict[str, Any]:
+    return {
+        "reachability_owner": "CURRENT_SOURCE_GRAPH",
+        "disposition": "ast_node",
+        "cst_shape": "PRODUCTION_NODE",
+        "cst_kind": f"CST/{production_id}",
+        "cst_owner_rule": "this production emits the named CST kind",
+        "ast_target": f"AST/{production_id}",
+        "ast_output_cardinality": "EXACTLY_ONE",
+        "invalid_or_recovery_ast_count": 0,
+    }
+
+
+def normalize_to_call(production_id: str) -> dict[str, Any]:
+    return {
+        "reachability_owner": "CURRENT_SOURCE_GRAPH",
+        "disposition": "normalize_to",
+        "cst_shape": "PRODUCTION_NODE",
+        "cst_kind": f"CST/{production_id}",
+        "cst_owner_rule": "this production emits the named CST kind",
+        "ast_target": "AST/CallExpr",
+        "ast_output_cardinality": "EXACTLY_ONE",
+        "invalid_or_recovery_ast_count": 0,
+    }
+
 
 REFRESHABLE_NEW_PRODUCTIONS = {
     "FunctionTypeModeItem": {
@@ -47,7 +88,32 @@ REFRESHABLE_NEW_PRODUCTIONS = {
         "ast_target": None,
         "ast_output_cardinality": "ZERO",
         "invalid_or_recovery_ast_count": 0,
-    }
+    },
+    "NamedRestRequirementClause": cst_only(),
+    "NamedRestRequirementEntries": cst_only(),
+    "NamedRestRequirementEntry": cst_only(),
+    "TraitLanguageRole": cst_only(),
+    "ListRestPattern": cst_only(),
+    "AssigneeRecordRestPattern": ast_node("AssigneeRecordRestPattern"),
+    "MutableListStructuralEditStmt": cst_only(),
+    "MutableListInsertStmt": normalize_to_call("MutableListInsertStmt"),
+    "MutableListEditReceiver": cst_only(),
+    "MutableListInsertSuffix": cst_only(),
+    "MutableListInsertPayload": cst_only(),
+    "MutableListRemoveStmt": normalize_to_call("MutableListRemoveStmt"),
+    "MutableListRemoveSuffix": cst_only(),
+    "MutableListRemovalSelector": cst_only(),
+    "MutableListRemovalCapture": cst_only(),
+    "ListEntryList": cst_only("HANDWRITTEN_PARSER_REGISTRY"),
+    "ListEntry": cst_only("HANDWRITTEN_PARSER_REGISTRY"),
+}
+
+REFRESHABLE_STALE_PRODUCTIONS = {
+    "DOT_DOT_GT",
+    "FloatSuffix",
+    "GuardedBindingFailure",
+    "IntegerSuffix",
+    "TRIPLE_STAR",
 }
 
 
@@ -142,7 +208,10 @@ def render_refreshed_documents(
         )
     missing = name_set - set(old_by_name)
     stale = set(old_by_name) - name_set
-    if stale or not missing.issubset(REFRESHABLE_NEW_PRODUCTIONS):
+    if (
+        not stale.issubset(REFRESHABLE_STALE_PRODUCTIONS)
+        or not missing.issubset(REFRESHABLE_NEW_PRODUCTIONS)
+    ):
         raise RuntimeError(
             "REFRESH_PRODUCTION_DELTA: "
             f"missing={sorted(missing)} stale={sorted(stale)}"
@@ -366,7 +435,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
         "CONTRACT_PRODUCTION_COUNT",
     )
     require(
-        contract.get("external_symbol_set", {}).get("count") == 40,
+        contract.get("external_symbol_set", {}).get("count") == 41,
         "CONTRACT_EXTERNAL_COUNT",
     )
     require(
@@ -388,7 +457,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
             "disposition_registry": DISPOSITION_REL,
             "source_root_count": 6,
             "production_count": expected_production_count,
-            "closed_external_symbol_count": 40,
+            "closed_external_symbol_count": 41,
             "unowned_orphan_count": 0,
             "illegal_cross_profile_edge_count": 0,
             "product_support": "NOT_RUN",
@@ -507,7 +576,7 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
             "case_count": 3,
             "mutation_count": 6,
             "production_count": expected_production_count,
-            "external_symbol_count": 40,
+            "external_symbol_count": 41,
             "source_root_count": 6,
             "unowned_orphan_count": 0,
             "illegal_cross_profile_edge_count": 0,
@@ -662,12 +731,12 @@ def main() -> int:
     )
     prefix_groups = {
         "R27_CONTRACT_EXACT": ("CONTRACT_",),
-        "R27_RHS_REFERENCE_BINDING_643": (
+        "R77_RHS_REFERENCE_BINDING_656": (
             "GRAMMAR_TOPOLOGY_PRODUCTION_SET",
             "GRAMMAR_TOPOLOGY_DISPOSITION",
             "GRAMMAR_TOPOLOGY_REFERENCE_BINDING",
         ),
-        "R27_EXTERNAL_SYMBOL_REGISTRY_EXACT_40": (
+        "R77_EXTERNAL_SYMBOL_REGISTRY_EXACT_41": (
             "GRAMMAR_TOPOLOGY_EXTERNAL_",
         ),
         "R27_SIX_ROOT_REACHABILITY_EXACT": (
@@ -715,7 +784,7 @@ def main() -> int:
         "checks": checks,
         "production_count": documents.get("contract", {}).get("production_set", {}).get("count", 0),
         "declared_reference_binding_count": len(documents.get("disposition", {}).get("production_rows", [])),
-        "external_symbol_count": 40,
+        "external_symbol_count": 41,
         "source_root_count": 6,
         "six_root_union_count": documents.get("contract", {}).get("six_root_reachability", {}).get("union", {}).get("count", 0),
         "six_root_shared_count": documents.get("contract", {}).get("six_root_reachability", {}).get("shared", {}).get("count", 0),

@@ -12,9 +12,17 @@ The checker owns well-formedness, expression typing, subtyping, conformance evid
 
 Aliases, option layers, closed unions/intersections, associated projections, rows, labels, ownership modes, effects, errors, cancellation, measures, shapes, and witness identities normalize before comparison. Normalization is terminating, performs an occurs check, and preserves every responsibility-bearing distinction. Inference is bidirectional and local: it never invents an implicit generic, anonymous union, hidden authority, cancellation conversion, or open runtime type test.
 
-A semantic value identity is independent from storage, serialization, runtime discriminant, ABI, and backend layout identity. `Int` normalizes to the signed 64-bit mathematical domain. `UInt` is the separate default unsigned mathematical domain `0..18446744073709551615`; it is not an alias of `UInt64`, `USize`, `Int`, or `Int64` and grants no storage or ABI identity. `IntN`, `UIntN`, `ISize`, and `USize` remain separate domains. Contextual adaptation of a signless unsuffixed integer succeeds only for one independently fixed exact and representable `UInt`, `IntN`, or `UIntN` target; absent such a target, the literal still normalizes to `Int`. A sign remains an AST prefix operator. With an independently fixed exact `Int`, `IntN`, or `UIntN` target, the checker may additionally recognize only `PrefixExpr(-, UnsuffixedIntegerLiteral)`, consume the validated magnitude fact, compute `-magnitude`, and test that signed candidate against the exact target domain. Negative source never adapts to `UInt`. This adapter neither folds any other expression nor inserts widening/narrowing; an unrepresentable candidate is rejected by the enclosing owner's exact range diagnostic. `ISize`/`USize` require an exact suffix or explicit checked conversion.
+A semantic value identity is independent from storage, serialization, runtime discriminant, ABI, and backend layout identity. `Int` normalizes to the signed 64-bit mathematical domain. `UInt` is the separate default unsigned mathematical domain `0..18446744073709551615`; it is not an alias of `UInt64`, `USize`, `Int`, or `Int64` and grants no storage or ABI identity. `IntN`, `UIntN`, `ISize`, and `USize` remain separate domains. Contextual adaptation of a signless unsuffixed integer succeeds only for one independently fixed exact and representable `UInt`, `IntN`, `UIntN`, `ISize`, or `USize` target; absent such a target, the literal still normalizes to `Int`. A sign remains an AST prefix operator. With an independently fixed exact signed target, the checker may additionally recognize only `PrefixExpr(-, UnsuffixedIntegerLiteral)`, consume the validated token magnitude, compute `-magnitude`, and test that candidate against the exact target domain. Negative source never adapts to an unsigned target. This adapter neither folds any other expression nor inserts widening/narrowing; an unrepresentable candidate is rejected by the enclosing owner's exact range diagnostic. Width/type suffixes are not source type selectors.
 
-An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. `Float` is a Stable closed alias of `Float64`: normalization erases the alias spelling before comparison, so it creates no distinct nominal, precision, serialization, runtime-discriminant, storage, layout, or ABI identity. No operator judgment inserts hidden widening, narrowing, mixed signedness, or mixed-width conversion. `Float32` and `Float64` preserve their separate IEEE-754 binary domains; NaN is unordered and cannot establish implicit `Ord` or `Keyable` evidence.
+An unconstrained floating-look literal defaults to `Float64`; one independently fixed exact `Float32` target may contextually adapt the atomic literal when exactly representable under the Float32 rounding law. `Float` is a Stable closed alias of `Float64`: normalization erases the alias spelling before comparison, so it creates no distinct nominal, precision, serialization, runtime-discriminant, storage, layout, or ABI identity. No operator judgment inserts hidden widening, narrowing, mixed signedness, or mixed-width conversion. In particular an expected operator result cannot retroactively select operand types or a fixed-glyph candidate. `Float32` and `Float64` preserve their separate IEEE-754 binary domains; NaN is unordered and cannot establish implicit `Ord` or `Keyable` evidence.
+
+The scanner maximal-munches every removed type-suffix-shaped candidate
+(`i8/i16/i32/i64/i128/isize`, `u8/u16/u32/u64/u128/usize`, `f32/f64`) and emits
+one `NUMERIC_TYPE_SUFFIX_REMOVED`; it never tokenizes that candidate as a
+number followed by an identifier and emits no admitted CST/AST/HIR residue.
+Exact atomic target adaptation replaces source suffix selection. Untyped
+constants remain exact until a valid target is independently fixed, and
+unconstrained defaults remain `Int`, `Float64`, and `Complex<Float64>`.
 
 Resolver identities are typed by owner domain. `TargetId` is the canonical
 triple `(PackageId, manifest_target_name, target_kind)`, where `target_kind` is
@@ -52,7 +60,7 @@ The initial `Complex<Rep>` profile admits exactly invariant
 of the latter. Its semantic identity contains exact real and imaginary
 component values but no public layout or ABI identity. An attached `4.0i`
 literal has real component positive zero and Float64 imaginary component;
-`4.0f32i` selects Float32. Integer `4i`, separated or radix forms do not enter
+an atomic `4.0i` may adapt to `Complex<Float32>` only under an independently fixed direct literal target. In `lhs + 4.0i`, candidate selection is fixed by the already typed operands; an expected `Complex<Float32>` result does not push a target into both operands, so nondefault arithmetic requires an explicit typed operand anchor. Integer `4i`, separated or radix forms do not enter
 this judgment. Float-profile Complex supplies sealed unary `+`/`-`, binary
 `+`/`-`/`*`/`/`, and partial IEEE equality evidence. It supplies no `%`,
 `Ord`, strong `Hash`, or `Keyable` evidence; an exact zero complex divisor
@@ -89,7 +97,7 @@ conversion, or product-support receipt.
 
 ## 3. Named rest, function-type residue, and unfold
 
-Named-rest parameters use attached triple-star `***`: `options***: Record`. Function types and public API digests preserve the exact `Record***` named-rest residue. Call/materialization named unfold uses attached prefix `**record`. Parameter/type `**` and unfold-prefix `***` are rejected. The collector is unique, final, and exactly canonical structural `Record`; Map is not admissible.
+Named-rest parameters use attached suffix `**`: `options**`. Function types and public API digests preserve the exact `NamedPack**` residue. The body binding is a finite call-scoped, nonescaping `NamedPack<rho>` whose normalized static label row and witness digest are public callable identity. Duplicate or dynamic labels, Map input, reflection, serialization, escaping storage and runtime row selection reject. Call/materialization named unfold remains attached prefix `**value`, distinguished by its closed structural owner. A named-rest parameter may own a `NamedRestRequirementClause` of required static labels and types; this node is separate from callable `RequiresClause ::= requires PredicateExpr` and cannot express a value predicate.
 
 ## 4. Nominal and structural domains
 
@@ -188,8 +196,9 @@ unmatched catch continues or propagates.
 Current coverage domains include enum/union/Option/Result alternatives, exact
 Tuple products, exact/open Record and Map rows, closed List length/rest cells,
 transparent nominal products, exact ordered scalar intervals, and loop
-outcome. Record and Map are exact by default; `.._` ignores and `..name`
-captures an exact residual. A nominal type opens only through schema/data/value
+outcome. Record-family patterns are exact by default; `_**` ignores and
+`name**` captures an exact static named residual. Map patterns remain distinct:
+`.._` ignores and `..name` captures an exact keyed residual. A nominal type opens only through schema/data/value
 identity or an explicit pattern-transparent descriptor. Sealed-Class closure
 does not expose private fields or create a constructor Pattern. Pin keys/bounds
 must be stable and use statically selected pure total equality/order. Float
@@ -198,9 +207,11 @@ and backtracking remain outside the Stable domain. Declarative clauses use the
 same finite partition algorithm. Law bodies admit only pure predicate
 assertions.
 
-A List Pattern has exact shape, `[.._]`, or one positional rest:
-`leadings..`, `..tail`, or `..middle..`; middle rest requires fixed children
-on both sides. The closed built-in descriptor returns borrowed
+A List Pattern has exact shape or one suffix positional collector:
+`[prefix, rest.., suffix]` or the sink `_..`. The collector may occupy the
+beginning, middle or end; a middle collector requires fixed children on both
+sides. Prefix-rest and double-sided legacy spellings are not aliases. The
+closed built-in descriptor returns borrowed
 `ListRestView<T>` with an explicit intrinsic `Sequence<T>` witness,
 `SourceOwnerId`, `BorrowRegionId`, `RankSpan(start_rank,count)` and original
 logical-coordinate projection. Empty rest uses `count = 0`, not an invalid
@@ -219,7 +230,7 @@ field/index/property/shared/actor/FFI targets remain Preview.
 
 ## 9. NumericArray, bitfield, and measures
 
-NumericArray typing preserves element, shape, rank, orientation, and typed coordinate domain. Each built-in default source-visible axis is exactly `1..dimension`, but it is not an ordinary Sequence witness. A full rank-matching coordinate list selects one element; coordinate type/count mismatch is static, and a dynamic coordinate outside the declared axis raises `IndexError::outOfLogicalDomain`. A NumericArray slice produces an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. Bitfield uses unsigned strict layout and finite flags universe. Exact-ratio units are core; calendar units require the stdlib/provider profile.
+NumericArray typing preserves element, shape, rank, orientation, and typed coordinate domain. Each built-in default source-visible axis is exactly `1..dimension`, but it is not an ordinary Sequence witness. IndexSuffix supplies exactly one comma-separated axis per source rank. Each scalar axis is removed; all-scalar selection returns the element and mixed selection result rank equals the number of non-scalar axes. Multi-axis selection is Cartesian. A rank-one List does not reinterpret a comma list as gather, Tuple-as-gather is absent, and no implicit linear index exists. Coordinate type/count mismatch is static, and a dynamic coordinate outside the declared axis raises `IndexError::outOfLogicalDomain`. A NumericArray slice produces an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. Open slice ends use a boundary identity that can denote one-past-last without forming `last + 1`; an empty view retains owner, region, coordinate domain and insertion boundary. Bitfield uses unsigned strict layout and finite flags universe. Exact-ratio units are core; calendar units require the stdlib/provider profile.
 
 Current `Set<T>` is an immutable unique-element collection. Literal and
 comprehension elements require one exact normalized `T` plus admitted equality
@@ -276,15 +287,15 @@ Call checking performs these steps in order:
 1. resolve the callee domain and candidate set without using the result type as a tie-breaker;
 2. evaluate argument expressions in source order;
 3. bind fixed positional and fixed named parameters;
-4. bind the optional repeated positional channel `T...`;
+4. bind the optional repeated positional channel `T..` into a finite nonescaping `PositionalPack<T>`;
 5. prove and expand each named unfold `**record` from a statically known Record label row;
-6. bind the optional final named-rest channel `Record***`;
+6. bind the optional static named-rest channel `NamedPack**` into a finite nonescaping `NamedPack<rho>` and verify its optional required-label clause;
 7. reject missing, duplicate, overlapping, indeterminate, or extra labels;
 8. check ownership, context, witness, effects, errors, isolation, and return compatibility;
 9. choose the unique most-specific candidate, preferring fixed arity, then repeated positional, then named rest;
 10. emit a normalized CallShape for Deeplus MIR.
 
-The source parameter `options***: Record` and the function-type item `Record***` denote the same named-rest residue. The body binding may be a Record value, but its public type identity remains a call channel. `**record` is an argument-supply operation, not a parameter and not a type suffix. A Map never satisfies the static label-row proof.
+The source parameter `options**` and the function-type item `NamedPack**` denote the same named-rest residue. The body binding is a `NamedPack<rho>`, not a Record or Map; its finite normalized row/witness digest remains public call identity. `*value` is the owner-bounded positional outward unfold and `**value` is the owner-bounded static-named outward unfold, not a parameter/type suffix. The lexical marker fixes the channel before overload selection; expected formals, results, selected overloads and runtime values cannot choose it.
 
 ## 13. Classes, Traits, conformance, and extensions
 
@@ -535,6 +546,31 @@ overloading. Power, strict/short-circuit logical, bitwise, range, and arbitrary
 custom glyphs have no user hook. `TCC-P1-002..008` remain OPEN product and
 independent-conformance evidence gates.
 
+Trait language roles are a closed, core-owned registry keyed by a
+`TraitLanguageRoleId` distinct from `TraitId`. The role and version are carried
+by the Trait contract, consumer HIR and module API digest; adding or changing a
+role is an API/source change. `trait#operator` applies only to the nine roots
+above and does not select glyphs. `trait#iteration` applies only to core
+`Sequence` and `Iterator`, `trait#interpolation` only to core `Display`, and
+`trait#binding` only to core `Failable`. Users may declare direct global
+conformances to an eligible role-bearing Trait but may not declare a new
+role-bearing root. Generic `#role`/`#profile`, a public `#proof`, and
+conversion/literal/actor/message/derive/marker/intrinsic roles reject.
+
+`Failable` fixes associated types `Success` and `Failure` and the associated
+static function
+`def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}`.
+One unique direct-global witness must be selected before the guarded binding is
+sealed. `let? successPattern = expression else failurePattern => exit` evaluates
+and consumes the expression once, invokes `branch` once, requires both patterns
+to be irrefutable for their associated types, and commits all success bindings
+once only on the success alternative. The failure alternative publishes no
+success loan/move/binding residue and must structurally leave the enclosing
+continuation. `Option<T>` fixes `Failure = Unit`; `Result<T,error E>` fixes
+`Failure = E`. No `if let?`, `while let?`, `var?`, bare `let?`, borrowed probe,
+runtime role lookup, provider fallback, local evidence, `VIA`, `AUTO`, or
+specialization route exists.
+
 The Stable `&&`, `||`, `^^`, and prefix `~~` family has a pointwise logical
 type rule. A packed known-width integer or identical bitfield/flags pair returns
 that same domain. A binary pair of exact same-shape `NumericArray<I>` values
@@ -768,6 +804,21 @@ Structured concurrency uses a separate nominal `Run<T>` responsibility. `concur 
 Before enqueue commit, all moved argument places remain live at the sender and a rejection allocates neither `MessageId` ownership nor `channel_sequence`. A successful commit consumes each moved sender place exactly once, installs exactly one actor-owned payload, and allocates the next strictly increasing sequence for the normalized `(SenderId, ReceiverActorId, MailboxProfileId)` key. Cancellation before commit aborts without transfer; cancellation after commit cannot restore the sender place or retract the message. Cancellation is a control axis and never a member of `ActorMessageError`.
 
 An assignment target is checked and evaluated as one place. Compound assignment reads that place once, checks one exact intrinsic operand domain, evaluates the right operand once, and commits at most one result. A precommit `ArithmeticDefect`, `IndexError`, or other failure leaves the prior owner and value unchanged. Assignment expressions have result type `Unit`. Every admitted slice result is a `ReadonlyView`, never an assignable place; its borrow cannot escape its owner, cross isolation, hide a copy, or be implicitly rebased.
+
+MutableList structural-edit statements are not ordinary index assignment. The
+checker requires one exact exclusive `MutableList<T>` place and resolves each
+surface to one of the closed Prelude operations `insertBefore`, `insertAfter`,
+`prepend`, `append`, their four `insertAll*` forms, `removeAt`, `removeRange`,
+`removeSelected`, `popFirst`, or `popLast`. A bulk payload is one finite
+nonescaping `PositionalPack<T>` with reusable/copyable element evidence; plain
+`Sequence<T>` conformance is insufficient. Receiver, selectors and payload are
+evaluated once left-to-right; all coordinates, duplicates, alias/overlap,
+borrows/views/iterators, payload ownership and required capacity/result storage
+are validated or staged before one mutation commit. Failure preserves the
+receiver and every source owner. Point removal returns `T`; multi-removal
+returns `List<T>` in selector order while preserving survivor order, using
+pre-mutation coordinates. The checker creates one ordinary `CallPlan` and
+`CallableImplementationId`; it creates no edit-specific HIR/MIR identity.
 
 For a simple mutable place and the same admitted operator domain, the canonical
 source spelling is the compound form—for example, `count += 1`. This is a
@@ -1145,9 +1196,20 @@ The following conceptual judgments close the source-visible current profile with
 Γ ; Π ⊢ numeric-array[slice-axes] ⇒ ReadonlyView<Element>
 ```
 
-`List<T>`, `String`, and `Bytes` have the built-in domain `1..length` and storage offset `index - 1`; their element results are respectively `T`, `Char`, and `UInt8`. Every `ReadonlyView<T>` preserves its source owner's declared logical domain, mapping, and provenance and returns borrowed `T`; ordinary one-based sources remain one-based, while bounded or sliced sources retain their coordinates. These carriers accept exactly one bounded range slice. An explicitly bounded List preserves its declared inclusive `L..U` domain. `Map<K,V>` requires an exact `K` and returns `V` or raises `IndexError::keyNotFound`. Tuple `.n` and Record labels are static projections, not bracket indexing. Merely conforming to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not create any bracket judgment.
+`List<T>`, `String`, and `Bytes` have the built-in domain `1..length` and storage offset `index - 1`; their element results are respectively `T`, `Char`, and `UInt8`. Every `ReadonlyView<T>` preserves its source owner's declared logical domain, mapping, provenance, and open-end boundary identity and returns borrowed `T`; ordinary one-based sources remain one-based, while bounded or sliced sources retain their coordinates. These carriers accept exactly one scalar or range selector. An explicitly bounded List preserves its declared inclusive `L..U` domain. `Map<K,V>` requires an exact `K` and returns `V` or raises `IndexError::keyNotFound`. Tuple `.n` and Record labels are static projections, not bracket indexing. Merely conforming to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not create any bracket judgment.
 
-The current bounded range forms are inclusive `i..j` and explicit exclusive end `i..<j`; `^`/`$` are first/last bound anchors. NumericArray additionally admits exact-rank semicolon-separated axes, where a scalar coordinate or full-axis `*` may appear. Empty `[]`, omitted range bounds, descending/step forms, and implicit negative-from-end rewriting have no typing rule. Half-open input retains a warning. Successful slicing retains the selected logical coordinates and owner region; explicit named rebase/copy is required for new coordinates or independent ownership.
+Expression Range admits inclusive `i..j`, exclusive `i..<j`, one-sided lazy
+`i...`, and an optional attached Range-owned `:step`. Its start, present end,
+and step evaluate once left-to-right. Zero or direction-incompatible steps
+reject; bounded iteration terminates before overflow, and a finite ordered Enum
+cannot form a one-sided Range. IndexSuffix is a separate owner. It admits
+`[..<end]`, `[..end]`, `[start..]`, and `[..]`; `start..<` has no distinct law
+and rejects. NumericArray additionally admits exact-rank comma-separated axes,
+where a scalar, slice, or full-axis `*` may appear. Empty `[]`, implicit
+negative-from-end rewriting, Tuple-as-gather, and implicit linear indexing have
+no typing rule. Successful slicing retains selected coordinates and owner
+region; explicit named rebase/copy is required for new coordinates or
+independent ownership.
 
 ## 26. Post-R51f3 nonactivatable Preview design
 

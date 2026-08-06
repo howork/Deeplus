@@ -11,7 +11,7 @@ source 예제를 만들지 않는다.
 ## 2. 학습 목표
 
 - comprehension clause를 source order로 읽는다.
-- `for`, guard, `if let`, `for ...` unfold를 사용한다.
+- `for`, guard, `if let`, `for pattern in *source` unfold를 사용한다.
 - eager collection과 single-pass generator를 구분한다.
 - generator capture/lifetime/cleanup 경계를 이해한다.
 
@@ -137,6 +137,28 @@ let visible = @for item in items {
 
 guard는 terminating/pure 조건을 따라 yield admission을 결정한다.
 
+### 6.5 comprehension source를 구조적으로 펼치기
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+let flat = [
+    value
+    for value in *groups
+    if value > 0
+]
+```
+
+`*groups`는 comprehension source owner 안에서만 의미를 갖는다. 먼저
+`groups`를 정확히 한 번 평가하고, checker가 유한한 positional source의
+shape를 봉인한 뒤 각 inner element를 `value`에 결합한다. 예전처럼
+`for ... value in groups`로 binder 앞에 생략점을 붙이지 않는다. `*groups`
+자체를 괄호 밖 일반 prefix expression으로 꺼내 저장할 수도 없다.
+
+Map이나 static-named row를 positional iteration source로 바꾸는 것은
+unfold가 해 주지 않는다. 필요한 경우 owner가 명시된 named API로 먼저
+변환한다. expected result type이나 뒤쪽 overload가 unfold 종류를 다시
+선택하지 않는다.
+
 ## 7. 허용·거부·경계 사례
 
 <!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: GENERATOR_EXPR_IS_SINGLE_PASS_NOT_COLLECTION; product: NOT_RUN -->
@@ -157,6 +179,12 @@ let g = [borrow owner] @for item in owner {
 async comprehension은 source spelling과 iteration/cancellation/ownership
 계약이 활성화되지 않았다. ordinary `for#await` statement와 stdlib
 collector를 comprehension으로 암시 승격하지 않는다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: COMPREHENSION_UNFOLD_LEGACY_BINDER_PREFIX_REMOVED; product: NOT_RUN -->
+```deeplus
+let flat = [value for ... value in groups]
+// COMPREHENSION_UNFOLD_LEGACY_BINDER_PREFIX_REMOVED
+```
 
 ## 8. 다른 기능과의 연결
 

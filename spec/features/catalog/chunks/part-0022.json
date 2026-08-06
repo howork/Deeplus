@@ -255,15 +255,12 @@
       "pattern_decomposition",
       "readonly_view"
     ],
-    "notes": "Closed List-shaped carriers admit exactly one attached positional rest: leadings.. first, ..tail last, or ..middle.. with fixed children on both sides. Captures have exact borrowed ListRestView<T>; [.._] remains the all-ignored form. Generic Sequence conformance never opens the Pattern.",
+    "notes": "Closed List-shaped carriers admit exactly one attached suffix positional rest `name..` or `_..` at the beginning, middle, or end with the required fixed context. Captures have exact borrowed ListRestView<T>. Generic Sequence conformance never opens the Pattern; Tuple rest remains Preview and is not promoted.",
     "primary_source": "spec/language.md",
     "normative_trace_refs": {
       "diagnostics": [
         "PATTERN_MULTIPLE_REST",
-        "PATTERN_PREFIX_REST_MUST_BE_FIRST",
-        "PATTERN_SUFFIX_REST_MUST_BE_LAST",
-        "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
-        "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+        "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
         "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
         "PATTERN_REST_CARRIER_NOT_ADMITTED",
         "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE"
@@ -359,7 +356,7 @@
     "depends_on": [
       "pattern_decomposition"
     ],
-    "notes": "Record ${...} and Map #map{...} Patterns have exact, open-ignore .._, and one residual ..name form. Record entries are target-first; a typed or nested renamed target is parenthesized. Map keys are literals or pinned stable values and are evaluated as closed key identities without getters or extractors.",
+    "notes": "Record-family ${...} Patterns use label-first entries label: Pattern and are exact by default, with _** open-ignore or one name** static-named residual. Map #map{...} Patterns use destination Pattern: key and remain exact by default, with .._ open-ignore or one ..name dynamic residual. Map keys are literals or pinned stable values and are evaluated as closed key identities without getters or extractors.",
     "primary_source": "spec/language.md",
     "normative_trace_refs": {
       "diagnostics": [

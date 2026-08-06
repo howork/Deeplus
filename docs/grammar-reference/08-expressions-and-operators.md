@@ -57,7 +57,7 @@ Pratt registry 및 operator contract가 소유한다.
 | 90 | pointwise logical OR | `||` | 왼쪽 |
 | 100 | pointwise logical XOR | `^^` | 왼쪽 |
 | 110 | pointwise logical AND | `&&` | 왼쪽 |
-| 120 | range | `..`, `..<` | 비결합 |
+| 120 | range | `..`, `..<`, one-sided `...`, attached `:step` | 비결합 |
 | 130 | 덧셈 | `+`, `-` | 왼쪽 |
 | 140 | 곱셈 | `*`, `/`, `%` | 왼쪽 |
 | 150 | linear product | `**`, `*+` | 왼쪽 |
@@ -116,6 +116,11 @@ suspend시키지 않는다.
   glyph를 만들거나 재정의하지 못한다.
 - 사용자 확장은 named Trait method 또는 named API를 쓴다.
 - source order는 overload tie-breaker가 아니다.
+
+이 13개 역할을 소유하는 `UnaryPlus`, `UnaryMinus`, `Add`, `Subtract`,
+`Multiply`, `Divide`, `Remainder`, `Eq`, `Ord`는 core
+`trait#operator` root다. role tag는 기존 glyph 집합을 넓히지 않으며
+사용자가 새 role-bearing root를 선언할 수 없다.
 
 ### Stable fixed-glyph conformance
 
@@ -181,15 +186,22 @@ Preview로 내리지 않는다.
 signedness 변경이 없다. float는 정확한 `Float32` 또는 `Float64` domain을
 사용한다.
 
-unsuffixed integer literal은 기본적으로 signed 64-bit `Int`다. 기대
-타입이 이미 정확한 `UInt`, `IntN` 또는 `UIntN`으로 고정되었을 때는
-표현 가능한 signless literal만 그 domain으로 문맥 적응한다. 직접 결합된
-`PrefixExpr(-, UnsuffixedIntegerLiteral)`에는 정확한 `Int`, `IntN` 또는
-`UIntN` 문맥에서 음수 최솟값과 범위 오류를 일관되게 판정하기 위한 한정
-적응이 있지만, `UInt`에는 이 음수 adapter가 없다. 이 규칙은
-`ISize`/`USize`, 임의 상수식, 일반 unary 계산으로 확대되지 않는다. 즉
-`-128`은 `Int8` 문맥에서 한 값으로 검사할 수 있지만 `-(64 + 64)`를 같은
-규칙으로 접어 주지 않는다.
+unconstrained integer literal은 signed 64-bit `Int`, real literal은
+`Float64`, imaginary literal은 `Complex<Float64>`로 기본화된다. 기대 타입이
+독립적으로 정확한 `UInt`, `IntN`, `UIntN`, `ISize`, `USize`, `Float32` 또는
+`Complex<Float32>`로 고정되었을 때는 표현 가능한 직접 원자 literal만 그
+domain으로 문맥 적응한다. 직접 결합된
+`PrefixExpr(-, IntegerLiteral)`에는 정확한 signed `Int`, `IntN`
+또는 `ISize` 문맥에서 음수 최솟값과 범위 오류를 판정하는 한정 적응이
+있지만 unsigned target에는 없다. 이 규칙은 임의 상수식이나 일반 unary
+계산으로 확대되지 않는다. `-128`은 `Int8` 문맥에서 한 값으로 검사할 수
+있지만 `-(64 + 64)`를 같은 규칙으로 접어 주지 않는다.
+
+`i8`/`u8`/`f32` 계열 source type suffix는 제거되었다. suffix-shaped
+candidate는 `NUMERIC_TYPE_SUFFIX_REMOVED` 하나를 내고 canonical residue를
+만들지 않는다. literal target이나 expected result가 operator witness를
+선택하지도 않는다. 비기본 연산 domain은 suffix가 아니라 명시적으로 typed
+anchor operand로 고정한다.
 
 integer `/`는 0 방향으로 절단한다. `%`의 결과 `r`은
 `a == trunc(a / b) * b + r`을 만족하고 0이 아니면 dividend와 같은
@@ -202,6 +214,40 @@ wrapping 또는 saturating 계산은 이름 있는 API를 써야 한다.
 unordered이므로 암시적 `Ord`나 `Keyable` evidence를 공급하지 않는다.
 따라서 NaN 가능 float를 Set/Map key로 사용하는 것은 별도 명시적 정책
 없이 허용되지 않는다.
+
+### Range parselet
+
+expression Range의 현행 표면은 다음처럼 닫혀 있다.
+
+```ebnf
+RangeExpr ::= Expr ".." Expr RangeStep?
+            | Expr "..<" Expr RangeStep?
+            | Expr "..." RangeStep?
+RangeStep ::= ":" Expr
+```
+
+`..`는 end를 포함하고 `..<`는 end를 제외하며 `...`는 one-sided lazy
+Range다. 붙은 `:step`은 ternary colon이 아니라 Range parselet이 소비한다.
+start, present end, step은 왼쪽부터 정확히 한 번 평가된다. step 0은
+거부되고, 양수 step은 present end를 향해 증가해야 하며 음수 step은 end를
+향해 감소해야 한다. bounded Range는 overflow 전에 종료하고 inclusive end에
+정확히 닿으면 그 값을 포함한다. finite ordered Enum은 one-sided Range를
+허용하지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/integrated-surface-atomic-cutover-r77-r1.json -->
+```deeplus
+let inclusive = 1..5
+let halfOpen = 1..<5
+let odds = 1..9:2
+let countdown = 9..1:-2
+let naturals = 1...
+let oddNaturals = 1...:2
+```
+
+terminal `start..`와 `..>`는 expression Range에서 제거되었다. open
+`[start..]`는 IndexSuffix의 slice owner에만 속하고, bounded
+`start...end`도 제거된 spelling이다. Range는 closed intrinsic carrier
+규칙이며 Trait conformance hook을 만들지 않는다.
 
 ### Rational과 Complex의 닫힌 산술
 
@@ -416,13 +462,13 @@ dynamic shape와 사용자 정의 carrier 역시 포함하지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/value-operator-indexing-coherence.json -->
 ```deeplus
-let maskA = #2,2[
-    0b11110000u8, 0b00111100u8;
-    0b10101010u8, 0b01010101u8;
+let maskA: #2,2[UInt8] = #2,2[
+    0b11110000, 0b00111100;
+    0b10101010, 0b01010101;
 ]
-let maskB = #2,2[
-    0b11001100u8, 0b00001111u8;
-    0b11111111u8, 0b00110011u8;
+let maskB: #2,2[UInt8] = #2,2[
+    0b11001100, 0b00001111;
+    0b11111111, 0b00110011;
 ]
 let common = maskA && maskB
 ```
@@ -654,15 +700,16 @@ public def invalidComparisonChain(value: TextOrNumber) -> Bool = {
 
 ```deeplus
 let count: Int = 42
-let exact: Int32 = 42i32
+let exact: Int32 = 42
 let ratio: Float64 = 1.5
-let compact: Float32 = 1.5f32
+let compact: Float32 = 1.5
 let sum: Int = count + 1
 ```
 
-`count`와 `sum`은 기본 signed 64-bit `Int`, suffix가 붙은 `exact`와
-`compact`는 각각 `Int32`, `Float32`, suffix 없는 소수 `ratio`는
-`Float64`다. `count + 1`은 두 operand를 왼쪽부터 한 번씩 평가하고 같은
+`count`와 `sum`은 기본 signed 64-bit `Int`다. `exact`와 `compact`의
+독립적으로 고정된 target은 직접 원자 literal을 각각 `Int32`, `Float32`로
+정확히 문맥 적응시키고, unconstrained decimal real은 `Float64`로
+기본화된다. `count + 1`은 두 operand를 왼쪽부터 한 번씩 평가하고 같은
 normalized `Int` domain에서 checked addition을 수행하므로 이 입력의
 설계상 결과는 `43`이다. 일반 입력에서 overflow가 나면 결과 binding을
 commit하기 전에 `ArithmeticDefect`로 끝난다. 이 값·진단은 정적 계약이며
@@ -788,7 +835,8 @@ snippet은 주변 선언을 전제로 한 정적 예이며 제품 checker 실행
 | `Rational ^ exponent` 또는 matrix 밖 mixed numeric power | `POWER_OPERAND_DOMAIN_NOT_ADMITTED` |
 | expected result로 power operation/result 변경 | `POWER_EXPECTED_RESULT_SELECTION_FORBIDDEN` |
 | runtime 부호·정수성으로 real/Complex 또는 power operation 재선택 | 거부; 정적 operand domain만 사용 |
-| `i..>j`, `i...j` range | 거부 |
+| 제거된 `i..>j`, bounded `i...j`, terminal expression `i..` | 거부; `i..j`, `i..<j`, one-sided `i...` 사용 |
+| removed numeric suffix `42i32`, `1.5f32` | `NUMERIC_TYPE_SUFFIX_REMOVED`; exact target annotation 사용 |
 | ungated NumericArray infix `^` | 현행 아님 |
 
 corpus의 `EX-R48L-010`은 명시적 Preview gate가 있는 경우에만
@@ -822,7 +870,8 @@ Preview 후보도 아니다.
 - `^`는 Pratt 위치에 따라 infix power, postfix transpose, unit static
   power로 구분된다. Pattern goal의 prefix `^`는 별도의 pin owner다.
 - `**`는 infix linear product와 argument/materialization의 named unfold를
-  문맥별로 가진다. named-rest parameter는 `***`다.
+  문맥별로 가진다. named-rest parameter는 suffix `name**`, function-type
+  residue는 `NamedPack**`다.
 - message `~`, call, member, index, constructor, derivation, trailing closure는
   user-overloadable punctuation이 아니라 구조적 postfix다.
 - index/slice 의미는

@@ -129,7 +129,7 @@ operation의 static error/effect row만 검토한다.
 1. **construction:** partial session publication이 영이고 handle cleanup이
    정확한가?
 2. **borrow:** owner 유지, region, forbidden escape가 설명됐는가?
-3. **move:** precommit failure와 postcommit callee 책임이 분리됐는가?
+3. *move:** precommit failure와 postcommit callee 책임이 분리됐는가?
 4. **cleanup:** 정상·Error·Cancellation에서 exactly once와 LIFO가
    유지되는가?
 5. **effect/error:** I/O와 CloseError가 signature 및 ordering에

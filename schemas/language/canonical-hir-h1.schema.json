@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://deeplus-lang.org/schema/r31-closure-capture-plan-r1/canonical-hir-h1.schema.json",
-  "title": "Deeplus Canonical HIR-H1 R31 closure-capture-plan successor",
+  "$id": "https://deeplus-lang.org/schema/r77-integrated-surface-atomic-cutover-r1/canonical-hir-h1.schema.json",
+  "title": "Deeplus Canonical HIR-H1 R77 integrated-surface atomic cutover",
   "description": "Machine-bound canonical HIR payload. Audit baseline, audit status, and product status are deliberately outside the instance semantic projection.",
   "type": "object",
   "additionalProperties": false,
@@ -19,7 +19,7 @@
       "const": "deeplus.canonical-hir-h1/r1"
     },
     "schema_revision": {
-      "const": "R31-CLOSURE-CAPTURE-PLAN-R1"
+      "const": "R77-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R1"
     },
     "schema_digest": {
       "$ref": "#/$defs/Sha256"
@@ -121,6 +121,35 @@
       "description": "Body-local stable identity of one closure-environment field. It is semantic HIR/MIR residue and is never a module API identity.",
       "x-deeplus-identity-domain": "CAPTURE_FIELD_ID",
       "x-deeplus-api-export": "FORBIDDEN_VALUE_LEVEL_ID"
+    },
+    "TraitLanguageRoleId": {
+      "enum": [
+        "TRAIT_LANGUAGE_ROLE_OPERATOR_R1",
+        "TRAIT_LANGUAGE_ROLE_ITERATION_R1",
+        "TRAIT_LANGUAGE_ROLE_INTERPOLATION_R1",
+        "TRAIT_LANGUAGE_ROLE_BINDING_R1"
+      ],
+      "description": "Closed core-owned language responsibility identity. This domain is distinct from TraitId."
+    },
+    "TraitLanguageRoleBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trait_id",
+        "role_id",
+        "role_contract_digest"
+      ],
+      "properties": {
+        "trait_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "role_id": {
+          "$ref": "#/$defs/TraitLanguageRoleId"
+        },
+        "role_contract_digest": {
+          "$ref": "#/$defs/Sha256"
+        }
+      }
     },
     "Sha256": {
       "type": "string",
@@ -4579,7 +4608,8 @@
             {
               "required": [
                 "value_expr_id",
-                "projection_profile_id"
+                "projection_profile_id",
+                "source_shape_seal"
               ],
               "properties": {
                 "kind": {
@@ -4590,6 +4620,9 @@
                 },
                 "projection_profile_id": {
                   "$ref": "#/$defs/Id"
+                },
+                "source_shape_seal": {
+                  "const": "POSITIONAL_FINITE"
                 },
                 "label_id_or_null": {
                   "type": "null"
@@ -4607,7 +4640,8 @@
             {
               "required": [
                 "value_expr_id",
-                "projection_profile_id"
+                "projection_profile_id",
+                "source_shape_seal"
               ],
               "properties": {
                 "kind": {
@@ -4618,6 +4652,9 @@
                 },
                 "projection_profile_id": {
                   "$ref": "#/$defs/Id"
+                },
+                "source_shape_seal": {
+                  "const": "STATIC_NAMED_FINITE"
                 },
                 "label_id_or_null": {
                   "type": "null"
@@ -6593,6 +6630,7 @@
         "managed_trace_descriptors",
         "responsibility_profile_ids",
         "responsibility_evidence_descriptors",
+        "trait_language_role_bindings",
         "item_headers",
         "body_index",
         "body_store",
@@ -6654,6 +6692,13 @@
             "$ref": "#/$defs/ResponsibilityEvidenceDescriptor"
           },
           "uniqueItems": true
+        },
+        "trait_language_role_bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/TraitLanguageRoleBinding"
+          },
+          "x-deeplus-unique-key": "trait_id"
         },
         "item_headers": {
           "type": "array",
@@ -6898,6 +6943,20 @@
     "occurrence_profile_rule": "The root source_profile is the sole occurrence profile. Nested profile overrides do not exist.",
     "preview_pattern_rule": "A Preview pattern exists only in EXPLICIT_PREVIEW and its containing PATTERN_ATTEMPT reachability is FEATURE_GATED with a nonempty required feature set.",
     "no_recovery_unknown_rule": "Every canonical discriminator is closed. Analysis recovery, unresolved, overload-set, unknown, and the two rejected pre-HIR patterns cannot validate.",
+    "integrated_surface_atomic_cutover_r77": {
+      "decision_id": "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
+      "structural_unfold_source_surface": "*Expr selects POSITIONAL_FINITE and **Expr selects STATIC_NAMED_FINITE under closed owners",
+      "structural_unfold_seal": "the lexical marker fixes POSITIONAL_FINITE or STATIC_NAMED_FINITE before formal binding and overload selection",
+      "expected_type_overload_or_runtime_shape_selects_unfold_kind": false,
+      "named_rest_requirement_owner": "source-signature contract only; callable RequiresClause remains distinct",
+      "mutable_list_edit_lowering": "existing CallExpr and CallPlan(mode_target_pair,call_head_id) with a closed CallableImplementationId",
+      "mutable_list_edit_dedicated_hir_or_mir": false,
+      "range_step_source_residue": "normalized selected Range construction; source punctuation is absent after typed HIR",
+      "numeric_removed_suffix_canonical_node_count": 0,
+      "failable_binding_lowering": "one consuming Failable::branch call followed by existing pattern-attempt and control-exit identities",
+      "trait_language_role_identity": "TraitLanguageRoleId distinct from TraitId",
+      "product_execution": "NOT_RUN"
+    },
     "structural_plan_contract_count": 13,
     "structural_plan_optional_encoding": "REQUIRED_OR_NULL",
     "focused_verifier_obligations": [
@@ -6921,6 +6980,10 @@
       "Require each lowering-row hir_identity_ids entry to resolve in the exact 129-row catalog and to equal the identities implied by its dispatch key.",
       "Require every ResponsibilityEvidenceDescriptor to preserve exact ResponsibilityRuleId and ResponsibilityEvidenceId domains, normalized TypeId, evidence kind, registry revision, derivation digest and all nullable behavioral/value-level fields; this non-structural table adds no HIR identity-catalog row.",
       "Require every TraitAssociatedStaticSelection to preserve one SelectionId and exact TraitId, RequirementId, ConformanceId, TraitWitnessId, ImplementationId, SubstitutionId, and ResponsibilityId; require associated types to emit no runtime operation, associated values and bare function references to use DIRECT_DECL plus STATIC_REF, and invoked associated functions to use ORDINARY::TRAIT_WITNESS without runtime reconstruction or search.",
+      "Require every structural unfold source to be sealed exactly once as POSITIONAL_FINITE or STATIC_NAMED_FINITE before formal binding and overload selection; an expected formal, expected result, overload winner, or runtime key cannot choose the seal.",
+      "Require every trait_language_role_bindings row to use the closed core registry, remain unique by TraitId, and preserve the exact role contract digest into public API and consumer HIR identity.",
+      "Require every MutableList structural-edit surface to disappear into an existing CallExpr and closed CallPlan/CallableImplementationId; reject an edit-specific HIR or MIR opcode and require receiver, selector, and payload evaluation exactly once before one mutation commit.",
+      "Reject every removed numeric type suffix before canonical CST/AST/HIR; one recovery diagnostic may exist outside this schema but no split numeric prefix or suffix identifier can validate.",
       "Require any repeated TraitAssociatedStaticSelection with the same selection_id in ResolvedRef, CallPlan, or MIR static identity residue to be byte-for-byte equal after canonical serialization; associated-type selections never occur as ResolvedRefExpr or ReferenceCapture values.",
       "Reject any reuse of callable ResponsibilityProfileId as ResponsibilityRuleId or ResponsibilityEvidenceId and forbid runtime or backend responsibility-evidence relookup.",
       "Require responsibility_evidence_descriptors to be strictly ordered by responsibility_evidence_id, unique by that ID, and fully reachable from the typed-HIR semantic facts that selected them.",

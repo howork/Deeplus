@@ -34,9 +34,9 @@
   "stable_design": [
     "exact Tuple patterns",
     "List exact patterns",
-    "List prefix rest binder..",
-    "List suffix rest ..binder",
-    "List middle rest ..binder..",
+    "List prefix-position suffix rest binder../_..",
+    "List suffix-position suffix rest binder../_..",
+    "List middle-position suffix rest binder../_..",
     "Record exact, open-ignore and open-capture patterns",
     "Record destination-pattern:source-field mapping",
     "Map exact, open-ignore and open-capture patterns",
@@ -51,7 +51,8 @@
     "direct-local failure-atomic pattern assignment",
     "bare Tuple return type and return-value sugar",
     "bare Tuple multi-binding sugar",
-    "direct-local bare Tuple parallel assignment"
+    "direct-local bare Tuple parallel assignment",
+    "Failable guarded local let? binding with mandatory failure exit"
   ],
   "preview_gated": [
     "and and not patterns",
@@ -61,7 +62,6 @@
     "pure Pattern Views",
     "Pattern completeness manifests",
     "find/search patterns",
-    "one-layer let? Option payload binding",
     "Float range patterns",
     "clone binder acquisition",
     "generic Sequence automatic Pattern opening",
@@ -105,9 +105,12 @@
       "clone"
     ],
     "record_and_map_shape_default": "EXACT",
-    "open_ignore": ".._",
-    "open_capture": "..name",
-    "mapping_direction": "DESTINATION_PATTERN_COLON_SOURCE_IDENTITY",
+    "record_open_ignore": "_**",
+    "record_open_capture": "name**",
+    "map_open_ignore": ".._",
+    "map_open_capture": "..name",
+    "record_mapping_direction": "SOURCE_LABEL_COLON_DESTINATION_PATTERN",
+    "map_mapping_direction": "DESTINATION_PATTERN_COLON_KEY",
     "ordinary_class_opening": "REQUIRES_EXPLICIT_PATTERN_TRANSPARENCY_OR_ADAPTER"
   },
   "sequence_rest": {
@@ -118,15 +121,15 @@
     ],
     "maximum_rest_per_pattern": 1,
     "prefix": {
-      "surface": "binder..",
+      "surface": "binder../_..",
       "position": "FIRST"
     },
     "suffix": {
-      "surface": "..binder",
+      "surface": "binder../_..",
       "position": "LAST"
     },
     "middle": {
-      "surface": "..binder..",
+      "surface": "binder../_..",
       "position": "BETWEEN_FIXED_PATTERNS",
       "minimum_fixed_prefix": 1,
       "minimum_fixed_suffix": 1
@@ -190,8 +193,8 @@
   },
   "record_map_nominal": {
     "record_exact_without_rest": true,
-    "record_open_ignore": ".._",
-    "record_open_capture": "..name",
+    "record_open_ignore": "_**",
+    "record_open_capture": "name**",
     "record_residual_type": "exact structural Record row",
     "map_exact_without_rest": true,
     "map_open_ignore": ".._",
@@ -256,10 +259,8 @@
     "product_execution_receipt_count": 0
   },
   "diagnostic_families": [
-    "PATTERN_PREFIX_REST_MUST_BE_FIRST",
-    "PATTERN_SUFFIX_REST_MUST_BE_LAST",
+    "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
     "PATTERN_MULTIPLE_REST",
-    "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
     "PATTERN_REST_CARRIER_NOT_ADMITTED",
     "PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE",
     "COMMA_BINDING_REQUIRES_FIXED_TUPLE",
@@ -278,11 +279,11 @@
     "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR"
   ],
   "acceptance": {
-    "stable_design_count": 20,
-    "preview_gated_count": 14,
+    "stable_design_count": 21,
+    "preview_gated_count": 13,
     "not_admitted_count": 10,
-    "diagnostic_family_count": 20,
-    "sequence_rest_form_count": 3,
+    "diagnostic_family_count": 18,
+    "sequence_rest_form_count": 2,
     "maximum_rest_per_sequence_pattern": 1,
     "multi_value_semantic_carrier_count": 1,
     "general_comma_operator_count": 0,

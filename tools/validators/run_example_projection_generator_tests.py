@@ -424,7 +424,7 @@ def main() -> int:
                 lambda text: text.replace(
                     "- **source_root:** `ScriptSourceFile`\n",
                     "- **source_root:** `ScriptSourceFile`\n"
-                    "- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`\n",
+                    "- **expected_warnings:** `SLICE_OPEN_BOUND_FORM_INVALID`\n",
                     1,
                 ),
             )
@@ -434,7 +434,7 @@ def main() -> int:
                 if path.startswith("examples/manifests/by-outcome/chunks/"):
                     warning_rows.extend(load_json_bytes(data))
             assert warning_rows[0]["expected_warnings"] == [
-                "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+                "SLICE_OPEN_BOUND_FORM_INVALID"
             ], warning_rows[0]["expected_warnings"]
             duplicate_warning = case("duplicate_warning")
             mutate_text(

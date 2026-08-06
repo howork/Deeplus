@@ -239,8 +239,8 @@ def validate_documents(root: Path, docs: dict[str, Any]) -> tuple[list[dict[str,
     dependency_core = [{key: row.get(key) for key in ("dependency_id", "status", "panel", "required_digest_or_null")} for row in dependencies]
     dependency_shapes = [row.get("bound_shape") for row in dependencies]
     check(errors, checks, dependency_core == [
-        {"dependency_id": "MANAGED_REFERENCE_MEMORY_PROFILE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "root_rows", "required_digest_or_null": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"},
-        {"dependency_id": "CONTINUATION_INTERFACE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "continuation_rows", "required_digest_or_null": "42b925ea39769f9eb85310d333e0c43f866c72d0541dcdd6b7966c4bd1ed8562"},
+        {"dependency_id": "MANAGED_REFERENCE_MEMORY_PROFILE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "root_rows", "required_digest_or_null": "c7edbfe73ce68116525bc430de9b009e3b563f0bb8fa6d7a787a35f558927287"},
+        {"dependency_id": "CONTINUATION_INTERFACE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "continuation_rows", "required_digest_or_null": "52eff7187a3fd4abfd9f8dad38c6b6592f9d75ed1596121463c018be92aebb53"},
     ] and dependency_shapes == [
         {"semantic_references": ["RootId"], "required_receipt": "exact runtime/debug receipt additionally bound to the canonical managed-reference profile digest", "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"},
         {"semantic_references": ["ContinuationReceiptId"], "fields": ["frame state", "winner"], "required_receipt": "exact runtime/debug receipt additionally bound to the canonical continuation-interface digest", "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"},

@@ -1691,7 +1691,7 @@
     "descriptor": {
       "boundary_case": true,
       "call_shape": {
-        "named_rest_collector": "***"
+        "named_rest_collector": "**"
       }
     },
     "descriptor_v5": {
@@ -1713,7 +1713,7 @@
       }
     },
     "admitted_condition": "minimum closed boundary of the declared decision procedure",
-    "rule_seed": "declaration collector is exactly ***; function-type residue is Record***; call-side named unfold alone uses **",
+    "rule_seed": "declaration collector is exactly **; function-type residue is NamedPack**; owner-bounded call-side named unfold also uses prefix **",
     "execution_status": "STATIC_REFERENCE_VALIDATOR_PASS",
     "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
@@ -1724,80 +1724,9 @@
     "fixture_id": "PF-NamedRestCollectorAdmitted-NEG",
     "predicate_id": "NamedRestCollectorAdmitted",
     "expected": "rejected",
-    "expected_primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+    "expected_primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
     "diagnostic_disposition": "active_primary",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor": {
-      "source_kind": "FunctionType",
-      "normalized_type": "(Record**) -> Unit",
-      "ownership": null,
-      "borrow_region": null,
-      "cleanup": null,
-      "error_set": null,
-      "effect_row": null,
-      "suspension": null,
-      "cancellation": null,
-      "isolation": null,
-      "authority": null,
-      "construction_domain": null,
-      "call_shape": {
-        "named_rest_collector": "**",
-        "named_unfold_marker": "**"
-      },
-      "lookup_domain": null,
-      "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
-      "class_disposition": null,
-      "sealed_module_identity": null,
-      "ast_stage": null,
-      "ast_schema_version": null,
-      "unicode_scalar_constraint": null,
-      "label_row": null,
-      "product_evidence": {
-        "fixture": true
-      },
-      "source_role": null,
-      "entry_kind": null,
-      "construction_row": null,
-      "projection_row": null,
-      "projection_scope": null,
-      "option_coalesce_path": null,
-      "conditional_responsibility": null,
-      "numeric_literal_kind": null,
-      "shape": null,
-      "rank": null,
-      "orientation": null,
-      "element_types": null
-    },
-    "violated_condition": "parameter/type owner uses removed double-star suffix",
-    "fixture_kind": "concrete_negative",
-    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-NamedRestCollectorAdmitted-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-NamedRestCollectorAdmitted-POS",
-    "predicate_id": "NamedRestCollectorAdmitted",
-    "expected": "admitted",
     "descriptor": {
       "source_kind": "FunctionType",
       "normalized_type": "(Record***) -> Unit",
@@ -1841,7 +1770,78 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "declaration collector is exactly ***; function-type residue is Record***; call-side named unfold alone uses **",
+    "violated_condition": "parameter/type owner uses removed triple-star spelling",
+    "fixture_kind": "concrete_negative",
+    "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "PF-NamedRestCollectorAdmitted-NEG"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-NamedRestCollectorAdmitted-POS",
+    "predicate_id": "NamedRestCollectorAdmitted",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "FunctionType",
+      "normalized_type": "(NamedPack**) -> Unit",
+      "ownership": null,
+      "borrow_region": null,
+      "cleanup": null,
+      "error_set": null,
+      "effect_row": null,
+      "suspension": null,
+      "cancellation": null,
+      "isolation": null,
+      "authority": null,
+      "construction_domain": null,
+      "call_shape": {
+        "named_rest_collector": "**",
+        "named_unfold_marker": "**"
+      },
+      "lookup_domain": null,
+      "extension_member_id": null,
+      "witness_id": null,
+      "implementation_id": null,
+      "class_disposition": null,
+      "sealed_module_identity": null,
+      "ast_stage": null,
+      "ast_schema_version": null,
+      "unicode_scalar_constraint": null,
+      "label_row": null,
+      "product_evidence": {
+        "fixture": true
+      },
+      "source_role": null,
+      "entry_kind": null,
+      "construction_row": null,
+      "projection_row": null,
+      "projection_scope": null,
+      "option_coalesce_path": null,
+      "conditional_responsibility": null,
+      "numeric_literal_kind": null,
+      "shape": null,
+      "rank": null,
+      "orientation": null,
+      "element_types": null
+    },
+    "rule_seed": "declaration collector is exactly **; function-type residue is NamedPack**; owner-bounded call-side named unfold also uses prefix **",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {

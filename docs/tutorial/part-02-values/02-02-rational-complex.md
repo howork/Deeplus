@@ -18,7 +18,7 @@ profile이다. parser/checker/HIR/backend 실제 실행은 `NOT_RUN`이며,
 
 ## 3. 선수 지식
 
-numeric suffix, prefix sign, exact domain 개념을 알고 있어야 한다.
+numeric target adaptation, prefix sign, exact domain 개념을 알고 있어야 한다.
 
 ## 4. 문제에서 출발하기
 
@@ -39,9 +39,11 @@ gcd(abs(numerator), denominator) == 1
 zero == 0/1
 ```
 
-허수 리터럴은 decimal floating literal 뒤에 `i`가 붙은 scanner token이다.
-`4.0i`는 `Complex<Float64>`, `4.0f32i`는 `Complex<Float32>`다. `4i`,
-`4.0 i`, `4.0f64i`는 허용되지 않는다.
+허수 리터럴은 decimal floating-look literal 뒤에 `i`가 붙은 scanner
+token이다. target이 없으면 `4.0i`는 `Complex<Float64>`다. 직접 atomic
+literal을 `let imaginary: Complex<Float32> = 4.0i`처럼 target에 결합할 수
+있다. `4i`, `4.0 i`와 제거된 type suffix를 섞은 `4.0f64i`는 허용되지
+않는다.
 
 ## 6. 단계별 예제
 
@@ -62,7 +64,8 @@ canonical `0/1`이며 floating approximation을 거치지 않는다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 let signal: Complex = 3.0 + 4.0i
-let compact: Complex<Float32> = 1.0f32 - 2.0f32i
+let compactReal: Float32 = 1.0
+let compact: Complex<Float32> = compactReal - 2.0i
 let rotated: Complex = Complex::i * signal
 
 let rate: Rational = <3/100>
@@ -76,7 +79,9 @@ let divided: Complex = signal / (1.0 - 1.0i)
 
 `3.0 + 4.0i`는 일반적인 “real을 Complex로 바꾸는” conversion search가
 아니라, exact `(Float64, Complex<Float64>)` sealed 표준 `BinaryAdd`
-row를 선택한다.
+row를 선택한다. 반면 결과 annotation만으로 binary operand 둘을
+`Float32`로 역전파하지 않는다. nondefault operator domain이 필요하면
+`compactReal`처럼 이미 typed된 operand 하나가 candidate를 고정해야 한다.
 
 ### 판정 trace, 미니 사례와 흔한 오해
 
@@ -151,7 +156,7 @@ principal power는 branch cut에서 imaginary `+0.0`/`-0.0`을 지우면 안
 
 - Rational component는 붙은 부호 없는 10진 magnitude다.
 - 음수 부호는 literal 바깥 prefix가 소유한다.
-- `4.0i`와 `4.0f32i`만 각각의 admitted imaginary profile을 만든다.
+- floating-look `4.0i`가 유일한 imaginary suffix 표면이며 target이 Rep를 고정한다.
 - Rational은 unary `+`/`-`, binary `+`/`-`/`*`/`/`/`%`, strong
   `Eq`와 total `Ord`를 지원한다.
 - Complex는 unary `+`/`-`, binary `+`/`-`/`*`/`/`와 기존 partial

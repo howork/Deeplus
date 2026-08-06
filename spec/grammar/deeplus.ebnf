@@ -67,32 +67,28 @@ WordComment ::= "`" WordCommentScalar+ ;
 
 NUMERIC_LITERAL ::= FLOAT_LITERAL | INTEGER_LITERAL ;
 (* Attached imaginary literals are scanner-owned single tokens. The marker is
-   admitted only after a decimal floating literal: `4.0i`, `4.0f32i`.
+   admitted only after an unsuffixed decimal floating literal such as `4.0i`.
    An integer-looking `4i`, separated `4.0 i`, bare `i`, radix spelling, and
-   chained suffix such as `4.0f64i` are not imaginary literals. *)
+   every removed numeric type suffix are not imaginary literals. *)
 IMAGINARY_LITERAL ::= ScannerImaginaryFloatLiteral ;
 (* A Rational compound literal is recognized transactionally only at an
    expression-prefix goal. Its two unsigned decimal magnitudes contain no
    internal trivia, suffix, radix prefix, or sign. On failed recognition the
    scanner consumes nothing, preserving ordinary `<`, `/`, and `>` parsing. *)
 RATIONAL_LITERAL ::= ScannerRationalLiteralAtExpressionPrefix ;
-INTEGER_LITERAL ::= BinaryInteger IntegerSuffix?
-                  | OctalInteger IntegerSuffix?
-                  | HexInteger IntegerSuffix?
-                  | DECIMAL_INTEGER IntegerSuffix? ;
+INTEGER_LITERAL ::= BinaryInteger | OctalInteger | HexInteger | DECIMAL_INTEGER ;
 (* Non-finite values are not lexical literals. Use Float32/Float64::nan or ::positiveInfinity. *)
-FLOAT_LITERAL ::= DecimalFraction ExponentPart? FloatSuffix?
-                | DECIMAL_INTEGER ExponentPart FloatSuffix?
-                | DECIMAL_INTEGER FloatSuffix ;
+FLOAT_LITERAL ::= DecimalFraction ExponentPart?
+                | DECIMAL_INTEGER ExponentPart ;
 BinaryInteger ::= ("0b" | "0B") BinaryDigits ;
 OctalInteger ::= ("0o" | "0O") OctalDigits ;
 HexInteger ::= ("0x" | "0X") HexDigits ;
 DECIMAL_INTEGER ::= DecimalDigits ;
 DecimalFraction ::= DecimalDigits "." DecimalDigits ;
 ExponentPart ::= ("e" | "E") ("+" | "-")? DecimalDigits ;
-IntegerSuffix ::= "i8" | "i16" | "i32" | "i64" | "i128" | "isize"
-                | "u8" | "u16" | "u32" | "u64" | "u128" | "usize" ;
-FloatSuffix ::= "f32" | "f64" ;
+(* A removed numeric type suffix is a scanner recovery outcome rather than a
+   grammar production. It emits NUMERIC_TYPE_SUFFIX_REMOVED and is absent from
+   NUMERIC_LITERAL, CST, AST and HIR admission. *)
 BinaryDigits ::= BinaryDigit ("_"? BinaryDigit)* ;
 OctalDigits ::= OctalDigit ("_"? OctalDigit)* ;
 DecimalDigits ::= DecimalDigit ("_"? DecimalDigit)* ;
@@ -133,9 +129,7 @@ FAT_ARROW ::= "=>" ;
 ARROW ::= "->" ;
 DOT_DOT ::= ".." ;
 DOT_DOT_LT ::= "..<" ;
-DOT_DOT_GT ::= "..>" ;
 ELLIPSIS ::= "..." ;
-TRIPLE_STAR ::= "***" ;
 DOUBLE_STAR ::= "**" ;
 STAR_PLUS ::= "*+" ;
 STAR_DOT ::= "*." ;
@@ -422,11 +416,16 @@ IrrefutableParameterPattern ::= TuplePattern
 ParameterMode ::= "borrow" | "mut" | "move" | "inout" ;
 ContextParameter ::= "context" Identifier ":" TypeRef ;
 WitnessParameter ::= "using" Identifier ":" "witness" TypeRef ;
-RepeatedParameter ::= Identifier "..." TypeAnnotation ;
-NamedRestParameter ::= Identifier "***" TypeAnnotation ;
-(* `***` is the attached suffix for a named-rest parameter or function-type residue.
-   `**` is the attached prefix for call/materialization unfold and an independent
-   infix linear-product operator. The collector is canonical Record and must be final. *)
+RepeatedParameter ::= Identifier ".." TypeAnnotation ;
+NamedRestParameter ::= Identifier "**" NamedRestRequirementClause? ;
+NamedRestRequirementClause ::= "requires" "{" NamedRestRequirementEntries "}" ;
+NamedRestRequirementEntries ::= NamedRestRequirementEntry
+                                (PatternEntrySeparator NamedRestRequirementEntry)*
+                                PatternEntrySeparator? ;
+NamedRestRequirementEntry ::= Identifier ":" TypeRef ;
+(* Collection into a binder is an attached suffix: `items..: T` and `options**`.
+   NamedRestRequirementClause belongs only to that named-rest parameter and is
+   distinct from callable RequiresClause ::= `requires PredicateExpr`. *)
 StoredParameter ::= MemberVisibility? ("let" | "var") Identifier TypeAnnotation? ;
 
 (* ---------- Classes and members ---------- *)
@@ -472,8 +471,11 @@ ForwardMemberSpec ::= Identifier | "{" Identifier ("," Identifier)* ","? "}" ;
 
 (* ---------- Traits and conformances ---------- *)
 
-TraitDecl ::= TopLevelVisibility? "trait" Identifier TypeParameterList?
+TraitDecl ::= TopLevelVisibility? "trait" TraitLanguageRole? Identifier TypeParameterList?
               TraitDerivesClause* TraitAutoSupportClause? TraitBody? ;
+TraitLanguageRole ::= "#" ("operator" | "iteration" | "interpolation" | "binding") ;
+(* TraitLanguageRole is attached to `trait` and admitted only for the closed
+   core-owned role registry. It never creates a user-defined semantic hook. *)
 TraitDerivesClause ::= LineBreakBoundary "derives" QualifiedTypeReference ;
 TraitAutoSupportClause ::= LineBreakBoundary "supports" "auto" ;
 TraitBody ::= "{" TraitItem* "}" ;
@@ -688,7 +690,9 @@ OwnershipQualifier ::= "owned" | "borrowed" | "mut" | "inout" ;
    therefore uses one additional grouping layer, for example `((mut T)) -> R`. *)
 ParenTypeSyntax ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail? ;
 ParenTypeItemList ::= ParenTypeItem ("," ParenTypeItem)* ","? ;
-ParenTypeItem ::= FunctionTypeModeItem | TypeRef | TypeRef "..." | TypeRef "***" ;
+ParenTypeItem ::= FunctionTypeModeItem | TypeRef | TypeRef ".." | TypeRef "**" ;
+(* In this owner `T..` is the positional residue and `NamedPack**` is the
+   static-named residue. The checker requires the latter exact normalized owner. *)
 FunctionTypeModeItem ::= ParameterMode TypeRef ;
 FunctionTypeTail ::= "->" ReturnTypeSurface ThrowsClause* EffectsClause* ;
 
@@ -781,16 +785,16 @@ BindingPatternPrimary ::= Identifier
                         | Literal
                         | ParenthesizedPattern ;
 
-(* Record and Map patterns are exact by default. `.._` deliberately ignores an
-   open remainder and `..name` captures its exact residual row/map. At entry
-   top level `:` maps destination Pattern to source field/key; a destination
-   that owns a colon itself must be parenthesized. *)
+(* Record and Map patterns are exact by default but deliberately keep distinct
+   entry directions. Record-family entries are label-first and their static
+   named residual is the suffix `_**`/`name**`. Map entries retain destination
+   Pattern : key and their dynamic Map remainder remains `.._`/`..name`. *)
 RecordPattern ::= "${" RecordPatternEntries? "}" ;
 RecordPatternEntries ::= RecordPatternEntry (PatternEntrySeparator RecordPatternEntry)*
                          PatternEntrySeparator? ;
-RecordPatternEntry ::= Identifier | RecordDestination ":" Identifier | RecordRestPattern ;
+RecordPatternEntry ::= Identifier | Identifier ":" RecordDestination | RecordRestPattern ;
 RecordDestination ::= Pattern ;
-RecordRestPattern ::= ".." RestBinder ;
+RecordRestPattern ::= RestBinder "**" ;
 
 MapPattern ::= "#" "map" "{" MapPatternEntries? "}" ;
 MapPatternEntries ::= MapPatternEntry (PatternEntrySeparator MapPatternEntry)*
@@ -801,10 +805,8 @@ MapKeyPattern ::= Literal | PinPattern ;
 MapRestPattern ::= ".." RestBinder ;
 PatternEntrySeparator ::= "," LineBreakBoundary? | LineBreakBoundary ;
 
-(* List decomposition has exactly one of four shapes. A captured prefix or
-   suffix needs fixed context; `[.._]` remains the unique all-remainder
-   wildcard. Middle capture has fixed children on both sides and closes with
-   an attached second `..`. *)
+(* List decomposition has exactly one suffix rest binder. It may occur first,
+   last, or between fixed children; `_..` is the all-remainder sink. *)
 ListPattern ::= "[" ListPatternBody? "]" ;
 ListPatternBody ::= IgnoredAllListRest
                   | ExactListPattern
@@ -816,10 +818,11 @@ PrefixRestListPattern ::= PrefixListRest "," Pattern ("," Pattern)* ","? ;
 SuffixRestListPattern ::= Pattern ("," Pattern)* "," SuffixListRest ","? ;
 MiddleRestListPattern ::= Pattern ("," Pattern)* "," MiddleListRest ","
                           Pattern ("," Pattern)* ","? ;
-PrefixListRest ::= RestBinder ".." ;
-SuffixListRest ::= ".." RestBinder ;
-MiddleListRest ::= ".." RestBinder ".." ;
-IgnoredAllListRest ::= ".." "_" ","? ;
+PrefixListRest ::= ListRestPattern ;
+SuffixListRest ::= ListRestPattern ;
+MiddleListRest ::= ListRestPattern ;
+IgnoredAllListRest ::= "_" ".." ","? ;
+ListRestPattern ::= RestBinder ".." ;
 RestBinder ::= Identifier | "_" ;
 
 VariantPattern ::= VariantQualifier Identifier VariantPatternPayload? ;
@@ -846,6 +849,7 @@ Stmt ::= ForLoop
        | IfStmt
        | LocalBindingStmt
        | AssertiveBindingStmt
+       | MutableListStructuralEditStmt
        | PatternAssignmentStmt
        | ParallelAssignmentStmt
        | ControlTransferStmt
@@ -882,10 +886,10 @@ ReturnValueSurface ::= Expr | BareTupleValueSurface ;
 BareTupleValueSurface ::= Expr "," Expr ("," Expr)* ;
 LocalBindingStmt ::= BindingCore StatementBoundary | RightwardLocalBindingSurface | LazyBindingStmt | GuardedBindingStmt ;
 LazyBindingStmt ::= "let" HashTag Identifier TypeAnnotation? "=" Expr StatementBoundary ;
-GuardedBindingStmt ::= ("let" | "var") BindingPattern "=" Expr "else" GuardedBindingFailure StatementBoundary? ;
+GuardedBindingStmt ::= "let" "?" BindingPattern "=" Expr "else" Pattern "=>" GuardedBindingExit StatementBoundary? ;
 AssertiveBindingStmt ::= ("let" | "var") "!" BindingPattern "=" Expr StatementBoundary ;
-(* Failure exits are structurally unconditional. yield, ret and guarded transfers are not admitted. *)
-GuardedBindingFailure ::= GuardedBindingExit | Pattern "=>" GuardedBindingExit ;
+(* Failable binding consumes its source once. Both patterns must be checker-proven
+   irrefutable and the mandatory failure arm must leave the local continuation. *)
 GuardedBindingExit ::= GuardedReturnExit | GuardedThrowExit | GuardedBreakExit | GuardedContinueExit ;
 GuardedReturnExit ::= "return" Expr? ;
 GuardedThrowExit ::= "throw" Expr ;
@@ -986,18 +990,33 @@ AssigneeListBody ::= AssigneeIgnoredAllRest
                    | AssigneeSuffixRestList
                    | AssigneeMiddleRestList ;
 AssigneeExactList ::= AssigneePatternItem ("," AssigneePatternItem)* ","? ;
-AssigneePrefixRestList ::= Identifier ".." "," AssigneeExactList ;
-AssigneeSuffixRestList ::= AssigneeExactList "," ".." Identifier ","? ;
-AssigneeMiddleRestList ::= AssigneeExactList "," ".." Identifier ".." ","
+AssigneePrefixRestList ::= AssigneeRestPattern "," AssigneeExactList ;
+AssigneeSuffixRestList ::= AssigneeExactList "," AssigneeRestPattern ","? ;
+AssigneeMiddleRestList ::= AssigneeExactList "," AssigneeRestPattern ","
                            AssigneeExactList ;
-AssigneeIgnoredAllRest ::= ".." "_" ","? ;
-AssigneeRestPattern ::= ".." ("_" | Identifier) ;
+AssigneeIgnoredAllRest ::= "_" ".." ","? ;
+AssigneeRestPattern ::= ("_" | Identifier) ".." ;
 AssigneeRecordPattern ::= "${" AssigneeRecordEntries? "}" ;
 AssigneeRecordEntries ::= AssigneeRecordEntry
                           (PatternEntrySeparator AssigneeRecordEntry)*
                           PatternEntrySeparator? ;
-AssigneeRecordEntry ::= Identifier | AssigneePrimary ":" Identifier | AssigneeRestPattern ;
+AssigneeRecordEntry ::= Identifier | Identifier ":" AssigneePatternItem | AssigneeRecordRestPattern ;
+AssigneeRecordRestPattern ::= ("_" | Identifier) "**" ;
 AssigneeNominalPattern ::= TypeRef AssigneeRecordPattern ;
+(* MutableList structural edits are statement-only and do not activate ordinary
+   bracket read/replace. The receiver parselet commits only when the bracket
+   carries one of these exact structural-edit marker shapes. *)
+MutableListStructuralEditStmt ::= MutableListInsertStmt | MutableListRemoveStmt ;
+MutableListInsertStmt ::= MutableListEditReceiver MutableListInsertSuffix "=" MutableListInsertPayload StatementBoundary ;
+MutableListEditReceiver ::= MUTABLE_LIST_EDIT_RECEIVER_BY_OWNER ;
+MutableListInsertSuffix ::= "[" ("@" SliceIndexExpr | SliceIndexExpr "@" | "@" "^" | "$" "@") "]" ;
+MutableListInsertPayload ::= Expr | "*" Expr ;
+MutableListRemoveStmt ::= MutableListEditReceiver MutableListRemoveSuffix MutableListRemovalCapture? StatementBoundary ;
+MutableListRemoveSuffix ::= "[" ("-" "@" MutableListRemovalSelector | "-" "^" | "-" "$") "]" ;
+MutableListRemovalSelector ::= SliceIndexExpr
+                             | SliceRange
+                             | "(" SliceIndexExpr "," SliceIndexExpr ("," SliceIndexExpr)* ","? ")" ;
+MutableListRemovalCapture ::= "->" DollarLocalBinding ;
 ParallelAssignmentStmt ::= BareTuplePlaceSurface "=" AssignmentValueSurface StatementBoundary ;
 BareTuplePlaceSurface ::= Identifier "," Identifier ("," Identifier)* ;
 AssignmentValueSurface ::= Expr | BareTupleValueSurface ;
@@ -1020,7 +1039,11 @@ SliceIndexExpr ::= PrattSliceIndexExpr ;
    right-associative and gives `-2 ^ 2` the mathematical parse `-(2 ^ 2)`,
    while `2 ^ -3` remains `2 ^ (-3)`. *)
 ExpressionPrefixParselet ::= "+" | "-" | "not" | "~~"
-                           | "move" | "borrow" | "&" | "await" ;
+                            | "move" | "borrow" | "&" | "await" ;
+(* Structural unfold is intentionally absent from this general prefix set.
+   Closed positional owners admit `*Expr`; static-named call/materialization
+   and Map-entry owners admit `**Expr`. Range is an external Pratt led parselet for `..`, `..<`, and
+   one-sided `...`; its optional `:step` suffix belongs to that parselet. *)
 ExpressionPostfixParselet ::= CallSuffix
                             | TildeCallLed
                             | TupleOrdinalSuffix
@@ -1098,14 +1121,15 @@ AtomicCallArgument ::= Literal | Identifier | QualifiedStaticExpr | ExpectedVari
 TrailingClosureGroup ::= TrailingClosureArgument+ ;
 TrailingClosureArgument ::= ClosureExpr | Identifier ":" ClosureExpr ;
 
-(* An index suffix always supplies at least one axis; a full slice axis is
-   written `*`. *)
+(* An index suffix always supplies at least one comma-separated axis. `[..]`
+   is the general full slice; `[*]` remains NumericArray-axis syntax. *)
 IndexSuffix ::= "[" SliceAxisList "]" ;
-SliceAxisList ::= SliceAxis (";" SliceAxis)* ;
+SliceAxisList ::= SliceAxis ("," SliceAxis)* ;
 SliceAxis ::= SliceRange | SliceIndexExpr | AxisWildcard ;
 (* SliceRange owns `..`/`..<` at this delimiter level. PrattSliceIndexExpr
    terminates before those tokens and cannot consume the enclosing range. *)
-SliceRange ::= SliceBound (".." | "..<") SliceBound ;
+SliceRange ::= SliceBound? ".." SliceBound?
+             | SliceBound? "..<" SliceBound ;
 SliceBound ::= SliceIndexExpr | "^" | "$" | "^" OffsetExpr | "$" OffsetExpr ;
 OffsetExpr ::= ("+" | "-") NumericLiteral ;
 AxisWildcard ::= "*" ;
@@ -1125,11 +1149,11 @@ QualifiedMessageSelector ::= TypeRef "::" Identifier ("::" Identifier)? ;
 QualifiedExtensionSelector ::= TypeRef "::" Identifier "::" Identifier ;
 TildeArgumentSequence ::= TildeArgument ("," TildeArgument)* ;
 TildeArgument ::= ContextArgument
-                | WitnessArgument
-                | NamedArgument
-                | PositionalUnfoldArgument
-                | NamedUnfoldArgument
-                | Expr ;
+                 | WitnessArgument
+                 | NamedArgument
+                 | PositionalUnfoldArgument
+                 | NamedUnfoldArgument
+                 | Expr ;
 
 NumericArrayTransposeSuffix ::= "^" ;
 ConstructorCallSuffix ::= "!" ArgumentList ;
@@ -1266,9 +1290,11 @@ InterpolationIndex ::= StaticIntLiteral | Identifier ;
    diagnoses use of `${...}`. A terminal unescaped backtick explicitly ends shorthand output. *)
 
 (* Ordinary list, bounded list and comprehension share the '[' commitment point. *)
-ListLiteral ::= "[" ExpressionList? "]" ;
+ListLiteral ::= "[" ListEntryList? "]" ;
+ListEntryList ::= ListEntry ("," ListEntry)* ","? ;
+ListEntry ::= Expr | PositionalUnfoldArgument ;
 BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral
-                       ":" ExpressionList? "]" ;
+                       ":" ListEntryList? "]" ;
 ComprehensionExpr ::= "[" Expr ComprehensionClause+ "]" ;
 
 (* Record/materialization. *)
@@ -1293,7 +1319,7 @@ SetComprehensionExpr ::= "#" "set" "{" Expr ComprehensionClause+ "}" ;
 ComprehensionClause ::= ForClause | PositiveGuard | IfLetClause | UnfoldClause ;
 ForClause ::= "for" Pattern "in" Expr ;
 IfLetClause ::= "if" "let" Pattern "=" Expr ;
-UnfoldClause ::= "for" "..." Pattern "in" Expr ;
+UnfoldClause ::= "for" Pattern "in" "*" Expr ;
 
 (* Numeric arrays. *)
 NumericArrayLiteral ::= ShapeInferredArrayLiteral

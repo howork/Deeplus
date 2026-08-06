@@ -893,7 +893,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Comprehension unfold. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "Comprehension source unfold is `for Pattern in *Expr`. The star belongs to the source owner, evaluates the source once, and cannot become a general prefix expression or be selected by an expected type or overload.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -914,6 +914,7 @@
       "productions": [
         "ComprehensionClause",
         "ComprehensionExpr",
+        "UnfoldClause",
         "MaterializationBody",
         "SchemaDecl",
         "TypedMaterializationExpr"

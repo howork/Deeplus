@@ -4,7 +4,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ListLiteralElementJoinAdmitted",
     "source_name": "ListLiteralElementJoinAdmitted",
-    "summary": "Checks ordinary List elements against one inferred homogeneous type or an explicit expected type, including an explicit closed union; it never synthesizes a Union.",
+    "summary": "Checks ordinary List elements against one homogeneous defaulted type or one exact declared target, including an explicit closed union; direct suffix-free atomic numeric literals may adopt an exact numeric target, and the predicate never synthesizes a Union.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "normalized_type",
@@ -18,20 +18,23 @@
     ],
     "diagnostic_refs": [
       "LIST_LITERAL_ELEMENT_JOIN_FAILED",
-      "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE"
+      "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+      "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN",
+      "NUMERIC_TYPE_SUFFIX_REMOVED"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
       "the literal constructs immutable List<T> and is never context-rewritten to NumericArray",
-      "every numeric token is validated once by NumericLiteralAdmitted; '-' remains a separate AST prefix operator",
-      "without context, an empty literal is not inferable and only identical delegated or nonnumeric normalized element types are admitted",
+      "every scanner-admitted suffix-free numeric token is validated once by NumericLiteralAdmitted; '-' remains a separate AST prefix operator",
+      "without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64>; an empty literal is not inferable and all normalized element types must be identical",
       "with a fixed contextual List<T>, a nonnumeric element's normalized type must equal T exactly; assignment compatibility, subtype conversion, variance, hidden conversion, clone, ownership weakening, Option insertion, and source-order preference do not count as equality",
-      "with fixed exact integer T, only PrefixExpr(-, UnsuffixedIntegerLiteral) may request a magnitude fact and form signed candidate -magnitude; an in-range candidate admits as T",
-      "an out-of-range signed candidate, including Int8 -129 or UInt8 -1, emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+      "with a fixed contextual List<T>, a direct atomic numeric literal is delegated with exact T and admits exactly as T iff representable, including ISize, USize, Float32, and Float64 targets",
+      "with fixed exact signed Int, IntN, or ISize target T, only direct PrefixExpr(-, IntegerLiteral) may request a magnitude fact and form signed candidate -magnitude; an in-range candidate admits as T",
+      "a negative prefix expression under an exact unsigned UInt, UIntN, or USize target is rejected before the signed adapter with UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN; an out-of-range signed candidate, including Int8 -129, emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
       "the prefix-sign adapter performs no arbitrary constant folding, hidden widening, or expression rewrite",
-      "other numeric elements require NumericLiteralAdmitted to return exact T; suffix, ISize/USize, and Float32 rules remain delegated",
-      "there is no implicit integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent join"
+      "a candidate carrying any removed numeric type suffix is rejected by the scanner with NUMERIC_TYPE_SUFFIX_REMOVED before token/CST/AST/HIR creation or predicate invocation",
+      "there is no source-suffix, smallest-fit, implicit unsigned/BigInt/platform, width-fit, integer/float, signed/unsigned, width-changing, nominal, union, or source-order-dependent inference or join"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -48,15 +51,19 @@
     "preconditions": [
       "the literal constructs immutable List<T> and is never context-rewritten to NumericArray",
       "the optional contextual List<T> target is fixed before element normalization",
-      "numeric token parts, exact contextual target, and direct PrefixExpr shape are preserved",
-      "no hidden conversion, constant folding, synthesized union, or source-order preference has occurred"
+      "suffix-free numeric token parts, exact contextual target, and direct PrefixExpr shape are preserved",
+      "removed numeric type suffix candidates appear only as pre-predicate scanner-guard fixtures and have no current AST",
+      "no suffix-driven or smallest-fit inference, hidden conversion, constant folding, synthesized union, or source-order preference has occurred"
     ],
-    "normalization": "normalize exact List target and element AST shape; keep prefix sign separate from the numeric token",
+    "normalization": "normalize the exact List target and element AST shape; keep prefix sign separate, preserve exact suffix-free numeric values, and use only Int/Float64/Complex<Float64> when no target exists",
     "decision_procedure": [
-      "validate the closed RCTS-V5 descriptor",
-      "for a direct prefix-minus unsuffixed integer under exact integer T, request NumericLiteralAdmitted magnitude-only mode, compute -magnitude once, and admit exact T iff representable",
-      "emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE for an unrepresentable signed candidate; do not fold any other expression or insert conversion",
-      "otherwise evaluate NumericLiteralAdmitted once with contextual T when present and propagate its selected diagnostic",
+      "for a removed numeric type suffix candidate, require the scanner to emit NUMERIC_TYPE_SUFFIX_REMOVED over the whole candidate and stop before this predicate",
+      "validate the closed RCTS-V5 descriptor for every scanner-admitted current-source fixture",
+      "for a direct suffix-free atomic literal under exact contextual T, evaluate NumericLiteralAdmitted once with T and admit its exact materialized type iff representable",
+      "for a direct prefix-minus suffix-free integer under exact signed Int, IntN, or ISize target T, request NumericLiteralAdmitted magnitude-only mode, compute -magnitude once, and admit exact T iff representable",
+      "reject a negative prefix expression under UInt, UIntN, or USize before entering the adapter with UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN; emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE only for an unrepresentable signed-adapter candidate; do not fold any other expression or insert conversion",
+      "without context, default integer, real, and imaginary/complex atoms only to Int, Float64, and Complex<Float64>, then require normalized element-type identity",
+      "propagate any other diagnostic selected by NumericLiteralAdmitted without reinterpretation or suffix/smallest-fit recovery",
       "evaluate ListLiteralElementJoinAdmitted diagnostic_dispatch conditions once in their declared deterministic order",
       "emit only the diagnostic selected by the first matching condition (or its declared advisory lint), never the entire secondary_diagnostics list; otherwise return success"
     ],
@@ -64,14 +71,16 @@
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED",
     "secondary_diagnostics": [
-      "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE"
+      "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+      "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN",
+      "NUMERIC_TYPE_SUFFIX_REMOVED"
     ],
     "positive_fixture_ids": [
       "PF-ListLiteralElementJoinAdmitted-POS",
       "PF-ListLiteralElementJoinAdmitted-POS-CONTEXT-U8",
       "PF-ListLiteralElementJoinAdmitted-POS-EMPTY-CONTEXT",
-      "PF-ListLiteralElementJoinAdmitted-POS-F32-SUFFIX",
-      "PF-ListLiteralElementJoinAdmitted-POS-ISIZE-SUFFIX",
+      "PF-ListLiteralElementJoinAdmitted-POS-CONTEXT-F32",
+      "PF-ListLiteralElementJoinAdmitted-POS-CONTEXT-ISIZE",
       "PF-ListLiteralElementJoinAdmitted-POS-INT8-BOUNDARY",
       "PF-ListLiteralElementJoinAdmitted-POS-NONNUMERIC-EXACT",
       "PF-ListLiteralElementJoinAdmitted-BOUNDARY"
@@ -79,13 +88,13 @@
     "negative_fixture_ids": [
       "PF-ListLiteralElementJoinAdmitted-NEG",
       "PF-ListLiteralElementJoinAdmitted-NEG-EMPTY-NO-CONTEXT",
-      "PF-ListLiteralElementJoinAdmitted-NEG-F32-UNSUFFIXED",
-      "PF-ListLiteralElementJoinAdmitted-NEG-ISIZE-UNSUFFIXED",
       "PF-ListLiteralElementJoinAdmitted-NEG-INT8-LOW",
       "PF-ListLiteralElementJoinAdmitted-NEG-UINT8-NEGATIVE",
       "PF-ListLiteralElementJoinAdmitted-NEG-NONNUMERIC-SUBTYPE",
-      "PF-ListLiteralElementJoinAdmitted-NEG-MIXED-SUFFIX",
-      "PF-ListLiteralElementJoinAdmitted-NEG-I8-INT",
+      "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-F32-SUFFIX",
+      "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-I8-SUFFIX",
+      "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-ISIZE-SUFFIX",
+      "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-U8-SUFFIX",
       "PF-ListLiteralElementJoinAdmitted-NEG-INT-FLOAT",
       "PF-ListLiteralElementJoinAdmitted-NEG-U8-RANGE"
     ],
@@ -94,10 +103,12 @@
       "NumericLiteralAdmitted"
     ],
     "execution_receipt": null,
-    "input_adapter": "contextual_prefix_sign_only_for_direct_unsuffixed_integer_literal",
+    "input_adapter": "scanner_guard_then_contextual_direct_atomic_or_signed_target_prefix_minus_integer_adapter",
     "diagnostic_dispatch": {
       "empty_without_context_or_nonidentical_normalized_types_or_disallowed_conversion": "LIST_LITERAL_ELEMENT_JOIN_FAILED",
-      "contextual_integer_or_direct_prefix_sign_candidate_out_of_range": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE"
+      "contextual_direct_integer_or_signed_adapter_candidate_out_of_range": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+      "unsigned_exact_target_with_negative_prefix_expression_before_adapter": "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN",
+      "removed_numeric_type_suffix_candidate_before_predicate": "NUMERIC_TYPE_SUFFIX_REMOVED"
     },
     "diagnostic_disposition": "active_primary",
     "predicate_maturity": "design_algorithm",
@@ -227,7 +238,7 @@
       "no negative-from-end, hidden narrowing, truthiness, or witness rewrite has occurred",
       "storage offsets are not source-visible inputs"
     ],
-    "normalization": "normalize the intrinsic receiver family, source-owner identity, exact key/axis type, logical lower/upper bounds, shape and typed axes; ReadonlyView inherits its owner's domain and coordinates; never normalize source coordinates to offsets before admission",
+    "normalization": "normalize the intrinsic receiver family, source-owner identity, exact key/axis type, logical lower/upper boundary identities, shape and typed axes; ReadonlyView inherits its owner's domain and coordinates; one-past-last is a boundary identity rather than last+1; never normalize source coordinates to offsets before admission",
     "decision_procedure": [
       "validate the closed descriptor and select exactly one intrinsic domain; a ReadonlyView uses its source owner's declared domain and provenance; reject conformance-only or unknown receivers with LOGICAL_INDEX_DOMAIN_MISMATCH",
       "require exact Int for positional/bounded/NumericArray coordinates and exact K for Map; reject every wrong key or axis type with LOGICAL_INDEX_DOMAIN_MISMATCH",
@@ -426,7 +437,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MapUnfoldEntryAdmitted",
     "source_name": "MapUnfoldEntryAdmitted",
-    "summary": "Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and Map unfolds.",
+    "summary": "Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and owner-bounded **Map unfolds.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -456,7 +467,7 @@
       "direct/unfold sources evaluate once in order and share one exact K/V pair",
       "Keyable is preselected, nonconsuming, synchronous, throws Never, effects {}, cancellation-forbidden, authority-free",
       "later equal keys replace with one displaced-owner cleanup",
-      "failure publishes zero and reverse-cleans; call **record is separate"
+      "failure publishes zero and reverse-cleans; call **NamedPack is a different static-named owner even though both use the double-star lexical family"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -482,7 +493,7 @@
       "Keyable adds no hidden responsibility",
       "replacement/cleanup/publication obey the failure-atomic plan"
     ],
-    "normalization": "normalize exact K/V, entry kind/order, responsibility, and one Keyable witness",
+    "normalization": "normalize exact K/V, owner-bounded ** entry kind/order, responsibility, and one Keyable witness before overload or runtime selection",
     "decision_procedure": [
       "validate the MapLiteralPlan owner; exclude call **record",
       "evaluate each direct/unfold source once in order",
@@ -1279,92 +1290,5 @@
     "diagnostic_dispatch": {
       "environment_not_mutable_or_access_not_exclusive_or_overlap_or_reentrant": "CLOSURE_MUT_CALL_REQUIRES_MUTABLE_PLACE"
     }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "NamedConformanceAdmitted",
-    "source_name": "NamedConformanceAdmitted",
-    "summary": "Admit one static named conformance identity without adding it to automatic witness search.",
-    "input_descriptor": "RCTSDescriptorV5",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
-    "descriptor_axes": [
-      "semantic_type",
-      "ownership",
-      "effect",
-      "failure",
-      "authority",
-      "evidence",
-      "flow",
-      "api_digest"
-    ],
-    "feature_refs": [
-      "named_conformance_selector_msp"
-    ],
-    "diagnostic_refs": [
-      "NAMED_CONFORMANCE_DUPLICATE_NAME",
-      "NAMED_CONFORMANCE_AUTOMATIC_SEARCH_FORBIDDEN"
-    ],
-    "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "resolve nominal type and Trait",
-      "check module-local unique name",
-      "validate one coherent witness body",
-      "exclude from automatic search",
-      "publish deterministic evidence identity"
-    ],
-    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "type",
-      "ownership",
-      "effect",
-      "authority",
-      "evidence"
-    ],
-    "formal_judgment_id": "J-NamedConformanceAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "preconditions": [
-      "resolve nominal type and Trait",
-      "check module-local unique name"
-    ],
-    "normalization": "resolve nominal type and Trait",
-    "decision_procedure": [
-      "resolve nominal type and Trait",
-      "check module-local unique name",
-      "validate one coherent witness body",
-      "exclude from automatic search",
-      "publish deterministic evidence identity"
-    ],
-    "termination_metric": "finite descriptor/tree size and finite candidate set",
-    "success_result": "admit with normalized output",
-    "active_primary_diagnostic": "NAMED_CONFORMANCE_DUPLICATE_NAME",
-    "secondary_diagnostics": [
-      "NAMED_CONFORMANCE_AUTOMATIC_SEARCH_FORBIDDEN"
-    ],
-    "positive_fixture_ids": [
-      "PF-NamedConformanceAdmitted-POS",
-      "PF-NamedConformanceAdmitted-BOUNDARY"
-    ],
-    "negative_fixture_ids": [
-      "PF-NamedConformanceAdmitted-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> ordered decision procedure -> diagnostic",
-    "dependency_predicates": [
-      "ConformanceDeclProducesWitness",
-      "WitnessCoherent",
-      "WitnessResolution",
-      "WitnessResponsibilityCompatibility",
-      "AssociatedRequirementAdmitted",
-      "ConformanceVisibilityOrphanAdmitted",
-      "NamedEvidenceExcludedFromAutomaticResolution"
-    ],
-    "execution_receipt": null,
-    "diagnostic_disposition": "active_design_algorithm_product_not_run",
-    "predicate_maturity": "design_algorithm",
-    "emission_eligible": true,
-    "predecessor_identity": null
   }
 ]

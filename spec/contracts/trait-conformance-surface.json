@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.trait-conformance-surface/r1",
-  "revision": "r51f3-current-trait-operator-refinement-r1",
+  "revision": "r51f3-current-integrated-surface-r77-r1",
   "status": "STABLE_DESIGN",
   "authority": "DESIGN_TRAIT_CONFORMANCE_SUCCESSOR_SURFACE_R1",
   "date": "2026-07-28",
@@ -99,6 +99,7 @@
   },
   "preserved_identity_fields": [
     "TraitId",
+    "TraitLanguageRoleId",
     "ConformanceId",
     "TraitWitnessId",
     "RequirementId",
@@ -107,6 +108,48 @@
     "ResponsibilityId",
     "AuthorityId"
   ],
+  "language_roles": {
+    "registry_owner": "CORE_LANGUAGE_ONLY",
+    "role_is_distinct_from_trait_identity": true,
+    "role_is_part_of_trait_contract_and_api_digest": true,
+    "role_change_is_source_and_api_change": true,
+    "user_role_bearing_trait_declaration": "REJECT",
+    "user_direct_global_conformance_to_eligible_role_trait": "ADMIT",
+    "roles": {
+      "operator": {
+        "spelling": "trait#operator",
+        "owners": [
+          "UnaryPlus",
+          "UnaryMinus",
+          "Add",
+          "Subtract",
+          "Multiply",
+          "Divide",
+          "Remainder",
+          "Eq",
+          "Ord"
+        ],
+        "glyph_count": 13,
+        "selects_or_creates_glyph": false
+      },
+      "iteration": {
+        "spelling": "trait#iteration",
+        "owners": ["Sequence", "Iterator"]
+      },
+      "interpolation": {
+        "spelling": "trait#interpolation",
+        "owners": ["Display"]
+      },
+      "binding": {
+        "spelling": "trait#binding",
+        "owners": ["Failable"],
+        "associated_operation": "def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}"
+      }
+    },
+    "proof_role": "COMPILER_INTERNAL_DEFERRED",
+    "generic_role_or_profile_surface": "REJECT",
+    "runtime_role_lookup_count": 0
+  },
   "tcc_evolution_lanes": [
     "SOURCE",
     "RESOLUTION",

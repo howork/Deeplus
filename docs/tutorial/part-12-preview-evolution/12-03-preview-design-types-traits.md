@@ -18,8 +18,7 @@ expected reject probe다. 이 장은 새 syntax, P1 closure, 구현 authority
 - 타입·객체·Trait Preview Design을 문제군별로 분류한다.
 - current explicit alternative와 candidate surface를 구분한다.
 - coherence, witness, identity와 ownership 검토 질문을 세운다.
-- Option optional-binding 후보가 current pattern authority를 재사용하는
-  경계를 설명한다.
+- Stable `Failable` guarded binding과 거부된 조건형 확장의 경계를 설명한다.
 
 ## 3. 선수 지식
 
@@ -56,7 +55,6 @@ coherence와 link identity를 닫지 못한다.
    - `solver_backed_general_refinement`
    - `dyn_rcts_family`
    - `dynamic_trait_attach_detach_stateless_preview_design`
-   - `option_let_question_binding_preview_design`
 4. **extension·facet·projection**
    - `extension_dot_call_sugar`
    - `generic_named_extension_set_target`
@@ -110,29 +108,26 @@ def displayIsStable(id: UserId) -> Bool = {
 termination, artifact binding을 검토하는 이름이다. 위 test의 존재만으로
 proposal이 활성화되거나 법칙이 기계 증명되었다고 말하지 않는다.
 
-### 3단계: Option optional binding을 기존 pattern과 비교한다
+### 3단계: Stable Failable binding과 조건형 pattern을 구분한다
 
-`let?`는 `Option<T>` 한 겹의 `::some` pattern을 짧게 쓰려는
-nonactivatable 후보다.
+과거 Option-only 후보는 `trait#binding Failable`에 기반한 Stable guarded
+local binding으로 대체되었다. 현행 표면은 성공과 실패 pattern을 모두
+명시하고 실패 arm에서 반드시 현재 local continuation을 벗어난다.
 
-<!-- deeplus-example: illustrative; surface: PREVIEW_DESIGN_NONACTIVATABLE; product: NOT_RUN; expected: REJECT -->
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-// feature: option_let_question_binding_preview_design
-if let? user = findUser(id) {
-    show(user)
-}
-
-let? config = loadConfig() else {
-    return defaultConfig()
-}
+let? config = loadConfig()
+else error => throw error
 ```
 
-정규화는 각각 현행 `if let ::some(user) = ...`와 mismatch disposition을
-가진 guarded `let`을 재사용한다. `Option<T>` 한 겹만 열고 subject를 한
-번 평가하며 성공 전에는 binding/move를 commit하지 않는다. Result,
-arbitrary Enum, nullability, force unwrap, propagation, bare local
-`let?` without `else`, `for`/comprehension/match/condition-chain으로
-확대하지 않는다.
+subject는 한 번 평가되고 한 번 소비된다. 성공·실패 pattern은 연관 타입
+`Success`·`Failure`에 대해 irrefutable이어야 하며 성공 전에는 binding과
+move를 commit하지 않는다. Option과 Result는 각각 `Unit`과 `E`라는 다른
+실패 identity를 보존한다.
+
+`if let?`와 `while let?`, `var?`, `else` 없는 bare `let?`는 current도
+Preview도 아니다. 조건부 Option probing은 `if let Option::some(value) =
+candidate { ... }`처럼 명시적 pattern을 사용한다.
 
 ## 7. 허용·거부·경계 사례
 
@@ -171,8 +166,8 @@ compile-time erased라 하면 dynamic carriage use case를 설명하지 못한�
 Trait proposal은 fixed-glyph operator, indexing, method dispatch와 이어진다.
 하지만 임의 custom operator는 Preview 후보도 아니며 다시 만들지 않는다.
 Enum order/display/subset은 이미 Stable이며 Preview proposal로 세지
-않는다. Option binding proposal은 기존 pattern의 evaluation/commit과
-exhaustiveness 책임을 보존해야 한다. facet/projection proposal은
+않는다. Stable Failable binding은 기존 pattern의 evaluation/commit과
+failure identity를 보존한다. facet/projection proposal은
 borrow/move/inout 책임, mutation commit, cleanup을 HIR-H1에 lossless하게
 남겨야 한다.
 
@@ -225,7 +220,7 @@ child-local parent witness replacement나 specialization을 활성화하지
 - 모두 `NONACTIVATABLE`이며 current source가 아니다.
 - current explicit alternative는 proposal의 문제를 설명하되 proposal을
   몰래 구현하지 않는다.
-- Option binding 후보는 Option/pattern identity를 새 runtime node로 바꾸지 않는다.
+- Stable Failable binding은 carrier/pattern identity를 새 runtime node로 바꾸지 않는다.
 - static example이나 schema 존재만으로 P1/product 상태는 바뀌지 않는다.
 
 ## 12. 정본 근거와 다음 장

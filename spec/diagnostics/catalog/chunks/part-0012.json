@@ -797,10 +797,10 @@
     "feature_refs": [
       "numeric_array_sharp_shape_literal_msp"
     ],
-    "fixit_hint": "use comma in shape; semicolon is for slice axes",
+    "fixit_hint": "use comma in shape and between index/slice axes; semicolons are reserved for exact-shape literal bodies",
     "fixit_kind": "deterministic_rewrite",
-    "fixit_policy": "use comma in shape; semicolon is for slice axes",
-    "message": "NumericArray shape dimensions use comma; semicolon separates slice axes.",
+    "fixit_policy": "use comma in shape and between index/slice axes; semicolons are reserved for exact-shape literal bodies",
+    "message": "NumericArray shape dimensions and index/slice axes use commas; semicolons are reserved for exact-shape literal bodies.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -1167,18 +1167,18 @@
       "DIAGNOSTICS"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "NUMERIC_SUFFIX_KIND_MISMATCH",
+    "diagnostic_id": "NUMERIC_TYPE_SUFFIX_REMOVED",
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
       "numeric_literal_lexical_contract",
       "numeric_literal_suffix"
     ],
-    "fixit_hint": "",
-    "fixit_kind": "none",
-    "fixit_policy": "none",
-    "message": "The numeric suffix kind does not match the integer or decimal-float literal.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "fixit_hint": "remove the suffix and add or preserve an exact type annotation; rewrite integer-look 1f32/1f64 as a floating-look literal such as 1.0",
+    "fixit_kind": "migration_guidance",
+    "fixit_policy": "automatic replacement is permitted only when the target type and lexical kind are already unambiguous",
+    "message": "Numeric type suffixes are removed; write a suffix-free literal under an exact declared target.",
+    "notes": "The scanner maximal-munches the complete suffix-shaped candidate, emits this diagnostic once over the whole candidate, and creates no admitted token/CST/AST/HIR. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],

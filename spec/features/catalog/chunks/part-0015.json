@@ -1082,13 +1082,13 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
-    "display_name": "Half-open slice noncanonical warning law",
+    "display_name": "Canonical half-open and open-slice boundary law",
     "feature_id": "slice_half_open_noncanonical_warning_law",
     "feature_kind": "semantic_law",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Explicit-exclusive i..<j is accepted and emits SLICE_HALF_OPEN_RANGE_NONCANONICAL; canonical source uses inclusive i..j. This warning never rejects or silently rewrites the slice.",
+    "notes": "Explicit-exclusive `i..<j` is canonical. IndexSuffix also admits `[..<j]`, `[..j]`, `[i..]`, and `[..]`; `[i..<]` rejects. Open endpoints use owner boundary identities, including one-past-last without integer increment, and preserve provenance in empty views. No warning or silent rewrite is emitted.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1101,7 +1101,7 @@
     "trace_class": "syntax",
     "normative_trace_refs": {
       "diagnostics": [
-        "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+        "SLICE_OPEN_BOUND_FORM_INVALID"
       ],
       "predicates": [
         "SliceRangeAdmitted"

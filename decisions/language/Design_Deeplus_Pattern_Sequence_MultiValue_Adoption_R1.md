@@ -16,9 +16,10 @@ revision: `r51f3-current-pattern-sequence-multivalue-r1`
 
 두 ZIP은 CRC, path safety, exact/case-fold duplicate, symlink, nested
 archive, manifest와 `SHA256SUMS` 결합을 통과했다. Sequence rest와
-multi-value가 충돌하는 경우 R3가 R2보다 우선한다. 따라서 R2의
-`[first, ..middle, last]`는 수용하지 않고 R3의
-`[first, ..middle.., last]`를 사용한다.
+multi-value가 충돌하는 경우 R3가 R2보다 우선한다는 당시 판정은 provenance로
+남는다. 현행 R77 atomic cutover는 두 prefix/double-sided 후보를 모두
+제거하고, 정확히 하나의 attached suffix rest `name..` 또는 `_..`만 List
+Pattern의 시작·중간·끝 위치에 허용한다.
 
 ## 2. Deeplus다운 수용 원칙
 
@@ -41,9 +42,12 @@ multi-value가 충돌하는 경우 R3가 R2보다 우선한다. 따라서 R2의
 ### 3.1 Pattern carrier
 
 - exact Tuple Pattern: `(p)`는 grouping, `(p,)`는 one-Tuple
-- List exact, `[.._]`, `leadings..`, `..tail`, `..middle..`
-- Record/Map exact-by-default, `.._` open-ignore, `..name` open-capture
-- Record/Map mapping은 `destination Pattern : source identity`
+- List exact 또는 정확히 하나의 suffix rest: `[tail..]`,
+  `[first, middle.., last]`, `[head, tail..]`, `_..`
+- Record-family exact-by-default, `_**` open-ignore, `name**` static-named
+  residual, mapping은 `source label : destination Pattern`
+- Map exact-by-default, `.._` open-ignore, `..name` dynamic residual,
+  mapping은 `destination Pattern : key`
 - schema/data/value 또는 명시적 pattern-transparent nominal product
 - Enum positional payload와 declared named payload
 - stable pin, closed exact-order range/relational Pattern
@@ -117,7 +121,7 @@ Preview 파일과 설명은 삭제하지 않는다. 다만 별도 activation과
 
 ## 5. 수용하지 않은 항목
 
-- R2 middle rest 철자와 tuple rest
+- prefix/double-sided List rest 철자와 tuple rest
 - effectful, throwing, suspending 또는 dynamic extractor
 - arbitrary getter/provider 호출
 - unbounded backtracking

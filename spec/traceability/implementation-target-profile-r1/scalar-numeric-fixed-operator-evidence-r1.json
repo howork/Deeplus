@@ -1053,14 +1053,14 @@
     {
       "case_id": "R54-NUM-001",
       "feature_id": "numeric_literal_suffix",
-      "outcome": "BOUNDARY",
+      "outcome": "REJECT",
       "source_or_subject": "let max: UInt8 = 255u8",
-      "expected": "ADMIT",
-      "diagnostic_or_null": null,
+      "expected": "REJECT",
+      "diagnostic_or_null": "NUMERIC_TYPE_SUFFIX_REMOVED",
       "assertions": {
-        "suffix": "u8",
-        "normalized_type": "UInt8",
-        "boundary": "maximum exact value"
+        "whole_candidate_rejected": true,
+        "prefix_split": false,
+        "replacement": "let max: UInt8 = 255"
       },
       "execution_state": "DESIGN_STATIC_NOT_RUN"
     },
@@ -1070,7 +1070,7 @@
       "outcome": "REJECT",
       "source_or_subject": "let bad = 1u7",
       "expected": "REJECT",
-      "diagnostic_or_null": "UNKNOWN_NUMERIC_LITERAL_SUFFIX",
+      "diagnostic_or_null": "NUMERIC_TYPE_SUFFIX_REMOVED",
       "assertions": {
         "whole_candidate_rejected": true,
         "prefix_split": false

@@ -25,10 +25,13 @@ Record·Map, transparent nominal product와 direct-local group assignment까지
 검토한다.
 
 **제안 표면**
-후보 inventory는 And/Not Pattern, Set/NumericArray Pattern, Option 전용
-`let?`, Pattern Synonym/View/completeness/find, Float range, clone binder,
+후보 inventory는 And/Not Pattern, Set/NumericArray Pattern,
+Pattern Synonym/View/completeness/find, Float range, clone binder,
 generic Sequence opening, temporary-owner-retaining residual, affine/Resource
 permutation과 member/index/property/shared/actor/FFI group assignment이다.
+제거된 Option-only `if let?`/`while let?` predecessor는 이 후보 inventory에
+포함되지 않는다. current consuming local은 core `Failable`의 exact guarded
+form을 사용한다.
 아래 코드는 이해를 위한 비활성 예시이며 current parser가 받는 구문이
 아니다.
 
@@ -67,7 +70,7 @@ xVM/Cranelift target receipt와 명시적 Design activation authority가 필요�
 ```deeplus
 // 비활성 검토 예시: current source가 아니다.
 match values {
-    find [..before, ^target, ..after] => report(before, after)
+    find [before.., ^target, after..] => report(before, after)
     otherwise => reportMissing()
 }
 

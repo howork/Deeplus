@@ -325,11 +325,12 @@
     }
   },
   "current_surface_decisions": {
-    "named_repeated_parameter": "***",
-    "named_repeated_function_type": "***",
-    "named_unfold": "**",
-    "positional_repeated": "...",
-    "comprehension_unfold": "for ... Pattern in Expr",
+    "named_repeated_parameter": "**",
+    "named_repeated_function_type": "NamedPack**",
+    "structural_unfold": "*Expr is the positional unfold and **Expr is the static-named unfold under their closed owners; the token fixes the channel before overload selection",
+    "positional_repeated": "..",
+    "positional_repeated_function_type": "T..",
+    "comprehension_unfold": "for Pattern in *Expr",
     "lazy_binding": "let#lazy",
     "interpolation_shorthand": "$root.member[index]",
     "unit_infix": [
@@ -345,7 +346,7 @@
       "@while",
       "@repeat"
     ],
-    "hash_role_trivia": "allowed by parser; formatter canonicalizes to attached #word",
+    "hash_role_trivia": "generic hash roles allow parser trivia and format attached; closed TraitLanguageRole and Failable let? owners require exact attachment",
     "semantic_rejections": [
       "fixed-operator conformance outside the exact 13 unary, arithmetic, equality and ordering roles or outside their left-owner DIRECT_GLOBAL profile",
       "open or provider-driven runtime type tests",
@@ -356,12 +357,15 @@
     "operator_glyph_dispatch": "INTRINSIC_RESERVED_OR_STABLE_FIXED_CONFORMANCE_FOR_EXACT_13_UNARY_ARITHMETIC_EQUALITY_ORDER_ROLES",
     "range_delimiters": [
       "..",
-      "..<"
+      "..<",
+      "..."
     ],
+    "range_step_suffix": ":step owned by the Range parselet",
     "index_suffix_requires_axis": true,
-    "full_slice_axis": "*",
+    "index_axis_separator": ",",
+    "full_slice_axis": "[..] generally; [*] additionally for a NumericArray axis",
     "no_generic_at_role": true,
-    "named_rest_disambiguation": "grammar owner: attached suffix *** in parameter/type; attached prefix ** only in call/materialization unfold",
+    "named_rest_disambiguation": "attached suffix ** collects a static named row in parameter, function-type, and Record-family pattern owners; attached prefix ** unfolds the static-named channel, while prefix * unfolds only the positional channel under a closed owner",
     "class_instance_method_marker": "mandatory one of . + *. *+",
     "stored_field_dispatch_marker": "forbidden",
     "trait_associated_non_method_marker": "forbidden",
@@ -372,7 +376,7 @@
       "if let pattern = expr",
       "while let pattern = expr",
       "for let pattern in expr",
-      "Preview Design only: if/while/guarded-local let? OptionPayloadPattern = expr; nonactivatable"
+      "let? successPattern = expression else failurePattern => structurallyUnconditionalExit"
     ]
   },
   "stage_names": [
@@ -420,36 +424,25 @@
       "surface": "...",
       "lexer": "ELLIPSIS",
       "cst_roles": [
-        "RepeatedPositionalMarker",
-        "UnfoldClause"
+        "OneSidedRangeMarker"
       ],
       "ast_roles": [
-        "RepeatedPositional",
-        "ComprehensionUnfold"
+        "OneSidedRange"
       ]
-    },
-    {
-      "surface": "***",
-      "lexer": "TRIPLE_STAR",
-      "cst_roles": [
-        "NamedRestParameterMarker",
-        "FunctionTypeNamedRestResidueMarker"
-      ],
-      "ast_roles": [
-        "NamedRestParameter",
-        "FunctionTypeNamedRestResidue"
-      ],
-      "profile": "STABLE"
     },
     {
       "surface": "**",
       "lexer": "DOUBLE_STAR",
       "cst_roles": [
-        "NamedUnfoldMarker",
+        "NamedRestSuffixMarker",
+        "NamedUnfoldPrefixMarker",
+        "MapUnfoldPrefixMarker",
         "InfixOperator"
       ],
       "ast_roles": [
+        "NamedRestParameterOrPatternOrTypeResidue",
         "NamedUnfold",
+        "MapUnfold",
         "LinearProduct"
       ]
     },
@@ -647,18 +640,18 @@
       "lexer_fused_token": false
     },
     {
-      "id": "POSITIONAL_REPEAT",
-      "surface": "...",
+      "id": "POSITIONAL_COLLECT_SUFFIX",
+      "surface": "..",
       "trivia": "CONTEXT_DEPENDENT",
       "contexts": [
         "parameter",
         "function_type",
-        "comprehension_unfold_clause"
+        "list_pattern"
       ],
       "trivia_by_context": {
         "parameter": "ATTACHED_SUFFIX",
         "function_type": "ATTACHED_SUFFIX",
-        "comprehension_unfold_clause": "SPACE_AFTER_FOR_AND_BEFORE_PATTERN"
+        "list_pattern": "ATTACHED_SUFFIX"
       },
       "formatter": "contextual"
     },
@@ -740,15 +733,65 @@
     {
       "id": "NAMED_MARKER_BY_OWNER",
       "surfaces": [
-        "***",
         "**"
       ],
       "trivia": "NO_TRIVIA",
       "owners": {
-        "parameter_or_function_type": "attached_suffix_***_named_rest",
-        "call_or_materialization": "attached_prefix_**_named_unfold",
+        "parameter_function_type_or_record_family_pattern": "attached_suffix_**_static_named_rest",
         "linear_product_expression": "spaced_infix_**"
       }
+    },
+    {
+      "id": "STRUCTURAL_UNFOLD_BY_OWNER",
+      "surfaces": {
+        "positional": "*Expr",
+        "static_named": "**Expr"
+      },
+      "trivia": "NO_TRIVIA_BETWEEN_MARKER_AND_OPERAND",
+      "owners": {
+        "positional": [
+          "call_argument",
+          "list_entry",
+          "mutable_list_insertion_payload",
+          "comprehension_source"
+        ],
+        "static_named": [
+          "call_argument",
+          "record_materialization_entry",
+          "map_entry"
+        ]
+      },
+      "general_expression_prefix_parselet": false,
+      "ast": "PositionalUnfold for *Expr or NamedUnfold for **Expr; no unsealed channel variant exists",
+      "seal_before": "the lexical marker fixes the channel before formal binding and overload candidate selection",
+      "runtime_shape_selection": false
+    },
+    {
+      "id": "TRAIT_LANGUAGE_ROLE_ATTACHMENT",
+      "surface": "trait#operator, trait#iteration, trait#interpolation, or trait#binding",
+      "trivia": "NO_TRIVIA_AROUND_HASH",
+      "owner": "TraitDecl",
+      "role_vocabulary": [
+        "operator",
+        "iteration",
+        "interpolation",
+        "binding"
+      ],
+      "core_owner_only": true
+    },
+    {
+      "id": "FAILABLE_BINDING_ATTACHMENT",
+      "surface": "let?",
+      "trivia": "NO_TRIVIA_BEFORE_QUESTION",
+      "owner": "GuardedBindingStmt",
+      "else_required": true
+    },
+    {
+      "id": "RANGE_STEP_OWNER",
+      "surface": ":step",
+      "trivia_before_colon": "NO_TRIVIA_REQUIRED_BY_ATTACHMENT_POLICY",
+      "owner": "Range parselet after bounded or one-sided range",
+      "ternary_owner": false
     },
     {
       "id": "INTERPOLATION_SHORTHAND",
@@ -853,7 +896,9 @@
     ],
     "forbidden": "Do not model omission as a global optional; only the owning context may supply an implicit input.",
     "named_rest": {
-      "marker": "***"
+      "marker": "**",
+      "body_type": "NamedPack<rho>",
+      "optional_requirement_owner": "NamedRestRequirementClause"
     }
   },
   "admission_policies": {
@@ -924,13 +969,15 @@
       }
     ],
     "named_rest": {
-      "marker": "***",
+      "marker": "**",
       "position": "FINAL",
-      "phase_a_carrier": "canonical Prelude Record identity",
-      "grammar": "TypeAnnotation/TypeRef",
+      "phase_a_carrier": "call-scoped nonescaping NamedPack<rho>",
+      "grammar": "Identifier ** NamedRestRequirementClause?",
       "checker_owned": true,
-      "function_type_residue_marker": "***",
-      "named_unfold_marker": "**"
+      "function_type_residue": "NamedPack**",
+      "outward_unfold_marker": "*",
+      "row_selection_before_overload": true,
+      "dynamic_labels_or_map_input": "REJECT"
     },
     "class": {
       "ordinary_body": "REQUIRED",
@@ -1767,12 +1814,20 @@
             ],
             [
               "..<"
+            ],
+            [
+              "..."
             ]
           ],
           "lbp": 120,
           "rbp": 121,
           "assoc": "nonassociative",
-          "parselet": "range"
+          "parselet": "range",
+          "rhs": "required for .. and ..<; absent for ...",
+          "step_suffix": ": Expr consumed by this parselet after the optional end",
+          "evaluation": "start then end if present then step exactly once left-to-right",
+          "zero_or_direction_mismatch": "static rejection before HIR",
+          "overflow": "bounded iteration terminates before overflow"
         },
         {
           "id": "additive",
@@ -1908,18 +1963,31 @@
       "enclosing_owner": "IndexSuffix",
       "range_owner": "SliceRange",
       "scalar_expression_owner": "PrattSliceIndexExpr",
-      "bounds_required": true,
+      "bounds_required": false,
       "terminates_before": [
         "..",
         "..<",
-        ";",
+        ",",
         "]"
       ],
       "anchors_owned_by_slice_bound_only": [
         "^",
         "$"
       ],
-      "full_axis": "* (NumericArray axis only)",
+      "axis_separator": ",",
+      "open_ranges": [
+        "[..<end]",
+        "[..end]",
+        "[start..]",
+        "[..]"
+      ],
+      "rejected_open_exclusive_end": "[start..<]",
+      "full_axis": "[..] generally; [*] is a NumericArray-only equivalent full axis",
+      "numeric_array_axis_count": "exact source rank",
+      "scalar_axis_result": "axis removed; result rank is the count of non-scalar axes",
+      "multi_axis_composition": "Cartesian",
+      "tuple_as_gather": false,
+      "one_past_last": "boundary identity; never compute last + 1",
       "empty_axis": "INDEX_SUFFIX_REQUIRES_AXIS",
       "anchor_outside_slice_bound_diagnostic": {
         "diagnostic": "SLICE_ANCHOR_OUTSIDE_SLICE",
@@ -2255,7 +2323,7 @@
       "schema": "deeplus.complete-token-lexical-goal-contract/r1",
       "scanner_mode_count": 6,
       "lexical_goal_count": 10,
-      "syntax_terminal_count": 201,
+      "syntax_terminal_count": 200,
       "atomic_token_count": 22,
       "trivia_kind_count": 8,
       "token_probe": "complete-checkpoint transaction; failed probe consumes zero bytes/tokens and emits zero diagnostics",
@@ -2309,7 +2377,7 @@
     "contract": "spec/contracts/frontend-cst-boundary-recovery-contract.json",
     "schema": "deeplus.frontend-cst-boundary-recovery-contract/r1",
     "grammar_disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
-    "grammar_production_count": 644,
+    "grammar_production_count": 656,
     "parser_boundary_contract": "spec/contracts/parser-boundary-match-arm-contract-r1.json",
     "recovery_contract": "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json",
     "canonical_ast_recovery_node_count": 0,
@@ -2327,14 +2395,14 @@
       "commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
       "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
     },
-    "grammar_production_count": 644,
+    "grammar_production_count": 656,
     "formatting_rule_count": 6,
     "formatting_rule_counts": {
-      "FD-01": 56,
-      "FD-02": 35,
-      "FD-03": 320,
-      "FD-04": 204,
-      "FD-05": 10,
+      "FD-01": 54,
+      "FD-02": 33,
+      "FD-03": 333,
+      "FD-04": 205,
+      "FD-05": 12,
       "FD-06": 19
     },
     "identity_domain_count": 8,
@@ -2540,9 +2608,9 @@
       "fix": "${...}"
     },
     {
-      "id": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+      "id": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
       "stage": "PARSER",
-      "fix": "***"
+      "fix": "name** or NamedPack**"
     },
     {
       "id": "OPTION_BARE_NONE_REMOVED",
@@ -2630,14 +2698,21 @@
       "fix": "use one of the exact 13 admitted roles or a named Trait method/API; assignment, range, power, bitwise, logical, membership, type identity, and arbitrary custom glyph hooks remain closed"
     },
     {
-      "id": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+      "id": "SLICE_OPEN_BOUND_FORM_INVALID",
       "stage": "PARSER",
-      "fix": "write both bounds with .. or ..<; use * only for a NumericArray full axis"
+      "fix": "write i.. for an open upper bound or provide the exclusive end as i..<j"
     },
     {
       "id": "INDEX_SUFFIX_REQUIRES_AXIS",
       "stage": "PARSER",
-      "fix": "declared first coordinate/key; [*] only for NumericArray"
+      "fix": "supply a coordinate or use [..] for a general full slice; [*] remains NumericArray-only"
+    },
+    {
+      "id": "NUMERIC_TYPE_SUFFIX_REMOVED",
+      "stage": "LEXER",
+      "fix": "remove the type suffix and impose the exact target with a type annotation; use a typed operand anchor before operator selection",
+      "candidate_consumption": "maximal whole candidate",
+      "canonical_cst_ast_hir_count": 0
     },
     {
       "id": "LAZY_BINDING_AT_MARKER_REMOVED_USE_HASH",
@@ -2687,20 +2762,27 @@
     "ParenTypeSyntax",
     "Block/ValueBody engine",
     "CallableBlock/FunctionStaticActivation",
-    "DelimitedSequence engine"
+    "DelimitedSequence engine",
+    "Range parselet with owned :step suffix",
+    "IndexSuffix comma-axis and open-slice owner",
+    "PositionalUnfold *Expr and NamedUnfold **Expr closed-owner dispatchers",
+    "NamedRestParameter and NamedRestRequirementClause",
+    "MutableListStructuralEditStmt",
+    "TraitLanguageRole attached annotation",
+    "Failable let? binding"
   ],
   "baseline": "0.1.2-baseline.r51f3",
   "grammar_profile_counts": {
-    "LEXICAL": 91,
-    "STABLE": 540,
+    "LEXICAL": 87,
+    "STABLE": 556,
     "PREVIEW": 13
   },
   "grammar_topology_closure": {
     "contract": "spec/contracts/grammar-topology-closure-r1.json",
     "disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
     "source_root_count": 6,
-    "production_count": 644,
-    "closed_external_symbol_count": 40,
+    "production_count": 656,
+    "closed_external_symbol_count": 41,
     "unowned_orphan_count": 0,
     "illegal_cross_profile_edge_count": 0,
     "product_support": "NOT_RUN"
@@ -2710,8 +2792,8 @@
     "sign_is_numeric_token_part": false,
     "contextual_prefix_sign_adapter": {
       "owner": "integrated_checker",
-      "required_ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
-      "required_context": "one independently fixed exact Int, IntN, or UIntN domain; ISize/USize excluded",
+      "required_ast_shape": "PrefixExpr(-, IntegerLiteral)",
+      "required_context": "one independently fixed exact signed Int, IntN, or ISize domain",
       "candidate": "negative of the validated token magnitude",
       "admission": "candidate is mathematically representable in the exact target domain",
       "list_failure": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
@@ -2724,7 +2806,7 @@
       10,
       16
     ],
-    "integer_suffixes": [
+    "removed_integer_suffixes": [
       "i8",
       "i16",
       "i32",
@@ -2738,7 +2820,7 @@
       "u128",
       "usize"
     ],
-    "float_suffixes": [
+    "removed_float_suffixes": [
       "f32",
       "f64"
     ],
@@ -2747,21 +2829,21 @@
       "emitted_kind": "ImaginaryFloatLiteralToken",
       "source_forms": [
         "DecimalFraction ExponentPart? i",
-        "DecimalFraction ExponentPart? f32 i"
+        "DECIMAL_INTEGER ExponentPart i"
       ],
       "attachment": "the terminal ASCII i is part of the same token and admits no trivia",
       "default_type": "Complex<Float64>",
-      "f32_type": "Complex<Float32>",
+      "contextual_target": "a direct atomic literal may adapt to Complex<Float32>; operator candidate selection remains operand-driven",
       "canonical_value": "real component is positive zero; imaginary component is the exact validated floating literal value",
       "accepted_examples": [
         "4.0i",
-        "6.25e-2i",
-        "4.0f32i"
+        "6.25e-2i"
       ],
       "rejected_examples": {
         "4i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
         "4.0 i": "IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED",
-        "4.0f64i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED",
+        "4.0f32i": "NUMERIC_TYPE_SUFFIX_REMOVED",
+        "4.0f64i": "NUMERIC_TYPE_SUFFIX_REMOVED",
         "0x4.0i": "IMAGINARY_LITERAL_FORM_NOT_ADMITTED"
       },
       "bare_i": "ordinary IDENTIFIER",
@@ -2795,10 +2877,11 @@
     "exponent": "decimal_only_with_required_digits",
     "radix_floats": "not_current",
     "unsuffixed_integer_default": "Int",
-    "unsuffixed_integer_contextual_targets": "representable Int, UInt, IntN, or UIntN for N in {8,16,32,64,128} only",
-    "unsuffixed_integer_excluded_contextual_targets": "ISize and USize require isize/usize or explicit checked conversion",
+    "unsuffixed_integer_contextual_targets": "any independently fixed exact integer target for which the mathematical constant is representable, including platform-sized domains",
+    "unsuffixed_integer_excluded_contextual_targets": "none solely because a removed source suffix no longer exists; target representability still applies",
     "unsuffixed_float_default": "Float64",
-    "unsuffixed_float_contextual_targets": "after closed-alias normalization, Float64 only (therefore Float is included); Float32 requires f32",
+    "unsuffixed_float_contextual_targets": "a direct atomic real literal may adapt to one independently fixed Float32 or Float64 target; unconstrained default is Float64",
+    "untyped_constant_law": "integer, real, imaginary, and rational constants remain exact until a valid target is imposed; no smallest-fit, width-fit ranking, or expected-result-driven operator selection",
     "normalization_owner": "NumericLiteralAdmitted",
     "nonfinite_policy": "not lexical literals; use Float32/Float64 static nan and positiveInfinity members",
     "candidate_scanner": {
@@ -2808,8 +2891,8 @@
         "1 consume a radix prefix when present, then consume the maximal adjacent ASCII alphanumeric/underscore digit-suffix candidate rather than stopping at the last valid radix digit",
         "2 for decimal candidates consume a dot only when followed by a decimal digit; then consume the decimal fraction, optional e/E exponent marker, optional exponent sign, exponent candidate, and adjacent suffix candidate",
         "3 for radix candidates include an adjacent dotted p/P-exponent spelling in the same candidate only when lookahead finds the p/P marker; otherwise dot begins ordinary member syntax",
-        "4 validate radix digits, underscore positions, required fraction/exponent digits, suffix kind, and the radix-float prohibition against the whole candidate",
-        "5 on failure emit exactly one mapped lexer diagnostic spanning the whole candidate and emit no valid numeric prefix tokens",
+        "4 validate radix digits, underscore positions and required fraction/exponent digits; any attached removed numeric type suffix commits the whole candidate to one recovery diagnostic",
+        "5 on failure or removed suffix emit exactly one mapped lexer diagnostic spanning the whole candidate and emit no valid numeric prefix tokens or admitted CST/AST/HIR residue",
         "6 only after successful validation emit exactly one most-specific token kind according to successful_token_emission; parser terminals may match its declared lexical supertypes, but no second co-spanning token is emitted; an immediately attached [ is then reclassified by the measure-opener rule"
       ],
       "successful_token_emission": {
@@ -2834,7 +2917,7 @@
             ]
           },
           {
-            "predicate": "valid decimal fraction, exponent, or float-suffixed candidate",
+            "predicate": "valid unsuffixed decimal fraction or exponent candidate",
             "emitted_kind": "FloatLiteralToken",
             "matches_parser_terminals": [
               "FloatLiteralToken",
@@ -2849,7 +2932,7 @@
             ]
           }
         ],
-        "static_int_terminal_law": "StaticIntLiteral matches only the DecimalIntegerToken concrete kind; radix prefix, integer suffix, decimal point, exponent, or float suffix prevents that kind"
+        "static_int_terminal_law": "StaticIntLiteral matches only the DecimalIntegerToken concrete kind; radix prefix, decimal point, exponent, or any recovery-only removed suffix candidate prevents that kind"
       },
       "member_dot_disambiguation": "1.foo is NumericLiteralToken(1) plus MemberSuffix; 0x1.fp3 is one rejected radix-float candidate because p3 lookahead closes the radix-float signature",
       "error_map": {
@@ -2857,9 +2940,10 @@
         "digit_outside_radix": "INVALID_DIGIT_FOR_NUMERIC_RADIX",
         "underscore_not_exactly_between_digits": "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
         "missing_exponent_digits": "MALFORMED_NUMERIC_EXPONENT",
-        "suffix_kind_mismatch": "NUMERIC_SUFFIX_KIND_MISMATCH",
+        "removed_numeric_type_suffix": "NUMERIC_TYPE_SUFFIX_REMOVED",
+        "suffix_kind_mismatch": "NUMERIC_TYPE_SUFFIX_REMOVED",
         "radix_float_signature": "NUMERIC_RADIX_FLOAT_NOT_CURRENT",
-        "unknown_suffix": "UNKNOWN_NUMERIC_LITERAL_SUFFIX"
+        "unknown_suffix": "NUMERIC_TYPE_SUFFIX_REMOVED"
       }
     }
   },
@@ -2982,6 +3066,60 @@
       "extension_shape_creates_policy": false,
       "runtime_search_count": 0
     },
+    "language_role_registry": {
+      "identity_domain": "TraitLanguageRoleId distinct from TraitId",
+      "surface_owner": "one attached closed core annotation: trait#operator, trait#iteration, trait#interpolation, or trait#binding",
+      "core_owned": true,
+      "roles": {
+        "operator": [
+          "UnaryPlus",
+          "UnaryMinus",
+          "Add",
+          "Subtract",
+          "Multiply",
+          "Divide",
+          "Remainder",
+          "Eq",
+          "Ord"
+        ],
+        "iteration": [
+          "Sequence",
+          "Iterator"
+        ],
+        "interpolation": [
+          "Display"
+        ],
+        "binding": [
+          "Failable"
+        ]
+      },
+      "operator_role_selects_glyph": false,
+      "user_role_declaration": "REJECT",
+      "generic_role_or_profile": "REJECT",
+      "proof_role": "INTERNAL_DEFERRED",
+      "digest_residue": [
+        "TraitContract",
+        "public API",
+        "consumer HIR"
+      ]
+    },
+    "failable_binding": {
+      "trait": "trait#binding Failable",
+      "operation": "associated consuming branch.() -> BindingBranch<Success, Failure> throws Never effects {}",
+      "surface": "let? successPattern = source else failurePattern => unconditionalExit",
+      "source_evaluation_count": 1,
+      "source_transfer": "CONSUME",
+      "success_pattern": "CHECKER_PROVEN_IRREFUTABLE",
+      "failure_pattern": "CHECKER_PROVEN_IRREFUTABLE",
+      "else_required": true,
+      "failure_continuation": "STRUCTURALLY_UNCONDITIONAL_EXIT",
+      "var_form": false,
+      "bare_form": false,
+      "if_while_generalization": false,
+      "option_failure_type": "Unit",
+      "result_failure_type": "E",
+      "product_support": "NOT_RUN"
+    },
     "witness_surface": {
       "markers": [
         ".",
@@ -3010,6 +3148,7 @@
     },
     "preserved_identity_fields": [
       "TraitId",
+      "TraitLanguageRoleId",
       "ConformanceId",
       "TraitWitnessId",
       "RequirementId",
@@ -3353,9 +3492,11 @@
       "product_support": "NOT_RUN"
     },
     "tuple_pattern_current": "exact fixed product; (p) grouping, (p,) one-Tuple, no Tuple rest",
-    "record_rest_current": "exact by default; .._ open-ignore; ..name exact residual",
+    "record_field_direction_current": "label: Pattern for Record, nominal named-payload, and variant named-payload owners",
+    "record_rest_current": "exact by default; _** open-ignore; name** exact static-named residual",
     "map_pattern_current": "exact/open over literal or pinned stable keys and a pure total closed descriptor",
-    "list_rest_current": "exact, [.._], or exactly one attached leadings.. / ..tail / ..middle.. positional rest",
+    "map_entry_direction_current": "destination Pattern: literal-or-pinned-key; dynamic remainder remains .._ or ..name",
+    "list_rest_current": "exact or exactly one attached suffix binder name../_.. at the beginning, middle, or end",
     "list_rest_result": {
       "borrowed_type": "ListRestView<T>",
       "owned_moved_list_type": "List<T>",
@@ -3447,9 +3588,11 @@
         "trailing_closures": "ordered TrailingClosureArg[]"
       },
       "CallArgument": {
-        "kind": "Positional | Named | PositionalUnfold | NamedUnfold | Context | Witness",
+        "source_kind": "Positional | Named | PositionalUnfold | NamedUnfold | Context | Witness",
+        "normalized_kind": "Positional | Named | PositionalUnfold | NamedUnfold | Context | Witness",
         "label": "Identifier | null",
-        "expression": "Expr"
+        "expression": "Expr",
+        "structural_unfold_seal": "the * versus ** token fixes the positional versus static-named channel before formal binding and overload selection; the owner then validates the source shape, and expected formal/result or runtime shape never chooses the channel"
       },
       "TrailingClosureArg": {
         "label": "Identifier | null",
@@ -3466,6 +3609,8 @@
       "ordinary_argument_list_reuse_count": 1
     },
     "structural_validation": {
+      "structural_unfold_surface": "*Expr is positional and **Expr is static-named under their closed owners",
+      "structural_unfold_general_pratt_prefix": false,
       "single_trailing_closure": "label optional",
       "multiple_trailing_closures": "every label present and unique",
       "duplicate_label_diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED",
@@ -3515,6 +3660,107 @@
       "parse_format_parse_ast_equivalence_required": true,
       "product_support": "NOT_RUN"
     }
+  },
+  "integrated_collect_unfold_frontend_contract": {
+    "decision": "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
+    "positional_parameter": "name..: T",
+    "positional_function_type_residue": "T..",
+    "named_parameter": "name**",
+    "named_function_type_residue": "NamedPack**",
+    "named_parameter_body_type": "NamedPack<rho>",
+    "named_requirement_owner": "NamedRestRequirementClause",
+    "named_requirement_surface": "name** requires { label: TypeRef ... }",
+    "callable_requires_owner_preserved": "RequiresClause ::= requires PredicateExpr",
+    "binder_order": "explicit labels, fixed positional suffix from right, fixed positional prefix from left, residual to rest",
+    "fixed_suffix_default_after_rest": "REJECT",
+    "structural_unfold_surface": "*Expr positional / **Expr static-named",
+    "positional_unfold_surface": "*Expr",
+    "named_unfold_surface": "**Expr",
+    "structural_unfold_general_prefix": false,
+    "structural_unfold_owner_count": 6,
+    "comprehension_surface": "for Pattern in *Expr",
+    "runtime_shape_selection": false,
+    "expected_type_or_overload_selects_shape": false,
+    "public_proof_role": false,
+    "product_support": "NOT_RUN"
+  },
+  "range_index_frontend_contract": {
+    "range": {
+      "bounded_inclusive": "start..end",
+      "bounded_exclusive": "start..<end",
+      "one_sided": "start...",
+      "step_suffix": ":step",
+      "step_suffix_owner": "Range parselet, not ternary",
+      "evaluation": "start then end if present then step exactly once",
+      "zero_step": "REJECT",
+      "direction_mismatch": "REJECT",
+      "bounded_overflow": "terminate before overflow",
+      "one_sided_finite_enum": "REJECT",
+      "removed": [
+        "terminal start.. as expression Range",
+        "..>"
+      ]
+    },
+    "index": {
+      "axis_separator": ",",
+      "separator_owner": "IndexSuffix only",
+      "open_slice_surfaces": [
+        "[..<end]",
+        "[..end]",
+        "[start..]",
+        "[..]"
+      ],
+      "rejected": [
+        "[start..<]",
+        "Tuple-as-gather",
+        "implicit linear indexing"
+      ],
+      "numeric_array_axis_count": "exact source rank",
+      "scalar_axis": "drop",
+      "result_rank": "count of non-scalar axes",
+      "composition": "Cartesian",
+      "coordinates": "one-based",
+      "one_past_last": "boundary identity without integer increment",
+      "empty_view": "preserve source owner, region, coordinate domain, and insertion boundary",
+      "slice_allocation_or_copy": false
+    },
+    "product_support": "NOT_RUN"
+  },
+  "mutable_list_structural_edit_frontend_contract": {
+    "owner": "MutableListStructuralEditStmt",
+    "statement_only": true,
+    "ordinary_bracket_read_replace_activated": false,
+    "insert_surfaces": [
+      "a[@i] = x",
+      "a[i@] = x",
+      "a[@^] = x",
+      "a[$@] = x"
+    ],
+    "bulk_payload": "*Expr; one finite reusable/copyable source",
+    "remove_surfaces": [
+      "a[-@i]",
+      "a[-@range]",
+      "a[-@(selectors)]",
+      "a[-^]",
+      "a[-$]"
+    ],
+    "capture": [
+      "none",
+      "$value",
+      "$$values"
+    ],
+    "lowering": "existing CallExpr plus CallPlan(mode_target_pair, call_head_id) and CallableImplementationId",
+    "dedicated_hir_or_mir": false,
+    "evaluation": "receiver then selectors then payload exactly once left-to-right",
+    "precommit": "validate, stage payload, and allocate",
+    "mutation_commit_count": 1,
+    "failure_preserves_target": true,
+    "hidden_clone_snapshot_move": false,
+    "selector_coordinates": "pre-mutation",
+    "duplicate_selectors": "REJECT",
+    "point_result": "T",
+    "multi_result": "List<T> in selector order with survivor order preserved",
+    "product_support": "NOT_RUN"
   },
   "fixed_operator_conformance_frontend_contract": {
     "status": "STABLE_DESIGN",
@@ -4517,14 +4763,6 @@
       "reason": "authority, provenance, escape, suspension and backend-equivalence proofs remain open",
       "documentation_status": "PREVIEW_DESIGN_NONACTIVATABLE_NO_SOURCE_ROUTE"
     },
-    "option_optional_binding": {
-      "feature_id": "option_let_question_binding_preview_design",
-      "represented_in": "spec/contracts/option-optional-binding-preview-design.json",
-      "parser_cover_grammar": false,
-      "source_activation": "nonactivatable",
-      "payload_pattern_owner": "OptionPayloadPattern ::= Pattern",
-      "reason": "if/while/guarded-local let? is a one-layer Option binding design only; parser, checker, MIR, runtime, tooling, and product evidence are not activated"
-    },
     "literal_shaped_list_type_surface": {
       "represented_in": "spec/contracts/literal-shaped-collection-design.json",
       "parser_cover_grammar": false,
@@ -4582,7 +4820,7 @@
     "guards": "one GuardClause only",
     "def_guard_refinement": "stable design: valid GuardSummaryV1 direct calls refine true and false Phi edges without changing the declared type",
     "calls": "stable design: CallExpr modes Ordinary, Message (~), and ActorMessage (:~) share ordered arguments and trailing closures",
-    "pattern_controls": "if let / while let / for let transactional bindings; let? remains Preview Design"
+    "pattern_controls": "if let / while let / for let transactional bindings plus consuming trait#binding Failable local let? with mandatory unconditional failure exit"
   },
   "r4_name_resolution_module_contract": {
     "status": "STABLE_DESIGN",

@@ -6,7 +6,8 @@
 ## 상태
 
 이 장은 현행 value-level collection literal, 닫힌 built-in bracket carrier
-matrix, 1-based logical coordinate, slice를 설명한다.
+matrix, 1-based logical coordinate, slice와 statement-only `MutableList`
+structural edit를 설명한다.
 
 현행 value literal과 별도의 literal-shaped *type-position* 제안을 혼동하면
 안 된다. type spelling `[T]`, `#mut[T]`, `#set{T}`, `#map{K: V}`,
@@ -67,16 +68,46 @@ semicolon run은 더 깊은 axis boundary를 구분한다. NumericArray는 List�
 
 ```ebnf
 IndexSuffix   ::= "[" SliceAxisList "]"
-SliceAxisList ::= SliceAxis (";" SliceAxis)*
+SliceAxisList ::= SliceAxis ("," SliceAxis)*
 SliceAxis     ::= SliceRange | SliceIndexExpr | AxisWildcard
-SliceRange    ::= SliceBound (".." | "..<") SliceBound
+SliceRange    ::= SliceBound? ".." SliceBound?
+                | SliceBound? "..<" SliceBound
 SliceBound    ::= SliceIndexExpr | "^" | "$" | "^" OffsetExpr | "$" OffsetExpr
 AxisWildcard  ::= "*"
 ```
 
-index suffix에는 axis가 하나 이상 있어야 한다. slice bound에서 `^`는 첫
-logical coordinate, `$`는 마지막 logical coordinate다. `*`는 axis
-selector가 허용된 곳에서만 complete axis를 뜻한다.
+index suffix에는 comma-separated axis가 하나 이상 있어야 한다. open
+`[..<end]`, `[..end]`, `[start..]`, `[..]`는 IndexSuffix만의 현행 slice다.
+`[start..<]`는 별도 의미가 없어 거부한다. slice bound에서 `^`는 첫 logical
+coordinate, `$`는 마지막 logical coordinate다. `*`는 NumericArray axis의
+complete selection이고 `[..]`와 같은 full-axis selector로 정규화된다.
+
+### `MutableList` structural-edit statement
+
+```ebnf
+MutableListStructuralEditStmt ::= MutableListInsertStmt | MutableListRemoveStmt
+MutableListInsertStmt ::= MutableListEditReceiver MutableListInsertSuffix
+                          "=" MutableListInsertPayload StatementBoundary
+MutableListInsertSuffix ::= "[" ("@" SliceIndexExpr
+                                  | SliceIndexExpr "@"
+                                  | "@" "^"
+                                  | "$" "@") "]"
+MutableListInsertPayload ::= Expr | "*" Expr
+MutableListRemoveStmt ::= MutableListEditReceiver MutableListRemoveSuffix
+                          MutableListRemovalCapture? StatementBoundary
+MutableListRemoveSuffix ::= "[" ("-" "@" MutableListRemovalSelector
+                                  | "-" "^"
+                                  | "-" "$") "]"
+MutableListRemovalSelector ::= SliceIndexExpr | SliceRange
+                             | "(" SliceIndexExpr "," SliceIndexExpr
+                                   ("," SliceIndexExpr)* ","? ")"
+MutableListRemovalCapture ::= "->" DollarLocalBinding
+```
+
+이 문법은 expression postfix나 일반 index assignment가 아니다. statement
+parser가 exact marker shape를 본 뒤에만 `MutableListStructuralEditStmt`를
+만든다. `*Expr` bulk payload도 이 닫힌 insertion owner에서만 structural
+unfold로 허용된다.
 
 ## 허용과 정적 의미
 
@@ -118,7 +149,7 @@ let servesTls = 443 in ports
 | `String` | `1..UnicodeScalarCount` | `Char` |
 | `Bytes` | `1..byteCount` | `UInt8` |
 | bounded List | 선언한 `L..U` | read-only element 또는 view |
-| `NumericArray<T, rank R>` | axis별 typed coordinate, built-in default `1..dimension` | 모든 axis가 scalar면 `T`, 아니면 rank/shape-preserving view |
+| `NumericArray<T, rank R>` | axis별 typed coordinate, built-in default `1..dimension` | 모든 axis가 scalar면 `T`, 아니면 scalar axis를 제거한 rank의 view |
 | `Map<K,V>` | 정확한 `K` | `V`, 없으면 `IndexError::keyNotFound` |
 | Tuple | static `.1`부터 `.arity` | 정적으로 선택한 element |
 | Record | static label | 정적으로 선택한 field |
@@ -144,18 +175,28 @@ index `0`, 음수 index, 음수를 from-end로 바꾸는 암시적 rewrite는 �
 bounded List는 선언한 `L..U`, Map은 정확한 `K`를 사용하므로 1-based로
 재작성하지 않는다. NumericArray built-in axis는 기본적으로 1-based다.
 
-- `value[i..j]`: 양 끝을 포함하는 현행 canonical slice
-- `value[i..<j]`: 허용되지만 noncanonical warning
-- `value[^..$]`: 첫 coordinate부터 마지막까지
-- `value[*]`: 허용된 axis owner의 full axis
+- `value[i..j]`: 양 끝을 포함하는 slice
+- `value[i..<j]`: canonical half-open slice
+- `value[..<j]`, `value[..j]`: open start
+- `value[i..]`: open end
+- `value[..]`: general full slice
+- `value[*]`: NumericArray full-axis spelling; `[..]`와 같은 selector
 - slice는 coordinate와 provenance를 보존하며 암시적으로 rebase/copy하지
   않는다.
+
+open exclusive end는 one-past-last를 정수 `last + 1`로 계산하지 않고
+boundary identity로 나타낸다. maximum-width coordinate에서도 overflow하지
+않으며 empty view도 owner, region, coordinate domain과 insertion boundary를
+보존한다. NumericArray는 source rank와 정확히 같은 수의 comma axis를
+요구한다. scalar axis는 결과에서 제거되고 result rank는 non-scalar axis
+수다. multi-axis selection은 Cartesian이며 Tuple-as-gather나 implicit linear
+indexing은 없다.
 
 Pattern rest도 같은 coordinate 보존 법칙을 따른다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
-if let [first, ..middle.., last] = values {
+if let [first, middle.., last] = values {
     // middle: ListRestView<T>
     inspect(middle)
 }
@@ -167,6 +208,47 @@ if let [first, ..middle.., last] = values {
 
 단계 지정, 역방향 slice, mutable slice 대입, lifetime escape, isolation
 crossing은 현행이 아니다.
+
+### `MutableList` structural edit의 닫힌 정적 계약
+
+ordinary bracket read/replace matrix는 여전히 `MutableList<T>`를 포함하지
+않는다. 대신 다음 statement-only 표면만 exact exclusive mutable place에
+허용된다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/integrated-surface-atomic-cutover-r77-r1.json -->
+```deeplus
+items[@i] = value
+items[i@] = value
+items[@^] = value
+items[$@] = value
+items[@i] = *finiteValues
+items[-@i]
+items[-@2..4] -> $removed
+items[-@(2, 5, 7)] -> $$removed
+items[-^] -> $first
+items[-$] -> $last
+```
+
+| 표면 | 선택되는 닫힌 Prelude operation |
+|---|---|
+| `items[@i] = value` | `MutableList::insertBefore` |
+| `items[i@] = value` | `MutableList::insertAfter` |
+| `items[@^] = value` | `MutableList::prepend` |
+| `items[$@] = value` | `MutableList::append` |
+| 위 네 marker와 `*finiteValues` | 각각 `insertAllBefore`, `insertAllAfter`, `prependAll`, `appendAll` |
+| `items[-@i]` | `MutableList::removeAt` |
+| `items[-@range]` | `MutableList::removeRange` |
+| `items[-@(selectors)]` | `MutableList::removeSelected` |
+| `items[-^]` / `items[-$]` | `MutableList::popFirst` / `MutableList::popLast` |
+
+receiver는 temporary, shared owner, actor-isolated handle이 아니라 하나의
+exact exclusive `MutableList<T>` place여야 한다. live borrow/view/iterator,
+self-alias 또는 `inout` overlap도 commit 전에 거부한다. bulk source에는
+finite evidence와 reusable/copyable element evidence가 필요하며 plain
+`Sequence<T>`만으로는 충분하지 않다. point removal 결과는 `T`, range와
+selector-list removal 결과는 selector 순서의 `List<T>`이고 survivor
+순서는 유지된다. 모든 selector는 mutation 전 coordinate로 해석하며
+중복 selector는 거부한다.
 
 ## 평가·소유권·효과
 
@@ -206,6 +288,15 @@ indexing은 owner와 index expression을 일반 평가 순서로 처리한다. �
 보존하고 암시적으로 copy/rebase하지 않으며 owner보다 오래 살거나
 isolation을 넘을 수 없다. live view와 충돌하는 mutation, move, freeze는
 거부한다.
+
+structural edit는 receiver, selector, payload를 왼쪽부터 각각 한 번
+평가한다. coordinate·중복·alias·borrow 검증, payload staging과 필요한
+allocation/result storage를 모두 끝낸 뒤 성공 시 구조 mutation을 정확히
+한 번 commit한다. 그 전의 Error, Defect 또는 Cancellation은 receiver와
+source owner를 그대로 두며 hidden clone, snapshot 또는 move를 만들지
+않는다. lowering은 기존 `CallExpr`/`ResolvedCallPlan`과
+`CallableImplementationId`만 사용하고 edit 전용 HIR/MIR identity를
+만들지 않는다.
 
 literal-shaped type design의 freeze/snapshot 책임은 미래 설계일 뿐 현행
 syntax, bracket evidence, shareability, deep-freeze, actor-transfer proof를
@@ -277,16 +368,34 @@ publish한다. 정확한 key lookup의 결과 `secure`은 `Int` 값 `443`이다.
 
 ```deeplus
 let matrix = #2,2[1, 2; 3, 4]
-let topLeft = matrix[1; 1]
-let firstRow = matrix[1; *]
+let topLeft = matrix[1, 1]
+let firstRow = matrix[1, *]
 ```
 
 `matrix`는 element `Int`, rank 2, shape `(2, 2)`의 NumericArray다. 두
-scalar axis를 고른 `topLeft`는 `Int` 값 `1`이고, 둘째 axis의 `*`를 남긴
+scalar axis를 고른 `topLeft`는 `Int` 값 `1`이고, 둘째 NumericArray axis의 `[*]`를 남긴
 `firstRow`는 source owner에 묶인 rank-1 readonly view다. axis는 모두
-1-based이며 `matrix[0; 1]`은 storage offset으로 rewrite하지 않는다.
+1-based이며 `matrix[0, 1]`은 storage offset으로 rewrite하지 않는다.
 view는 copy가 아니고 원본의 coordinate·provenance·lifetime을 보존한다.
 실제 shape checker와 backend view 실행은 `NOT_RUN`이다.
+
+현행 explanatory structural-edit 예제:
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: decisions/language/Design_Deeplus_Integrated_Surface_Atomic_Cutover_R77_R1.md -->
+```deeplus
+var queue: MutableList<Int> = #mut[20, 30]
+queue[@^] = 10
+queue[$@] = 40
+queue[@2] = *[11, 12]
+queue[-@(2, 4)] -> $removed
+```
+
+각 statement는 하나의 exclusive `queue` place를 검사하고 해당 Prelude
+operation 하나로 낮아진다. 마지막 statement의 두 selector는 같은
+pre-mutation coordinate set에서 검증되며 `removed: List<Int>`는 selector
+순서를, `queue`는 survivor 순서를 보존한다. 어느 검증이나 staging이
+실패해도 그 statement는 `queue`를 바꾸지 않는다. 제품 실행은
+`NOT_RUN`이다.
 
 현행 예제 `EX-R48-001`,
 원본 `examples/guide/review-corpus.md`:
@@ -313,11 +422,11 @@ NumericArray 실행은 `NOT_RUN`이다.
 
 ```deeplus
 let values = [10, 20, 30, 40]
-let middle = values[2..$]
+let middle = values[2..]
 let sameCoordinate = middle[3]
 ```
 
-`middle`은 source coordinate 2부터 4를 고르며 rebase하지 않으므로
+`middle`은 open end로 source coordinate 2부터 4를 고르며 rebase하지 않으므로
 coordinate 3을 그대로 사용한다. 따라서 `sameCoordinate`의 타입은 `Int`,
 설계상 값은 `30`이다. slice는 `ReadonlyView<Int>`이고 원본 `values`를
 한 번 평가한 뒤 inclusive bounds를 검증한다. bounds failure에서는 view를
@@ -353,11 +462,17 @@ Map-to-Record 변환은 없고, 어느 field가 실패하면 partial `Config`와
 |---|---|
 | ordinary sequence의 `values[0]` | 거부; 기본 domain은 1부터 시작 |
 | 음수 from-end index | 거부 |
-| `value[..]` | 거부; 두 bound 모두 필요 |
-| `value[i..>j]`, `value[i...j]` | range로 거부 |
-| `value[i..<j]` | 허용되지만 noncanonical warning |
+| `value[i..<]` | 거부; open exclusive end는 별도 contract가 없음 |
+| IndexSuffix의 semicolon axes `matrix[1; 2]` | 제거됨; comma `matrix[1, 2]` 사용 |
+| `value[i..>j]`, bounded `value[i...j]` | 제거된 range spelling으로 거부 |
+| rank-one List의 `values[1, 3]` | gather로 재해석하지 않고 거부 |
+| NumericArray axis count와 source rank 불일치 | 정적으로 거부 |
 | stepped/descending slice | 없음 |
 | mutable slice assignment | 없음 |
+| `MutableList`의 ordinary `items[i] = value` | 거부; structural edit marker와 닫힌 statement owner를 사용 |
+| temporary/shared/actor-isolated receiver의 structural edit | 거부; exact exclusive `MutableList<T>` place 필요 |
+| bulk insert의 unbounded `Sequence<T>` 또는 hidden clone | 거부; finite reusable/copyable payload evidence 필요 |
+| `items[-@(2, 2)]` | 거부; selector는 pre-mutation coordinate에서 중복될 수 없음 |
 | conformance가 `[]` 활성화 | nonactivatable |
 | Map string key를 Record label로 취급 | 거부 |
 | `#[...]`을 ordinary List로 취급 | 거부 |
@@ -434,8 +549,10 @@ activation authority가 모두 필요하다.
 
 <!-- deeplus-status-fence: CURRENT -->
 
-corpus의 `EX-R51VOI-009`는 migration/noncanonical 설명에서만 사용하고
-`SLICE_HALF_OPEN_RANGE_NONCANONICAL`을 함께 표시해야 한다.
+이전 receipt에서 `..<`를 noncanonical로 표시한 판정은 제거되었다. 다음
+half-open slice는 현행 canonical source다.
+
+### `EX-R51VOI-009` — half-open slice
 
 ```deeplus
 let values = [10, 20, 30, 40]
@@ -453,7 +570,7 @@ let prefix = values[1..<4]
 - `*`는 axis wildcard, positional unfold, multiplication, unit
   multiplication을 문맥별로 가진다.
 - `**`는 named unfold 또는 infix linear product다. named-rest declaration은
-  `***`다.
+  suffix `name**`이고 function-type residue는 `NamedPack**`다.
 - Pattern form은 별도 parser goal이며 value literal 허용을 자동 재사용하지
   않는다.
 - collection이 immutable하다는 사실만으로 actor shareability나

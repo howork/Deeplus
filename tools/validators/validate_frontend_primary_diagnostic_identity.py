@@ -18,13 +18,13 @@ FRONTEND_REL = "spec/frontend/frontend-model.json"
 
 EXPECTED_FAMILIES = [
     {
-        "family_id": "NAMED_REST_TRIPLE_STAR_CONTEXT",
+        "family_id": "LEGACY_NAMED_REST_TRIPLE_STAR_CONTEXT",
         "primary_diagnostic":
-            "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+            "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
         "stage": "PARSER",
-        "frontend_fix": "***",
+        "frontend_fix": "name** or NamedPack**",
         "frontend_action": "BIND_EXISTING_ACTIVE_ID",
-        "no_go_rejection_ids": ["NG-NAMED-REST-DOUBLE-STAR"],
+        "no_go_rejection_ids": ["NG-LEGACY-NAMED-REST-TRIPLE-STAR"],
         "current_ast_created": False,
     },
     {
@@ -51,12 +51,12 @@ EXPECTED_FAMILIES = [
         "current_ast_created": True,
     },
     {
-        "family_id": "EMPTY_SLICE_RANGE_CONTEXT",
-        "primary_diagnostic": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+        "family_id": "INVALID_OPEN_EXCLUSIVE_SLICE_CONTEXT",
+        "primary_diagnostic": "SLICE_OPEN_BOUND_FORM_INVALID",
         "stage": "PARSER",
         "frontend_fix": (
-            "write both bounds with .. or ..<; use * only for a NumericArray "
-            "full axis"
+            "write i.. for an open upper bound or provide the exclusive end "
+            "as i..<j"
         ),
         "frontend_action": "BIND_EXISTING_ACTIVE_ID",
         "no_go_rejection_ids": [],
@@ -142,7 +142,7 @@ def evaluate(documents: dict[str, Any]) -> list[str]:
         policy.get("frontend_redundant_placeholder_removal_count") == 1,
         "CONTRACT_FRONTEND_REMOVAL_COUNT",
     )
-    require(policy.get("frontend_diagnostic_row_count") == 39, "CONTRACT_FRONTEND_ROW_COUNT")
+    require(policy.get("frontend_diagnostic_row_count") == 40, "CONTRACT_FRONTEND_ROW_COUNT")
     require(policy.get("no_go_binding_count") == 3, "CONTRACT_NO_GO_COUNT")
     require(policy.get("binding_family_count") == 6, "CONTRACT_FAMILY_COUNT")
     require(policy.get("new_diagnostic_id_count") == 0, "CONTRACT_NEW_ID_COUNT")
@@ -174,7 +174,7 @@ def evaluate(documents: dict[str, Any]) -> list[str]:
     require(isinstance(frontend_rows, list), "FRONTEND_DIAGNOSTICS_ARRAY")
     if not isinstance(frontend_rows, list):
         frontend_rows = []
-    require(len(frontend_rows) == 39, "FRONTEND_DIAGNOSTIC_COUNT")
+    require(len(frontend_rows) == 40, "FRONTEND_DIAGNOSTIC_COUNT")
     require(
         all(isinstance(row.get("id"), str) and row["id"] for row in frontend_rows),
         "FRONTEND_MISSING_ID",
@@ -356,7 +356,7 @@ def mutation_receipts(documents: dict[str, Any]) -> list[dict[str, Any]]:
                 row
                 for row in docs["diagnostics"]
                 if row.get("diagnostic_id")
-                != "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR"
+                != "SLICE_OPEN_BOUND_FORM_INVALID"
             ],
         ),
         "REGISTRY_TARGET",

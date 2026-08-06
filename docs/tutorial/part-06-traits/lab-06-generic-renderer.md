@@ -26,7 +26,7 @@ operator/custom surface를 만들지 않는다.
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public trait Display {
+public trait#interpolation Display {
     +def display+() -> String
         throws Never
         effects {}

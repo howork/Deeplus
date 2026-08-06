@@ -264,13 +264,13 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
-    "display_name": "Named-rest parameter `options***: Record`",
+    "display_name": "Static named-rest parameter `options**`",
     "feature_id": "named_rest_parameter_record_msp",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Declaration named-rest parameters and function-type named-rest residues use attached `***`. Call and materialization named unfold use attached prefix `**`. A collector is final, unique, and exactly the canonical Prelude Record carrier.",
+    "notes": "A unique final declaration named-rest parameter uses attached suffix `options**`; its body has a finite call-scoped nonescaping `NamedPack<rho>`, and public callable identity preserves `NamedPack**`. Optional `requires { label: Type }` is a distinct named-rest row clause and does not replace callable `requires PredicateExpr`. Outward static-named unfold is owner-bounded `**expr`; Map and runtime-selected labels reject.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -288,7 +288,7 @@
         "MULTIPLE_NAMED_REST_PARAMETERS",
         "NAMED_REST_PARAMETER_MUST_BE_LAST",
         "NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE",
-        "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+        "LEGACY_REST_UNFOLD_SPELLING_REMOVED"
       ],
       "predicates": [
         "NamedRestCollectorAdmitted",
@@ -313,7 +313,8 @@
         "EX-R51a1-NAMEDREST-P-001",
         "EX-R51a1-NEW-003",
         "EX-R51a1-NEW-004",
-        "EX-R51b-GRAM-P-001"
+        "EX-R51b-GRAM-P-001",
+        "EX-R77-CALL-P-001"
       ],
       "productions": [
         "NamedRestParameter",
@@ -1580,7 +1581,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable group",
-    "notes": "Numeric tokens exclude sign. NumericLiteralAdmitted returns an exact value or unsuffixed-integer magnitude fact. A signless unsuffixed integer may adapt to one exact representable UInt, IntN, or UIntN target; otherwise it defaults to Int. With an exact Int, IntN, or UIntN target, the checker may adapt only direct PrefixExpr(-, literal) by testing -magnitude; UInt has no negative adapter. No other fold or hidden conversion occurs. IntN/UIntN use N={8,16,32,64,128}; ISize/USize need suffix/conversion; Float defaults Float64 and Float32 needs f32. Product NOT_RUN.",
+    "notes": "Numeric tokens exclude sign and all integer/float type suffixes. NumericLiteralAdmitted returns an exact untyped constant; a direct atomic literal or direct prefix-minus literal may materialize once under an independently fixed exact target with a representability check. Defaults are Int, Float64 and Complex<Float64>. There is no smallest-fit, unsigned/BigInt/platform inference, literal-fit overload ranking, expected-result operator selection or generic Type! cast. A suffix-shaped candidate is maximal-munched and emits NUMERIC_TYPE_SUFFIX_REMOVED with zero admitted CST/AST/HIR. Product NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1599,7 +1600,7 @@
         "NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID",
         "NUMERIC_LITERAL_OUT_OF_RANGE",
         "NUMERIC_RADIX_FLOAT_NOT_CURRENT",
-        "NUMERIC_SUFFIX_KIND_MISMATCH",
+        "NUMERIC_TYPE_SUFFIX_REMOVED",
         "UNIT_EXPONENT_REQUIRES_STATIC_INT",
         "UNKNOWN_NUMERIC_LITERAL_SUFFIX"
       ],
@@ -1638,27 +1639,26 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
-    "display_name": "Numeric literal suffix",
+    "display_name": "Removed numeric type suffix fence",
     "feature_id": "numeric_literal_suffix",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "Integer and float suffixes are closed lexical terminals and map through the current numeric type contract.",
+    "language_status": "Not current",
+    "notes": "The former i8/i16/i32/i64/i128/isize, u8/u16/u32/u64/u128/usize, f32 and f64 source suffixes are removed. The scanner consumes the whole suffix-shaped candidate and emits one NUMERIC_TYPE_SUFFIX_REMOVED diagnostic with no canonical residue. Floating-look imaginary `i`, Rational syntax and Measure unit suffixes are separate domains and remain current.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
     "row_schema_version": "deeplus.feature-row/r51f3",
     "runtime_xvm": "NOT_RUN",
     "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
+    "status_display": "Not current",
+    "status_enum": "NOT_CURRENT",
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "syntax",
     "normative_trace_refs": {
       "diagnostics": [
-        "NUMERIC_SUFFIX_KIND_MISMATCH",
-        "UNKNOWN_NUMERIC_LITERAL_SUFFIX"
+        "NUMERIC_TYPE_SUFFIX_REMOVED"
       ],
       "predicates": [],
       "examples": [

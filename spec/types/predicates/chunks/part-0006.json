@@ -540,7 +540,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "FunctionRestResiduePreserved",
     "source_name": "FunctionRestResiduePreserved",
-    "summary": "Function types and public API digests preserve each repeated `T...` and named `Record***` residue exactly; Sequence, plain Record, Map, count, and omission erasure are rejected.",
+    "summary": "Function types and public API digests preserve each positional `T..` and static-named `NamedPack**` residue exactly; Sequence, Record, Map, count, and omission erasure are rejected.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -562,8 +562,8 @@
     "requires": [
       "source_kind is FunctionType and call_shape.kind is rest_residue",
       "rest_parameters equals repeated_residue_count plus named_rest_parameter_count and each residue count is zero or one",
-      "when repeated_residue_count is one, function_type_repeated_residue ends in ... and api_digest_repeated_residue is exactly equal; when zero both fields are null",
-      "when named_rest_parameter_count is one, named_rest_parameter_type is exactly Record and function_type_named_residue and api_digest_named_residue are exactly Record***; when zero the index, type, and both residue fields are null",
+      "when repeated_residue_count is one, function_type_repeated_residue ends in .. and api_digest_repeated_residue is exactly equal; when zero both fields are null",
+      "when named_rest_parameter_count is one, the body carrier is a finite nonescaping NamedPack row and function_type_named_residue and api_digest_named_residue are exactly NamedPack** with the same versioned row digest; when zero all named-residue fields are null",
       "neither rest channel may be erased to Sequence<T>, plain Record, Map, or omission"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -580,8 +580,8 @@
     "preconditions": [
       "source_kind is FunctionType and call_shape.kind is rest_residue",
       "rest_parameters equals repeated_residue_count plus named_rest_parameter_count and each residue count is zero or one",
-      "when repeated_residue_count is one, function_type_repeated_residue ends in ... and api_digest_repeated_residue is exactly equal; when zero both fields are null",
-      "when named_rest_parameter_count is one, named_rest_parameter_type is exactly Record and function_type_named_residue and api_digest_named_residue are exactly Record***; when zero the index, type, and both residue fields are null",
+      "when repeated_residue_count is one, function_type_repeated_residue ends in .. and api_digest_repeated_residue is exactly equal; when zero both fields are null",
+      "when named_rest_parameter_count is one, the body carrier is a finite nonescaping NamedPack row and function_type_named_residue and api_digest_named_residue are exactly NamedPack** with the same versioned row digest; when zero all named-residue fields are null",
       "neither rest channel may be erased to Sequence<T>, plain Record, Map, or omission"
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",

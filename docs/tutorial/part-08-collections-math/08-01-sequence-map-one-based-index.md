@@ -127,7 +127,7 @@ Map lookup은 `String` key identity를 사용한다. 없는 key를 `Option`이�
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-if let [first, ..middle.., last] = values {
+if let [first, middle.., last] = values {
     inspect(middle)
 }
 ```
@@ -135,6 +135,40 @@ if let [first, ..middle.., last] = values {
 `middle`의 type은 borrowed `ListRestView<T>`다. 첫 element의 coordinate는
 원본 `values`에서 차지하던 coordinate이며 1로 자동 rebase되지 않는다.
 독립 List가 필요하면 명시적인 copy/materialization API를 호출한다.
+
+### 6.5 MutableList의 statement-only 구조 편집
+
+`MutableList<T>`는 ordinary `items[i] = value` bracket replacement를
+활성화하지 않는다. 대신 삽입·제거 책임이 source에 보이는 statement-only
+표면을 쓴다.
+
+```deeplus
+items[@3] = newValue
+items[3@] = newValue
+items[@^] = firstValue
+items[$@] = lastValue
+items[@3] = *moreValues
+
+items[-@3] -> $removed
+items[-@2..4] -> $$removedRange
+items[-@(2, 5, 7)] -> $$removedSelected
+items[-^] -> $first
+items[-$] -> $last
+```
+
+receiver와 selector, payload는 왼쪽부터 정확히 한 번 평가한다. 모든
+coordinate·ownership·alias 검사와 payload staging 및 필요한 allocation이
+끝난 뒤 target에 mutation 하나만 commit한다. 실패하면 `items`는 그대로다.
+point removal은 `T`, range/selector removal은 selector order의 `List<T>`를
+capture하며 survivor order는 보존된다. 모든 selector는 변경 전 coordinate로
+읽고 duplicate selector는 거부한다.
+
+이 sugar는 닫힌 Prelude의 `insertBefore`/`insertAfter`/`prepend`/`append`,
+`insertAll*`, `removeAt`/`removeRange`/`removeSelected`, `popFirst`/`popLast`
+호출 plan으로 즉시 내려간다. 임시·shared·actor-isolated receiver, self-alias,
+겹치는 `inout`, live view/iterator가 있으면 mutation 전에 거부한다. bulk
+insert는 초기 계약에서 finite reusable/copyable element source만 허용하며
+숨은 clone, snapshot, move를 만들지 않는다.
 
 ## 7. 허용·거부·경계 사례
 
@@ -155,6 +189,16 @@ negative-from-end index도 없다. from-end가 필요하면 slice bound의 `$`�
 사용한다. user type이 `Sequence`나 `Indexable`을 만족해도 bracket route가
 자동 활성화되지 않는다.
 
+<!-- deeplus-example: illustrative; surface: CURRENT; expected: REJECT; diagnostic: MUTABLE_LIST_ORDINARY_BRACKET_REPLACE_NOT_CURRENT; product: NOT_RUN -->
+```deeplus
+items[2] = replacement
+// MUTABLE_LIST_ORDINARY_BRACKET_REPLACE_NOT_CURRENT
+```
+
+`items[@$]`, `items[^@]`, `items[-@^]`, `items[-@$]`처럼 같은 책임을 두
+가지 glyph 순서로 표현하지 않는다. 각각 `items[$@]`, `items[@^]`,
+`items[-^]`, `items[-$]`가 canonical이다.
+
 ## 8. 다른 기능과의 연결
 
 - comprehension은 Sequence traversal을 사용하지만 eager collection
@@ -162,7 +206,8 @@ negative-from-end index도 없다. from-end가 필요하면 slice bound의 `$`�
 - slice 결과는 `ReadonlyView`이며 source coordinate를 보존한다.
 - Pattern remainder는 `ListRestView`이며 source owner와 coordinate를
   보존한다.
-- Map의 `**base` unfold와 Record named unfold는 서로 다르다.
+- Map의 `**base` unfold와 call-site static-named `**record` unfold는
+  같은 표지를 쓰지만 owner와 source shape가 서로 다르다.
 - String index는 byte나 grapheme가 아니라 Unicode scalar `Char`다.
 
 ## 9. Deeplus다운 작성 관례

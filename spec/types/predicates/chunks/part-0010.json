@@ -4,7 +4,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "NumericLiteralAdmitted",
     "source_name": "NumericLiteralAdmitted",
-    "summary": "exact value or magnitude admission for a lexer-validated signless numeric token",
+    "summary": "exact suffix-free constant admission for a lexer-validated signless numeric token",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -26,7 +26,7 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "one successfully lexer-validated maximal digit-led token; sign is a separate PrefixExpr",
+      "one successfully lexer-validated maximal suffix-free digit-led token; sign is a separate PrefixExpr",
       "exact optional target or magnitude-only request"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
@@ -48,12 +48,13 @@
       "token parts and optional target are preserved",
       "AST prefix sign is separate and unconsumed"
     ],
-    "normalization": "classify the signless token once; preserve suffix; defaults are Int/Float64",
+    "normalization": "classify the signless suffix-free token once; preserve its exact mathematical value; defaults are Int/Float64/Complex<Float64>",
     "decision_procedure": [
       "consume the already lexer-validated signless token and parse integer magnitude before target-range checking",
-      "magnitude-only mode returns an unsuffixed-integer magnitude fact to an enclosing direct-prefix adapter and never consumes -",
-      "normal mode selects exact suffix or representable Int/UInt/IntN/UIntN target for N={8,16,32,64,128}, never ISize/USize; default Int",
-      "unsuffixed float is Float64; Float32 needs f32",
+      "an attached numeric type suffix never reaches this predicate: the scanner emits NUMERIC_TYPE_SUFFIX_REMOVED over the whole candidate and commits no token/CST/AST/HIR",
+      "magnitude-only mode returns an integer magnitude fact only to an enclosing direct-prefix adapter and never consumes -",
+      "after overload/witness choice is independently fixed, a direct atomic literal or direct prefix-minus may materialize once under an exact representable target; default integer is Int",
+      "an untyped real defaults Float64 and an untyped imaginary/complex expression defaults Complex<Float64>; an expected result never selects an operator witness",
       "emit NUMERIC_LITERAL_OUT_OF_RANGE only for checker-owned representability failure; lexical failures never invoke this predicate"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
@@ -305,8 +306,8 @@
     "normalization": "longest token, exact Pratt entry, structural owner before lookup",
     "decision_procedure": [
       "require exact token/binding/associativity/parselet or OPERATOR_PRECEDENCE_TABLE_REQUIRED",
-      "range admits .. and ..<; ... remains owned by repeated positional and comprehension unfold structures",
-      "slice-index stops before range/;/]; preserve structural ...; admit without lookup"
+      "range admits bounded .. and ..< plus terminal ...; repeated positional collection uses an owner-bound .. suffix and comprehension unfold uses owner-bound prefix *",
+      "slice-index stops before range/comma/]; preserve its comma-owned axis list; admit without lookup"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",

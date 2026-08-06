@@ -21,7 +21,7 @@
     "frontend_binding_count": 6,
     "frontend_id_insert_count": 5,
     "frontend_redundant_placeholder_removal_count": 1,
-    "frontend_diagnostic_row_count": 39,
+    "frontend_diagnostic_row_count": 40,
     "no_go_binding_count": 3,
     "binding_family_count": 6,
     "new_diagnostic_id_count": 0,
@@ -30,13 +30,13 @@
   },
   "binding_families": [
     {
-      "family_id": "NAMED_REST_TRIPLE_STAR_CONTEXT",
-      "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+      "family_id": "LEGACY_NAMED_REST_TRIPLE_STAR_CONTEXT",
+      "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
       "stage": "PARSER",
-      "frontend_fix": "***",
+      "frontend_fix": "name** or NamedPack**",
       "frontend_action": "BIND_EXISTING_ACTIVE_ID",
       "no_go_rejection_ids": [
-        "NG-NAMED-REST-DOUBLE-STAR"
+        "NG-LEGACY-NAMED-REST-TRIPLE-STAR"
       ],
       "current_ast_created": false
     },
@@ -59,10 +59,10 @@
       "current_ast_created": true
     },
     {
-      "family_id": "EMPTY_SLICE_RANGE_CONTEXT",
-      "primary_diagnostic": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+      "family_id": "INVALID_OPEN_EXCLUSIVE_SLICE_CONTEXT",
+      "primary_diagnostic": "SLICE_OPEN_BOUND_FORM_INVALID",
       "stage": "PARSER",
-      "frontend_fix": "write both bounds with .. or ..<; use * only for a NumericArray full axis",
+      "frontend_fix": "write i.. for an open upper bound or provide the exclusive end as i..<j",
       "frontend_action": "BIND_EXISTING_ACTIVE_ID",
       "no_go_rejection_ids": [],
       "current_ast_created": false
@@ -117,9 +117,9 @@
     },
     {
       "rule_id": "R26-PREC-005",
-      "winner": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
+      "winner": "SLICE_OPEN_BOUND_FORM_INVALID",
       "loser": "INDEX_SUFFIX_REQUIRES_AXIS",
-      "condition": "a bracket suffix contains an empty range delimiter"
+      "condition": "a bracket suffix contains the invalid open-exclusive form i..<"
     },
     {
       "rule_id": "R26-PREC-006",

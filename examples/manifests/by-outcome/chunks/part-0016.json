@@ -1,80 +1,5 @@
 [
   {
-    "example_id": "EX-R33-CBA-NG-001",
-    "title": "a cleanup budget axis cannot be repeated",
-    "feature_ids": [
-      "header_cleanup_budget_surface",
-      "cleanup_budget_algebra"
-    ],
-    "source_feature_ids": [
-      "header_cleanup_budget_surface",
-      "cleanup_budget_algebra"
-    ],
-    "checker_trace_ids": [
-      "CleanupBudgetEnvelopeAdmitted"
-    ],
-    "provenance_ids": [
-      "EX-R33-CBA-NG-001"
-    ],
-    "expected_outcome": "reject",
-    "corpus_partition": "active_profile",
-    "source_activation": "none",
-    "certification_status": "design_static_product_not_run",
-    "primary_diagnostic": "CLEANUP_BUDGET_DUPLICATE",
-    "expected_warnings": [],
-    "source_role": "library",
-    "source_root": "LibrarySourceFile",
-    "parser_status": "not_run",
-    "checker_status": "not_run",
-    "code_block_id": "EX-R33-CBA-NG-001-B001",
-    "code_language": "deeplus",
-    "code_sha256": "02ec969001e8d4fff587f9397f9be809e5d83a8bcbb2106b2bd81f2bb8a33fd8",
-    "source_file": "examples/guide/review-corpus.md",
-    "line_range_scope": "one_based_inclusive_within_source_file",
-    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 13151,
-    "card_line_end": 13170
-  },
-  {
-    "example_id": "EX-R33-CBA-NG-002",
-    "title": "an explicit empty envelope cannot hide cleanup work",
-    "feature_ids": [
-      "header_cleanup_budget_surface",
-      "cleanup_budget_algebra",
-      "resource_cleanup"
-    ],
-    "source_feature_ids": [
-      "header_cleanup_budget_surface",
-      "cleanup_budget_algebra",
-      "resource_cleanup"
-    ],
-    "checker_trace_ids": [
-      "CleanupBudgetEnvelopeAdmitted",
-      "CleanupDeclarationAdmitted"
-    ],
-    "provenance_ids": [
-      "EX-R33-CBA-NG-002"
-    ],
-    "expected_outcome": "reject",
-    "corpus_partition": "active_profile",
-    "source_activation": "none",
-    "certification_status": "design_static_product_not_run",
-    "primary_diagnostic": "CLEANUP_BUDGET_EXCEEDED",
-    "expected_warnings": [],
-    "source_role": "library",
-    "source_root": "LibrarySourceFile",
-    "parser_status": "not_run",
-    "checker_status": "not_run",
-    "code_block_id": "EX-R33-CBA-NG-002-B001",
-    "code_language": "deeplus",
-    "code_sha256": "43e0dcf8b3f990e6072be87622bae7d223f3f5c9e93d73090e85a07c0102ef2f",
-    "source_file": "examples/guide/review-corpus.md",
-    "line_range_scope": "one_based_inclusive_within_source_file",
-    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 13172,
-    "card_line_end": 13196
-  },
-  {
     "example_id": "EX-R33-CBA-NG-003",
     "title": "a child cannot widen the sealed-root envelope",
     "feature_ids": [
@@ -107,7 +32,462 @@
     "source_file": "examples/guide/review-corpus.md",
     "line_range_scope": "one_based_inclusive_within_source_file",
     "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
-    "card_line_start": 13198,
-    "card_line_end": 13226
+    "card_line_start": 13170,
+    "card_line_end": 13198
+  },
+  {
+    "example_id": "EX-R77-CALL-P-001",
+    "title": "Attached collect and owner-bounded unfold",
+    "feature_ids": [
+      "call_shape_rest_type_residue_law",
+      "named_rest_parameter_record_msp",
+      "call_side_positional_unfold_star_msp"
+    ],
+    "source_feature_ids": [
+      "call_shape_rest_type_residue_law",
+      "named_rest_parameter_record_msp",
+      "call_side_positional_unfold_star_msp"
+    ],
+    "checker_trace_ids": [
+      "CallSideUnfoldStaticEvidence",
+      "FunctionRestResiduePreserved"
+    ],
+    "provenance_ids": [
+      "EX-R77-CALL-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "library",
+    "source_root": "LibrarySourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-CALL-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "c4370c958460637ac84afbf443ac50e2fd0ae64cc83c5b0a5244b07d9c1bee06",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13200,
+    "card_line_end": 13223
+  },
+  {
+    "example_id": "EX-R77-COMP-P-001",
+    "title": "Comprehension unfolds its source, not its binder",
+    "feature_ids": [
+      "comprehension_unfold",
+      "call_side_positional_unfold_star_msp"
+    ],
+    "source_feature_ids": [
+      "comprehension_unfold",
+      "call_side_positional_unfold_star_msp"
+    ],
+    "checker_trace_ids": [
+      "CallSideUnfoldStaticEvidence"
+    ],
+    "provenance_ids": [
+      "EX-R77-COMP-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-COMP-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "98dc6b1b869ce90fa4d428f0c6eb7002c44edac8673b83e424c60574ebcab157",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13225,
+    "card_line_end": 13238
+  },
+  {
+    "example_id": "EX-R77-PAT-P-001",
+    "title": "List suffix rest and Record label-first pattern",
+    "feature_ids": [
+      "sequence_positional_rest_pattern",
+      "structured_record_map_pattern"
+    ],
+    "source_feature_ids": [
+      "sequence_positional_rest_pattern",
+      "structured_record_map_pattern"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-PAT-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-PAT-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "e62e48a419f98b67d2ff82ec63134f123636f63f15aad0301b509b50b039f55e",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13240,
+    "card_line_end": 13264
+  },
+  {
+    "example_id": "EX-R77-RANGE-P-001",
+    "title": "Bounded and one-sided Range use exact step ownership",
+    "feature_ids": [
+      "runtime_range_step_expression",
+      "range_step_expression_surface_clarification"
+    ],
+    "source_feature_ids": [
+      "runtime_range_step_expression",
+      "range_step_expression_surface_clarification"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-RANGE-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-RANGE-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "74dfc89d82b4eaa909cd5b3ab00b64106be44a838af2423b08c2acc5a7a41482",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13266,
+    "card_line_end": 13281
+  },
+  {
+    "example_id": "EX-R77-RANGE-NG-001",
+    "title": "Zero step is rejected before traversal",
+    "feature_ids": [
+      "runtime_range_step_expression"
+    ],
+    "source_feature_ids": [
+      "runtime_range_step_expression"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-RANGE-NG-001"
+    ],
+    "expected_outcome": "reject",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": "RANGE_STEP_ZERO",
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-RANGE-NG-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "3e8969386b8482db8a0100ec015d069d4f4d476d437c512372cca57a641a7bb8",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13283,
+    "card_line_end": 13298
+  },
+  {
+    "example_id": "EX-R77-INDEX-P-001",
+    "title": "Comma axes and open slices preserve owner provenance",
+    "feature_ids": [
+      "numeric_array_multiaxis_slice_readonly_view_msp",
+      "inclusive_slice_range_canonical_msp",
+      "slice_logical_domain_preservation"
+    ],
+    "source_feature_ids": [
+      "numeric_array_multiaxis_slice_readonly_view_msp",
+      "inclusive_slice_range_canonical_msp",
+      "slice_logical_domain_preservation"
+    ],
+    "checker_trace_ids": [
+      "NumericFillSliceIndexAdmitted",
+      "SliceViewLifetimeAdmitted"
+    ],
+    "provenance_ids": [
+      "EX-R77-INDEX-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-INDEX-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "d31e85c7e302052545f9b57f49c2ecbd5b46d8bd64f3586a16dadb5ef7be1547",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13300,
+    "card_line_end": 13319
+  },
+  {
+    "example_id": "EX-R77-INDEX-NG-001",
+    "title": "List comma index is not tuple gather",
+    "feature_ids": [
+      "basic_index_operator",
+      "numeric_array_multiaxis_slice_readonly_view_msp"
+    ],
+    "source_feature_ids": [
+      "basic_index_operator",
+      "numeric_array_multiaxis_slice_readonly_view_msp"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-INDEX-NG-001"
+    ],
+    "expected_outcome": "reject",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": "INDEX_AXIS_COUNT_MISMATCH",
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-INDEX-NG-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "7191e7d3d956fd216ab8cf30c56fd9a5f35b8c1ceddda3adb6e6133a1073afe8",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13321,
+    "card_line_end": 13336
+  },
+  {
+    "example_id": "EX-R77-MUTLIST-P-001",
+    "title": "MutableList structural edit is statement-only",
+    "feature_ids": [
+      "basic_index_operator"
+    ],
+    "source_feature_ids": [
+      "basic_index_operator"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-MUTLIST-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-MUTLIST-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "a698969a04784f4456a4a094ebc43b8a7ee7ad960750687d2f5ed970e9354ccb",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13338,
+    "card_line_end": 13355
+  },
+  {
+    "example_id": "EX-R77-MUTLIST-NG-001",
+    "title": "Ordinary MutableList bracket replace stays closed",
+    "feature_ids": [
+      "basic_index_operator"
+    ],
+    "source_feature_ids": [
+      "basic_index_operator"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-MUTLIST-NG-001"
+    ],
+    "expected_outcome": "reject",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": "MUTABLE_LIST_ORDINARY_BRACKET_REPLACE_NOT_CURRENT",
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-MUTLIST-NG-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "24f1823cccd3a9accebd673b97431f3484180e762a0ada0c47fc975cdedf79d8",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13357,
+    "card_line_end": 13372
+  },
+  {
+    "example_id": "EX-R77-TRAIT-P-001",
+    "title": "Core roles and consuming Failable binding",
+    "feature_ids": [
+      "fixed_operator_conformance_overloading",
+      "iterator_protocol_core",
+      "trait_binding_failable_v1"
+    ],
+    "source_feature_ids": [
+      "fixed_operator_conformance_overloading",
+      "iterator_protocol_core",
+      "trait_binding_failable_v1"
+    ],
+    "checker_trace_ids": [
+      "NumericOperatorCoreAdmitted"
+    ],
+    "provenance_ids": [
+      "EX-R77-TRAIT-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "library",
+    "source_root": "LibrarySourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-TRAIT-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "fa60a12655477039c4d56d83316e3d43017b8090a76b53d353984d77b09677e0",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13374,
+    "card_line_end": 13394
+  },
+  {
+    "example_id": "EX-R77-TRAIT-NG-001",
+    "title": "User role-bearing Trait root is rejected",
+    "feature_ids": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "source_feature_ids": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-TRAIT-NG-001"
+    ],
+    "expected_outcome": "reject",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": "TRAIT_LANGUAGE_ROLE_OWNER_NOT_CORE",
+    "expected_warnings": [],
+    "source_role": "library",
+    "source_root": "LibrarySourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-TRAIT-NG-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "337697ca84f38a79e6a16d5b4aa4f431fc5e8519e16dedeec51f5f30d9df54a2",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13396,
+    "card_line_end": 13413
+  },
+  {
+    "example_id": "EX-R77-NUM-P-001",
+    "title": "Numeric domain comes from a valid target or typed anchor",
+    "feature_ids": [
+      "numeric_literal_lexical_contract",
+      "numeric_literal_suffix",
+      "complex_core_numeric_value"
+    ],
+    "source_feature_ids": [
+      "numeric_literal_lexical_contract",
+      "numeric_literal_suffix",
+      "complex_core_numeric_value"
+    ],
+    "checker_trace_ids": [
+      "NumericLiteralAdmitted",
+      "ComplexLiteralAndOperatorAdmitted"
+    ],
+    "provenance_ids": [
+      "EX-R77-NUM-P-001"
+    ],
+    "expected_outcome": "accept",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": null,
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-NUM-P-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "77691a1578f963d9a9450bb1fb80f29ac3c978ad6371e5a2131a1329f13e3b2d",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13415,
+    "card_line_end": 13431
+  },
+  {
+    "example_id": "EX-R77-NUM-NG-001",
+    "title": "Removed numeric type suffix is one lexical diagnostic",
+    "feature_ids": [
+      "numeric_literal_lexical_contract",
+      "numeric_literal_suffix"
+    ],
+    "source_feature_ids": [
+      "numeric_literal_lexical_contract",
+      "numeric_literal_suffix"
+    ],
+    "checker_trace_ids": [],
+    "provenance_ids": [
+      "EX-R77-NUM-NG-001"
+    ],
+    "expected_outcome": "reject",
+    "corpus_partition": "active_profile",
+    "source_activation": "none",
+    "certification_status": "design_static_product_not_run",
+    "primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED",
+    "expected_warnings": [],
+    "source_role": "script",
+    "source_root": "ScriptSourceFile",
+    "parser_status": "not_run",
+    "checker_status": "not_run",
+    "code_block_id": "EX-R77-NUM-NG-001-B001",
+    "code_language": "deeplus",
+    "code_sha256": "3c0a9f533007005cd2503d937211bab6a3a0713c79570be6ae426030737709c0",
+    "source_file": "examples/guide/review-corpus.md",
+    "line_range_scope": "one_based_inclusive_within_source_file",
+    "code_hash_policy": "UTF-8 bytes between fence newlines, excluding fence and terminating newline",
+    "card_line_start": 13433,
+    "card_line_end": 13448
   }
 ]

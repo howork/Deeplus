@@ -21,7 +21,8 @@
         "numeric_digits_valid": true,
         "numeric_separators_valid": true,
         "numeric_exponent_valid": true,
-        "numeric_suffix_kind_valid": true,
+        "numeric_suffix_absent": true,
+        "numeric_declared_target": "Int32",
         "numeric_target_range_valid": true,
         "numeric_token_contains_sign": false,
         "ast_prefix_operator": null
@@ -52,9 +53,10 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "a hexadecimal integer candidate with an explicit i32 suffix has valid radix digits, fits Int32 exactly, and admits without hidden widening; product checker NOT_RUN",
+    "rule_seed": "a suffix-free hexadecimal integer literal with an independently fixed Int32 target has valid radix digits, is exactly representable, and materializes once as Int32; no suffix-driven or smallest-fit inference occurs; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "no diagnostic",
+    "admitted_condition": "the direct atomic literal adopts its exact declared Int32 target after lexical validation",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",

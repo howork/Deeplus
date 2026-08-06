@@ -1613,17 +1613,17 @@
       "PARSER"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+    "diagnostic_id": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
       "named_rest_parameter_record_msp"
     ],
-    "fixit_hint": "use **expr for named unfold",
+    "fixit_hint": "use `name..: T`, `name**`, `T..`, `NamedPack**`, positional `*expr`, or static-named `**expr` according to the source owner",
     "fixit_kind": "replace",
-    "fixit_policy": "replace prefix *** with ** only in call/materialization unfold position",
-    "message": "Triple-star is admitted only as the attached named-rest parameter suffix or function-type named-rest residue; named unfold uses prefix `**`.",
-    "notes": "current-source diagnostic; product emission receipt NOT_RUN.",
+    "fixit_policy": "offer only after CST owner classification; never rewrite `...`, `**`, `..`, or `*` by token text alone",
+    "message": "This rest or unfold spelling was removed by the atomic collect/unfold cutover.",
+    "notes": "Recovery recognizes legacy collector/unfold spellings only to emit one owner-specific error and commits no canonical residue. Product emission receipt NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],

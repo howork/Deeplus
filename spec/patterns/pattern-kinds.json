@@ -41,8 +41,8 @@
     "Probe binders are nonowning and cannot escape.",
     "Moves, borrows, bindings and assignment writes publish only through one failure-atomic logical commit.",
     "A failed shape test or false guard publishes no partial binder, owner, rest view, assignment or authority.",
-    "A List pattern admits at most one rest; prefix is first, suffix is last, and middle has fixed patterns on both sides.",
-    "`[first, ..middle, last]` is malformed: the parser reports the missing closing `..`, and no admitted Pattern node is produced.",
+    "A List pattern admits at most one attached suffix rest binder name../_..; it may be first, last, or between fixed patterns.",
+    "The suffix is owned by the binder and never by the source-side structural unfold direction.",
     "Tuple products use exact arity; Tuple rest remains Preview gated.",
     "Preview-gated kinds do not imply implementation or product support."
   ],
@@ -72,7 +72,7 @@
       "binder_contract": "INTRODUCES_ONE",
       "execution_class": "COMPILER_KNOWN_PURE_TEST",
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "EXCLUSIVE_BORROW_AFTER_ADMISSION", "MOVE_DELAYED_UNTIL_COMMIT"],
-      "allowed_context_ids": ["PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-FOR-LET", "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH", "PCTX-VALUE-CATCH", "PCTX-COMPREHENSION-IF-LET"],
+      "allowed_context_ids": ["PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-FOR-LET", "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH", "PCTX-VALUE-CATCH", "PCTX-COMPREHENSION-IF-LET"],
       "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
       "constraints": ["The subject is a closed Union and the type names exactly one declared alternative identity."],
       "product_execution": "NOT_RUN"
@@ -171,7 +171,7 @@
       "pattern_kind_id": "PK-LIST-EXACT",
       "revision": "r51f3-current-trait-operator-refinement-r1",
       "surface_status": "CURRENT_REACHABLE",
-      "grammar_production": "ExactSequencePattern",
+      "grammar_production": "ExactListPattern",
       "normalized_variant": "ListExactPattern",
       "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
       "binder_contract": "DELEGATES_TO_CHILDREN",
@@ -186,7 +186,7 @@
       "pattern_kind_id": "PK-LIST-IGNORED-TAIL",
       "revision": "r51f3-current-trait-operator-refinement-r1",
       "surface_status": "CURRENT_REACHABLE",
-      "grammar_production": "SuffixRestPattern",
+      "grammar_production": "IgnoredAllListRest",
       "normalized_variant": "ListSuffixIgnoredRestPattern",
       "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
       "binder_contract": "DELEGATES_TO_CHILDREN",
@@ -194,14 +194,14 @@
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "EXCLUSIVE_BORROW_AFTER_ADMISSION", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ORDINARY-PARAMETER", "PCTX-LAMBDA-PARAMETER", "PCTX-PLAIN-LET", "PCTX-PLAIN-VAR", "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-GUARDED-LET-RESIDUAL", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-BARE-FOR", "PCTX-FOR-LET", "PCTX-ASYNC-BARE-FOR", "PCTX-ASYNC-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH", "PCTX-VALUE-CATCH", "PCTX-GENERATOR-FOR", "PCTX-COMPREHENSION-FOR", "PCTX-COMPREHENSION-IF-LET", "PCTX-COMPREHENSION-UNFOLD"],
       "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
-      "constraints": ["The existing `.._` final ignored remainder remains Current.", "It creates no residual owner or view."],
+      "constraints": ["`_..` is the all-remainder sink.", "It creates no residual owner or view."],
       "product_execution": "NOT_RUN"
     },
     {
       "pattern_kind_id": "PK-LIST-SUFFIX-REST",
       "revision": "r51f3-current-trait-operator-refinement-r1",
       "surface_status": "CURRENT_REACHABLE",
-      "grammar_production": "SuffixRestSequencePattern",
+      "grammar_production": "SuffixRestListPattern",
       "normalized_variant": "ListSuffixRestPattern",
       "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
       "binder_contract": "INTRODUCES_ONE_REST_VIEW",
@@ -209,14 +209,14 @@
       "ownership_capabilities": ["INSPECT", "SHARED_BORROW", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ORDINARY-PARAMETER", "PCTX-LAMBDA-PARAMETER", "PCTX-PLAIN-LET", "PCTX-PLAIN-VAR", "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-CATCH", "PCTX-VALUE-CATCH"],
       "coverage_contribution": "SEQUENCE_LENGTH_INTERVAL_CELL",
-      "constraints": ["`..tail` is final.", "The residual type is exact ListRestView<T>, owner-bounded, coordinate-preserving and Sequence<T>-conforming.", "No hidden copy or allocation."],
+      "constraints": ["`tail..` is final.", "The residual type is exact ListRestView<T>, owner-bounded, coordinate-preserving and Sequence<T>-conforming.", "No hidden copy or allocation."],
       "product_execution": "NOT_RUN"
     },
     {
       "pattern_kind_id": "PK-LIST-PREFIX-REST",
       "revision": "r51f3-current-trait-operator-refinement-r1",
       "surface_status": "CURRENT_REACHABLE",
-      "grammar_production": "PrefixRestSequencePattern",
+      "grammar_production": "PrefixRestListPattern",
       "normalized_variant": "ListPrefixRestPattern",
       "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
       "binder_contract": "INTRODUCES_ONE_REST_VIEW",
@@ -231,7 +231,7 @@
       "pattern_kind_id": "PK-LIST-MIDDLE-REST",
       "revision": "r51f3-current-trait-operator-refinement-r1",
       "surface_status": "CURRENT_REACHABLE",
-      "grammar_production": "MiddleRestSequencePattern",
+      "grammar_production": "MiddleRestListPattern",
       "normalized_variant": "ListMiddleRestPattern",
       "refutability": "CHECKER_PROVEN_FROM_SUBJECT_AND_CHILDREN",
       "binder_contract": "INTRODUCES_ONE_REST_VIEW",
@@ -239,7 +239,7 @@
       "ownership_capabilities": ["INSPECT", "SHARED_BORROW", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ORDINARY-PARAMETER", "PCTX-LAMBDA-PARAMETER", "PCTX-PLAIN-LET", "PCTX-PLAIN-VAR", "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-CATCH", "PCTX-VALUE-CATCH"],
       "coverage_contribution": "SEQUENCE_LENGTH_INTERVAL_CELL",
-      "constraints": ["`..middle..` has at least one fixed Pattern on each side.", "The two-sided marker is canonical.", "The residual is an owner-bounded ListRestView<T>."],
+      "constraints": ["`middle..` has at least one fixed Pattern on each side.", "The same one-sided attached suffix is canonical at every position.", "The residual is an owner-bounded ListRestView<T>."],
       "product_execution": "NOT_RUN"
     },
     {
@@ -254,7 +254,7 @@
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "EXCLUSIVE_BORROW_AFTER_ADMISSION", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ORDINARY-PARAMETER", "PCTX-LAMBDA-PARAMETER", "PCTX-PLAIN-LET", "PCTX-PLAIN-VAR", "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-GUARDED-LET-RESIDUAL", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-BARE-FOR", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH", "PCTX-VALUE-CATCH", "PCTX-LOCAL-PATTERN-ASSIGNMENT"],
       "coverage_contribution": "RECORD_ROW_CELL",
-      "constraints": ["Without a rest marker the visible Record field set is exact.", "A mapping is destination Pattern on the left and source field identity on the right."],
+      "constraints": ["Without a rest marker the visible Record field set is exact.", "A mapping is source label identity on the left and destination Pattern on the right; nominal and variant named payloads reuse this direction."],
       "product_execution": "NOT_RUN"
     },
     {
@@ -269,7 +269,7 @@
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "EXCLUSIVE_BORROW_AFTER_ADMISSION", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ORDINARY-PARAMETER", "PCTX-LAMBDA-PARAMETER", "PCTX-PLAIN-LET", "PCTX-PLAIN-VAR", "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-GUARDED-LET-RESIDUAL", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-BARE-FOR", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH", "PCTX-VALUE-CATCH", "PCTX-LOCAL-PATTERN-ASSIGNMENT"],
       "coverage_contribution": "RECORD_ROW_CELL",
-      "constraints": ["`.._` explicitly permits and ignores additional visible labels.", "No residual value is created."],
+      "constraints": ["`_**` explicitly permits and ignores additional visible labels.", "No residual value is created."],
       "product_execution": "NOT_RUN"
     },
     {
@@ -284,7 +284,7 @@
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ORDINARY-PARAMETER", "PCTX-LAMBDA-PARAMETER", "PCTX-PLAIN-LET", "PCTX-PLAIN-VAR", "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-CATCH", "PCTX-VALUE-CATCH"],
       "coverage_contribution": "RECORD_ROW_CELL",
-      "constraints": ["`..rest` captures one exact structural Record row consisting of unselected visible labels.", "No Map conversion or hidden allocation is inferred."],
+      "constraints": ["`rest**` captures one exact static-named structural row consisting of unselected visible labels.", "No Map conversion or hidden allocation is inferred."],
       "product_execution": "NOT_RUN"
     },
     {
@@ -374,7 +374,7 @@
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "EXCLUSIVE_BORROW_AFTER_ADMISSION", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ORDINARY-PARAMETER", "PCTX-LAMBDA-PARAMETER", "PCTX-PLAIN-LET", "PCTX-PLAIN-VAR", "PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-GUARDED-LET-RESIDUAL", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-BARE-FOR", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-DECLARATIVE-CLAUSE", "PCTX-CATCH", "PCTX-VALUE-CATCH"],
       "coverage_contribution": "SUBJECT_CONSTRUCTOR_CELL",
-      "constraints": ["Named payload fields use declared Enum case field identities and destination-pattern:source-field mapping.", "The case remains the coverage identity."],
+      "constraints": ["Named payload fields use declared Enum case field identities and label-first source-field:destination-pattern mapping.", "The case remains the coverage identity."],
       "product_execution": "NOT_RUN"
     },
     {

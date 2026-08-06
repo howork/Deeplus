@@ -1049,7 +1049,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "SliceRangeAdmitted",
     "source_name": "inclusive slice range",
-    "summary": "two-bound .. or ..< slice; static diagnostics and dynamic IndexError precede view creation",
+    "summary": "bounded or owner-open .. / ..< slice; static diagnostics and dynamic IndexError precede provenance-bound view creation",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1071,14 +1071,13 @@
     "diagnostic_refs": [
       "SLICE_BOUND_ORDER_INVALID",
       "SLICE_BOUND_OUT_OF_RANGE_STATIC",
-      "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
-      "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+      "SLICE_OPEN_BOUND_FORM_INVALID"
     ],
     "design_seed_diagnostic_refs": [],
-    "output": "admit | admit_with_lint(diagnostic_id) | reject(diagnostic_id)",
+    "output": "admit | reject(diagnostic_id)",
     "requires": [
       "the enclosing IndexSuffix, not expression Pratt, owns the slice delimiter",
-      "the receiver logical domain and optional bounds are exact",
+      "the receiver logical domain and each present bound are exact; absent bounds normalize to owner boundary identities",
       "bounds evaluate once left-to-right before selection"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
@@ -1100,24 +1099,23 @@
     "algorithm_owner": "parser_then_integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "the delimiter is .. or ..< and both bounds are present",
-      "^ and $ occur only as SliceBound anchors; * is the only full-axis spelling",
+      "the delimiter is .. or ..<; `start..<` is rejected while missing-start and `start..` open forms are admitted",
+      "^ and $ occur only as explicit SliceBound anchors; `[..]` is the general full slice and `[*]` remains NumericArray-only",
       "the selected receiver domain has ordered closed bounds"
     ],
-    "normalization": "preserve delimiter spelling, normalize ^/$ anchors against the receiver's first/last logical coordinates, and retain source-domain bounds without rebasing",
+    "normalization": "preserve delimiter spelling, normalize present ^/$ anchors and absent bounds to source boundary identities (including one-past-last without integer increment), and retain source-domain coordinates without rebasing",
     "decision_procedure": [
-      "reject a missing bound with the exact empty-range diagnostic; ^/$ express endpoints",
-      "evaluate lower then upper once; reject statically out-of-domain or reversed bounds",
+      "admit [..<upper], [..upper], [lower..], and [..]; reject [lower..<] with SLICE_OPEN_BOUND_FORM_INVALID",
+      "evaluate each present lower then upper once; reject statically out-of-domain or reversed bounds",
       "a dynamic bounds failure raises IndexError::outOfLogicalDomain before any view or ownership commit",
-      ".. admits inclusive coordinates; ..< admits lower..upper-1 with SLICE_HALF_OPEN_RANGE_NONCANONICAL; never infer step/rebase"
+      ".. admits inclusive coordinates, ..< excludes a present upper boundary, and neither form infers step or rebase"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | admit_with_lint(diagnostic_id) | reject(diagnostic_id)",
+    "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "SLICE_BOUND_ORDER_INVALID",
     "secondary_diagnostics": [
       "SLICE_BOUND_OUT_OF_RANGE_STATIC",
-      "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
-      "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+      "SLICE_OPEN_BOUND_FORM_INVALID"
     ],
     "positive_fixture_ids": [
       "PF-SliceRangeAdmitted-POS"
@@ -1128,7 +1126,7 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "active_primary_with_advisory_lint",
+    "diagnostic_disposition": "active_primary",
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
     "predecessor_identity": {
@@ -1197,7 +1195,7 @@
       "selected coordinates are expressed in the source logical domain",
       "no implicit copy, rebase, mutable assignment, escape, or isolation crossing has been requested"
     ],
-    "normalization": "normalize owner identity, borrow region, isolation, ordered source coordinates and view provenance while preserving the source logical-domain labels",
+    "normalization": "normalize owner identity, borrow region, isolation, ordered source coordinates, open-boundary identities and view provenance while preserving source-domain labels and empty-view insertion boundaries",
     "decision_procedure": [
       "reject any requested or observed coordinate rebase with SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN",
       "reject mutable slice assignment with SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED; a readonly view exposes no write place",

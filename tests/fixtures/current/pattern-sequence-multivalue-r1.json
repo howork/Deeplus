@@ -25,7 +25,7 @@
     {
       "fixture_id": "PSM-R1-POS-003",
       "fixture_class": "positive",
-      "surface": "let [head, ..tail] = values",
+      "surface": "let [head, tail..] = values",
       "rule": "LIST_SUFFIX_REST",
       "expected": "ADMIT_IF_IRREFUTABLE",
       "assertions": ["rest_position=LAST", "rest_type=ListRestView<Int>"],
@@ -43,7 +43,7 @@
     {
       "fixture_id": "PSM-R1-POS-005",
       "fixture_class": "positive",
-      "surface": "let [first, ..middle.., last] = values",
+      "surface": "let [first, middle.., last] = values",
       "rule": "LIST_MIDDLE_REST",
       "expected": "ADMIT_IF_IRREFUTABLE",
       "assertions": ["fixed_prefix_count=1", "fixed_suffix_count=1"],
@@ -52,7 +52,7 @@
     {
       "fixture_id": "PSM-R1-POS-006",
       "fixture_class": "positive",
-      "surface": "if let [.._] = values { accept() }",
+      "surface": "if let [_..] = values { accept() }",
       "rule": "LIST_ALL_REMAINDER_WILDCARD",
       "expected": "ADMIT",
       "assertions": ["binder_count=0", "all_lengths_covered=true"],
@@ -61,7 +61,7 @@
     {
       "fixture_id": "PSM-R1-POS-007",
       "fixture_class": "positive",
-      "surface": "if let [first, ..tail] = oneValue { use(tail) }",
+      "surface": "if let [first, tail..] = oneValue { use(tail) }",
       "rule": "EMPTY_LIST_REST",
       "expected": "ADMIT",
       "assertions": ["rank_span_count=0", "invalid_empty_source_range_count=0"],
@@ -79,7 +79,7 @@
     {
       "fixture_id": "PSM-R1-POS-009",
       "fixture_class": "positive",
-      "surface": "let ${name, .._} = person",
+      "surface": "let ${name: name, _**} = person",
       "rule": "OPEN_IGNORE_RECORD_PATTERN",
       "expected": "ADMIT",
       "assertions": ["record_shape=OPEN_IGNORE", "residual_binder_count=0"],
@@ -88,7 +88,7 @@
     {
       "fixture_id": "PSM-R1-POS-010",
       "fixture_class": "positive",
-      "surface": "let ${displayName: name, ..rest} = person",
+      "surface": "let ${displayName: name, rest**} = person",
       "rule": "OPEN_CAPTURE_RECORD_MAPPING",
       "expected": "ADMIT",
       "assertions": ["mapping=DESTINATION_COLON_SOURCE", "residual_type=EXACT_RECORD_ROW"],
@@ -160,7 +160,7 @@
     {
       "fixture_id": "PSM-R1-POS-018",
       "fixture_class": "positive",
-      "surface": "catch NetworkError${status: code, .._} if status >= 500 { retry() }",
+      "surface": "catch NetworkError${status: code, _**} if status >= 500 { retry() }",
       "rule": "REFUTABLE_ORDERED_CATCH_PATTERN",
       "expected": "ADMIT",
       "assertions": ["first_match=true", "unmatched=NEXT_CATCH_OR_PROPAGATE"],
@@ -224,7 +224,7 @@
       "fixture_id": "PSM-R1-NEG-001",
       "fixture_class": "negative",
       "surface": "let [first, ..middle, last] = values",
-      "rule": "MIDDLE_REST_REQUIRES_CLOSING_DOT_DOT",
+      "rule": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
       "expected": "REJECT",
       "assertions": ["admitted_ast_count=0", "recovery_surface_count=0"],
       "execution": "DESIGN_STATIC_NOT_RUN"
@@ -233,7 +233,7 @@
       "fixture_id": "PSM-R1-NEG-002",
       "fixture_class": "negative",
       "surface": "let [..middle..] = values",
-      "rule": "MIDDLE_REST_REQUIRES_BOTH_SIDES",
+      "rule": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
       "expected": "REJECT",
       "assertions": ["fixed_prefix_count=0", "fixed_suffix_count=0"],
       "execution": "DESIGN_STATIC_NOT_RUN"
@@ -241,7 +241,7 @@
     {
       "fixture_id": "PSM-R1-NEG-003",
       "fixture_class": "negative",
-      "surface": "let [prefix.., ..suffix] = values",
+      "surface": "let [prefix.., suffix..] = values",
       "rule": "PATTERN_MULTIPLE_REST",
       "expected": "REJECT",
       "assertions": ["rest_count=2", "final_binding_count=0"],
@@ -250,7 +250,7 @@
     {
       "fixture_id": "PSM-R1-NEG-004",
       "fixture_class": "negative",
-      "surface": "let [head, ..tail] = customSequence",
+      "surface": "let [head, tail..] = customSequence",
       "rule": "SEQUENCE_PATTERN_CARRIER_NOT_ADMITTED",
       "expected": "REJECT_WITHOUT_CLOSED_DESCRIPTOR",
       "assertions": ["sequence_conformance_only=true", "descriptor_count=0"],
@@ -259,7 +259,7 @@
     {
       "fixture_id": "PSM-R1-NEG-005",
       "fixture_class": "negative",
-      "surface": "let [head, ..tail] = makeList(); return tail",
+      "surface": "let [head, tail..] = makeList(); return tail",
       "rule": "REST_VIEW_WOULD_OUTLIVE_SOURCE",
       "expected": "REJECT",
       "assertions": ["temporary_owner_retention=FORBIDDEN_CURRENT", "hidden_copy_count=0"],

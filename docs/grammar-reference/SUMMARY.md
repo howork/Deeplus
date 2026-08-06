@@ -84,7 +84,6 @@
 | [`nullsafe_control`](22-preview-design-collections-context-and-control.md#preview-feature-nullsafe_control) | `PREVIEW_DESIGN` | Nullsafe control |
 | [`numeric_array_elementwise_power_msp`](20-preview-gated-reference.md#preview-feature-numeric_array_elementwise_power_msp) | `PREVIEW` | NumericArray elementwise power law |
 | [`numeric_capability_lattice_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-numeric_capability_lattice_preview_design) | `PREVIEW_DESIGN` | Closed numeric capability lattice Preview design |
-| [`option_let_question_binding_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-option_let_question_binding_preview_design) | `PREVIEW_DESIGN` | Option optional payload binding Preview design |
 | [`pattern_advanced_surface_preview_design`](22-preview-design-collections-context-and-control.md#preview-feature-pattern_advanced_surface_preview_design) | `PREVIEW_DESIGN` | Advanced Pattern surface Preview Design |
 | [`prototype_delta`](23-preview-design-concurrency-ffi-and-runtime.md#preview-feature-prototype_delta) | `PREVIEW_DESIGN` | Prototype delta |
 | [`rational_operator_completion_preview_design`](21-preview-design-types-objects-and-traits.md#preview-feature-rational_operator_completion_preview_design) | `PREVIEW_DESIGN` | Rational integral-power and alternative-API Preview design |

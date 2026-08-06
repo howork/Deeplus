@@ -365,7 +365,7 @@ argument type/arity가 불일치하는 경우다.
 
 **정적 판정과 상호작용**
 promotion table, permitted scalar/pointer set, arity/sentinel contract,
-ownership, ABI와 unwind를 닫아야 한다. `values...: T`, named rest와 tuple
+ownership, ABI와 unwind를 닫아야 한다. `values..: T`, named rest와 tuple
 unfold를 C varargs로 해석하지 않고 c_aggregate/stored callback profile도
 자동 포함하지 않는다.
 

@@ -1125,7 +1125,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "BasicIndexOperatorAdmitted",
     "source_name": "BasicIndexOperatorAdmitted",
-    "summary": "intrinsic [] is read-only; conformance never activates it",
+    "summary": "intrinsic comma-axis [] is read-only; open slices preserve owner boundaries; conformance never activates it and MutableList edit statements are separate",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1177,8 +1177,9 @@
     "normalization": "carrier/domain/axes normalized; no conformance",
     "decision_procedure": [
       "reject unknown/conformance-only carriers with LOGICAL_INDEX_DOMAIN_MISMATCH",
-      "List/ReadonlyView/String/Bytes/bounded-list admit one scalar or bounded range; Map admits one exact-K key; tuple/Record do not use []",
-      "NumericArray requires axis_count=rank and typed scalar/range/* axes; admit iff all delegated domain decisions admit",
+      "List/ReadonlyView/String/Bytes/bounded-list admit one scalar or bounded/open range; Map admits one exact-K key; tuple/Record do not use [] and rank-one comma gather is rejected",
+      "NumericArray requires comma axis_count=source rank and typed scalar/range/* axes; drop scalar axes, set result rank to non-scalar axis count, and admit iff all delegated domain decisions admit",
+      "route MutableList structural-edit statements to their closed Prelude CallPlan before ordinary bracket admission; do not create a MutableList read/replace place",
       "return read-only value/borrow"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",

@@ -56,7 +56,7 @@ reordering과 happens-before가 달라질 수 있다. xVM-only MIR 제안 역시
    - `module_static_entrance`
    - `prototype_delta`
    - `static_once_value`
-6. **memory model**
+6. *memory model**
    - `weak_atomic_ordering`
 
 모든 항목은 nonactivatable이며 exact gate가 없다. C aggregate/callback/

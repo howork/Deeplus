@@ -116,7 +116,7 @@ The parser may admit horizontal whitespace and comments between `#` and a role w
 
 Every source value has a semantic type and value identity independent from storage address, serialization tag, runtime discriminant, backend layout, and ABI. This specification fixes source-observable values; it does not infer a representation contract from a literal spelling or a built-in type name.
 
-The lexical authority includes decimal and supported radix integers, digit separators, suffixes, decimal exponents, floating forms, and the finite policy for special floating values. An underscore may separate digits only in admitted positions; it may not lead, trail, or touch a radix prefix, decimal point, exponent marker, or suffix unless the Grammar explicitly admits it. A sign is an AST prefix operator, never part of the numeric token. An unsuffixed integer has portable type `Int`, whose current mathematical domain is the signed 64-bit interval. `UInt` is the corresponding default unsigned core semantic domain `0..2^64-1`; it is distinct from `UInt64`, `USize`, `Int`, and `Int64`, and does not establish a storage or ABI identity. An unsuffixed literal still defaults to `Int`, but an independently fixed `UInt` target may admit the same signless literal only when it is exactly representable. Context may likewise adapt a signless unsuffixed integer to one exact admitted `IntN` or `UIntN` domain only when its value is representable. In addition, with one independently fixed exact `Int`, `IntN`, or `UIntN` target, the checker recognizes only a direct `PrefixExpr(-, UnsuffixedIntegerLiteral)`, obtains the already validated token magnitude, computes the signed mathematical candidate `-magnitude`, and admits it only when representable. `UInt` never admits that negative adapter. This contextual prefix-sign adapter performs no arbitrary constant folding, expression rewriting, or hidden widening/narrowing: `let xs: List<Int8> = [-128]` is admitted, while `let low: List<Int8> = [-129]` and `let unsigned: List<UInt8> = [-1]` are rejected with `LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE`. `ISize` and `USize` require their suffix or an explicit checked conversion. An unsuffixed floating literal remains `Float64`, and `Float32` requires `f32`. `Float` is a closed Prelude alias that normalizes exactly to `Float64`; it creates no new precision, TypeId, conversion, representation, serialization, or ABI domain. All other named integer and floating domains remain distinct. Integer arithmetic, including `UInt`, is checked: statically provable overflow is rejected, while dynamic overflow or integer division or remainder by zero raises a deterministic `ArithmeticDefect` before any enclosing place commit. Wrapping and saturating arithmetic require named APIs.
+The lexical authority includes decimal and supported radix integers, digit separators, decimal exponents, floating forms, and the finite policy for special floating values. An underscore may separate digits only in admitted positions; it may not lead, trail, or touch a radix prefix, decimal point, exponent marker, or removed suffix-shaped tail. A sign is an AST prefix operator, never part of the numeric token. Untyped constants remain exact until an independently fixed direct target applies. Unconstrained defaults are `Int`, `Float64`, and `Complex<Float64>`. `UInt` is the separate unsigned core semantic domain `0..2^64-1`; named integer widths, `ISize`, and `USize` remain distinct. A signless atomic integer may adapt to one exact representable integer target, and a direct negative literal expression may adapt only to an exact signed target; neither rule folds a larger expression or changes overload ranking. A floating-look atomic literal may adapt to an independently fixed exact `Float32` target. The type suffixes `i8/i16/i32/i64/i128/isize`, `u8/u16/u32/u64/u128/usize`, and `f32/f64` are removed. The scanner maximal-munches a suffix-shaped candidate and emits one `NUMERIC_TYPE_SUFFIX_REMOVED`; it does not split it into a number plus identifier and creates no admitted CST/AST/HIR. `Float` remains the exact alias of `Float64`. An expected operator result never retroactively types operands or selects a fixed-glyph candidate. Integer arithmetic, including `UInt`, is checked: statically provable overflow is rejected, while dynamic overflow or integer division or remainder by zero raises deterministic `ArithmeticDefect` before any enclosing place commit. Wrapping and saturating arithmetic require named APIs.
 
 `Float32` and `Float64` have IEEE-754 binary32 and binary64 value behavior; every occurrence of `Float` first normalizes to `Float64`. Ordinary arithmetic rounds to nearest with ties to even. Non-finite values are type-side constants rather than numeric literal spellings. NaN is unordered and supplies neither implicit `Ord` nor `Keyable` evidence; signed zero compares equal. These value laws do not prescribe a backend storage or calling convention.
 
@@ -154,19 +154,21 @@ Prelude 약칭 `Complex<Float64>`로 정규화된다. 이 타입 이름만으로
 않는다.
 
 허수 리터럴은 **10진 부동소수 리터럴과 ASCII `i`가 붙은 하나의 scanner
-token**이다. `4.0i`는 `Complex<Float64>(real: +0.0, imag: 4.0)`이고
-`4.0f32i`는 `Complex<Float32>`이다. 그러므로 정본 직교형 예는 다음과
-같다.
+token**이다. `4.0i`는 기본적으로
+`Complex<Float64>(real: +0.0, imag: 4.0)`이고, 독립적으로 고정된
+`Complex<Float32>` 문맥에서는 같은 무접미사 원자 리터럴이 직접 그
+표현 타입으로 적응한다. 그러므로 정본 직교형 예는 다음과 같다.
 
 ```deeplus
 let z: Complex = 3.0 + 4.0i
-let small: Complex<Float32> = 1.5f32 - 0.25f32i
+let real: Float32 = 1.5
+let small: Complex<Float32> = real - 0.25i
 let unit = Complex::i
 ```
 
 `i` 자체는 일반 식별자이고 전역 허수 상수가 아니다. `4.0 * i`는 그
 식별자를 곱하는 평범한 식이다. 정수형 `4i`, 분리된 `4.0 i`,
-radix 허수, suffix를 연쇄한 `4.0f64i`, 그리고 `4.0index`를 유효 prefix와
+radix 허수, 제거된 numeric type suffix를 붙인 형태, 그리고 `4.0index`를 유효 prefix와
 식별자로 분할하는 행위는 허용하지 않는다. 음수 허수는
 `-4.0i`처럼 언어 예약 prefix 부호를 사용한다.
 
@@ -196,10 +198,10 @@ The same glyph may have several roles only when the Grammar owner determines the
 
 | Glyph | Current owners |
 |---|---|
-| `...` | repeated positional parameter/type residue, or `for ... Pattern in Expr` comprehension unfold |
-| `*` | call-side positional unfold where admitted; for example `f(*args)` |
-| `***` | attached named-rest parameter suffix and function-type named-rest residue suffix only |
-| `**` | attached named unfold prefix and linear-product operator |
+| `...` | one-sided expression Range terminator only |
+| `..` | bounded inclusive Range, positional collect suffix, or IndexSuffix open/full boundary as determined by owner |
+| `*` | owner-bounded structural unfold, NumericArray full axis, or multiplication as determined by owner |
+| `**` | attached NamedPack collect/type-residue suffix, owner-bounded named unfold prefix, or linear-product operator |
 | `.` | member access, class final dispatch marker, tuple ordinal punctuation where owned |
 | `+` | addition/prefix plus and class open dispatch marker where owned |
 | `*.` / `*+` | override-final / override-open class dispatch markers |
@@ -568,8 +570,8 @@ source activation, or product-support claim follows from this Preview Design.
 
 Ordinary value parameters, explicit context parameters, explicit witness parameters, repeated positional parameters, and one named-rest parameter are distinct channels.
 
-- A repeated positional parameter is written `values...: T`. Its body binding is sequence-like, but its public function-type residue remains `T...`.
-- A named-rest parameter is written `options***: Record`. It must be unique and final, and its carrier is exactly the canonical structural `Record` with static labels.
+- A repeated positional parameter is written `values..: T`. Its body binding is a finite call-scoped, nonescaping `PositionalPack<T>`, while its public function-type residue remains `T..`.
+- A named-rest parameter is written `options**`. Its body binding is a finite call-scoped, nonescaping `NamedPack<rho>` with an exact static label row; its public function-type residue is `NamedPack**`.
 - Repeated positional parameters precede the optional named-rest parameter.
 - Primary constructors may additionally own stored `let`/`var` parameters under their admission policy.
 - Lambda parameters use the dedicated lambda parameter list; canonical typed source is `{ x: Int => ... }`.
@@ -579,25 +581,33 @@ Ordinary value parameters, explicit context parameters, explicit witness paramet
 This is a user-ratified constitutional surface decision and applies to every role and artifact.
 
 ```deeplus
-public def configure(options***: Record) -> Unit = {
+public def configure(options** requires {
+    timeout: Duration
+}) -> Unit = {
     apply(**options)
 }
 
-public type Configure = (Record***) -> Unit
+public type Configure = (NamedPack**) -> Unit
 ```
 
 The responsibilities are disjoint:
 
 | Owner | Canonical surface | Meaning |
 |---|---|---|
-| parameter declaration | attached suffix `***` | collect remaining statically labeled named arguments |
-| function-type item | attached suffix `***` | preserve the named-rest call-shape residue |
-| call/materialization entry | attached prefix `**` | unfold a structural Record into static labels |
+| parameter declaration | attached suffix `**` | collect one finite statically labelled heterogeneous row |
+| function-type item | attached suffix `**` on `NamedPack` | preserve exact named-rest row/witness residue |
+| call/materialization entry | owner-bounded prefix `**` | unfold an already proven static named row |
 
-The `**` glyph is current for named unfold and its independent operator role;
-`***` is the named-rest parameter and function-type residue.
+The same `**` glyph is unambiguous because parameter/type suffix and
+call/materialization prefix are different closed owners. Triple-star has no
+current named-rest or unfold role.
 
-Named unfold requires a structural Record whose label set is statically known. A `Map` has runtime keys and cannot feed named arguments. Overlapping unfolded labels, missing required labels, or indeterminate label disjointness are checker errors.
+Named unfold requires a finite structural value whose label row is statically
+known. A `Map` has runtime keys and cannot feed named arguments. Overlapping
+unfolded labels, missing required labels, or indeterminate label disjointness
+are checker errors. `options** requires { label: Type }` belongs to the
+named-rest parameter and owns a `NamedRestRequirementClause`; it is separate
+from callable `requires PredicateExpr` and cannot state a value predicate.
 
 ## 11. Calls, labels, and callable compatibility
 
@@ -696,6 +706,27 @@ selects an explicit provider route and may still have a body; it is not the
 future uppercase VIA route. A direct declaration may omit its body only when
 all requirements are already closed by compatible defaults. An empty explicit
 body has the same meaning and the formatter removes it.
+
+A role tag on a core Trait records one closed language responsibility in the
+distinct `TraitLanguageRoleId` domain. The only current rows are
+`trait#operator` on the nine fixed-glyph roots, `trait#iteration` on
+`Sequence`/`Iterator`, `trait#interpolation` on `Display`, and
+`trait#binding` on `Failable`. The tag does not select glyphs, widen syntax, or
+perform runtime dispatch. Only core language declarations may bear a role tag;
+user types may still provide admitted direct global conformances. Generic
+`#role`/`#profile`, public `#proof`, and arbitrary conversion/literal/actor/
+message/derive/marker/intrinsic roles are rejected.
+
+`Failable` declares `Success`, `Failure`, and the associated static operation
+`def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}`.
+It owns exactly the else-required consuming local form
+`let? success = expression else failure => exit`. Both patterns must be
+irrefutable for the associated types and the failure path must structurally
+leave the enclosing continuation. The expression and branch execute once; only
+success commits bindings. `Option<T>` uses `Failure = Unit` and
+`Result<T,error E>` uses `Failure = E`. Conditional/loop tests use explicit
+patterns; `if let?`, `while let?`, `var?`, bare `let?`, implicit propagation,
+and runtime/fallback evidence routes are absent.
 
 A Trait may opt into one registered synthesis family with `supports auto`, and
 a type requests that policy with `by auto`. The request is bodyless. The
@@ -956,7 +987,16 @@ Strict Boolean `and` and `or` evaluate both operands left-to-right. Sequential `
 
 Linear product is left-folded over the exact operator family `**` and `*+`; the current abstract shape is `PowerExpr` followed by zero or more operator/right-power pairs. Numeric exponentiation uses spaced infix `^` and is right-associative where its numeric law applies. Attached `A^` is NumericArray transpose. Mixed attachment is rejected rather than guessed.
 
-`..` and `..<` are the only current range/slice delimiters. `...` has exactly the closed structural owners repeated positional parameter/type residue and `for ... Pattern in Expr` comprehension unfold; it is never a range delimiter or inferred upper bound. A bounded List literal uses exactly `[L..U: elements]`, preserves its declared inclusive logical domain, and requires the element count to equal `U - L + 1`.
+Expression Range owns `start..end`, `start..<end`, and lazy one-sided
+`start...`, with optional Range-owned `:step`. Start, present end, and step
+evaluate once left-to-right. Step zero and a step whose sign cannot approach a
+present end reject. A bounded range terminates before overflow and includes an
+exactly reached inclusive end. A finite ordered Enum cannot form a one-sided
+Range. `..>` is not current. Positional parameter/type collection instead uses
+owner-attached `name..: T` / `T..`; comprehension unfold is
+`for Pattern in *Expr`. A bounded List literal remains exactly
+`[L..U: elements]`, preserves its inclusive domain, and requires element count
+`U - L + 1`.
 
 A payload-free, nongeneric `enum#increasing` or `enum#decreasing` is also an
 intrinsic range carrier. It receives one whole-Enum `Eq<Self>` and
@@ -1062,7 +1102,7 @@ Typed labeled materialization and schema unfolding must preserve the target cons
 
 ## 24. Collections, comprehensions, and indexing
 
-List, set, map, tuple, Record, String, Bytes, ReadonlyView, and NumericArray owners remain distinct. Comprehension iteration and filters preserve evaluation and failure order. The Stable `for ... Pattern in Expr` clause is a structural comprehension-unfold owner; it never forms a range. Async comprehension remains Preview-design. Collection behavior outside the closed built-in syntax owners uses named methods; conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not activate `[]`.
+List, set, map, tuple, Record, String, Bytes, ReadonlyView, and NumericArray owners remain distinct. Comprehension iteration and filters preserve evaluation and failure order. The Stable structural comprehension-unfold owner is `for Pattern in *Expr`: the source is evaluated once and sealed as a positional structural source before overload selection. `*Expr` is not a general Pratt prefix expression. Async comprehension remains Preview-design. Collection behavior outside the closed built-in syntax owners uses named methods; conformance to `Sequence`, `Indexable`, or `LogicalIndexDomain` does not activate `[]`.
 
 `#set{...}` constructs the current immutable `Set<T>` identity. All elements
 must normalize to one exact element domain with the required equality and
@@ -1169,9 +1209,45 @@ Complex 원소의 `u *+ v`는 왼쪽 피연산자를 켤레화하는 내적
 
 Broadcasting, fill/repeat, slicing, and matrix-like operations must produce deterministic shape diagnostics. NumericArray coordinate domains are not ordinary labels or runtime map keys.
 
-Current range slicing is admitted only for the closed built-in slice carriers. `List`, `String`, `Bytes`, and `ReadonlyView` accept exactly one bounded range axis; semicolon-separated multi-axis selection and the full-axis `*` wildcard are NumericArray-only. `MutableList`, `FrozenList`, and `ListSnapshot` are outside this closed bracket matrix and do not acquire `[]` from a family resemblance or Trait conformance. An axis range is canonical inclusive `i..j` or explicit exclusive-end `i..<j`. `^` and `$` are slice-only first/last anchors. Empty `[]`, omitted range bounds, descending ranges, and step syntax are not current. The half-open spelling is accepted but reports `SLICE_HALF_OPEN_RANGE_NONCANONICAL`; canonical source uses inclusive bounds.
+Current slicing is admitted only for closed built-in owners. `List`, `String`,
+`Bytes`, and `ReadonlyView` accept one scalar or range selector. IndexSuffix
+admits inclusive `i..j`, exclusive `i..<j`, open `[..<j]`, `[..j]`, `[i..]`,
+and full `[..]`; `i..<` rejects because it has no distinct boundary law.
+`^` and `$` remain slice-only first/last anchors. Open exclusive ends use a
+boundary identity that can denote one-past-last without computing `last + 1`.
 
-A slice result is a read-only owner-bounded view that preserves the selected source logical coordinates and owner provenance. It does not implicitly rebase, copy, become mutable, cross isolation, or outlive its source. Mutable slice assignment is forbidden. Code requiring coordinates beginning at one or independent ownership must call an explicit named rebase/copy operation whose cost and ownership transfer are visible.
+NumericArray uses exactly one comma-separated axis per source rank and also
+admits full-axis `*`. `[..]` and `[*]` normalize to the same full-axis selector
+for NumericArray. Scalar axes are removed, so all-scalar selection returns an
+element and mixed selection rank is the count of non-scalar axes. Multi-axis
+selection is Cartesian. A rank-one List does not treat `a[1, 3]` as gather;
+Tuple-as-gather and implicit linear indexing are absent. `MutableList`,
+`FrozenList`, and `ListSnapshot` remain outside ordinary bracket read/replace.
+Empty `[]` and implicit negative-from-end rewriting are not current. `..<` is
+canonical and emits no noncanonical warning.
+
+A slice result is a read-only owner-bounded view that preserves the selected source logical coordinates, owner provenance, borrow region, and open-end insertion boundary, including when empty. It does not implicitly rebase, copy, become mutable, cross isolation, or outlive its source. Mutable slice assignment is forbidden. Code requiring coordinates beginning at one or independent ownership must call an explicit named rebase/copy operation whose cost and ownership transfer are visible.
+
+`MutableList<T>` structural edits are a separate statement-only owner, not
+ordinary bracket indexing or slice assignment. Insertion uses `a[@i] = x`,
+`a[i@] = x`, `a[@^] = x`, and `a[$@] = x`; an explicit `*source` selects the
+corresponding finite multi-insert operation. Removal uses `a[-@i]`,
+`a[-@range]`, `a[-@(selectors)]`, `a[-^]`, or `a[-$]`, optionally followed by
+`-> $value` or `-> $$values` according to point or multi result. Redundant
+`@$`, `^@`, `-@^`, and `-@$` spellings reject.
+
+Each surface resolves to one closed Prelude `MutableList` operation through the
+ordinary `CallExpr` and exact `CallPlan(mode_target_pair, call_head_id)` /
+`CallableImplementationId`. The receiver is one exact exclusive mutable place;
+receiver, selectors, and payload evaluate once left-to-right. Validation,
+finite reusable/copyable payload staging, and allocation complete before one
+mutation commit. Failure preserves the target and payload owners. Temporary,
+shared or actor receivers, self-alias/`inout` overlap, live borrow/view/iterator,
+duplicate selectors, and a general Sequence-only multi source reject. Point
+removal returns `T`; multi removal returns `List<T>` in selector order, uses
+pre-mutation coordinates, and preserves survivor order. No edit-specific HIR,
+MIR opcode, runtime fallback, extension lookup, hidden clone, snapshot, or move
+exists.
 
 ## 27. Bitfield and flags
 
@@ -1228,7 +1304,7 @@ Union injection must select a unique admissible alternative after normalization.
 
 ## 32. Function types and call-shape residue
 
-Function types include parameter channels, callable profile, ownership, effect/error rows, isolation, and return type. Repeated positional residue is written `T...`. Named-rest residue is written `Record***`. Public module API digests preserve these exact residues; erasing them to `Sequence<T>`, plain `Record`, `Map`, a count, or omission is invalid.
+Function types include parameter channels, callable profile, ownership, effect/error rows, isolation, and return type. Repeated positional residue is written `T..`. Named-rest residue is written `NamedPack**`. Public module API digests preserve those residues; the named residue additionally binds the versioned normalized static row/witness digest. Erasing them to `Sequence<T>`, plain `Record`, `Map`, a count, or omission is invalid.
 
 Call compatibility checks each channel independently and then checks the combined responsibility profile. A function accepting named rest is not equivalent to a function accepting a Map.
 
@@ -1494,18 +1570,22 @@ Current structural carriers are exact Tuple products; closed List/bounded-List
 descriptors; exact/open structural Record and Map rows; Enum positional or
 declared named payloads; and schema/data/value or explicitly
 pattern-transparent nominal products. Ordinary Class private state, getters,
-providers, Dyn, Facet, FFI and opaque representation do not open. Record and Map
-patterns are exact when no rest appears, `.._` explicitly ignores an open
-remainder, and `..name` captures the exact residual. A mapped entry writes the
-destination Pattern before `:` and the source field/key after it; a destination
-that itself owns a colon is parenthesized. Map keys are literals or pinned
-stable values under one compiler-selected pure total key/equality descriptor.
+providers, Dyn, Facet, FFI and opaque representation do not open. Record,
+nominal named-payload and variant named-payload patterns use label-first
+`label: Pattern`; exact matching has no remainder, while `rest**` captures and
+`_**` ignores the exact static named residual. Their residual publishes only at
+the whole-pattern delayed commit. Map patterns remain distinct and retain the
+keyed orientation `Pattern: key` plus `..rest`/`.._`; a destination that owns a
+colon is parenthesized. Map keys are literals or pinned stable values under one
+compiler-selected pure total key/equality descriptor. A Map residual is not a
+NamedPack.
 
 Tuple Patterns are exact fixed products: `(p)` groups, `(p,)` is a one-element
-Tuple, and `(p, q)` is a two-element Tuple. Tuple rest is not admitted. List
-Patterns admit exact shape, the all-remainder wildcard `[.._]`, or exactly one
-attached positional rest: `leadings..` first, `..tail` last, or
-`..middle..` between at least one fixed Pattern on each side. A borrowed rest
+Tuple, and `(p, q)` is a two-element Tuple. Tuple rest remains Preview and is
+not promoted here. List Patterns admit exact shape or exactly one attached
+suffix collector `rest..`; `_..` is the all-remainder sink. The collector may
+occupy the beginning, middle, or end, and a middle collector requires fixed
+patterns on both sides. Prefix and double-sided rest spellings are removed. A borrowed rest
 has the exact owner-bounded type `ListRestView<T>`, an explicit intrinsic
 `Sequence<T>` witness, one ordinal `RankSpan(start_rank, count)` and the source
 logical-coordinate projection. `count = 0` represents an empty residual without
@@ -1866,7 +1946,7 @@ lifetime merely because its referent uses managed storage.
 
 MIR represents normalized call channels, construction, witness calls, extension resolution, ownership/place operations, cleanup regions, effects/errors, match partitions, async suspension, actor messages, measures, NumericArray operations, and RCTS responsibility events. Surface sugar must be gone or explicitly represented by a responsibility-bearing MIR node.
 
-Named rest lowers with `***` declaration/type residue identity; named unfold lowers from `**record`. The lowered call shape must retain static labels and must never convert runtime Map keys into labels.
+Named rest lowers from suffix `name**` with `NamedPack**` residue identity; named unfold lowers from owner-bounded prefix `**value`. The lowered call shape retains the finite normalized static row/witness digest and never converts runtime Map keys into labels.
 
 HIR-H1에서 MIR로 내리는 단계는 구조 확장만 수행한다. resolver나
 overload/conformance lookup을 다시 실행하거나 expected result로 연산을
@@ -1889,7 +1969,7 @@ profile identity를 보존한다. 허용되는 adaptation도 `Identity`,
 
 Prelude supplies canonical identities for primitive numbers, `Bool`, `Char`, `String`, bytes, collections, `Record`, Option, Result, iterator protocols, callable/protocol surfaces, measures, and fixed operator contracts. Prelude names are not hard keywords unless the lexical authority says so.
 
-Public Prelude signatures use current syntax, including `Record***` function-type residue where named rest is present. Calendar support belongs to an explicit stdlib/provider profile. Prelude and stdlib artifacts do not claim implementation until target receipts exist.
+Public Prelude signatures use current syntax, including `T..` positional and `NamedPack**` static-named function-type residues. Calendar support belongs to an explicit stdlib/provider profile. Prelude and stdlib artifacts do not claim implementation until target receipts exist.
 
 `BigInt`, `Rational`, `Complex<Float32>`, `Complex<Float64>`와 bare
 `Complex` 약칭은 항상 보이는 Prelude numeric identity이다. `Rational`
@@ -1905,7 +1985,7 @@ API이고 glyph dispatch 후보를 추가하지 않는다.
 
 Formatter/LSP, module API digests, schema validators, conformance corpora, UML export, and design galleries are separate evidence/tooling planes. UML OCL subset, component/deployment mapping, and sequence/activity test generation are `OFFICIAL_TOOLING`; they do not add core language syntax.
 
-The formatter must preserve semantics and normalize only declared conventions. It prints attached `#word`, preserves the `***` named-rest/type suffix and `**` unfold prefix, and never rewrites one owner into the other.
+The formatter must preserve semantics and normalize only declared conventions. It prints attached `#word`, suffix collect `name**`, `NamedPack**` residue, and owner-bounded prefix unfold `**value`, and never rewrites one owner into another.
 
 
 ## 44.1 Bounded tooling and library promotions in R51f3
@@ -1955,9 +2035,11 @@ The Frontend Model supplies the owner policies that EBNF deliberately delegates:
 
 - Every Stable production is reachable from a declared Stable root or an explicitly declared parser entry.
 - No current production has an undefined nonterminal except the declared external scanner/Pratt contracts.
-- Parameter `***`, function-type residue `***`, and unfold `**` have distinct owners.
-- `***` has no expression/unfold role.
-- `**` has no named-rest parameter/type role.
+- Positional `name..: T` / `T..`, named `name**` / `NamedPack**`, and prefix unfold `*value` / `**value` have distinct closed owners.
+- Triple-star has no current collect, type-residue, or unfold role.
+- Suffix `name**` collects one finite static named row, `NamedPack**` preserves
+  its function-type residue, and owner-bounded prefix `**value` unfolds it;
+  these owners are position-disjoint despite sharing the glyph.
 - Source roots consume EOF.
 - `@match` is the only MatchExpr surface.
 - Class and Trait marker domains lower separately.
@@ -1968,9 +2050,10 @@ The Frontend Model supplies the owner policies that EBNF deliberately delegates:
 - Every guard owner admits at most one GuardClause; GuardChain has no production.
 - Callable parameters begin with a stable channel Identifier and may add only a
   checker-proven irrefutable body-entry structural Pattern.
-- Tuple patterns are exact. List patterns admit exact shape, `[.._]`, or one
-  attached prefix/suffix/middle rest. Record and Map patterns are exact by
-  default and use explicit `.._`/`..name` open remainder forms.
+- Tuple patterns are exact. List patterns admit exact shape, `[_..]`, or one
+  attached suffix rest at the beginning, middle, or end. Record patterns use
+  `_**`/`name**` static named residuals; Map patterns alone retain
+  `.._`/`..name` keyed residuals.
 - Bare comma surfaces exist only in the fixed-product return, binding and
   direct-local parallel-assignment owners; Expr has no comma operator.
 - `array` and `case` are ordinary identifiers with no special token, declaration keyword, predeclared/intrinsic nominal-type binding, parser, checker, or formatter owner; ordinary user declarations of those spellings resolve normally.
@@ -1989,7 +2072,7 @@ Publication closure requires canonical hashes, ID parity, grammar closure, curre
 
 ## 49. Scanner, parser, and lossless CST obligations
 
-The Rust scanner must preserve enough span and trivia information for a lossless CST and deterministic diagnostics. It tokenizes the longest admitted glyph, but it does not decide semantic admission. In particular, it may produce `TRIPLE_STAR` and `DOUBLE_STAR`; the parser owner decides whether that token is attached to a parameter, a function-type item, a call/materialization entry, or is an infix operator. Splitting `***` into `**` plus `*`, or reconstructing it from separated tokens, is forbidden.
+The Rust scanner must preserve enough span and trivia information for a lossless CST and deterministic diagnostics. It tokenizes the longest admitted glyph, but it does not decide semantic admission. `DOUBLE_STAR` is classified only by its suffix-collect, type-residue, prefix-unfold, or spaced-infix owner. A removed triple-star candidate is recognized only for one migration diagnostic and commits no canonical token owner, AST, HIR, or MIR residue.
 
 The handwritten recursive-descent parser owns declaration and statement
 structure. A Pratt parser owns the expression precedence table declared by the
@@ -2001,8 +2084,8 @@ domains below:
 
 | Owner | Accepted |
 |---|---|
-| final named-rest parameter | `options***: Record` |
-| function-type named residue | `Record***` |
+| named-rest parameter | `options**` with optional owner-local `requires { label: Type }` |
+| function-type named residue | `NamedPack**` |
 | call/materialization named unfold | `**options` |
 | linear product expression | spaced infix `a ** b` |
 
@@ -2017,7 +2100,7 @@ its dependency closure atomically. It cannot select or rewrite a role, profile,
 or root. A mismatch produces no activated feature and no canonical source-unit
 AST.
 
-The exact 644 Grammar productions are bound by the canonical production-
+The exact 656 Grammar productions are bound by the canonical production-
 disposition registry. Every production has exactly one disposition: lossless
 CST-only, canonical AST node, deterministic normalization, external parser
 entry, or reject-before-AST recovery. The lossless CST preserves every source
@@ -2123,24 +2206,24 @@ under the existing Trait-conformance authority.
 
 The checker evaluates callable channels in this order: ordinary parameters, repeated positional residue, named-rest residue, ownership/place requirements, effect/error rows, isolation/context, and return compatibility. It then applies overload specificity. Named unfold first proves a structural Record with a statically known label row; it then contributes each label once. Duplicate or possibly overlapping labels are rejected before body lowering. A `Map` cannot pass this proof because its key set is a runtime value.
 
-Function-type compatibility preserves `T...` and `Record***` as different residues. It must not erase either residue to a collection carrier. A public API digest records the residue, parameter label policy, effects, errors, ownership, and witness/extension requirements. Two digests that differ in any responsibility-bearing field are not equal merely because their machine ABI could be made identical.
+Function-type compatibility preserves `T..` and `NamedPack**` as different residues. It must not erase either residue to a collection carrier. The named residue also records its normalized finite row and witness digest. A public API digest records the residue, parameter label policy, effects, errors, ownership, and witness/extension requirements. Two digests that differ in any responsibility-bearing field are not equal merely because their machine ABI could be made identical.
 
 ## 51. MIR and backend preservation checklist
 
 Deeplus MIR is the canonical semantic handoff. Each accepted source construct must lower once into an explicit MIR operation or into a documented desugaring whose observable order is fixed. MIR carries evaluation sequence, static label rows, selected conformance or extension evidence, ownership/place transitions, cleanup regions, effect/error edges, cancellation, actor/message responsibility, provider identity, and source provenance needed for diagnostics.
 
-The named-rest declaration and `Record***` function-type residue lower to a named-rest call-shape channel. The `**record` unfold expression lowers to label-row expansion in source evaluation order. It does not lower to iteration over map entries, and it cannot invent or reorder labels. `***` has no unfold MIR node; parameter/type `**` has no current MIR node.
+The named-rest declaration and `NamedPack**` function-type residue lower to a finite static-named call-shape channel. The `**value` unfold expression lowers to label-row expansion in source evaluation order. It does not lower to iteration over map entries, and it cannot invent or reorder labels. Owner-bounded collect/unfold syntax creates no general prefix MIR operation.
 
 The xVM bytecode interpreter is the first executable oracle for development, validation, and REPL behavior, but it remains an implementation of MIR. Cranelift ObjectModule AOT is the first native backend and Cranelift JITModule is the later high-performance path. Backend optimization may erase representation details only after proving preservation of MIR-visible behavior. A passing design validator is not evidence that any of these products parsed, checked, lowered, or ran the feature.
 
 ## 52. Formatter, LSP, documentation, and API obligations
 
 The formatter is syntax-aware and owner-aware. It prints named-rest parameters
-as `name***: Record`, function-type residue as `Record***`, and named unfold as
-`**value`. It must never offer a preference or compatibility setting that
-prints parameter/type `**`.
+as `name**`, function-type residue as `NamedPack**`, and named unfold as
+`**value`. It must preserve the distinct suffix/prefix owners and never print
+the removed triple-star spelling.
 
-The LSP shares parser/checker identities. Completion for a final named-rest parameter inserts `***`; signature help displays `Record***`; unfold completion inserts `**`; hover text names the owner rather than calling both forms “spread.” Rename and formatting preserve static labels. Diagnostics expose the primary ID, exact span, owner-sensitive fix, and current profile.
+The LSP shares parser/checker identities. Completion for a named-rest parameter inserts `**`; signature help displays `NamedPack**`; unfold completion inserts owner-bounded prefix `**`; hover text names the collect or unfold owner rather than calling both forms “spread.” Rename and formatting preserve static labels. Diagnostics expose the primary ID, exact span, owner-sensitive fix, and current profile.
 
 The exact formatter disposition is total over all 643 rows of the current
 grammar-production registry. The six disjoint classes contain exactly
@@ -2277,14 +2360,14 @@ incremental-parser execution remain `NOT_RUN`; their static contract does not
 claim product support. Semantic P0 remains `0`, the canonical feature P1 set is
 exactly `22 OPEN`, and all 15 product lanes remain `NOT_RUN`.
 
-Language guides, design galleries, examples, Prelude signatures, code actions, snippets, and generated API documentation must follow the same surface. Any role report that proposes named-rest parameter/type `**` conflicts with current law and must be rejected or rewritten before integration.
+Language guides, design galleries, examples, Prelude signatures, code actions, snippets, and generated API documentation must follow the same surface. Removed triple-star named-rest spellings are recovery-only and commit no semantic residue.
 
 ## 53. Test corpus and receipt requirements
 
 Every feature family has positive, negative, boundary, and mutation evidence.
 For the named-rest split, the minimum deterministic set contains accepted
-parameter `***`, accepted type residue `Record***`, accepted unfold `**record`,
-and a spaced infix `**` expression so the owner domains remain distinct.
+parameter suffix `options**`, type residue `NamedPack**`, prefix unfold
+`**value`, and spaced infix `a ** b` so all owner domains remain distinct.
 
 A design-static fixture states an expected outcome and checks registry/schema consistency. A parser receipt requires actual Rust parser execution over identified source bytes. A checker receipt additionally identifies diagnostics and normalized responsibility. A MIR receipt records canonical MIR or a stable digest. An xVM or Cranelift receipt records runtime target, toolchain, exit/result behavior, and the MIR identity it executed. The publication must not synthesize a higher evidence lane from lower-lane success.
 
@@ -2294,18 +2377,17 @@ Mutation tests must flip one authority at a time: Grammar token, Frontend owner,
 
 All Deeplus roles are bound by the following current-source directive:
 
-- The language designer maintains the disjoint constitutional rule: named-rest parameter `***`, function-type residue `***`, named unfold `**`.
-- Grammar and frontend owners preserve the exact `***` named-rest and `**`
-  named-unfold owner split.
-- Type-system and checker owners preserve `Record***` in callable compatibility, RCTS descriptors, public API digests, and diagnostics.
-- Implementer and MIR owners create no AST, HIR, MIR, xVM, or Cranelift current node from parameter/type `**`.
-- Formatter/LSP owners print and suggest `***` for named rest and `**` only for unfold; no configuration may reverse them.
+- The language designer maintains the owner-disjoint rule: `name**` collects a static named row, `NamedPack**` preserves its function residue, and owner-bounded prefix `**value` unfolds one.
+- Grammar and frontend owners distinguish suffix collect, prefix unfold, and spaced infix linear product structurally.
+- Type-system and checker owners preserve the finite normalized NamedPack row/witness digest in callable compatibility and public API identity.
+- Implementer and MIR owners create no runtime row-choice, Map iteration, or general-prefix unfold operation.
+- Formatter/LSP owners print the current suffix/prefix forms and never restore triple-star named rest.
 - Prelude, standard-library, example, and documentation owners publish only the current spelling.
 - Tester and critic roles include both directions of negative evidence and search the entire release for contradictory current claims.
-- Idea and promotion roles must rewrite or reject any proposal whose named-rest parameter or type surface is `**`; that surface is fully discarded.
+- Idea and promotion roles must reject dynamic row choice, Map-as-NamedPack, escaping NamedPack, or any return/overload-directed unfold classification.
 - Release owners block publication unless the canonical spec, exact Grammar, Frontend Model, TypeSystem, examples, registries, schemas, and verifier all agree.
 
-This directive does not prohibit the independent infix linear-product operator `**`. It prohibits using `**` as the declaration/type named-rest suffix and prohibits using `***` as unfold.
+This directive does not alter the independent spaced infix linear-product operator `**`; closed owner context disambiguates it from collect and unfold.
 
 ## 55. Human review procedure and conflict resolution
 
@@ -2330,16 +2412,18 @@ derives Request {
 }
 
 public trait Configurable {
-    +def configure+(options***: Record) -> Result<Unit, error ConfigError>
+    +def configure+(options**) -> Result<Unit, error ConfigError>
 }
 
-public def configure(options***: Record) -> Result<Unit, error ConfigError>
+public def configure(options** requires {
+    timeout: Duration
+}) -> Result<Unit, error ConfigError>
 = return @match validate(**options) {
     ::ok(_) => apply(**options)
     ::err(error) => ::err(error)
 }
 
-public type Configure = (Record***) -> Result<Unit, error ConfigError>
+public type Configure = (NamedPack**) -> Result<Unit, error ConfigError>
 
 public def classify(value: Option<Int>) -> String =
     @match value {
@@ -2712,7 +2796,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN` [error]: Preview M0 function-static slots are read-only after initialization.
 - `FUNCTION_SIGNATURE_MUST_PRESERVE_CONTROL_AXES` [note]: Function signatures must preserve throws/effects/suspension/call-domain axes; do not erase them into a bare callable façade.
 - `FUNCTION_TYPE_REQUIRES_THIN_ARROW` [error]: Function/result/signature arrows use ->.
-- `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` [error]: Function types and public API digests must preserve `T...` and `Record***` call-shape residues; neither may be erased to `Sequence<T>` or `Record`.
+- `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` [error]: Function types and public API digests must preserve `T..` and `NamedPack**` call-shape residues; neither may be erased to `Sequence<T>`, `Record`, or `Map`.
 - `GENERATOR_BORROW_CAPTURE_FORBIDDEN` [error]: Escaping generator expression cannot capture a borrowed owner that would outlive its region.
 - `GENERATOR_CREATION_EFFECTS_VISIBLE` [error]: Generator creation effects must be visible at creation boundary.
 - `GENERATOR_EXPR_IS_SINGLE_PASS_NOT_COLLECTION` [error]: @for/@while/@repeat produces a single-pass generator value, not an eager collection.
@@ -2842,7 +2926,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NAMED_CONFORMANCE_DUPLICATE_NAME` [error]: A named conformance identity must be unique for its nominal type, Trait and declaration scope.
 - `NAMED_CONFORMANCE_NOT_AUTOMATIC` [error]: A named conformance never participates in automatic evidence search.
 - `NAMED_CONSTRUCTOR_NOT_FOUND` [error]: No matching named constructor exists for `Type!name(...)`.
-- `NAMED_REST_PARAMETER_MUST_BE_LAST` [error]: A named-rest parameter `options***: Record` must be the final parameter.
+- `NAMED_REST_PARAMETER_REQUIRES_STATIC_ROW` [error]: A named-rest parameter `options**` requires one finite static label row and cannot collect a Map or dynamic labels.
 - `NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE` [error]: Named rest and named-argument spread require a structural Record with static labels; Map is not admissible.
 - `NAMED_UNFOLD_CONSUMING_REQUIRES_MOVE` [error]: A consuming named destination requires an ownership-preserving moved projection source.
 - `NAMED_UNFOLD_REQUIRES_STATIC_PROJECTION_ROW` [error]: Named unfolding requires statically known labels from Record or a certified ProjectionRow.
@@ -2877,7 +2961,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY` [error]: Postfix `^` transpose requires a NumericArray operand.
 - `NUMARR_SHAPE_COLON_FORBIDDEN` [error]: NumericArray shape dimensions use comma, not colon.
 - `NUMARR_SHAPE_INFERRED_VALUE_LITERAL_NOT_TYPE` [error]: #[...] is a value literal with inferred rank-1 shape, not a type façade.
-- `NUMARR_SHAPE_SEMICOLON_FORBIDDEN` [error]: NumericArray shape dimensions use comma; semicolon separates slice axes.
+- `NUMARR_SHAPE_SEMICOLON_FORBIDDEN` [error]: NumericArray shape dimensions and index/slice axes use commas; semicolons are reserved for exact-shape literal bodies.
 - `NUMARR_TRANSPOSE_IS_NOT_ADJOINT` [warning]: `A^` is transpose, not complex adjoint; use `A ~ adjoint`.
 - `NUMARR_UNKNOWN_SHARP_SHAPE_LITERAL` [error]: Unknown # shape literal head.
 - `NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION` [error]: Rank-1 NumericArray transpose requires row/column orientation witness.
@@ -2975,6 +3059,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `R1_PROOF_PROFILE_OUTSIDE_INTRINSIC_SUBSET` [error]: The proof obligation is outside the stable R1 intrinsic-pure profile.
 - `RANGE_CLOSED_END_NOT_ON_STEP_LATTICE` [lint]: Closed endpoint is not yielded by this step lattice.
 - `RANGE_LITERAL_TYPE_POSITION_ONLY` [error]: Range literal refinement type is allowed only in type position.
+- `RANGE_ONE_SIDED_FINITE_DOMAIN` [error]: A one-sided Range requires a non-finite traversal domain; finite ordered Enum domains require an explicit end.
+- `RANGE_OPERATOR_SPELLING_NOT_CURRENT` [error]: Use `..` or `..<`, use terminal `...` only for a one-sided Range, and express traversal direction with `:step`.
 - `RANGE_STEP_DIRECTION_MISMATCH` [error]: Range direction and step sign are inconsistent.
 - `RANGE_STEP_ZERO` [error]: Range step must not be zero.
 - `RANGE_UNSIGNED_DESCENDING_REQUIRES_SIGNED_DOMAIN` [error]: Unsigned descending ranges require an explicit signed delta/domain profile.
@@ -3073,7 +3159,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `SLICE_BOUND_ORDER_INVALID` [error]: Slice lower bound must not exceed upper bound for increasing ranges.
 - `SLICE_BOUND_OUT_OF_RANGE_STATIC` [error]: Static slice bound is outside the source logical domain.
 - `SLICE_FIRST_ANCHOR_OFFSET_REQUIRES_INTEGER` [error]: Offset from ^ must be an integer index expression.
-- `SLICE_HALF_OPEN_RANGE_NONCANONICAL` [warning]: `i..<j` is accepted for explicit exclusive-end slices but is noncanonical in ordinary cases.
+- `SLICE_OPEN_BOUND_FORM_INVALID` [error]: `i..<` has no distinct current meaning; write `i..` or supply the exclusive end as `i..<j`.
 - `SLICE_LAST_ANCHOR_OFFSET_REQUIRES_INTEGER` [error]: Offset from $ must be an integer index expression.
 - `SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN` [error]: A slice preserves selected logical coordinates; call an explicit rebase operation if new coordinates are required.
 - `SLICE_MUTABLE_ALIAS_CONFLICT` [error]: Mutable slice would create an aliasing conflict.
@@ -3153,9 +3239,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `TRY_REQUIRES_CATCH_OR_FINALLY` [error]: A statement `try` or value `@try` requires at least one `catch` clause or one `finally` clause.
 - `TRY_EXPRESSION_STATEMENT_NOT_CURRENT` [error]: Statement `try` requires a block body; `try Expr` is not current Deeplus.
 - `PATTERN_MULTIPLE_REST` [error]: A List pattern may contain at most one rest form.
-- `PATTERN_REST_POSITION_INVALID` [error]: A captured prefix rest must be first, a captured suffix rest must be last, and a middle rest must occur between fixed Patterns.
-- `MIDDLE_REST_REQUIRES_BOTH_SIDES` [error]: A `..name..` middle rest requires at least one fixed Pattern before and after it.
-- `MIDDLE_REST_REQUIRES_CLOSING_DOT_DOT` [error]: A rest followed by another fixed Pattern must use the attached middle spelling `..name..`.
+- `PATTERN_REST_POSITION_INVALID` [retired]: Suffix List rests are admitted at the beginning, middle, or end; legacy prefix/double-ended spellings use `LEGACY_REST_UNFOLD_SPELLING_REMOVED`.
 - `MATCH_CHAIN_BINDER_DIRECTION_MIXED` [error]: A bounded-binder Pattern requires both comparison operators to have the same monotone direction.
 - `SEQUENCE_PATTERN_CARRIER_NOT_ADMITTED` [error]: Bracket decomposition requires a closed built-in finite descriptor; Sequence conformance alone is insufficient.
 - `REST_VIEW_WOULD_OUTLIVE_SOURCE` [error]: A captured `ListRestView` cannot outlive or retain its source owner.
@@ -3163,7 +3247,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `RECORD_PATTERN_DUPLICATE_FIELD` [error]: A Record pattern names the same required label more than once.
 - `RECORD_PATTERN_UNKNOWN_FIELD` [error]: A Record pattern names a label outside the subject's statically known Record row.
 - `RECORD_PATTERN_PRIVATE_FIELD` [error]: A Record pattern cannot project a label that is not visible in the current authority domain.
-- `RECORD_PATTERN_SHAPE_MISMATCH` [error]: An exact Record Pattern and subject row differ; write `.._` or `..name` only when an open remainder is intentional.
+- `RECORD_PATTERN_SHAPE_MISMATCH` [error]: An exact Record Pattern and subject row differ; write `_**` or `name**` only when an open static named residual is intentional.
 - `MAP_PATTERN_DUPLICATE_KEY` [error]: A Map Pattern names the same canonical key more than once.
 - `PATTERN_PIN_REQUIRES_STABLE_VALUE` [error]: A pin Pattern requires one stable value whose strong equality is selected statically.
 - `PATTERN_RANGE_DOMAIN_NOT_ADMITTED` [error]: This Pattern range/relational domain is not a closed exact ordered domain.
@@ -3343,7 +3427,6 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NAMED_UNICODE_ESCAPE_UNKNOWN` [error]: Named Unicode escape is not known in the active Unicode name table.
 - `NUMERIC_DIGIT_SEPARATOR_POSITION_INVALID` [error]: A numeric underscore must occur exactly between two digits of the same component.
 - `NUMERIC_RADIX_FLOAT_NOT_CURRENT` [error]: Radix floating-point literals are not current Deeplus source; use a decimal float or an explicit conversion.
-- `NUMERIC_SUFFIX_KIND_MISMATCH` [error]: The numeric suffix kind does not match the integer or decimal-float literal.
 - `OPTION_COALESCE_TOKEN_MUST_BE_ADJACENT` [error]: Option coalescing uses the adjacent compound token `?:`; separated `? :` belongs to ternary syntax.
 - `RAW_MULTILINE_STRING_NOT_CURRENT` [error]: Raw multiline String syntax is not current; use the Unicode multiline String or `#raw"..."`.
 - `RAW_STRING_DELIMITER_INVALID` [error]: Stable raw String uses exactly the attached `#raw"..."` delimiter family.
@@ -3352,7 +3435,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `UNICODE_ESCAPE_INVALID_DIGIT` [error]: Unicode escape contains an invalid hex digit.
 - `UNICODE_ESCAPE_OUT_OF_RANGE` [error]: Unicode scalar escape is above U+10FFFF.
 - `UNICODE_ESCAPE_SURROGATE_NOT_ALLOWED` [error]: Unicode scalar escape cannot encode a surrogate.
-- `UNKNOWN_NUMERIC_LITERAL_SUFFIX` [error]: Unknown numeric literal suffix; use the closed integer or float suffix table.
+- `NUMERIC_TYPE_SUFFIX_REMOVED` [error]: Numeric type suffixes are not current syntax; use an unsuffixed literal with an explicit target type when a nondefault domain is required.
 - `WORD_COMMENT_AMBIGUOUS_ATTACHMENT` [error]: A Word Comment must be byte-adjacent to exactly one eligible completed left anchor; its lossless CST owner is otherwise ambiguous.
 - `WORD_COMMENT_EXPECTED_TEXT` [error]: Backtick word comment requires a non-empty word comment body.
 - `WORD_COMMENT_LOSSLESS_TRIVIA_REQUIRED` [error]: Word Comment trivia must be preserved by parser, formatter, and LSP projections.
@@ -3451,7 +3534,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `SCOPED_USE_BLOCK_IS_STATEMENT_ONLY` [error]: A scoped use block is a statement and cannot produce a value.
 - `SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT` [error]: A script source file cannot contain an explicit entry declaration; choose the executable root for an explicit entry.
 - `SET_HASH_BRACE_LITERAL_REMOVED_USE_HASH_SET` [error]: #{...} set literal is removed; use #set{...}.
-- `SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR` [error]: A slice range requires both bounds; use ^/$ for endpoints, or * for an admitted NumericArray full axis.
+- `SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR` [retired]: `[..]` is the canonical general full slice; this diagnostic is not emitted.
 - `SOURCE_ROLE_CARRIER_CONFLICT` [error]: A normalized project-relative path occurs more than once, or the manifest and external carrier assign different source roles to one file.
 - `SOURCE_ROLE_ENTRY_COUNT_MISMATCH` [error]: The parser's explicit entry-declaration count must equal the source front end's selected entry-target count for the same normalized source root.
 - `SOURCE_TRAILING_TOKENS` [error]: The selected source root did not consume all input.
@@ -3465,7 +3548,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT` [error]: A top-level executable statement is admitted only by the selected script root; library and executable roots reject it.
 - `TRAILING_CLOSURE_SUFFIX_REQUIRED` [error]: Trailing closures bind only to a suffix of formal closure parameters.
 - `TRAIT_ASSOCIATED_ITEM_DISPATCH_MARKER_FORBIDDEN` [error]: A non-method associated requirement cannot carry a Trait witness marker.
-- `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE` [error]: Triple-star is admitted only as the attached named-rest parameter suffix or function-type named-rest residue; named unfold uses prefix `**`.
+- `LEGACY_REST_UNFOLD_SPELLING_REMOVED` [error]: Triple-star is admitted only as the attached named-rest parameter suffix or function-type named-rest residue; named unfold uses prefix `**`.
 - `UNIT_EXPONENT_REQUIRES_STATIC_INT` [error]: A unit exponent must be a signed decimal StaticInt literal; a runtime expression, radix literal, suffixed integer, decimal point, or exponent-form number is not admitted.
 - `WEAK_ATOMIC_ORDERING_REQUIRES_FEATURE_GATE` [error]: Feature `weak_atomic_ordering` is PREVIEW_DESIGN/nonactivatable and has no current source gate.
 - `WHERE_COLON_RELATION_AMBIGUOUS` [error]: `where T : U` is ambiguous in the current profile. Use `where T conforms Trait` for conformance or an explicit future subtype-bound relation.
@@ -3897,39 +3980,23 @@ Payload ordering, payload-bearing exact-variant types, generic conditional
 synthesis, automatic reverse parsing, subset iteration/ranges, and bundled Trait
 derivation remain deferred.
 
-### Optional payload binding: accepted Preview design
+### Failable guarded local binding
 
-`let?` is a deliberately narrow, nonactivatable Option-binding design. It opens
-exactly one statically known `Option<T>` layer and applies an ordinary
-transactional payload pattern as though the source had written
-`::some(pattern)`. The admitted candidate shapes are:
+The former Option-only Preview is superseded by the exact core
+`trait#binding Failable` contract in Part III. The one current surface is:
 
 ```deeplus
-if let? user = lookupUser(id) {
-    render(user)
-}
-
-while let? task = queue.takeNext() {
-    process(task)
-}
-
-let? configuration = loadConfiguration() else {
-    return ::none
-}
+let? configuration = loadConfiguration()
+else error => throw error
 ```
 
-The payload grammar is `OptionPayloadPattern ::= Pattern`; a type annotation
-belongs to that payload pattern and does not silently retag the whole Option
-subject. The `else` body of the declaration form must unconditionally leave the
-enclosing path. Matching is atomic: bindings become visible only after the full
-payload pattern succeeds. Failure enters the ordinary false/else path without
-partial moves or bindings.
-
-This design does not open `Result`, arbitrary Enum, or nested Option layers. It
-does not introduce truthiness, force unwrap, error propagation, a bare
-declaration without `else`, `match let?`, `for let?`, comprehension filters,
-user-defined extractors, or optional-call syntax. Current source continues to
-use explicit `::some` patterns until separate activation authority exists.
+The right side is consumed once through the selected associated static
+`Failable::branch` operation. Success and failure patterns are irrefutable for
+the witness's associated types; the failure branch exits unconditionally and
+does not imply automatic propagation. Conditional Option probing remains
+explicit, for example `if let Option::some(value) = candidate { ... }`.
+Generalized `if let?`/`while let?`, `var?`, bare `let?`, truthiness, force
+unwrap, runtime extractors, and fallback evidence are not current.
 
 ### Numeric capability and `std::math`: current/Preview split
 

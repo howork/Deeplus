@@ -65,7 +65,7 @@ private type FileLoader =
         effects io
 
 private type Command =
-    (String, String..., Record***) -> Unit
+    (String, String.., NamedPack**) -> Unit
         throws Never
         effects {}
 ```

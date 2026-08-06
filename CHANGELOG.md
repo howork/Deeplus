@@ -1,5 +1,23 @@
 # Changelog
 
+## r77-local-integrated-surface-atomic-cutover-r1 — 2026-08-06
+
+- Reconstruct the collect/unfold family as suffix collection (`name..`,
+  `name**`) and owner-bounded prefix expansion (`*value`), with finite
+  nonescaping NamedPack rows and a separate required-field clause.
+- Give expression Range one-sided `...` and attached `:step`; move IndexSuffix
+  axes to commas, make half-open and open slices canonical, and preserve
+  one-based owner coordinates and scalar-axis removal.
+- Add closed statement-only MutableList structural edits that lower to Prelude
+  calls with one exact place and one failure-atomic commit.
+- Normalize the core Trait language roles and add consuming Failable guarded
+  local `let?`, without opening arbitrary roles or operator glyphs.
+- Remove numeric integer/float type suffixes in one source cutover while
+  preserving exact constants, contextual representability and the existing
+  return-type-directed operator-selection prohibition.
+- Keep semantic P0 at zero, all 22 feature P1 actions and four M13 actions open,
+  all 15 product lanes `NOT_RUN`, and this local candidate unbound to GitHub.
+
 ## r51f3-current-managed-root-runtime-fusion-r1 — 2026-08-03
 
 - Supersede the earlier dependency-unbound R37 candidate phase by binding the

@@ -43,29 +43,30 @@ let id, name = identity()
 쉼표가 있다고 해서 임의의 `Sequence`를 분해하는 것은 아니다. 함수의
 반환 type과 값, binding Pattern은 모두 같은 Tuple arity를 가져야 한다.
 
-## 3. List rest를 방향으로 읽기
+## 3. List rest는 binder에 붙여 읽기
 
-Sequence rest는 점의 위치가 방향을 나타낸다.
+Sequence rest는 수집 책임을 가진 binder 뒤에 `..`를 붙인다. 위치가
+앞·가운데·뒤여도 표면 방향은 바뀌지 않는다.
 
 ```deeplus
-let [head, ..tail] = values
+let [head, tail..] = values
 else return
 
 if let [leadings.., last] = values {
     inspect(last)
 }
 
-if let [first, ..middle.., last] = values {
+if let [first, middle.., last] = values {
     inspect(first, middle, last)
 }
 ```
 
-- `..tail`: 뒤쪽 remainder
+- `tail..`: 뒤쪽 remainder
 - `leadings..`: 앞쪽 remainder
-- `..middle..`: 앞뒤 고정 child 사이의 remainder
-- `.._`: remainder를 capture하지 않고 무시
+- `middle..`: 앞뒤 고정 child 사이의 remainder
+- `_..`: remainder를 capture하지 않고 무시
 
-한 Pattern에는 rest가 최대 하나다. `[.._]`도 유효하며 길이가 0인
+한 Pattern에는 rest가 최대 하나다. `[_..]`도 유효하며 길이가 0인
 List와 nonempty List를 모두 받아들인다.
 
 borrowed List의 captured rest type은 `ListRestView<T>`다. 이 view는 원본
@@ -79,7 +80,7 @@ owner region과 1-based coordinate를 보존한다. 따라서 첫 remainder
 
 ```deeplus
 let ${x, y} = exactPoint
-let ${x, y, .._} = extensiblePoint
+let ${x, y, _**} = extensiblePoint
 ```
 
 첫 Pattern은 field set이 정확히 `x`, `y`인지 확인한다. 둘째 Pattern은
@@ -87,27 +88,31 @@ let ${x, y, .._} = extensiblePoint
 필요하면 이름을 붙인다.
 
 ```deeplus
-let ${x, y, ..metadata} = event
+let ${x, y, metadata**} = event
 ```
 
 이 규칙은 schema가 바뀌었을 때 조용히 새 field를 무시할지, 재검토를
 요구할지를 소스에서 선택하게 한다.
 
-### 4.1 source field의 이름을 바꿔 받기
+### 4.1 source label과 Pattern을 함께 읽기
 
-colon 왼쪽은 destination, 오른쪽은 source다.
+Record-family Pattern에서는 colon 왼쪽이 source label, 오른쪽이 그 field에
+적용할 Pattern이다.
 
 ```deeplus
-let ${horizontal: x, vertical: y, .._} = point
+let ${x: horizontal, y: vertical, _**} = point
 ```
 
 `point.x`가 `horizontal`로, `point.y`가 `vertical`로 들어온다. nested
 Pattern이나 typed destination은 괄호로 묶어 colon owner를 분명히 한다.
 
 ```deeplus
-let ${(${city, zip}): address, .._} = user
-let ${(userId: UserId): id, .._} = payload
+let ${address: ${city, zip}, _**} = user
+let ${id: (userId: UserId), _**} = payload
 ```
+
+Map Pattern은 이 규칙의 예외다. Map은 static-named row가 아니므로 다음
+절의 기존 `destination: key` 방향과 `..rest`를 그대로 사용한다.
 
 ## 5. Map Pattern
 
@@ -134,7 +139,7 @@ identity로 분해한다.
 
 ```deeplus
 let Point${x, y} = point
-let User${displayName: name, .._} = user
+let User${name: displayName, _**} = user
 ```
 
 ordinary Class는 `sealed` 또는 `final`이어도 내부 field가 자동 공개되지
@@ -146,7 +151,7 @@ Enum은 positional payload와 labeled payload를 구분한다.
 ```deeplus
 let message = @match result {
     ::ok(value) => "ok: ${value}"
-    ::error${message, code, .._} => "${code}: ${message}"
+    ::error${message, code, _**} => "${code}: ${message}"
 }
 ```
 
@@ -186,7 +191,7 @@ checker가 `fixedPair`의 Tuple arity를 알기 때문에 irrefutable이다.
 ### 8.2 guarded binding
 
 ```deeplus
-let [head, ..tail] = values
+let [head, tail..] = values
 else return
 ```
 
@@ -196,7 +201,7 @@ List가 비어 있으면 `else`가 실행되며 `head`와 `tail`은 만들어지
 ### 8.3 assertive binding
 
 ```deeplus
-let! [head, ..tail] = protocolGuaranteedNonempty
+let! [head, tail..] = protocolGuaranteedNonempty
 ```
 
 호출자가 불변식을 assert하고 mismatch를 `PatternMatchDefect`로
@@ -207,7 +212,7 @@ let! [head, ..tail] = protocolGuaranteedNonempty
 
 ```deeplus
 if let ::some(user) = lookup(id)
-    and then let ${email, .._} = user.profile
+    and then let ${email, _**} = user.profile
     and then isVerified(email)
 {
     publish(user)
@@ -216,6 +221,33 @@ if let ::some(user) = lookup(id)
 
 뒤 condition은 앞 binder를 읽을 수 있다. 어느 단계든 실패하면 뒤
 표현식은 평가하지 않고 tentative binding은 모두 폐기한다.
+
+### 8.5 `Failable` 값을 소비하는 지역 `let?`
+
+`Option<T>`와 `Result<T, E>`처럼 성공·실패 branch를 가진 값은 core
+`trait#binding Failable`의 직접 conformance를 통해 한 번 소비할 수 있다.
+
+```deeplus
+private def parsePort(text: String) -> Int throws ParseError = {
+    let? port = Int::parse(text) else error => throw error
+    return port
+}
+```
+
+`else`는 필수다. 성공과 실패 Pattern은 모두 irrefutable이어야 하고,
+실패 arm은 `return`, `throw`, `break`, `continue` 중 문맥에 맞는 하나로
+현재 local continuation을 반드시 떠나야 한다. source는 `Failable::branch`
+과정에서 정확히 한 번 consume된다. `Option<T>`의 failure 값은 `Unit`,
+`Result<T,E>`의 failure 값은 `E`다.
+
+```deeplus
+let? value = maybeValue
+// FAILABLE_BINDING_ELSE_REQUIRED
+```
+
+bare `let?`, `var?`, generalized `if let?`와 `while let?`는 허용하지 않는다.
+조건에서 Option을 검사할 때는 `if let Option::some(value) = maybeValue`처럼
+case Pattern을 명시한다.
 
 ## 9. 함수와 lambda parameter Pattern
 
@@ -249,7 +281,7 @@ catch는 Error를 순서대로 Pattern match한다.
 try {
     loadConfiguration()
 }
-catch IOError${path, .._} if isConfigPath(path) {
+catch IOError${path, _**} if isConfigPath(path) {
     useDefaults(path)
 }
 catch error: IOError {
@@ -294,7 +326,6 @@ exclusive borrow, assignment write와 authority 획득이 모두 0이다.
 실행 증거 전에는 Stable source route를 만들지 않는다.
 
 - And/Not Pattern
-- `let? ... else ...`
 - Set/NumericArray Pattern
 - Pattern Synonym과 pure Pattern View
 - completeness manifest와 find Pattern
@@ -313,16 +344,16 @@ if let [first, ..middle, last] = values {
 }
 ```
 
-middle rest는 닫는 marker가 필요하므로 `..middle..`로 쓴다.
+prefix rest는 제거되었다. current spelling은 `[first, middle.., last]`다.
 
 ```deeplus
 let ${x, y} = pointWithMetadata
 ```
 
-추가 field를 허용하려는 의도라면 `${x, y, .._}`여야 한다.
+추가 field를 허용하려는 의도라면 `${x, y, _**}`여야 한다.
 
 ```deeplus
-private def first([head, .._]: List<Int>) -> Int = {
+private def first([head, _..]: List<Int>) -> Int = {
     return head
 }
 ```
@@ -334,7 +365,7 @@ private def first([head, .._]: List<Int>) -> Int = {
 
 1. **Sequence rest:** tail, prefix, middle rest를 각각 사용하는 guarded
    List Pattern을 작성하라.
-2. **Record mapping:** `${localName: sourceName, .._}` 방향으로 payload
+2. **Record mapping:** `${sourceName: localPattern, _**}` 방향으로 payload
    Record를 분해하라.
 3. **Map exactness:** `#map{value: "key", ..rest}` Pattern에서 exact와
    open의 차이를 설명하라.
@@ -346,8 +377,8 @@ private def first([head, .._]: List<Int>) -> Int = {
 ## 16. 빠른 복습
 
 - Tuple과 bare comma product는 하나의 Tuple로 정규화된다.
-- Sequence rest marker의 방향은 remainder 위치를 나타낸다.
-- Record와 Map은 exact-by-default이고 destination이 colon 왼쪽이다.
+- Sequence rest marker는 수집 binder에 suffix로 붙는다.
+- Record-family는 `label: Pattern`, Map은 `destination: key` 방향이다.
 - parameter Pattern은 irrefutable해야 한다.
 - refutable catch는 다음 catch 또는 바깥 error 경계로 진행한다.
 - 성공할 때만 binding과 ownership이 commit된다.

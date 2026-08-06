@@ -419,7 +419,7 @@ bb_complete_cancel(%p: FinalCancelled): complete cancel(%p)
 
 ```text
 invoke callee, args
-  ok(values...)       -> bb_ok(...)
+  ok(values)          -> bb_ok(...)
   error(failure)      -> bb_error(...)   // declared ErrorSet이 있을 때만
   defect(failure)     -> bb_defect(...)  // declared DefectSet이 있을 때만
   cancel(token)       -> bb_cancel(...)  // CancellationPointId가 있을 때만
@@ -458,7 +458,7 @@ CallShape {
 }
 ```
 
-`named_tail`은 `**record`를 HIR/checker가 정적 label row로 닫은 결과다. label 순서는 source evaluation order를 유지한다. xVM에서 Map entry를 순회해 argument label을 만들지 않는다. callee의 `Record***` collector는 이 정적 row로 하나의 Record 값을 만든다.
+`named_tail`은 `**namedPack`을 HIR/checker가 정적 label row로 닫은 결과다. label 순서는 source evaluation order를 유지한다. xVM에서 Map entry를 순회해 argument label을 만들지 않는다. callee의 `name**` collector는 이 정적 row로 하나의 finite call-scoped `NamedPack<rho>` 값을 만든다.
 
 ### 8.2 CalleeRef
 
@@ -919,7 +919,7 @@ Dead-code elimination은 값이 사용되지 않는다는 사실만으로 허용
 | `OP-CALLABLE-020` | closure environment/profile/call-right token |
 | `OP-CLEANUP-021` | 일반 call과 분리된 cleanup registration/entry |
 | `OP-EVIDENCE-022` | `WitnessId`가 고정된 `CalleeRef` |
-| `OP-NAMED-REST-023` | static `CallShape.named_tail`과 `Record***` residue |
+| `OP-NAMED-REST-023` | static `CallShape.named_tail`과 `NamedPack**` residue |
 | `OP-RIGHTWARD-BIND-024` | 별도 op 없음; ordinary initializer + binding commit |
 | `OP-RAW-STRING-025` | exact scalar `ConstString`; raw 여부는 provenance |
 | `OP-DYNAMIC-UNIT-027` | fully bound provider/policy/replay operation |

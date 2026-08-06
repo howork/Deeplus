@@ -190,9 +190,11 @@ owner를 보존한다.
 ### Trait와 associated requirement
 
 ```ebnf
-TraitDecl ::= TopLevelVisibility? "trait" Identifier
+TraitDecl ::= TopLevelVisibility? "trait" TraitLanguageRole? Identifier
               TypeParameterList? TraitDerivesClause*
               TraitAutoSupportClause? TraitBody?
+TraitLanguageRole ::= "#" ("operator" | "iteration"
+                            | "interpolation" | "binding")
 TraitDerivesClause ::= LineBreakBoundary "derives"
                        QualifiedTypeReference
 TraitAutoSupportClause ::= LineBreakBoundary "supports" "auto"
@@ -227,6 +229,37 @@ Trait method의 marker는 Class marker와 glyph를 공유하지만 AST와 identi
 domain은 `TraitWitnessKind`이다. associated type/value/non-method function은
 method witness marker를 얻지 않는다. parent Trait는 반복되는 `derives`
 절로 명시한다.
+
+`TraitLanguageRole`은 arbitrary annotation이 아니라 core-owned language
+responsibility다. 정확한 registry는 다음과 같이 닫혀 있다.
+
+| role | 허용되는 core Trait root |
+|---|---|
+| `#operator` | `UnaryPlus`, `UnaryMinus`, `Add`, `Subtract`, `Multiply`, `Divide`, `Remainder`, `Eq`, `Ord` |
+| `#iteration` | `Sequence`, `Iterator` |
+| `#interpolation` | `Display` |
+| `#binding` | `Failable` |
+
+사용자는 이 root들에 conform할 수 있지만 새 role-bearing Trait root를
+선언할 수 없다. `#operator`도 정확한 13개 기존 glyph만 연결하며 glyph,
+fixity, precedence 또는 후보 집합을 확장하지 않는다. generic
+`#role`/`#profile`, conversion·literal·actor·message·derive·marker·intrinsic
+role과 public `#proof`는 제거되었거나 현행이 아니다. role과 version은
+Trait/API digest에 포함되며 단순 tooling metadata로 지울 수 없다.
+
+Stable feature identity `trait_binding_failable_v1`의 core `Failable`
+binding role은 정확히 하나의 consuming branch operation을 가진다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/integrated-surface-atomic-cutover-r77-r1.json -->
+```deeplus
+public trait#binding Failable {
+    type Success
+    type Failure
+    def ::branch(move source: Self) -> BindingBranch<Success, Failure>
+        throws Never
+        effects {}
+}
+```
 
 ### Associated selector와 companion capability 분해
 
@@ -442,7 +475,7 @@ requirement 이름은 해당 Trait가 확정되어 있으므로 unqualified로 �
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/trait-conformance-surface.json -->
 ```deeplus
-public trait Display {
+public trait#interpolation Display {
     +def display.() -> String
         throws Never
         effects {}
@@ -618,6 +651,11 @@ left nominal owner가 제공하는 유일한 `DIRECT_GLOBAL` conformance를
 정적으로 선택할 수 있다. 그 밖의 glyph와 임의 operator 철자는 named
 Trait method 또는 named API로 표현한다.
 
+이 mapping을 소유하는 아홉 Prelude root는 `trait#operator`로 선언된다.
+role tag 자체가 conformance를 만들거나 user Trait를 operator root로
+승격하지 않는다. `Sequence`/`Iterator`, `Display`, `Failable`도 각각
+`#iteration`, `#interpolation`, `#binding`의 정확한 core root일 뿐이다.
+
 fixed-glyph conformance overloading의 Stable 계약은 기존
 `type T conforms Trait` 표면과 폐쇄된 fixed-glyph mapping만
 사용한다. `TCC-P1-002..008`은 제품·실행 검증 항목으로 계속 OPEN이다.
@@ -687,7 +725,7 @@ let id = UserId!(1)
 ### `EX-R48C-083` — 명시적 Trait conformance evidence
 
 ```deeplus
-public trait Display {
+public trait#interpolation Display {
     +def display+() -> String
         throws Never
         effects {}
@@ -819,6 +857,8 @@ public sealed class Node {
 | conformance/extension/top-level helper가 nominal owner-private constructor authority 획득 | 거부; `TYPE_SIDE_PRIVATE_CONSTRUCTION_AUTHORITY_FORBIDDEN` |
 | mutable/cache/resource/ambient-authority associated `let::` | 거부; `ASSOCIATED_STATIC_VALUE_PROFILE_NOT_ADMITTED` |
 | admitted set 밖의 fixed glyph conformance overload | 거부; Stable 집합은 정확한 13개 역할뿐 |
+| 사용자 선언 `trait#operator MyOperator` | 거부; role-bearing root는 core registry가 소유 |
+| `trait#profile`, `trait#proof`, arbitrary `trait#role` | 제거됨/거부; public role 확장 없음 |
 | successor `VIA`/`AUTO`, specialization, fallback 경로 | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 자식/case 로컬 parent witness replacement | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 동적 attach/detach, 일급/로컬 Witness | `PREVIEW_DESIGN_NONACTIVATABLE` |
