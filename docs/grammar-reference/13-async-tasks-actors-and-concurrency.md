@@ -394,8 +394,8 @@ actor Directory {
 
 def#async inspect(directory: Directory, id: Int) -> Status
     throws ActorMessageError throws LookupError = {
-    let Result::ok(reply) = directory :~ find id: id
-    else Result::err(admissionError) => throw admissionError
+    let? reply = directory :~ find id: id
+    else admissionError => throw admissionError
 
     return await reply
 }

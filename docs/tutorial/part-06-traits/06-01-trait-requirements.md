@@ -88,7 +88,7 @@ default implementation을 만들지 않는다. 어느 칸이 비어 있으면 �
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-public trait Display {
+public trait#interpolation Display {
     +def display+() -> String
         throws Never
         effects {}
@@ -104,7 +104,26 @@ private def describe<T>(borrow value: T) -> String
 `where`는 `T`에 exact `Display` conformance evidence가 필요함을 말한다.
 호출 시 source/import order가 아니라 coherent witness identity가 선택된다.
 
-### 6.2 associated type을 가진 Source
+### 6.2 닫힌 language role
+
+`#operator`, `#iteration`, `#interpolation`, `#binding`은 임의 annotation이
+아니라 compiler와 Prelude 사이의 닫힌 책임 ID다.
+
+```deeplus
+public trait#operator Add<Rhs> { /* fixed `+` requirement */ }
+public trait#iteration Sequence<T> { /* traversal requirement */ }
+public trait#iteration Iterator { /* single-pass state */ }
+public trait#interpolation Display { /* String interpolation */ }
+public trait#binding Failable { /* consuming branch */ }
+```
+
+각 role은 `TraitLanguageRoleId`로 `TraitId`와 별도 보존되며 Trait contract,
+public API digest, consumer HIR에 version과 함께 들어간다. 사용자는 eligible
+target을 이 Trait에 직접 conform시킬 수 있지만 새 role-bearing Trait root를
+선언하거나 `#role`, `#profile`, `#proof` 같은 열린 meta-role을 만들 수
+없다. role은 glyph를 고르거나 fixed operator 집합을 넓히지 않는다.
+
+### 6.3 associated type을 가진 Source
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
@@ -126,7 +145,7 @@ private def first<S>(borrow source: S) -> <S as Source>::Item?
 `Item`은 instance method가 아니며 witness marker를 갖지 않는다.
 `<S as Source>::Item`은 exact Trait associated type projection이다.
 
-### 6.3 law는 실행 코드가 아니다
+### 6.4 law는 실행 코드가 아니다
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus

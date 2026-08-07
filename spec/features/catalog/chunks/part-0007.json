@@ -1602,7 +1602,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Slice i..j has an inclusive end and both bounds are required; use ^/$ for first/last coordinates. Explicit-exclusive i..<j is admitted with SLICE_HALF_OPEN_RANGE_NONCANONICAL. SliceRange owns the delimiter; ..., ..>, omitted bounds, and step/descending syntax are not current.",
+    "notes": "Inside IndexSuffix, `i..j` includes the end and `i..<j` canonically excludes it. The open forms `[..<j]`, `[..j]`, `[i..]`, and `[..]` use owner-boundary identities rather than fabricated integer endpoints. `i..<` and slice step syntax reject. Expression Range `...` and `:step` belong to the Pratt Range owner, not SliceRange.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1616,8 +1616,7 @@
     "normative_trace_refs": {
       "diagnostics": [
         "SLICE_BOUND_ORDER_INVALID",
-        "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
-        "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
+        "SLICE_OPEN_BOUND_FORM_INVALID"
       ],
       "predicates": [
         "SliceRangeAdmitted"

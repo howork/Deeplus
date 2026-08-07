@@ -105,12 +105,19 @@ let matrix = #2,3[
     4, 5, 6;
 ]
 
-let topLeft = matrix[1; 1]
-let secondColumn = matrix[*; 2]
+let topLeft = matrix[1, 1]
+let secondColumn = matrix[*, 2]
 ```
 
 `row`, `column`, `matrix`는 element가 같아도 rank/orientation identity가
-다르다.
+다르다. IndexSuffix의 top-level comma만 axis를 나눈다. `matrix[1; 1]`은
+제거된 축 표면이며, 리터럴의 `#2,3[1, 2, 3; 4, 5, 6;]` semicolon까지
+쉼표로 바꾸면 안 된다.
+
+source rank만큼 selector를 정확히 써야 한다. scalar axis는 결과에서
+제거되므로 `matrix[1, 1]`은 element, `matrix[1, ..]`와 `matrix[*, 2]`는
+rank-1 view다. 여러 non-scalar axis는 Cartesian product이며 implicit
+linear indexing이나 rank 보존 singleton promotion은 없다.
 
 ### 6.2 dot product와 matrix product
 
@@ -190,7 +197,7 @@ spaced `a ^ b`는 scalar power, attached `A^`는 transpose다. formatter가
 
 ## 10. 연습 문제
 
-1. **복사:** 2×2 matrix를 만들고 `[2; 1]` element를 읽어라.
+1. **복사:** 2×2 matrix를 만들고 `[2, 1]` element를 읽어라.
 2. **빈칸 완성:** `#[1, 2, 3] *+ #[4, 5, 6] = 1*4 + ___ + ___`의 두
    빈칸을 채우고 scalar 결과를 계산하라.
 3. **설계:** batch×feature matrix와 weight matrix의 shape contract,

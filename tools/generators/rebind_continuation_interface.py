@@ -43,7 +43,10 @@ def load(path: Path) -> dict[str, Any]:
 
 
 def write(path: Path, value: Any) -> None:
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    # Bound contract identities are byte-level and must not vary with the
+    # host default newline convention.  Git's canonical text form is LF.
+    with path.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
 
 
 def recompute(root: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:

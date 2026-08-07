@@ -5,7 +5,7 @@
     {
       "case_id": "R26-NAMED-REST-P",
       "class": "positive",
-      "source_or_scenario": "def collect(***named: Record) -> Unit = {}",
+      "source_or_scenario": "def collect(named**) -> Unit = {}",
       "expected_outcome": "ACCEPT_CURRENT_NAMED_REST",
       "expected_stage_or_null": null,
       "expected_primary_diagnostic_or_null": null
@@ -21,10 +21,10 @@
     {
       "case_id": "R26-NAMED-REST-N",
       "class": "negative",
-      "source_or_scenario": "def collect(**named: Record) -> Unit = {}",
+      "source_or_scenario": "def collect(named***) -> Unit = {}",
       "expected_outcome": "REJECT_BEFORE_AST",
       "expected_stage_or_null": "PARSER",
-      "expected_primary_diagnostic_or_null": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+      "expected_primary_diagnostic_or_null": "LEGACY_REST_UNFOLD_SPELLING_REMOVED"
     },
     {
       "case_id": "R26-OPTION-NONE-P",
@@ -93,10 +93,10 @@
     {
       "case_id": "R26-SLICE-N",
       "class": "negative",
-      "source_or_scenario": "values[..]",
+      "source_or_scenario": "values[2..<]",
       "expected_outcome": "REJECT_BEFORE_AST",
       "expected_stage_or_null": "PARSER",
-      "expected_primary_diagnostic_or_null": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR"
+      "expected_primary_diagnostic_or_null": "SLICE_OPEN_BOUND_FORM_INVALID"
     },
     {
       "case_id": "R26-LAZY-P",

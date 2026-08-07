@@ -133,6 +133,15 @@ LocalBindingStmt    ::= BindingCore StatementBoundary
 
 LazyBindingStmt     ::= "let" HashTag Identifier TypeAnnotation? "=" Expr
                         StatementBoundary
+GuardedBindingStmt  ::= "let" "?" BindingPattern "=" Expr
+                        "else" Pattern "=>" GuardedBindingExit
+                        StatementBoundary?
+GuardedBindingExit  ::= GuardedReturnExit | GuardedThrowExit
+                      | GuardedBreakExit | GuardedContinueExit
+GuardedReturnExit   ::= "return" Expr?
+GuardedThrowExit    ::= "throw" Expr
+GuardedBreakExit    ::= ("break")+ Expr?
+GuardedContinueExit ::= ("break")* "continue"
 ```
 
 `let`은 불변 바인딩, `var`는 가변 바인딩이다. 지연 바인딩의 현행 표기는
@@ -140,13 +149,17 @@ LazyBindingStmt     ::= "let" HashTag Identifier TypeAnnotation? "=" Expr
 
 plain `let`/`var`의 Pattern은 checker가 irrefutable임을 증명해야 한다.
 `let!`/`var!`은 refutable Pattern의 성공을 프로그래머가 assert하며,
-mismatch는 `PatternMatchDefect`다. ordinary 입력 검증에는 guarded
-binding을 사용한다.
+mismatch는 `PatternMatchDefect`다. ordinary refutable 입력 검증에는
+`if let`/`match`를 사용한다. Stable `trait_binding_failable_v1`의 `let?`는
+core `trait#binding Failable` success/failure carrier를 한 번 소비하는 별도
+owner이고 mandatory `else failurePattern => GuardedBindingExit` arm은
+enclosing continuation을 구조적으로 떠나야 한다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
-let [head, ..tail] = values
-else return
+if let [head, tail..] = values {
+    consume(head, tail)
+}
 
 let! [x, y] = protocolGuaranteedPair
 ```
@@ -198,8 +211,9 @@ AccessorDecl         ::= MemberVisibility? "get" Block
   identifier여야 한다. member/index/place/pattern이나 기존 이름을
   대상으로 삼을 수 없다.
 - bare comma binding `let id, name = pair`는 Tuple Pattern으로
-  정규화된다. List/Record/Map의 refutable 구조는 guarded binding,
-  `if let`, `match` 또는 명시적 `let!` owner를 사용한다.
+  정규화된다. List/Record/Map의 refutable 구조는 `if let`, `match` 또는
+  명시적 `let!` owner를 사용한다. `let?`는 임의 Pattern mismatch sugar가
+  아니다.
 - 로컬 함수 이름은 선언 뒤부터 보이며 `public/common/private`를 붙일
   수 없다.
 - 프로퍼티 값과 접근자는 저장소 소유권, 변경 권한, 수명 책임을

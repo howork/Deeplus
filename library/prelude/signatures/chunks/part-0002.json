@@ -35,7 +35,7 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"
     ],
     "responsibility": "Stable BinarySubtract evidence for an admitted non-intrinsic operand pair under the borrowed, pure, synchronous, non-consuming fixed-glyph profile with only a declared precommit ArithmeticDefect terminal",
     "notes": "Selection requires one left-owner DIRECT_GLOBAL conformance and cannot override an intrinsic-reserved domain or use conversion, alternate evidence routes, ordering, fallback, or runtime lookup; ArithmeticDefect is nonrecoverable and not a throws member; product support NOT_RUN.",
@@ -45,13 +45,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "99fc8e077d7dbf5cfb6832732f9b4789ddb01fe09ce4424df5efdfe9310cc358"
+    "normalized_contract_sha256": "14abf3ce361fcb499ee245b0e3236c78ddf17d40cdb86c9a7c5c8294fe5bb6c6"
   },
   {
     "entry_id": "divide_rhs",
@@ -62,7 +62,7 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"
     ],
     "responsibility": "Stable BinaryDivide evidence for one admitted non-intrinsic operand pair; both operands are borrowed and any zero-divisor terminal is the nonrecoverable ArithmeticDefect before enclosing place commit",
     "notes": "Output is derived only after one left-owner DIRECT_GLOBAL witness is selected. Intrinsic-reserved domains take priority. Conversion, result-directed selection, alternate evidence, fallback, runtime lookup and recoverable hidden throws are forbidden; named recoverable division APIs remain available.",
@@ -72,13 +72,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "c4fd2086b6586297612f4ef10fb46504d7aa9eb3c39526e5e5a249329284c9cf"
+    "normalized_contract_sha256": "27cb941ebc38512f6ae3c59ee730865071e5df00ee8f83fee99fab9104378930"
   },
   {
     "entry_id": "eq_rhs",
@@ -89,7 +89,7 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"
+      "public trait#operator Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"
     ],
     "responsibility": "Strong equality evidence for Self and Rhs; equals borrows its implicit Self receiver and explicit rhs, is pure, deterministic, synchronous, non-consuming and total, and one witness derives both == and !=",
     "notes": "Eq requires reflexivity, symmetry and transitivity. BinaryNotEqual is logical negation of the exact BinaryEqual Eq.equals result and owns no independent conformance. NaN-like partial equality uses an intrinsic or separately named partial profile rather than weakening Eq.",
@@ -99,13 +99,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }",
+        "text": "public trait#operator Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "1a56d45fa598082304f48b176c13227482c99e6def2192fd0470b92ba9279b3b"
+    "normalized_contract_sha256": "b2c969d067973d93c7329c81c59188dff2ce22cfd86b7f723b44e3865a2f3a4a"
   },
   {
     "entry_id": "remainder_rhs",
@@ -116,7 +116,7 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"
     ],
     "responsibility": "Stable BinaryRemainder evidence for one admitted non-intrinsic operand pair; both operands are borrowed and any zero-divisor terminal is the nonrecoverable ArithmeticDefect before enclosing place commit",
     "notes": "Output is derived only after one left-owner DIRECT_GLOBAL witness is selected. A domain must publish its exact quotient/remainder law; intrinsic-reserved domains take priority and Complex has no Remainder row. Conversion, fallback, runtime lookup and recoverable hidden throws are forbidden.",
@@ -126,13 +126,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "6eeb2c1a1c5f0c767434284d4b0171c5636f6ae445dfe08a9d648208ea90ab60"
+    "normalized_contract_sha256": "3e711a96bc23f66e795d52205839226935ec79dcf5a00b73d3cc9c31c3e6cbe6"
   },
   {
     "entry_id": "unary_minus",
@@ -143,7 +143,7 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"
+      "public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"
     ],
     "responsibility": "Stable prefix UnaryMinus evidence for one admitted non-intrinsic operand; the receiver is borrowed, Output is derived after selection and checked negation may terminate only through ArithmeticDefect before commit",
     "notes": "Selection uses OperatorId plus the normalized operand type and one owner DIRECT_GLOBAL witness. Intrinsic-reserved domains, especially literal-prefix adaptation, take priority; conversion, fallback and runtime lookup are forbidden.",
@@ -153,13 +153,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }",
+        "text": "public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "929afdb9039531ae0105ad6526262dafd99a31ffb1f96c2d2bfe865f4a9bd103"
+    "normalized_contract_sha256": "27415c9a4a562546965e14b9fcabb3228d7d37c3c8a25e109517565cedea1d0b"
   },
   {
     "entry_id": "unary_plus",
@@ -170,7 +170,7 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"
+      "public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"
     ],
     "responsibility": "Stable prefix UnaryPlus evidence for one admitted non-intrinsic operand; the receiver is borrowed and Output is derived only after one owner DIRECT_GLOBAL witness is selected",
     "notes": "Selection uses OperatorId plus the normalized operand type. Intrinsic-reserved domains and contextual numeric-literal adaptation take priority; conversion, result direction, fallback and runtime lookup are forbidden.",
@@ -180,13 +180,13 @@
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }",
+        "text": "public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "0a99b68f89d6dc46509b122e7638201f2dabfb63131a8d4b91b49d85d75add98"
+    "normalized_contract_sha256": "ad41d7699eb37fec739e8d3e5d200feea15709be2cd51f33fa5c5ca3db054bcf"
   },
   {
     "entry_id": "run_t",

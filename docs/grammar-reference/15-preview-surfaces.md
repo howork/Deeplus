@@ -16,7 +16,7 @@
 | 분류 | 현재 관측값 | 소스 의미 |
 |---|---:|---|
 | feature registry의 `PREVIEW` | 3 | `explicit_feature_gate`가 있는 Preview 루트에서만 허용 가능 |
-| feature registry의 `PREVIEW_DESIGN` | 50 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
+| feature registry의 `PREVIEW_DESIGN` | 49 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
 | EBNF `PREVIEW` profile | 13 production | Preview 루트, gate 및 FFI 구조 |
 | gate map의 activatable entry | 3 | FFI 2개와 NumericArray elementwise power 1개 |
 | 제품 lane | 15/15 `NOT_RUN` | 정적 설계와 예제만으로 실행을 주장하지 않음 |
@@ -246,7 +246,6 @@ FFI와 unsafe의 상세 soundness 경계는 [FFI, unsafe, 메타프로그래밍 
 | `explicit_broadcast_marker_msp` | 후보 `matrix + &row` | `&` polarity가 context anchor와 충돌하며 현행 source가 아님 |
 | `explicit_context_argument_ampersand_spelling` | 후보 `&expr` argument | broadcast/context-anchor와 owner 충돌; parameter/call identity 미결 |
 | `nullsafe_control` | exact surface 미선정 | Option/match/current control과 중복되지 않는 semantics, diagnostic 및 trace가 없음 |
-| `option_let_question_binding_preview_design` | `if let?`, `while let?`, guarded `let? ... else` | `Option<T>` 한 겹만 기존 `::some` pattern으로 정규화; Result·arbitrary Enum·force unwrap·propagation으로 확대하지 않음 |
 | `solver_backed_general_refinement` | solver query/API와 source surface 미선정 | termination, resource budget, proof reproducibility, provider authority 및 ABI stability 필요 |
 | `use_site_projection_dmad` | Java/Kotlin형 use-site projection 후보; exact Deeplus spelling 미선정 | Phase A role-named facade와 variance law를 우선하며 ABI/API residue 미결 |
 
@@ -263,7 +262,11 @@ FFI와 unsafe의 상세 soundness 경계는 [FFI, unsafe, 메타프로그래밍 
 ### Stable로 승급되어 Preview 목록에서 제외된 항목
 
 `def#guard`의 `GuardSummaryV1`, Enum declaration-order `Ord`, case-owned
-Display mapping과 exact-variant subset alias는 Stable로 승급되었다.
+Display mapping, exact-variant subset alias와 `trait_binding_failable_v1`은
+Stable이다. 마지막 identity는 core `trait#binding Failable`과 exact
+`let? success = expression else failure => unconditionalExit` local을
+소유한다. Option-only `if let?`/`while let?` predecessor는 제거되었으며
+Preview inventory에 남지 않는다.
 현행 문법과 의미는 [타입, generic과 refinement](04-types-generics-and-refinement.md#guard-callable-refinement-summary)와
 [Enum, Record, schema, bitfield와 단위](07-enums-records-schemas-bitfields-and-units.md)를
 따른다. 이 장의 Preview gate나 nonactivatable 판정은 이 네 기능에
@@ -284,7 +287,7 @@ actor crossing을 암시하지 않는다.
 
 ### 기계 검증 가능한 Preview Design 도입 검토 카드
 
-다음 50개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
+다음 49개 카드는 feature registry의 `PREVIEW_DESIGN` 전체 집합과
 일대일이다. 각 필드는 비어 있을 수 없으며, 구문이나 API가 아직
 선택되지 않은 경우에도 그 사실과 현재 대안을 명시한다. 카드의 존재는
 활성화가 아니라 도입 검토 가능성을 보장한다.
@@ -653,15 +656,6 @@ actor crossing을 암시하지 않는다.
     "activation_prerequisites": "동기와 유스케이스 승인, exact syntax, lowering, diagnostics/migration policy와 execution corpus가 필요하다."
   },
   {
-    "feature_id": "option_let_question_binding_preview_design",
-    "motivation": "Option 한 겹의 성공 payload를 기존 pattern engine으로 짧고 명시적으로 결합하려는 제안이다.",
-    "surface_or_api": "if let? Pattern = Expr Block, while let? Pattern = Expr Block, let? Pattern = Expr else Failure가 후보다.",
-    "static_semantics_and_interactions": "Option<T> 한 겹만 ::some(Pattern)으로 정규화하고 subject 단일 평가, nonconsuming test, atomic binding commit과 owner별 mismatch disposition을 보존한다.",
-    "diagnostics_migration_tooling": "let과 ?는 붙여 쓰며 Result, arbitrary Enum, nullability, force unwrap, propagation, bare local let?와 condition chain으로 확대하지 않는다.",
-    "open_alternatives": "현행 if let/while let/guarded let과 명시적 ::some pattern이 대안이다.",
-    "activation_prerequisites": "exact grammar와 diagnostic, Option-only typing, ownership/guard/exhaustiveness corpus, formatter/LSP와 target receipt가 필요하다."
-  },
-  {
     "feature_id": "solver_backed_general_refinement",
     "motivation": "finite R0보다 풍부한 수학적 predicate를 정적 증명에 사용하려는 제안이다.",
     "surface_or_api": "solver query, proof annotation과 source predicate calculus는 미선정이다.",
@@ -737,7 +731,7 @@ actor crossing을 암시하지 않는다.
   {
     "feature_id": "pattern_advanced_surface_preview_design",
     "motivation": "Stable Pattern의 subject-once, pure probe, one-commit 법칙을 보존하면서 검색·추상화·비지역 대입처럼 비용과 책임이 큰 확장을 따로 검토하기 위한 경계다.",
-    "surface_or_api": "And/Not, Set/NumericArray, let?, Pattern Synonym/View/completeness/find, Float range, clone binder, generic Sequence opening, temporary-owner residual, affine·member·index·shared·actor·FFI 대입이 후보이며 exact source route는 미선정이다.",
+    "surface_or_api": "And/Not, Set/NumericArray, Pattern Synonym/View/completeness/find, Float range, clone binder, generic Sequence opening, temporary-owner residual, affine·member·index·shared·actor·FFI 대입이 후보이며 exact source route는 미선정이다. 제거된 Option-only let? predecessor는 이 후보 집합에 포함되지 않는다.",
     "static_semantics_and_interactions": "각 후보는 binder parity, finiteness, shape, equality/order, view selection, ownership, effect/error, cleanup, isolation과 rollback을 독립적으로 닫아야 하며 Stable ListRestView나 Tuple product를 일반화했다고 추정하지 않는다.",
     "diagnostics_migration_tooling": "Preview 표면을 current로 자동 rewrite하지 않고 gate별 deterministic diagnostic, formatter round-trip, hover의 Stable 대안, migration inventory와 부정 corpus를 제공해야 한다.",
     "open_alternatives": "Stable match/guarded binding, named pure adapter, 명시적 loop/search API, direct-local group assignment가 현행 대안이며 dynamic/effectful extractor와 ambient shared mutation은 source route 없이 deferred다.",
@@ -758,7 +752,6 @@ actor crossing을 암시하지 않는다.
 | 권위 행 | 보존되는 설계 | 활성화 fence |
 |---|---|---|
 | `DSGN-CURRENT-LITERAL-SHAPED-COLLECTION-DESIGN-PREVIEW` | literal-shaped type와 immutable-first/freeze-snapshot-view 책임 | nonactivatable, current indexing/Prelude 불변 |
-| `DSGN-OPTION-LET-QUESTION-BINDING-PREVIEW` | Option 한 겹의 `let?` binding sugar | nonactivatable, 기존 pattern engine과 Option identity 불변 |
 | `DSGN-QUARANTINE` | dynamic/unsafe quarantine minimum profile | nonactivatable Preview Design |
 | `DSGN-POST-PR16-TRAIT-BASE` | `TC-R001..R016` | successor only, current conformance/`via` 불변 |
 | `DSGN-POST-PR16-TRAIT-GUARDS` | `TCC-DG-001..008`, `TCC-DG-P2-009/A/B` | VIA/AUTO, specialization, child-local witness 비활성 |
@@ -781,7 +774,7 @@ actor crossing을 암시하지 않는다.
 Frontend model은 Enum-derived 3개를 `stable_design_surfaces_current`에
 결합하고, quarantine, literal-shaped 3개, immutable-first 및
 freeze/snapshot/view를 `preview_design_nonactivatable`에 결합한다. 이 목록은 대표적인
-상세 결합이며 registry의 50개를 축소하는 대체 registry가 아니다.
+상세 결합이며 registry의 49개를 축소하는 대체 registry가 아니다.
 
 ## 평가·소유권·효과
 

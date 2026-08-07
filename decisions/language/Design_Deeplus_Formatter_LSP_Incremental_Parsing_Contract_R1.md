@@ -18,7 +18,7 @@ Baseline:
 ## Chosen profile
 
 The formatter is a deterministic projection over the existing lossless CST.
-The 644 R47 grammar productions are covered by six total, disjoint
+The current 656 grammar productions are covered by six total, disjoint
 disposition classes with exact counts `56/35/320/204/10/19`. An explicit owner
 rule may change only its declared whitespace or layout slots. Token spellings,
 comments, and their lossless owners remain fixed; when a unique rule is absent,
@@ -117,7 +117,7 @@ returns the stale-result outcome without publishing partial state.
 - frontend binding: `spec/frontend/frontend-model.json`
 - human-readable authority: `spec/language.md`, section 52
 
-The successor validation binds all 644 disposition rows, including the five
+The successor validation binds all 656 disposition rows, including the five
 Actor rows, and covers semantic-digest parity, old/new snapshot reuse,
 interval transforms, CAS loss, stale LSP results, position-encoding rejection,
 diagnostic ordering/cascade parity, and failure precedence. It adds zero grammar

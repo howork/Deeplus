@@ -25,7 +25,7 @@ BASELINE_TREE = "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
 CHECK_IDS = (
     "R28_CONTRACT_IDENTITY",
     "R28_SCHEMA_BINDING",
-    "R28_FORMATTING_TOTAL_644",
+    "R77_FORMATTING_TOTAL_656",
     "R28_FORMATTING_DISJOINT_COUNTS",
     "R28_ACTOR_ROWS_EXACT_5",
     "R28_RECOVERY_RANGE_FENCE",
@@ -39,11 +39,11 @@ CHECK_IDS = (
     "R28_GOVERNANCE_FENCE",
 )
 EXPECTED_RULE_COUNTS = {
-    "FD-01": 56,
-    "FD-02": 35,
-    "FD-03": 320,
-    "FD-04": 204,
-    "FD-05": 10,
+    "FD-01": 54,
+    "FD-02": 33,
+    "FD-03": 333,
+    "FD-04": 205,
+    "FD-05": 12,
     "FD-06": 19,
 }
 EXPECTED_ACTOR_RULES = {
@@ -251,7 +251,7 @@ def contract_errors(
         .get("properties", {})
         .get("expected_total_row_count", {})
         .get("const")
-        != 644
+        != 656
         or set(
             schema_properties.get("identity_domains", {}).get("required", [])
         )
@@ -276,8 +276,8 @@ def contract_errors(
     ):
         errors.append("schema successor binding drift")
 
-    if len(rows) != 644 or function.get("expected_total_row_count") != 644:
-        errors.append("formatting domain is not exact 644")
+    if len(rows) != 656 or function.get("expected_total_row_count") != 656:
+        errors.append("formatting domain is not exact 656")
     if counts != Counter(EXPECTED_RULE_COUNTS):
         errors.append(f"observed formatting counts drift: {dict(counts)}")
     if declared_counts != EXPECTED_RULE_COUNTS:
@@ -427,7 +427,7 @@ def contract_errors(
 
     model_binding = frontend.get("frontend_cst_boundary_recovery_contract", {})
     if (
-        model_binding.get("grammar_production_count") != 644
+        model_binding.get("grammar_production_count") != 656
         or model_binding.get("canonical_ast_recovery_node_count") != 0
         or model_binding.get("canonical_hir_recovery_node_count") != 0
         or frontend.get("evidence", {}).get("formatter_lsp") != "NOT_RUN"
@@ -448,7 +448,7 @@ def contract_errors(
             "commit": BASELINE_COMMIT,
             "tree": BASELINE_TREE,
         },
-        "grammar_production_count": 644,
+        "grammar_production_count": 656,
         "formatting_rule_count": 6,
         "formatting_rule_counts": EXPECTED_RULE_COUNTS,
         "identity_domain_count": 8,

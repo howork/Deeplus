@@ -103,7 +103,7 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "b74169e0724791dddc764cc2695474921b93feefd603a305e1021d23365665d2"
+        "ecb3bfd5ee74d4bd5a45b7af79de146f1424213e847a204d1ad0af9edab56974"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
@@ -1107,7 +1107,7 @@ def _check_hir_h1_fence(
             continue
         observed[relative] = _sha256(path.read_bytes())
         active_expected_sha256 = (
-            R41_HIR_H1_BRIDGE_SHA256
+            R77_HIR_H1_BRIDGE_SHA256
             if relative == "spec/contracts/hir-h1-current-mir-bridge.json"
             else expected_sha256
         )
@@ -2400,11 +2400,11 @@ R8_REASSEMBLY = "migration/catalog-reassembly.json"
 R8_GRAMMAR_SHA256 = (
     "933d0bd8e62e318b23a395f5b7454610bb8e95acc584fb7f31b61d8d49a8071e"
 )
-R41_GRAMMAR_SHA256 = (
-    "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
+R77_GRAMMAR_SHA256 = (
+    "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
 )
-R41_HIR_H1_BRIDGE_SHA256 = (
-    "b74169e0724791dddc764cc2695474921b93feefd603a305e1021d23365665d2"
+R77_HIR_H1_BRIDGE_SHA256 = (
+    "ecb3bfd5ee74d4bd5a45b7af79de146f1424213e847a204d1ad0af9edab56974"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
@@ -3374,7 +3374,7 @@ def _check_context_exact_7(
         (
             grammar_path.is_file()
             and not grammar_path.is_symlink()
-            and _sha256(grammar_path.read_bytes()) == R41_GRAMMAR_SHA256,
+            and _sha256(grammar_path.read_bytes()) == R77_GRAMMAR_SHA256,
             "grammar byte fence changed",
         ),
         (
@@ -3701,8 +3701,8 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1484
-            and relation_metadata_doc.value.get("relation_count") == 615,
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1486
+            and relation_metadata_doc.value.get("relation_count") == 613,
             "diagnostic/relation canonical counts are not exact current fusion",
         ),
         (

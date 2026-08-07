@@ -1,0 +1,303 @@
+[
+  {
+    "entry_id": "option_t",
+    "symbol": "Option<T>",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "trait_binding_failable_v1"
+    ],
+    "signatures": [
+      "public enum Option<T> { some(value: T); none; }",
+      "prelude intrinsic direct conformance Option<T> conforms Failable { Success = T; Failure = Unit; branch = def ::branch(move source: Option<T>) -> BindingBranch<T, Unit> throws Never effects {}; }"
+    ],
+    "responsibility": "recoverable absence as value, not Error",
+    "notes": "The sealed direct Failable conformance maps some to success and none to failure(Unit); it consumes the Option exactly once and performs no runtime witness search.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum Option<T> { some(value: T); none; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      },
+      {
+        "text": "prelude intrinsic direct conformance Option<T> conforms Failable { Success = T; Failure = Unit; branch = def ::branch(move source: Option<T>) -> BindingBranch<T, Unit> throws Never effects {}; }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "c5132db445f0563e95a32d007a602521a7a738191722a7d8bee533f75f8f7e6f"
+  },
+  {
+    "entry_id": "option_unwrap_or_else",
+    "symbol": "Option<T>::unwrapOrElse",
+    "kind": "stdlib_operation",
+    "status": "stable_design",
+    "feature_refs": [
+      "option_coalescing_unwrap_or_default",
+      "option_coalescing_ownership_law"
+    ],
+    "signatures": [
+      "unwrapOrElse(fallback: #once () -> T throws E effects ε) -> T throws E effects ε"
+    ],
+    "responsibility": "Named lazy equivalent of one-layer Option coalescing; fallback executes only for none and preserves conditional ownership/error/effect/cleanup.",
+    "notes": "An eager fallback is not semantically interchangeable when evaluation has responsibility.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "unwrapOrElse(fallback: #once () -> T throws E effects ε) -> T throws E effects ε",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "1960645efb385f024761956eb9d3b8951b53cdde5f9eaf4a47823b21cba6c219"
+  },
+  {
+    "entry_id": "ord_t",
+    "symbol": "Ord<Rhs>",
+    "kind": "trait",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "fixed_operator_conformance_overloading"
+    ],
+    "signatures": [
+      "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"
+    ],
+    "responsibility": "nominal total-order evidence for Self and Rhs; compare borrows its implicit Self receiver and explicit rhs, is deterministic, pure, synchronous, non-consuming, authority-free, throws Never, and makes only the result sign meaningful; one selected witness derives <, <=, > and >=",
+    "notes": "Ord<Rhs> derives Eq<Rhs>; compare zero must equal the Eq relation and trichotomy, transitivity, and antisymmetry are required. The four order glyphs share one WitnessId and no per-glyph conformance exists. Intrinsic-reserved domains take priority; Float NaN and Complex supply no implicit Ord evidence. Eligible ordered Enum derivation supplies one whole-Enum Eq/Ord pair and semantic ascending range authority.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "6c74cb1b7a4097fadcfab2157edf1abca28462cc6a496051751497d30dc5bb01"
+  },
+  {
+    "entry_id": "owned_downcast_op",
+    "symbol": "downcastOwned<Target,Source>",
+    "kind": "function",
+    "status": "stable_design",
+    "feature_refs": [
+      "owned_downcast_result",
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "type_token_authority_law"
+    ],
+    "signatures": [
+      "prelude intrinsic def downcastOwned<Target, Source>(move source: Source) -> OwnedDowncast<Target, Source> throws Never effects {}"
+    ],
+    "responsibility": "generic target is selected from the exact expected OwnedDowncast result type; no runtime type-token argument is accepted",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic def downcastOwned<Target, Source>(move source: Source) -> OwnedDowncast<Target, Source> throws Never effects {}",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "cef282f932e95b8dbd5938a87efe69bf9bd12a263172ca2c4fd308e310e566c3"
+  },
+  {
+    "entry_id": "owned_downcast_t",
+    "symbol": "OwnedDowncast<Target,Source>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "owned_downcast_result",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public enum OwnedDowncast<Target, Source> { matched(value: Target); unmatched(original: Source); }"
+    ],
+    "responsibility": "sum channel that preserves exactly one owner on both downcast outcomes",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum OwnedDowncast<Target, Source> { matched(value: Target); unmatched(original: Source); }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "dda4e2da2986902b2672cb776914106bde78ad647e718dbe3ca5fb5fcc590fde"
+  },
+  {
+    "entry_id": "readonly_view_t",
+    "symbol": "ReadonlyView<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "readonly_view"
+    ],
+    "signatures": [
+      "public borrowed type ReadonlyView<T>"
+    ],
+    "responsibility": "nonowning nonmutating owner-bounded coordinate-preserving view",
+    "notes": "Every view preserves its source owner's declared logical coordinates and provenance; ordinary one-based sources remain one-based, while bounded or sliced sources retain their domains. No implicit rebase, hidden copy, isolation crossing, owner-lifetime escape, or Sequence witness is inferred. Positional List-pattern capture uses the distinct ListRestView<T> identity.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public borrowed type ReadonlyView<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "1e7b402f5af51ca2967ee4f6410ecf7c767a0f27a6f42126ea09a1146bee705b"
+  },
+  {
+    "entry_id": "list_rest_view_t",
+    "symbol": "ListRestView<T>",
+    "kind": "core_type",
+    "status": "stable_design",
+    "feature_refs": [
+      "pattern_decomposition",
+      "sequence_positional_rest_pattern"
+    ],
+    "signatures": [
+      "prelude intrinsic borrowed type ListRestView<T>",
+      "prelude intrinsic type ListRestView<T> conforms Sequence<T>"
+    ],
+    "responsibility": "owner-bounded positional List-rest view with exact ordinal span, source-coordinate provenance, and explicit intrinsic traversal evidence",
+    "notes": "Only the closed built-in List-pattern decomposition descriptor creates this borrowed identity. It records SourceOwnerId, BorrowRegionId, RankSpan(start_rank,count), and rank-to-source-coordinate projection; count = 0 is a valid empty residual at a preserved insertion boundary and is not an empty source Range. The explicit intrinsic Sequence<T> witness supplies traversal only and activates neither brackets nor generic Sequence pattern opening. No user conformance, hidden copy, allocation, rebase, mutation, isolation crossing, or owner-lifetime extension is admitted. A pure Pattern guard may observe a nonowning probe view; the final binder is published only by the whole-pattern commit.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "prelude intrinsic borrowed type ListRestView<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      },
+      {
+        "text": "prelude intrinsic type ListRestView<T> conforms Sequence<T>",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "bcafd3bdf932735f31cbd59c222c1dc87956becff043c7f42447761d020bf806"
+  },
+  {
+    "entry_id": "replace_t",
+    "symbol": "replace<T>",
+    "kind": "function",
+    "status": "stable_design",
+    "feature_refs": [
+      "place_replace",
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public def replace<T>(inout place: T, move newValue: T) -> T"
+    ],
+    "responsibility": "one-evaluation exclusive place transaction returning the old owner",
+    "notes": "R50 core identity closure",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public def replace<T>(inout place: T, move newValue: T) -> T",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "0d735ce31216e5af5fad5c976ea95648ec6de931572ca075845d4a8133425b1b"
+  },
+  {
+    "entry_id": "result_t_error_e",
+    "symbol": "Result<T, error E>",
+    "kind": "enum",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth",
+      "trait_binding_failable_v1"
+    ],
+    "signatures": [
+      "public enum Result<T, E: ErrorSet> { ok(value: T); err(cause: E); }",
+      "prelude intrinsic direct conformance Result<T, E: ErrorSet> conforms Failable { Success = T; Failure = E; branch = def ::branch(move source: Result<T, E>) -> BindingBranch<T, E> throws Never effects {}; }"
+    ],
+    "responsibility": "value-level error channel distinct from throws",
+    "notes": "The sealed direct Failable conformance maps ok to success and err to failure(E); it consumes the Result exactly once and does not propagate E implicitly.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public enum Result<T, E: ErrorSet> { ok(value: T); err(cause: E); }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      },
+      {
+        "text": "prelude intrinsic direct conformance Result<T, E: ErrorSet> conforms Failable { Success = T; Failure = E; branch = def ::branch(move source: Result<T, E>) -> BindingBranch<T, E> throws Never effects {}; }",
+        "dialect": "prelude_intrinsic",
+        "grammar_root": null,
+        "schema": "deeplus.prelude-intrinsic-signature/r51f3"
+      }
+    ],
+    "normalized_contract_sha256": "c924ac1586fae427974283d5ace8629a4786e2122787ba41eda0ebb37863e4ab"
+  },
+  {
+    "entry_id": "sequence_t",
+    "symbol": "Sequence<T>",
+    "kind": "protocol",
+    "status": "stable_design",
+    "feature_refs": [
+      "r51a1_fully_merged_current_canonical_single_source_truth"
+    ],
+    "signatures": [
+      "public trait#iteration Sequence<T> { +def iterator.() -> some Iterator where Item == T; }"
+    ],
+    "responsibility": "named ordered finite or lazy sequence contract with an exact associated Item binding",
+    "notes": "Conformance supplies iteration behavior only and does not activate bracket indexing.",
+    "product_support": "NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.prelude-signature-row/r51f3",
+    "primary_source": "library/prelude/prelude.md",
+    "signature_records": [
+      {
+        "text": "public trait#iteration Sequence<T> { +def iterator.() -> some Iterator where Item == T; }",
+        "dialect": "deeplus_source",
+        "grammar_root": "TopLevelDecl",
+        "schema": null
+      }
+    ],
+    "normalized_contract_sha256": "7af1dc684e07f516124faaec9cc9124cc023b36921bdbe29ce22c1138bd7297c"
+  }
+]

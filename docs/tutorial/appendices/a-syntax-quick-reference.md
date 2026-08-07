@@ -25,8 +25,8 @@ Package는 배포·의존성·빌드 단위이고 Module은 이름 공간·가�
 
 | 종류 | 예 | 핵심 규칙 |
 |---|---|---|
-| 정수 | `42`, `1_000` | suffix와 범위는 lexical/type 규칙 참조 |
-| 실수 | `3.5`, `1.5f32` | IEEE Rep가 identity에 포함됨 |
+| 정수 | `42`, `1_000` | exact constant가 target에 적응, 기본은 `Int` |
+| 실수 | `3.5`, `let x: Float32 = 1.5` | type suffix 없음, 기본은 `Float64` |
 | Rational | `<2/3>` | 분모는 양수, 값은 기약형으로 정규화 |
 | Complex | `3.0 + 4.0i` | 허수 literal의 Rep를 맞춤 |
 | Char | `'한'` | escape 처리 뒤 Unicode scalar 하나 |
@@ -131,19 +131,19 @@ closed input에는 exhaustive match를 선호한다. guard는 Bool이어야 하�
 | 의도 | 표면 |
 |---|---|
 | Tuple/bare product | `(x, y)`, `let x, y = pair` |
-| List tail/prefix/middle rest | `..tail`, `leadings..`, `..middle..` |
+| List tail/prefix/middle rest | `tail..`, `leadings..`, `middle..` |
 | exact Record | `${x, y}` |
-| open/captured Record | `${x, y, .._}`, `${x, y, ..rest}` |
-| Record rename | `${destination: source, .._}` |
+| open/captured Record | `${x, y, _**}`, `${x, y, rest**}` |
+| Record rename | `${sourceLabel: destinationPattern, _**}` |
 | Map Pattern | `#map{destination: "key", .._}` |
-| named Enum payload | `::case${field, .._}` |
+| named Enum payload | `::case${field, _**}` |
 | pin/range | `^expected`, `0..<10`, `>= 10` |
 | assertive binding | `let! Pattern = value` |
 | condition chain | `if let ... and then let ... and then condition` |
 | 지역 병렬 대입 | `left, right = right, left` |
 
-Record와 Map은 exact-by-default다. 추가 field/key를 허용하려면 `.._`를
-생략하지 않는다.
+Record와 Map은 exact-by-default다. 추가 Record-family field에는 `_**`,
+추가 Map key에는 `.._`를 생략하지 않는다.
 
 ## 7. 컬렉션과 index
 

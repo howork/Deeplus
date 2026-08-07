@@ -59,6 +59,15 @@
     "copy_requirement": false,
     "escape_policy": "MUST_NOT_OUTLIVE_SOURCE_OWNER"
   },
+  "r77_pattern_surface_direction": {
+    "positional_collect": "name../_.. attached suffix at beginning, middle, or end",
+    "record_family_entry": "label: Pattern",
+    "record_family_static_named_residual": "name**/_**",
+    "map_entry_preserved": "destination Pattern: literal-or-pinned-key",
+    "map_remainder_preserved": "..name/.._",
+    "tuple_rest": "PREVIEW_GATED_NOT_PROMOTED",
+    "whole_pattern_delayed_commit": true
+  },
   "local_pattern_assignment": {
     "assignee_scope": "DIRECT_MUTABLE_LOCALS_ONLY",
     "right_hand_side_evaluation_count": 1,
@@ -399,7 +408,7 @@
       "post_join_policy": "DELEGATES_TO_CHILDREN",
       "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
       "constraints": [
-        "Lowering is compiler-known, deterministic, and performs no user extractor call or backtracking."
+        "Lowering consumes label-first source entries and is compiler-known, deterministic, and free of user extractor calls or backtracking."
       ]
     },
     {
@@ -421,7 +430,7 @@
       "post_join_policy": "DELEGATES_TO_CHILDREN",
       "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
       "constraints": [
-        "Lowering is compiler-known, deterministic, and performs no user extractor call or backtracking."
+        "The `_**` sink is derived only after the declared label subset succeeds and creates no residual value."
       ]
     },
     {
@@ -443,7 +452,8 @@
       "post_join_policy": "DELEGATES_TO_CHILDREN",
       "mir_disposition": "TEST_PROBE_COMMIT_TRACE",
       "constraints": [
-        "The remainder is derived from the closed owner descriptor and cannot invent owner facts, semantic identities, witnesses, or admission rules."
+        "The `name**` static-named remainder is derived from the closed owner descriptor after every label probe and child pattern succeeds.",
+        "It cannot invent owner facts, semantic identities, witnesses, admission rules, a Map conversion, or a partial residual publication."
       ]
     },
     {

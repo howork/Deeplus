@@ -100,7 +100,7 @@
           "tuple with statically known ordered elements"
         ],
         "numeric_array_flattening": false,
-        "record_named_unfolding": "separate **Record channel",
+        "record_named_unfolding": "separate finite **NamedPack channel",
         "map_named_unfolding": false,
         "evaluation": "source expression once, produced positional values in source order"
       }
@@ -712,21 +712,23 @@
       }
     }
   ],
-  "option_optional_binding_preview_design": {
+  "failable_guarded_local_binding": {
     "contract": "spec/contracts/option-optional-binding-preview-design.json",
-    "feature_id": "option_let_question_binding_preview_design",
-    "status": "PREVIEW_DESIGN_NONACTIVATABLE",
-    "surface_owners": [
-      "if let? OptionPayloadPattern = Expr",
-      "while let? OptionPayloadPattern = Expr",
-      "guarded local let? OptionPayloadPattern = Expr"
+    "feature_id": "trait_binding_failable_v1",
+    "status": "STABLE_DESIGN_PRODUCT_NOT_RUN",
+    "surface_owner": "let? SuccessPattern = Expr else FailurePattern => GuardedBindingExit",
+    "trait_role": "trait#binding Failable",
+    "associated_types": [
+      "Success",
+      "Failure"
     ],
-    "payload_pattern_production": "OptionPayloadPattern ::= Pattern",
-    "normalization": "exactly one Option layer is tested and an admitted some payload is matched transactionally by the payload Pattern",
+    "associated_operation": "def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}",
+    "normalization": "consume the source once, select one direct-global Failable witness, branch once, and commit only an irrefutable success pattern or take the structurally unconditional failure exit",
     "attached_token_required": true,
     "implicit_flattening_or_coercion": false,
+    "conditional_or_loop_surface_count": 0,
     "new_mir_or_runtime_node_count": 0,
-    "source_activation_count": 0,
+    "current_surface_count": 1,
     "product_support": "NOT_RUN"
   },
   "parameter_mode_matrix": [

@@ -57,13 +57,11 @@ Tuple 요소를 임의의 `Sequence`로 다시 해석하지 않는다.
 
 ### Sequence rest
 
-List의 위치 기반 rest는 marker의 방향으로 역할을 드러낸다. Stable
-Tuple Pattern은 exact fixed product이며 rest를 갖지 않는다.
+List의 위치 기반 rest는 binder에 붙은 suffix로 collection 방향을
+드러낸다. Stable Tuple Pattern은 exact fixed product이며 rest를 갖지 않는다.
 
 ```ebnf
-TailRestPattern   ::= ".." RestBinding
-PrefixRestPattern ::= RestBinding ".."
-MiddleRestPattern ::= ".." RestBinding ".."
+ListRestPattern   ::= RestBinding ".."
 RestBinding       ::= Identifier | "_"
 ```
 
@@ -71,15 +69,16 @@ Stable 철자는 다음과 같다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
-[head, ..tail]                  // 뒤쪽 remainder
+[head, tail..]                  // 뒤쪽 remainder
 [leadings.., last]              // 앞쪽 remainder
-[first, ..middle.., last]       // 양쪽 고정 항목 사이
-[.._]                           // 전체 remainder를 무시
+[first, middle.., last]         // 양쪽 고정 항목 사이
+[_..]                           // 전체 remainder를 무시
 ```
 
 marker는 이름에 붙으며 한 Pattern에 rest는 최대 하나다. middle rest에는
-앞뒤로 적어도 하나의 고정 child가 있어야 한다. `[first, ..middle, last]`
-처럼 tail marker 뒤에 child를 계속 쓰는 형식은 허용하지 않는다.
+앞뒤로 적어도 하나의 고정 child가 있어야 한다. 제거된 prefix
+`[head, ..tail]`이나 double-sided `[first, ..middle.., last]`는 recovery
+진단만 내고 canonical Pattern을 만들지 않는다.
 
 동적 List의 길이는 runtime에 판정하므로 일반적으로 refutable하다.
 borrowed List에서 capture한 remainder는 `ListRestView<T>`다. 이 view는
@@ -93,9 +92,9 @@ borrowed List에서 capture한 remainder는 `ListRestView<T>`다. 이 view는
 ```ebnf
 RecordPattern ::= "${" RecordPatternEntries? "}"
 RecordPatternEntry ::= Identifier
-                     | RecordTarget ":" Identifier
+                     | Identifier ":" RecordDestination
                      | RecordRestPattern
-RecordRestPattern ::= ".." ("_" | Identifier)
+RecordRestPattern ::= ("_" | Identifier) "**"
 ```
 
 Record는 exact-by-default다.
@@ -103,15 +102,15 @@ Record는 exact-by-default다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
 ${x, y}          // field set이 정확히 x, y
-${x, y, .._}    // x, y를 요구하고 나머지는 명시적으로 무시
-${x, y, ..rest} // 나머지를 residual Record로 capture
+${x, y, _**}    // x, y를 요구하고 나머지는 명시적으로 무시
+${x, y, rest**} // 나머지를 static named residual로 capture
 ```
 
-mapping의 왼쪽은 destination Pattern이고 오른쪽은 source field다.
+mapping의 왼쪽은 source label이고 오른쪽은 destination Pattern이다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
-let ${horizontal: x, vertical: y} = point
+let ${x: horizontal, y: vertical} = point
 ```
 
 위 코드는 `point.x`를 `horizontal`에, `point.y`를 `vertical`에
@@ -121,8 +120,8 @@ destination 자체가 typed 또는 nested Pattern이면 colon owner가 보이도
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
-let ${(id: UserId): id, .._} = payload
-let ${(${city, zip}): address, .._} = user
+let ${id: (id: UserId), _**} = payload
+let ${address: ${city, zip}, _**} = user
 ```
 
 field order는 의미 identity가 아니지만 source ordinal은 진단과 평가
@@ -139,7 +138,9 @@ MapKeyPattern ::= Literal | PinPattern
 MapRestPattern ::= ".." ("_" | Identifier)
 ```
 
-Map도 exact-by-default이며 mapping 방향은 Record와 같다.
+Map도 exact-by-default지만 keyed orientation은 Record-family의 label-first
+방향과 다르다. Map은 기존 `destination: key`와 `..rest`/`.._`를 그대로
+유지하며 static named residual이나 `NamedPack`을 만들지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
@@ -166,7 +167,7 @@ product는 field identity로 분해한다.
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
 let Point${x, y} = point
-let User${displayName: name, .._} = user
+let User${displayName: name, _**} = user
 ```
 
 ordinary Class가 `sealed` 또는 `final`이라는 이유만으로 내부 field가
@@ -179,7 +180,7 @@ Enum의 positional payload와 labeled payload는 서로 다른 모양을 보존�
 ```deeplus
 match result {
     ::ok(value) => consume(value)
-    ::error${message, code, .._} => report(code, message)
+    ::error${message, code, _**} => report(code, message)
 }
 ```
 
@@ -254,8 +255,15 @@ declaration 또는 standalone expression으로 확장되지 않는다.
 ```ebnf
 BindingCore          ::= ("let" | "var") BindingPattern "=" Expr
 AssertiveBindingStmt ::= ("let" | "var") "!" BindingPattern "=" Expr
-GuardedBindingStmt   ::= ("let" | "var") BindingPattern "=" Expr
-                         "else" GuardedBindingFailure
+GuardedBindingStmt   ::= "let" "?" BindingPattern "=" Expr
+                         "else" Pattern "=>" GuardedBindingExit
+                         StatementBoundary?
+GuardedBindingExit   ::= GuardedReturnExit | GuardedThrowExit
+                       | GuardedBreakExit | GuardedContinueExit
+GuardedReturnExit    ::= "return" Expr?
+GuardedThrowExit     ::= "throw" Expr
+GuardedBreakExit     ::= ("break")+ Expr?
+GuardedContinueExit  ::= ("break")* "continue"
 PatternConditionChain ::= PatternCondition
                           ("and" "then" PatternCondition)*
 PatternCondition      ::= Expr | "let" Pattern "=" Expr
@@ -270,12 +278,21 @@ plain `let`/`var`는 checker가 irrefutable임을 증명해야 한다. `let!`과
 `PatternMatchDefect`를 만든다. 실패 전에 component binding, move,
 exclusive borrow 또는 assignment write가 생기지 않는다.
 
+Stable `trait_binding_failable_v1`의 `let?`는 임의 refutable Pattern의
+mismatch sugar가 아니다. core
+`trait#binding Failable`의 유일한 direct-global witness를 먼저 선택하고,
+source를 정확히 한 번 소비해 `Failable::branch`를 한 번 호출한다. success와
+failure Pattern은 각각 associated `Success`/`Failure` type에 irrefutable해야
+하며 failure arm은 `return`, `throw`, `break` 또는 `continue`로 enclosing
+local continuation을 반드시 떠난다. `Option<T>`의 Failure는 `Unit`,
+`Result<T, error E>`의 Failure는 `E`다.
+
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
-let! [head, ..tail] = nonemptyValues
+let! [head, tail..] = nonemptyValues
 
-let ::ok(document) = parse(text)
-else ::err(error) => throw error
+let? document = parse(text)
+else error => throw error
 ```
 
 condition chain은 왼쪽에서 오른쪽으로 진행하며 뒤 condition은 앞에서
@@ -284,7 +301,7 @@ condition chain은 왼쪽에서 오른쪽으로 진행하며 뒤 condition은 �
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
 if let ::some(user) = lookup(id)
-    and then let ${email, .._} = user.profile
+    and then let ${email, _**} = user.profile
     and then isVerified(email)
 {
     publish(user)
@@ -333,7 +350,7 @@ catch Pattern은 refutable할 수 있다. error subject는 한 번 평가되고 
 try {
     loadConfiguration()
 }
-catch IOError${path, .._} if isConfigPath(path) {
+catch IOError${path, _**} if isConfigPath(path) {
     useDefaults(path)
 }
 catch error: IOError {
@@ -417,7 +434,7 @@ interval과 transparent nominal product를 구분한다.
 - Or Pattern은 cell union이다.
 - guard는 usefulness에는 참여하지만 unconditional coverage를 만들지
   않는다.
-- exact `${x}`와 open `${x, .._}`는 서로 다른 row cell이다.
+- exact `${x}`와 open `${x, _**}`는 서로 다른 row cell이다.
 - opaque Preview Pattern View는 completeness를 만들지 않는다.
 - `def#guard`의 검증된 `GuardSummaryV1`은 stable actual의 branch-local
   flow fact만 추가하며 Pattern coverage를 늘리지 않는다.
@@ -434,7 +451,7 @@ Pattern guard 또는 정확히 선택된 `def#guard`를 사용한다.
 않는다.
 
 - And/Not Pattern
-- 한 층의 Option payload만 여는 `let? ... else ...`
+- removed Option-only `if let?`/`while let?` sugar; conditional tests use an explicit `Option::some` Pattern
 - Set과 NumericArray Pattern
 - Pattern Synonym과 direct pure Pattern View
 - completeness manifest
@@ -461,8 +478,8 @@ shared/actor multi-place assignment와 probe 중 suspension에는 Stable source
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
 let ${x, y} = exactPoint
-let ${x, y, .._} = extensiblePoint
-let ${horizontal: x, vertical: y, ..rest} = extensiblePoint
+let ${x, y, _**} = extensiblePoint
+let ${x: horizontal, y: vertical, rest**} = extensiblePoint
 
 if let #map{id: "id", .._} = payload {
     consume(id)
@@ -473,14 +490,15 @@ if let #map{id: "id", .._} = payload {
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
-let [head, ..tail] = values
-else return
+if let [head, tail..] = values {
+    consume(head, tail)
+}
 
 if let [leadings.., last] = values {
     consume(last)
 }
 
-if let [first, ..middle.., last] = values {
+if let [first, middle.., last] = values {
     consume(first, middle, last)
 }
 ```
@@ -491,9 +509,9 @@ if let [first, ..middle.., last] = values {
 ```deeplus
 let expected = 200
 let description = @match response {
-    ::ok${status: code, body, .._} if status == expected => body
-    ::ok${status: code, .._} if status >= 200 and then status < 300 => "ok"
-    ::error${message, .._} => message
+    ::ok${status: code, body, _**} if code == expected => body
+    ::ok${status: code, _**} if code >= 200 and then code < 300 => "ok"
+    ::error${message, _**} => message
 }
 ```
 
@@ -504,15 +522,16 @@ stable-place comparison을 사용한다.
 
 | 형식 또는 주장 | 판정 |
 |---|---|
-| `[first, ..middle, last]` | 거부; middle rest는 `..middle..` |
+| 제거된 `[head, ..tail]`, `[first, ..middle.., last]`, `[.._]` | 거부; suffix `tail..`, `middle..`, `_..` 사용 |
 | Pattern 안의 rest 둘 이상 | 거부 |
-| `${x, y}`를 subset으로 해석 | 거부; subset 의도는 `${x, y, .._}` |
-| source field를 colon 왼쪽에 두기 | 거부; destination이 왼쪽 |
+| `${x, y}`를 subset으로 해석 | 거부; subset 의도는 `${x, y, _**}` |
+| Record-family destination을 colon 왼쪽에 두기 | 거부; source label이 왼쪽 |
 | arbitrary Map key call | 거부 |
 | mutable/unstable pin | 거부 |
 | ordinary Class 내부 자동 개방 | 거부 |
 | refutable parameter Pattern | 거부 |
 | guard의 effect, throw, suspend, consume, authority 획득 | 거부 |
+| `if let?`, `while let?`, `var?`, bare `let?` without `else` | 제거됨/거부; exact consuming local `let? ... else ... => exit`만 current |
 | Or branch마다 다른 binder/type/mode/region | 거부 |
 | 실패 뒤 부분 move·binding·assignment | 금지 |
 | generic Sequence conformance로 bracket/rest Pattern 활성화 | 거부 |

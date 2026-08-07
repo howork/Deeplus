@@ -36,20 +36,20 @@
     "recognition_contract": "parse one ordered TrailingClosureGroup, preserve labels and spans, then reject when a group of two or more contains any unlabeled item"
   },
   {
-    "rejection_id": "NG-NAMED-REST-DOUBLE-STAR",
+    "rejection_id": "NG-LEGACY-NAMED-REST-TRIPLE-STAR",
     "feature_ids": [
       "named_rest_parameter_record_msp"
     ],
-    "surface_family": "named-rest parameter/type residue written with `**`",
+    "surface_family": "named-rest parameter/type residue written with the removed triple-star collector",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+    "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
     "negative_fixture_ids": [
       "EX-R51c1-004",
       "EX-R51c1-005"
     ],
-    "replacement_or_no_fix": "use attached ***; ** remains only named unfold in this family",
-    "feature_gate_policy": "no gate, recovery, or compatibility mode admits parameter/type **",
+    "replacement_or_no_fix": "use attached suffix name** for the collector and NamedPack** for the function-type residue",
+    "feature_gate_policy": "no gate, recovery, or compatibility mode admits a triple-star collector or residue",
     "recognition_stage": "parser",
     "current_ast_created": false,
     "recognition_contract": "emit the primary diagnostic without admitting the program"
@@ -63,7 +63,7 @@
     "surface_family": "call/materialization named unfold written with prefix `***`",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE",
+    "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
     "negative_fixture_ids": [
       "EX-R51c1-006"
     ],
@@ -1293,22 +1293,22 @@
     "recognition_contract": "emit the primary diagnostic and do not continue with an admitted program"
   },
   {
-    "rejection_id": "NG-SEQUENCE-MIDDLE-REST-WITHOUT-CLOSING-DOTS",
+    "rejection_id": "NG-SEQUENCE-LEGACY-MIDDLE-REST",
     "feature_ids": [
       "sequence_positional_rest_pattern"
     ],
-    "surface_family": "middle positional rest missing the attached closing dot pair",
+    "surface_family": "removed prefix or two-sided positional List-rest spelling",
     "lexical_or_parse_recognition": "recognized_then_rejected",
     "current_status": "FORBIDDEN",
-    "primary_diagnostic": "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+    "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
     "negative_fixture_ids": [
       "EX-R52-PAT-NG-001"
     ],
-    "replacement_or_no_fix": "write the bounded middle rest as `..binder..`",
+    "replacement_or_no_fix": "write one attached suffix rest as `binder..` or `_..` at the intended List-pattern position",
     "feature_gate_policy": "no current gate",
     "recognition_stage": "parser",
     "current_ast_created": false,
-    "recognition_contract": "diagnose the missing attached closing dots; do not recover the spelling into an admitted Pattern"
+    "recognition_contract": "diagnose the removed direction before AST commitment; do not recover the spelling into an admitted Pattern"
   },
   {
     "rejection_id": "NG-MAP-PATTERN-UNSTABLE-KEY",

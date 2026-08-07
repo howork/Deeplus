@@ -104,8 +104,8 @@ public def parseRequest(request: Record) -> Option<ParsedId>
     throws Never
     effects {}
 = {
-    if let ${rawIdentifier: id, metadata, .._} = request
-        and then let ${source, .._} = metadata
+    if let ${id: rawIdentifier, metadata, _**} = request
+        and then let ${source, _**} = metadata
         and then hasText(source)
     {
         return parse(rawIdentifier)
@@ -114,8 +114,8 @@ public def parseRequest(request: Record) -> Option<ParsedId>
 }
 ```
 
-`${rawIdentifier: id, ...}`는 source field `id`를 destination
-`rawIdentifier`로 받는다. 두 Record Pattern의 `.._`는 새 field를
+`${id: rawIdentifier, _**}`는 source field `id`를 destination
+`rawIdentifier`로 받는다. 두 Record Pattern의 `_**`는 새 field를
 명시적으로 허용한다. 어느 단계가 실패해도 앞 단계 probe binder를 final
 binding으로 남기지 않는다.
 

@@ -151,7 +151,67 @@
                 "type": "null"
               },
               {
-                "const": "Record***"
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "spelling",
+                  "finite",
+                  "nonescaping",
+                  "normalized_row_digest",
+                  "witness_digest"
+                ],
+                "properties": {
+                  "spelling": {
+                    "const": "NamedPack**"
+                  },
+                  "finite": {
+                    "const": true
+                  },
+                  "nonescaping": {
+                    "const": true
+                  },
+                  "normalized_row_digest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "witness_digest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            ]
+          },
+          "trait_language_role": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "role_id",
+                  "registry_owner",
+                  "role_contract_digest"
+                ],
+                "properties": {
+                  "role_id": {
+                    "enum": [
+                      "TRAIT_LANGUAGE_ROLE_OPERATOR_R1",
+                      "TRAIT_LANGUAGE_ROLE_ITERATION_R1",
+                      "TRAIT_LANGUAGE_ROLE_INTERPOLATION_R1",
+                      "TRAIT_LANGUAGE_ROLE_BINDING_R1"
+                    ]
+                  },
+                  "registry_owner": {
+                    "const": "CORE_LANGUAGE"
+                  },
+                  "role_contract_digest": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
               }
             ]
           },
@@ -1969,7 +2029,8 @@
         "projection_row_sha256"
       ],
       "optional": [
-        "cleanup_budget_envelope"
+        "cleanup_budget_envelope",
+        "trait_language_role"
       ],
       "forbidden": [
         "callable_profile",
@@ -1987,7 +2048,8 @@
         "construction_row_sha256",
         "projection_row_sha256",
         "cleanup_budget_envelope",
-        "fixed_operator_conformance"
+        "fixed_operator_conformance",
+        "trait_language_role"
       ],
       "optional": [
         "function_static_activation"
@@ -2007,7 +2069,8 @@
         "construction_row_sha256",
         "projection_row_sha256",
         "cleanup_budget_envelope",
-        "fixed_operator_conformance"
+        "fixed_operator_conformance",
+        "trait_language_role"
       ],
       "optional": [
         "function_static_activation"
@@ -2026,7 +2089,8 @@
         "construction_row_sha256",
         "projection_row_sha256",
         "cleanup_budget_envelope",
-        "function_static_activation"
+        "function_static_activation",
+        "trait_language_role"
       ],
       "optional": [
         "fixed_operator_conformance"
@@ -2044,9 +2108,26 @@
         "projection_row_sha256",
         "cleanup_budget_envelope",
         "function_static_activation",
-        "fixed_operator_conformance"
+        "fixed_operator_conformance",
+        "trait_language_role"
       ]
     }
+  },
+  "x-deeplus-named-pack-residue-contract": {
+    "surface": "options**: NamedPack<rho>",
+    "finite": true,
+    "nonescaping": true,
+    "api_identity": "normalized_row_digest and witness_digest are mandatory whenever named_rest_residue is non-null",
+    "separation": "named-rest row requirements are distinct from callable requires clauses",
+    "legacy_residue": "Record*** is rejected"
+  },
+  "x-deeplus-trait-language-role-contract": {
+    "owner": "CORE_LANGUAGE",
+    "identity": "TraitLanguageRoleId is distinct from TraitId, ConformanceId and TraitWitnessId",
+    "export_rule": "every exported role-bearing Trait type row carries a non-null trait_language_role",
+    "api_breaking_change": "adding, removing or changing role_id changes the public API digest",
+    "runtime_lookup": false,
+    "operator_fence": "TRAIT_LANGUAGE_ROLE_OPERATOR_R1 classifies only the closed thirteen-glyph law and cannot select or widen glyphs"
   },
   "x-deeplus-type-header-cleanup-budget-contract": {
     "public_type_residue": [

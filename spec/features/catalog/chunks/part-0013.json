@@ -305,7 +305,7 @@
     "feature_kind": "semantic_law",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
-    "notes": "Function-type syntax and public API digests preserve repeated positional `T...` and named-rest `Record***` call-shape residues.",
+    "notes": "Function-type syntax and public API digests preserve repeated positional `T..` and static named-rest `NamedPack**` call-shape residues.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1425,7 +1425,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current range delimiters are exactly .. and ..<. The ... token has only repeated-positional and comprehension-unfold structural owners. Step and reverse traversal use explicit named APIs.",
+    "notes": "Expression Range owns inclusive `..`, exclusive `..<`, one-sided `...`, and an optional attached signed `:step`. Start, optional end and step evaluate once left to right; zero and direction mismatch reject; bounded traversal terminates before overflow. One-sided finite Enum ranges reject. IndexSuffix open slices are a distinct owner.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1436,7 +1436,13 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "RANGE_CLOSED_END_NOT_ON_STEP_LATTICE",
+        "RANGE_ONE_SIDED_FINITE_DOMAIN",
+        "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+        "RANGE_STEP_DIRECTION_MISMATCH",
+        "RANGE_STEP_ZERO"
+      ],
       "predicates": [
         "OperatorPrecedenceTablePhaseAAdmitted",
         "SliceRangeAdmitted"

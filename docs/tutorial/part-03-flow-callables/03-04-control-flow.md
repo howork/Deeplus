@@ -117,7 +117,7 @@ filter와 transfer guard도 반드시 `Bool`이다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 if let ::some(user) = lookup(id)
-    and then let ${email, .._} = user.profile
+    and then let ${email, _**} = user.profile
     and then isVerified(email)
 {
     publish(user)

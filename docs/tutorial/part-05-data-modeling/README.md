@@ -38,10 +38,10 @@ Deeplus의 데이터 모델링 표면은 비슷해 보이는 문법을 의도적
   `PREVIEW_DESIGN_NONACTIVATABLE`이며 현행 예제에 섞지 않는다.
 - Record label과 Map key를 서로 바꾸지 않는다.
 - Tuple과 bare comma product는 하나의 Tuple 의미로 정규화된다.
-- Record/Map Pattern은 exact-by-default이며 subset 의도는 `.._`로
-  명시한다.
-- List rest는 tail `..tail`, prefix `leadings..`, middle
-  `..middle..`의 방향을 구분한다.
+- Record/Map Pattern은 exact-by-default다. Record-family subset은 `_**`,
+  Map subset은 `.._`로 명시한다.
+- List rest는 위치와 무관하게 binder suffix인 `tail..`, `leadings..`,
+  `middle..`를 사용한다.
 - pattern 실패나 false guard는 partial binding, partial move 또는
   exclusive borrow를 남기지 않는다.
 

@@ -1,22 +1,5 @@
 [
   {
-    "example_id": "EX-R51a1-NG-058",
-    "code_sha256": "14e3dd116387f85d02c81af690d2daa2b14aa06800a18a2c6c7800746b6e7252",
-    "feature_ids": [
-      "library_static_binding_initializer_msp"
-    ],
-    "primary_diagnostic": "LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED"
-  },
-  {
-    "example_id": "EX-R51a1-NG-059",
-    "code_sha256": "a186b43790d48ee2a03ca9f789d6b8ef35676c29aaa7dc559b5085765cf3ee92",
-    "feature_ids": [
-      "library_static_binding_initializer_msp",
-      "structured_concur_region"
-    ],
-    "primary_diagnostic": "LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED"
-  },
-  {
     "example_id": "EX-R51a1-NG-060",
     "code_sha256": "121b4cc1180acbe3a90893d6a87b5d9b54fb9c881887ed4ea8f227fb67895609",
     "feature_ids": [
@@ -459,20 +442,20 @@
   },
   {
     "example_id": "EX-R51c1-004",
-    "code_sha256": "17b66665a176fa76f688118e7227ebd2104aebea1b860f7cbfc36084f031f578",
+    "code_sha256": "e3e2bae3d1f7003a52a963601c159d226ad0aa79c28b826ea3153a0f9829d265",
     "feature_ids": [
       "named_rest_parameter_record_msp"
     ],
-    "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+    "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED"
   },
   {
     "example_id": "EX-R51c1-005",
-    "code_sha256": "e12550f7ec0879edce9dbd7265f9dad90e96210c750cea022d5c0706ca4da403",
+    "code_sha256": "1607bdb42f06f56be6a32007c68f6769e61a9b1e8763ccdeaa9ccef9320fe534",
     "feature_ids": [
       "call_shape_rest_type_residue_law",
       "named_rest_parameter_record_msp"
     ],
-    "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+    "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED"
   },
   {
     "example_id": "EX-R51c1-006",
@@ -481,7 +464,7 @@
       "named_rest_parameter_record_msp",
       "record_named_argument_spread_msp"
     ],
-    "primary_diagnostic": "TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE"
+    "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED"
   },
   {
     "example_id": "EX-R51d-002",
@@ -745,7 +728,7 @@
   },
   {
     "example_id": "EX-R51VOI-NG-007",
-    "code_sha256": "0d0b806e4660302ca44221d1bafd6c923b8c99cde60017a81c3f029692e3bbb2",
+    "code_sha256": "f90d1f76a2dd6c85544cf5c64f09445756eac6c5686b941e32e1686bbc016ad9",
     "feature_ids": [
       "numeric_array_multiaxis_slice_readonly_view_msp",
       "one_based_sequence_logical_indexing",
@@ -755,7 +738,7 @@
   },
   {
     "example_id": "EX-R51VOI-NG-008",
-    "code_sha256": "bc835ed742dae185d641a5c248267537eefc71027577c8d51dac75531a451d65",
+    "code_sha256": "cb1ead2d97bbd68a743e569593063d4ded1af9d6bef2eeb8c5a4a301befc372c",
     "feature_ids": [
       "numeric_operator_core",
       "numeric_literal_suffix"
@@ -904,11 +887,11 @@
   },
   {
     "example_id": "EX-R52-PAT-NG-001",
-    "code_sha256": "6b6496a87cf8342b26d4cf7de3ccb9d663c38314ec254226c9b9447243754c21",
+    "code_sha256": "6033765c3c583be78911f4a34762c9cc986c57c08983ed41d3e262e37db40d25",
     "feature_ids": [
       "sequence_positional_rest_pattern"
     ],
-    "primary_diagnostic": "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS"
+    "primary_diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED"
   },
   {
     "example_id": "EX-R52-PAT-NG-002",
@@ -928,7 +911,7 @@
   },
   {
     "example_id": "EX-R52-PAT-NG-004",
-    "code_sha256": "b7a7c159430b2b47d27383960582fa4cea9830a30b6b1f5e9996a5939ed6b2ed",
+    "code_sha256": "64cfa2f2d3161784c6a313676f54a7b1993bcd268c6b6c2e9fedad526fc3d23e",
     "feature_ids": [
       "irrefutable_parameter_entry_pattern"
     ],
@@ -995,5 +978,47 @@
       "resource_inheritance"
     ],
     "primary_diagnostic": "CLEANUP_BUDGET_EXCEEDED"
+  },
+  {
+    "example_id": "EX-R77-RANGE-NG-001",
+    "code_sha256": "3e8969386b8482db8a0100ec015d069d4f4d476d437c512372cca57a641a7bb8",
+    "feature_ids": [
+      "runtime_range_step_expression"
+    ],
+    "primary_diagnostic": "RANGE_STEP_ZERO"
+  },
+  {
+    "example_id": "EX-R77-INDEX-NG-001",
+    "code_sha256": "7191e7d3d956fd216ab8cf30c56fd9a5f35b8c1ceddda3adb6e6133a1073afe8",
+    "feature_ids": [
+      "basic_index_operator",
+      "numeric_array_multiaxis_slice_readonly_view_msp"
+    ],
+    "primary_diagnostic": "INDEX_AXIS_COUNT_MISMATCH"
+  },
+  {
+    "example_id": "EX-R77-MUTLIST-NG-001",
+    "code_sha256": "24f1823cccd3a9accebd673b97431f3484180e762a0ada0c47fc975cdedf79d8",
+    "feature_ids": [
+      "basic_index_operator"
+    ],
+    "primary_diagnostic": "MUTABLE_LIST_ORDINARY_BRACKET_REPLACE_NOT_CURRENT"
+  },
+  {
+    "example_id": "EX-R77-TRAIT-NG-001",
+    "code_sha256": "337697ca84f38a79e6a16d5b4aa4f431fc5e8519e16dedeec51f5f30d9df54a2",
+    "feature_ids": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "primary_diagnostic": "TRAIT_LANGUAGE_ROLE_OWNER_NOT_CORE"
+  },
+  {
+    "example_id": "EX-R77-NUM-NG-001",
+    "code_sha256": "3c0a9f533007005cd2503d937211bab6a3a0713c79570be6ae426030737709c0",
+    "feature_ids": [
+      "numeric_literal_lexical_contract",
+      "numeric_literal_suffix"
+    ],
+    "primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED"
   }
 ]

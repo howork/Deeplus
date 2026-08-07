@@ -541,7 +541,7 @@
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "descriptor": {
       "source_kind": "FunctionType",
-      "normalized_type": "(String..., Record***) -> Unit",
+      "normalized_type": "(String.., NamedPack**) -> Unit",
       "ownership": null,
       "borrow_region": null,
       "cleanup": null,
@@ -559,11 +559,11 @@
         "repeated_residue_count": 1,
         "named_rest_parameter_count": 1,
         "named_rest_parameter_index": 1,
-        "named_rest_parameter_type": "Record",
-        "function_type_repeated_residue": "String...",
-        "function_type_named_residue": "Record***",
+        "named_rest_parameter_type": "NamedPack",
+        "function_type_repeated_residue": "String..",
+        "function_type_named_residue": "NamedPack**",
         "api_digest_repeated_residue": "Sequence<String>",
-        "api_digest_named_residue": "Record***"
+        "api_digest_named_residue": "NamedPack**"
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -591,7 +591,7 @@
       "orientation": null,
       "element_types": null
     },
-    "violated_condition": "the public API digest erases the exact repeated String... residue to Sequence<String>",
+    "violated_condition": "the public API digest erases the exact repeated String.. residue to Sequence<String>",
     "fixture_kind": "concrete_negative",
     "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
     "descriptor_v5": {
@@ -629,7 +629,7 @@
     "expected": "rejected",
     "descriptor": {
       "source_kind": "FunctionType",
-      "normalized_type": "(String..., Record***) -> Unit",
+      "normalized_type": "(String.., NamedPack**) -> Unit",
       "ownership": null,
       "borrow_region": null,
       "cleanup": null,
@@ -647,10 +647,10 @@
         "repeated_residue_count": 1,
         "named_rest_parameter_count": 1,
         "named_rest_parameter_index": 1,
-        "named_rest_parameter_type": "Record",
-        "function_type_repeated_residue": "String...",
-        "function_type_named_residue": "Record***",
-        "api_digest_repeated_residue": "String...",
+        "named_rest_parameter_type": "NamedPack",
+        "function_type_repeated_residue": "String..",
+        "function_type_named_residue": "NamedPack**",
+        "api_digest_repeated_residue": "String..",
         "api_digest_named_residue": "Record"
       },
       "lookup_domain": null,
@@ -682,7 +682,7 @@
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "expected_primary_diagnostic": "FUNCTION_TYPE_REST_RESIDUE_REQUIRED",
     "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "the public API digest erases Record*** to a plain Record and loses the named-rest call channel",
+    "violated_condition": "the public API digest erases NamedPack** to a plain Record and loses the static named-rest call channel",
     "fixture_kind": "concrete_negative",
     "rule_seed": "R51a1 design fixture; product checker NOT_RUN.",
     "descriptor_v5": {
@@ -720,7 +720,7 @@
     "expected": "admitted",
     "descriptor": {
       "source_kind": "FunctionType",
-      "normalized_type": "(String..., Record***) -> Unit",
+      "normalized_type": "(String.., NamedPack**) -> Unit",
       "ownership": null,
       "borrow_region": null,
       "cleanup": null,
@@ -738,11 +738,11 @@
         "repeated_residue_count": 1,
         "named_rest_parameter_count": 1,
         "named_rest_parameter_index": 1,
-        "named_rest_parameter_type": "Record",
-        "function_type_repeated_residue": "String...",
-        "function_type_named_residue": "Record***",
-        "api_digest_repeated_residue": "String...",
-        "api_digest_named_residue": "Record***"
+        "named_rest_parameter_type": "NamedPack",
+        "function_type_repeated_residue": "String..",
+        "function_type_named_residue": "NamedPack**",
+        "api_digest_repeated_residue": "String..",
+        "api_digest_named_residue": "NamedPack**"
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -770,7 +770,7 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "source_kind is FunctionType and call_shape.kind is rest_residue; rest_parameters equals repeated_residue_count plus named_rest_parameter_count and each residue count is zero or one; when repeated_residue_count is one, function_type_repeated_residue ends in ... and api_digest_repeated_residue is exactly equal; when zero both fields are null; when named_rest_parameter_count is one, named_rest_parameter_type is exactly Record and function_type_named_residue and api_digest_named_residue are exactly Record***; when zero the index, type, and both residue fields are null; neither rest channel may be erased to Sequence<T>, plain Record, Map, or omission",
+    "rule_seed": "source_kind is FunctionType and call_shape.kind is rest_residue; rest_parameters equals repeated_residue_count plus named_rest_parameter_count and each residue count is zero or one; when repeated_residue_count is one, function_type_repeated_residue ends in .. and api_digest_repeated_residue is exactly equal; when zero both fields are null; when named_rest_parameter_count is one, named_rest_parameter_type is exactly NamedPack and function_type_named_residue and api_digest_named_residue are exactly NamedPack**; when zero the index, type, and both residue fields are null; neither rest channel may be erased to Sequence<T>, plain Record, Map, or omission",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {

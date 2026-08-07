@@ -171,14 +171,15 @@ identity를 대체하지 않는다.
 current operator glyph vocabulary는 닫혀 있고
 primitive와 언어 예약 operand pair는 `INTRINSIC_ONLY`다.
 
-Prelude의 `Bitwise`, `Ord<T>` 같은 이름은
-named contract vocabulary다.
-다만 `Add<Rhs>`, `Subtract<Rhs>`, `Multiply<Rhs>`는 각각 exact binary
-`+`, `-`, `*`의 Stable fixed-glyph contract다. intrinsic 예약 pair
-밖에서 left nominal owner의 유일한 `DIRECT_GLOBAL` conformance만
-선택한다. extension, local/case witness, provider, `via`/`VIA`/`AUTO`,
-specialization과 source/import order는 후보를 만들지 못한다. `^`, `[]`,
-`/`, `%`, 비교·논리 glyph는 이 계약으로 확장되지 않는다.
+Prelude의 `Bitwise` 같은 이름은 named contract vocabulary다. fixed-glyph
+contract는 `trait#operator`로 등록된 정확한 아홉 root가 소유한다:
+`UnaryPlus`, `UnaryMinus`, `Add`, `Subtract`, `Multiply`, `Divide`,
+`Remainder`, `Eq`, `Ord`. 이들은 unary/binary arithmetic, equality,
+ordering의 정확한 13개 기존 glyph만 담당한다. intrinsic 예약 pair 밖에서
+left nominal owner의 유일한 `DIRECT_GLOBAL` conformance만 선택한다.
+extension, local/case witness, provider, `via`/`VIA`/`AUTO`, specialization과
+source/import order는 후보를 만들지 못한다. `^`, `[]`, range, bitwise,
+논리 glyph는 이 계약으로 확장되지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: library/prelude/prelude.md -->
 ```deeplus
@@ -190,9 +191,12 @@ public type Vec2 conforms Add<Vec2> {
 }
 ```
 
-이 세 Trait 밖의 사용자-defined behavior는 named method 또는 named
-API를 사용한다. Stable contract도 hidden runtime hook이 아니라
-checker가 identity를 고정하는 정적 conformance다.
+이 아홉 root 밖의 사용자-defined behavior는 named method 또는 named
+API를 사용한다. Stable contract도 hidden runtime hook이 아니라 checker가
+identity를 고정하는 정적 conformance다. 다른 core language role은
+`Sequence`/`Iterator`의 `#iteration`, `Display`의 `#interpolation`,
+`Failable`의 `#binding`뿐이며 사용자는 새 role-bearing root를 선언할 수
+없다.
 
 ### 3.4 conformance가 bracket을 활성화하지 않는다
 
@@ -444,7 +448,29 @@ freeze와 snapshot은 같은 operation이 아니다.
 cross-isolation shareability에는
 payload capability proof가 별도로 필요하다.
 
-### 5.3 ReadonlyView
+### 5.3 `MutableList` structural-edit operations
+
+R77 statement surface는 다음 13개 language-facing Prelude identity만
+선택한다.
+
+| source responsibility | Prelude operation |
+|---|---|
+| insert one before/after coordinate | `MutableList::insertBefore`, `MutableList::insertAfter` |
+| prepend/append one | `MutableList::prepend`, `MutableList::append` |
+| insert finite bulk before/after coordinate | `MutableList::insertAllBefore`, `MutableList::insertAllAfter` |
+| prepend/append finite bulk | `MutableList::prependAll`, `MutableList::appendAll` |
+| remove one coordinate | `MutableList::removeAt` |
+| remove range or selector list | `MutableList::removeRange`, `MutableList::removeSelected` |
+| remove first/last | `MutableList::popFirst`, `MutableList::popLast` |
+
+이 identity가 ordinary `MutableList` bracket read/replace를 활성화하지
+않는다. structural-edit statement에서만 direct call plan을 만들며 extension,
+runtime provider 또는 expected result로 대체 operation을 찾지 않는다. bulk
+operation은 finite reusable/copyable element source를 요구하고 hidden clone,
+snapshot 또는 move를 공급하지 않는다. 모든 validation/staging 뒤 성공 시
+정확히 한 번 commit하고 precommit failure에서는 receiver를 보존한다.
+
+### 5.4 ReadonlyView
 
 `ReadonlyView<T>`은
 source coordinate와 provenance를 보존하는
@@ -2058,7 +2084,8 @@ source acceptance, AST/HIR/MIR operation과 product execution 수는 0이며,
 | 오해 | 정확한 판정 |
 |---|---|
 | Prelude row가 있으면 keyword다 | 아니다. language-facing identity와 scanner keyword는 별도다 |
-| 아무 Trait나 만들면 operator를 overload할 수 있다 | 정확한 `Add`/`Subtract`/`Multiply`와 left-owner `DIRECT_GLOBAL`만 가능하다 |
+| 아무 Trait나 만들면 operator를 overload할 수 있다 | `trait#operator`인 정확한 아홉 core root와 left-owner `DIRECT_GLOBAL`만 가능하다 |
+| 사용자가 `trait#profile` 또는 `trait#proof`를 만들 수 있다 | 아니다. 현행 language role은 core-owned 네 tag뿐이다 |
 | `T::item`이 visible Trait의 associated item을 찾는다 | 아니다. `<T as Trait>::item`으로 exact Trait를 써야 한다 |
 | 모든 type에는 암시적 companion singleton이 있다 | 아니다. nominal/extension/Trait-associated/runtime owner를 분리한다 |
 | `let::`이면 mutable cache도 associated value로 안전하다 | 아니다. immutable/static-safe 최소 profile을 모두 만족해야 한다 |

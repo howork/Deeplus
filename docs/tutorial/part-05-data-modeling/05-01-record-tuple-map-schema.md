@@ -120,7 +120,7 @@ let defaults = #map{
     "port": "80"
 }
 let production = #map{
-    **defaults
+    *defaults
     "port": "443"
 }
 
@@ -128,10 +128,11 @@ let request = ${ id: 13, active: true }
 send(**request)
 ```
 
-첫 `**defaults`는 같은 `K,V` domain의 Map entry를 펼친다. 뒤의 `"port"`
+첫 `*defaults`는 같은 `K,V` domain의 Map entry를 펼친다. 뒤의 `"port"`
 entry가 앞 값을 대체하며 displaced owner는 한 번 정리된다.
-`send(**request)`의 `**request`는 정적 Record label을 named argument로
-공급한다. 같은 glyph라도 parser owner와 lowering이 다르다.
+`send(**request)`의 `**request`는 정적 label row를 named argument로
+공급한다. 같은 prefix라도 owner가 Map entry인지 call argument인지,
+그리고 source shape가 무엇인지 overload 전에 봉인한다.
 
 ## 7. 허용·거부·경계 사례
 
@@ -165,8 +166,8 @@ constructor alias처럼 쓰면
 
 ## 8. 다른 기능과의 연결
 
-Record는 named-rest `Record***`, schema materialization, 그리고 call에
-명시적으로 전달하는 하나의 Record expression과 연결된다. Named message
+Record는 named-rest `NamedPack**`, schema materialization, 그리고 call에
+`**record`로 공급하는 static-named source와 연결된다. Named message
 arguments는 ordered call labels이지 자동 생성된 Record가 아니다.
 Pattern의 `${name}`은 Record value literal이 아니라 별도 parser goal이다.
 Class constructor와 schema construction의 차이는 다음 장에서 다룬다.

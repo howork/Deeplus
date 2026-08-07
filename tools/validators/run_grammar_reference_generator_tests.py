@@ -207,7 +207,7 @@ def mutate_profile(root: Path, contract: dict) -> None:
 def mutate_production(root: Path, contract: dict) -> None:
     path = root / contract["grammar"]["path"]
     text = path.read_text(encoding="utf-8")
-    needle = 'IgnoredAllListRest ::= ".." "_" ","? ;'
+    needle = 'IgnoredAllListRest ::= "_" ".." ","? ;'
     if text.count(needle) != 1:
         raise TestFailure(
             "PRODUCTION_MUTATION_NEEDLE: expected one IgnoredAllListRest"

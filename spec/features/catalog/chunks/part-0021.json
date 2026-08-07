@@ -511,21 +511,21 @@
     "depends_on": [
       "pattern_match_expression_msp"
     ],
-    "display_name": "Option optional payload binding Preview design",
-    "feature_id": "option_let_question_binding_preview_design",
-    "feature_kind": "design_proposal",
+    "display_name": "Failable guarded local binding",
+    "feature_id": "trait_binding_failable_v1",
+    "feature_kind": "stable_group",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
-    "language_status": "Preview design",
-    "notes": "Nonactivatable design for if/while/let-else forms that open exactly one Option layer and transactionally apply an OptionPayloadPattern as ::some(pattern). Result, arbitrary Enum, force unwrap, propagation, for/comprehension and user extractors remain excluded.",
+    "language_status": "Stable group",
+    "notes": "Core `trait#binding Failable` supplies Success, Failure and one exact associated consuming `branch` operation. Local `let? success = source else failure => unconditionalExit` consumes once, requires irrefutable success/failure patterns and a structurally unconditional failure exit. Option uses Failure=Unit, Result uses Failure=E, and direct user conformance is global. `if let?`, `while let?`, `var?`, bare let?, force unwrap, postfix propagation and runtime evidence selection are not current.",
     "primary_source": "spec/contracts/option-optional-binding-preview-design.json",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
     "row_schema_version": "deeplus.feature-row/r51f3",
     "runtime_xvm": "NOT_RUN",
-    "source_activation": "nonactivatable",
-    "status_display": "Preview design",
-    "status_enum": "PREVIEW_DESIGN",
+    "source_activation": "none",
+    "status_display": "Stable group",
+    "status_enum": "STABLE_GROUP",
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "syntax",
     "normative_trace_refs": {
@@ -534,7 +534,9 @@
       ],
       "predicates": [],
       "examples": [],
-      "productions": [],
+      "productions": [
+        "GuardedQuestionBindingStmt"
+      ],
       "semantic_reference_productions": [
         "Pattern"
       ]

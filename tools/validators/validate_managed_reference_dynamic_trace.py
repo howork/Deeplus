@@ -23,6 +23,7 @@ REVISION = "r69-local-managed-reference-dynamic-trace-closure-r1"
 FEATURE = "managed_reference_memory_profile_phase1"
 TARGET = (FEATURE, "DYNAMIC_LOWERING", None)
 CONTINUATION_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
+R69_DECISION_CONTINUATION_DIGEST = "56ae21c7e0b18fc30ef753a6a38e7b849783f550ca8e4b253b72344b38369cbb"
 R36_SHA256 = "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
 R37_SHA256 = "fa905282037bdda3d3eb122d74f467ae611ea1ca7d355b0efb49c02fb6f93ba0"
 NON_TARGET_SHA256 = "d29120dc5d88c5381ba1ca09ed927720deba9f20a05ba6f9cca325049f777165"
@@ -969,7 +970,8 @@ def validate(
     decision_text = (root / DECISION).read_text(encoding="utf-8") if (root / DECISION).is_file() else ""
     require(
         all(token in decision_text for token in (
-            FEATURE, R36_SHA256, R37_SHA256, "all 15 product lanes", "NOT_RUN", str(current_digest),
+            FEATURE, R36_SHA256, R37_SHA256, "all 15 product lanes", "NOT_RUN",
+            R69_DECISION_CONTINUATION_DIGEST,
         )),
         "G10", "DECISION_GOVERNANCE",
     )

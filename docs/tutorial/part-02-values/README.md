@@ -25,9 +25,11 @@ product lane은 `15/15 NOT_RUN`이며 실제 수치 backend 실행을 주장하�
 ## 이 부의 학습 판정 trace
 
 값을 읽을 때는 source spelling, semantic domain, representation,
-operation result를 한 줄로 합치지 않는다. 먼저 scanner가 literal의
-닫힌 spelling을 고르고, checker가 expected type과 suffix로 exact
-domain을 확정한다. 그다음 operator owner와 adaptation plan을 고르고,
+operation result를 한 줄로 합치지 않는다. 먼저 scanner가 suffix-free
+literal spelling을 고르고, checker가 direct atomic literal의 유효한
+declared target에서 exact domain을 확정한다. target이 없으면 `Int`,
+`Float64`, `Complex<Float64>`로 default하며 suffix나 smallest-fit
+inference를 사용하지 않는다. 그다음 operator owner와 adaptation plan을 고르고,
 마지막에 source order와 failure/commit을 기록한다. 예를 들어 `4.0i`는
 imaginary literal이고 `3.0 + 4.0i`는 두 값을 더해 Complex를 만드는
 expression이다. 둘을 하나의 특별한 “복소수 문자열”로 해석하지 않는다.
@@ -43,7 +45,12 @@ narrowing 전달이 달라진다. 미니 사례를 풀 때는 값 표, 선택된
 
 ## 이 부를 마치면
 
-- unsuffixed/suffixed numeric literal의 exact domain을 구분한다.
+- suffix-free direct atomic numeric literal의 exact declared-target adaptation
+  (`ISize`/`USize` 포함)과 `Int`/`Float64`/`Complex<Float64>` default를
+  구분한다.
+- 제거된 14개 numeric type suffix (`i8`, `i16`, `i32`, `i64`, `i128`,
+  `isize`, `u8`, `u16`, `u32`, `u64`, `u128`, `usize`, `f32`, `f64`)
+  candidate가 `NUMERIC_TYPE_SUFFIX_REMOVED` 하나로 거부됨을 설명한다.
 - `<p/q>`와 붙은 `i` 리터럴을 정확히 쓴다.
 - String, Char, Bytes와 raw String의 경계를 설명한다.
 - Bool word operator와 pointwise double-glyph operator를 구분한다.

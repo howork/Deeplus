@@ -53,7 +53,7 @@
   },
   "trait_contracts": {
     "Eq<Rhs>": {
-      "canonical_signature": "public trait Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }",
+      "canonical_signature": "public trait#operator Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }",
       "receiver_channels": ["implicit_borrow_self", "explicit_borrow_rhs"],
       "effects": [],
       "errors": "Never",
@@ -64,7 +64,7 @@
       "not_equal_projection": "logical negation of the same Eq witness result"
     },
     "Ord<Rhs>": {
-      "canonical_signature": "public trait Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}",
+      "canonical_signature": "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}",
       "receiver_channels": ["implicit_borrow_self", "explicit_borrow_rhs"],
       "effects": [],
       "errors": "Never",
@@ -77,7 +77,7 @@
       "zero_relation": "Eq<Rhs>.equals"
     },
     "Display": {
-      "canonical_signature": "public trait Display { +def display.() -> String throws Never effects {}; }",
+      "canonical_signature": "public trait#interpolation Display { +def display.() -> String throws Never effects {}; }",
       "receiver_channel": "borrow self",
       "effects": [],
       "errors": "Never",

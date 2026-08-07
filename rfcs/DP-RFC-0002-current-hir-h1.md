@@ -1322,7 +1322,7 @@ ConstructionPlan {
 - publish 전까지 constructed value는 외부에서 관찰되지 않는다.
 - MIR가 linear `BuilderToken`과 commit/rollback edge를 만든다.
 
-`Record`와 `Map`은 같은 HIR node가 아니다. `Record***` residue와 `**` named-tail unfold도 정적 label/row plan을 잃지 않는다.
+`Record`와 `Map`은 같은 HIR node가 아니다. `NamedPack**` residue와 `**` named-tail unfold도 finite row identity, 정적 label plan, normalized row digest를 잃지 않는다.
 
 ### 15.2 immutable Map literal
 
@@ -2286,3 +2286,34 @@ blocks only executable-HIR construction.
 This addendum changes no source syntax or profile, adds no production
 implementation or product support, closes no feature P1 or M13 action, and
 leaves all 15 product lanes `NOT_RUN`.
+
+## 32. R77 integrated-surface HIR projection
+
+R77 adds no HIR variant and no MIR opcode. The following source contracts are
+represented by existing HIR identities and sealed plans:
+
+- a positional unfold retains its owner-bounded `*source` spelling and a named
+  unfold retains `**namedPack`; the checker seals positional arity or the finite
+  `NamedPack<rho>` row, source order, labels, and normalized row digest before
+  overload selection;
+- `TraitLanguageRoleId` is core-owned static Trait metadata and remains
+  distinct from `TraitId`, `ConformanceId`, and `TraitWitnessId`; no role adds
+  runtime lookup, and `trait#operator` cannot select a glyph outside the closed
+  thirteen-glyph law;
+- guarded binding records the exact selected call
+  `Failable::branch(move source) -> BindingBranch<Success, Failure>` with
+  `throws Never effects {}`, then reuses the existing branch and binding-commit
+  plan; it adds neither recovery search nor a Failable-specific HIR/MIR node;
+- Range and slice syntax normalizes into existing typed range/index descriptors.
+  A missing endpoint records the owner-domain lower or upper boundary identity,
+  comma-separated NumericArray axes retain source order, and a scalar selector
+  removes exactly its result axis;
+- every admitted `MutableList` structural edit remains an ordinary `CallExpr`
+  with one closed `ResolvedCallPlan` and `CallableImplementationId`; the closed
+  thirteen-operation surface adds no structural-edit opcode; and
+- unsuffixed atomic numeric and imaginary literals may adapt directly to an
+  exact contextual numeric target before call selection. Expected result type
+  never selects an operator witness, and removed numeric suffixes produce no HIR.
+
+The normalized HIR/API digest includes the `NamedPack` row digest and any
+exported `TraitLanguageRoleId`. Product implementation remains `NOT_RUN`.

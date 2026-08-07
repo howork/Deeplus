@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -392,10 +393,11 @@ def main() -> int:
     )
 
     grammar = (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
+    grammar_without_comments = re.sub(r"\(\*.*?\*\)", "", grammar, flags=re.S)
     productions = [
         line.split("::=", 1)[0].strip()
-        for line in grammar.splitlines()
-        if "::=" in line and not line.lstrip().startswith("(*")
+        for line in grammar_without_comments.splitlines()
+        if "::=" in line
     ]
     grammar_count_authority = load_json(
         root, "spec/contracts/manual-grammar-count-authority-r1.json"

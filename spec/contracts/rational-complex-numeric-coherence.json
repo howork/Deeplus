@@ -51,6 +51,27 @@
     "feature_p1_closed": 0,
     "feature_p1_created": 0
   },
+  "numeric_literal_suffix_cutover": {
+    "current_numeric_type_suffix_count": 0,
+    "legacy_compatibility_alias_count": 0,
+    "integer_default": "Int",
+    "floating_default": "Float64",
+    "imaginary_default": "Complex<Float64>",
+    "direct_contextual_targets": [
+      "an atomic unsuffixed integer literal to one independently fixed exact integer target",
+      "an atomic unsuffixed floating literal to Float32 or Float64",
+      "an atomic unsuffixed imaginary literal to Complex<Float32> or Complex<Float64>"
+    ],
+    "adaptation_phase": "before overload/operator selection",
+    "expected_result_selects_operator": false,
+    "maximal_munch_rejection": "NUMERIC_TYPE_SUFFIX_REMOVED"
+  },
+  "fixed_operator_trait_role": {
+    "trait_language_role_id": "TRAIT_LANGUAGE_ROLE_OPERATOR_R1",
+    "registry_owner": "CORE_LANGUAGE",
+    "role_can_select_or_widen_glyph_set": false,
+    "runtime_role_lookup_count": 0
+  },
   "open_feature_p1": {
     "status": "EXACTLY_22_OPEN",
     "class": [
@@ -374,10 +395,11 @@
           "imag": "4.0"
         },
         {
-          "source": "4.0f32i",
+          "source": "let z: Complex<Float32> = 4.0i",
           "normalized_type": "std.numeric.Complex<Float32>",
-          "real": "+0.0f32",
-          "imag": "4.0f32"
+          "real": "+0.0 in Float32",
+          "imag": "4.0 in Float32",
+          "resolution": "ATOMIC_UNSUFFIXED_DIRECT_CONTEXTUAL_TARGET_BEFORE_OPERATOR_SELECTION"
         },
         {
           "source": "3.0 + 4.0i",

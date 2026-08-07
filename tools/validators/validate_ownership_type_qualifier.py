@@ -316,7 +316,7 @@ def main() -> int:
 
     grammar = (ROOT / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8")
     add_error(failures, "R29_OTQ_CHECK_009", 'OwnershipQualifier ::= "owned" | "borrowed" | "mut" | "inout" ;' in grammar, "grammar ownership qualifier set differs")
-    add_error(failures, "R29_OTQ_CHECK_009", "ParenTypeItem ::= FunctionTypeModeItem | TypeRef | TypeRef \"...\" | TypeRef \"***\" ;" in grammar and "FunctionTypeModeItem ::= ParameterMode TypeRef ;" in grammar, "function-type channel mode is not root-connected")
+    add_error(failures, "R29_OTQ_CHECK_009", "ParenTypeItem ::= FunctionTypeModeItem | TypeRef | TypeRef \"..\" | TypeRef \"**\" ;" in grammar and "FunctionTypeModeItem ::= ParameterMode TypeRef ;" in grammar, "function-type channel mode is not root-connected")
     pratt_text = json.dumps(docs["pratt"], sort_keys=True)
     add_error(failures, "R29_OTQ_CHECK_009", "OwnershipQualifiedType" in pratt_text and all(f'"{token}"' in pratt_text for token in SURFACES), "Pratt ownership parselet binding differs")
 

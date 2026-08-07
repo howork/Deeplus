@@ -255,7 +255,7 @@ reverse target order로 정확히 한 번 수행한다.
 refutable Pattern도 같은 zero-partial-publication 원칙을 쓴다.
 
 ```deeplus
-let [head, ..tail] = values
+let [head, tail..] = values
 else return
 ```
 

@@ -143,70 +143,6 @@ xVM·Cranelift 간 재현 가능한 실행 receipt와 별도 Design authority가
 현재 parser-cover, HIR/MIR operation, runtime route와 제품 지원 수는 모두
 0이며 15개 product lane은 `NOT_RUN`이다.
 
-<!-- deeplus-preview-feature-example: option_let_question_binding_preview_design; registry-status: PREVIEW_DESIGN -->
-<a id="preview-feature-option_let_question_binding_preview_design"></a>
-
-## Option optional-binding sugar
-
-> **Feature metadata**
-> - Feature ID: `option_let_question_binding_preview_design`
-> - Registry status: `PREVIEW_DESIGN`; activation: `nonactivatable`
-> - Authority: `LANGUAGE / PARSER / CHECKER`
-> - P1 영향: 없음. 정확한 OPEN P1 집합을 추가·폐쇄하지 않는다.
-
-**검토 목적**
-이 후보는 `Option<T>`의 정확히 한 겹을 검사하고 `::some` payload를
-기존 pattern engine으로 전달하는 짧은 표면이다. 새로운 unwrap 연산,
-truthiness, nullability나 runtime node가 아니다.
-
-**제안 표면**
-<!-- deeplus-example: illustrative; status: PREVIEW_NONACTIVATABLE; authority-source: spec/contracts/option-optional-binding-preview-design.json -->
-```deeplus
-// Preview Design — current source로 활성화할 수 없다.
-if let? value = maybeValue {
-    consume(value)
-}
-
-while let? item = iterator ~ next {
-    consume(item)
-}
-
-let? config = loadConfig() else {
-    return defaultConfig()
-}
-```
-
-**정적 판정과 상호작용**
-정규화는 각각 `if let ::some(value) = maybeValue`,
-`while let ::some(item) = ...`, 실패 disposition이 명시된 guarded
-`let`으로 환원된다. `let?`의 `let`과 `?` 사이에는 trivia가 없다.
-subject는 정확히 한 번 평가하고 structural test가 성공하기 전에는
-move/borrow/binding을 commit하지 않는다. nested `Option<Option<T>>`은
-한 번에 한 겹만 열며 Result, arbitrary Enum, force unwrap, propagation,
-bare local `let?` without `else`, `for`, comprehension, match와 condition
-chain으로 확장하지 않는다.
-
-**평가·소유권·오류**
-subject는 ordinary expression 규칙으로 정확히 한 번 평가한다. `::some`
-검사가 끝나기 전에 payload move, borrow 또는 pattern binding을
-commit하지 않으며 mismatch는 `if`의 false path, `while`의 종료,
-guarded `let`의 명시적 `else`로만 전달한다. `Option` 바깥의 Error,
-Defect 또는 effect를 흡수하거나 nullable truthiness로 바꾸지 않는다.
-
-**현행 대안과 이행**
-현행 source는 `if let ::some(value) = maybeValue`, `while let
-::some(item) = ...`와 명시적 guarded `let`을 사용한다. formatter나 IDE는
-기존 pattern을 `let?`로 자동 축약하지 않으며 Result, arbitrary Enum,
-force unwrap 또는 propagation spelling을 이 후보와 합치지 않는다.
-
-**활성화 선행 조건**
-exact EBNF와 trivia/diagnostic, Option 한 겹의 type rule, mismatch
-disposition, ownership commit 및 nested-pattern 상호작용을 먼저
-ratify해야 한다. positive/negative/boundary corpus, diagnostic/fix-it,
-formatter/LSP round-trip과 target-bound checker receipt가 모두 필요하다.
-
-<!-- deeplus-status-fence: PREVIEW_NONACTIVATABLE -->
-
 ## Numeric capability와 Rational completion
 
 이 묶음은 `spec/contracts/numeric-system-std-math.json`의
@@ -237,7 +173,8 @@ let reciprocalPower: Rational = <2/3> ^ -2
 ```
 
 붙은 정수 허수 literal `4i`도 이 Preview 묶음이다. unsuffixed 10진
-정수만 허용하고 `Complex<Float64>`로 정규화한다. `4u8i`, `0x4i`,
+정수만 허용하고 `Complex<Float64>`로 정규화한다. 제거된 numeric type
+suffix가 섞인 `4u8i`, radix form `0x4i`,
 `4index`와 결과 타입으로 유도하는 hidden adaptation은 거부한다.
 special function과 calculus는 별도 Preview profile이며, calculus는
 `Result<Estimate<T>, error NumericAnalysisError<T>>`처럼 오차와 실패를
@@ -389,7 +326,7 @@ lexical maximal munch와 type adaptation을 동시에 닫는다.
 // Preview Design
 let z: Complex<Float64> = 3.0 + 4i
 
-// rejected candidates: typed/radix imaginary와 suffix 분할은 없다.
+// rejected candidates: removed numeric suffix/radix imaginary와 suffix 분할은 없다.
 let typed = 4u8i
 let radix = 0x4i
 let maximalMunch = 4index
@@ -400,7 +337,8 @@ admitted 후보는 identifier boundary에서 끝나는 unsuffixed decimal
 integer와 붙은 `i`다. 기본 결과는 `Complex<Float64>`이며 expected
 type으로 typed integer imaginary를 제조하지 않는다. `4index`는 `4i`
 뒤 `ndex`로 분해되지 않고 하나의 invalid numeric-suffix candidate로
-진단된다. `4u8i`와 `0x4i`도 별도 typed/radix adaptation 없이 거부한다.
+진단된다. `4u8i`는 `NUMERIC_TYPE_SUFFIX_REMOVED`, `0x4i`는 radix-imaginary
+form rejection이며 별도 typed/radix adaptation은 없다.
 
 **평가·소유권·오류**
 리터럴은 값을 소유하거나 effect를 실행하는 새 runtime protocol을

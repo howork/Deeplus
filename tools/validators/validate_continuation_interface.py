@@ -18,7 +18,7 @@ from typing import Any
 
 
 BASELINE_COMMIT = "e680568057ec9c6b02218dbe153758471734cf44"
-GRAMMAR_SHA256 = "303e90004386609777013bb6f15d139277e39ab0bf71301ace990a1f0092fb2a"
+GRAMMAR_SHA256 = "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
 INTERFACE_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
 R36_HISTORICAL_MANAGED_REFERENCE_DIGEST = "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
 R37_HISTORICAL_RUNTIME_ABI_DIGEST = "45f40998a052d21393ee324261ad2c1865beaddee435632df30ddb5e8a69833d"
@@ -396,7 +396,7 @@ def main() -> int:
     check("R38_R20_ACCEPTANCE_PRESERVED", len(legacy) == 24 and len({row.get("test_id") for row in legacy}) == 24, len(legacy))
 
     counts: dict[str, tuple[int, int]] = {}
-    expected_counts = {"diagnostics": 1484, "predicates": 283, "predicate_fixtures": 877, "relations": 615}
+    expected_counts = {"diagnostics": 1486, "predicates": 283, "predicate_fixtures": 877, "relations": 613}
     locations = {
         "diagnostics": ("spec/diagnostics/catalog", "diagnostic_count"),
         "predicates": ("spec/types/predicates", "predicate_count"),

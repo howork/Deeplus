@@ -12,55 +12,53 @@
 | `IMAGINARY_LITERAL` | 73 |
 | `RATIONAL_LITERAL` | 78 |
 | `INTEGER_LITERAL` | 79 |
-| `FLOAT_LITERAL` | 84 |
-| `DECIMAL_INTEGER` | 90 |
-| `CHAR_LITERAL` | 106 |
-| `PLAIN_STRING_LITERAL` | 114 |
-| `STRING_START` | 115 |
-| `STRING_TEXT` | 116 |
-| `STRING_ESCAPE` | 117 |
-| `INTERPOLATION_BOUNDARY` | 118 |
-| `INTERPOLATION_OPEN` | 119 |
-| `INTERPOLATION_CLOSE` | 120 |
-| `INTERPOLATION_FORMAT_TEXT` | 121 |
-| `STRING_END` | 122 |
-| `RAW_STRING_LITERAL` | 126 |
-| `MULTILINE_STRING_LITERAL` | 127 |
-| `BYTES_LITERAL` | 128 |
-| `PATH_SEP` | 131 |
-| `FAT_ARROW` | 132 |
-| `ARROW` | 133 |
-| `DOT_DOT` | 134 |
-| `DOT_DOT_LT` | 135 |
-| `DOT_DOT_GT` | 136 |
-| `ELLIPSIS` | 137 |
-| `TRIPLE_STAR` | 138 |
-| `DOUBLE_STAR` | 139 |
-| `STAR_PLUS` | 140 |
-| `STAR_DOT` | 141 |
-| `AMP_AMP` | 142 |
-| `PIPE_PIPE` | 143 |
-| `CARET_CARET` | 144 |
-| `QUESTION_COLON` | 145 |
-| `DOUBLE_DOLLAR` | 146 |
-| `EQ_EQ` | 147 |
-| `BANG_EQ` | 148 |
-| `LT_EQ` | 149 |
-| `GT_EQ` | 150 |
-| `PLUS_EQ` | 151 |
-| `MINUS_EQ` | 152 |
-| `STAR_EQ` | 153 |
-| `SLASH_EQ` | 154 |
-| `PERCENT_EQ` | 155 |
-| `TILDE_TILDE` | 156 |
-| `COLON_EQ` | 157 |
-| `BANG_BANG` | 158 |
-| `DOUBLE_L_BRACE` | 159 |
-| `DOUBLE_R_BRACE` | 160 |
-| `DOLLAR_L_BRACE` | 161 |
-| `EOF_TOKEN` | 169 |
-| `NAME_TOKEN` | 171 |
-| `EOF` | 172 |
+| `FLOAT_LITERAL` | 81 |
+| `DECIMAL_INTEGER` | 86 |
+| `CHAR_LITERAL` | 102 |
+| `PLAIN_STRING_LITERAL` | 110 |
+| `STRING_START` | 111 |
+| `STRING_TEXT` | 112 |
+| `STRING_ESCAPE` | 113 |
+| `INTERPOLATION_BOUNDARY` | 114 |
+| `INTERPOLATION_OPEN` | 115 |
+| `INTERPOLATION_CLOSE` | 116 |
+| `INTERPOLATION_FORMAT_TEXT` | 117 |
+| `STRING_END` | 118 |
+| `RAW_STRING_LITERAL` | 122 |
+| `MULTILINE_STRING_LITERAL` | 123 |
+| `BYTES_LITERAL` | 124 |
+| `PATH_SEP` | 127 |
+| `FAT_ARROW` | 128 |
+| `ARROW` | 129 |
+| `DOT_DOT` | 130 |
+| `DOT_DOT_LT` | 131 |
+| `ELLIPSIS` | 132 |
+| `DOUBLE_STAR` | 133 |
+| `STAR_PLUS` | 134 |
+| `STAR_DOT` | 135 |
+| `AMP_AMP` | 136 |
+| `PIPE_PIPE` | 137 |
+| `CARET_CARET` | 138 |
+| `QUESTION_COLON` | 139 |
+| `DOUBLE_DOLLAR` | 140 |
+| `EQ_EQ` | 141 |
+| `BANG_EQ` | 142 |
+| `LT_EQ` | 143 |
+| `GT_EQ` | 144 |
+| `PLUS_EQ` | 145 |
+| `MINUS_EQ` | 146 |
+| `STAR_EQ` | 147 |
+| `SLASH_EQ` | 148 |
+| `PERCENT_EQ` | 149 |
+| `TILDE_TILDE` | 150 |
+| `COLON_EQ` | 151 |
+| `BANG_BANG` | 152 |
+| `DOUBLE_L_BRACE` | 153 |
+| `DOUBLE_R_BRACE` | 154 |
+| `DOLLAR_L_BRACE` | 155 |
+| `EOF_TOKEN` | 163 |
+| `NAME_TOKEN` | 165 |
+| `EOF` | 166 |
 
 ## 하드 키워드
 
@@ -221,7 +219,7 @@
 | `expression` | `bitwise_or` | `\|\|` | 90/91 | left |
 | `expression` | `bitwise_xor` | `^^` | 100/101 | left |
 | `expression` | `bitwise_and` | `&&` | 110/111 | left |
-| `expression` | `range` | `.. / ..<` | 120/121 | nonassociative |
+| `expression` | `range` | `.. / ..< / ...` | 120/121 | nonassociative |
 | `expression` | `additive` | `+ / -` | 130/131 | left |
 | `expression` | `multiplicative` | `* / / / %` | 140/141 | left |
 | `expression` | `linear_product` | `** / *+` | 150/151 | left |

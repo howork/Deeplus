@@ -460,7 +460,7 @@
   },
   {
     "example_id": "EX-R48H-004",
-    "code_sha256": "e3e1ef8edd6e1ab207c73d80aba7943861ab37ff8bf79c3df3c48a9853af1868",
+    "code_sha256": "f7ef56ad4616625d5a19614887866bafdc1236ef9ee7d4de784035cecd603c03",
     "feature_ids": [
       "trait_witness_slot_method_markers_msp"
     ],
@@ -468,7 +468,7 @@
   },
   {
     "example_id": "EX-R48H-005",
-    "code_sha256": "cb34f23f4893bfe39ec732df7b09303bea0987288e8f942b380008843f860e36",
+    "code_sha256": "c075244f81ebba5a2226890c3bc46f8851c02de314d5a5c9a4e805cfe681e499",
     "feature_ids": [
       "trait_witness_slot_method_markers_msp"
     ],
@@ -579,7 +579,7 @@
   },
   {
     "example_id": "EX-R49-PARAM-002",
-    "code_sha256": "3b8b8c77eb177fd481ac62773d7ac58415e3f8182504fcaf0f7dfe42721c33bc",
+    "code_sha256": "e368d0f96b9d1c9ad9d4434e901100dc6cd7fff396cfddbff837501450279631",
     "feature_ids": [
       "repeated_positional_parameter_msp"
     ],
@@ -595,7 +595,7 @@
   },
   {
     "example_id": "EX-R49-PARAM-006",
-    "code_sha256": "aab2a398104380e2ec294b39a322f4f63697dbe3d7f4452f579c7275cc71ed1e",
+    "code_sha256": "0d4391f182debd4c832c29cf0445e3ad7b0b24bf612e755e733133855eb78db6",
     "feature_ids": [
       "named_rest_parameter_record_msp",
       "data_shaping_callshape_model"
@@ -612,7 +612,7 @@
   },
   {
     "example_id": "EX-R49-SPREAD-001",
-    "code_sha256": "d82e5747fd01d2fe0cf0adde07f61143d3c9643395ba4c588c93ea6f2d921f21",
+    "code_sha256": "632eaf2e7c34e28234631b1fba0ccb2abe56c4d63f67dc8439a775a8c1d2f2c0",
     "feature_ids": [
       "map_named_argument_spread_forbidden_law",
       "named_rest_parameter_record_msp"
@@ -876,7 +876,7 @@
       "numeric_literal_lexical_contract",
       "numeric_literal_suffix"
     ],
-    "primary_diagnostic": "NUMERIC_SUFFIX_KIND_MISMATCH"
+    "primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED"
   },
   {
     "example_id": "EX-R49C-NUM-007",
@@ -1155,12 +1155,12 @@
   },
   {
     "example_id": "EX-R51a1-AUD-NG-031",
-    "code_sha256": "bb368e469200f027e41b53a1f21664a6ddaba2382475199ff5d26a462552fd49",
+    "code_sha256": "9e849a7578e4bbf8a92ec4e0dd7c372938f9b2c894237f0ca03aa2064b224f67",
     "feature_ids": [
       "inclusive_slice_range_canonical_msp",
       "range_literal_refinement_type"
     ],
-    "primary_diagnostic": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR"
+    "primary_diagnostic": "SLICE_OPEN_BOUND_FORM_INVALID"
   },
   {
     "example_id": "EX-R51a1-AUD-NG-032",
@@ -1624,7 +1624,7 @@
     "feature_ids": [
       "numeric_array_sharp_shape_literal_msp"
     ],
-    "primary_diagnostic": "NUMARR_DIMENSION_STATIC_INT_REQUIRED"
+    "primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED"
   },
   {
     "example_id": "EX-R51a1-NG-038",
@@ -1640,7 +1640,7 @@
     "feature_ids": [
       "ordinary_list_literal_surface"
     ],
-    "primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED"
+    "primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED"
   },
   {
     "example_id": "EX-R51a1-NG-040",
@@ -1648,7 +1648,7 @@
     "feature_ids": [
       "ordinary_list_literal_surface"
     ],
-    "primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED"
+    "primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED"
   },
   {
     "example_id": "EX-R51a1-NG-041",
@@ -1737,24 +1737,6 @@
     "primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED"
   },
   {
-    "example_id": "EX-R51a1-NG-052",
-    "code_sha256": "ecaca57dd201e62bd71355a0dae39618773b3add292207dba7a54b7cf89bdbd0",
-    "feature_ids": [
-      "ordinary_list_literal_surface",
-      "numeric_literal_suffix"
-    ],
-    "primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED"
-  },
-  {
-    "example_id": "EX-R51a1-NG-053",
-    "code_sha256": "b792644b633d6d1945bf8ae7f53621b6d1447f96c9834a14082fc54b4059965b",
-    "feature_ids": [
-      "ordinary_list_literal_surface",
-      "numeric_literal_suffix"
-    ],
-    "primary_diagnostic": "LIST_LITERAL_ELEMENT_JOIN_FAILED"
-  },
-  {
     "example_id": "EX-R51a1-NG-054",
     "code_sha256": "e6a0b622e9474e4ed9e4a7142b2644a26f6fd20d87c0522d26b549b3f3eceae5",
     "feature_ids": [
@@ -1789,5 +1771,22 @@
       "explicit_witness_argument_msp"
     ],
     "primary_diagnostic": "EXPLICIT_WITNESS_PARAMETER_ESCAPE_FORBIDDEN"
+  },
+  {
+    "example_id": "EX-R51a1-NG-058",
+    "code_sha256": "14e3dd116387f85d02c81af690d2daa2b14aa06800a18a2c6c7800746b6e7252",
+    "feature_ids": [
+      "library_static_binding_initializer_msp"
+    ],
+    "primary_diagnostic": "LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED"
+  },
+  {
+    "example_id": "EX-R51a1-NG-059",
+    "code_sha256": "a186b43790d48ee2a03ca9f789d6b8ef35676c29aaa7dc559b5085765cf3ee92",
+    "feature_ids": [
+      "library_static_binding_initializer_msp",
+      "structured_concur_region"
+    ],
+    "primary_diagnostic": "LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED"
   }
 ]

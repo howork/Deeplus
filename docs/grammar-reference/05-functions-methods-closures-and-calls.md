@@ -242,8 +242,13 @@ ParameterEntrySlot ::= Identifier IrrefutableParameterPattern?
 ParameterMode     ::= "borrow" | "mut" | "move" | "inout"
 ContextParameter  ::= "context" Identifier ":" TypeRef
 WitnessParameter  ::= "using" Identifier ":" "witness" TypeRef
-RepeatedParameter ::= Identifier "..." TypeAnnotation
-NamedRestParameter ::= Identifier "***" TypeAnnotation
+RepeatedParameter ::= Identifier ".." TypeAnnotation
+NamedRestParameter ::= Identifier "**" NamedRestRequirementClause?
+NamedRestRequirementClause ::= "requires" "{" NamedRestRequirementEntries "}"
+NamedRestRequirementEntries ::= NamedRestRequirementEntry
+                                (PatternEntrySeparator NamedRestRequirementEntry)*
+                                PatternEntrySeparator?
+NamedRestRequirementEntry ::= Identifier ":" TypeRef
 StoredParameter   ::= MemberVisibility? ("let" | "var") Identifier
                       TypeAnnotation?
 ```
@@ -252,8 +257,16 @@ StoredParameter   ::= MemberVisibility? ("let" | "var") Identifier
 irrefutable structural Pattern을 body-entry plan으로 가질 수 있다.
 Pattern은 overload, named-argument label, function type 또는 public ABI
 identity에 참여하지 않는다. refutable Pattern은 formal에서 정적으로
-거부한다. 반복 positional channel은 `values...: T`, named rest channel은
-유일하고 마지막인 `options***: Record`다.
+거부한다. 반복 positional channel은 `values..: T`이고 body에서는 유한한
+`PositionalPack<T>`다. static named-rest channel은 `options**`이며 body의
+타입은 유한하고 call-scoped인 `NamedPack<rho>`다. named rest는 최대 하나고
+escaping storage, runtime Map key 또는 동적 label row로 바뀌지 않는다.
+call binder는 explicit label을 먼저 결합하고, positional rest가 있으면
+그 뒤의 fixed positional formal을 오른쪽부터 예약한 다음 앞의 fixed
+formal을 왼쪽부터 결합한다. 남은 actual만 rest에 모이며 rest 뒤 fixed
+formal에는 default를 둘 수 없다. value, context, witness와 static-named
+channel은 이 계산에 섞이지 않고, named rest는 해당 channel의 마지막
+formal이어야 한다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
@@ -284,11 +297,14 @@ named-rest residue 규칙이다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/types/type-system.md -->
 ```deeplus
-private type Handler = (String, Int..., Record***) -> Unit
+private type Handler = (String, Int.., NamedPack**) -> Unit
 ```
 
-`***`는 parameter/type suffix이고 `**record`는 call/materialization의
-named unfold prefix다. 둘은 같은 의미가 아니다.
+`name**`와 `NamedPack**`는 각각 parameter와 function-type의 suffix collect
+owner이고, `**record`는 call/materialization의 owner-bounded prefix named
+unfold다. suffix와 prefix는 같은 의미가 아니다. named-rest parameter는
+필요하면 `requires { timeout: Duration }`처럼 정적 필수 label/type 절을
+직접 소유하며, 이 절은 callable의 `requires PredicateExpr`와 다른 node다.
 
 ### 메서드와 type-side 함수
 
@@ -454,9 +470,10 @@ reply를 추출한 뒤 그 reply에 `await`을 적용한다.
    `context`, `using` evidence channel로 분리한다.
 3. generic constraint를 ordinary argument의 source order로 모아 하나의
    exact substitution을 만든다.
-4. 고정 parameter의 arity를 먼저 확인한다. `*expr`은 statically known
-   Tuple 또는 admitted `Sequence` residue에만 쓰며 unknown length로 fixed
-   parameter를 채우지 않는다.
+4. 고정 parameter의 arity를 먼저 확인한다. owner-bounded `*expr`은
+   positional structural source, `**expr`은 static-named structural source로
+   overload selection 전에 shape를 seal한다. expected formal/result,
+   선택된 overload나 runtime 값이 unfold channel을 고르지 못한다.
 5. `context expr`은 선언된 context parameter 하나를 명시적으로
    공급한다. 이름을 보고 ambient lookup하지 않는다.
 6. `using evidence`는 non-forgeable, borrowed, nonescaping witness를
@@ -525,7 +542,7 @@ transfer다. `ret`는 lambda와 `@if/@match/@try/@scope`의 로컬 value body에
 원본 `examples/guide/review-corpus.md`:
 
 ```deeplus
-def command(name: String, args...: String, options***: Record) -> Unit = {
+def command(name: String, args..: String, options**) -> Unit = {
     dispatch(name, *args, **options)
 }
 ```
@@ -534,7 +551,7 @@ def command(name: String, args...: String, options***: Record) -> Unit = {
 원본 `examples/guide/review-corpus.md`:
 
 ```deeplus
-private type Command = (String, String..., Record***) -> Unit
+private type Command = (String, String.., NamedPack**) -> Unit
 ```
 
 ### lambda와 로컬 함수
@@ -640,7 +657,8 @@ def#guard validPort(port: Int) -> Bool = {
 | message/actor call을 payload aggregate로 해석 | 거부; ordinary argument channel을 그대로 사용한다 |
 | actor operation에 `~` 사용 | 거부; exact actor operation은 `:~`를 사용한다 |
 | named argument의 `name = value` | 거부; `name: value`를 사용한다 |
-| call-side `***record` | 거부; unfold는 `**record`다 |
+| 제거된 parameter/type `...`·`***` residue | 거부; `name..: T`/`T..`와 `name**`/`NamedPack**` 사용 |
+| call-side `***record` | 제거된 철자; named unfold는 `**record`다 |
 | ordinary `def#unsafe` | 거부; `extern#C def#unsafe`는 명시적 Preview gate의 FFI 전용이다 |
 
 ## 상호작용
@@ -658,7 +676,7 @@ def#guard validPort(port: Int) -> Bool = {
   검사를 통과해야 하며 trailing 표면이 그 권한을 만들지 않는다.
 - `def#async`와 `await`는 suspension을 숨기지 않으며 structured `concur`
   경계를 따라야 한다.
-- 함수 type의 `T...` 및 `Record***`는 public API digest와 compatibility에
+- 함수 type의 `T..` 및 `NamedPack**`는 public API digest와 compatibility에
   남는다.
 
 ## 정본 근거

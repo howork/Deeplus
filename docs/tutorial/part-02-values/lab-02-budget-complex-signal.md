@@ -126,8 +126,8 @@ real/imaginary 성분과 representation parameter를 기록한다. 예상값을
 
 1. **따라 하기:** principal `2500`, rate `7/200`으로 바꾸고 exact total을
    기약분수로 계산한다.
-2. **빈칸 완성:** `let wave: Complex<Float32> = 1.0f32 + ___`를
-   `2.0f32`의 허수 성분으로 완성한다.
+2. **빈칸 완성:** `let real: Float32 = 1.0` 다음의
+   `let wave: Complex<Float32> = real + ___`를 `2.0i`로 완성한다.
 3. **스스로 설계하기:** Rational 두 개를 결합한 세금 계산과 Complex 두
    개를 결합한 신호 합성을 각각 함수로 만든다. operand/result exact
    domain을 주석 대신 설명 표에 적는다.

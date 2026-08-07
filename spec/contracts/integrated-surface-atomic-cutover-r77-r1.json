@@ -1,0 +1,187 @@
+{
+  "schema": "deeplus.integrated-surface-atomic-cutover/r1",
+  "decision_id": "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
+  "status": "LOCAL_ACCEPTED_NOT_PUBLISHED",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "9f7041c6aff80cf2a725b737d68a197caabc0005",
+    "tree": "18c627e294b28d6b3f4a04f54d3c7caacd892c38"
+  },
+  "source_transition": {
+    "mode": "ATOMIC_FORCED_CUTOVER",
+    "legacy_alias_count": 0,
+    "recovery_commits_canonical_residue": false,
+    "github_mutation": false,
+    "current_binding": false
+  },
+  "surface": {
+    "range": {
+      "bounded_inclusive": "start..end",
+      "bounded_exclusive": "start..<end",
+      "one_sided": "start...",
+      "step_suffix": ":step",
+      "evaluation": "start_then_end_if_present_then_step_exactly_once",
+      "zero_step": "REJECT",
+      "direction_mismatch": "REJECT",
+      "overflow": "TERMINATE_BEFORE_OVERFLOW",
+      "one_sided_finite_enum": "REJECT",
+      "diagnostics": {
+        "zero_step": "RANGE_STEP_ZERO",
+        "direction_mismatch": "RANGE_STEP_DIRECTION_MISMATCH",
+        "one_sided_finite_domain": "RANGE_ONE_SIDED_FINITE_DOMAIN",
+        "removed_or_misplaced_delimiter": "RANGE_OPERATOR_SPELLING_NOT_CURRENT"
+      },
+      "removed": ["terminal start..", "..>"]
+    },
+    "collect_unfold": {
+      "positional_formal": "name..: T",
+      "positional_function_residue": "T..",
+      "named_formal": "name**",
+      "named_function_residue": "NamedPack**",
+      "positional_pattern": ["name..", "_.."],
+      "static_named_pattern": ["name**", "_**"],
+      "positional_outward_unfold": "*Expr",
+      "static_named_outward_unfold": "**Expr",
+      "outward_unfold_is_general_pratt_prefix": false,
+      "outward_unfold_owners": {
+        "positional": [
+          "call_argument",
+          "list_entry",
+          "mutable_list_insertion_payload",
+          "comprehension_source"
+        ],
+        "static_named": [
+          "call_argument",
+          "record_materialization_entry",
+          "map_entry"
+        ]
+      },
+      "comprehension": "for Pattern in *Expr"
+    },
+    "patterns": {
+      "record_family_field": "label: Pattern",
+      "record_family_remainder": ["name**", "_**"],
+      "map_orientation": "Pattern: key",
+      "map_remainder": ["..name", ".._"],
+      "tuple_rest": "PREVIEW_NOT_PROMOTED"
+    },
+    "named_rest_requirements": {
+      "owner": "NamedRestParameter",
+      "grammar_node": "NamedRestRequirementClause",
+      "shape": "requires { label: TypeRef ... }",
+      "callable_requires_preserved": "RequiresClause ::= requires PredicateExpr"
+    },
+    "indexing": {
+      "axis_separator": ",",
+      "axis_separator_owner": "IndexSuffix_only",
+      "full_slice": "[..]",
+      "numeric_array_full_axis": "[*]",
+      "open_slices": ["[..<end]", "[..end]", "[start..]", "[..]"],
+      "rejected": ["[start..<]", "tuple_as_gather", "implicit_linear_indexing"],
+      "numeric_array_axis_count": "exact_source_rank",
+      "scalar_axis_rule": "drop",
+      "result_rank": "count_non_scalar_axes",
+      "multi_axis_composition": "cartesian",
+      "coordinate_origin": 1,
+      "one_past_last": "BOUNDARY_IDENTITY_NO_INTEGER_INCREMENT"
+    },
+    "mutable_list_edit": {
+      "statement_only": true,
+      "ordinary_bracket_replace_activated": false,
+      "insert_surfaces": ["a[@i] = x", "a[i@] = x", "a[@^] = x", "a[$@] = x"],
+      "remove_surfaces": ["a[-@i]", "a[-@range]", "a[-@(selectors)]", "a[-^]", "a[-$]"],
+      "capture": ["none", "$value", "$$values"],
+      "lowering": "CallExpr+CallPlan(mode_target_pair,call_head_id)+CallableImplementationId",
+      "dedicated_hir_mir_opcode": false,
+      "evaluation": "receiver_then_selectors_then_payload_exactly_once",
+      "mutation_commits": 1,
+      "failure_preserves_target": true,
+      "hidden_clone_snapshot_move": false,
+      "duplicate_selectors": "REJECT",
+      "selector_coordinates": "PREIMAGE",
+      "multi_result_order": "SELECTOR_ORDER",
+      "survivor_order": "PRESERVED"
+    }
+  },
+  "trait_roles": {
+    "identity": "TraitLanguageRoleId",
+    "core_owned": true,
+    "roles": {
+      "operator": ["UnaryPlus", "UnaryMinus", "Add", "Subtract", "Multiply", "Divide", "Remainder", "Eq", "Ord"],
+      "iteration": ["Sequence", "Iterator"],
+      "interpolation": ["Display"],
+      "binding": ["Failable"]
+    },
+    "operator_glyph_count": 13,
+    "operator_role_selects_glyph": false,
+    "user_role_declaration": "REJECT",
+    "proof_role": "INTERNAL_DEFERRED"
+  },
+  "failable_binding": {
+    "surface": "let? Pattern = Expr else Pattern => ExitStatement",
+    "branch": "def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}",
+    "source_mode": "consume_once",
+    "else_required": true,
+    "success_pattern": "IRREFUTABLE",
+    "failure_pattern": "IRREFUTABLE",
+    "failure_continuation": "STRUCTURALLY_UNCONDITIONAL_EXIT",
+    "var_form": "REJECT",
+    "bare_form": "REJECT",
+    "if_while_generalization": "REJECT",
+    "option_failure": "Unit",
+    "result_failure": "E"
+  },
+  "numeric_suffix_cutover": {
+    "removed_suffixes": [
+      "i8", "i16", "i32", "i64", "i128", "isize",
+      "u8", "u16", "u32", "u64", "u128", "usize", "f32", "f64"
+    ],
+    "preserved_suffix_domains": ["floating_look_imaginary_i", "measure_unit", "rational_literal"],
+    "unconstrained_defaults": {
+      "integer": "Int",
+      "real": "Float64",
+      "imaginary_or_complex": "Complex<Float64>"
+    },
+    "smallest_fit": false,
+    "width_fit_overload_ranking": false,
+    "expected_result_selects_operator": false,
+    "generic_Type_bang_cast": false,
+    "scanner": "MAXIMAL_SUFFIX_SHAPED_CANDIDATE_ONE_DIAGNOSTIC_ZERO_CANONICAL_RESIDUE",
+    "diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED"
+  },
+  "closed_prelude_operations": [
+    "MutableList::insertBefore",
+    "MutableList::insertAfter",
+    "MutableList::prepend",
+    "MutableList::append",
+    "MutableList::insertAllBefore",
+    "MutableList::insertAllAfter",
+    "MutableList::prependAll",
+    "MutableList::appendAll",
+    "MutableList::removeAt",
+    "MutableList::removeRange",
+    "MutableList::removeSelected",
+    "MutableList::popFirst",
+    "MutableList::popLast"
+  ],
+  "non_goals": [
+    "arbitrary_custom_operator",
+    "runtime_shape_selected_unfold",
+    "map_as_named_pack",
+    "tuple_as_gather",
+    "gather_assignment",
+    "tuple_rest_promotion",
+    "public_proof_trait_role",
+    "production_frontend_or_runtime_implementation",
+    "github_publication"
+  ],
+  "evidence": {
+    "design_static": "E2_AFTER_LOCAL_VALIDATION",
+    "production_execution": "NOT_RUN",
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "separate_open_m13_actions": 4,
+    "product_lanes": "15/15_NOT_RUN"
+  }
+}

@@ -119,7 +119,7 @@ let values = [1, "two"]
 - evidence: `design-static; product NOT_RUN`
 
 ```deeplus
-def command(name: String, args...: String, options***: Record) -> Unit = {
+def command(name: String, args..: String, options**) -> Unit = {
     dispatch(name, *args, **options)
 }
 ```
@@ -149,7 +149,7 @@ derives Expr {
 - evidence: `design-static; product NOT_RUN`
 
 ```deeplus
-public trait Display {
+public trait#interpolation Display {
     +def display+() -> String
         throws Never
         effects {}

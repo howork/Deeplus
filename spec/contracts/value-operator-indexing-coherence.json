@@ -9,7 +9,7 @@
   "product_support": "NOT_RUN",
   "product_lanes": "15/15_NOT_RUN",
   "authority_fence": {
-    "new_source_syntax": false,
+    "new_source_syntax": true,
     "custom_operator_activation": false,
     "fixed_operator_conformance_overloading_activation": true,
     "structural_index_activation": false,
@@ -88,11 +88,12 @@
         "numeric_token_contains_sign": false,
         "sign_ast_owner": "PrefixExpr",
         "contextual_prefix_sign_adapter": {
-          "required_ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
-          "required_context": "one independently fixed exact Int, UInt, IntN, or UIntN target",
+          "required_ast_shape": "PrefixExpr(-, IntegerLiteral)",
+          "required_context": "one independently fixed exact signed Int, IntN, or ISize target",
           "candidate": "negative of the validated token magnitude",
           "admission": "signed candidate is mathematically representable in the exact target",
-          "ISize_or_USize_target": false,
+          "ISize_target": "EXACT_SIGNED_TARGET_ONLY_NEVER_INFERRED",
+          "USize_target": "REJECT_NEGATIVE_LITERAL_ADAPTATION",
           "arbitrary_constant_folding": false,
           "hidden_widening_or_narrowing": false,
           "list_out_of_range_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE"
@@ -348,7 +349,7 @@
       "domain": "numeric_operator_typing",
       "title": "homogeneous scalar operators use one exact normalized domain and specialized owners delegate",
       "contract": {
-        "literal_context_adaptation": "a signless unsuffixed integer may adopt an exact representable Int/UInt/IntN/UIntN target; only direct PrefixExpr(-, UnsuffixedIntegerLiteral) may instead adapt its signed -magnitude candidate; no arbitrary folding; ISize/USize require suffix or checked conversion; unsuffixed float remains Float64",
+        "literal_context_adaptation": "a signless integer may adopt an exact representable Int/UInt/IntN/UIntN/ISize/USize target; only direct PrefixExpr(-, IntegerLiteral) may instead adapt its signed -magnitude candidate to an exact signed Int/IntN/ISize target; no arbitrary folding; ISize/USize are never inferred and require an exact target or checked conversion; an unconstrained float defaults to Float64",
         "homogeneous_scalar_operators": [
           "+",
           "-",
@@ -412,17 +413,22 @@
       "contract": {
         "current_range_delimiters": [
           "..",
-          "..<"
+          "..<",
+          "..."
         ],
-        "ellipsis_structural_owners": [
-          "repeated positional parameter/type residue",
-          "for ... Pattern in Expr comprehension unfold"
+        "owner_bounded_structural_unfold_spellings": [
+          "repeated positional parameter/type residue uses ..",
+          "comprehension and positional unfold use *",
+          "named unfold and NamedPack residue use **"
         ],
-        "ellipsis_range_delimiter": false,
+        "ellipsis_range_delimiter": true,
+        "one_sided_range_forms": [
+          "lower..."
+        ],
         "reserved_rejected_spelling": "..>",
         "bounded_list_exact_form": "[L..U: elements]",
         "bounded_list_inferred_upper_form_count": 0,
-        "three_dot_range_operator_count": 0,
+        "three_dot_range_operator_count": 1,
         "three_dot_bounded_list_form_count": 0
       }
     },
@@ -481,9 +487,16 @@
       "domain": "slicing",
       "title": "current slices preserve logical coordinates and provenance",
       "contract": {
-        "canonical_range": "i..j inclusive",
-        "accepted_noncanonical_range": "i..<j",
-        "noncanonical_diagnostic": "SLICE_HALF_OPEN_RANGE_NONCANONICAL",
+        "canonical_ranges": [
+          "i..j inclusive",
+          "i..<j half-open",
+          "..<j open-lower half-open",
+          "..j open-lower inclusive",
+          "i.. open-upper inclusive",
+          ".. full owner domain"
+        ],
+        "omitted_boundary_identity": "the corresponding owner logical-domain lower or upper boundary identity",
+        "numeric_sentinel_for_omitted_boundary": false,
         "step_syntax": false,
         "descending_syntax": false,
         "first_anchor": "^",
@@ -491,6 +504,10 @@
         "anchor_scope": "SLICE_ONLY",
         "full_axis": "*",
         "empty_axis_or_empty_brackets": false,
+        "NumericArray_axis_separator": ",",
+        "NumericArray_scalar_selector_result_axis_drop": "exactly one axis per scalar selector",
+        "NumericArray_cartesian_selection": true,
+        "NumericArray_gather_or_linear_fallback": false,
         "selected_logical_coordinates_preserved": true,
         "owner_provenance_preserved": true,
         "implicit_rebase": false,
@@ -534,11 +551,11 @@
       "notes": "signed 64-bit mathematical domain"
     },
     {
-      "literal_id": "LIT-INT-EXPLICIT",
-      "source_family": "integer with an admitted signed or unsigned width suffix",
-      "normalized_type": "exact suffix domain",
+      "literal_id": "LIT-INT-CONTEXTUAL-TARGET",
+      "source_family": "atomic unsuffixed integer literal under one independently fixed exact integer target",
+      "normalized_type": "the exact contextual Int, UInt, IntN, UIntN, ISize, or USize target when representable",
       "current": true,
-      "notes": "no implicit mixed-domain operator dispatch"
+      "notes": "numeric type suffixes are removed; adaptation is atomic and occurs before call/operator selection; expected result type cannot select an operator"
     },
     {
       "literal_id": "LIT-FLOAT-UNSUFFIXED",
@@ -548,18 +565,18 @@
       "notes": "IEEE binary64"
     },
     {
-      "literal_id": "LIT-FLOAT-EXPLICIT",
-      "source_family": "floating literal with f32 or f64 suffix",
-      "normalized_type": "exact suffix domain",
+      "literal_id": "LIT-FLOAT-CONTEXTUAL-TARGET",
+      "source_family": "atomic unsuffixed floating literal under one independently fixed exact Float target",
+      "normalized_type": "the exact contextual Float32 or Float64 target",
       "current": true,
-      "notes": "IEEE binary32 or binary64"
+      "notes": "numeric type suffixes are removed; direct literal adaptation is not a conversion candidate and does not select an operator"
     },
     {
       "literal_id": "LIT-IMAGINARY-FLOAT",
       "source_family": "attached decimal floating literal followed by i",
-      "normalized_type": "Complex<Float64> or Complex<Float32> selected by the floating literal suffix",
+      "normalized_type": "Complex<Float64> by default, or one independently fixed exact contextual Complex<Float32> target",
       "current": true,
-      "notes": "4.0i is Complex<Float64>(+0.0, 4.0); 4.0f32i is Complex<Float32>; integer 4i, bare i, whitespace and chained suffixes are not imaginary literals"
+      "notes": "4.0i defaults to Complex<Float64>(+0.0, 4.0); an exact Complex<Float32> context adapts the atomic unsuffixed literal directly; integer 4i, bare i, whitespace, numeric type suffixes and chained suffixes are not imaginary literals"
     },
     {
       "literal_id": "LIT-RATIONAL-COMPOUND",
@@ -1081,9 +1098,9 @@
     },
     {
       "carrier": "NumericArray<T,rank R>",
-      "surface": "value[axis1; ...; axisR]",
+      "surface": "value[axis1, ..., axisR]",
       "index_domain": "typed coordinate per axis; built-in default 1..dimension",
-      "result": "all R scalar axes return T; otherwise a ReadonlyView<T> preserves or reduces selected-axis shape/rank according to non-scalar selectors without implicit collapse or rebase",
+      "result": "all R scalar axes return T; otherwise every scalar selector drops exactly its result axis while range and * selectors preserve theirs in Cartesian source order",
       "slice": true,
       "activation": "BUILTIN_INTRINSIC_WITH_TYPED_AXES"
     },
@@ -1128,29 +1145,28 @@
     },
     {
       "form": "value[i..<j]",
-      "status": "CURRENT_ACCEPTED_NONCANONICAL",
-      "meaning": "logical coordinates i through the predecessor of j",
-      "diagnostic": "SLICE_HALF_OPEN_RANGE_NONCANONICAL"
-    },
-    {
-      "form": "value[^..$]",
       "status": "CURRENT_CANONICAL",
-      "meaning": "first through last logical coordinate"
+      "meaning": "logical coordinates i through the predecessor of j"
     },
     {
-      "form": "value[*]",
+      "form": "value[..j] or value[..<j]",
       "status": "CURRENT_CANONICAL",
-      "meaning": "full axis selector where an axis selector is admitted"
+      "meaning": "the omitted lower endpoint is the owner-domain lower-bound identity"
     },
     {
-      "form": "value[]",
-      "status": "REJECT",
-      "meaning": "empty index or full-axis shorthand is absent"
+      "form": "value[i..]",
+      "status": "CURRENT_CANONICAL",
+      "meaning": "the omitted upper endpoint is the owner-domain upper-bound identity"
     },
     {
       "form": "value[..]",
-      "status": "REJECT",
-      "meaning": "both range bounds are required; use ^/$ for endpoints, or * only for an admitted NumericArray full axis"
+      "status": "CURRENT_CANONICAL",
+      "meaning": "both endpoints are the exact owner-domain boundary identities"
+    },
+    {
+      "form": "value[*]",
+      "status": "CURRENT_CANONICAL_NUMERIC_ARRAY_ONLY",
+      "meaning": "full-axis selector preserving that NumericArray result axis"
     },
     {
       "form": "value[i..>j]",
@@ -1158,11 +1174,36 @@
       "meaning": "reserved spelling has no current range identity"
     },
     {
-      "form": "value[i...j]",
+      "form": "value[]",
       "status": "REJECT",
-      "meaning": "three dots have only repeated-positional and comprehension-unfold structural owners, never a range owner"
+      "meaning": "empty index or implicit full-axis shorthand is absent"
     }
   ],
+  "mutable_list_structural_edit_contract": {
+    "operations": [
+      "insertBefore",
+      "insertAfter",
+      "prepend",
+      "append",
+      "insertAllBefore",
+      "insertAllAfter",
+      "prependAll",
+      "appendAll",
+      "removeAt",
+      "removeRange",
+      "removeSelected",
+      "popFirst",
+      "popLast"
+    ],
+    "operation_count": 13,
+    "lowering": "existing CallExpr -> ResolvedCallPlan -> CallableImplementationId",
+    "new_HIR_node_count": 0,
+    "new_MIR_opcode_count": 0,
+    "hidden_copy_count": 0,
+    "successful_structural_commit_count": 1,
+    "precommit_failure_commit_count": 0,
+    "selection_uses_expected_result_type": false
+  },
   "map_literal_plan_contract": {
     "plan_identity": "MapLiteralPlan<K,V>",
     "entry_kinds": [
@@ -1301,6 +1342,12 @@
     "ordinary_sequence_first_index": 1,
     "negative_from_end_rewrite_count": 0,
     "slice_form_row_count": 8,
+    "numeric_literal_suffix_current_count": 0,
+    "numeric_literal_contextual_direct_target_row_count": 2,
+    "numeric_array_axis_separator": ",",
+    "numeric_array_scalar_axis_drop_rule_count": 1,
+    "mutable_list_structural_edit_operation_count": 13,
+    "mutable_list_structural_edit_new_opcode_count": 0,
     "new_rejection_diagnostic_count": 11,
     "implicit_rebase_count": 0,
     "map_literal_entry_kind_count": 2,

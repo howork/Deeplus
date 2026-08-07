@@ -218,7 +218,7 @@ let defaults = #map{
     "port": "8080"
 }
 let actual = #map{
-    **defaults
+    *defaults
     "port": "443"
 }
 ```
@@ -254,7 +254,7 @@ public def sign(n: Int) -> Int = {{
 ```deeplus
 public def safeHead<T>(xs: List<T>) -> Option<T> = {{
     []       => ::none
-    [x, .._] => ::some(x)
+    [x, _..] => ::some(x)
 }}
 ```
 ## EX-R48-015 — Explicit context parameter stable phase A
@@ -1343,7 +1343,7 @@ match {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public trait Display {
+public trait#interpolation Display {
     +def display+() -> String
         throws Never
         effects {}
@@ -2678,7 +2678,7 @@ let bad = v^
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
+- **expected_warnings:** `none`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -2686,7 +2686,7 @@ let firstFour = xs[1..4]
 let tail = xs[1..$]
 let beforeLast = xs[1..<$]
 ```
-## EX-R48F-013 — Half-open slice is noncanonical ordinary style
+## EX-R48F-013 — Half-open slice is canonical ordinary style
 
 - **source_feature_ids:** `slice_half_open_noncanonical_warning_law`
 - **checker_trace_ids:** `none`
@@ -2695,12 +2695,11 @@ let beforeLast = xs[1..<$]
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
+- **expected_warnings:** `none`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
 let window = xs[i..<j]
-// warning: SLICE_HALF_OPEN_RANGE_NONCANONICAL
 ```
 ## EX-R48F-014 — Complex vector dot product law
 
@@ -3014,7 +3013,7 @@ let squared = A ^ 2
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
+- **expected_warnings:** `none`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -3109,7 +3108,7 @@ let b: Int? = None
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public trait Eq {
+public trait#operator Eq {
     +def equals+(other: Self) -> Bool
         throws Never
         effects {}
@@ -3134,13 +3133,13 @@ public trait Eq {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public trait Eq {
+public trait#operator Eq {
     +def equals+(other: Self) -> Bool
         throws Never
         effects {}
 }
 
-public trait Ord
+public trait#operator Ord
 derives Eq {
     +def compare+(other: Self) -> Int
         throws Never
@@ -3185,7 +3184,7 @@ public trait StableHash {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public trait Eq {
+public trait#operator Eq {
     +def equals(other: Self) -> Bool
         throws Never
         effects {}
@@ -3205,7 +3204,7 @@ public trait Eq {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public trait Eq {
+public trait#operator Eq {
     +def notEquals.(other: Self) -> Bool
         throws Never
         effects {}
@@ -3922,9 +3921,9 @@ let label = @match state {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public type Logger = (LogLevel, String..., Record***) -> Unit
+public type Logger = (LogLevel, String.., NamedPack**) -> Unit
 
-public def log(level: LogLevel, values...: String, options***: Record) -> Unit
+public def log(level: LogLevel, values..: String, options**) -> Unit
     throws Never
     effects io
 = {
@@ -4035,7 +4034,7 @@ let label = @match state {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def log(level: LogLevel, values...: String) -> Unit
+public def log(level: LogLevel, values..: String) -> Unit
     throws Never
     effects io
 = {
@@ -4059,7 +4058,7 @@ log(::info, "start", "loading", "done")
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def makeList<T>(values...: T) -> List<T>
+public def makeList<T>(values..: T) -> List<T>
     throws Never
     effects {}
 = {
@@ -4118,7 +4117,7 @@ let p = pair(*xs)
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def configure(options***: Record) -> Unit
+public def configure(options**) -> Unit
     throws Never
     effects {}
 = {
@@ -4140,7 +4139,7 @@ configure(timeout: 30, verbose: true, mode: "fast")
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def bad(options***: Record, x: Int) -> Unit
+public def bad(options**, x: Int) -> Unit
     throws Never
     effects {}
 = {
@@ -4158,7 +4157,7 @@ public def bad(options***: Record, x: Int) -> Unit
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def command(name: String, args...: String, options***: Record) -> Unit
+public def command(name: String, args..: String, options**) -> Unit
     throws Never
     effects io
 = {
@@ -4238,7 +4237,7 @@ public data class BadProfile(
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def configure(options***: Record) -> Unit
+public def configure(options**) -> Unit
     throws Never
     effects {}
 = {
@@ -4628,7 +4627,7 @@ let ambiguous: Int?? = ::none
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def configure(options***: Record) -> Unit = {
+public def configure(options**) -> Unit = {
 }
 configure(host: "localhost", port: 443)
 ```
@@ -5086,12 +5085,12 @@ match state {
 
 ```deeplus
 let a = 1_000_000
-let b: UInt8 = 0b1010_0110u8
-let mode = 0o755u16
-let mask = 0xDEAD_BEEFu32
-let avogadro = 6.022_140_76e23f64
-let small = 1e-9f64
-let exactFloat = 1f64
+let b: UInt8 = 0b1010_0110
+let mode: UInt16 = 0o755
+let mask: UInt32 = 0xDEAD_BEEF
+let avogadro: Float64 = 6.022_140_76e23
+let small: Float64 = 1e-9
+let exactFloat: Float64 = 1.0
 ```
 ## EX-R49C-NUM-002 — Invalid binary digit
 
@@ -5153,7 +5152,7 @@ let bad = 1__000
 ```deeplus
 let bad = 1e+
 ```
-## EX-R49C-NUM-006 — Integer suffix cannot follow decimal fraction
+## EX-R49C-NUM-006 — Removed numeric type suffix is one scanner error
 
 - **source_feature_ids:** `numeric_literal_lexical_contract`, `numeric_literal_suffix`
 - **checker_trace_ids:** `none`
@@ -5162,7 +5161,7 @@ let bad = 1e+
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `NUMERIC_SUFFIX_KIND_MISMATCH`
+- **primary_diagnostic:** `NUMERIC_TYPE_SUFFIX_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -5513,9 +5512,9 @@ def announce() -> Unit = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let mask = 0xDEAD_BEEFu32
-let count = 0b1010_0101u8
-let ratio = 6.022_140_76e23f64
+let mask: UInt32 = 0xDEAD_BEEF
+let count: UInt8 = 0b1010_0101
+let ratio: Float64 = 6.022_140_76e23
 let inf = Float64::positiveInfinity
 ```
 ## EX-R51a1-007 — Bytes mode and named Unicode escape
@@ -6145,7 +6144,7 @@ cleanup budget {
     effects { io }
 }
 ```
-## EX-R51a1-044 — value-arm newline separates an open range from the next qualified pattern
+## EX-R51a1-044 — value-arm newline separates a one-sided range from the next qualified pattern
 
 - **source_feature_ids:** `declarative_function_clause_block_msp`, `runtime_range_step_expression`, `enum_case_pattern_double_colon_surface`
 - **checker_trace_ids:** `none`
@@ -6158,7 +6157,7 @@ cleanup budget {
 
 ```deeplus
 def choose(x: Input) -> Range<Int> = {{
-    p => a..
+    p => a...
     Q::ready => r
 }}
 ```
@@ -6303,7 +6302,7 @@ if (withValue() { value => value }) {
     start()
 }
 ```
-## EX-R51a1-053 — List suffix, target-size, boundary, empty-context, and nonnumeric identity admissions
+## EX-R51a1-053 — List target-size, boundary, empty-context, and nonnumeric identity admissions
 
 - **source_feature_ids:** `ordinary_list_literal_surface`, `numeric_literal_suffix`
 - **checker_trace_ids:** `none`
@@ -6315,8 +6314,8 @@ if (withValue() { value => value }) {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let floats: List<Float32> = [1.0f32]
-let indexes: List<ISize> = [1isize]
+let floats: List<Float32> = [1.0]
+let indexes: List<ISize> = [1]
 let signed: List<Int8> = [-128, 127]
 let emptyNames: List<String> = []
 let names: List<String> = ["Ada", "Grace"]
@@ -7024,7 +7023,7 @@ let g = [borrow owner] @for item in owner { yield item }
 ```deeplus
 let value = User!(name = "Ada")
 ```
-## EX-R51a1-AUD-NG-031 — empty slice range uses wildcard
+## EX-R51a1-AUD-NG-031 — exclusive open upper slice is rejected
 
 - **source_feature_ids:** `inclusive_slice_range_canonical_msp`, `range_literal_refinement_type`
 - **checker_trace_ids:** `none`
@@ -7033,11 +7032,11 @@ let value = User!(name = "Ada")
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR`
+- **primary_diagnostic:** `SLICE_OPEN_BOUND_FORM_INVALID`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let all = values[..]
+let invalid = values[2..<]
 ```
 ## EX-R51a1-AUD-NG-032 — bare parenless ordinary call remains forbidden
 
@@ -7752,7 +7751,7 @@ inspect(model)
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-def configure(options***: Record) -> Unit {
+def configure(options**) -> Unit {
     log(options)
 }
 configure(**settings)
@@ -7787,7 +7786,7 @@ def#entry#async launch() -> Unit
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-def command(name: String, args...: String, options***: Record) -> Unit = {
+def command(name: String, args..: String, options**) -> Unit = {
     dispatch(name, *args, **options)
 }
 ```
@@ -7803,7 +7802,7 @@ def command(name: String, args...: String, options***: Record) -> Unit = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-private type Command = (String, String..., Record***) -> Unit
+private type Command = (String, String.., NamedPack**) -> Unit
 ```
 ## EX-R51a1-NEW-005 — typed immutable flow binding
 
@@ -8796,7 +8795,7 @@ let invalidRadixShape = #0x2,2[1, 2; 3, 4;]
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `NUMARR_DIMENSION_STATIC_INT_REQUIRED`
+- **primary_diagnostic:** `NUMERIC_TYPE_SUFFIX_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -8817,7 +8816,7 @@ let invalidSuffixedShape = #2u8,2[1, 2; 3, 4;]
 ```deeplus
 let invalidRadix = 0x
 ```
-## EX-R51a1-NG-039 — rejected: ordinary List literal mixing unsuffixed Int and suffixed u8 without context
+## EX-R51a1-NG-039 — rejected: removed u8 numeric type suffix
 
 - **source_feature_ids:** `ordinary_list_literal_surface`
 - **checker_trace_ids:** `none`
@@ -8826,13 +8825,13 @@ let invalidRadix = 0x
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `LIST_LITERAL_ELEMENT_JOIN_FAILED`
+- **primary_diagnostic:** `NUMERIC_TYPE_SUFFIX_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
 let mixed = [1, 2u8]
 ```
-## EX-R51a1-NG-040 — rejected: ordinary List literal mixing suffixed i8 and unsuffixed Int without context
+## EX-R51a1-NG-040 — rejected: removed i8 numeric type suffix
 
 - **source_feature_ids:** `ordinary_list_literal_surface`
 - **checker_trace_ids:** `none`
@@ -8841,7 +8840,7 @@ let mixed = [1, 2u8]
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `LIST_LITERAL_ELEMENT_JOIN_FAILED`
+- **primary_diagnostic:** `NUMERIC_TYPE_SUFFIX_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -8990,36 +8989,6 @@ let sorted = sort([3, 1, 2], using forged)
 
 ```deeplus
 let empty = []
-```
-## EX-R51a1-NG-052 — rejected: unsuffixed Float64 literal in a contextual List<Float32>
-
-- **source_feature_ids:** `ordinary_list_literal_surface`, `numeric_literal_suffix`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `LIST_LITERAL_ELEMENT_JOIN_FAILED`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let values: List<Float32> = [1.0]
-```
-## EX-R51a1-NG-053 — rejected: unsuffixed Int literal in a contextual List<ISize>
-
-- **source_feature_ids:** `ordinary_list_literal_surface`, `numeric_literal_suffix`
-- **checker_trace_ids:** `none`
-- **expected_outcome:** `reject`
-- **source_activation:** `none`
-- **certification_status:** `design_static_product_not_run`
-- **source_role:** `script`
-- **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `LIST_LITERAL_ELEMENT_JOIN_FAILED`
-- **parser_status / checker_status:** `not_run` / `not_run`
-
-```deeplus
-let indexes: List<ISize> = [1]
 ```
 ## EX-R51a1-NG-054 — rejected: out-of-range negative literal in a contextual List<Int8>
 
@@ -9823,7 +9792,7 @@ let distance = use std::units::si in {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-def configure(options***: Record) -> Unit = { apply(options) }
+def configure(options**) -> Unit = { apply(options) }
 configure(**settings)
 ```
 ## EX-R51b-GRAM-P-002 — Lazy binding uses the hash role
@@ -10181,7 +10150,7 @@ let value = @
 match input { otherwise => 0 }
 // AT_EXACT_INTRODUCER_LINE_BREAK_FORBIDDEN
 ```
-## EX-R51c-001 — Named rest uses triple-star while named unfold uses double-star
+## EX-R51c-001 — Named rest uses suffix double-star while named unfold uses prefix double-star
 
 - **source_feature_ids:** `named_rest_parameter_record_msp`
 - **checker_trace_ids:** `NamedRestCollectorAdmitted`, `NamedRestParameterRecordAndLastPosition`
@@ -10193,10 +10162,10 @@ match input { otherwise => 0 }
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def configure(options***: Record) -> Unit = {
+public def configure(options**) -> Unit = {
     apply(**options)
 }
-public type Configure = (Record***) -> Unit
+public type Configure = (NamedPack**) -> Unit
 ```
 ## EX-R51c-003 — Class instance methods require dispatch markers; fields do not
 
@@ -10262,7 +10231,7 @@ private class BadField {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-private trait Iterator {
+public trait#iteration Iterator {
     type Item
     let:: empty: Bool
     def:: defaultBatch() -> Int
@@ -10492,7 +10461,7 @@ let value = 1
 }
 ```
 
-## EX-R51c1-001 — Named-rest parameter uses attached triple-star
+## EX-R51c1-001 — Named-rest parameter uses attached suffix double-star
 
 - **source_feature_ids:** `named_rest_parameter_record_msp`, `r51e_package_current_canonical_authority`
 - **checker_trace_ids:** `NamedRestCollectorAdmitted`, `NamedRestParameterRecordAndLastPosition`
@@ -10504,11 +10473,11 @@ let value = 1
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def configure(options***: Record) -> Unit = {
+public def configure(options**) -> Unit = {
     apply(**options)
 }
 ```
-## EX-R51c1-002 — Function type preserves triple-star named-rest residue
+## EX-R51c1-002 — Function type preserves `NamedPack**` named-rest residue
 
 - **source_feature_ids:** `named_rest_parameter_record_msp`, `call_shape_rest_type_residue_law`
 - **checker_trace_ids:** `FunctionRestResiduePreserved`
@@ -10520,7 +10489,7 @@ public def configure(options***: Record) -> Unit = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public type Configure = (Record***) -> Unit
+public type Configure = (NamedPack**) -> Unit
 ```
 ## EX-R51c1-003 — Named unfold alone uses prefix double-star
 
@@ -10537,7 +10506,7 @@ public type Configure = (Record***) -> Unit
 let options = ${ timeout: 30, retries: 2 }
 configure(**options)
 ```
-## EX-R51c1-004 — Named-rest parameter cannot use a double-star suffix
+## EX-R51c1-004 — Legacy triple-star named-rest collector is removed
 
 - **source_feature_ids:** `named_rest_parameter_record_msp`
 - **checker_trace_ids:** `NamedRestCollectorAdmitted`, `NamedRestParameterRecordAndLastPosition`
@@ -10546,15 +10515,15 @@ configure(**options)
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `library`
 - **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE`
+- **primary_diagnostic:** `LEGACY_REST_UNFOLD_SPELLING_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public def configure(options**: Record) -> Unit = {
+public def configure(options***) -> Unit = {
     apply(**options)
 }
 ```
-## EX-R51c1-005 — Function-type named-rest residue cannot use double-star
+## EX-R51c1-005 — Legacy triple-star function residue is removed
 
 - **source_feature_ids:** `call_shape_rest_type_residue_law`, `named_rest_parameter_record_msp`
 - **checker_trace_ids:** `FunctionRestResiduePreserved`, `NamedRestCollectorAdmitted`
@@ -10563,11 +10532,11 @@ public def configure(options**: Record) -> Unit = {
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `library`
 - **source_root:** `LibrarySourceFile`
-- **primary_diagnostic:** `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE`
+- **primary_diagnostic:** `LEGACY_REST_UNFOLD_SPELLING_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-public type Configure = (Record**) -> Unit
+public type Configure = (NamedPack***) -> Unit
 ```
 ## EX-R51c1-006 — Triple-star cannot be used as named unfold
 
@@ -10578,7 +10547,7 @@ public type Configure = (Record**) -> Unit
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE`
+- **primary_diagnostic:** `LEGACY_REST_UNFOLD_SPELLING_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -11346,7 +11315,7 @@ let text = "name=$name:<12"
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-if let [head, .._] = values {
+if let [head, _..] = values {
     consume(head)
 }
 ```
@@ -11610,7 +11579,7 @@ let mutex = SharedMutex::new(move state)
 mutex ~ withLock { inout value => value = update(value) }
 ```
 
-## EX-R51VOI-001 — Unsuffixed and suffixed numeric values keep exact domains
+## EX-R51VOI-001 — Targeted numeric literals keep exact domains
 
 - **source_feature_ids:** `numeric_literal_lexical_contract`, `numeric_literal_suffix`, `numeric_operator_core`
 - **checker_trace_ids:** `NumericLiteralAdmitted`, `NumericOperatorCoreAdmitted`
@@ -11623,9 +11592,9 @@ mutex ~ withLock { inout value => value = update(value) }
 
 ```deeplus
 let count: Int = 42
-let exact: Int32 = 42i32
+let exact: Int32 = 42
 let ratio: Float64 = 1.5
-let compact: Float32 = 1.5f32
+let compact: Float32 = 1.5
 let sum: Int = count + 1
 ```
 
@@ -11727,8 +11696,8 @@ let secure = ports["https"]
 
 ```deeplus
 let matrix = #2,2[1, 2; 3, 4]
-let topLeft = matrix[1; 1]
-let firstRow = matrix[1; *]
+let topLeft = matrix[1, 1]
+let firstRow = matrix[1, *]
 ```
 
 ## EX-R51VOI-008 — Inclusive slices and anchors preserve source coordinates
@@ -11744,11 +11713,11 @@ let firstRow = matrix[1; *]
 
 ```deeplus
 let values = [10, 20, 30, 40]
-let middle = values[2..$]
+let middle = values[2..]
 let sameCoordinate = middle[3]
 ```
 
-## EX-R51VOI-009 — Explicit exclusive slice end is accepted with a warning
+## EX-R51VOI-009 — Explicit exclusive slice end is accepted
 
 - **source_feature_ids:** `inclusive_slice_range_canonical_msp`, `slice_half_open_noncanonical_warning_law`
 - **checker_trace_ids:** `SliceRangeAdmitted`
@@ -11757,7 +11726,7 @@ let sameCoordinate = middle[3]
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **expected_warnings:** `SLICE_HALF_OPEN_RANGE_NONCANONICAL`
+- **expected_warnings:** `none`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
@@ -11835,7 +11804,7 @@ let combined: Vec2 = left + right
 
 ```deeplus
 let matrix = #2,2[1, 2; 3, 4]
-let invalid = matrix[0; 1]
+let invalid = matrix[0, 1]
 // ZERO_BASED_INDEX_NOT_CURRENT
 ```
 
@@ -11852,7 +11821,9 @@ let invalid = matrix[0; 1]
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let invalid = 1i32 + 2i64
+let left: Int32 = 1
+let right: Int64 = 2
+let invalid = left + right
 // NUMERIC_OPERATOR_CORE_REQUIRED
 ```
 
@@ -12110,7 +12081,8 @@ let invalid: Rational = <2/0>
 
 ```deeplus
 let z: Complex = 3.0 + 4.0i
-let small: Complex<Float32> = 1.5f32 - 0.25f32i
+let smallReal: Float32 = 1.5
+let small: Complex<Float32> = smallReal - 0.25i
 let unit: Complex = Complex::i
 ```
 
@@ -12423,16 +12395,16 @@ public def invalid() -> Int = {
 ```deeplus
 let values = [10, 20, 30, 40]
 
-if let [head, ..tail] = values {
+if let [head, tail..] = values {
     consume(head, tail)
 }
 if let [leadings.., last] = values {
     consume(leadings, last)
 }
-if let [first, ..middle.., last] = values {
+if let [first, middle.., last] = values {
     consume(first, middle, last)
 }
-if let [.._] = values {
+if let [_..] = values {
     observe(values)
 }
 ```
@@ -12489,7 +12461,7 @@ left, right = right, left
 
 ```deeplus
 let point = ${x: 10, y: 20, label: "origin"}
-let ${horizontal: x, vertical: y, ..metadata} = point
+let ${x: horizontal, y: vertical, metadata**} = point
 
 let payload = #map{"id": 13, "name": "Ada", "active": true}
 if let #map{
@@ -12566,7 +12538,7 @@ let label = @match status {
 
 ```deeplus
 let guaranteed = protocolGuaranteedNonempty()
-let! [head, ..tail] = guaranteed
+let! [head, tail..] = guaranteed
 consume(head, tail)
 ```
 
@@ -12583,7 +12555,7 @@ consume(head, tail)
 
 ```deeplus
 if let ::some(user) = lookupUser(id)
-    and then let ${email, .._} = user.profile
+    and then let ${email, _**} = user.profile
     and then isVerified(email)
 {
     publish(user)
@@ -12607,7 +12579,7 @@ private def loadConfiguration() -> Unit
 = {
     try {
         readConfiguration()
-    } catch IOError${path, .._} if isConfigPath(path) {
+    } catch IOError${path, _**} if isConfigPath(path) {
         useDefaults(path)
     } catch error: IOError {
         throw error
@@ -12659,7 +12631,7 @@ public def#pattern Email(borrow subject: String)
 // Preview Design: Pattern Synonym and Pattern View are not Stable source.
 ```
 
-## EX-R52-PAT-NG-001 — Middle rest requires a closing marker
+## EX-R52-PAT-NG-001 — Prefix legacy rest spelling is removed
 
 - **source_feature_ids:** `sequence_positional_rest_pattern`
 - **checker_trace_ids:** `none`
@@ -12668,14 +12640,14 @@ public def#pattern Email(borrow subject: String)
 - **certification_status:** `design_static_product_not_run`
 - **source_role:** `script`
 - **source_root:** `ScriptSourceFile`
-- **primary_diagnostic:** `PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS`
+- **primary_diagnostic:** `LEGACY_REST_UNFOLD_SPELLING_REMOVED`
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
 if let [first, ..middle, last] = values {
     consume(middle)
 }
-// PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS
+// LEGACY_REST_UNFOLD_SPELLING_REMOVED
 ```
 
 ## EX-R52-PAT-NG-002 — Map pattern key must be stable
@@ -12734,7 +12706,7 @@ private def expose(secret: Secret) -> Int = {
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-private def first(values [head, .._]: List<Int>) -> Int = {
+private def first(values [head, _..]: List<Int>) -> Int = {
     return head
 }
 // REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT
@@ -13223,4 +13195,254 @@ cleanup budget {
 }
 {}
 // audit is outside the family-root ceiling.
+```
+
+## EX-R77-CALL-P-001 — Attached collect and owner-bounded unfold
+
+- **source_feature_ids:** `call_shape_rest_type_residue_law`, `named_rest_parameter_record_msp`, `call_side_positional_unfold_star_msp`
+- **checker_trace_ids:** `CallSideUnfoldStaticEvidence`, `FunctionRestResiduePreserved`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public type Command = (String, String.., NamedPack**) -> Unit
+
+public def command(
+    name: String,
+    arguments..: String,
+    options** requires {
+        timeout: Duration
+    },
+) -> Unit = {
+    dispatch(name, *arguments, **options)
+}
+```
+
+## EX-R77-COMP-P-001 — Comprehension unfolds its source, not its binder
+
+- **source_feature_ids:** `comprehension_unfold`, `call_side_positional_unfold_star_msp`
+- **checker_trace_ids:** `CallSideUnfoldStaticEvidence`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let positives = [value for value in *groups if value > 0]
+```
+
+## EX-R77-PAT-P-001 — List suffix rest and Record label-first pattern
+
+- **source_feature_ids:** `sequence_positional_rest_pattern`, `structured_record_map_pattern`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+if let [first, middle.., last] = values {
+    consume(first, middle, last)
+}
+
+let ${id: userId, metadata**} = request
+
+if let #map{
+    payloadId: "id"
+    ..rest
+} = payload {
+    consume(payloadId, rest)
+}
+```
+
+## EX-R77-RANGE-P-001 — Bounded and one-sided Range use exact step ownership
+
+- **source_feature_ids:** `runtime_range_step_expression`, `range_step_expression_surface_clarification`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let odds = 1..10:2
+let countdown = 10..1:-1
+let naturals = 1...
+```
+
+## EX-R77-RANGE-NG-001 — Zero step is rejected before traversal
+
+- **source_feature_ids:** `runtime_range_step_expression`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `RANGE_STEP_ZERO`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = 1..10:0
+// RANGE_STEP_ZERO
+```
+
+## EX-R77-INDEX-P-001 — Comma axes and open slices preserve owner provenance
+
+- **source_feature_ids:** `numeric_array_multiaxis_slice_readonly_view_msp`, `inclusive_slice_range_canonical_msp`, `slice_logical_domain_preservation`
+- **checker_trace_ids:** `NumericFillSliceIndexAdmitted`, `SliceViewLifetimeAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let matrix = #2,3[1, 2, 3; 4, 5, 6;]
+let element = matrix[1, 2]
+let row = matrix[1, ..]
+let column = matrix[.., 2]
+let prefix = values[..<4]
+let suffix = values[2..]
+let full = values[..]
+```
+
+## EX-R77-INDEX-NG-001 — List comma index is not tuple gather
+
+- **source_feature_ids:** `basic_index_operator`, `numeric_array_multiaxis_slice_readonly_view_msp`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `INDEX_AXIS_COUNT_MISMATCH`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = values[1, 3]
+// INDEX_AXIS_COUNT_MISMATCH
+```
+
+## EX-R77-MUTLIST-P-001 — MutableList structural edit is statement-only
+
+- **source_feature_ids:** `basic_index_operator`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+items[@3] = value
+items[3@] = value
+items[@^] = *prefixValues
+items[-@2..4] -> $$removed
+items[-$] -> $last
+```
+
+## EX-R77-MUTLIST-NG-001 — Ordinary MutableList bracket replace stays closed
+
+- **source_feature_ids:** `basic_index_operator`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `MUTABLE_LIST_ORDINARY_BRACKET_REPLACE_NOT_CURRENT`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+items[2] = value
+// MUTABLE_LIST_ORDINARY_BRACKET_REPLACE_NOT_CURRENT
+```
+
+## EX-R77-TRAIT-P-001 — Core roles and consuming Failable binding
+
+- **source_feature_ids:** `fixed_operator_conformance_overloading`, `iterator_protocol_core`, `trait_binding_failable_v1`
+- **checker_trace_ids:** `NumericOperatorCoreAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public trait#interpolation Display {
+    +def display+() -> String throws Never effects {}
+}
+
+private def parsePort(text: String) -> Int throws ParseError = {
+    let? port = Int::parse(text) else error => throw error
+    return port
+}
+```
+
+## EX-R77-TRAIT-NG-001 — User role-bearing Trait root is rejected
+
+- **source_feature_ids:** `fixed_operator_conformance_overloading`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `TRAIT_LANGUAGE_ROLE_OWNER_NOT_CORE`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `library`
+- **source_root:** `LibrarySourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public trait#operator VectorOperator {
+    +def combine+(borrow rhs: Self) -> Self throws Never effects {}
+}
+// TRAIT_LANGUAGE_ROLE_OWNER_NOT_CORE
+```
+
+## EX-R77-NUM-P-001 — Numeric domain comes from a valid target or typed anchor
+
+- **source_feature_ids:** `numeric_literal_lexical_contract`, `numeric_literal_suffix`, `complex_core_numeric_value`
+- **checker_trace_ids:** `NumericLiteralAdmitted`, `ComplexLiteralAndOperatorAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let byte: UInt8 = 255
+let ratio: Float32 = 0.5
+let real: Float32 = 3.0
+let complex: Complex<Float32> = real + 4.0i
+```
+
+## EX-R77-NUM-NG-001 — Removed numeric type suffix is one lexical diagnostic
+
+- **source_feature_ids:** `numeric_literal_lexical_contract`, `numeric_literal_suffix`
+- **checker_trace_ids:** `none`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `NUMERIC_TYPE_SUFFIX_REMOVED`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let legacy = 255u8
+// NUMERIC_TYPE_SUFFIX_REMOVED
 ```

@@ -300,6 +300,7 @@ owner가 다르면 자동으로 같은 의미가 되지 않는다.
 | callable declaration | `def#async`, `def#guard`, `def#cleanup` | 호출·중단·증명·정리 profile |
 | callable type | `#scoped (...) -> ...` | invocation-bounded callable lifetime |
 | binding | `let#lazy` | initialization profile |
+| core Trait declaration | `trait#operator`, `trait#iteration`, `trait#interpolation`, `trait#binding` | 닫힌 언어 책임 identity |
 | Enum | `enum#increasing`, `enum#decreasing` | 전체 Enum의 의미상 순서 |
 | Actor | `actor #mailbox(capacity: N)` | mailbox admission profile |
 | async loop | `for#await` | `AsyncSequence` 순회 owner |
@@ -313,6 +314,9 @@ callback을 호출 중에만 살게 하는 type profile이다.
 새 role을 이름만 보고 등록하거나 role argument/provider를 임의로
 추가하지 않는다. parser가 owner를 정하고, owner의 admitted role set,
 중복·순서·조합 규칙을 통과한 뒤에만 HIR tag가 생긴다.
+Trait role은 더 좁다. core가 소유한 정확한 Trait root에만 붙으며 사용자가
+새 role-bearing Trait를 선언하거나 generic `#role`/`#profile`/`#proof`로
+확장할 수 없다.
 
 ## 5. parameter와 argument: 비슷해 보이는 서로 다른 goal
 
@@ -332,8 +336,13 @@ ValueParameter     ::= ParameterMode? ParameterEntrySlot TypeAnnotation
 ParameterEntrySlot ::= Identifier IrrefutableParameterPattern?
 ContextParameter   ::= "context" Identifier ":" TypeRef
 WitnessParameter   ::= "using" Identifier ":" "witness" TypeRef
-RepeatedParameter  ::= Identifier "..." TypeAnnotation
-NamedRestParameter ::= Identifier "***" TypeAnnotation
+RepeatedParameter  ::= Identifier ".." TypeAnnotation
+NamedRestParameter ::= Identifier "**" NamedRestRequirementClause?
+NamedRestRequirementClause ::= "requires" "{" NamedRestRequirementEntries "}"
+NamedRestRequirementEntries ::= NamedRestRequirementEntry
+                                (PatternEntrySeparator NamedRestRequirementEntry)*
+                                PatternEntrySeparator?
+NamedRestRequirementEntry ::= Identifier ":" TypeRef
 ```
 
 callable parameter는 identifier call channel을 먼저 받고, 그 뒤에
@@ -395,21 +404,26 @@ checker는 각 channel이 선언의 동일 role과 일치하는지 검사한다.
 `ConformanceEvidenceSelector`, `NamedConformanceEvidenceSelector` 중
 하나다.
 
-### 5.3 `...`, `***`, `**`의 소유자
+### 5.3 `..`, `**`, prefix unfold의 소유자
 
-세 표면은 문맥을 보지 않고 token 모양만 비교하면 오판하기 쉽다.
+붙은 suffix collect와 prefix unfold는 문맥을 보지 않고 token 모양만
+비교하면 오판하기 쉽다.
 
 | 표면 | owner | 의미 |
 |---|---|---|
-| suffix `...` | `RepeatedParameter`, `ParenTypeItem` | positional residue |
-| `for ... Pattern in Expr` | `UnfoldClause` | comprehension source unfold |
-| suffix `***` | `NamedRestParameter`, `ParenTypeItem` | named residue |
+| suffix `name..: T` / `T..` | `RepeatedParameter`, `ParenTypeItem` | positional residue |
+| suffix `name**` / `NamedPack**` | `NamedRestParameter`, `ParenTypeItem` | static named residue |
+| prefix `*Expr` | call/list/insertion/comprehension owner | positional structural unfold |
 | prefix `**Expr` | `NamedUnfoldArgument`, materialization entry | named unfold |
+| `for Pattern in *Expr` | `UnfoldClause` | comprehension source unfold |
 | spaced infix `a ** b` | expression Pratt goal | linear product operator |
 
 부착 정책도 의미의 일부다.
 parameter/type의 residue marker는 앞 type 또는 identifier에 붙고,
-call/materialization unfold marker는 뒤 expression의 prefix다.
+call/materialization/comprehension unfold marker는 뒤 expression의 prefix다.
+두 unfold form은 닫힌 structural owner 안에서만 admit되며 general Pratt
+prefix가 아니다. 제거된 `...`/`***` collect와 `for ... Pattern in Expr`는
+migration diagnostic 뒤 canonical node를 만들지 않는다.
 linear product는 이항 연산자로 읽힐 수 있는 간격과 양 operand가 필요하다.
 
 ## 6. type goal: `TypeRef` 안으로 들어가는 법
@@ -452,13 +466,13 @@ function type의 공통 owner다.
 
 ```ebnf
 ParenTypeSyntax  ::= HashTag* "(" ParenTypeItemList? ")" FunctionTypeTail?
-ParenTypeItem    ::= TypeRef | TypeRef "..." | TypeRef "***"
+ParenTypeItem    ::= TypeRef | TypeRef ".." | TypeRef "**"
 FunctionTypeTail ::= "->" NonFunctionTypeRef ThrowsClause* EffectsClause*
 ```
 
 닫는 괄호 뒤의 `->`와 내부 comma shape가 commitment에 중요하다.
 `(Int) -> String`은 function type이고 `(Int, String)`은 tuple type이다.
-named rest는 `Record***`로 표기한다.
+positional residue는 `T..`, static named rest는 `NamedPack**`로 표기한다.
 
 ### 6.3 type argument와 type parameter는 다르다
 
@@ -574,6 +588,13 @@ production 목록은 appendix A에서 찾되 의미는 해당 owner 장을 함�
 `is`와 `!is`는 comparison parselet에 있지만 직접 comparison chain에
 들어갈 수 없는 checker-bounded case다.
 따라서 parselet 등록과 semantic chain admission을 구별해야 한다.
+
+Range parselet은 bounded inclusive `start..end`, bounded exclusive
+`start..<end`, one-sided lazy `start...`를 소유하고 선택적인 붙은
+`:step`까지 함께 소비한다. start, present end, step은 왼쪽부터 한 번씩
+평가된다. step 0과 end 방향에서 멀어지는 step은 거부한다. terminal
+`start..`는 일반 expression Range가 아니며 open end는 IndexSuffix 안에서만
+허용된다.
 
 ### 7.4 postfix base는 implicit Pratt input
 
@@ -777,21 +798,21 @@ refutability, binding transaction, public signature identity를 보존한다.
 |---|---|
 | `name: T` | `TypedBindingPattern` |
 | `(pattern)` / `(p,)` / `(p, q)` | grouping / singleton Tuple / Tuple Pattern |
-| `${field, destination: source, .._}` | exact/open/rest `RecordPattern` |
-| `[head, ..tail]`, `[leadings.., last]`, `[first, ..middle.., last]` | `ListPattern` |
+| `${field, source: destination, _**}` | exact/open/rest `RecordPattern` |
+| `[head, tail..]`, `[leadings.., last]`, `[first, middle.., last]` | `ListPattern` |
 | `#map{destination: key, .._}` | `MapPattern` |
 | `Type::case(...)` 또는 `::case(...)` | `VariantPattern` |
-| `::case${field, .._}` | labeled-payload `VariantPattern` |
+| `::case${field, _**}` | labeled-payload `VariantPattern` |
 | `^stableValue` | `PinPattern` |
 | `0..<10`, `>= 10` | bounded `RangePattern` / `RelationalPattern` |
 | literal | literal pattern branch |
 | `_` | wildcard branch |
 
-Tuple과 bare comma product는 하나의 Tuple 의미로 정규화된다. Sequence
-rest는 marker 방향에 따라 tail `..tail`, prefix `leadings..`, middle
-`..middle..`을 구분하며 한 Pattern에 최대 하나만 허용한다. Record와
-Map은 exact-by-default이고 subset 의도는 `.._`로 명시한다. colon
-왼쪽은 destination Pattern, 오른쪽은 source field/key다.
+Tuple과 bare comma product는 하나의 Tuple 의미로 정규화된다. List의
+positional rest는 위치와 무관하게 붙은 suffix `name..`/`_..` 하나만
+사용한다. Record-family는 label-first `label: Pattern`과 suffix
+`name**`/`_**` residual을 쓰고, Map은 keyed orientation
+`destination: key`와 `..name`/`.._` remainder를 유지한다.
 
 ### 10.3 expected-type input
 
@@ -815,8 +836,11 @@ clause function의 subject는 함수 parameter parent가 암시적으로 공급�
 
 ### 10.4 transactional binding
 
-`if let`, `while let`, `for let`, guarded binding, refutable catch와
-condition chain은 Pattern 성공 edge에서만 binding을 commit한다.
+`if let`, `while let`, `for let`, refutable catch와 condition chain은 Pattern
+성공 edge에서만 binding을 commit한다. Stable `trait_binding_failable_v1`의
+별도 `let? success = expression else failure => exit`는 core
+`trait#binding Failable`을 통해 source를 한 번
+소비하고 success edge에서만 binding을 commit한다.
 `let!`/`var!`은 mismatch를 명시적 `PatternMatchDefect`로 바꾸지만
 commit 전 부분 binding이나 move를 만들지 않는다.
 실패 edge에는 부분 binding이 새지 않는다.
@@ -907,7 +931,7 @@ ComprehensionClause ::= ForClause
                       | UnfoldClause
 ForClause    ::= "for" Pattern "in" Expr
 IfLetClause  ::= "if" "let" Pattern "=" Expr
-UnfoldClause ::= "for" "..." Pattern "in" Expr
+UnfoldClause ::= "for" Pattern "in" "*" Expr
 ```
 
 첫 element/map entry를 읽은 뒤 `for`가 나타나면 literal sequence가 아니라
@@ -965,32 +989,37 @@ checker는 yield type, generator lifetime, capture 책임, effect/error row를
 
 ```ebnf
 IndexSuffix  ::= "[" SliceAxisList "]"
-SliceAxisList ::= SliceAxis (";" SliceAxis)*
+SliceAxisList ::= SliceAxis ("," SliceAxis)*
 SliceAxis    ::= SliceRange | SliceIndexExpr | AxisWildcard
-SliceRange   ::= SliceBound (".." | "..<") SliceBound
+SliceRange   ::= SliceBound? ".." SliceBound?
+               | SliceBound? "..<" SliceBound
 SliceBound   ::= SliceIndexExpr | "^" | "$" | "^" OffsetExpr | "$" OffsetExpr
 AxisWildcard ::= "*"
 ```
 
 현재 index suffix에는 axis가 하나 이상 필요하다.
-slice range는 양 bound를 요구하며 생략 bound 대신 첫 좌표 `^`와 마지막
-좌표 `$` anchor를 쓴다.
+open slice는 `[..<end]`, `[..end]`, `[start..]`, `[..]`를 admit한다.
+`[start..<]`는 별도 의미가 없으므로 거부한다. `[..]`는 일반 full slice고,
+NumericArray의 `[*]`는 같은 full-axis selector로 정규화된다. `^`와 `$`
+anchor도 SliceBound 안에서만 사용할 수 있다.
 
 일반 expression range도 `..`/`..<`를 사용하지만,
 index suffix에서는 `SliceRange`가 delimiter를 소유한다.
-`PrattSliceIndexExpr`는 `..`, `..<`, `;`, `]` 앞에서 멈춘다.
+`PrattSliceIndexExpr`는 `..`, `..<`, `,`, `]` 앞에서 멈춘다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/frontend/frontend-model.json -->
 ```deeplus
 let first = values[1]
 let last = values[values.length]
-let middle = values[^ + 1 ..< $ - 1]
-let column = matrix[*; 2]
+let tail = values[2..]
+let prefix = values[..<values.length]
+let column = matrix[*, 2]
 ```
 
 `^`와 `$`는 단독 element index가 아니라 `SliceRange`의 bound에서만
-유효하다. 따라서 ordinary one-based sequence의 첫 element는 `values[1]`,
-마지막 element는 `values[values.length]`로 읽는다.
+유효하다. ordinary one-based sequence의 첫 element는 `values[1]`, 마지막
+element는 `values[values.length]`로 읽는다. open end는 source의 boundary
+identity를 사용하므로 마지막 coordinate에 1을 더해 overflow시키지 않는다.
 `*` full-axis는 NumericArray axis에서만 의미가 있다.
 List에 같은 syntax가 parse되더라도 checker가 collection kind별 axis
 admission을 판정한다.
@@ -1004,6 +1033,39 @@ semantic owner가 결정한다.
 따라서 index 밖의 `$`를 “last value” 전역 상수로 해석하지 않는다.
 잘못된 위치는 `SLICE_ANCHOR_OUTSIDE_SLICE`이고 semantic anchor node는
 0개다.
+
+### 13.3 `MutableList` structural-edit statement goal
+
+ordinary `IndexSuffix`와 별개로 statement parser는 정확한 structural-edit
+marker가 있을 때만 다음 goal을 연다.
+
+```ebnf
+MutableListStructuralEditStmt ::= MutableListInsertStmt | MutableListRemoveStmt
+MutableListInsertStmt ::= MutableListEditReceiver MutableListInsertSuffix
+                          "=" MutableListInsertPayload StatementBoundary
+MutableListInsertSuffix ::= "[" ("@" SliceIndexExpr
+                                  | SliceIndexExpr "@"
+                                  | "@" "^"
+                                  | "$" "@") "]"
+MutableListInsertPayload ::= Expr | "*" Expr
+MutableListRemoveStmt ::= MutableListEditReceiver MutableListRemoveSuffix
+                          MutableListRemovalCapture? StatementBoundary
+MutableListRemoveSuffix ::= "[" ("-" "@" MutableListRemovalSelector
+                                  | "-" "^" | "-" "$") "]"
+MutableListRemovalSelector ::= SliceIndexExpr | SliceRange
+                             | "(" SliceIndexExpr "," SliceIndexExpr
+                                   ("," SliceIndexExpr)* ","? ")"
+MutableListRemovalCapture ::= "->" DollarLocalBinding
+```
+
+receiver input은 owner가 제공한 하나의 place이며 general Pratt expression이
+아니다. parser는 marker shape와 capture를 보존하지만, checker가 exact
+exclusive `MutableList<T>` place, finite bulk payload, pre-mutation selector와
+borrow/alias 조건을 닫는다. `*Expr`는 이 insertion payload owner 안에서만
+positional structural unfold다. 성공한 node는 edit 전용 HIR/MIR이 아니라
+닫힌 13개 Prelude operation 중 하나의 ordinary `CallPlan`으로 낮아진다.
+ordinary `value[index]`, NumericArray axis comma, shaped-array semicolon과 이
+statement goal은 서로의 delimiter 또는 의미를 빌리지 않는다.
 
 ## 14. parse 성공과 semantic admission
 
@@ -1027,6 +1089,7 @@ production profile과 frontend feature profile을 반드시 확인한다.
 - callable owner별 `#async`, `#mut`, `#entry` profile 조합
 - class flavor와 modifier compatibility
 - member dispatch marker와 trait witness marker
+- structural-edit receiver의 exact exclusive `MutableList<T>` place 여부
 - parameter channel 순서와 named-rest 유일성
 - type parameter kind와 variance 위치
 - effect/error row의 정규화와 overlap
@@ -1053,7 +1116,7 @@ public class InvalidBox<out T> {
 - annotation 뒤 line break 누락
 - named function의 bare `= Expr`
 - index suffix의 axis 누락
-- 현재 range가 아닌 `..>`/`...` spelling
+- 제거된 `..>` 또는 bounded `start...end` spelling
 - token attachment가 필요한 `as ?`, `! is`, `T ?`
 - named rest와 unfold marker를 반대로 사용
 - statement-only rightward binding을 expression 안에서 사용
@@ -1083,7 +1146,8 @@ public class InvalidBox<out T> {
 | `where` | type alias, annotation, schema field, callable tail 중 어디인가 | refinement/schema/generic owner |
 | `*` | argument prefix, axis, arithmetic, capture/type인가 | owner별 parselet/production |
 | `**` | prefix인가 양 operand 사이인가 | named unfold 또는 linear product |
-| `***` | parameter/type suffix인가 | named rest |
+| `name..` / `name**` | parameter·type·Pattern suffix인가 | positional/static-named collect |
+| `***` | 제거된 residue 후보인가 | migration diagnostic; current owner 없음 |
 | `^` | attachment, RHS, enclosing unit/index goal | transpose, power, unit exponent, slice anchor |
 | `::name` | expression expected variant인가 pattern인가 | `ExpectedVariantExpr` 또는 `VariantPattern` |
 | `match` | explicit subject인가 loop 직후인가 | explicit/implicit `MatchSubjectSlot` |
@@ -1277,7 +1341,7 @@ source-root commitment를 위반한다.
 이 표를 채우지 않은 설명은 대개 “token이 보인다”는 수준에 머문다.
 <!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
 
-반대로 표를 채우면 644개 production을 복제하지 않고도 독자가 정확한
+반대로 표를 채우면 656개 production을 복제하지 않고도 독자가 정확한
 권위 source로 이동하고, parse 가능성과 현행 언어 허용을 구별하며,
 부착·입력 공급·평가 순서의 빈틈을 찾을 수 있다.
 

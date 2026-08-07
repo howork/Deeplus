@@ -13,7 +13,7 @@
     "relax_exact_to_open_automatically": false,
     "replace_move_with_clone_automatically": false,
     "open_private_or_foreign_representation_automatically": false,
-    "insert_middle_rest_closing_marker_only_when_unambiguous": true,
+    "rewrite_legacy_prefix_or_two_sided_rest_automatically": false,
     "rewrite_sequence_carrier_automatically": false,
     "rewrite_local_assignment_target_automatically": false
   },
@@ -25,13 +25,10 @@
       "precedence": 1,
       "family_id": "DPD-PARSER-SHAPE",
       "stage": "parser",
-      "selection_rule": "Reject malformed delimiters, token ownership, multiple rest markers, an incomplete middle-rest pair, and comma products with fewer than two items before semantic analysis.",
+      "selection_rule": "Reject malformed delimiters, token ownership, multiple attached suffix rest binders, removed prefix/two-sided rest spellings, and comma products with fewer than two items before semantic analysis.",
       "representative_diagnostic_ids": [
         "PATTERN_MULTIPLE_REST",
-        "PATTERN_PREFIX_REST_MUST_BE_FIRST",
-        "PATTERN_SUFFIX_REST_MUST_BE_LAST",
-        "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
-        "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
+        "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
         "PATTERN_REST_MARKER_ATTACHMENT_REQUIRED",
         "BARE_COMMA_PRODUCT_NOT_ADMITTED_HERE",
         "BARE_TUPLE_PRODUCT_REQUIRES_TWO_ITEMS"

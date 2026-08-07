@@ -324,10 +324,11 @@
     "emission_domain": "source"
   },
   {
-    "authority": "LANGUAGE / OFFICIAL_TOOLING",
+    "authority": "LANGUAGE / PARSER / CHECKER",
     "authority_set": [
       "LANGUAGE",
-      "OFFICIAL_TOOLING"
+      "PARSER",
+      "CHECKER"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "SELF_UNAVAILABLE_IN_TYPE_SIDE_MEMBER",
@@ -934,23 +935,23 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR",
-    "diagnostic_maturity": "active",
-    "diagnostic_status": "active",
+    "diagnostic_maturity": "retired",
+    "diagnostic_status": "retired",
     "feature_refs": [
       "inclusive_slice_range_canonical_msp"
     ],
-    "fixit_hint": "write both bounds, using ^/$ for first/last; use * only for a NumericArray full axis",
-    "fixit_kind": "manual_review",
-    "fixit_policy": "never infer a missing endpoint or a full-axis carrier from an omitted bound",
-    "message": "A slice range requires both bounds; use ^/$ for endpoints, or * for an admitted NumericArray full axis.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "fixit_hint": "",
+    "fixit_kind": "none",
+    "fixit_policy": "",
+    "message": "This diagnostic is not emitted by current Deeplus.",
+    "notes": "Retired by R77 because `[..]` is the canonical general full slice; invalid `i..<` uses SLICE_OPEN_BOUND_FORM_INVALID. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "parser",
-    "diagnostic_class": "current_source",
+    "diagnostic_class": "retired_reference",
     "emission_domain": "source"
   },
   {
@@ -1017,24 +1018,24 @@
       "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_id": "SLICE_HALF_OPEN_RANGE_NONCANONICAL",
+    "diagnostic_id": "SLICE_OPEN_BOUND_FORM_INVALID",
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
       "slice_half_open_noncanonical_warning_law",
       "inclusive_slice_range_canonical_msp"
     ],
-    "fixit_hint": "",
-    "fixit_kind": "none",
-    "fixit_policy": "",
-    "message": "`i..<j` is accepted for explicit exclusive-end slices but is noncanonical in ordinary cases.",
-    "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
+    "fixit_hint": "use `i..` for an open upper bound or supply the exclusive end in `i..<j`",
+    "fixit_kind": "replace_or_insert",
+    "fixit_policy": "offer only after IndexSuffix ownership is certain",
+    "message": "This open slice bound form is not admitted; `i..<` has no current meaning.",
+    "notes": "Bounded `i..<j` is canonical and does not emit this diagnostic. The diagnostic applies only to invalid open-bound combinations. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
-    "severity": "warning",
-    "stage": "checker",
+    "severity": "error",
+    "stage": "parser",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
   },

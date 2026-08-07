@@ -10,11 +10,40 @@ The catalog covers canonical language-facing numeric constants and identities, `
 
 ## 2. Call channels
 
-Public signatures preserve `T...` repeated positional residue and `Record***` named-rest residue. A body may expose a sequence-like or Record binding, but module API identity retains the channel. Named unfold is `**record`; Map is not a static named-argument source.
+Public signatures preserve `T..` repeated positional residue and `NamedPack**`
+named-rest residue. The body bindings are respectively finite, call-scoped,
+nonescaping `PositionalPack<T>` and `NamedPack<rho>` values; neither channel is
+erased to `Sequence<T>`, `Record`, or `Map`. Named unfold remains `**value` and
+is admitted only after a static named-row proof. The normalized named row and
+witness digest are part of module API identity.
 
 ## 3. Option, Result and cleanup
 
 Option has explicit `::some` and `::none` alternatives. `?:` is lazy in its fallback. Result and errors are separate from Option absence. Every Result use site writes the error-channel role as `Result<T, error E>`; the generic declaration itself may bind `E: ErrorSet` without repeating that use-site role. Resource-facing Prelude contracts preserve move and exactly-once cleanup responsibility.
+
+`Failable` is the sole core `trait#binding` root. It declares associated types
+`Success` and `Failure` and one associated static operation:
+
+```deeplus
+public trait#binding Failable {
+    type Success
+    type Failure
+
+    def ::branch(move source: Self)
+        -> BindingBranch<Success, Failure>
+        throws Never
+        effects {}
+}
+```
+
+`BindingBranch<S,F>` has exactly `success(value: S)` and
+`failure(reason: F)`. The operation consumes its input once and returns exactly
+one owner-bearing alternative. `Option<T>` supplies the sealed direct mapping
+`Success = T`, `Failure = Unit`; `Result<T,error E>` maps `Failure = E`.
+Guarded local `let?` requires `else`, irrefutable success and failure patterns,
+and a structurally unconditional failure exit. It does not imply propagation.
+There is no `if let?`, `while let?`, `var?`, or bare `let?`; use explicit
+Option/Result patterns in conditional and loop positions.
 
 `ActorMessageError` is the closed current actor admission/reply failure family:
 `mailboxFull`, `receiverClosedBeforeAdmission`, and
@@ -74,6 +103,13 @@ Range, power, bitwise, logical, membership and identity hooks remain closed,
 as do arbitrary custom operators. Product execution is `NOT_RUN`, and all
 `TCC-P1-002..008` remain OPEN evidence gates.
 
+These core declarations carry `trait#operator`. The tag records the closed
+language role in `TraitLanguageRoleId`; it does not select glyphs or enlarge the
+thirteen-glyph matrix. `Sequence` and `Iterator` similarly carry
+`trait#iteration`, and `Display` carries `trait#interpolation`. Only the core
+language may declare a role-bearing Trait root. A user type may still provide
+one admitted direct global conformance to such a root.
+
 ## 4A. Current numeric and indexing boundary
 
 `Int` has the signed 64-bit mathematical domain. `UInt` is the distinct Stable
@@ -107,7 +143,18 @@ introduce an increment operator.
 
 `ArithmeticDefect` is the closed nonrecoverable intrinsic family `overflow | divisionByZero`; the latter covers integer and exact-number division or remainder by zero, including Rational fixed-glyph arithmetic. It is neither an `ErrorSet` member nor an enum-as-error and occurs before enclosing place commit. `IndexError` is the closed recoverable family `outOfLogicalDomain | keyNotFound`. `List<T>`, `String`, and `Bytes` have built-in one-based domains. Every `ReadonlyView<T>` preserves its source owner's declared logical coordinates and provenance: views of those ordinary owners are therefore one-based, while views of bounded or sliced owners retain their source domain. String indexing returns `Char` and Bytes indexing returns `UInt8`. Map lookup requires the exact key type. NumericArray uses separate typed axes whose built-in default source coordinates are each `1..dimension`. `Indexable`, `Sequence`, and `LogicalIndexDomain` are checker/library descriptors and named behavior contracts; source conformance to them does not activate `[]`.
 
-NumericArray slicing yields an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. No Prelude operation silently rebases, copies, makes the view mutable, crosses isolation, or extends its owner lifetime. An independent value or rebased coordinate domain requires an explicit named operation.
+NumericArray indexing uses one comma-separated axis per source rank. Scalar
+axes disappear from the result; all-scalar selection returns an element and a
+mixed selection has rank equal to the number of non-scalar axes. Selection is
+Cartesian and never becomes implicit linear indexing or Tuple-as-gather.
+NumericArray slicing yields an owner-bounded `ReadonlyView` that preserves
+source coordinates and provenance. `[..]` is the general full slice; `[*]`
+remains NumericArray-axis syntax and normalizes to the same full-axis selector
+for that owner. Open slices `[..<end]`, `[..end]`, and `[start..]` use a
+boundary identity capable of representing one-past-last without integer
+increment. No Prelude operation silently rebases, copies, makes the view
+mutable, crosses isolation, or extends its owner lifetime. An independent
+value or rebased coordinate domain requires an explicit named operation.
 
 `ListRestView<T>` is the dedicated borrowed result of an admitted positional
 List-pattern rest. It is created only by the closed built-in decomposition
@@ -126,6 +173,33 @@ no Sequence witness from this rule. Pattern probing may expose a nonowning
 rest view to an admitted pure guard, but the final binder is published only
 after the entire Pattern succeeds; failure publishes no residual and performs
 no hidden allocation.
+
+### 4A.1 MutableList structural operations
+
+`MutableList<T>` keeps ordinary bracket read/replace closed. Its structural
+edit surface resolves to exactly thirteen Prelude operations:
+
+```text
+insertBefore  insertAfter  prepend  append
+insertAllBefore  insertAllAfter  prependAll  appendAll
+removeAt  removeRange  removeSelected  popFirst  popLast
+```
+
+All are exact `CallableImplementationId` targets in the ordinary `CallExpr` /
+`CallPlan(mode_target_pair, call_head_id)` path. There is no structural-edit
+HIR node, MIR opcode, extension lookup, import fallback, or runtime method
+search. A bulk insertion receives one finite nonescaping `PositionalPack<T>`
+whose elements have reusable/copyable evidence; general `Sequence<T>` is not a
+finite-source proof and no hidden clone, snapshot, or move is inserted.
+
+The receiver is one exact exclusive mutable place. Receiver, selector, and
+payload evaluate once from left to right. Coordinate and overlap checks,
+payload staging, and required allocation finish before one mutation commit;
+any failure preserves the receiver. Point removal returns `T`; range/selected
+removal returns `List<T>` in selector order while preserving survivor order.
+Selectors use pre-mutation coordinates and duplicates reject. A temporary,
+shared or actor-isolated receiver, self-alias or `inout` overlap, or a live
+borrow/view/iterator rejects before commit.
 
 ### 4B. BigInt, Rational, Complex, and power
 
@@ -157,10 +231,15 @@ object. The canonical Cartesian source is:
 
 ```deeplus
 let z: Complex = 3.0 + 4.0i
-let w: Complex<Float32> = 1.0f32 - 2.0f32i
+let real: Float32 = 1.0
+let w: Complex<Float32> = real - 2.0i
 ```
 
-The `i` marker belongs only to an attached floating literal. Complex supplies
+The `i` marker belongs only to an attached floating-look literal. A direct
+`2.0i` literal may adapt to an independently fixed `Complex<Float32>` target,
+but the expected result of an operator cannot retroactively choose operand or
+operator types; the typed `real` anchor above fixes that operation. Numeric
+type suffixes such as `f32`, `u8`, and `i64` are removed. Complex supplies
 partial IEEE equality but no implicit strong Eq, total ordering, Hash, or
 Keyable. Prelude owns sealed same-Rep Complex and real/Complex unary `+`/`-`
 and binary `+`, `-`, `*`, `/` conformances. Complex has neither `%` nor `Ord`;
@@ -277,6 +356,8 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `FrozenList<T>` | core_type | `stable_design` | immutable result of an exclusive freeze transition; cross-isolation shareability requires an independent payload-capability proof |
 | `ListSnapshot<T>` | core_type | `stable_design` | independent point-in-time list value with declared copy/COW cost |
 | `MutableList<T>` | core_type | `stable_design` | exclusive mutable list owner; snapshot borrows without invalidating the source, while freeze consumes the receiver and completes its ownership transition |
+| `PositionalPack<T>` | compiler_intrinsic_type | `stable_design` | finite call-scoped positional residue; never erased to Sequence and never escapes its call owner |
+| `NamedPack<rho>` | compiler_intrinsic_type | `stable_design` | finite call-scoped static-label row with API-bound normalized row/witness digest |
 | `NumericArray<T, rank R>` | core_type | `stable_design` | ranked numeric value with typed one-based default axes and visible allocation/backend responsibility |
 | `OwnedDowncast<Target,Source>` | core_type | `stable_design` | sum channel that preserves exactly one owner on both downcast outcomes |
 | `ReadonlyView<T>` | core_type | `stable_design` | nonowning nonmutating owner-bounded coordinate-preserving view |
@@ -290,6 +371,8 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `CollectPolicy` | enum | `stable_design` | exact sequential/source/fail-fast/cancel-pending/buffer-one collection policy |
 | `Option<T>` | enum | `stable_design` | recoverable absence as value, not Error |
 | `Result<T, error E>` | enum | `stable_design` | value-level error channel distinct from throws |
+| `BindingBranch<S,F>` | enum | `stable_design` | exact success/failure owner carrier returned by Failable::branch |
+| `Failable` | trait_profile | `stable_design` | core `trait#binding` root for consuming else-required guarded local `let?` |
 | `downcastOwned<Target,Source>` | function | `stable_design` | generic target is selected from the exact expected OwnedDowncast result type; no runtime type-token argument is accepted |
 | `replace<T>` | function | `stable_design` | one-evaluation exclusive place transaction returning the old owner |
 | `withBorrowed<T,R>` | function | `stable_design` | invocation-bounded borrowed callback helper |
@@ -306,7 +389,7 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `PowerError` | enum | `stable_design` | checked named analytic power outcome; ordinary infix 0^0 remains one |
 | `Actor` | protocol | `stable_design` | isolated mailbox execution root |
 | `ActorMessageError` | enum | `stable_design` | closed actor admission/reply failure family; cancellation excluded |
-| `Sequence<T>` | protocol | `stable_design` | named ordered-sequence contract; conformance alone does not activate brackets |
+| `Sequence<T>` | protocol | `stable_design` | core `trait#iteration` ordered-sequence contract; conformance alone does not activate brackets |
 | `Char` | scalar | `stable_design` | exactly one Unicode scalar value; surrogates excluded |
 | `Shared<T>` | shared_handle | `stable_design` | shared observation handle, not mutable alias permission |
 | `SharedCell<T>` | synchronization | `stable_design` | sequentially consistent scoped observation and owner replacement for Plain payloads; no raw-layout or lock-free inference |
@@ -326,7 +409,7 @@ This generated review index mirrors the machine catalog without replacing it. `s
 | `Subtract<Rhs>` | trait | `stable_design` | exact non-intrinsic `BinarySubtract` evidence with associated `Output` |
 | `UnaryMinus` | trait | `stable_design` | exact non-intrinsic prefix `-` evidence with associated `Output` |
 | `UnaryPlus` | trait | `stable_design` | exact non-intrinsic prefix `+` evidence with associated `Output` |
-| `Display` | trait/profile | `stable_design` | string interpolation rendering/display; not serialization or redaction authority source-level display responsibility contract seed |
+| `Display` | trait/profile | `stable_design` | core `trait#interpolation` rendering/display contract; not serialization or redaction authority |
 
 `Eq<Rhs>.equals(rhs)` uses the instance marker's implicit borrowed `Self`
 receiver and one explicit borrowed `rhs`. It is deterministic, pure,
@@ -351,7 +434,7 @@ provider, serialization, parsing, or redaction operation. String interpolation
 must select every nested `Display` witness before evaluation. The accepted Enum
 case-mapping proposal may synthesize one whole-Enum witness only after its
 nonactivatable feature gates close; it creates no case- or alias-local witness.
-| `Iterator` | trait_profile | `stable_design` | for-loop protocol seed associated Item requirement and next selector seed synchronous iteration protocol core; stable design in R48; product support NOT_RUN Current Prelude design vocabulary; product support NOT_RUN. |
+| `Iterator` | trait_profile | `stable_design` | core `trait#iteration` synchronous iterator with associated Item; product support NOT_RUN |
 
 ## 11. Nonactivatable collection ownership design note
 

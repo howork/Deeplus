@@ -158,7 +158,7 @@
     "diagnostic_status": "active",
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
-    "message": "An imaginary literal requires an attached decimal floating form such as 4.0i or 4.0f32i.",
+    "message": "An imaginary literal requires an attached suffix-free decimal floating form such as 4.0i; an exact contextual target determines Float32 or Float64 materialization.",
     "feature_refs": [
       "complex_core_numeric_value"
     ],
@@ -950,17 +950,17 @@
   {
     "diagnostic_id": "OPTIONAL_BINDING_SOURCE_NOT_CURRENT",
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "seed",
-    "diagnostic_maturity": "design_seed",
-    "diagnostic_class": "design_seed",
-    "message": "Optional payload binding with let? is a nonactivatable Preview design; use an explicit ::some pattern in current source.",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "message": "Only the else-required consuming local `let?` Failable binding is current; use an explicit Option::some pattern for if/while conditions.",
     "feature_refs": [
-      "option_let_question_binding_preview_design"
+      "trait_binding_failable_v1"
     ],
     "related_feature_refs": [],
     "stage": "parser",
     "severity": "error",
-    "primary_source": "spec/contracts/option-optional-binding-preview-design.json",
+    "primary_source": "spec/contracts/option-optional-binding-preview-design.json; spec/contracts/integrated-surface-atomic-cutover-r77-r1.json",
     "product_support": "NOT_RUN",
     "emission_domain": "source"
   },
@@ -1537,10 +1537,10 @@
   {
     "diagnostic_id": "PATTERN_PREFIX_REST_MUST_BE_FIRST",
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "message": "A `name..` List rest must be the first item and must precede at least one fixed Pattern.",
+    "diagnostic_status": "retired",
+    "diagnostic_maturity": "retired",
+    "diagnostic_class": "retired_reference",
+    "message": "This diagnostic is not emitted; suffix `name..` is admitted at the beginning, middle, or end of a List pattern.",
     "feature_refs": [
       "sequence_positional_rest_pattern"
     ],
@@ -1556,10 +1556,10 @@
   {
     "diagnostic_id": "PATTERN_SUFFIX_REST_MUST_BE_LAST",
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "message": "A `..name` List rest must be the last item; a bounded middle rest closes as `..name..`.",
+    "diagnostic_status": "retired",
+    "diagnostic_maturity": "retired",
+    "diagnostic_class": "retired_reference",
+    "message": "This diagnostic is not emitted; one attached suffix `name..` or `_..` may appear at any List-pattern position.",
     "feature_refs": [
       "sequence_positional_rest_pattern"
     ],
@@ -1575,10 +1575,10 @@
   {
     "diagnostic_id": "PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES",
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "message": "A `..name..` middle rest requires at least one fixed Pattern on each side.",
+    "diagnostic_status": "retired",
+    "diagnostic_maturity": "retired",
+    "diagnostic_class": "retired_reference",
+    "message": "This diagnostic is not emitted; a suffix rest's position and surrounding fixed patterns determine its exact RankSpan.",
     "feature_refs": [
       "sequence_positional_rest_pattern"
     ],
@@ -1594,10 +1594,10 @@
   {
     "diagnostic_id": "PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS",
     "baseline": "0.1.2-baseline.r51f3",
-    "diagnostic_status": "active",
-    "diagnostic_maturity": "active",
-    "diagnostic_class": "current_source",
-    "message": "A List rest followed by another fixed Pattern must close with a second `..` marker.",
+    "diagnostic_status": "retired",
+    "diagnostic_maturity": "retired",
+    "diagnostic_class": "retired_reference",
+    "message": "This diagnostic is not emitted; the only current List-rest spelling is attached suffix `name..` or `_..`.",
     "feature_refs": [
       "sequence_positional_rest_pattern"
     ],

@@ -1,0 +1,147 @@
+{
+  "schema": "deeplus.integrated-surface-atomic-cutover-fixtures/r1",
+  "decision_id": "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
+  "baseline_commit": "9f7041c6aff80cf2a725b737d68a197caabc0005",
+  "evidence_level": "E2_STRUCTURED_STATIC",
+  "product_execution": "NOT_RUN",
+  "positive": [
+    {
+      "id": "R77-POS-COLLECT-001",
+      "source": "def command(name: String, args..: String, options**) = { execute(name, *args, **options) }",
+      "expect": "one positional residue T.., one finite NamedPack** residue, and owner-sealed structural unfolds"
+    },
+    {
+      "id": "R77-POS-PATTERN-001",
+      "source": "let [first, middle.., last] = values\nlet ${timeout: timeoutPattern, remaining**} = settings",
+      "expect": "one owner-bounded positional view and one exact static-named residual; whole-pattern delayed commit"
+    },
+    {
+      "id": "R77-POS-COMPREHENSION-001",
+      "source": "let flat = [item for item in *groups]",
+      "expect": "source evaluates once and structural unfold belongs to the comprehension source"
+    },
+    {
+      "id": "R77-POS-RANGE-001",
+      "source": "let evens = 2..10:2\nlet countdown = 10...:-1",
+      "expect": "start/end/step evaluate once left-to-right; bounded range terminates before overflow"
+    },
+    {
+      "id": "R77-POS-SLICE-001",
+      "source": "let head = values[..<5]\nlet tail = values[5..]\nlet row = matrix[1, ..]",
+      "expect": "owner-boundary views; comma axis count equals rank; scalar axis is removed"
+    },
+    {
+      "id": "R77-POS-MUTABLE-LIST-001",
+      "source": "items[@2] = value\nitems[-@2..4] -> $$removed",
+      "expect": "closed Prelude CallPlan, preimage coordinates, one mutation commit, multi result in selector order"
+    },
+    {
+      "id": "R77-POS-FAILABLE-001",
+      "source": "let? value = result else error => return Result::err(error)",
+      "expect": "one DIRECT_GLOBAL Failable witness, consume once, irrefutable patterns, unconditional failure exit"
+    },
+    {
+      "id": "R77-POS-NUMERIC-001",
+      "source": "let byte: UInt8 = 255\nlet real: Float32 = 3.0\nlet z: Complex<Float32> = real + 4.0i",
+      "expect": "literal target materialization after independent operator selection; no type suffix"
+    }
+  ],
+  "boundary": [
+    {
+      "id": "R77-BOUNDARY-SLICE-001",
+      "source": "let empty = values[..<^]",
+      "expect": "empty owner-bounded view retains provenance and insertion boundary without computing last+1"
+    },
+    {
+      "id": "R77-BOUNDARY-RANGE-001",
+      "source": "let edge = maxMinusTwo..maximum:1",
+      "expect": "include an exactly reached endpoint and terminate without stepping through overflow"
+    },
+    {
+      "id": "R77-BOUNDARY-MUTABLE-LIST-001",
+      "source": "items[$@] = *emptyReusableSource",
+      "expect": "finite zero-element payload performs one validated no-op commit and no hidden snapshot"
+    },
+    {
+      "id": "R77-BOUNDARY-NUMERIC-001",
+      "source": "let min: Int8 = -128",
+      "expect": "direct prefix-minus materializes from exact magnitude once after target is fixed"
+    }
+  ],
+  "rejected": [
+    {
+      "id": "R77-NEG-LEGACY-001",
+      "source": "def old(args...: String, options***: Record) = { sink(**options) }",
+      "diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-COMPREHENSION-001",
+      "source": "let flat = [item for ... item in groups]",
+      "diagnostic": "LEGACY_REST_UNFOLD_SPELLING_REMOVED",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-NAMED-001",
+      "source": "def bad(options** requires { dynamicLabel(): Int }) = {}",
+      "diagnostic": "NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-RANGE-001",
+      "source": "let never = 1..10:0",
+      "diagnostic": "RANGE_STEP_ZERO",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-RANGE-002",
+      "source": "enum#increasing Level { low, high }\nlet invalid = Level::low...",
+      "diagnostic": "RANGE_ONE_SIDED_FINITE_DOMAIN",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-SLICE-001",
+      "source": "let bad = values[2..<]",
+      "diagnostic": "SLICE_OPEN_BOUND_FORM_INVALID",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-AXIS-001",
+      "source": "let bad = list[1, 3]",
+      "diagnostic": "SLICE_AXIS_COUNT_MISMATCH",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-MUTABLE-LIST-001",
+      "source": "makeList()[@1] = value",
+      "diagnostic": "PLACE_REPLACE_NOT_ADMITTED",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-FAILABLE-001",
+      "source": "if let? value = option { use(value) }",
+      "diagnostic": "OPTIONAL_BINDING_SOURCE_NOT_CURRENT",
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-NUMERIC-001",
+      "source": "let byte = 255u8",
+      "diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED",
+      "diagnostic_count": 1,
+      "canonical_residue": false
+    },
+    {
+      "id": "R77-NEG-OVERLOAD-001",
+      "source": "let z: Complex<Float32> = 3.0 + 4.0i",
+      "diagnostic": "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
+      "canonical_residue": false
+    }
+  ],
+  "invariants": {
+    "semantic_p0": 0,
+    "open_feature_p1": 22,
+    "separate_open_m13_actions": 4,
+    "product_lanes": "15/15_NOT_RUN",
+    "github_mutation": 0
+  }
+}

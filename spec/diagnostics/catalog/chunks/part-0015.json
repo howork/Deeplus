@@ -993,7 +993,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "range_literal_refinement_type"
+      "runtime_range_step_expression"
     ],
     "fixit_hint": "none",
     "fixit_kind": "none",
@@ -1006,6 +1006,64 @@
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "lint",
     "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.3-local-r77",
+    "diagnostic_id": "RANGE_ONE_SIDED_FINITE_DOMAIN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "runtime_range_step_expression",
+      "range_step_expression_surface_clarification"
+    ],
+    "fixit_hint": "provide an explicit end for a finite ordered domain",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "provide an explicit end for a finite ordered domain",
+    "message": "A one-sided Range requires a non-finite traversal domain; finite ordered Enum domains require an explicit end.",
+    "notes": "R77 design-static diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/integrated-surface-atomic-cutover-r77-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.3-local-r77",
+    "diagnostic_id": "RANGE_OPERATOR_SPELLING_NOT_CURRENT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "runtime_range_step_expression",
+      "range_step_expression_surface_clarification"
+    ],
+    "fixit_hint": "use .. or ..< and express traversal direction with the signed :step suffix",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "use .. or ..< and express traversal direction with the signed :step suffix",
+    "message": "This Range delimiter is not current Deeplus; use .. or ..<, use terminal ... only for a one-sided Range, and express direction with :step.",
+    "notes": "R77 design-static diagnostic contract; product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/integrated-surface-atomic-cutover-r77-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
   },
@@ -1047,7 +1105,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "range_literal_refinement_type"
+      "runtime_range_step_expression"
     ],
     "fixit_hint": "none",
     "fixit_kind": "none",
@@ -1074,7 +1132,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "range_literal_refinement_type"
+      "runtime_range_step_expression"
     ],
     "fixit_hint": "none",
     "fixit_kind": "none",
@@ -1101,7 +1159,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "range_literal_refinement_type"
+      "runtime_range_step_expression"
     ],
     "fixit_hint": "use signed endpoints or future signed-delta API",
     "fixit_kind": "deterministic_rewrite",

@@ -24,7 +24,7 @@
     },
     {
       "fixture_id": "TCS-R1-POS-003",
-      "source": "public trait Display\nsupports auto {\n    +def display.() -> String throws Never effects {}\n}\npublic type Receipt conforms Display by auto",
+      "source": "public trait#interpolation Display\nsupports auto {\n    +def display.() -> String throws Never effects {}\n}\npublic type Receipt conforms Display by auto",
       "expected": "ACCEPT_STATIC_IF_POLICY_REGISTERED",
       "assertions": ["physical_line_auto_support", "auto_bodyless", "closed_policy_required"]
     },
@@ -150,7 +150,7 @@
     },
     {
       "fixture_id": "TCS-R1-NEG-010",
-      "source": "public trait Display supports auto { +def display.() -> String }",
+      "source": "public trait#interpolation Display supports auto { +def display.() -> String }",
       "expected": "REJECT_STATIC",
       "assertions": ["supports_auto_requires_physical_line_boundary"]
     },

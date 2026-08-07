@@ -463,7 +463,7 @@
 | `FUNCTION_STATIC_SLOT_VALUE_PROFILE_NOT_ADMITTED` | `checker` | `error` | `seed` | A Preview M0 slot must be deeply immutable, static-materializable, and free of resource, authority, borrow, needsDrop, and interior mutable state. |
 | `FUNCTION_STATIC_SLOT_WRITE_FORBIDDEN` | `checker` | `error` | `seed` | Preview M0 function-static slots are read-only after initialization. |
 | `FUNCTION_TYPE_REQUIRES_THIN_ARROW` | `checker` | `error` | `active` | Function/result/signature arrows use ->. |
-| `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` | `checker` | `error` | `active` | Function types and public API digests must preserve \`T...\` and \`Record***\` call-shape residues; neither may be erased to \`Sequence<T>\` or \`Record\`. |
+| `FUNCTION_TYPE_REST_RESIDUE_REQUIRED` | `checker` | `error` | `active` | Function types and public API digests must preserve \`T..\` and \`NamedPack**\` call-shape residues; neither may be erased to Sequence, Record, Map, a count, or omission. |
 | `GALLERY_FRAGMENT_FEATURE_TAG_REQUIRED` | `design_static` | `error` | `active` | GALLERY_FRAGMENT_FEATURE_TAG_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `GALLERY_FRAGMENT_MANIFEST_REQUIRED` | `design_static` | `error` | `active` | GALLERY_FRAGMENT_MANIFEST_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `GALLERY_ID_DUPLICATE_FORBIDDEN_R48` | `design_static` | `error` | `active` | Gallery ids must be globally unique in the current profile design gallery manifest. |
@@ -518,7 +518,7 @@
 | `HIR_VARIANT_UNMAPPED` | `checker` | `error` | `active` | A canonical HIR identity has no unique lowering-registry mapping. |
 | `IDENTITY_OPERATION_REQUIRES_IDENTITY_BEARING` | `checker` | `error` | `active` | The operation requires an identity-bearing descriptor. |
 | `IF_EXPR_REQUIRES_ELSE` | `checker` | `error` | `active` | A value-producing \`@if\` requires an \`else\` branch. |
-| `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` | `lexer` | `error` | `active` | An imaginary literal requires an attached decimal floating form such as 4.0i or 4.0f32i. |
+| `IMAGINARY_LITERAL_FORM_NOT_ADMITTED` | `lexer` | `error` | `active` | An imaginary literal requires an attached suffix-free decimal floating form such as 4.0i; an exact contextual target determines Float32 or Float64 materialization. |
 | `IMAGINARY_LITERAL_MARKER_MUST_BE_ATTACHED` | `lexer` | `error` | `active` | The imaginary marker i must be attached to its decimal floating literal. |
 | `IMPLICIT_AT_OUTSIDE_SINGLE_PARAMETER_CLOSURE` | `checker` | `error` | `active` | Implicit @ requires the nearest omitted-parameter closure to have one expected parameter. |
 | `IMPLICIT_AT_WITH_EXPLICIT_PARAMETER` | `checker` | `error` | `active` | An explicit closure parameter cannot be mixed with the implicit @ parameter. |
@@ -569,6 +569,7 @@
 | `LAZY_SINGLE_COMMIT_VIOLATION` | `runtime` | `error` | `active` | Concurrent lazy forcing must publish exactly one immutable committed value. |
 | `LEGACY_LOGICAL_AND_OPERATOR_REMOVED_ON_BOOL` | `checker` | `error` | `active` | \`&&\` on Bool is rejected because \`&&\` is bitwise in Deeplus. |
 | `LEGACY_LOGICAL_OR_OPERATOR_REMOVED_ON_BOOL` | `checker` | `error` | `active` | \`\|\|\` on Bool is rejected because \`\|\|\` is bitwise in Deeplus. |
+| `LEGACY_REST_UNFOLD_SPELLING_REMOVED` | `parser` | `error` | `active` | This rest or unfold spelling was removed by the atomic collect/unfold cutover. |
 | `LEGACY_SHORT_CIRCUIT_AND_OPERATOR_REMOVED` | `checker` | `error` | `active` | \`&&\` is not logical AND in Deeplus; use \`and then\` for short-circuit or \`and\` for strict Boolean AND. |
 | `LEGACY_SHORT_CIRCUIT_OR_OPERATOR_REMOVED` | `checker` | `error` | `active` | \`\|\|\` is not logical OR in Deeplus; use \`otherwise\` for short-circuit or \`or\` for strict Boolean OR. |
 | `LET_PROPERTY_CANNOT_HAVE_SETTER` | `checker` | `error` | `active` | let property cannot have setter. |
@@ -688,8 +689,8 @@
 | `NAMED_CONFORMANCE_DUPLICATE_NAME` | `checker` | `error` | `active` | A named conformance identity must be unique for its nominal type, Trait and declaration scope. |
 | `NAMED_CONFORMANCE_NOT_AUTOMATIC` | `checker` | `error` | `active` | A named conformance never participates in automatic evidence search. |
 | `NAMED_CONSTRUCTOR_NOT_FOUND` | `checker` | `error` | `active` | No matching named constructor exists for \`Type!name(...)\`. |
-| `NAMED_REST_PARAMETER_MUST_BE_LAST` | `checker` | `error` | `active` | A named-rest parameter \`options***: Record\` must be the final parameter. |
-| `NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE` | `checker` | `error` | `active` | Named rest and named-argument spread require a structural Record with static labels; Map is not admissible. |
+| `NAMED_REST_PARAMETER_MUST_BE_LAST` | `checker` | `error` | `active` | A named-rest parameter \`options**\` must be the final parameter. |
+| `NAMED_REST_REQUIRES_RECORD_LABEL_SOURCE` | `checker` | `error` | `active` | Static named rest and named structural unfold require one finite compile-time label row; Map, dynamic labels, and escaping NamedPack values are not admissible. |
 | `NAMED_UNFOLD_CONSUMING_REQUIRES_MOVE` | `checker` | `error` | `active` | A consuming named destination requires an ownership-preserving moved projection source. |
 | `NAMED_UNFOLD_REQUIRES_STATIC_PROJECTION_ROW` | `checker` | `error` | `active` | Named unfolding requires statically known labels from Record or a certified ProjectionRow. |
 | `NAMED_UNICODE_ESCAPE_UNKNOWN` | `lexer` | `error` | `active` | Named Unicode escape is not known in the active Unicode name table. |
@@ -731,7 +732,7 @@
 | `NUMARR_POSTFIX_TRANSPOSE_REQUIRES_NUMERIC_ARRAY` | `checker` | `error` | `active` | Postfix \`^\` transpose requires a NumericArray operand. |
 | `NUMARR_SHAPE_COLON_FORBIDDEN` | `checker` | `error` | `active` | NumericArray shape dimensions use comma, not colon. |
 | `NUMARR_SHAPE_INFERRED_VALUE_LITERAL_NOT_TYPE` | `checker` | `error` | `active` | #[...] is a value literal with inferred rank-1 shape, not a type façade. |
-| `NUMARR_SHAPE_SEMICOLON_FORBIDDEN` | `checker` | `error` | `active` | NumericArray shape dimensions use comma; semicolon separates slice axes. |
+| `NUMARR_SHAPE_SEMICOLON_FORBIDDEN` | `checker` | `error` | `active` | NumericArray shape dimensions and index/slice axes use commas; semicolons are reserved for exact-shape literal bodies. |
 | `NUMARR_TRANSPOSE_IS_NOT_ADJOINT` | `checker` | `warning` | `active` | \`A^\` is transpose, not complex adjoint; use \`A ~ adjoint\`. |
 | `NUMARR_UNKNOWN_SHARP_SHAPE_LITERAL` | `checker` | `error` | `active` | Unknown # shape literal head. |
 | `NUMARR_VECTOR_TRANSPOSE_REQUIRES_ORIENTATION` | `checker` | `error` | `active` | Rank-1 NumericArray transpose requires row/column orientation witness. |
@@ -745,7 +746,7 @@
 | `NUMERIC_LITERAL_OUT_OF_RANGE` | `checker` | `error` | `active` | Numeric literal is outside the representable or refined range. |
 | `NUMERIC_OPERATOR_CORE_REQUIRED` | `checker` | `error` | `active` | Numeric operator use requires the current profile numeric operator core law. |
 | `NUMERIC_RADIX_FLOAT_NOT_CURRENT` | `lexer` | `error` | `active` | Radix floating-point literals are not current Deeplus source; use a decimal float or an explicit conversion. |
-| `NUMERIC_SUFFIX_KIND_MISMATCH` | `lexer` | `error` | `active` | The numeric suffix kind does not match the integer or decimal-float literal. |
+| `NUMERIC_TYPE_SUFFIX_REMOVED` | `lexer` | `error` | `active` | Numeric type suffixes are removed; write a suffix-free literal under an exact declared target. |
 | `OLD_ANYDATA_REMOVED_USE_PLAIN` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `OLD_CAPABILITY_NAME_REMOVED` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `OLD_DOTTED_BITWISE_OPERATOR_REMOVED` | `parser` | `error` | `active` | Old dotted bitwise operators .&. .\|. .^. .~. are not current source; use && \|\| ^^ ~~. |
@@ -760,7 +761,7 @@
 | `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` | `checker` | `error` | `active` | The selected fixed-operator witness violates the borrowed, pure, synchronous, throws-Never responsibility profile or introduces a terminal other than the admitted precommit ArithmeticDefect. |
 | `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` | `checker` | `error` | `active` | Fixed-glyph conformance overloading admits only the exact 13 unary, arithmetic, equality, and total-order roles. |
 | `OPERATOR_PRECEDENCE_TABLE_REQUIRED` | `checker` | `error` | `active` | Operator parsing requires the current profile operator precedence table. |
-| `OPTIONAL_BINDING_SOURCE_NOT_CURRENT` | `parser` | `error` | `seed` | Optional payload binding with let? is a nonactivatable Preview design; use an explicit ::some pattern in current source. |
+| `OPTIONAL_BINDING_SOURCE_NOT_CURRENT` | `parser` | `error` | `active` | Only the else-required consuming local \`let?\` Failable binding is current; use an explicit Option::some pattern for if/while conditions. |
 | `OPTIONAL_CALLABLE_INVOCATION_NOT_CURRENT` | `parser` | `error` | `active` | Optional callable invocation \`callee?(args)\` is not current Deeplus source. Use explicit Option flow. |
 | `OPTIONAL_CHAINING_NOT_CURRENT` | `parser` | `error` | `active` | Optional chaining is not current Deeplus source; use explicit Option handling, match/@match, if-let, or library combinators. |
 | `OPTIONAL_SUFFIX_REPEATED` | `parser` | `error` | `active` | A compact optional suffix may occur once; write Option<T?> for nested optionality. |
@@ -810,15 +811,12 @@
 | `PATTERN_FIELD_NOT_FOUND` | `checker` | `error` | `seed` | Record/schema pattern references a field that is not present in the matched type. |
 | `PATTERN_MAP_DUPLICATE_KEY` | `checker` | `error` | `active` | A Map Pattern contains the same normalized key identity more than once. |
 | `PATTERN_MAP_KEY_NOT_STABLE` | `checker` | `error` | `active` | A Map Pattern key must be a literal or \`^stableValue\` with an exact stable key identity. |
-| `PATTERN_MIDDLE_REST_REQUIRES_BOTH_SIDES` | `parser` | `error` | `active` | A \`..name..\` middle rest requires at least one fixed Pattern on each side. |
-| `PATTERN_MIDDLE_REST_REQUIRES_CLOSING_DOTS` | `parser` | `error` | `active` | A List rest followed by another fixed Pattern must close with a second \`..\` marker. |
 | `PATTERN_MOVES_LIFECYCLE_TOKEN_IMPLICITLY` | `lexer` | `error` | `seed` | Pattern decomposition cannot implicitly move a lifecycle token or resource owner. |
 | `PATTERN_MULTIPLE_REST` | `parser` | `error` | `active` | A List pattern may contain at most one rest form. |
 | `PATTERN_NOMINAL_NOT_TRANSPARENT` | `checker` | `error` | `active` | Direct nominal decomposition requires Record, schema, data class, or explicit pattern-transparent product authority. |
 | `PATTERN_PARAMETER_BINDER_COLLISION` | `checker` | `error` | `active` | A parameter entry Pattern binder collides with its channel identifier or another entry binder. |
 | `PATTERN_PIN_REQUIRES_STABLE_VALUE` | `checker` | `error` | `active` | A pin Pattern requires one stable readable nonconsuming value whose identity survives the complete test. |
 | `PATTERN_PIN_STRONG_EQ_UNAVAILABLE` | `checker` | `error` | `active` | A pin Pattern requires one exact compiler-selected strong equality relation for the subject and pinned value. |
-| `PATTERN_PREFIX_REST_MUST_BE_FIRST` | `parser` | `error` | `active` | A \`name..\` List rest must be the first item and must precede at least one fixed Pattern. |
 | `PATTERN_PRIVATE_REPRESENTATION_FORBIDDEN` | `checker` | `error` | `active` | Pattern decomposition cannot open a Class, Dyn, Facet, FFI, or opaque private representation. |
 | `PATTERN_RANGE_DOMAIN_UNSUPPORTED` | `checker` | `error` | `active` | Range and relational Patterns require Int, UInt, Char, ordered Enum, or another exact admitted ordered domain; Float is Preview Gated. |
 | `PATTERN_RECORD_EXACT_FIELD_SET_MISMATCH` | `checker` | `error` | `active` | An exact Record Pattern must name the complete visible field set exactly once. |
@@ -826,7 +824,6 @@
 | `PATTERN_REST_CARRIER_NOT_ADMITTED` | `checker` | `error` | `active` | This subject has no closed built-in List-rest decomposition descriptor; Sequence conformance alone is insufficient. |
 | `PATTERN_REST_MARKER_ATTACHMENT_REQUIRED` | `parser` | `error` | `active` | A positional List-rest marker and its binder must be attached with no intervening trivia. |
 | `PATTERN_REST_VIEW_WOULD_OUTLIVE_SOURCE` | `checker` | `error` | `active` | The captured ListRestView would outlive, cross isolation from, or survive move/drop of its source owner. |
-| `PATTERN_SUFFIX_REST_MUST_BE_LAST` | `parser` | `error` | `active` | A \`..name\` List rest must be the last item; a bounded middle rest closes as \`..name..\`. |
 | `PLACE_REPLACE_NOT_ADMITTED` | `checker` | `error` | `active` | replace requires one stable place, exclusive access, and a transaction that preserves exactly one old and one new owner. |
 | `PLACE_STATE_JOIN_MISMATCH` | `checker` | `error` | `active` | Control-flow predecessors disagree on ownership place, loan, reservation, cleanup-token, or prior join-conflict state. |
 | `PLAIN_HETEROGENEOUS_TOP_FORBIDDEN` | `checker` | `error` | `active` | \`Plain\` is not a heterogeneous dynamic top. Use an explicit union, JsonValue, Dyn, or a typed boundary wrapper. |
@@ -902,6 +899,8 @@
 | `R47_PROMOTION_CONFLICT_RESOLVED_TO_PREVIEW` | `checker` | `warning` | `seed` | A feature was requested as both Stable and Preview; R49 resolves the source-surface row to Preview and records stable semantic intent in the designer report. |
 | `RANGE_CLOSED_END_NOT_ON_STEP_LATTICE` | `checker` | `lint` | `active` | Closed endpoint is not yielded by this step lattice. |
 | `RANGE_LITERAL_TYPE_POSITION_ONLY` | `checker` | `error` | `active` | Range literal refinement type is allowed only in type position. |
+| `RANGE_ONE_SIDED_FINITE_DOMAIN` | `checker` | `error` | `active` | A one-sided Range requires a non-finite traversal domain; finite ordered Enum domains require an explicit end. |
+| `RANGE_OPERATOR_SPELLING_NOT_CURRENT` | `parser` | `error` | `active` | This Range delimiter is not current Deeplus; use .. or ..<, use terminal ... only for a one-sided Range, and express direction with :step. |
 | `RANGE_STEP_DIRECTION_MISMATCH` | `checker` | `error` | `active` | Range direction and step sign are inconsistent. |
 | `RANGE_STEP_ZERO` | `checker` | `error` | `active` | Range step must not be zero. |
 | `RANGE_UNSIGNED_DESCENDING_REQUIRES_SIGNED_DOMAIN` | `checker` | `error` | `active` | Unsigned descending ranges require an explicit signed delta/domain profile. |
@@ -944,7 +943,7 @@
 | `RECORD_FIELD_DUPLICATE` | `checker` | `error` | `active` | Record/schema literal contains a duplicate field key. Deeplus schema construction requires deterministic field ownership. |
 | `RECORD_FIELD_EQUALS_REMOVED_USE_COLON` | `checker` | `error` | `seed` | Record field equals removed use colon |
 | `RECORD_LITERAL_BRACE_COVER_REPAIRED` | `parser` | `error` | `seed` | Record literal cover grammar must parse \`${ field: value }\` with one brace pair. |
-| `RECORD_NAMED_ARGUMENT_SPREAD_REQUIRES_RECORD` | `checker` | `error` | `active` | \`**expr\` in an argument list requires a structural Record with statically known labels. |
+| `RECORD_NAMED_ARGUMENT_SPREAD_REQUIRES_RECORD` | `checker` | `error` | `active` | Named structural unfold \`**expr\` requires a finite static Record/NamedPack projection row. |
 | `RECORD_PATTERN_DUPLICATE_FIELD` | `checker` | `error` | `active` | A Record pattern names the same required label more than once. |
 | `RECORD_PATTERN_PRIVATE_FIELD` | `checker` | `error` | `active` | A Record pattern cannot project a label that is not visible in the current authority domain. |
 | `RECORD_PATTERN_UNKNOWN_FIELD` | `checker` | `error` | `active` | A Record pattern names a label outside the subject's statically known Record row. |
@@ -1060,13 +1059,12 @@
 | `SLICE_AXIS_COUNT_MISMATCH` | `checker` | `error` | `active` | Slice axis count must match source rank. |
 | `SLICE_BOUND_ORDER_INVALID` | `checker` | `error` | `active` | Slice lower bound must not exceed upper bound for increasing ranges. |
 | `SLICE_BOUND_OUT_OF_RANGE_STATIC` | `checker` | `error` | `active` | Static slice bound is outside the source logical domain. |
-| `SLICE_EMPTY_RANGE_FORBIDDEN_USE_STAR` | `parser` | `error` | `active` | A slice range requires both bounds; use ^/$ for endpoints, or * for an admitted NumericArray full axis. |
 | `SLICE_FIRST_ANCHOR_OFFSET_REQUIRES_INTEGER` | `checker` | `error` | `active` | Offset from ^ must be an integer index expression. |
-| `SLICE_HALF_OPEN_RANGE_NONCANONICAL` | `checker` | `warning` | `active` | \`i..<j\` is accepted for explicit exclusive-end slices but is noncanonical in ordinary cases. |
 | `SLICE_LAST_ANCHOR_OFFSET_REQUIRES_INTEGER` | `checker` | `error` | `active` | Offset from $ must be an integer index expression. |
 | `SLICE_LOGICAL_DOMAIN_REBASE_FORBIDDEN` | `checker` | `error` | `active` | A slice preserves selected logical coordinates; call an explicit rebase operation if new coordinates are required. |
 | `SLICE_MUTABLE_ALIAS_CONFLICT` | `checker` | `error` | `active` | Mutable slice would create an aliasing conflict. |
 | `SLICE_MUTABLE_ASSIGNMENT_UNSUPPORTED` | `checker` | `error` | `active` | Mutable slice assignment is not admitted in Phase A. |
+| `SLICE_OPEN_BOUND_FORM_INVALID` | `parser` | `error` | `active` | This open slice bound form is not admitted; \`i..<\` has no current meaning. |
 | `SLICE_RESULT_NONCONTIGUOUS_REQUIRES_EXPLICIT_COPY_FOR_BYTE_VIEW` | `checker` | `error` | `active` | Non-contiguous slice view requires explicit copy for byte-view/contiguous storage. |
 | `SLICE_SOURCE_REQUIRES_NUMERIC_ARRAY` | `checker` | `error` | `active` | Multi-axis slicing Phase A is NumericArray-only. |
 | `SLICE_VIEW_CROSSES_ISOLATION_WITHOUT_OWNED_COPY` | `checker` | `error` | `active` | A slice view cannot cross isolation without an explicit owned copy. |
@@ -1189,7 +1187,6 @@
 | `TRAIT_VARIANCE_POSITION_VIOLATION` | `checker` | `error` | `active` | Trait-only variance parameter appears in an invalid responsibility position. |
 | `TRANSPOSE_INFIX_CARET_FORBIDDEN` | `checker` | `error` | `seed` | Transpose infix caret forbidden |
 | `TRANSPOSE_RANK1_REQUIRES_ROW_OR_COL_VIEW` | `checker` | `error` | `seed` | Transpose rank1 requires row or col view |
-| `TRIPLE_STAR_ONLY_FOR_NAMED_REST_PARAMETER_OR_TYPE_RESIDUE` | `parser` | `error` | `active` | Triple-star is admitted only as the attached named-rest parameter suffix or function-type named-rest residue; named unfold uses prefix \`**\`. |
 | `TRY_EXPRESSION_STATEMENT_NOT_CURRENT` | `parser` | `error` | `active` | Statement \`try\` requires a block body; \`try Expr\` is not current Deeplus. |
 | `TRY_REQUIRES_CATCH_OR_FINALLY` | `parser` | `error` | `active` | A statement \`try\` or value \`@try\` requires at least one \`catch\` clause or one \`finally\` clause. |
 | `TUPLE_ORDINAL_OUT_OF_RANGE` | `checker` | `error` | `active` | The tuple ordinal exceeds the tuple arity. |
@@ -1259,7 +1256,7 @@
 | `UNIT_CONVERSION_GRAPH_NOT_CLOSED` | `checker` | `error` | `active` | Unit conversion graph must be deterministic and closed for admitted static conversions. |
 | `UNIT_DECLARATION_DIMENSION_MISMATCH` | `checker` | `error` | `active` | Unit declaration conversion target has a dimension mismatch. |
 | `UNIT_DIMENSION_CANONICALIZATION_FAILED` | `checker` | `error` | `active` | The unit expression cannot be normalized to an exact dimension vector and rational scale under the Stable unit core. |
-| `UNIT_EXPONENT_REQUIRES_STATIC_INT` | `parser` | `error` | `active` | A unit exponent must be a signed decimal StaticInt literal; a runtime expression, radix literal, suffixed integer, decimal point, or exponent-form number is not admitted. |
+| `UNIT_EXPONENT_REQUIRES_STATIC_INT` | `parser` | `error` | `active` | A unit exponent must be a signed decimal StaticInt literal; a runtime expression, radix literal, decimal point, or exponent-form number is not admitted. A removed numeric type suffix candidate is rejected earlier with NUMERIC_TYPE_SUFFIX_REMOVED. |
 | `UNIT_EXPR_REQUIRES_UNIT_NAMESPACE` | `checker` | `error` | `active` | Unit brackets contain only unit symbols, catalog qualifiers, powers, products, and divisions. |
 | `UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED` | `checker` | `error` | `active` | No whitespace is allowed between numeric literal and unit bracket. |
 | `UNIT_MIDDLE_DOT_REMOVED_USE_STAR` | `parser` | `error` | `active` | Unit multiplication uses \`*\`; the middle-dot spelling is not a current Deeplus surface. |
@@ -1267,7 +1264,6 @@
 | `UNIT_SYMBOL_NOT_ACTIVE` | `checker` | `error` | `active` | Unit symbol is known but no active catalog authority is in scope. Use the catalog, do not merely import it. |
 | `UNIT_TYPE_IS_UNIT_NOT_NONE` | `checker` | `note` | `seed` | The unit return type is \`Unit\`. \`None\` is the Option case expression, not the unit type. |
 | `UNIT_WITNESS_LITERAL_MUST_BE_ONE` | `checker` | `error` | `active` | Unit witness argument must be \`1[unit]\`. |
-| `UNKNOWN_NUMERIC_LITERAL_SUFFIX` | `lexer` | `error` | `active` | Unknown numeric literal suffix; use the closed integer or float suffix table. |
 | `UNKNOWN_PREFIXED_LITERAL` | `checker` | `error` | `active` | Unknown #prefix literal; current prefixed literal families are #map, #set, #mut, #raw, and #bytes. |
 | `UNKNOWN_UNIT_SYMBOL` | `checker` | `error` | `active` | Unit symbol cannot be resolved in active unit catalogs. |
 | `UNSAFE_AUTHORITY_NOT_EFFECT` | `checker` | `error` | `active` | Unsafe authority must not be hidden as an ordinary runtime effect. |
@@ -1319,7 +1315,7 @@
 | `AsyncSurfaceGateAdmitted` | async/await/for#await | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `AtMatchArmResultAdmitted` | @match arm result | R51a1 closed design algorithm for AtMatchArmResultAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AuthorityRelationAdmitted` | AuthorityRelationAdmitted | Decide explicit authority requires/grants/delegates/borrows/consumes/isolation relations without conflation. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `BasicIndexOperatorAdmitted` | BasicIndexOperatorAdmitted | intrinsic [] is read-only; conformance never activates it | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `BasicIndexOperatorAdmitted` | BasicIndexOperatorAdmitted | intrinsic comma-axis [] is read-only; open slices preserve owner boundaries; conformance never activates it and MutableList edit statements are separate | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BitfieldBackingAdmitted` | BitfieldBackingAdmitted | Admit exactly UInt8, UInt16, UInt32, UInt64, or UInt128 as portable backing. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BitfieldConstructionRowAdmitted` | BitfieldConstructionRowAdmitted | Materialize required named fields exactly once and synthesize reserved zero slots. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `BitfieldDerivationAdmitted` | BitfieldDerivationAdmitted | Create a fresh same-type bitfield by atomic checked field updates. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1335,7 +1331,7 @@
 | `BoundedLogicalIndexDomainAdmitted` | BoundedLogicalIndexDomainAdmitted | Admits StaticInt closed logical bounds whose cardinality equals the literal element count. | `DESIGN_STATIC_NOT_RUN` |
 | `BoxOwnershipAdmitted` | BoxOwnershipAdmitted | construct one unique owner under explicit allocation/failure responsibility; move invalidates source and forbids source_used_after_move; a completed owned lifecycle has payload_cleanup_count exactly one and every borrow has borrow_escapes=false while owner_alive | `DESIGN_STATIC_NOT_RUN` |
 | `ByteViewAdmitted` | ByteViewAdmitted | apply ReadonlyViewAdmitted first and propagate its selected diagnostic unchanged; require a nonempty owner_provenance and owner_lifetime_valid=true for the borrowed Bytes owner; require contiguous_storage=true and byte_addressable=true; require text_encoding_assumed=false and string_semantics_assumed=false | `DESIGN_STATIC_NOT_RUN` |
-| `CallSideUnfoldStaticEvidence` | CallSideUnfoldStaticEvidence | R51a1 closed design algorithm for CallSideUnfoldStaticEvidence; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `CallSideUnfoldStaticEvidence` | CallSideUnfoldStaticEvidence | Validate owner-bounded positional *Expr or static-named **Expr after the marker fixes its channel and before overload selection; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `CallableProfileAdmitted` | CallableProfileAdmitted | normalize four orthogonal axes; require unique canonical profile order; admit only the closed combination table; reject profile-only overload identity | `DESIGN_STATIC_NOT_RUN` |
 | `CallableResponsibilityClausesAdmitted` | Repeated callable responsibility clause admission | Stable-design repeated throws/effects clause predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `CanResolveUnitSymbol` | CanResolveUnitSymbol | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1409,7 +1405,7 @@
 | `ForSourceIterableAdmitted` | for source iterable profile | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionCompatibility` | FunctionCompatibility | Compare call shape, parameter variance, result, failure, effect, authority, suspension and ownership residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `FunctionProfileIntroducerAdmitted` | FunctionProfileIntroducerAdmitted | Admits exactly the owner-specific closed declaration-profile table; the removed tail-recursion kind is never admitted. | `DESIGN_STATIC_NOT_RUN` |
-| `FunctionRestResiduePreserved` | FunctionRestResiduePreserved | Function types and public API digests preserve each repeated \`T...\` and named \`Record***\` residue exactly; Sequence, plain Record, Map, count, and omission erasure are rejected. | `DESIGN_STATIC_NOT_RUN` |
+| `FunctionRestResiduePreserved` | FunctionRestResiduePreserved | Function types and public API digests preserve each positional \`T..\` and static-named \`NamedPack**\` residue exactly; Sequence, Record, Map, count, and omission erasure are rejected. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionReturnAndLambdaRetAdmitted` | FunctionReturnAndLambdaRetAdmitted | ordered branch 1: return in a lambda emits RETURN_NOT_ALLOWED_IN_LAMBDA and ret in a named function emits RET_OUTSIDE_LAMBDA; ordered branch 2: a non-Unit lambda block path without ret emits LAMBDA_BLOCK_REQUIRES_RET; ordered branch 3: a non-Unit named-function block path without return emits MISSING_EXPLICIT_RETURN; ordered branch 4: a terminal valueless return in a Unit named function is admitted and emits only the REDUNDANT_FINAL_VALUELESS_RETURN lint; Unit fallthrough and early valueless return are admitted without that lint; an ordinary named \`= expr\` body has no current AST route and is rejected earlier by the parser with FUNCTION_EXPRESSION_BODY_REQUIRES_RETURN | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionStaticNamespacePreviewAdmitted` | Function-static immutable namespace Preview admission | Specify explicit immutable function-static slots, closed lookup, ordered staging, and atomic publication without activating source. | `DESIGN_STATIC_NOT_RUN` |
 | `GeneratedDataMaterializationAdmitted` | GeneratedDataMaterializationAdmitted | parsing DataClassDecl deterministically normalizes class_kind=data and class_disposition=final; this implicit final disposition forbids subclasses and requires no source \`final\` token; every promoted stored field is let and there is no mutable stored field; custom_root_constructor, resource_semantics, effectful_default, throwing_default, hidden_invariant, and nontrivial_super_initialization are all false; the compiler generates exactly one ConstructionRow from visible promoted fields in declaration order; no ProjectionRow is generated automatically and named unfolding remains unavailable without an explicit ProjectionRow | `DESIGN_STATIC_NOT_RUN` |
@@ -1439,13 +1435,13 @@
 | `LibraryStaticBindingInitializerAdmitted` | LibraryStaticBindingInitializerAdmitted | source_kind is Binding and source_role is library; call_shape.binding_kind is let, dependency_cycle is false, and commit_count is exactly one; error_set and effect_row are both empty normalized sets, suspension is none, and authority is empty; cleanup.acquires_resource and cleanup.escapes_resource are both false; call_shape.initializer_run_count and call_shape.initializer_actor_count are both zero; isolation is exactly local; no actor/global isolation boundary is crossed during initialization; the conjunction is evaluated left-to-right in the written order and the first failed conjunct emits LIBRARY_STATIC_BINDING_INITIALIZER_NOT_ADMITTED | `DESIGN_STATIC_NOT_RUN` |
 | `LinearAlgebraOperatorAdmitted` | LinearAlgebraOperatorAdmitted | LinearProductExpr folds \`**\` and \`*+\` strictly left-to-right in source order and validates each intermediate result before the next step; for \`**\`, both operands are rank-2; a rank failure emits MATRIX_PRODUCT_REQUIRES_RANK2_MATRICES and an inner-dimension mismatch emits MATRIX_PRODUCT_DIMENSION_MISMATCH; for \`*+\`, both operands are rank-1 vectors of equal static or checker-proven length; any rank/length failure emits DOT_PRODUCT_REQUIRES_RANK1_VECTORS; mixed operator chains are not rejected for associativity alone; the first fold step whose current lhs/rhs ranks or shapes violate its operator emits that operator's exact diagnostic | `DESIGN_STATIC_NOT_RUN` |
 | `LinearProductLeftFoldAdmitted` | LinearProductLeftFoldAdmitted | R51c current design predicate for LinearProductLeftFoldAdmitted; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `ListLiteralElementJoinAdmitted` | ListLiteralElementJoinAdmitted | Checks ordinary List elements against one inferred homogeneous type or an explicit expected type, including an explicit closed union; it never synthesizes a Union. | `DESIGN_STATIC_NOT_RUN` |
+| `ListLiteralElementJoinAdmitted` | ListLiteralElementJoinAdmitted | Checks ordinary List elements against one homogeneous defaulted type or one exact declared target, including an explicit closed union; direct suffix-free atomic numeric literals may adopt an exact numeric target, and the predicate never synthesizes a Union. | `DESIGN_STATIC_NOT_RUN` |
 | `LocalGroupAssignmentAdmitted` | Local group Tuple assignment admission | Admit exact-arity assignment to distinct direct mutable Plain locals with staged right-hand values and one infallible logical commit. | `` |
 | `LocalValueBodyAdmitted` | LocalValueBodyAdmitted | a value-producing @if has an else branch; exactly one expression is admitted directly; otherwise every reachable normal path ends in local ret; return is an enclosing-function transfer and finally never creates the local value | `DESIGN_STATIC_NOT_RUN` |
 | `LogicalIndexDomainAdmitted` | LogicalIndexDomainAdmitted | one closed intrinsic logical domain: List/String/Bytes and default NumericArray axes are one-based, bounded owners retain L..U, Map uses exact K, and ReadonlyView preserves its source owner's domain | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `LoopOutcomeExhaustive` | LoopOutcomeExhaustive | ordered branch 1: a value-carrying break without an immediately following outcome match emits BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH; ordered branch 2: a present outcome match using a pattern other than the admitted outcome cases emits LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE; ordered branch 3: a present correctly spelled match that omits any reachable outcome emits LOOP_OUTCOME_MATCH_NON_EXHAUSTIVE; only a present, correctly spelled, exhaustive outcome match admits the value-carrying loop result | `DESIGN_STATIC_NOT_RUN` |
 | `LoopOutcomeHandlerAdmitted` | LoopOutcomeHandlerAdmitted | normalize loop and optional handler to one node; run intermediate cleanup/finally while skipping intermediate handlers; only the final break target handler observes ::break and a terminal continue observes none | `DESIGN_STATIC_NOT_RUN` |
-| `MapUnfoldEntryAdmitted` | MapUnfoldEntryAdmitted | Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and Map unfolds. | `DESIGN_STATIC_NOT_RUN` |
+| `MapUnfoldEntryAdmitted` | MapUnfoldEntryAdmitted | Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and owner-bounded **Map unfolds. | `DESIGN_STATIC_NOT_RUN` |
 | `MatchExhaustive` | match exhaustiveness and usefulness | Compute match-arm usefulness and final exhaustiveness over one normalized structural partition, including symbolic complement cells for admitted open scalar domains. | `DESIGN_STATIC_NOT_RUN` |
 | `MatchGuardPurityAdmitted` | match arm guard purity | Apply the ordinary guard profile, then forbid consuming or escaping probe bindings before atomic commit. | `DESIGN_STATIC_NOT_RUN` |
 | `MaterializationFieldPunAdmitted` | MaterializationFieldPunAdmitted | R51f3 owner-specific static design seed for materialization_derivation_field_punning; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1462,8 +1458,8 @@
 | `NamedEvidenceExcludedFromAutomaticResolution` | NamedEvidenceExcludedFromAutomaticResolution | Keep named evidence out of the automatic WitnessResolution candidate set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NamedExtensionSetAdmitted` | named extension set identity | Deterministic NumericArray literal element admission: nonempty numeric PlainValue elements use one exact normalized type unless an exact expected type admits only contextual numeric-literal representability; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `NamedExtensionSetAdmitted_R48_48` | NamedExtensionSetCurrentAdmitted | Deterministic shape-inferred NumericArray element admission algorithm: require a nonempty homogeneous normalized numeric PlainValue sequence, permit only existing contextual literal adaptation, and forbid widening or aggregate rewrites; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `NamedRestCollectorAdmitted` | NamedRestCollectorAdmitted | Named-rest parameter and function-type residue use \`***\`; call/materialization named unfold uses \`**\`. Product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `NamedRestParameterRecordAndLastPosition` | NamedRestParameterRecordAndLastPosition | named_rest_parameter_count is exactly one; named_rest_parameter_type is exactly Record; named_rest_parameter_index equals parameter_count - 1; dispatch multiple-count before non-Record type before nonfinal position | `DESIGN_STATIC_NOT_RUN` |
+| `NamedRestCollectorAdmitted` | NamedRestCollectorAdmitted | Static named-rest parameter uses suffix \`**\`, function identity uses \`NamedPack**\`, and outward static-named unfold uses owner-bounded prefix \`**\`. Product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `NamedRestParameterRecordAndLastPosition` | NamedRestParameterRecordAndLastPosition | named_rest_parameter_count is at most one; its finite NamedPack row is nonescaping and final; dispatch multiplicity before row/source-shape before nonfinal position | `DESIGN_STATIC_NOT_RUN` |
 | `NarrowUnionByPattern` | NarrowUnionByPattern | Refine Phi by the alternatives selected by a pattern without changing the declared semantic type. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NominalPrototypeDerivationAdmitted` | NominalPrototypeDerivationAdmitted | the result normalized_type is exactly the base nominal type; construction_domain is nominal_derivation and a visible ConstructionRow admits every label exactly once; derivation mode is shallow or deep and never changes conformance or nominal identity; shallow mode preserves declared field ownership responsibilities; deep mode requires deep-clone admission for every traversed field; resource, borrow, invariant, and cleanup responsibilities are rechecked before the fresh value is committed | `DESIGN_STATIC_NOT_RUN` |
 | `NonescapingLexicalAccessAdmitted` | Nonescaping lexical access admission | Classify a proven synchronous ancestor-place read as a region-bounded lexical dependency rather than an environment capture. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1478,7 +1474,7 @@
 | `NumericArrayPostfixTransposeAdmitted` | NumericArray postfix transpose | Admit owner-bounded readonly NumericArray view. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericArrayPostfixTransposeStable` | NumericArrayPostfixTransposeStable | Attached \`A^\` is Stable NumericArray transpose. | `DESIGN_STATIC_NOT_RUN` |
 | `NumericFillSliceIndexAdmitted` | NumericFillSliceIndexAdmitted | NumericArray fill/index/slice has exact rank and typed one-based axes; slices preserve owner and coordinates | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `NumericLiteralAdmitted` | NumericLiteralAdmitted | exact value or magnitude admission for a lexer-validated signless numeric token | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `NumericLiteralAdmitted` | NumericLiteralAdmitted | exact suffix-free constant admission for a lexer-validated signless numeric token | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `NumericOperatorCoreAdmitted` | NumericOperatorCoreAdmitted | intrinsic owner dispatch over exact literal results; failure precedes commit | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `OnceCallableAdmitted` | OnceCallableAdmitted | require call_right=once; consume the call right atomically at the first invocation; reject invocation_attempt_count greater than one or an attempt after once_right_consumed_before_attempt | `DESIGN_STATIC_NOT_RUN` |
 | `OperatorPrecedenceTablePhaseAAdmitted` | OperatorPrecedenceTablePhaseAAdmitted | closed Pratt token, binding powers, associativity, parselet, and owner | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1530,7 +1526,7 @@
 | `ScopedUseBlockAdmitted` | ScopedUseBlockAdmitted | Admits a statement-only scoped use frame and rejects priority by nesting depth. | `DESIGN_STATIC_NOT_RUN` |
 | `SealedDirectSubclassAdmitted` | Sealed direct subclass | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `SelectUnionInjection` | SelectUnionInjection | Select exactly one alternative of an independently fixed union. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `SequencePositionalRestAdmitted` | Sequence positional-rest Pattern admission | Admit the three attached positional-rest forms over explicitly witnessed Sequence values and materialize a source-borrowed ListRestView. | `` |
+| `SequencePositionalRestAdmitted` | Sequence positional-rest Pattern admission | Admit one attached suffix positional-rest \`name..\` or \`_..\` in any List position with required fixed context and materialize a source-borrowed ListRestView. | `` |
 | `ShapedSemicolonBodyAdmitted` | ShapedSemicolonBodyAdmitted | shape is a nonempty positive dimension vector and rank equals its length; comma advances only the innermost coordinate; a semicolon run of length k closes exactly k completed inner axes and satisfies 1 <= k < rank; a nonfinal run advances the immediately enclosing axis and resets the closed axes; an optional trailing semicolon run has length rank - 1 and all coordinates and total element count equal the declared shape | `DESIGN_STATIC_NOT_RUN` |
 | `ShareableObservationSafe` | Shareable | R30 closed deterministic admission algorithm for Shareable; production checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SharedMutexPayloadAdmitted` | SharedMutexPayload | Admit the sealed SharedMutex payload bound only for a closed normalized owned-component graph with no resource lifecycle, cleanup responsibility, borrowed view, or unresolved generic residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1538,7 +1534,7 @@
 | `SingleActionDeferAdmitted` | SingleActionDeferAdmitted | Admits one statically selected cleanup invocation, constructs its sealed typed plan at registration, and preserves that plan across suspension until terminal scope exit. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SingleGuardClauseAdmitted` | SingleGuardClauseAdmitted | R51f3 owner-specific static design seed for single_guard_clause_unification; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `SliceLogicalDomainPreserved` | SliceLogicalDomainPreserved | Preserves the selected source logical coordinate interval in every view/copy slice. | `DESIGN_STATIC_NOT_RUN` |
-| `SliceRangeAdmitted` | inclusive slice range | two-bound .. or ..< slice; static diagnostics and dynamic IndexError precede view creation | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `SliceRangeAdmitted` | inclusive slice range | bounded or owner-open .. / ..< slice; static diagnostics and dynamic IndexError precede provenance-bound view creation | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SliceViewLifetimeAdmitted` | readonly slice carrier view | a slice result is a readonly view tied to one live owner and retains the selected source logical coordinates; hidden copy, rebase, mutation, escape, and isolation crossing are forbidden | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SourceRoleAdmitted` | SourceRoleAdmitted | ordered branch 1: normalize every manifest path before parsing and reject the first repeated key with SOURCE_ROLE_CARRIER_CONFLICT; ordered branch 2: require source_role to be exactly library/executable/script and equal to the authoritative manifest or external carrier role; ordered branch 3: require activation_profile to be exactly stable/preview and equal between target and source rows, otherwise emit PACKAGE_MODULE_SOURCE_GRAPH_INVALID; the two axes select exactly one of six roots before parsing, stable normalizes to HIR CURRENT and preview to EXPLICIT_PREVIEW, and no gate may rewrite either axis; ordered later branches preserve the existing library/executable/script top-level and entry-count rules; trying roots to infer role or profile is forbidden | `DESIGN_STATIC_NOT_RUN` |
 | `StableComprehensionScopedUseMembershipAdmitted` | Stable comprehension, scoped-use, and membership family | Design-static checker seed for comprehension, scoped activation and membership; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1556,7 +1552,7 @@
 | `StringCharBytesBoundaryAdmitted` | StringCharBytesBoundaryAdmitted | Design seed for text/binary/display boundary. | `DESIGN_STATIC_NOT_RUN` |
 | `StringRenderAdmitted` | StringRenderAdmitted | Type and lower String::render as single evaluation plus one nonescaping renderer invocation. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `StructuredControlTargetResolved` | StructuredControlTargetResolved | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `StructuredRecordMapPatternAdmitted` | Record and Map structural Pattern admission | Admit exact, open-ignore and residual Record and Map Patterns with explicit field direction and stable Map keys. | `` |
+| `StructuredRecordMapPatternAdmitted` | Record and Map structural Pattern admission | Admit label-first Record-family exact/static-named-residual patterns and keyed Map patterns without conflating their directions or rest markers. | `` |
 | `TerminalUnitReturnAdmitted` | TerminalUnitReturnAdmitted | a non-Unit named-function path that reaches the end without an explicit value return emits MISSING_EXPLICIT_RETURN; a terminal valueless return in a Unit function is semantically admitted but emits REDUNDANT_FINAL_VALUELESS_RETURN as a lint; Unit fallthrough is canonical and an early valueless return remains admitted control flow without the terminal-return lint | `DESIGN_STATIC_NOT_RUN` |
 | `TernarySpacingAndArmJoinAdmitted` | TernarySpacingAndArmJoinAdmitted | Spaced ternary evaluates one strict-Bool condition once, evaluates exactly one lazy arm, and joins normalized type, place capability, ownership, effect row, recoverable errors, cancellation, and cleanup without synthesizing an anonymous Union. | `DESIGN_STATIC_NOT_RUN` |
 | `TopLevelTypeVisibilityAdmitted` | TopLevelTypeVisibilityAdmitted | Normalize one top-level visibility domain while requiring an explicit word for exactly nine type-producing owners in all six stable and preview source roots. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |

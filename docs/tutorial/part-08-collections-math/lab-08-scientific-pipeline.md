@@ -87,7 +87,7 @@ commit하지 않는다.
 셋째, `transform`과 `vector`를 각각 한 번 평가한 후 `2×3`과 `3×1`의
 inner dimension을 검사한다. admission 성공 시에만 `2×1` result owner를
 계산한다. `transform^`는 원본에 묶인 transpose view이고
-`projected[1; 1]`의 axis coordinate는 모두 1-based다. 마지막으로
+`projected[1, 1]`의 axis coordinate는 모두 1-based다. 마지막으로
 Complex metadata와 계산 결과를 Record로 조립하되, serialization tag나
 외부 publication을 이 Lab이 자동 승인하지 않는다.
 
@@ -144,7 +144,7 @@ let vector = #3,1[
 ]
 
 let projected = transform ** vector
-let firstProjected = projected[1; 1]
+let firstProjected = projected[1, 1]
 let transposedView = transform^
 ```
 

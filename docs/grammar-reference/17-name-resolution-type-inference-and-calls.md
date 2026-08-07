@@ -61,7 +61,7 @@ Trait witness, context 채널 또는 명시적 evidence 채널에 나타날 수 
    - library, executable, script 중 정확히 하나의 Stable root를 고른다.
    - 모듈 선언, import, use, export의 구조적 위치를 확인한다.
 2. **CST/AST owner 확정**
-   - `*`, `**`, `***`, `context`, `using`, trailing closure가
+   - suffix `..`/`**`, prefix `*`/`**`, `context`, `using`, trailing closure가
      어느 문법 owner에 속하는지 결정한다.
    - 타입 정보를 사용해 잘못 파싱한 토큰열을 고치지 않는다.
 3. **lexical 및 정적 identity 해석**
@@ -686,8 +686,8 @@ ParameterEntrySlot ::= Identifier IrrefutableParameterPattern? ;
 ParameterMode      ::= "borrow" | "mut" | "move" | "inout" ;
 ContextParameter   ::= "context" Identifier ":" TypeRef ;
 WitnessParameter   ::= "using" Identifier ":" "witness" TypeRef ;
-RepeatedParameter  ::= Identifier "..." TypeAnnotation ;
-NamedRestParameter ::= Identifier "***" TypeAnnotation ;
+RepeatedParameter  ::= Identifier ".." TypeAnnotation ;
+NamedRestParameter ::= Identifier "**" NamedRestRequirementClause? ;
 ```
 
 ordinary parameter의 선행 identifier는 call channel과 whole-value local을
@@ -834,25 +834,24 @@ private def compareWith<T>(
 
 ### 8.4 positional unfold
 
-`*expr`는 다음 두 source만 허용한다.
+`*expr`는 닫힌 call/materialization/comprehension owner 안에서 positional
+shape가 정적으로 seal되는 source만 허용한다. 대표 source는 다음과 같다.
 
-- `Sequence<T>` element stream
 - 정적으로 길이와 순서를 아는 tuple
+- 유한한 `PositionalPack<T>` 또는 별도로 finite-shape가 증명된 positional source
 
 NumericArray를 평탄화하거나
 Record field를 positional로 바꾸지 않는다.
 source expression은 한 번 평가되고,
 생성되는 positional 값은 source order를 따른다.
 
-고정 positional formal을 채우려면
-남은 arity가 정적으로 알려져 정확히 일치해야 한다.
-길이를 runtime에서만 아는 Sequence는
-repeated positional formal에는 공급할 수 있지만,
-고정 formal 여러 개를 추측해서 채울 수 없다.
+고정 positional formal을 채우려면 남은 arity가 정적으로 알려져 정확히
+일치해야 한다. expected formal/result, overload 후보 또는 runtime length가
+source shape를 선택하지 못한다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/type-flow-callable-coherence.json -->
 ```deeplus
-private def sumAll(values...: Int) -> Int = {
+private def sumAll(values..: Int) -> Int = {
     return reduceSum(values)
 }
 
@@ -861,18 +860,17 @@ private def total(xs: List<Int>) -> Int = {
 }
 ```
 
-여기서는 repeated channel이 source의 유한 element stream을 받는다.
+여기서는 repeated channel이 source의 유한 positional pack을 받는다.
 같은 `*xs`를 `pair(left: Int, right: Int)`에 전달하면
 `xs`의 runtime 길이가 2일 수도 있다는 이유로 허용되지 않는다.
 
 ### 8.5 named unfold와 named rest
 
 call-side `**record`는 정적 label row를 공급한다.
-formal-side `options***: Record`는
-결합되지 않은 named argument를 받는 유일하고 마지막인
-named-rest channel이다.
+formal-side `options**`는 결합되지 않은 named argument를 받는 유일한
+named-rest channel이며 body에서는 `NamedPack<rho>`다.
 
-`**`와 `***`는 교환할 수 없다.
+suffix `name**` collect와 prefix `**record` unfold는 교환할 수 없다.
 Map key는 runtime value이므로
 call named label을 만들지 못한다.
 `#map{ **base }`의 Map literal unfold는
@@ -882,15 +880,18 @@ call named label을 만들지 못한다.
 ```deeplus
 private def command(
     name: String,
-    args...: String,
-    options***: Record,
+    args..: String,
+    options** requires {
+        timeout: Duration
+    },
 ) -> Unit = {
     dispatch(name, *args, **options)
 }
 ```
 
-`args`는 positional stream이고,
-`options`는 static label row다.
+`args`는 `PositionalPack<String>`이고 `options`는 call-scoped
+`NamedPack<rho>`다. required-field clause는 `timeout: Duration` label을
+검사하며 callable `requires PredicateExpr`와 다른 owner다.
 두 residue는 public function type과 API digest에도 남는다.
 
 ## 9. call-shape admission 알고리즘
@@ -922,18 +923,19 @@ message와 actor-message도 이 descriptor 목록을 그대로 사용한다.
 
 후보별로 다음을 판정한다.
 
-1. positional 인수를 남은 positional formal에 순서대로 결합한다.
-2. tuple unfold는 정적 arity만큼 펼친다.
-3. Sequence unfold가 fixed formal로 흘러가면
-   static arity evidence를 요구한다.
-4. explicit named label은 정확히 같은 visible formal label 하나에 결합한다.
-5. named unfold의 모든 label을 정적으로 열거한다.
-6. 중복 label을 즉시 거부한다.
-7. context는 context formal에만 결합한다.
-8. witness는 witness formal에만 결합한다.
-9. 남은 positional은 repeated channel 하나에만 결합한다.
-10. 남은 named는 named-rest channel 하나에만 결합한다.
-11. 인수가 빠지거나 두 번 결합되면 후보를 제거한다.
+1. explicit named label을 정확히 같은 visible formal에 먼저 결합한다.
+2. positional rest 뒤의 fixed formal을 오른쪽부터 예약하고, 앞의 fixed
+   formal을 왼쪽부터 결합한 뒤 residual actual만 rest에 모은다. rest 뒤
+   fixed formal에는 default가 없다.
+3. positional unfold는 overload selection 전에 seal된 정적 arity만큼
+   펼치며 runtime 길이 또는 expected formal이 unfold arity를 고르는 경로를
+   거부한다.
+4. named unfold의 모든 label을 정적으로 열거하고 중복 label을 즉시
+   거부한다.
+5. context는 context formal에, witness는 witness formal에만 결합한다.
+6. 남은 named는 유일한 final named-rest channel의 `NamedPack<rho>`로만
+   결합한다.
+7. 인수가 빠지거나 두 번 결합되면 후보를 제거한다.
 
 message/actor-message argument는 ordinary formal channel에 직접 결합한다.
 Tuple expression 하나는 formal 하나에만 결합하며 field projection으로
@@ -1270,7 +1272,7 @@ private def loadConfiguration() -> Unit
 = {
     try {
         readAll()
-    } catch IOError${path, .._} if isConfigPath(path) {
+    } catch IOError${path, _**} if isConfigPath(path) {
         useDefaults(path)
     } catch error: IOError {
         throw error
@@ -1414,7 +1416,7 @@ tuple arity가 정적으로 2이므로
 private def invalid(values: List<Int>) -> Int = {
     return pair(*values)
 }
-// Sequence의 runtime 길이는 fixed formal arity evidence가 아니다.
+// List의 runtime 길이는 fixed formal arity evidence가 아니다.
 ```
 
 `values`가 실행 중 두 원소일 수 있다는 사실은

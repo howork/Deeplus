@@ -31,7 +31,7 @@
     "runtime_backend": "no formatter, LSP, reparse, or tooling identity survives into MIR, xVM, Cranelift, ABI, or runtime state"
   },
   "formatting_disposition_function": {
-    "input_domain": "exact 644 rows of grammar-production-disposition-registry-r1",
+    "input_domain": "exact 656 rows of grammar-production-disposition-registry-r1 after the R77 atomic surface cutover",
     "ordered_first_match": true,
     "total_and_disjoint": true,
     "rules": [
@@ -43,7 +43,7 @@
           "disposition": "cst_only"
         },
         "formatting_disposition": "PRESERVE_TOKEN_OR_TRIVIA_BYTES",
-        "expected_row_count": 56
+        "expected_row_count": 54
       },
       {
         "rule_id": "FD-02",
@@ -53,7 +53,7 @@
           "disposition": "cst_only"
         },
         "formatting_disposition": "DELEGATE_TO_SCANNER_TOKEN_OWNER",
-        "expected_row_count": 35
+        "expected_row_count": 33
       },
       {
         "rule_id": "FD-03",
@@ -63,7 +63,7 @@
           "disposition": "cst_only"
         },
         "formatting_disposition": "PRESERVE_INLINE_CST_BYTES_UNLESS_PARENT_RULE",
-        "expected_row_count": 320
+        "expected_row_count": 333
       },
       {
         "rule_id": "FD-04",
@@ -72,7 +72,7 @@
           "disposition": "ast_node"
         },
         "formatting_disposition": "PRESERVE_STRUCTURAL_SOURCE_UNLESS_EXPLICIT_OWNER_RULE",
-        "expected_row_count": 204
+        "expected_row_count": 205
       },
       {
         "rule_id": "FD-05",
@@ -81,7 +81,7 @@
           "disposition": "normalize_to"
         },
         "formatting_disposition": "FORMAT_CANONICAL_NORMALIZATION_TARGET",
-        "expected_row_count": 10
+        "expected_row_count": 12
       },
       {
         "rule_id": "FD-06",
@@ -93,7 +93,7 @@
         "expected_row_count": 19
       }
     ],
-    "expected_total_row_count": 644,
+    "expected_total_row_count": 656,
     "unclassified_row_count": 0,
     "multiply_classified_row_count": 0,
     "default_rewrite": "PRESERVE_EXACT_SOURCE_BYTES",

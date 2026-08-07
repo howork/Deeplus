@@ -20,16 +20,12 @@
         "context_fixed": true,
         "contextual_element_type": "UInt8",
         "element_literal_kinds": [
-          "unsuffixed_integer",
-          "unsuffixed_integer"
+          "suffix_free_integer",
+          "suffix_free_integer"
         ],
         "element_literal_values": [
           "0",
           "256"
-        ],
-        "element_literal_suffixes": [
-          null,
-          null
         ]
       },
       "lookup_domain": null,
@@ -57,11 +53,11 @@
       "rank": null,
       "orientation": null,
       "element_types": [
-        "Int",
-        "Int"
+        "UInt8",
+        null
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "expected_primary_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
     "diagnostic_disposition": "active_dispatched",
@@ -109,24 +105,20 @@
         "context_fixed": true,
         "contextual_element_type": "UInt8",
         "element_literal_kinds": [
-          "prefix_minus_unsuffixed_integer"
+          "prefix_minus_suffix_free_integer"
         ],
         "element_literal_values": [
           "-1"
-        ],
-        "element_literal_suffixes": [
-          null
         ],
         "source_elements": [
           "-1"
         ],
         "sign_is_prefix_operator": true,
-        "contextual_prefix_sign_adapter": {
-          "ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+        "unsigned_target_negative_rejection": {
+          "ast_shape": "PrefixExpr(-, IntegerLiteral)",
           "validated_token_magnitude": 1,
-          "signed_candidate": -1,
           "exact_target": "UInt8",
-          "representable": false,
+          "rejected_before_signed_adapter": true,
           "arbitrary_constant_fold_count": 0,
           "hidden_conversion_count": 0
         }
@@ -156,14 +148,14 @@
       "rank": null,
       "orientation": null,
       "element_types": [
-        "Int"
+        null
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32; only an exact signed Int, IntN, or ISize target admits the direct prefix-minus adapter, while an unsigned target rejects a negative prefix expression before that adapter with UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; signed contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "expected_primary_diagnostic": "LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE",
+    "expected_primary_diagnostic": "UINT_NEGATIVE_CONTEXT_ADAPTER_FORBIDDEN",
     "diagnostic_disposition": "active_dispatched",
-    "violated_condition": "-1 is below the exact UInt8 minimum zero",
+    "violated_condition": "an exact UInt8 target rejects a negative prefix expression before the signed contextual adapter",
     "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -207,19 +199,14 @@
         "context_fixed": false,
         "contextual_element_type": null,
         "element_literal_kinds": [
-          "unsuffixed_integer",
-          "unsuffixed_integer",
-          "unsuffixed_integer"
+          "suffix_free_integer",
+          "suffix_free_integer",
+          "suffix_free_integer"
         ],
         "element_literal_values": [
           "1",
           "2",
           "3"
-        ],
-        "element_literal_suffixes": [
-          null,
-          null,
-          null
         ]
       },
       "lookup_domain": null,
@@ -252,7 +239,7 @@
         "Int"
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
@@ -297,16 +284,12 @@
         "context_fixed": true,
         "contextual_element_type": "UInt8",
         "element_literal_kinds": [
-          "unsuffixed_integer",
-          "unsuffixed_integer"
+          "suffix_free_integer",
+          "suffix_free_integer"
         ],
         "element_literal_values": [
           "1",
           "2"
-        ],
-        "element_literal_suffixes": [
-          null,
-          null
         ]
       },
       "lookup_domain": null,
@@ -334,11 +317,11 @@
       "rank": null,
       "orientation": null,
       "element_types": [
-        "Int",
-        "Int"
+        "UInt8",
+        "UInt8"
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "both mathematical values lie in the exact UInt8 range 0 through 255",
     "fixture_kind": "concrete_positive",
@@ -384,8 +367,7 @@
         "context_fixed": true,
         "contextual_element_type": "String",
         "element_literal_kinds": [],
-        "element_literal_values": [],
-        "element_literal_suffixes": []
+        "element_literal_values": []
       },
       "lookup_domain": null,
       "extension_member_id": null,
@@ -413,7 +395,7 @@
       "orientation": null,
       "element_types": []
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "an empty literal is admitted when an independently fixed List<String> context supplies the element type",
     "fixture_kind": "concrete_positive",
@@ -439,12 +421,12 @@
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
   {
-    "fixture_id": "PF-ListLiteralElementJoinAdmitted-POS-F32-SUFFIX",
+    "fixture_id": "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-F32-SUFFIX",
     "predicate_id": "ListLiteralElementJoinAdmitted",
-    "expected": "admitted",
+    "expected": "rejected",
     "descriptor": {
       "source_kind": "ListLiteral",
-      "normalized_type": "List<Float32>",
+      "normalized_type": null,
       "ownership": "owned",
       "borrow_region": null,
       "cleanup": null,
@@ -459,12 +441,12 @@
         "context_fixed": true,
         "contextual_element_type": "Float32",
         "element_literal_kinds": [
-          "suffixed_float"
+          "removed_numeric_type_suffix_candidate"
         ],
         "element_literal_values": [
           "1.0"
         ],
-        "element_literal_suffixes": [
+        "removed_numeric_type_suffix_candidates": [
           "f32"
         ]
       },
@@ -493,19 +475,21 @@
       "rank": null,
       "orientation": null,
       "element_types": [
-        "Float32"
+        null
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "admitted_condition": "the f32 suffix maps exactly to the contextual Float32 type",
-    "fixture_kind": "concrete_positive",
+    "expected_primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED",
+    "diagnostic_disposition": "active_dispatched",
+    "violated_condition": "the scanner maximal-munches the removed f32 suffix candidate, emits NUMERIC_TYPE_SUFFIX_REMOVED once, and creates no element AST for list joining",
+    "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
       "semantic_type": {
         "kind": "nominal",
-        "type_id": "PF-ListLiteralElementJoinAdmitted-POS-F32-SUFFIX"
+        "type_id": "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-F32-SUFFIX"
       },
       "responsibility": {
         "ownership": "reusable",
@@ -542,16 +526,12 @@
         "context_fixed": true,
         "contextual_element_type": "Int8",
         "element_literal_kinds": [
-          "prefix_minus_unsuffixed_integer",
-          "unsuffixed_integer"
+          "prefix_minus_suffix_free_integer",
+          "suffix_free_integer"
         ],
         "element_literal_values": [
           "-128",
           "127"
-        ],
-        "element_literal_suffixes": [
-          null,
-          null
         ],
         "source_elements": [
           "-128",
@@ -559,7 +539,7 @@
         ],
         "sign_is_prefix_operator": true,
         "contextual_prefix_sign_adapter": {
-          "ast_shape": "PrefixExpr(-, UnsuffixedIntegerLiteral)",
+          "ast_shape": "PrefixExpr(-, IntegerLiteral)",
           "validated_token_magnitude": 128,
           "signed_candidate": -128,
           "exact_target": "Int8",
@@ -593,11 +573,11 @@
       "rank": null,
       "orientation": null,
       "element_types": [
-        "Int",
-        "Int"
+        "Int8",
+        "Int8"
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "the signless token magnitude 128 under direct prefix minus forms representable Int8 candidate -128; 127 is the upper boundary",
     "fixture_kind": "concrete_positive",
@@ -623,12 +603,12 @@
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
   {
-    "fixture_id": "PF-ListLiteralElementJoinAdmitted-POS-ISIZE-SUFFIX",
+    "fixture_id": "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-ISIZE-SUFFIX",
     "predicate_id": "ListLiteralElementJoinAdmitted",
-    "expected": "admitted",
+    "expected": "rejected",
     "descriptor": {
       "source_kind": "ListLiteral",
-      "normalized_type": "List<ISize>",
+      "normalized_type": null,
       "ownership": "owned",
       "borrow_region": null,
       "cleanup": null,
@@ -643,12 +623,12 @@
         "context_fixed": true,
         "contextual_element_type": "ISize",
         "element_literal_kinds": [
-          "suffixed_integer"
+          "removed_numeric_type_suffix_candidate"
         ],
         "element_literal_values": [
           "1"
         ],
-        "element_literal_suffixes": [
+        "removed_numeric_type_suffix_candidates": [
           "isize"
         ]
       },
@@ -677,19 +657,21 @@
       "rank": null,
       "orientation": null,
       "element_types": [
-        "ISize"
+        null
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "admitted_condition": "the isize suffix maps exactly to the contextual ISize type",
-    "fixture_kind": "concrete_positive",
+    "expected_primary_diagnostic": "NUMERIC_TYPE_SUFFIX_REMOVED",
+    "diagnostic_disposition": "active_dispatched",
+    "violated_condition": "the scanner maximal-munches the removed isize suffix candidate, emits NUMERIC_TYPE_SUFFIX_REMOVED once, and creates no element AST for list joining",
+    "fixture_kind": "concrete_negative",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
       "semantic_type": {
         "kind": "nominal",
-        "type_id": "PF-ListLiteralElementJoinAdmitted-POS-ISIZE-SUFFIX"
+        "type_id": "PF-ListLiteralElementJoinAdmitted-NEG-REMOVED-ISIZE-SUFFIX"
       },
       "responsibility": {
         "ownership": "reusable",
@@ -730,9 +712,6 @@
         ],
         "element_literal_values": [
           null
-        ],
-        "element_literal_suffixes": [
-          null
         ]
       },
       "lookup_domain": null,
@@ -763,7 +742,7 @@
         "String"
       ]
     },
-    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every signless numeric token once; without context, empty is not inferable and all normalized element types must be identical; with fixed List<T>, nonnumeric and ordinary numeric elements must equal exact T after delegated validation, with no subtype, variance, clone, Option insertion, hidden conversion, or source-order join; a signless unsuffixed integer may adopt one exact representable Int, UInt, IntN, or UIntN target for N={8,16,32,64,128}; the sole prefix-sign path requires exact integer T and direct PrefixExpr(-, UnsuffixedIntegerLiteral), requests the validated magnitude fact, computes -magnitude once, and admits iff representable; an unrepresentable candidate emits LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE; no other fold, rewrite, widening, or narrowing occurs; ISize/USize require a suffix or checked conversion; suffixed literals match T exactly; unsuffixed Float is Float64 and Float32 requires f32; every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
+    "rule_seed": "the literal builds immutable List<T>, never NumericArray and never a synthesized Union; NumericLiteralAdmitted validates every scanner-admitted suffix-free numeric token once; with an exact declared List<T> target, a direct atomic numeric literal adopts exactly representable T, including ISize, USize, and Float32, while direct prefix-minus integer range checks preserve the sign adapter; without context, integer, real, and imaginary/complex atoms default only to Int, Float64, and Complex<Float64> before normalized element-type identity is checked; removed numeric type suffix candidates emit NUMERIC_TYPE_SUFFIX_REMOVED before element joining; no suffix-driven, smallest-fit, hidden conversion, fold, rewrite, widening, narrowing, synthesized Union, or source-order join occurs; contextual integer range failures emit LIST_LITERAL_CONTEXT_INTEGER_OUT_OF_RANGE and every other join failure emits LIST_LITERAL_ELEMENT_JOIN_FAILED; product checker NOT_RUN",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "admitted_condition": "the normalized nonnumeric element type equals contextual String exactly",
     "fixture_kind": "concrete_positive",

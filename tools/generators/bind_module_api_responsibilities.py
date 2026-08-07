@@ -44,8 +44,8 @@ def responsibility_profile(symbol: dict[str, Any]) -> dict[str, Any]:
             "value": channel("value", "Int", "reusable", "none"),
         }
     if kind == "function":
-        parameter_type = "Record***" if "Record***" in symbol["normalized_signature"] else "Int"
-        parameter_id = "named_rest" if parameter_type == "Record***" else "value"
+        parameter_type = "NamedPack**" if "NamedPack**" in symbol["normalized_signature"] else "Int"
+        parameter_id = "named_rest" if parameter_type == "NamedPack**" else "value"
         return {
             "profile_kind": "callable",
             "receiver": None,
@@ -66,6 +66,11 @@ def responsibility_profile(symbol: dict[str, Any]) -> dict[str, Any]:
 
 def complete_symbol(symbol: dict[str, Any]) -> dict[str, Any]:
     output = dict(symbol)
+    output["normalized_signature"] = output["normalized_signature"].replace(
+        "Record***", "NamedPack**"
+    )
+    if output.get("named_rest_residue") == "Record***":
+        output["named_rest_residue"] = "NamedPack**"
     output["responsibility_profile"] = responsibility_profile(output)
     output["ownership"] = "not_applicable"
     output["cleanup"] = "not_applicable"
