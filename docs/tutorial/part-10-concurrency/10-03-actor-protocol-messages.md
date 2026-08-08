@@ -164,6 +164,6 @@ admission Result, `Reply<T>`를 모두 source와 type responsibility에
 
 - [actor와 message 참조](../../grammar-reference/13-async-tasks-actors-and-concurrency.md)
 - [message/call coherence](../../../spec/contracts/type-flow-callable-coherence.json)
-- [exact grammar](../../../spec/grammar/deeplus.ebnf)
+- [exact grammar](../../../spec/grammar/deeplus.dpg)
 
 다음 장은 mailbox admission과 request reply의 commit 전후를 추적한다.

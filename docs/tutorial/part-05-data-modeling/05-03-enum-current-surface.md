@@ -286,7 +286,7 @@ mapping을 선언해야 한다.
 ## 12. 정본 근거와 다음 장
 
 - [Enum 정본 설명](../../../spec/language.md)
-- [Enum 문법](../../../spec/grammar/deeplus.ebnf)
+- [Enum 문법](../../../spec/grammar/deeplus.dpg)
 - [Enum·Record 레퍼런스](../../grammar-reference/07-enums-records-schemas-bitfields-and-units.md)
 - [패턴 레퍼런스](../../grammar-reference/10-patterns-destructuring-and-matching.md)
 

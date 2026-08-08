@@ -36,25 +36,33 @@
 
 ## 문법 표기법
 
-정확 문법은 EBNF를 사용한다.
+정확 문법은 DPG를 사용한다.
 
 | 형식 | 의미 |
 |---|---|
-| `Name ::= body ;` | 생성 규칙 정의 |
-| `"text"` | 정확한 소스 철자 |
+| `Name := body ;` | DPG 구조 rule 정의 |
+| `'text'` | 정확한 소스 철자 |
+| `~word` | 이 문맥에서 철자로 인식하는 contextual word |
 | `A B` | A 다음에 B가 옴. 비의미 토큰 정책은 별도 권위가 소유함 |
 | `A \| B` | A 또는 B |
-| `A?` | A가 없거나 한 번 나타남 |
+| `[A]` | A가 없거나 한 번 나타남 |
 | `A*` | A가 0회 이상 나타남 |
 | `A+` | A가 1회 이상 나타남 |
 | `( ... )` | 그룹화 |
+| `R<C>` | context `C`에 따라 동작하는 공유 parser routine |
+| `@Set` | ParserContext JSON의 닫힌 표면 집합 |
+| `dispatch<Table,C>` | owner/context별 handwritten dispatcher |
+| `pratt<Domain,Mode>` | Frontend Model에 결속된 Pratt 진입점 |
+| `list`, `rows`, `entries` | 닫힌 separator·최소 기수 combinator |
+| `LB`, `END` | lossless trivia와 BoundaryContext가 결정하는 metanode |
+| `admit<P>(A)` | 토큰을 추가하지 않고 predicate `P`로 A를 허용하는 문맥 검사 |
 
 `UPPER_SNAKE_CASE` 이름은 스캐너가 방출하는 범주를 나타낸다. 해당
 프로필 절의 정의에 따라 `CamelCase` 이름은 어휘 보조 요소 또는 구조
 생성 규칙을 나타낸다. 따라서 대소문자는 정확히 구별해야 하며,
 `IDENTIFIER`와 `Identifier`는 서로 다른 생성 규칙이다.
 
-EBNF는 다음 책임을 의도적으로 프런트엔드 모델에 위임한다.
+DPG는 다음 책임을 의도적으로 프런트엔드 모델에 위임한다.
 
 - maximal-munch와 스캐너 모드 확정
 - 문맥 단어 및 sigil 역할 허용
@@ -64,27 +72,28 @@ EBNF는 다음 책임을 의도적으로 프런트엔드 모델에 위임한다.
 - CST에서 AST/HIR/MIR로 이어지는 책임
 - 오류 소유권과 포매터 정책
 
-따라서 하나의 EBNF 대안에 일치하는 것은 허용의 필요조건이지만
+따라서 하나의 DPG 대안에 일치하는 것은 허용의 필요조건이지만
 충분조건은 아니다.
 
 ## 세 가지 문법 프로필
 
 <!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
 
-현행 생성 규칙의 정확한 개수는 다음과 같다.
+현행 DPG의 정확한 구조 기수는 다음과 같다.
 
-| 프로필 | 생성 규칙 수 | 역할 |
+| 항목 | 수 | 역할 |
 |---|---:|---|
-| `LEXICAL` | 87 | 소스 문자, 토큰, 스캐너 결과 및 비의미 토큰 |
-| `STABLE` | 556 | 현행 구조 구문 |
-| `PREVIEW` | 13 | 명시적 gate를 거쳐 활성화할 수 있는 Preview 루트 |
-| **합계** | **656** | 대소문자를 구별하는 정확한 생성 규칙 정의 |
+| DPG rule family | 280 | 공유 handwritten parser routine의 구조 단위 |
+| context-specialized clause | 301 | source role·owner·parse mode별 명시적 진입 조항 |
+| legacy EBNF surface census | 656 | R77 표면의 CST/AST 책임을 대조하는 비권위 차등 입력 |
 
-생성기는 EBNF에서 이 값을 산출하며 `frontend-model.json`과 정확히
-일치할 것을 요구한다. 숨겨진 제외 목록은 없다.
+차등 validator는 656개 census row가 모두 disposition registry에 남고,
+181개 비어휘 terminal 철자가 DPG·scanner·ParserContext·Pratt 중 한 곳에
+결속되며 누락이 0인지 검사한다. DPG를 다시 656개 규칙으로 팽창시키지
+않는다.
 
-문법 프로필과 문서 상태 fence는 서로 다른 분류다. 특히 EBNF의
-`PREVIEW` 프로필 안에서도 명시적 기능 gate로 도달 가능한 표면은
+문법 프로필과 문서 상태 fence는 서로 다른 분류다. 특히 DPG의
+`Source<Role,preview>` 진입점에서 명시적 기능 gate로 도달 가능한 표면은
 `PREVIEW_GATED`, 소스 경로와 활성화 권위가 없는 설계는
 `PREVIEW_NONACTIVATABLE`로 나뉜다.
 
@@ -179,7 +188,7 @@ cleanup 및 백엔드 관찰이 모두 닫혔다는 의미 완전성 증거가 �
 ## 권위 추적
 
 - 자연어 명세: [`spec/language.md`](../../spec/language.md)
-- 정확 EBNF: [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- 정확 DPG: [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - 프런트엔드 모델:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
 - 타입 시스템:

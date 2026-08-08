@@ -54,5 +54,5 @@ Deeplus는 타입 리파인먼트와 narrowing, Union, `def#guard`, Enum,
 
 튜토리얼은 학습용 2차 문서다. 정확한 규칙을 확인할 때는
 [문법 명세 및 언어 참조서](../grammar-reference/README.md)와
-`spec/language.md`, `spec/grammar/deeplus.ebnf`를 함께 본다. 상태나
+`spec/language.md`, `spec/grammar/deeplus.dpg`를 함께 본다. 상태나
 규칙이 충돌하면 이들 정본 자료가 우선한다.

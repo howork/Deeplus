@@ -169,7 +169,7 @@ cleanup 공백을 항목별로 보여야 한다. formatter는 gate를 source 첫
 탐색 가능하게 해야 한다.
 
 **활성화 선행 조건**
-exact EBNF/root와 lossless CST, ABI별 type mapping, provenance와
+exact DPG/root와 lossless CST, ABI별 type mapping, provenance와
 unsafe-authority calculus, resource/unwind/cleanup 법칙, gate 및
 feature-local diagnostic 순서, formatter/LSP, header projection 검증,
 MIR/xVM bytecode identity, native target의 양성·음성·경계·mutation corpus와

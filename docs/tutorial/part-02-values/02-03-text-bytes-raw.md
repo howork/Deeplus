@@ -160,7 +160,7 @@ HIR `ConstString`으로 내려가며 `$`에 별도 의미가 없다.
 
 ## 12. 정본 근거와 다음 장
 
-- [문자열 lexical EBNF](../../../spec/grammar/deeplus.ebnf)
+- [문자열 lexical DPG](../../../spec/grammar/deeplus.dpg)
 - [어휘 구조](../../grammar-reference/01-lexical-structure.md)
 - [String evaluation](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 - [value/operator contract](../../../spec/contracts/value-operator-indexing-coherence.json)

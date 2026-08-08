@@ -578,7 +578,7 @@ let prefix = values[1..<4]
 
 ## 정본 근거
 
-- [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - [`spec/contracts/value-operator-indexing-coherence.json`](../../spec/contracts/value-operator-indexing-coherence.json)
 - [`spec/contracts/literal-shaped-collection-design.json`](../../spec/contracts/literal-shaped-collection-design.json)
 - [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)

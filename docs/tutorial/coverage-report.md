@@ -2,7 +2,7 @@
 
 # Deeplus 튜토리얼 coverage 보고서
 
-- revision: `r51f3-current-implementation-readiness-g4-audit-r1`
+- revision: `r51f3-current-r77-publication-policy-closure-r1`
 - Part 안내: 12
 - 개념 장: 60
 - 안내 실습: 12
@@ -14,8 +14,8 @@
 - Deeplus 코드 블록: 389
 - 연습 prompt 표식: 260
 - 로컬 링크 오류: 0
-- contract SHA-256: `4d0879cfc5ae025218bd8278099ea0d6bd7640370fd48f36ebd7d1b79f4a9ed5`
-- coverage schema SHA-256: `57349bd038652148709daed4ecd6621a3ff1c69ef45d4107149679564b478ae9`
+- contract SHA-256: `0386f9bf954bb2ea11788f6618ea6ebe2042dec761705c85afc1a231654613ad`
+- coverage schema SHA-256: `a65a7b3a0f686febaca2eed82a7b1732d974969381fc96d5734597e59871d8df`
 
 ## authority 울타리
 

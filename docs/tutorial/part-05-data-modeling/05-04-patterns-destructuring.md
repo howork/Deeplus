@@ -386,7 +386,7 @@ private def first([head, _..]: List<Int>) -> Int = {
 ## 17. 정본 근거와 다음 장
 
 - [Pattern 레퍼런스](../../grammar-reference/10-patterns-destructuring-and-matching.md)
-- [Pattern 문법](../../../spec/grammar/deeplus.ebnf)
+- [Pattern 문법](../../../spec/grammar/deeplus.dpg)
 - [타입 시스템 Pattern 계약](../../../spec/types/type-system.md)
 - [MIR 평가 법칙](../../../spec/mir/semantics.md)
 

@@ -7,7 +7,7 @@
 ## 1. 이 장의 목적
 
 이 장은
-[`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)의 573개
+[`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)의 573개
 production을 다시 나열하는 색인이 아니다.
 독자가 실제 소스 조각을 보았을 때 어느 source root와 parser goal에서
 읽기 시작해야 하는지, 같은 token이 문맥에 따라 왜 다른 production의
@@ -15,7 +15,7 @@ production을 다시 나열하는 색인이 아니다.
 탐색 안내서다.
 
 정확한 token 순서와 구조적 중첩의 권위는
-[`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)에 있다.
+[`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)에 있다.
 Pratt binding power, 입력 공급, token 부착, owner별 admission 및
 CST/AST/HIR 책임은
 [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)에
@@ -94,7 +94,7 @@ parser가 첫 token만 보고 세 root 중 하나를 추측하는 것은 아니�
 
 다음은 executable root의 최소 구조다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 module demo::hello
 
@@ -143,7 +143,7 @@ Annotation ::= "@" Identifier ArgumentList? LineBreakBoundary
 annotation을 expression prefix `@if`나 implicit argument `@`와 같은
 goal에서 읽지 않는다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 @deprecated("use parseStrict")
 public def parse(text: String) -> Result<Int, error ParseError>
@@ -165,7 +165,7 @@ resolver 또는 checker 진단이다.
 annotation과 declaration을 같은 물리 줄에 쓰면 `LineBreakBoundary`를
 만족하지 않는다.
 
-<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 @deprecated("use parseStrict") public def parse(text: String) -> Int = {
     return 0
@@ -196,7 +196,7 @@ extension/profile activation을 합치면 안 된다.
 ### 4.1 최상위 선택 표
 
 `TopLevelDecl`과 `NonBindingTopLevelDecl`은 declaration 탐색의 중심이다.
-정확한 전체 대안은 EBNF를 보아야 하지만, 독자는 다음 표로 첫 owner를
+정확한 전체 대안은 DPG를 보아야 하지만, 독자는 다음 표로 첫 owner를
 찾을 수 있다.
 
 | source spelling의 시작 | 우선 확인할 production |
@@ -249,7 +249,7 @@ instance method는 이름 뒤의 `ClassDispatchMarker`를 요구한다.
 field declaration에는 같은 marker를 붙이지 않는다.
 trait method의 같은 glyph는 `TraitWitnessMarker`이며 AST 의미가 다르다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 public class Counter {
     -var value: Int = 0
@@ -507,7 +507,7 @@ type goal이 아니라 predicate expression goal이다.
 Bool expression을 받지 않는다.
 계약 clause는 callable tail에 나타나며 body보다 앞선다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 public type Positive = Int where > 0
 public type Percentage = Int in 0..100
@@ -553,7 +553,7 @@ owner에서 읽는다.
 `SliceIndexExpr`는 index suffix가 slice delimiter와 anchor를 직접
 소유하도록 제한된 terminator 집합을 사용한다.
 
-EBNF의 `EXPRESSION_PRATT_ENTRY` 같은 외부 terminal은 “아무 expression”을
+DPG의 `EXPRESSION_PRATT_ENTRY` 같은 외부 terminal은 “아무 expression”을
 뜻하지 않는다.
 frontend model의 parselet registry, binding power와 owner별 admission을
 함께 읽어야 한다.
@@ -671,7 +671,7 @@ parser 호출자가 type goal을 선택한 상태라면 `ParenTypeSyntax`,
 expression goal이라면 `ParenExprSyntax`를 사용한다.
 괄호 안 token만 보고 전역적으로 “tuple parser” 하나를 부르면 안 된다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 private type Unary = (Int) -> Int
 private type Pair = (Int, String)
@@ -939,7 +939,7 @@ comprehension owner로 commit한다.
 clause는 source order로 중첩되고 guard와 if-let은 앞 clause가 만든
 binding을 볼 수 있다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 let names = [
     user.name
@@ -972,7 +972,7 @@ generator는 collection comprehension이 아니다.
 `@for` introducer, 선택적 capture list, block과 `yield` control transfer를
 소유하며 lazy/resumable 평가와 ownership 책임을 남긴다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 let evens = @for value in values {
     yield value if value % 2 == 0
@@ -1313,7 +1313,7 @@ gate가 있다는 사실만으로 nonactivatable Preview Design을 켤 수 없�
 구문 분석 뒤에도 ABI-safe type, unsafe proof, effect/error 및 backend
 지원 판정이 남는다.
 
-<!-- deeplus-example: illustrative; status: PREVIEW_GATED; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: PREVIEW_GATED; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 #preview(ffi_c_extern_unsafe_surface_msp,ffi_minimum_sound_profile)
 extern#C def#unsafe c_abs(value: Int) -> Int

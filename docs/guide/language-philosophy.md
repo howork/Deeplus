@@ -21,7 +21,7 @@ Deeplus가 추구하는 바를 한 문장으로 줄이면 다음과 같다.
 
 이 문서는 언어 명세를 대신하지 않는다. 정확한 수용 여부는
 [`spec/language.md`](../../spec/language.md), 정확 문법은
-[`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf), 타입과
+[`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg), 타입과
 관측 의미는 각각 [`spec/types/type-system.md`](../../spec/types/type-system.md)와
 [`spec/mir/semantics.md`](../../spec/mir/semantics.md)를 따른다.
 

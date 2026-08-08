@@ -687,7 +687,7 @@ let f = #async{ => await load() }
 ### `PREVIEW_NONACTIVATABLE`: 비동기 컴프리헨션
 
 async comprehension은 feature catalog에 `PREVIEW_DESIGN`으로 남아 있지만
-현행 exact EBNF와 source gate가 없다. `for#await` statement와 stdlib
+현행 exact DPG와 source gate가 없다. `for#await` statement와 stdlib
 `AsyncCollector`가 이 후보를 암시적으로 활성화하지 않는다. 후보가
 활성화되려면 comprehension의 exact surface, finite-source 조건, 순서와
 backpressure, transform의 error-set union, Cancellation, 부분 결과의
@@ -748,7 +748,7 @@ PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지
 
 ## 정본 근거
 
-- `spec/grammar/deeplus.ebnf`
+- `spec/grammar/deeplus.dpg`
   - `DefIntroducer`, `AsyncForLoop`, `ForAwaitRole`, `SpawnExpr`,
     `ConcurExpr`, `ActorDecl`, `ActorProtocolDecl`,
     `TildeCallLed`, `TildeArgumentSequence`, `AtScopeExpr`.

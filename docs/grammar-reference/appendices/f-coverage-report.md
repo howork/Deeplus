@@ -1,7 +1,7 @@
 <!-- tools/generators/generate_grammar_reference.py가 생성함; 직접 수정하지 마십시오. -->
 # 부록 F — 커버리지 보고서
 
-- 리비전: `r51f3-current-implementation-readiness-g4-audit-r1`
+- 리비전: `r51f3-current-r77-publication-policy-closure-r1`
 - 투영 상태: `CURRENT_CANONICAL_DOCUMENTATION_PROJECTION`
 - 의미론 권위: `false`
 - 제품 지원: `NOT_RUN`
@@ -31,12 +31,15 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `d0ad95a0ec72a626f06e9a1138b8f9a736de5b16a096d4b4a6512e5d8049b620` |
-| `exact_grammar` | `spec/grammar/deeplus.ebnf` | `914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9` |
-| `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `a51660b756a44b45e118ed0526000a7b8be011545663e9160cab36e7d38b1abc` |
-| `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `daf3d867bfb4979771afd5ea4795324664d343f26b5fe3fb4646abd06c5c2fda` |
+| `human_language` | `spec/language.md` | `ce5cb4b7e4d339c313c4c05305757c32884d673d9fd319381764d1b554b079a2` |
+| `exact_grammar` | `spec/grammar/deeplus.dpg` | `90f95ba7ff4e163eb1f99752cf70602d2042ab00b8a775cb3cab1259d59d706d` |
+| `parser_contexts` | `spec/grammar/deeplus.parser-contexts.json` | `0ab24a754b9f95331c9eddb9bfdf737240f60b15bfb2eed99cdc5959508b7a1b` |
+| `legacy_surface_census` | `spec/grammar/deeplus.ebnf` | `914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9` |
+| `parser_grammar_differential` | `spec/contracts/parser-grammar-differential-r1.json` | `54f3f08b27ceb58333ff70d0b7a522e51ff1b76116fdc78e216c3e2e57601043` |
+| `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `4ede074bd28425c94eda7776093e58d3821dadf8a05212efe3eab5a4a6abb711` |
+| `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `8d612dd6a54a80ec1c77192c3d8f0358e1bc6bea4efa1c822b4b2a4e2aeb8401` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `2187c63e9b41aaa64a029292a683c3e72182e1a75fb966074242357a756e7ebe` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `46f8f527dfb317e88d3865003c3e62a68ba7d4c68739a474f74e4474e38e7920` |
 | `type_system` | `spec/types/type-system.md` | `7f4c5e94ae00cbe7fc5c2da0c2b7cdec2d1be58782452cbbca3eaf1ecc6730a9` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `2a4ed9d732cfb25e4c97816f72010a6c34fb6fc5aa82e40b6bd40681ca3d667f` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `45fd39519a3b88f6ff5182c368f4cee760febe4414e4a2d52cdc75f59f69ef84` |
@@ -48,5 +51,5 @@
 | `enum_derived_capabilities` | `spec/contracts/enum-derived-capabilities.json` | `a6094a7c9862e764b13aa935804b086a5d3a7e9ebf087b3b5506ed84c3e4a899` |
 | `literal_shaped_collection_design` | `spec/contracts/literal-shaped-collection-design.json` | `a83467df9ae86922569a90388c69c44443c5d2f0142cb9ea32fd2e31c8aafdad` |
 | `prelude` | `library/prelude/prelude.md` | `b6f2763556c02feafcb415130b0567a315b38c9321bb48d81f776ec71cecd7be` |
-| `current_decisions` | `decisions/language/current-decisions.json` | `52d0fe4ec14af39282ec2f739e0d0869e90056279325341ba543a6f927af186d` |
-| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `28e81c95a4e02a6472f313a5854ac85457ae7eeb7c5ab26c26d3b624df85e2a5` |
+| `current_decisions` | `decisions/language/current-decisions.json` | `81ea686a22a7de04e69e3e7876e32a7613c54b42f75465f2ae3b0d57b69c1d6f` |
+| `coverage_schema` | `schemas/language/grammar-reference-coverage.schema.json` | `dd8310c91102c8132425062c346f43abbb73daf54d255e6f79371838f80f2ebc` |

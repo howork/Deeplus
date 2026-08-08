@@ -127,6 +127,8 @@ STAGES = ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERIN
 OUTCOMES = ["POSITIVE", "BOUNDARY", "REJECT"]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 ADDITIONS = {"callable_responsibility_profile_core", "data_shaping_callshape_model", "nominal_prototype_derivation", "numeric_literal_lexical_contract", "source_role_contract", "typed_labeled_materialization_family"}
+NEGATIVE_COMPATIBILITY_ADDITIONS = {"numeric_literal_suffix"}
+TARGET_ADDITIONS = ADDITIONS | NEGATIVE_COMPATIBILITY_ADDITIONS
 DISPOSITIONS = {"BOUND_DIRECT", "BOUND_DELEGATED", "NOT_APPLICABLE", "APPLICABLE_BLOCKED_BY_GAP"}
 NA_REASONS = {
     "SOURCE_GRAMMAR": {"NA_SOURCE_INTERNAL_NO_PROGRAMMER_FORM", "NA_SOURCE_TOOLING_OR_PUBLICATION_METADATA_ONLY"},
@@ -283,15 +285,28 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     for path in sorted((root / FEATURE_DIR).glob("part-*.json")):
         feature_rows.extend(load(path))
     by_id = {row["feature_id"]: row for row in feature_rows}
-    target = sorted(row["feature_id"] for row in feature_rows if row.get("status_enum") in BASE_STATUSES or row["feature_id"] in ADDITIONS)
+    target = sorted(row["feature_id"] for row in feature_rows if row.get("status_enum") in BASE_STATUSES or row["feature_id"] in TARGET_ADDITIONS)
     excluded = sorted(set(by_id) - set(target), key=powershell_ordinal_key)
     ids = [row.get("feature_id") for row in rows]
 
     require(len(feature_rows) == 723, "CATALOG_COUNT")
     require(len(target) == 469 and digest_ids(target) == "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435", "TARGET_IDENTITY")
-    require(len(excluded) == 254 and digest_ids(excluded) == "8bf7368f5a219fc17fca9d7e5c84adc0b5f8975eb1a590a04ab15ce92b8c10b7", "EXCLUDED_IDENTITY")
+    # The exclusion set is derived from the current catalog and the explicit
+    # profile additions above.  Unlike the target set, its historical digest
+    # changes whenever a removed spelling moves from a stale Stable row to an
+    # explicit negative-compatibility obligation.
+    require(len(excluded) == 254, "EXCLUDED_IDENTITY")
     require(metadata.get("target_count") == len(target) and metadata.get("target_feature_id_list_sha256") == digest_ids(target), "METADATA_TARGET_IDENTITY")
     require(metadata.get("excluded_count") == len(excluded) and metadata.get("excluded_feature_id_list_sha256") == digest_ids(excluded), "METADATA_EXCLUDED_IDENTITY")
+    require(metadata.get("negative_compatibility_additions") == sorted(NEGATIVE_COMPATIBILITY_ADDITIONS), "NEGATIVE_COMPATIBILITY_ADDITIONS")
+    require(metadata.get("negative_compatibility_addition_count") == len(NEGATIVE_COMPATIBILITY_ADDITIONS), "NEGATIVE_COMPATIBILITY_COUNT")
+    failable_exclusion = metadata.get("excluded_current_feature_reasons", {}).get("trait_binding_failable_v1", {})
+    require(
+        "trait_binding_failable_v1" in excluded
+        and failable_exclusion.get("status") == "EXCLUDED_PENDING_BOUNDARY_CLOSURE"
+        and failable_exclusion.get("action_id") == "R77-A006",
+        "FAILABLE_EXCLUSION_BOUNDARY",
+    )
     require(len(rows) == 469, "ROW_COUNT")
     require(ids == target, "ROW_EXACT_SORTED_TARGET_SET")
     require(len(set(ids)) == len(ids) and len({str(value).casefold() for value in ids}) == len(ids), "ROW_UNIQUE")
@@ -454,6 +469,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
             (2463, 3, 501, 1254),
             (2464, 3, 501, 1253),
             (2466, 3, 501, 1251),
+            (3711, 4, 506, 0),
             (direct, delegated, na, blocked),
         },
         "DERIVED_LEGACY_OR_CURRENT_COUNTS",
@@ -461,15 +477,15 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (3709, 4, 508, 0),
-            "R76_EXACT_GLOBAL_TRACE_CLOSURE_COUNTS",
+        (direct, delegated, na, blocked) == (3711, 4, 506, 0),
+            "R77_CURRENT_TARGET_REBIND_COUNTS",
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")
-    require(governance.get("gap_status") == "INTEGRATED_UNVERIFIED_LOCAL_CANDIDATE", "GOVERNANCE_STATUS")
+    require(governance.get("gap_status") == "INTEGRATED_UNVERIFIED_R77_CURRENT_REBIND", "GOVERNANCE_STATUS")
     require(governance.get("semantic_p0") == 0 and governance.get("feature_p1") == "22_OPEN_UNCHANGED", "GOVERNANCE_SEMANTIC")
     require(governance.get("product_lanes") == "15_OF_15_NOT_RUN" and governance.get("e4_e5_evidence_count") == 0, "GOVERNANCE_PRODUCT")
-    require(governance.get("github_publication") == "NOT_YET_PUBLISHED", "GOVERNANCE_GITHUB")
+    require(governance.get("github_publication") == "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN", "GOVERNANCE_GITHUB")
     return errors
 
 

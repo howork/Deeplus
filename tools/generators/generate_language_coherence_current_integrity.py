@@ -26,8 +26,8 @@ from pathlib import Path
 from typing import Any
 
 
-REVISION = "r51f3-current-implementation-readiness-g4-audit-r1"
-PREVIOUS_REVISION = "r51f3-current-global-implementation-target-trace-closure-r76-r1"
+REVISION = "r51f3-current-r77-publication-policy-closure-r1"
+PREVIOUS_REVISION = "r51f3-current-implementation-readiness-g4-audit-r1"
 INHERITED_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
@@ -55,18 +55,20 @@ REVISION_RE = re.compile(r"^revision: (\S+)$", re.MULTILINE)
 AUTHORITY_DIGEST_RE = re.compile(
     r"^authority_digest: ([0-9a-f]{64})$", re.MULTILINE
 )
-ACTION_IDS = [
+SEPARATE_ACTION_IDS = [
     "M13-A002",
     "M13-A003",
     "M13-A004",
     "M13-A005",
+]
+AUDIT_ACTION_IDS = ["R77-A006"]
+FEATURE_P1_IDS = [
     *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
     *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
     *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
     "SFD-P1-009",
 ]
-FEATURE_P1_IDS = ACTION_IDS[4:]
-SEPARATE_ACTION_IDS = ACTION_IDS[:4]
+ACTION_IDS = SEPARATE_ACTION_IDS + AUDIT_ACTION_IDS + FEATURE_P1_IDS
 
 
 class GeneratorError(RuntimeError):
@@ -262,7 +264,15 @@ def collect_counts(root: Path) -> dict[str, int]:
         safe_path(root, "spec/grammar/keyword-vocabulary.json"),
         "LANGUAGE_COHERENCE_COUNT_METADATA",
     )
+    grammar_coverage = read_json(
+        safe_path(root, "docs/grammar-reference/coverage-manifest.json"),
+        "LANGUAGE_COHERENCE_COUNT_METADATA",
+    )
+    grammar_count = grammar_coverage.get("grammar", {}).get("production_count")
+    if not isinstance(grammar_count, int) or grammar_count < 0:
+        raise GeneratorError("LANGUAGE_COHERENCE_COUNT_METADATA", "grammar production count")
     return {
+        "grammar": grammar_count,
         "features": value("spec/features/catalog/catalog-metadata.json", "feature_count"),
         "diagnostics": value(
             "spec/diagnostics/catalog/catalog-metadata.json", "diagnostic_count"
@@ -282,7 +292,52 @@ def collect_counts(root: Path) -> dict[str, int]:
         "prelude_entries": value(
             "library/prelude/signatures/catalog-metadata.json", "entry_count"
         ),
+        "examples": value(
+            "examples/manifests/by-outcome/catalog-metadata.json", "example_count"
+        ),
     }
+
+
+def validate_readme_published_counts(root: Path, counts: dict[str, int]) -> None:
+    """Keep the human current-state summary bound to registry authorities."""
+
+    text = safe_path(root, "README.md").read_text(encoding="utf-8")
+    labels = {
+        "legacy EBNF surface census": counts["grammar"],
+        "기능 레지스트리": counts["features"],
+        "진단 레지스트리": counts["diagnostics"],
+        "타입 predicate": counts["predicates"],
+        "Prelude 서명": counts["prelude_entries"],
+        "예제 결과": counts["examples"],
+    }
+    for label, expected in labels.items():
+        match = re.search(rf"(?m)^[- ]*{re.escape(label)}: `([0-9,]+)`", text)
+        if not match or int(match.group(1).replace(",", "")) != expected:
+            raise GeneratorError(
+                "LANGUAGE_COHERENCE_README_COUNT_DRIFT",
+                f"{label}:{expected}",
+            )
+
+    parser_contract = read_json(
+        safe_path(root, "spec/contracts/parser-grammar-differential-r1.json"),
+        "LANGUAGE_COHERENCE_README_COUNT_DRIFT",
+    )
+    metrics = parser_contract.get("metrics", {})
+    dpg_match = re.search(
+        r"(?m)^- DPG 구조 rule family: `([0-9,]+)` \(`([0-9,]+)` context-specialized clause\)$",
+        text,
+    )
+    if (
+        not dpg_match
+        or int(dpg_match.group(1).replace(",", ""))
+        != metrics.get("dpg_rule_family_count")
+        or int(dpg_match.group(2).replace(",", ""))
+        != metrics.get("dpg_rule_clause_count")
+    ):
+        raise GeneratorError(
+            "LANGUAGE_COHERENCE_README_COUNT_DRIFT",
+            "DPG rule family/context clause",
+        )
 
 
 def collect_migration_exemptions(root: Path) -> list[dict[str, str]]:
@@ -355,6 +410,8 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "feature P1")
     if contract.get("separate_action_ids") != SEPARATE_ACTION_IDS:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "separate actions")
+    if contract.get("audit_action_ids") != AUDIT_ACTION_IDS:
+        raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "audit actions")
     if len(contract.get("product_lanes", [])) != 15:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "product lanes")
     if not re.fullmatch(
@@ -364,6 +421,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "reassembly non-owned")
     counts = contract.get("canonical_counts", {})
     fixed_counts = {
+        "grammar": 656,
         "features": 723,
         "predicates": 283,
         "predicate_fixtures": 877,
@@ -372,12 +430,14 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         "contextual_words": 105,
     }
     if (
-        set(counts) != {*fixed_counts, "diagnostics", "prelude_entries"}
+        set(counts) != {*fixed_counts, "diagnostics", "prelude_entries", "examples"}
         or any(counts.get(key) != value for key, value in fixed_counts.items())
         or not isinstance(counts.get("diagnostics"), int)
         or counts.get("diagnostics", 0) < 1250
         or not isinstance(counts.get("prelude_entries"), int)
         or counts.get("prelude_entries", 0) < 49
+        or not isinstance(counts.get("examples"), int)
+        or counts.get("examples", 0) < 1
     ):
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "canonical counts")
     return contract
@@ -417,8 +477,11 @@ def validate_state(root: Path, pointer: dict[str, Any], contract: dict[str, Any]
         or implementation_revision.group(1) != INHERITED_COMPONENT_REVISION
     ):
         raise GeneratorError("LANGUAGE_COHERENCE_REVISION_PARITY", REVISION)
-    if pointer.get("candidate_binding", {}).get("current_binding") is not False:
-        raise GeneratorError("LANGUAGE_COHERENCE_CURRENT_BINDING", "must be false")
+    if (
+        pointer.get("candidate_binding", {}).get("current_binding")
+        is not contract.get("current_binding")
+    ):
+        raise GeneratorError("LANGUAGE_COHERENCE_CURRENT_BINDING", "contract parity")
 
     lane_ids = contract["product_lanes"]
     expected_lanes = {lane: "NOT_RUN" for lane in lane_ids}
@@ -449,8 +512,8 @@ def validate_state(root: Path, pointer: dict[str, Any], contract: dict[str, Any]
     action_ids = [row.get("id") for row in actions if isinstance(row, dict)]
     if (
         action_ids != ACTION_IDS
-        or len(action_ids) != 26
-        or len(set(action_ids)) != 26
+        or len(action_ids) != len(ACTION_IDS)
+        or len(set(action_ids)) != len(ACTION_IDS)
         or any(row.get("tracking_ref") != f"deeplus-action:{row.get('id')}" for row in actions)
         or any(row.get("priority") != "P1" for row in actions[4:])
         or pointer.get("required_next_reviews") != contract["required_next_reviews"]
@@ -467,10 +530,12 @@ def validate_state(root: Path, pointer: dict[str, Any], contract: dict[str, Any]
         if capsule.get("source_revision") != INHERITED_COMPONENT_REVISION:
             raise GeneratorError("LANGUAGE_COHERENCE_ROLE_MEMORY", path.name)
 
-    if collect_counts(root) != contract["canonical_counts"]:
+    observed_counts = collect_counts(root)
+    if observed_counts != contract["canonical_counts"]:
         raise GeneratorError(
-            "LANGUAGE_COHERENCE_CANONICAL_COUNTS", repr(collect_counts(root))
+            "LANGUAGE_COHERENCE_CANONICAL_COUNTS", repr(observed_counts)
         )
+    validate_readme_published_counts(root, observed_counts)
 
 
 def render_authority(
@@ -561,9 +626,10 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
         "authority_digest": aggregate,
         "authority_domains": len(domains),
         "bound_roots": len(contract["bound_roots"]),
-        "open_actions": 26,
+        "open_actions": len(ACTION_IDS),
         "feature_p1": 22,
         "separate_actions": 4,
+        "audit_actions": len(AUDIT_ACTION_IDS),
         "product_lanes": "15/15_NOT_RUN",
         "canonical_counts": contract["canonical_counts"],
     }
@@ -608,7 +674,8 @@ def refresh_contract(root: Path) -> dict[str, Any]:
     ]
     contract["migration_identity_exemptions"] = collect_migration_exemptions(root)
     frozen = [
-        "spec/grammar/deeplus.ebnf",
+        "spec/grammar/deeplus.dpg",
+        "spec/grammar/deeplus.parser-contexts.json",
         "spec/frontend/frontend-model.json",
         "spec/types/type-system.md",
         "library/prelude/prelude.md",
@@ -782,7 +849,7 @@ def run(root: Path, mode: str) -> int:
                 **detail,
                 "owned_outputs": list(OUTPUTS),
                 "source_tree_manifest": "GENERATE_LAST_FROM_EXACT_STAGED_CLEAN_EXPORT",
-                "current_binding": False,
+                "current_binding": load_contract(root)["current_binding"],
                 "product_execution": "NOT_RUN",
             },
             ensure_ascii=False,

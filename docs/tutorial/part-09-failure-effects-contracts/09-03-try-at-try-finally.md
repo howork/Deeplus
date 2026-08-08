@@ -179,7 +179,7 @@ admitted Pattern carrier와 pure guard만 source order로 검사하며, 첫
 
 ## 12. 정본 근거와 다음 장
 
-- [try 정확 문법](../../../spec/grammar/deeplus.ebnf)
+- [try 정확 문법](../../../spec/grammar/deeplus.dpg)
 - [제어와 cleanup 참조](../../grammar-reference/11-control-flow-errors-effects-and-cleanup.md)
 - [평가·MIR](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 

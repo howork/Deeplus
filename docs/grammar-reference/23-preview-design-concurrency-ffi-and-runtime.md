@@ -29,7 +29,7 @@
 isolation과 callable ABI를 한 identity에 담을 수 있어야 한다.
 
 **제안 표면**
-`#async{ => ... }` 계열 후보는 존재하지만 exact EBNF, parameter/result
+`#async{ => ... }` 계열 후보는 존재하지만 exact DPG, parameter/result
 형식과 ABI가 미선정이다. 아래는 거부되는 설계 probe다. 양성 검토는
 명시적 capture와 structured owner, 음성은 ambient await/borrow escape,
 경계는 호출하지 않은 literal이 scope 밖으로 이동하거나 actor를 건너는

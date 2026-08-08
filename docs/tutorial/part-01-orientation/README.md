@@ -70,6 +70,6 @@ Preview Design의 후보 철자가 문서에 있다는 사실은 정상 AST를 �
 
 - [현재 포인터](../../../current/current-pointer.json)
 - [언어 정본](../../../spec/language.md)
-- [통합 EBNF](../../../spec/grammar/deeplus.ebnf)
+- [통합 DPG](../../../spec/grammar/deeplus.dpg)
 - [상태·권위 참고서](../../grammar-reference/00-status-authority-and-notation.md)
 - [프로그램과 Module 참고서](../../grammar-reference/02-programs-modules-and-imports.md)

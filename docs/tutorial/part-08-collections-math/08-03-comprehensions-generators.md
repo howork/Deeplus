@@ -222,7 +222,7 @@ let flat = [value for ... value in groups]
 
 - [문법 owner 가이드](../../grammar-reference/16-contextual-syntax-and-production-guide.md)
 - [collection 레퍼런스](../../grammar-reference/09-collections-indexing-and-slicing.md)
-- [generator grammar](../../../spec/grammar/deeplus.ebnf)
+- [generator grammar](../../../spec/grammar/deeplus.dpg)
 - [언어 명세 §24](../../../spec/language.md)
 
 다음 장에서는 shape가 type identity에 들어가는 NumericArray를 배운다.

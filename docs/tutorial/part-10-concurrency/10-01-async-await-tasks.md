@@ -185,7 +185,7 @@ Error로 접거나, background 실행을 암시적으로 시작하지 않는다.
 
 - [비동기 문법·의미](../../grammar-reference/13-async-tasks-actors-and-concurrency.md)
 - [Prelude AsyncSequence·Run·Reply](../../grammar-reference/19-prelude-providers-diagnostics-and-conformance.md)
-- [정확 grammar](../../../spec/grammar/deeplus.ebnf)
+- [정확 grammar](../../../spec/grammar/deeplus.dpg)
 
 다음 장에서는 `concur`가 child lifetime, 취소와 실패 집계를 닫는 방식을
 다룬다.

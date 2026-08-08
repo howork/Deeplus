@@ -17,7 +17,7 @@
 |---|---:|---|
 | feature registry의 `PREVIEW` | 3 | `explicit_feature_gate`가 있는 Preview 루트에서만 허용 가능 |
 | feature registry의 `PREVIEW_DESIGN` | 49 | 모두 `nonactivatable`; Stable/Preview parser route 없음 |
-| EBNF `PREVIEW` profile | 13 production | Preview 루트, gate 및 FFI 구조 |
+| DPG `PREVIEW` profile | 13 production | Preview 루트, gate 및 FFI 구조 |
 | gate map의 activatable entry | 3 | FFI 2개와 NumericArray elementwise power 1개 |
 | 제품 lane | 15/15 `NOT_RUN` | 정적 설계와 예제만으로 실행을 주장하지 않음 |
 
@@ -34,6 +34,8 @@
 semantic P0는 `0`이다. OPEN feature P1은 Class 6개,
 Enumeration 8개, Trait Conformance 7개, `SFD-P1-009` 1개로 정확히
 22개다. `M13-A002..005`는 이 22개에 합치지 않는 별도 OPEN action이다.
+`R77-A006`은 Failable guarded-binding의 checker/corpus closure를 위한
+별도 audit action이며, feature P1 집합이나 제품 지원 상태를 바꾸지 않는다.
 문서 생성, 정적 표, schema 또는 예제의 존재로 닫히는 P1은 0개다.
 
 15개 제품 lane은 `rust_frontend_lexer`, `rust_frontend_parser`,
@@ -82,6 +84,10 @@ Enumeration 8개, Trait Conformance 7개, `SFD-P1-009` 1개로 정확히
     "M13-A003",
     "M13-A004",
     "M13-A005"
+  ],
+  "audit_action_status": "OPEN",
+  "audit_action_ids": [
+    "R77-A006"
   ],
   "product_lanes": {
     "rust_frontend_lexer": "NOT_RUN",
@@ -183,7 +189,7 @@ FFI와 unsafe의 상세 soundness 경계는 [FFI, unsafe, 메타프로그래밍 
 - parser-cover grammar가 `false`인 설계는 source에서 사용할 수 없다.
 - 문서, fixture, schema, registry 행은 P1, 구현 또는 product lane을
   닫지 않는다.
-- source activation에는 Design_ 판정, exact EBNF와 root/profile,
+- source activation에는 Design_ 판정, exact DPG와 root/profile,
   frontend owner/admission, diagnostic, formatter/LSP, migration, MIR 및
   target-bound evidence가 별도로 필요하다.
 
@@ -191,7 +197,7 @@ FFI와 unsafe의 상세 soundness 경계는 [FFI, unsafe, 메타프로그래밍 
 
 | 기능 ID | 정확 후보 표면/API | 도입 판단과 현행 경계 |
 |---|---|---|
-| `async_callable_literal_profile` | `#async` callable literal family; exact EBNF 미선정 | call/return, cancellation, capture, lowering, ABI를 닫아야 하며 ordinary lambda는 동기 호출 |
+| `async_callable_literal_profile` | `#async` callable literal family; exact DPG 미선정 | call/return, cancellation, capture, lowering, ABI를 닫아야 하며 ordinary lambda는 동기 호출 |
 | `async_comprehension` | exact source surface 미선정 | iteration, failure order, cancellation, ownership 및 collection/stream 결과 identity 필요 |
 | `automatic_observation_tracking` | 자동 dependency observation API 미선정 | observation identity, mutation invalidation, lifetime, isolation 및 hidden authority 금지 필요 |
 | `directed_coroutine_group` | exact source route 미선정 | direction, structured scope, cancellation, cleanup 및 gated fixture가 없음 |
@@ -392,7 +398,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "state identity, transition totality, reentrancy, actor isolation, error/effect와 persistence 경계를 정해야 한다.",
     "diagnostics_migration_tooling": "현행 UML provider 출력을 새 syntax로 재해석하거나 자동 rewrite하지 않으며 formatter와 diagram round-trip 계약이 필요하다.",
     "open_alternatives": "ordinary Enum과 match 또는 uml_state_machine_provider가 현행 대안이고 provider evidence를 syntax authority로 쓰는 방식은 거부한다.",
-    "activation_prerequisites": "Design_ syntax 선택, exact EBNF, checker algorithm, MIR transition event와 provider parity receipt가 필요하다."
+    "activation_prerequisites": "Design_ syntax 선택, exact DPG, checker algorithm, MIR transition event와 provider parity receipt가 필요하다."
   },
   {
     "feature_id": "weak_atomic_ordering",
@@ -735,7 +741,7 @@ actor crossing을 암시하지 않는다.
     "static_semantics_and_interactions": "각 후보는 binder parity, finiteness, shape, equality/order, view selection, ownership, effect/error, cleanup, isolation과 rollback을 독립적으로 닫아야 하며 Stable ListRestView나 Tuple product를 일반화했다고 추정하지 않는다.",
     "diagnostics_migration_tooling": "Preview 표면을 current로 자동 rewrite하지 않고 gate별 deterministic diagnostic, formatter round-trip, hover의 Stable 대안, migration inventory와 부정 corpus를 제공해야 한다.",
     "open_alternatives": "Stable match/guarded binding, named pure adapter, 명시적 loop/search API, direct-local group assignment가 현행 대안이며 dynamic/effectful extractor와 ambient shared mutation은 source route 없이 deferred다.",
-    "activation_prerequisites": "후보별 exact EBNF와 owner policy, terminating checker algorithm, MIR event/cleanup contract, formatter/LSP, positive·negative·boundary·mutation corpus, target-bound xVM/Cranelift receipt와 별도 Design activation authority가 필요하다."
+    "activation_prerequisites": "후보별 exact DPG와 owner policy, terminating checker algorithm, MIR event/cleanup contract, formatter/LSP, positive·negative·boundary·mutation corpus, target-bound xVM/Cranelift receipt와 별도 Design activation authority가 필요하다."
   }
 ]
 ```
@@ -833,6 +839,11 @@ freeze/snapshot/view를 `preview_design_nonactivatable`에 결합한다. 이 목
 | `M13-A005` | `OPEN` | `P1` | Expressiveness First의 role/review contract 일치 |
 
 이 네 action은 feature P1과 독립이며 Preview 문서화로 완료되지 않는다.
+
+| `R77-A006` | `OPEN` | `P1` | Failable guarded-binding의 exact static `::branch(move source)` 계약에 대한 checker predicate 및 positive/boundary/rejection corpus 결속 |
+
+`R77-A006`은 R77 publication-policy audit에서 분리된 구현 준비 action이다.
+이 항목은 feature P1 22건에 합치지 않으며, 정적 문서나 schema만으로 닫히지 않는다.
 
 <!-- deeplus-status-fence: PREVIEW_GATED -->
 
@@ -934,7 +945,7 @@ row로 normalize하는 후보일 뿐 current parser syntax가 아니다.
 Preview promotion은 다음 순서를 건너뛸 수 없다.
 
 1. exact design decision과 current 대안/비활성 fence
-2. exact EBNF root/route와 frontend owner/admission
+2. exact DPG root/route와 frontend owner/admission
 3. terminating type/ownership/effect/coherence algorithm
 4. deterministic diagnostics 및 migration policy
 5. formatter/LSP와 public API/metadata residue
@@ -947,7 +958,7 @@ Preview promotion은 다음 순서를 건너뛸 수 없다.
 - 전체 언어 상태와 Post-PR16 Preview 설계:
   [`spec/language.md`](../../spec/language.md)
 - exact profile production:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - source root, gate 및 비활성 상세 결합:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
 - 720-row feature registry:

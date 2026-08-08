@@ -5,14 +5,14 @@
 ```text
 decision_id: DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1
 repository: howork/Deeplus
-branch: codex/r77-range-trait-indexing-migration
+branch: main
 baseline_commit: 9f7041c6aff80cf2a725b737d68a197caabc0005
 baseline_tree: 18c627e294b28d6b3f4a04f54d3c7caacd892c38
 authority: Codex Design_ under the user's current delegated language-design authority
-status: LOCAL_ACCEPTED_NOT_PUBLISHED
-current_binding: false
+status: INTEGRATED_UNVERIFIED_PENDING_PUBLICATION_CLOSURE
+current_binding: true
 product_lanes: 15/15 NOT_RUN
-github_mutation: none
+github_mutation: semantic surface integrated at da734c608c0d583a671c0da9e14da00bff42affd; this closure has no product implementation claim
 ```
 
 This decision reconstructs eight review inputs into one Deeplus contract. It

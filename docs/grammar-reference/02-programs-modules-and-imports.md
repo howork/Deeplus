@@ -248,7 +248,7 @@ def ask() -> Int
 
 ## 권위 추적
 
-- `spec/grammar/deeplus.ebnf`: `Deeplus`, `*SourceFile`, `ModuleDecl`,
+- `spec/grammar/deeplus.dpg`: `Deeplus`, `*SourceFile`, `ModuleDecl`,
   `ImportDecl`, `UseDecl`, `UseExportDecl`, `ExportDecl`,
   `TopLevelVisibility`
 - `spec/frontend/frontend-model.json`: `source_roots`,

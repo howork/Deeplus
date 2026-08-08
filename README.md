@@ -23,7 +23,8 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 4. [현행 포인터](current/current-pointer.json)에서 버전, 상태와 열린
    action을 확인한다.
 5. [언어 명세](spec/language.md)와 필요한 정확 정본을 대조한다.
-   - [정확 문법](spec/grammar/deeplus.ebnf)
+   - [정확 구조 문법 DPG](spec/grammar/deeplus.dpg)
+   - [ParserContext 정본](spec/grammar/deeplus.parser-contexts.json)
    - [Frontend 수용 모델](spec/frontend/frontend-model.json)
    - [타입 시스템](spec/types/type-system.md)
    - [MIR 관측 의미론](spec/mir/semantics.md)
@@ -38,16 +39,15 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 
 <!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
 
-- 문법 생성 규칙: `656`
-  - `LEXICAL 87`
-  - `STABLE 556`
-  - `PREVIEW 13`
-  - recovery는 production profile이 아니라 별도의 CST/parser 복구 정책
+- DPG 구조 rule family: `280` (`301` context-specialized clause)
+- legacy EBNF surface census: `656` production
+  - 차등 검증 입력이며 exact grammar authority가 아니다.
+  - recovery는 DPG rule이 아니라 별도의 CST/parser 복구 정책이다.
 - 기능 레지스트리: `723` (전체 catalog; Implementation Target Profile은 그중 `469`개)
-- 진단 레지스트리: `1,367`
-- 타입 predicate: `255`
-- Prelude 서명: `65`
-- 예제 결과: `715`
+- 진단 레지스트리: `1,486`
+- 타입 predicate: `283`
+- Prelude 서명: `81`
+- 예제 결과: `763`
 - semantic P0: `0`
 - 기능 P1: `22 OPEN`
 - 별도 action: `M13-A002..005` 네 건 `OPEN`
@@ -62,6 +62,7 @@ target-bound 실행 확인서가 없는 제품 주장은 허용하지 않는다.
 
 ```text
 python3 tools/generators/generate_grammar_reference.py --root . --check
+python3 tools/validators/validate_parser_grammar_differential.py --root . --mutations
 python3 tools/validators/run_grammar_reference_generator_tests.py --root .
 python3 tools/generators/generate_tutorial.py --root . --check
 python3 tools/validators/run_tutorial_generator_tests.py --root .

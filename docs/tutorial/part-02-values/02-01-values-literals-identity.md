@@ -156,7 +156,7 @@ serialization tag나 runtime discriminant와 직접 동일시하지 않는다.
 
 ## 12. 정본 근거와 다음 장
 
-- [어휘 EBNF](../../../spec/grammar/deeplus.ebnf)
+- [어휘 DPG](../../../spec/grammar/deeplus.dpg)
 - [어휘 구조 참고서](../../grammar-reference/01-lexical-structure.md)
 - [타입 정규화](../../../spec/types/type-system.md)
 - [MIR의 identity 분리](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)

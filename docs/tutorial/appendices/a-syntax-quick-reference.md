@@ -2,7 +2,7 @@
 
 > 상태: `MIXED_STATUS`
 >
-> 이 표는 학습용 축약이며 `spec/grammar/deeplus.ebnf`를 대체하지 않는다.
+> 이 표는 학습용 축약이며 `spec/grammar/deeplus.dpg`를 대체하지 않는다.
 > 모든 product 문법 실행 상태는 `NOT_RUN`이다.
 
 ## 1. source와 이름
@@ -188,6 +188,6 @@ lowercase `via`가 보이는 현행 contract와 inactive successor
 ## 10. 더 정확한 근거
 
 - [문법 명세 및 언어 참조서](../../grammar-reference/README.md)
-- `spec/grammar/deeplus.ebnf`
+- `spec/grammar/deeplus.dpg`
 - `spec/language.md`
 - `spec/frontend/frontend-model.json`

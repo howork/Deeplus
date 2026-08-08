@@ -70,5 +70,5 @@ def invalid(bytes: Bytes) -> Result<Image, error DecodeError>
 - [제어 흐름, 오류, 효과, 정리](../../grammar-reference/11-control-flow-errors-effects-and-cleanup.md)
 - [타입 시스템의 효과·오류·취소](../../../spec/types/type-system.md)
 - [MIR failure와 cleanup](../../../spec/mir/semantics.md)
-- [정확 문법](../../../spec/grammar/deeplus.ebnf)
+- [정확 문법](../../../spec/grammar/deeplus.dpg)
 - [진단 색인](../../grammar-reference/appendices/d-diagnostic-predicate-index.md)

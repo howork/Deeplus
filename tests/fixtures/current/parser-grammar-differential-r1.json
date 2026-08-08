@@ -1,0 +1,57 @@
+{
+  "schema": "deeplus.parser-grammar-differential-fixtures/r1",
+  "contract": "spec/contracts/parser-grammar-differential-r1.json",
+  "acceptance_cases": [
+    {
+      "test_id": "DPG-R1-P-001",
+      "kind": "positive",
+      "scenario": "resolve every DPG external binding and every legacy terminal spelling through the scanner, DPG, ParserContext, Pratt, CST or AST/checker owner",
+      "expected_outcome": "ACCEPT_CLOSED_LAYERED_GRAMMAR"
+    },
+    {
+      "test_id": "DPG-R1-B-001",
+      "kind": "boundary",
+      "scenario": "ordinary parenthesized call ends with a comma while a tilde argument sequence does not",
+      "expected_outcome": "ACCEPT_OWNER_SPECIFIC_COMMA_POLICY"
+    },
+    {
+      "test_id": "DPG-R1-B-002",
+      "kind": "boundary",
+      "scenario": "scan :~ as one longest-match actor-message operator and keep : ~ outside that operator",
+      "expected_outcome": "ACCEPT_ATTACHED_COLON_TILDE_ONLY"
+    },
+    {
+      "test_id": "DPG-R1-N-001",
+      "kind": "negative",
+      "scenario": "remove one @Set or admit predicate binding used by the DPG",
+      "expected_outcome": "REJECT_UNBOUND_DPG_EXTERNAL"
+    },
+    {
+      "test_id": "DPG-R1-N-002",
+      "kind": "negative",
+      "scenario": "remove AST/CallExpr from the closed AST kind domain while a legacy normalization row targets it",
+      "expected_outcome": "REJECT_AST_TARGET_OUTSIDE_CLOSED_DOMAIN"
+    },
+    {
+      "test_id": "DPG-R1-N-003",
+      "kind": "negative",
+      "scenario": "remove PreviewGate from the preview source root",
+      "expected_outcome": "REJECT_PREVIEW_ROOT_WITHOUT_GATE"
+    },
+    {
+      "test_id": "DPG-R1-N-004",
+      "kind": "negative",
+      "scenario": "parse an entry-point parameter list with the ordinary function parameter context",
+      "expected_outcome": "REJECT_PARAMETER_OWNER_CONTEXT_DRIFT"
+    }
+  ],
+  "mutation_specs": [
+    "MUT-UNKNOWN-SET",
+    "MUT-TILDE-TRAILING-COMMA",
+    "MUT-COLON-TILDE-ATTACHMENT",
+    "MUT-AST-CALL-DOMAIN",
+    "MUT-PREVIEW-GATE",
+    "MUT-PARAMETER-OWNER-CONTEXT"
+  ],
+  "evidence_boundary": "design/static DPG differential only; production parser, CST round-trip and AST normalization execution remain NOT_RUN"
+}

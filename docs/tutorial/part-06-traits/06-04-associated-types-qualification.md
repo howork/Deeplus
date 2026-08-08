@@ -222,7 +222,7 @@ nominal `def::`만 declaring owner의 private construction authority를 가질
 
 - [Associated capability 레퍼런스](../../grammar-reference/06-classes-traits-conformance-and-extensions.md)
 - [Companion coherence 계약](../../../spec/contracts/companion-capability-coherence.json)
-- [문법](../../../spec/grammar/deeplus.ebnf)
+- [문법](../../../spec/grammar/deeplus.dpg)
 
 다음 장에서는 Trait conformance가 operator glyph에 연결될 수 있는 정확히
 제한된 Stable 통로를 배운다.
