@@ -35,6 +35,10 @@ R76_PREDECESSOR = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
 R76_OVERLAY = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
 R76_COUNTS = (3709, 4, 508, 0)
 R76_NON_TARGET_SHA256 = "6a81d15917d1b2dc882cd66311ef66d5a9dd07d443e083fc963f34f08db16549"
+R77_REVISION = "r77-current-implementation-target-rebind-r1"
+R77_BASELINE = "da734c608c0d583a671c0da9e14da00bff42affd"
+R77_COUNTS = (3711, 4, 506, 0)
+R77_NON_TARGET_SHA256 = "03cbce04ca0b3a06e01972d186ad4b0c5a6987b814463a5d9f9dc53c1b27e34d"
 
 FEATURE_CATALOG = "spec/features/catalog/chunks/part-0009.json"
 ROWS = "spec/traceability/implementation-target-profile-r1/rows.json"
@@ -212,13 +216,22 @@ def validate(root: Path, *, overrides: Optional[Mapping[str, Any]] = None,
         and applied[-1]
         == {"path": R76_OVERLAY, "feature_count": 409, "binding_count": 1242}
     )
+    r77_successor = (
+        metadata.get("revision") == R77_REVISION
+        and metadata.get("canonical_baseline_commit") == R77_BASELINE
+        and metadata.get("local_predecessor_commit") == R77_BASELINE
+        and applied[-1]
+        == {"path": R76_OVERLAY, "feature_count": 409, "binding_count": 1242}
+    )
+    global_successor = r76_successor or r77_successor
     require(
         current_duplicates == 0
         and (
             (
-                r76_successor
+                global_successor
                 and current_count == NON_TARGET_COUNT
-                and current_digest == R76_NON_TARGET_SHA256
+                and current_digest
+                == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
             )
             or (
                 r75_successor
@@ -226,28 +239,28 @@ def validate(root: Path, *, overrides: Optional[Mapping[str, Any]] = None,
                 == (R75_NON_TARGET_COUNT, R75_NON_TARGET_SHA256)
             )
             or (
-                not (r75_successor or r76_successor)
+                not (r75_successor or global_successor)
                 and current_count == NON_TARGET_COUNT
                 and current_digest == NON_TARGET_SHA256
             )
         )
-        and (metadata.get("revision") == REVISION or r75_successor or r76_successor)
+        and (metadata.get("revision") == REVISION or r75_successor or global_successor)
         and metadata.get("canonical_baseline_commit")
-        == (R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
-        and (metadata.get("local_predecessor_commit") == PREDECESSOR or r75_successor or r76_successor)
-        and len(applied) == (21 if r76_successor else 20 if r75_successor else 19)
+        == (R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
+        and (metadata.get("local_predecessor_commit") == PREDECESSOR or r75_successor or global_successor)
+        and len(applied) == (21 if global_successor else 20 if r75_successor else 19)
         and {"path": R73_OVERLAY, "feature_count": 1, "binding_count": 2}
         in applied
         and sum(row.get("binding_count", 0) for row in applied)
-        == (1381 if r76_successor else 139 if r75_successor else 136)
-        and len(registry) == (4393 if r76_successor else 3151 if r75_successor else 3148)
+        == (1381 if global_successor else 139 if r75_successor else 136)
+        and len(registry) == (4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
         and sum(row.get("evidence_id") == EVIDENCE_ID for row in registry) == 1,
         "G03", "GENERATED_METADATA_EXACT",
     )
     require(
         (derived.get("bound_direct_cells"), derived.get("bound_delegated_cells"),
          derived.get("not_applicable_cells"), derived.get("applicable_blocked_cells"))
-        == (R76_COUNTS if r76_successor else (2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245))
+        == (R77_COUNTS if r77_successor else R76_COUNTS if r76_successor else (2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245))
         and derived.get("missing_cells") == 0 and derived.get("conflict_cells") == 0,
         "G03", "GENERATED_COUNTS_EXACT",
     )
@@ -296,7 +309,7 @@ def validate(root: Path, *, overrides: Optional[Mapping[str, Any]] = None,
         and governance.get("m13_actions") == "4_OPEN_UNCHANGED"
         and governance.get("product_lanes") == "15_OF_15_NOT_RUN"
         and governance.get("github_publication")
-        == ("NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED"),
+        == ("R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED"),
         "G06", "GOVERNANCE_AND_PRODUCT_FENCE",
     )
     return errors

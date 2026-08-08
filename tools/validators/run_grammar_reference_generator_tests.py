@@ -205,7 +205,10 @@ def mutate_profile(root: Path, contract: dict) -> None:
 
 
 def mutate_production(root: Path, contract: dict) -> None:
-    path = root / contract["grammar"]["path"]
+    # The production-index mutation targets the retained 656-row differential
+    # census.  The exact compact DPG is exercised by the dedicated DPG
+    # differential mutations instead of being expanded into legacy rows.
+    path = root / contract["grammar"]["surface_census_path"]
     text = path.read_text(encoding="utf-8")
     needle = 'IgnoredAllListRest ::= "_" ".." ","? ;'
     if text.count(needle) != 1:

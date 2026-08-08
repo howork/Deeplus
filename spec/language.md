@@ -4,7 +4,7 @@ Status: current language-design authority
 Publication date: 2026-07-14  
 Product implementation evidence: `NOT_RUN` unless an artifact-bound product receipt states otherwise
 
-R51f is a **fully merged package-level current-canonical artifact**, not an overlay. This document states the complete human-readable current language contract. The exact EBNF is maintained once, in `spec/grammar/deeplus.ebnf`, and is normatively incorporated by reference. Token ownership, contextual admission, input supply, CST/AST roles, and formatter boundaries are fixed by `spec/frontend/frontend-model.json`. Older releases are unnecessary for interpreting current source.
+R51f is a **fully merged package-level current-canonical artifact**, not an overlay. This document states the complete human-readable current language contract. The exact structural parser grammar is the compact DPG in `spec/grammar/deeplus.dpg`, coupled to the closed context registry in `spec/grammar/deeplus.parser-contexts.json`, and is normatively incorporated by reference. The retained `spec/grammar/deeplus.ebnf` is a nonauthoritative differential surface census. Token ownership, contextual admission, input supply, CST/AST roles, and formatter boundaries are fixed by `spec/frontend/frontend-model.json`. Older releases are unnecessary for interpreting current source.
 
 Normative words **must**, **must not**, **shall**, **shall not**, and **may** have their usual specification meaning. A code block marked accepted illustrates current source. A rejected block illustrates the exact invalid surface and does not make that surface current.
 
@@ -2019,8 +2019,8 @@ zero canonical source-unit AST.
 
 ## 46. Exact Grammar incorporation
 
-The exact syntax authority is `spec/grammar/deeplus.ebnf`. This specification
-does not duplicate EBNF productions. `docs/grammar-reference` is a
+The exact syntax authority is `spec/grammar/deeplus.dpg`. This specification
+does not duplicate DPG productions. `docs/grammar-reference` is a
 generated-and-validated reader projection, not a second syntax authority. The
 Grammar is an inseparable normative component of the R51f3 package and
 contains three profiles:
@@ -2029,7 +2029,7 @@ contains three profiles:
 - STABLE: current source reachable from the declared Deeplus roots;
 - PREVIEW: source admitted only by an explicit current feature gate.
 
-The Frontend Model supplies the owner policies that EBNF deliberately delegates: Pratt binding, contextual words, exact introducer attachment, input supply, role admission, token/trivia boundary, CST/AST/HIR/MIR responsibility, and formatter convention. An implementation must consume both files with this specification.
+The Frontend Model supplies the owner policies that DPG deliberately delegates: Pratt binding, contextual words, exact introducer attachment, input supply, role admission, token/trivia boundary, CST/AST/HIR/MIR responsibility, and formatter convention. An implementation must consume both files with this specification.
 
 ## 47. Required current Grammar invariants
 
@@ -2100,12 +2100,14 @@ its dependency closure atomically. It cannot select or rewrite a role, profile,
 or root. A mismatch produces no activated feature and no canonical source-unit
 AST.
 
-The exact 656 Grammar productions are bound by the canonical production-
-disposition registry. Every production has exactly one disposition: lossless
-CST-only, canonical AST node, deterministic normalization, external parser
-entry, or reject-before-AST recovery. The lossless CST preserves every source
-token and trivia occurrence exactly once. Canonical AST contains neither
-missing/unexpected/skipped tokens nor recovery/error nodes.
+The retained 656-row EBNF surface census is bound by the canonical production-
+disposition registry as a differential CST/AST responsibility crosswalk. It is
+not a second exact grammar and does not require the compact DPG to repeat 656
+productions. Every census row has exactly one disposition: lossless CST-only,
+canonical AST node, deterministic normalization, external parser entry, or
+reject-before-AST recovery. The lossless CST preserves every source token and
+trivia occurrence exactly once. Canonical AST contains neither missing,
+unexpected, or skipped tokens nor recovery/error nodes.
 
 Pratt dispatch is closed over `EXPRESSION`, `PREDICATE`, `SLICE_INDEX`, `TYPE`,
 `NON_FUNCTION_TYPE`, and `UNIT`. Each goal has its own admitted nud/led/primary
@@ -3377,7 +3379,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `SMOKE_EXPECTED_OUTCOME_REQUIRED` [error]: SMOKE_EXPECTED_OUTCOME_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree.
 - `SOURCE_TRUTH_PROJECTION_CONFLICT` [error]: Spec text, Markdown projection, and machine registry disagree about which artifact is the canonical source for registry rows.
 - `SPEC_PROJECTION_COUNT_DRIFT` [error]: Spec projection counts must match machine registry counts.
-- `STABLE_EBNF_NONACTIVATABLE_HELPER_LEAK` [error]: STABLE_EBNF_NONACTIVATABLE_HELPER_LEAK: the current corpus, lifecycle, grammar, and machine authorities must agree.
+- `STABLE_DPG_NONACTIVATABLE_HELPER_LEAK` [error]: STABLE_DPG_NONACTIVATABLE_HELPER_LEAK: the current corpus, lifecycle, grammar, and machine authorities must agree.
 - `STABLE_FEATURE_PREVIEW_GATE_ANNOTATION_FORBIDDEN_R48` [error]: Stable design features must not be documented with `@feature(..., preview)` in current-accept examples.
 - `STABLE_GRAMMAR_PROFILE_STATUS_DRIFT` [error]: STABLE_GRAMMAR_PROFILE_STATUS_DRIFT: the current corpus, lifecycle, grammar, and machine authorities must agree.
 - `STABLE_GRAMMAR_REQUIRES_PROFILE_AWARE_REFERENCES` [error]: STABLE_GRAMMAR_REQUIRES_PROFILE_AWARE_REFERENCES: the current corpus, lifecycle, grammar, and machine authorities must agree.

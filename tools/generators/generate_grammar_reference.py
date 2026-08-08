@@ -62,6 +62,10 @@ PROFILE_MARKER_RE = re.compile(
     r"(?m)^[ \t]*PROFILE:[ \t]*(LEXICAL|STABLE|PREVIEW)[ \t]*$"
 )
 PRODUCTION_RE = re.compile(r"(?m)^([A-Za-z][A-Za-z0-9_]*)[ \t]*::=")
+DPG_RULE_RE = re.compile(
+    r"(?m)^([A-Za-z_][A-Za-z0-9_]*)(<[^>\r\n]+>)?\s*"
+    r"(?::=|\r?\n\s*:=)"
+)
 EXPECTED_COUNTS = {
     "grammar_productions": 656,
     "features": 723,
@@ -167,6 +171,9 @@ EXPECTED_M13_ACTION_IDS = [
     "M13-A004",
     "M13-A005",
 ]
+EXPECTED_AUDIT_ACTION_IDS = [
+    "R77-A006",
+]
 EXPECTED_PRODUCT_LANE_IDS = [
     "rust_frontend_lexer",
     "rust_frontend_parser",
@@ -195,6 +202,8 @@ EXPECTED_GOVERNANCE = {
     "feature_p1_ids": EXPECTED_FEATURE_P1_IDS,
     "separate_action_status": "OPEN",
     "separate_open_action_ids": EXPECTED_M13_ACTION_IDS,
+    "audit_action_status": "OPEN",
+    "audit_action_ids": EXPECTED_AUDIT_ACTION_IDS,
     "product_lane_status": "NOT_RUN",
     "product_lane_ids": EXPECTED_PRODUCT_LANE_IDS,
     "chapter_begin_marker": "<!-- deeplus-governance-invariants: begin -->",
@@ -1310,6 +1319,7 @@ def validate_governance(
     action_ids = [row.get("id") for row in open_actions]
     expected_action_ids = [
         *governance["separate_open_action_ids"],
+        *governance["audit_action_ids"],
         *governance["feature_p1_ids"],
     ]
     if any(not isinstance(identifier, str) for identifier in action_ids):
@@ -1355,6 +1365,11 @@ def validate_governance(
         for identifier in action_ids
         if isinstance(identifier, str) and identifier.startswith("M13-A")
     ]
+    observed_audit_actions = [
+        identifier
+        for identifier in action_ids
+        if isinstance(identifier, str) and re.fullmatch(r"R77-A[0-9]{3}", identifier)
+    ]
     if observed_feature_p1 != governance["feature_p1_ids"]:
         raise GeneratorError(
             "GRAMMAR_REFERENCE_GOVERNANCE_P1_SOURCE",
@@ -1375,6 +1390,11 @@ def validate_governance(
         raise GeneratorError(
             "GRAMMAR_REFERENCE_GOVERNANCE_M13_SOURCE",
             f"observed={observed_m13}",
+        )
+    if observed_audit_actions != governance["audit_action_ids"]:
+        raise GeneratorError(
+            "GRAMMAR_REFERENCE_GOVERNANCE_AUDIT_ACTION_SOURCE",
+            f"observed={observed_audit_actions}",
         )
     expected_lanes = {
         lane: governance["product_lane_status"]
@@ -1400,6 +1420,8 @@ def validate_governance(
         "feature_p1_ids": governance["feature_p1_ids"],
         "separate_action_status": governance["separate_action_status"],
         "separate_open_action_ids": governance["separate_open_action_ids"],
+        "audit_action_status": governance["audit_action_status"],
+        "audit_action_ids": governance["audit_action_ids"],
         "product_lanes": expected_lanes,
     }
     if chapter_value != expected_chapter_value:
@@ -1417,6 +1439,10 @@ def validate_governance(
         r"(?m)^\|\s*`(M13-A[0-9]{3})`\s*\|\s*`OPEN`\s*\|",
         chapter_text,
     )
+    audit_rows = re.findall(
+        r"(?m)^\|\s*`(R77-A[0-9]{3})`\s*\|\s*`OPEN`\s*\|",
+        chapter_text,
+    )
     if p1_rows != governance["feature_p1_ids"]:
         raise GeneratorError(
             "GRAMMAR_REFERENCE_GOVERNANCE_P1_LEDGER",
@@ -1427,6 +1453,11 @@ def validate_governance(
             "GRAMMAR_REFERENCE_GOVERNANCE_M13_LEDGER",
             repr(m13_rows),
         )
+    if audit_rows != governance["audit_action_ids"]:
+        raise GeneratorError(
+            "GRAMMAR_REFERENCE_GOVERNANCE_AUDIT_ACTION_LEDGER",
+            repr(audit_rows),
+        )
     return {
         "source_path": governance["source_path"],
         "semantic_p0": observed_semantic_p0,
@@ -1434,6 +1465,8 @@ def validate_governance(
         "feature_p1_ids": governance["feature_p1_ids"],
         "separate_action_status": governance["separate_action_status"],
         "separate_open_action_ids": governance["separate_open_action_ids"],
+        "audit_action_status": governance["audit_action_status"],
+        "audit_action_ids": governance["audit_action_ids"],
         "product_lanes": expected_lanes,
     }
 
@@ -1819,14 +1852,15 @@ def render_summary(
     return ("\n".join(lines)).encode("utf-8")
 
 
-def render_productions(productions: list[dict[str, Any]], grammar_path: str) -> bytes:
+def render_productions(productions: list[dict[str, Any]], census_path: str) -> bytes:
     lines = [
         GENERATED_BANNER.rstrip(),
-        "# 부록 A — 정확한 문법 production 참조",
+        "# 부록 A — legacy surface-census production 참조",
         "",
-        f"권위 원천은 `{grammar_path}`입니다. 이름만 나열하지 않고 모든 production의 "
-        "정확한 오른쪽 항을 주석을 제외한 정규화된 EBNF로 한 번씩 투영합니다. "
-        "줄 번호는 원천을 찾아가기 위한 보조 정보이며 이 부록 자체가 별도 문법 권위는 아닙니다.",
+        f"비권위 차등 입력은 `{census_path}`입니다. 정확한 구조 문법 권위는 "
+        "`spec/grammar/deeplus.dpg`와 닫힌 ParserContext 정본입니다. 이 표는 기존 "
+        "656개 surface-census production의 오른쪽 항을 한 번씩 투영하여 DPG cutover의 "
+        "CST/AST 책임 추적성을 보존하며, 그 자체가 별도 문법 권위는 아닙니다.",
         "",
     ]
     for profile in ("LEXICAL", "STABLE", "PREVIEW"):
@@ -2177,9 +2211,23 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
 
     grammar_path = safe_path(root, contract["grammar"]["path"])
     grammar_text = grammar_path.read_text(encoding="utf-8")
+    context_path = safe_path(root, contract["grammar"]["contexts_path"])
+    read_json(context_path, "GRAMMAR_REFERENCE_CONTEXT_JSON")
+    census_path = safe_path(root, contract["grammar"]["surface_census_path"])
+    census_text = census_path.read_text(encoding="utf-8")
+    dpg_matches = list(DPG_RULE_RE.finditer(grammar_text))
+    dpg_families = {match.group(1) for match in dpg_matches}
+    if (
+        len(dpg_matches) != contract["grammar"]["expected_rule_clause_count"]
+        or len(dpg_families) != contract["grammar"]["expected_rule_family_count"]
+    ):
+        raise GeneratorError(
+            "GRAMMAR_REFERENCE_DPG_COUNT",
+            f"clauses={len(dpg_matches)} families={len(dpg_families)}",
+        )
     frontend_path = safe_path(root, contract["grammar"]["frontend_model_path"])
     frontend = read_json(frontend_path, "GRAMMAR_REFERENCE_FRONTEND_JSON")
-    productions, profile_counts = parse_grammar(grammar_text, frontend, contract)
+    productions, profile_counts = parse_grammar(census_text, frontend, contract)
     topology = read_json(
         safe_path(root, TOPOLOGY_CONTRACT_REL),
         "GRAMMAR_REFERENCE_TOPOLOGY_CONTRACT_JSON",
@@ -2257,7 +2305,7 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
             contract, registries["features"], preview_detail_links
         ),
         "docs/grammar-reference/appendices/a-production-index.md": render_productions(
-            productions, contract["grammar"]["path"]
+            productions, contract["grammar"]["surface_census_path"]
         ),
         "docs/grammar-reference/appendices/b-token-keyword-operator-index.md": render_vocabulary(
             vocabulary, frontend, productions
@@ -2313,6 +2361,12 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
         "grammar": {
             "path": contract["grammar"]["path"],
             "sha256": sha256_bytes(grammar_path.read_bytes()),
+            "contexts_path": contract["grammar"]["contexts_path"],
+            "contexts_sha256": sha256_bytes(context_path.read_bytes()),
+            "rule_family_count": len(dpg_families),
+            "rule_clause_count": len(dpg_matches),
+            "surface_census_path": contract["grammar"]["surface_census_path"],
+            "surface_census_sha256": sha256_bytes(census_path.read_bytes()),
             "production_count": len(productions),
             "profile_counts": profile_counts,
             "duplicate_production_count": 0,
@@ -2378,6 +2432,7 @@ def render_outputs(root: Path) -> tuple[dict[str, bytes], dict[str, Any]]:
             "open_separate_actions": len(
                 governance["separate_open_action_ids"]
             ),
+            "open_audit_actions": len(governance["audit_action_ids"]),
             "product_lanes_not_run": len(governance["product_lanes"]),
         },
         "product_support": "NOT_RUN",

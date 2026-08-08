@@ -1079,7 +1079,7 @@ support가 아니다.
 ## 정본 근거
 
 - 정확한 Class/Trait/conformance/extension 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - 관계 domain, marker, operator 및 current/Preview fence:
   [`spec/language.md`](../../spec/language.md)
 - Class, evidence, extension resolution과 ownership:

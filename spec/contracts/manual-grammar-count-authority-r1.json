@@ -9,7 +9,11 @@
     "tree": "49831ccd810ee4aa4e419ce6a414b54950977549"
   },
   "authority": {
-    "source_grammar": "spec/grammar/deeplus.ebnf",
+    "exact_parser_grammar": "spec/grammar/deeplus.dpg",
+    "parser_contexts": "spec/grammar/deeplus.parser-contexts.json",
+    "surface_census": "spec/grammar/deeplus.ebnf",
+    "dpg_rule_family_count": 280,
+    "dpg_rule_clause_count": 301,
     "extractor": "tools/generators/generate_grammar_reference.py#parse_grammar",
     "published_projection": "docs/grammar-reference/coverage-manifest.json#/grammar",
     "profile_counts": {
@@ -48,11 +52,9 @@
       "path": "README.md",
       "required_fragments": [
         "<!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->",
-        "문법 생성 규칙: `656`",
-        "`LEXICAL 87`",
-        "`STABLE 556`",
-        "`PREVIEW 13`",
-        "recovery는 production profile이 아니라 별도의 CST/parser 복구 정책"
+        "DPG 구조 rule family: `280` (`301` context-specialized clause)",
+        "legacy EBNF surface census: `656` production",
+        "recovery는 DPG rule이 아니라 별도의 CST/parser 복구 정책"
       ]
     },
     {
@@ -60,10 +62,9 @@
       "path": "docs/grammar-reference/00-status-authority-and-notation.md",
       "required_fragments": [
         "<!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->",
-        "| `LEXICAL` | 87 |",
-        "| `STABLE` | 556 |",
-        "| `PREVIEW` | 13 |",
-        "| **합계** | **656** |"
+        "| DPG rule family | 280 |",
+        "| context-specialized clause | 301 |",
+        "| legacy EBNF surface census | 656 |"
       ]
     },
     {
@@ -71,7 +72,7 @@
       "path": "docs/grammar-reference/16-contextual-syntax-and-production-guide.md",
       "required_fragments": [
         "<!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->",
-        "656개 production"
+        "656개 production을 복제하지 않고도"
       ]
     }
   ],

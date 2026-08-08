@@ -613,7 +613,7 @@ public enum Day {
 ## 정본 근거
 
 - 정확한 Enum/schema/bitfield/unit/materialization 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - current data-domain, identity, materialization과 Preview fence:
   [`spec/language.md`](../../spec/language.md)
 - Union/Enum/Record/bitfield/measure 타입 판정:

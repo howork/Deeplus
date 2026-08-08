@@ -141,7 +141,7 @@ parameter와 return뿐 아니라 effects, errors, suspension, ownership도
 
 ## 12. 정본 근거와 다음 장
 
-- [함수 문법](../../../spec/grammar/deeplus.ebnf)
+- [함수 문법](../../../spec/grammar/deeplus.dpg)
 - [함수·호출 참고서](../../grammar-reference/05-functions-methods-closures-and-calls.md)
 - [타입·callable 책임](../../../spec/types/type-system.md)
 - [현행 예제 corpus](../../../examples/guide/review-corpus.md)

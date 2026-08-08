@@ -209,7 +209,7 @@ conformance를 합성할 수도 없다.
 ## 12. 정본 근거와 다음 장
 
 - [언어 명세의 Class 계약](../../../spec/language.md)
-- [Class 문법](../../../spec/grammar/deeplus.ebnf)
+- [Class 문법](../../../spec/grammar/deeplus.dpg)
 - [Class·Trait 레퍼런스](../../grammar-reference/06-classes-traits-conformance-and-extensions.md)
 - [통합 예제](../../grammar-reference/24-integrated-worked-examples.md)
 

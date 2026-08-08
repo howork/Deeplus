@@ -201,7 +201,7 @@ broadcast나 shaped literal proposal 때문에 바뀌지 않는다.
 - [Preview Design — 컬렉션·context·제어](../../grammar-reference/22-preview-design-collections-context-and-control.md)
 - [인덱싱·연산자 계약](../../../spec/contracts/value-operator-indexing-coherence.json)
 - [type/flow/callable 계약](../../../spec/contracts/type-flow-callable-coherence.json)
-- [문법 명세](../../../spec/grammar/deeplus.ebnf)
+- [문법 명세](../../../spec/grammar/deeplus.dpg)
 
 다음 장에서는 async callable, observation, coroutine group, FFI/runtime
 proposal과 MIR-X1 draft를 current backend authority와 분리한다.

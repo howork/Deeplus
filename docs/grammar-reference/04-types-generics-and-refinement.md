@@ -6,7 +6,7 @@
 ## 상태
 
 이 장은 Deeplus `0.1.2-internal`의 현행 타입 문법과 정적 의미를
-읽기 쉽게 투영한다. 정확한 구문은 EBNF, 타입 판정은 타입 시스템과
+읽기 쉽게 투영한다. 정확한 구문은 DPG, 타입 판정은 타입 시스템과
 checker predicate가 소유한다. 이 문서가 새 타입, 암시적 변환, 런타임
 타입 검사 또는 제품 지원을 만들지는 않는다.
 
@@ -669,7 +669,7 @@ product PASS가 아니다.
 ## 정본 근거
 
 - 정확한 타입/parameter/refinement 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - 타입 정규화, Union, narrowing, refinement, Facet:
   [`spec/types/type-system.md`](../../spec/types/type-system.md)
 - 언어 규칙 Part III, VI 및 pattern 경계:

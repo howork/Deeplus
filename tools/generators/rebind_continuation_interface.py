@@ -42,11 +42,16 @@ def load(path: Path) -> dict[str, Any]:
     return value
 
 
+def rendered_json_bytes(value: Any) -> bytes:
+    """Return the repository-canonical UTF-8/LF representation."""
+    return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+
+
 def write(path: Path, value: Any) -> None:
     # Bound contract identities are byte-level and must not vary with the
-    # host default newline convention.  Git's canonical text form is LF.
-    with path.open("w", encoding="utf-8", newline="\n") as handle:
-        handle.write(json.dumps(value, ensure_ascii=False, indent=2) + "\n")
+    # host default newline convention. Writing bytes bypasses Windows text
+    # newline translation completely; Git's canonical text form is LF.
+    path.write_bytes(rendered_json_bytes(value))
 
 
 def recompute(root: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -123,19 +128,18 @@ def main() -> int:
     root = args.root.resolve()
     expected_interface, expected_suspension, expected_lowering, expected_bridge = recompute(root)
     if args.check:
-        actual_interface = load(root / INTERFACE)
-        actual_suspension = load(root / SUSPENSION)
-        actual_lowering = load(root / LOWERING)
-        actual_bridge = load(root / BRIDGE)
+        targets = {
+            "INTERFACE": (root / INTERFACE, expected_interface),
+            "SUSPENSION": (root / SUSPENSION, expected_suspension),
+            "LOWERING": (root / LOWERING, expected_lowering),
+            "BRIDGE": (root / BRIDGE, expected_bridge),
+        }
         errors = []
-        if actual_interface != expected_interface:
-            errors.append("INTERFACE_DRIFT")
-        if actual_suspension != expected_suspension:
-            errors.append("SUSPENSION_BINDING_DRIFT")
-        if actual_lowering != expected_lowering:
-            errors.append("LOWERING_BINDING_DRIFT")
-        if actual_bridge != expected_bridge:
-            errors.append("BRIDGE_BINDING_DRIFT")
+        for name, (path, expected) in targets.items():
+            if load(path) != expected:
+                errors.append(f"{name}_DRIFT")
+            if path.read_bytes() != rendered_json_bytes(expected):
+                errors.append(f"{name}_BYTE_DRIFT")
         print(json.dumps({"result": "PASS" if not errors else "FAIL", "mode": "check", "errors": errors, "interface_digest": expected_interface["continuation_interface_digest"]}, separators=(",", ":")))
         return 1 if errors else 0
     write(root / INTERFACE, expected_interface)

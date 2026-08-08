@@ -25,7 +25,7 @@
       "const": "deeplus.grammar-reference-coverage/r1"
     },
     "revision": {
-      "const": "r51f3-current-implementation-readiness-g4-audit-r1"
+      "const": "r51f3-current-r77-publication-policy-closure-r1"
     },
     "reference_root": {
       "const": "docs/grammar-reference"
@@ -117,6 +117,12 @@
       "required": [
         "path",
         "sha256",
+        "contexts_path",
+        "contexts_sha256",
+        "rule_family_count",
+        "rule_clause_count",
+        "surface_census_path",
+        "surface_census_sha256",
         "production_count",
         "profile_counts",
         "duplicate_production_count",
@@ -124,9 +130,27 @@
       ],
       "properties": {
         "path": {
-          "const": "spec/grammar/deeplus.ebnf"
+          "const": "spec/grammar/deeplus.dpg"
         },
         "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "contexts_path": {
+          "const": "spec/grammar/deeplus.parser-contexts.json"
+        },
+        "contexts_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "rule_family_count": {
+          "const": 280
+        },
+        "rule_clause_count": {
+          "const": 301
+        },
+        "surface_census_path": {
+          "const": "spec/grammar/deeplus.ebnf"
+        },
+        "surface_census_sha256": {
           "$ref": "#/$defs/sha256"
         },
         "production_count": {

@@ -449,6 +449,7 @@ def contract_errors(
             "tree": BASELINE_TREE,
         },
         "grammar_production_count": 656,
+        "grammar_production_count_role": "LEGACY_SURFACE_CENSUS_FORMATTING_DISPOSITION",
         "formatting_rule_count": 6,
         "formatting_rule_counts": EXPECTED_RULE_COUNTS,
         "identity_domain_count": 8,

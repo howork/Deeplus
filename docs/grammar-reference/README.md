@@ -19,7 +19,7 @@
 
 1. 승인된 현행 결정
 2. [`spec/language.md`](../../spec/language.md)
-3. [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)의 정확한 문법
+3. [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)의 정확한 문법
 4. [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)의
    프런트엔드 수용 모델
 5. [`spec/types/type-system.md`](../../spec/types/type-system.md)와
@@ -139,7 +139,8 @@ def#entry launch(args: Sequence<String>) -> ExitCode
 
 기수 일치와 해시 결합은 “모든 행이 투영되었다”는 완전성 증거이지,
 각 기능의 의미가 충분히 설명되었거나 제품에서 실행된다는 증거가
-아니다. 이 판본은 그 차이를 줄이기 위해 production의 정확한 EBNF,
+아니다. 이 판본은 그 차이를 줄이기 위해 구조 DPG와 legacy surface-census
+production의 정확한 crosswalk,
 기능별 의존성·진단·예제 추적, 판정 알고리즘, 평가·실패·cleanup 추적과
 Preview 50개 각각의 설명 예제를 별도로 제공한다. 그래도 대상 실행
 확인서가 없는 구현·백엔드·도구 레인은 계속 `NOT_RUN`이다.

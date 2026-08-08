@@ -177,7 +177,7 @@ capture하면 해당 이름의 lexical lifetime만으로 충분한지 escape 검
 
 ## 12. 정본 근거와 다음 장
 
-- [바인딩·block EBNF](../../../spec/grammar/deeplus.ebnf)
+- [바인딩·block DPG](../../../spec/grammar/deeplus.dpg)
 - [선언·바인딩·이름 참고서](../../grammar-reference/03-declarations-bindings-and-names.md)
 - [평가·place·commit](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 - [타입과 place state](../../../spec/types/type-system.md)

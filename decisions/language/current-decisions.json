@@ -2,16 +2,25 @@
   "schema": "deeplus.current-law-ledger/r51f3",
   "baseline": "0.1.2-baseline.r51f3",
   "authority": "CURRENT_DECISION_LEDGER",
-  "law_count": 68,
+  "law_count": 69,
   "laws": [
+    {
+      "id": "DSGN-CURRENT-PARSER-ORIENTED-DPG-CUTOVER-R1",
+      "law": "The exact current structural parser grammar is the compact spec/grammar/deeplus.dpg interpreted with the closed spec/grammar/deeplus.parser-contexts.json registry and the Frontend Model. Standard EBNF notation is not required: the handwritten parser divides responsibility among scanner, structural DPG, ParserContext/Pratt, lossless CST/recovery, and AST/checker layers, and no layer may silently widen the accepted source language. The byte-identical 656-row deeplus.ebnf is retained only as a non-authoritative differential surface census and CST/AST/formatter crosswalk. Design/static differential validation binds 280 rule families, 301 context-specialized clauses, 656 census rows, and 181 terminal spellings with zero missing terminals, unbound externals, or AST-domain misses and rejects six mutations. This changes no source spelling or semantics; semantic P0 remains zero, the exact 22 feature P1 actions and four separate M13 actions remain open, and all fifteen product lanes remain NOT_RUN.",
+      "status": "CURRENT",
+      "authority_origin": "USER_DIRECT_CODEX_DESIGN_DELEGATED",
+      "ratification_status": "CURRENT_DESIGN_STATIC_VALIDATED_PRODUCT_NOT_RUN",
+      "source_evidence": "decisions/language/Design_Deeplus_Parser_Oriented_DPG_Cutover_R1.md; spec/contracts/parser-grammar-differential-r1.json; tests/fixtures/current/parser-grammar-differential-r1.json",
+      "effective_revision": "r51f3-current-r77-publication-policy-closure-r1"
+    },
     {
       "id": "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
       "law": "The R77 integrated surface cutover applies one owner-directed collect/unfold law, comma-owned indexing with open slices, closed MutableList structural-edit sugar, core-owned Trait language roles with Failable guarded local binding, and removal of numeric type suffixes as one source migration. Collection uses positional `name..`/`T..` and static-named `name**`/`NamedPack**`; outward positional unfold is owner-bounded `*Expr` and outward static-named unfold is owner-bounded `**Expr`, with the marker fixing the channel before overload selection. Record-family mappings are label-first while Map patterns keep keyed orientation. Expression Range owns bounded `..`/`..<`, one-sided `...`, and an attached signed `:step`; IndexSuffix alone owns open bounds and comma axes. MutableList sugar lowers only through the closed Prelude CallPlan and commits once after validation. Trait roles cannot widen the fixed thirteen-glyph operator contract. Removed numeric suffix candidates produce one diagnostic and zero canonical residue, and an expected result never selects an operator witness. Tuple rest, Tuple-as-gather, public proof roles, arbitrary custom roles, production implementation, and GitHub publication are outside this decision. Semantic P0 remains zero, the exact 22 feature P1 actions and four separate M13 actions remain open, and all fifteen product lanes remain NOT_RUN.",
       "status": "CURRENT",
       "authority_origin": "USER_DIRECT_CODEX_DESIGN_DELEGATED",
-      "ratification_status": "LOCAL_ACCEPTED_NOT_PUBLISHED",
+      "ratification_status": "INTEGRATED_UNVERIFIED_PENDING_PUBLICATION_CLOSURE",
       "source_evidence": "decisions/language/Design_Deeplus_Integrated_Surface_Atomic_Cutover_R77_R1.md; spec/contracts/integrated-surface-atomic-cutover-r77-r1.json",
-      "effective_revision": "r77-local-integrated-surface-atomic-cutover-r1"
+      "effective_revision": "r77-current-integrated-surface-atomic-cutover-r1"
     },
     {
       "id": "DSGN-CURRENT-CONTRACT-AUTHORITY-STATUS-RECONCILIATION",

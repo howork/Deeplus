@@ -59,6 +59,10 @@ R76_PREDECESSOR = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
 R76_OVERLAY = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
 R76_COUNTS = (3709, 4, 508, 0)
 R76_NON_TARGET_SHA256 = "aa47e49ae5e1cdac10ba535f6492ce9baacedbb23a91abb3e56edb8a1383dc15"
+R77_REVISION = "r77-current-implementation-target-rebind-r1"
+R77_BASELINE = "da734c608c0d583a671c0da9e14da00bff42affd"
+R77_COUNTS = (3711, 4, 506, 0)
+R77_NON_TARGET_SHA256 = "ddc1bb4aab7ebd35749ca8d9728260a29aeb3a7428bf4693bcc00b5260c80d83"
 
 CONTRACT = "spec/contracts/member-extension-collision-dynamic-trace-closure-r1.json"
 CONTRACT_SCHEMA = "schemas/language/member-extension-collision-dynamic-trace-closure-r1.schema.json"
@@ -399,11 +403,19 @@ def validate(
         and metadata.get("local_predecessor_commit") == R76_PREDECESSOR
         and applied_paths[-1:] == [R76_OVERLAY]
     )
+    r77_successor = (
+        metadata.get("revision") == R77_REVISION
+        and metadata.get("canonical_baseline_commit") == R77_BASELINE
+        and metadata.get("local_predecessor_commit") == R77_BASELINE
+        and applied_paths[-1:] == [R76_OVERLAY]
+    )
+    global_successor = r76_successor or r77_successor
     require(
         (
-            r76_successor
+            global_successor
             and current_count == NON_TARGET_COUNT
-            and current_digest == R76_NON_TARGET_SHA256
+            and current_digest
+            == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
         )
         or (
             r75_successor
@@ -421,7 +433,7 @@ def validate(
             == (R73_TRIPLE_EXCLUSION_COUNT, R73_TRIPLE_EXCLUSION_SHA256)
         )
         or (
-            not (r73_successor or r74_successor or r75_successor or r76_successor)
+            not (r73_successor or r74_successor or r75_successor or global_successor)
             and current_count == NON_TARGET_COUNT
             and current_digest == NON_TARGET_SHA256
         ),
@@ -430,7 +442,7 @@ def validate(
     )
     require(
         metadata.get("canonical_baseline_commit")
-        == (R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
+        == (R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             (
                 metadata.get("revision") == REVISION
@@ -455,17 +467,17 @@ def validate(
                 == {"path": R75_OVERLAY, "feature_count": 3, "binding_count": 3}
             )
             or (
-                r76_successor
+                global_successor
                 and len(applied) == 21
                 and sum(row.get("binding_count", 0) for row in applied) == 1381
-                and len(registry) == 4393
+                and len(registry) == (4392 if r77_successor else 4393)
             )
         )
         and len(registered) == 1,
         "G03",
         "GENERATED_METADATA_EXACT",
     )
-    if r73_successor or r74_successor or r75_successor or r76_successor:
+    if r73_successor or r74_successor or r75_successor or global_successor:
         boundary = current_cells.get(R73_BOUNDARY_TARGET, {})
         reject = current_cells.get(R73_REJECT_TARGET, {})
         successor_count, successor_digest = r73_successor_non_target_digest(
@@ -485,7 +497,7 @@ def validate(
             "G03",
             "R73_SUCCESSOR_TARGETS_EXACT",
         )
-    if r74_successor or r75_successor or r76_successor:
+    if r74_successor or r75_successor or global_successor:
         r74_target = current_cells.get(R74_TARGET, {})
         require(
             r74_target.get("disposition") == "BOUND_DIRECT"
@@ -498,9 +510,10 @@ def validate(
         )
         require(
             (
-                r76_successor
+                global_successor
                 and current_count == NON_TARGET_COUNT
-                and current_digest == R76_NON_TARGET_SHA256
+                and current_digest
+                == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
             )
             or (
                 r75_successor
@@ -528,7 +541,9 @@ def validate(
             derived.get("applicable_blocked_cells"),
         )
         == (
-            R76_COUNTS
+            R77_COUNTS
+            if r77_successor
+            else R76_COUNTS
             if r76_successor
             else (2473, 4, 502, 1242)
             if r75_successor
@@ -781,9 +796,10 @@ def validate(
         == [f"MECDTC-R{index:03d}" for index in range(1, 14)]
         and (
             (
-                r76_successor
+                global_successor
                 and current_count == NON_TARGET_COUNT
-                and current_digest == R76_NON_TARGET_SHA256
+                and current_digest
+                == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
             )
             or (
                 r75_successor
@@ -801,7 +817,7 @@ def validate(
                 == (R73_TRIPLE_EXCLUSION_COUNT, R73_TRIPLE_EXCLUSION_SHA256)
             )
             or (
-                not (r73_successor or r74_successor or r75_successor or r76_successor)
+                not (r73_successor or r74_successor or r75_successor or global_successor)
                 and current_count == NON_TARGET_COUNT
                 and current_digest == NON_TARGET_SHA256
             )

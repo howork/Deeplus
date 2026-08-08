@@ -358,7 +358,7 @@ def incrementCount() -> Int = {
 
 ## 정본 근거
 
-- 문법: [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- 문법: [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - frontend 허용 정책:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
 - 선언·바인딩 정본 설명:

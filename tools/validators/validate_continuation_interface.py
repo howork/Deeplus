@@ -67,6 +67,15 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def is_canonical_lf_json(path: Path) -> bool:
+    raw = path.read_bytes()
+    if b"\r" in raw or not raw.endswith(b"\n"):
+        return False
+    value = json.loads(raw.decode("utf-8"))
+    expected = (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    return raw == expected
+
+
 def canonical_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
@@ -265,6 +274,21 @@ def main() -> int:
 
     interface = load(paths["interface"])
     suspension = load(paths["suspension"])
+    generator_owned_json = {
+        key: paths[key]
+        for key in ("interface", "suspension", "lowering", "bridge")
+    }
+    check(
+        "R38_GENERATOR_OWNED_JSON_UTF8_LF",
+        all(is_canonical_lf_json(path) for path in generator_owned_json.values()),
+        {
+            key: {
+                "crlf_count": path.read_bytes().count(b"\r\n"),
+                "canonical_lf": is_canonical_lf_json(path),
+            }
+            for key, path in generator_owned_json.items()
+        },
+    )
     fixtures = load(paths["fixtures"])
     active_r36_digest = sha256(paths["managed_reference_profile"])
     active_r37_digest = load(paths["runtime_abi_fixtures"])["runtime_abi_instance"]["runtime_abi_digest"]

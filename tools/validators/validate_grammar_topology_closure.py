@@ -489,6 +489,9 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
             documents["disposition"].get("grammar")
             == {
                 "path": GRAMMAR_REL,
+                "authority_role": "LEGACY_SURFACE_EQUIVALENCE_CENSUS_NOT_EXACT_GRAMMAR",
+                "canonical_parser_grammar": "spec/grammar/deeplus.dpg",
+                "canonical_parser_contexts": "spec/grammar/deeplus.parser-contexts.json",
                 "bytes": len(documents["grammar_bytes"]),
                 "sha256": hashlib.sha256(documents["grammar_bytes"]).hexdigest(),
                 "production_count": len(productions),

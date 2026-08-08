@@ -5,7 +5,7 @@
   "date": "2026-07-28",
   "authority_bundle": {
     "human_language_and_semantics": "spec/language.md",
-    "exact_syntax": "spec/grammar/deeplus.ebnf",
+    "exact_syntax": "spec/grammar/deeplus.dpg",
     "contextual_ownership_and_lowering": "spec/frontend/frontend-model.json",
     "conflict_policy": "domain owner wins; contradictory generated projection is defective",
     "package_is_self_contained": true,
@@ -2123,10 +2123,32 @@
       "product_execution": "NOT_RUN"
     }
   },
+  "parser_grammar_contract": {
+    "schema": "deeplus.parser-grammar-differential/r1",
+    "grammar": "spec/grammar/deeplus.dpg",
+    "contexts": "spec/grammar/deeplus.parser-contexts.json",
+    "differential_contract": "spec/contracts/parser-grammar-differential-r1.json",
+    "legacy_surface_census": "spec/grammar/deeplus.ebnf",
+    "legacy_surface_census_is_exact_grammar": false,
+    "rule_family_count": 280,
+    "context_specialized_clause_count": 301,
+    "architecture": "scanner + DPG + ParserContext/Pratt + lossless CST/recovery + AST/checker",
+    "handwritten_parser": true,
+    "standard_ebnf_required": false,
+    "product_execution": "NOT_RUN"
+  },
   "scanner": {
     "unicode_version": "15.1.0",
     "normalization": "NONE",
     "newline": "TRIVIA_ONLY",
+    "compound_token_attachment": {
+      ":~": {
+        "token": "COLON_TILDE",
+        "longest_match": true,
+        "trivia_inside": false,
+        "spaced_form_same_operator": false
+      }
+    },
     "nested_block_comment": "positive dash-run closes innermost comment; opener/closer dash counts need not match",
     "modes": [
       "NORMAL",
@@ -2378,6 +2400,7 @@
     "schema": "deeplus.frontend-cst-boundary-recovery-contract/r1",
     "grammar_disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
     "grammar_production_count": 656,
+    "grammar_production_count_role": "LEGACY_SURFACE_CENSUS_CST_AST_CROSSWALK",
     "parser_boundary_contract": "spec/contracts/parser-boundary-match-arm-contract-r1.json",
     "recovery_contract": "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json",
     "canonical_ast_recovery_node_count": 0,
@@ -2396,6 +2419,7 @@
       "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
     },
     "grammar_production_count": 656,
+    "grammar_production_count_role": "LEGACY_SURFACE_CENSUS_FORMATTING_DISPOSITION",
     "formatting_rule_count": 6,
     "formatting_rule_counts": {
       "FD-01": 54,
@@ -3105,7 +3129,7 @@
     },
     "failable_binding": {
       "trait": "trait#binding Failable",
-      "operation": "associated consuming branch.() -> BindingBranch<Success, Failure> throws Never effects {}",
+      "operation": "def ::branch(move source: Self) -> BindingBranch<Success, Failure> throws Never effects {}",
       "surface": "let? successPattern = source else failurePattern => unconditionalExit",
       "source_evaluation_count": 1,
       "source_transfer": "CONSUME",

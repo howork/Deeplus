@@ -1,7 +1,7 @@
 <!-- tools/generators/generate_grammar_reference.py가 생성함; 직접 수정하지 마십시오. -->
-# 부록 A — 정확한 문법 production 참조
+# 부록 A — legacy surface-census production 참조
 
-권위 원천은 `spec/grammar/deeplus.ebnf`입니다. 이름만 나열하지 않고 모든 production의 정확한 오른쪽 항을 주석을 제외한 정규화된 EBNF로 한 번씩 투영합니다. 줄 번호는 원천을 찾아가기 위한 보조 정보이며 이 부록 자체가 별도 문법 권위는 아닙니다.
+비권위 차등 입력은 `spec/grammar/deeplus.ebnf`입니다. 정확한 구조 문법 권위는 `spec/grammar/deeplus.dpg`와 닫힌 ParserContext 정본입니다. 이 표는 기존 656개 surface-census production의 오른쪽 항을 한 번씩 투영하여 DPG cutover의 CST/AST 책임 추적성을 보존하며, 그 자체가 별도 문법 권위는 아닙니다.
 
 ## `LEXICAL` 프로파일 — 87개
 

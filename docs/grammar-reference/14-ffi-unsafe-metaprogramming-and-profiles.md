@@ -300,7 +300,7 @@ extern#C def#unsafe c_abs(x: Int) -> Int
 
 다음은 이름 해석이 제공된다고 가정한 구조 예시다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 def readByte(pointer: RawPtr<Byte>) -> Byte
 = {
@@ -368,7 +368,7 @@ pointer/authority/borrow/resource/closure/run/actor escape를 금지한다.
 - 언어 경계와 제품 상태:
   [`spec/language.md`](../../spec/language.md)
 - 정확한 Stable/Preview 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - source root, gate, unsafe 및 quarantine 허용:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
 - 기능 maturity와 trace:

@@ -22,6 +22,12 @@ STAGE_COUNTS = {
     "STATIC_SEMANTICS": 64,
 }
 OUTCOME_COUNTS = {"BOUNDARY": 408, "POSITIVE": 145, "REJECT": 408}
+R77_CURRENT_TARGET_TRACE_COUNTS = {
+    "BOUND_DIRECT": 3711,
+    "BOUND_DELEGATED": 4,
+    "NOT_APPLICABLE": 506,
+    "APPLICABLE_BLOCKED_BY_GAP": 0,
+}
 
 
 def load(path: Path) -> Any:
@@ -154,7 +160,11 @@ def validate_data(root: Path, contract: dict[str, Any], overlay: dict[str, Any],
         for stage in row.get("stages", []):
             for item in stage.get("outcomes", [stage]):
                 trace_counts[item.get("disposition")] = trace_counts.get(item.get("disposition"), 0) + 1
-    require(trace_counts == {"BOUND_DIRECT": 3709, "BOUND_DELEGATED": 4, "NOT_APPLICABLE": 508, "APPLICABLE_BLOCKED_BY_GAP": 0}, "TRACE_COUNTS")
+    # R76 is an immutable closure record.  Its contract contains no
+    # numeric_literal_suffix cell; R77 reclassifies the same target row as an
+    # explicit negative-compatibility obligation, which moves two generated
+    # cells from N/A to direct without changing target membership or semantics.
+    require(trace_counts == R77_CURRENT_TARGET_TRACE_COUNTS, "TRACE_COUNTS")
 
     for rel in (
         "spec/frontend/frontend-model.json",
@@ -191,7 +201,8 @@ def main() -> int:
         "feature_rows": 469,
         "affected_features": 409,
         "contract_cells": 1242,
-        "final_trace_counts": {"BOUND_DIRECT": 3709, "BOUND_DELEGATED": 4, "NOT_APPLICABLE": 508, "APPLICABLE_BLOCKED_BY_GAP": 0},
+        "final_trace_counts": R77_CURRENT_TARGET_TRACE_COUNTS,
+        "historical_contract": "R76 closure contract retained; current rows revalidated under R77 negative-compatibility policy",
         "product_lanes": "15_OF_15_NOT_RUN",
         "errors": errors,
     }

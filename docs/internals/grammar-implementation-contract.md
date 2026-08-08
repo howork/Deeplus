@@ -1,9 +1,11 @@
 # Deeplus Grammar 0.1.2 R51f3 구현 계약
 
-정확한 문법 정본은 `spec/grammar/deeplus.ebnf`, 문맥별 owner와 scanner,
-Pratt, CST/AST 계약은 `spec/frontend/frontend-model.json`이다. 이 문서는
-구현자가 두 정본의 책임 경계를 임의로 다시 설계하지 않도록 하는 구현
-요약이다.
+정확한 구조 문법 정본은 `spec/grammar/deeplus.dpg`, 닫힌 parser context
+정본은 `spec/grammar/deeplus.parser-contexts.json`이다. scanner, Pratt,
+CST/AST 계약은 `spec/frontend/frontend-model.json`이 소유한다. 이 문서는
+구현자가 이 책임 경계를 임의로 다시 설계하지 않도록 하는 구현 요약이다.
+`spec/grammar/deeplus.ebnf`는 R77 표면을 빠짐없이 대조하기 위한
+비권위 surface census이며 새 parser의 생성 문법이 아니다.
 
 ## 1. 닫힌 입력 계약
 
@@ -19,11 +21,13 @@ Pratt, CST/AST 계약은 `spec/frontend/frontend-model.json`이다. 이 문서�
 
 ## 2. Grammar와 lossless CST
 
-Grammar의 643 production은
+DPG는 280개 rule family와 301개 context-specialized clause로 구조를
+기술한다. 기존 EBNF의 656개 surface-census production은
 `spec/contracts/grammar-production-disposition-registry-r1.json`에 정확히 한
-번씩 등록된다. disposition은 CST-only, AST-node, normalization, external
-parser entry 중 하나이며 recovery residue는 별도의 reject-before-AST
-종류다.
+번씩 남아 CST/AST 책임 crosswalk로 쓰인다. 이 656이라는 수는 새 DPG를
+다시 팽창시키라는 요구가 아니다. disposition은 CST-only, AST-node,
+normalization, external parser entry 중 하나이며 recovery residue는 별도의
+reject-before-AST 종류다.
 
 Lossless CST는 token, trivia, delimiter, recovery residue와 source bytes를
 순서대로 정확히 한 번 보존한다. AST normalization은 선언된 rule과

@@ -1,0 +1,103 @@
+{
+  "schema": "deeplus.parser-grammar-differential/r1",
+  "status": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT",
+  "decision": "DPG_CANONICAL_EBNF_RETAINED_AS_NONAUTHORITATIVE_SURFACE_CENSUS",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+    "tree": "ab37f3a91745c3b90e87eeaf15868007ef08ef69"
+  },
+  "input_packages": [
+    {
+      "filename": "Deeplus_Grammar_Current_Main_Audit_R77_2026-08-07.zip",
+      "bytes": 15856,
+      "sha256": "a6b0c24f597ba2eb7b1e29fc9355c4ca37f7c80f25c63b4d6966b719e73e9453"
+    },
+    {
+      "filename": "Deeplus_Grammar_Parser_Oriented_Rewrite_R1.zip",
+      "bytes": 55473,
+      "sha256": "02cf62b2f78ef38d642b999d7ff3a08b8283d3b37dbdd5c166255b08d9fbacd2"
+    }
+  ],
+  "artifacts": {
+    "dpg": {
+      "path": "spec/grammar/deeplus.dpg",
+      "bytes": 31808,
+      "sha256": "90f95ba7ff4e163eb1f99752cf70602d2042ab00b8a775cb3cab1259d59d706d",
+      "authority_role": "EXACT_STRUCTURAL_PARSER_GRAMMAR"
+    },
+    "contexts": {
+      "path": "spec/grammar/deeplus.parser-contexts.json",
+      "bytes": 16244,
+      "sha256": "0ab24a754b9f95331c9eddb9bfdf737240f60b15bfb2eed99cdc5959508b7a1b",
+      "authority_role": "CLOSED_PARSER_CONTEXT_AND_EXTERNAL_BINDING_REGISTRY"
+    },
+    "legacy_surface_census": {
+      "path": "spec/grammar/deeplus.ebnf",
+      "bytes": 70409,
+      "sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9",
+      "authority_role": "NONAUTHORITATIVE_DIFFERENTIAL_SURFACE_CENSUS"
+    }
+  },
+  "architecture": {
+    "scanner": "characters, Unicode/XID, trivia, strings, interpolation modes, numeric transactionality and longest-match compound tokens",
+    "dpg": "source roots, structural token order, parser entry shapes and explicit delegation points",
+    "parser_context": "contextual words, owner admission, commitment, attachment, source role and boundary policy",
+    "pratt": "expression, type and unit parse goals, binding power, associativity, stop sets and parselet registration",
+    "cst_recovery": "lossless trivia and bytes, recovery nodes, synchronization and stable source ownership",
+    "ast_checker": "normalization, name/type/effect/ownership/coherence rules and semantic rejection",
+    "layering_law": "the DPG does not re-expand scanner, Pratt, recovery or semantic-checker contracts and none of those layers may silently expand the accepted source language"
+  },
+  "metrics": {
+    "legacy_production_count": 656,
+    "legacy_disposition_row_count": 656,
+    "legacy_nonlex_terminal_count": 181,
+    "dpg_rule_clause_count": 301,
+    "dpg_rule_family_count": 280,
+    "unaccounted_terminal_count": 0,
+    "unbound_external_count": 0,
+    "ast_target_domain_miss_count": 0
+  },
+  "differential_gates": {
+    "package_sha256_and_member_binding": "PASS",
+    "baseline_ebnf_byte_identity": "PASS",
+    "dpg_rule_and_reference_closure": "PASS",
+    "all_legacy_terminal_spellings_accounted": "PASS",
+    "all_legacy_cst_ast_disposition_rows_bound": "PASS",
+    "parser_context_and_pratt_binding_closure": "PASS",
+    "critical_surface_invariants": "PASS",
+    "mutation_rejection": "PASS",
+    "product_parser_accept_reject_differential": "NOT_RUN",
+    "cst_round_trip_execution": "NOT_RUN",
+    "ast_normalization_execution": "NOT_RUN"
+  },
+  "critical_surface_invariants": [
+    "preview source requires exactly one leading PreviewGate",
+    "ordinary calls admit a parenthesized trailing comma; tilde argument sequences do not",
+    ":~ is one longest-match attached scanner outcome and : ~ is not an actor-message operator",
+    "defer admits ~ message cleanup but excludes :~ and trailing closures",
+    "parameter form and separator admission is owner-contextual",
+    "for#await attachment is ParserContext-owned",
+    "assignee roots remain structural and exclude nested nominal assignees",
+    "mutable-list insert/remove suffix sets remain exactly 4 and 5",
+    "expression, predicate, slice-index, type, non-function-type and unit Pratt goals remain closed",
+    "recovery residue produces no canonical AST or HIR node"
+  ],
+  "audit_findings": {
+    "GRA-R77-001": "RESOLVED_AST_CALL_EXPR_ADDED_TO_CLOSED_KIND_DOMAIN",
+    "GRA-R77-002": "RESOLVED_BY_EXISTING_R77_PUBLICATION_POLICY_CANDIDATE",
+    "GRA-R77-003": "RESOLVED_BY_EXISTING_R77_PUBLICATION_POLICY_CANDIDATE",
+    "GRA-R77-004": "RESOLVED_COLON_TILDE_LONGEST_MATCH_ATTACHMENT_CONTRACT",
+    "GRA-R77-005": "RESOLVED_AS_INTENTIONAL_DELIMITER_OWNERSHIP_ASYMMETRY"
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15/15_NOT_RUN",
+    "source_surface_change_count": 0,
+    "production_parser_implementation": "NOT_PERFORMED",
+    "canonicalization_scope": "DESIGN_AND_STATIC_PARSER_CONTRACT"
+  }
+}

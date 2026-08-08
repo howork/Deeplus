@@ -49,6 +49,23 @@ DEPENDENCY_ADDITIONS = {
     "source_role_contract",
     "typed_labeled_materialization_family",
 }
+# A removed spelling can still be an implementation-target obligation when the
+# lexer must reject it before any canonical residue is admitted.  It therefore
+# stays in the profile by an explicit negative-compatibility rule, not by a
+# stale Stable status in the feature catalog.
+NEGATIVE_COMPATIBILITY_ADDITIONS = {"numeric_literal_suffix"}
+# `trait_binding_failable_v1` is a reachable Stable-group surface, but its
+# checker predicate and complete P/B/R corpus are intentionally deferred to
+# R77-A006.  Keep that exclusion explicit so the first implementation target
+# cannot silently claim its vertical slice is closed.
+EXCLUDED_CURRENT_FEATURE_REASONS = {
+    "trait_binding_failable_v1": {
+        "status": "EXCLUDED_PENDING_BOUNDARY_CLOSURE",
+        "action_id": "R77-A006",
+        "reason": "The static Failable contract is current, but its target-bound checker and full positive/boundary/reject corpus remain a separately tracked P1 before the Failable vertical slice.",
+    }
+}
+TARGET_ADDITIONS = DEPENDENCY_ADDITIONS | NEGATIVE_COMPATIBILITY_ADDITIONS
 STAGES = [
     "SOURCE_GRAMMAR",
     "AST_FRONTEND",
@@ -116,7 +133,7 @@ def main() -> None:
     target_ids = sorted(
         row["feature_id"]
         for row in feature_rows
-        if row.get("status_enum") in BASE_STATUSES or row["feature_id"] in DEPENDENCY_ADDITIONS
+        if row.get("status_enum") in BASE_STATUSES or row["feature_id"] in TARGET_ADDITIONS
     )
     excluded_ids = sorted(set(by_id) - set(target_ids), key=powershell_ordinal_key)
 
@@ -372,7 +389,11 @@ def main() -> None:
                 "feature_kind": feature_kind,
                 "trace_class": trace_class,
                 "source_activation": source_activation,
-                "inclusion_basis": "DEPENDENCY_CLOSURE" if feature_id in DEPENDENCY_ADDITIONS else "BASE_STATUS",
+                "inclusion_basis": (
+                    "DEPENDENCY_CLOSURE" if feature_id in DEPENDENCY_ADDITIONS
+                    else "NEGATIVE_COMPATIBILITY" if feature_id in NEGATIVE_COMPATIBILITY_ADDITIONS
+                    else "BASE_STATUS"
+                ),
                 "feature_row_evidence_ref": feature_ref,
             },
             "stages": stages,
@@ -405,15 +426,18 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r76-global-implementation-target-trace-closure-r1",
-        "canonical_baseline_commit": "40a826af29410af1a14c6a7dec3193cd59ba9b12",
-        "local_predecessor_commit": "40a826af29410af1a14c6a7dec3193cd59ba9b12",
+        "revision": "r77-current-implementation-target-rebind-r1",
+        "canonical_baseline_commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+        "local_predecessor_commit": "da734c608c0d583a671c0da9e14da00bff42affd",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),
         "base_count": sum(row.get("status_enum") in BASE_STATUSES for row in feature_rows),
         "dependency_additions": sorted(DEPENDENCY_ADDITIONS),
         "dependency_addition_count": len(DEPENDENCY_ADDITIONS),
+        "negative_compatibility_additions": sorted(NEGATIVE_COMPATIBILITY_ADDITIONS),
+        "negative_compatibility_addition_count": len(NEGATIVE_COMPATIBILITY_ADDITIONS),
+        "excluded_current_feature_reasons": EXCLUDED_CURRENT_FEATURE_REASONS,
         "target_count": len(target_ids),
         "target_feature_id_list_sha256": digest_ids(target_ids),
         "excluded_count": len(excluded_ids),
@@ -441,12 +465,12 @@ def main() -> None:
         },
         "governance": {
             "gap_id": "IR-XCUT-P1-054",
-            "gap_status": "INTEGRATED_UNVERIFIED_LOCAL_CANDIDATE",
+            "gap_status": "INTEGRATED_UNVERIFIED_R77_CURRENT_REBIND",
             "semantic_p0": 0,
             "feature_p1": "22_OPEN_UNCHANGED",
             "m13_actions": "4_OPEN_UNCHANGED",
             "product_lanes": "15_OF_15_NOT_RUN",
-            "github_publication": "NOT_YET_PUBLISHED",
+            "github_publication": "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN",
             "e4_e5_evidence_count": 0,
         },
     }

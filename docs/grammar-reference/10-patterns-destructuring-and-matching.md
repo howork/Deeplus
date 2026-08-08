@@ -219,7 +219,7 @@ BoundedBinderPattern ::= PatternBound OrderedComparisonOperator Identifier
                          OrderedComparisonOperator PatternBound
 ```
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 let description = @match score {
     0 <= value <= 100 => "normal:${value}"
@@ -238,7 +238,7 @@ nominal type, serialization tag 또는 runtime discriminant를 만들지는
 `MATCH_CHAIN_BINDER_DIRECTION_MIXED`로 거부한다. 서로 독립된 조건이
 필요하면 기존 guard를 명시한다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 let description = @match score {
     value if value >= 0 and value <= limit => "bounded:${value}"
@@ -538,7 +538,7 @@ stable-place comparison을 사용한다.
 
 ## 정본 근거
 
-- [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - [`spec/patterns/pattern-context-policies.json`](../../spec/patterns/pattern-context-policies.json)
 - [`spec/patterns/pattern-kinds.json`](../../spec/patterns/pattern-kinds.json)
 - [`spec/patterns/pattern-lowering.json`](../../spec/patterns/pattern-lowering.json)

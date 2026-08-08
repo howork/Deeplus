@@ -36,7 +36,7 @@ ExpressionPostfixParselet ::= CallSuffix | TupleOrdinalSuffix | IndexSuffix
                             | PrototypeDerivationSuffix | CastSuffix
 ```
 
-EBNF는 parselet family를 열거하고 정확한 binding power와 associativity는
+DPG는 parselet family를 열거하고 정확한 binding power와 associativity는
 Pratt registry 및 operator contract가 소유한다.
 
 ### 우선순위
@@ -882,7 +882,7 @@ Preview 후보도 아니다.
 
 ## 정본 근거
 
-- [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
 - [`spec/contracts/value-operator-indexing-coherence.json`](../../spec/contracts/value-operator-indexing-coherence.json)
 - [`spec/contracts/rational-complex-numeric-coherence.json`](../../spec/contracts/rational-complex-numeric-coherence.json)

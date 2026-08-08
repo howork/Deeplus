@@ -290,7 +290,7 @@ ownership transfer를 강조하지만 그 표기만으로 mutation 권한을 새
 함수 type은 두 residue를 그대로 보존한다.
 
 다음은 현행 문법을 설명하기 위한 예시다. 근거는
-[`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)의
+[`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)의
 `ParenTypeSyntax`/`FunctionTypeTail`과
 [`spec/types/type-system.md`](../../spec/types/type-system.md)의
 named-rest residue 규칙이다.
@@ -682,7 +682,7 @@ def#guard validPort(port: Int) -> Bool = {
 ## 정본 근거
 
 - callable/closure 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - profile, 호출, capture 계약:
   [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
 - frontend owner 정책:

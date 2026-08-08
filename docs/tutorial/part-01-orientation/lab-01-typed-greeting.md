@@ -148,7 +148,7 @@ effectful expression에서도 이 원칙은 유지된다. 이 실습에서는 la
 
 ## 정본 근거
 
-- [통합 문법](../../../spec/grammar/deeplus.ebnf)
+- [통합 문법](../../../spec/grammar/deeplus.dpg)
 - [프로그램과 Module](../../grammar-reference/02-programs-modules-and-imports.md)
 - [타입·refinement](../../grammar-reference/04-types-generics-and-refinement.md)
 - [함수와 호출](../../grammar-reference/05-functions-methods-closures-and-calls.md)
