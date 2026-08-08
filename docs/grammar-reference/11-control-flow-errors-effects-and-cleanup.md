@@ -621,7 +621,7 @@ implementation authority, product PASS가 아니다.
 ## 정본 근거
 
 - 제어·try·defer 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - callable flow와 cleanup:
   [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
 - actor/run 취소:

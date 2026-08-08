@@ -1,0 +1,601 @@
+{
+  "schema": "deeplus.parser-contexts/dpg1",
+  "purpose": "Closed parser-facing surface sets and owner admission tables extracted from the attached CURRENT grammar. These values are not lexer keyword reclassifications.",
+  "source": {
+    "deeplus_ebnf_git_blob_sha1": "d901cf6acb672cf77051e53d09020f3f43d4a01c",
+    "deeplus_ebnf_sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9",
+    "keyword_vocabulary_git_blob_sha1": "51dd7b44b588757f91535a61f33d182103f3f958",
+    "keyword_vocabulary_sha256": "dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4"
+  },
+  "dpg_metamodel": {
+    "version": "DPG/1",
+    "grammar_path": "spec/grammar/deeplus.dpg",
+    "role": "lightweight structural contract for a Rust handwritten parser",
+    "closed_external_binding_law": "every @Set, dispatch<Table,C>, admit<P>, pratt<D,M>, scanner outcome, LB and END reference in the DPG resolves here or through one exact referenced canonical contract",
+    "unknown_binding": "INVALID_DPG_CONTRACT",
+    "source_language_expansion_by_recovery": false
+  },
+  "surface_sets": {
+    "TopLevelVisibility": [
+      "public",
+      "private",
+      "common"
+    ],
+    "MemberVisibility": [
+      "+",
+      "-",
+      "#"
+    ],
+    "ClassDispatchMarker": [
+      ".",
+      "+",
+      "*.",
+      "*+"
+    ],
+    "TraitWitnessMarker": [
+      ".",
+      "+",
+      "*.",
+      "*+"
+    ],
+    "VarianceMarker": [
+      "out",
+      "in"
+    ],
+    "TypeParameterKind": [
+      "type",
+      "StaticInt",
+      "EffectRow",
+      "ErrorSet"
+    ],
+    "OrderedComparison": [
+      "<",
+      "<=",
+      ">",
+      ">="
+    ],
+    "LawAssertionPrefix": [
+      "requires",
+      "ensures",
+      "invariant"
+    ],
+    "ParameterMode": [
+      "borrow",
+      "mut",
+      "move",
+      "inout"
+    ],
+    "ClassFlavor": [
+      "value",
+      "resource"
+    ],
+    "ClassModifierSequence": [
+      [
+        "final"
+      ],
+      [
+        "open"
+      ],
+      [
+        "abstract"
+      ],
+      [
+        "sealed"
+      ],
+      [
+        "abstract",
+        "sealed"
+      ]
+    ],
+    "TraitLanguageRole": [
+      "operator",
+      "iteration",
+      "interpolation",
+      "binding"
+    ],
+    "EnumOrderRole": [
+      "increasing",
+      "decreasing"
+    ],
+    "ScopeModifier": [
+      "isolated",
+      "cancellable",
+      "shielded"
+    ],
+    "CaptureMode": [
+      "borrow",
+      "inout",
+      "move",
+      "clone",
+      "deep",
+      "copy",
+      "once"
+    ],
+    "MutableListInsertSuffix": [
+      ["[", "@", "SliceIndexExpr", "]"],
+      ["[", "SliceIndexExpr", "@", "]"],
+      ["[", "@", "^", "]"],
+      ["[", "$", "@", "]"]
+    ],
+    "MutableListRemoveSuffix": [
+      ["[", "-", "@", "SliceIndexExpr", "]"],
+      ["[", "-", "@", "SliceRange", "]"],
+      ["[", "-", "@", "TupleOfSliceIndexExpr", "]"],
+      ["[", "-", "^", "]"],
+      ["[", "-", "$", "]"]
+    ]
+  },
+  "owner_member_sets": {
+    "class": [
+      "field_decl",
+      "member_function",
+      "constructor_decl",
+      "cleanup_decl",
+      "type_field_decl",
+      "type_member_function",
+      "accessor_property",
+      "conform_block",
+      "forward_decl"
+    ],
+    "trait": [
+      "trait_function",
+      "associated_requirement",
+      "law_decl"
+    ],
+    "conformance": [
+      "conformance_method",
+      "type_member_function",
+      "associated_binding",
+      "extension_delegate",
+      "law_decl"
+    ],
+    "extension_set": [
+      "extension_set_function",
+      "type_member_function"
+    ],
+    "enum": [
+      "member_function",
+      "type_field_decl",
+      "type_member_function",
+      "accessor_property",
+      "conform_block",
+      "enum_subset_alias"
+    ],
+    "actor": [
+      "actor_on_decl",
+      "actor_request_decl",
+      "field_decl",
+      "member_function",
+      "constructor_decl",
+      "cleanup_decl",
+      "type_field_decl",
+      "type_member_function",
+      "accessor_property",
+      "forward_decl",
+      "actor_protocol_conform_block"
+    ],
+    "actor_protocol_conformance": [
+      "actor_on_decl",
+      "actor_request_decl"
+    ],
+    "actor_protocol": [
+      "actor_protocol_send_requirement",
+      "actor_protocol_request_requirement"
+    ],
+    "bitfield": [
+      "member_function",
+      "type_field_decl",
+      "type_member_function",
+      "accessor_property",
+      "law_decl"
+    ]
+  },
+  "source_role_policy": {
+    "library": {
+      "plain": [
+        "import_or_use",
+        "nonbinding_top_decl",
+        "top_binding"
+      ],
+      "annotatable": [
+        "import_or_use",
+        "nonbinding_top_decl",
+        "top_binding"
+      ],
+      "shebang": false
+    },
+    "executable": {
+      "plain": [
+        "import_or_use",
+        "nonbinding_top_decl",
+        "entry_function"
+      ],
+      "annotatable": [
+        "import_or_use",
+        "nonbinding_top_decl",
+        "entry_function"
+      ],
+      "shebang": false
+    },
+    "script": {
+      "plain": [
+        "import_or_use",
+        "nonbinding_top_decl",
+        "stmt"
+      ],
+      "annotatable": [
+        "import_or_use",
+        "nonbinding_top_decl"
+      ],
+      "shebang": true
+    }
+  },
+  "call_argument_policy": {
+    "parenthesized_comma": {
+      "min": 1,
+      "trailing_comma": true
+    },
+    "parenthesized_layout": {
+      "min_named_rows": 2,
+      "trailing_linebreak": true
+    },
+    "tilde": {
+      "min": 1,
+      "trailing_comma": false,
+      "status": "CURRENT_INTENTIONAL_ASYMMETRY",
+      "rationale": "a tilde sequence has no closing delimiter that can own a trailing comma; an outer comma after a nested tilde call requires parentheses"
+    },
+    "trailing_closure": {
+      "multiple_requires_all_labels": true
+    }
+  },
+  "pattern_policy": {
+    "binding_root": {
+      "top_level_typed_binding_atom": false,
+      "whole_pattern_type_annotation": true,
+      "structural_children_mode": "general"
+    },
+    "general": {
+      "top_level_typed_binding_atom": true,
+      "whole_pattern_type_annotation": false,
+      "structural_children_mode": "general"
+    },
+    "assignee": {
+      "root_forms": [
+        "tuple",
+        "list",
+        "record",
+        "nominal"
+      ],
+      "bare_name_or_wildcard_at_root": false,
+      "nested_item_forms": [
+        "name",
+        "_",
+        "tuple",
+        "list",
+        "record"
+      ],
+      "nominal_allowed_as_nested_item": false,
+      "rest": true,
+      "or_alias_move_literal_map_variant": false
+    }
+  },
+  "mutable_list_edit_suffixes": {
+    "insert": [
+      [
+        "[",
+        "@",
+        "SliceIndexExpr",
+        "]"
+      ],
+      [
+        "[",
+        "SliceIndexExpr",
+        "@",
+        "]"
+      ],
+      [
+        "[",
+        "@",
+        "^",
+        "]"
+      ],
+      [
+        "[",
+        "$",
+        "@",
+        "]"
+      ]
+    ],
+    "remove": [
+      [
+        "[",
+        "-",
+        "@",
+        "SliceIndexExpr",
+        "]"
+      ],
+      [
+        "[",
+        "-",
+        "@",
+        "SliceRange",
+        "]"
+      ],
+      [
+        "[",
+        "-",
+        "@",
+        "TupleOfSliceIndexExpr",
+        "]"
+      ],
+      [
+        "[",
+        "-",
+        "^",
+        "]"
+      ],
+      [
+        "[",
+        "-",
+        "$",
+        "]"
+      ]
+    ]
+  },
+  "externalized_registries": {
+    "hard_and_contextual_words": "inputs/keyword-vocabulary.json",
+    "pratt_binding_and_parselet_registration": "spec/frontend/frontend-model.json (existing canonical owner; not duplicated here)",
+    "boundary_and_attachment": "existing BoundaryContext / owner policies",
+    "recovery": "handwritten parser recovery table/algorithm",
+    "cst_to_ast": "existing CST/AST normalization contracts",
+    "expression_type_unit_pratt": "spec/frontend/frontend-model.json and handwritten parser parselet tables; DPG names only entry domains/modes"
+  },
+  "parser_dispatch": {
+    "member_parser_map": {
+      "field_decl": "Field",
+      "member_function": "Function<member>",
+      "constructor_decl": "Constructor",
+      "cleanup_decl": "Cleanup",
+      "type_field_decl": "TypeField",
+      "type_member_function": "Function<type_member>",
+      "accessor_property": "Accessor",
+      "conform_block": "ConformBlock",
+      "forward_decl": "Forward",
+      "trait_function": "Function<trait>",
+      "associated_requirement": "AssociatedRequirement",
+      "law_decl": "Law",
+      "conformance_method": "Function<conformance>",
+      "associated_binding": "AssociatedBinding",
+      "extension_delegate": "ExtensionDelegate",
+      "extension_set_function": "Function<extension_set>",
+      "enum_subset_alias": "EnumSubsetAlias",
+      "actor_on_decl": "ActorOn",
+      "actor_request_decl": "ActorRequest",
+      "actor_protocol_conform_block": "ActorProtocolConform",
+      "actor_protocol_send_requirement": "ProtocolSend",
+      "actor_protocol_request_requirement": "ProtocolRequest"
+    },
+    "pattern_atom_set": {
+      "general": [
+        "TypedBindingPat",
+        "Name",
+        "PinPat",
+        "RangePat",
+        "RelationalPat",
+        "TuplePat",
+        "RecordPat",
+        "ListPat",
+        "MapPat",
+        "VariantPat",
+        "NominalPat",
+        "_",
+        "UnitSyntax",
+        "Literal",
+        "GroupedPat"
+      ],
+      "binding_root": [
+        "Name",
+        "PinPat",
+        "RangePat",
+        "RelationalPat",
+        "TuplePat",
+        "RecordPat",
+        "ListPat",
+        "MapPat",
+        "VariantPat",
+        "NominalPat",
+        "_",
+        "UnitSyntax",
+        "Literal",
+        "GroupedPat"
+      ]
+    },
+    "expression_primary": [
+      "Literal",
+      "Name",
+      "ImplicitAt",
+      "ParenExpr",
+      "ListLiteral",
+      "BoundedList",
+      "Comprehension",
+      "Materialization",
+      "MapLiteral",
+      "SetLiteral",
+      "MutListLiteral",
+      "MapComprehension",
+      "SetComprehension",
+      "NumericArray",
+      "Measure",
+      "QualifiedStatic",
+      "ExpectedVariant",
+      "AtControl",
+      "MatchValue",
+      "Closure",
+      "Generator",
+      "Spawn",
+      "Concur",
+      "Unsafe",
+      "Facet"
+    ]
+  },
+  "callable_context_policy": {
+    "where_allowed": {
+      "normal": true,
+      "entry": false,
+      "trait": true
+    },
+    "function_end": {
+      "normal": "FunctionBody",
+      "entry": "FunctionBody",
+      "trait": "FunctionBody | END"
+    },
+    "extension_set_contract_clauses": false,
+    "cleanup_allows_return_clause": false,
+    "cleanup_allows_where_clause": false
+  },
+  "source_profile_policy": {
+    "stable": {
+      "preview_gate": "forbidden"
+    },
+    "preview": {
+      "preview_gate": "required"
+    },
+    "preview_ffi_annotation_attachment": false
+  },
+  "boundary_policy": {
+    "LB": "physical line break found in lossless trivia; parser metanode, not lexer token",
+    "END": "statement boundary decided by BoundaryContext (newline/semicolon/root EOF as already canonical)",
+    "grammar_does_not_relex_trivia": true
+  },
+  "scanner_attachment_policy": {
+    "actor_message": {
+      "surface": ":~",
+      "scanner_outcome": "COLON_TILDE",
+      "longest_match_before_single_character_tokens": true,
+      "trivia_between_colon_and_tilde": false,
+      "spaced_colon_tilde_is_actor_message": false
+    },
+    "message": {
+      "surface": "~",
+      "scanner_outcome": "TILDE"
+    },
+    "for_await": {
+      "surface": "#await",
+      "scanner_outcome": "HASH then contextual await",
+      "attachment_owner": "ParserContext"
+    }
+  },
+  "closed_external_bindings": {
+    "scanner_outcomes": [
+      "IDENTIFIER",
+      "WILDCARD",
+      "NUMERIC_LITERAL",
+      "IMAGINARY_LITERAL",
+      "RATIONAL_LITERAL",
+      "CHAR_LITERAL",
+      "BYTES_LITERAL",
+      "PLAIN_STRING_LITERAL",
+      "RAW_STRING_LITERAL",
+      "MULTILINE_STRING_LITERAL",
+      "NAME_TOKEN",
+      "SHEBANG",
+      "EOF_TOKEN",
+      "HARD_KEYWORD",
+      "DECIMAL_INTEGER",
+      "STRING_START",
+      "STRING_TEXT",
+      "STRING_ESCAPE",
+      "INTERPOLATION_OPEN",
+      "INTERPOLATION_CLOSE",
+      "INTERPOLATION_FORMAT_TEXT",
+      "INTERPOLATION_BOUNDARY",
+      "STRING_END"
+    ],
+    "external_parser_slots": {
+      "MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY": "spec/frontend/frontend-model.json#/input_supply_policy",
+      "MATCH_ARM_SEPARATOR_BY_CONTEXT": "spec/frontend/frontend-model.json#/boundary_policies",
+      "MATCH_ARM_BODY_BY_CONTEXT": "spec/frontend/frontend-model.json#/input_supply_policy",
+      "MUTABLE_LIST_EDIT_RECEIVER_BY_OWNER": "spec/frontend/frontend-model.json#/mutable_list_structural_edit_frontend_contract"
+    },
+    "metanodes": {
+      "LB": "spec/frontend/frontend-model.json#/boundary_policies",
+      "END": "spec/frontend/frontend-model.json#/boundary_policies"
+    },
+    "admission_predicates": {
+      "TagPolicy": "spec/frontend/frontend-model.json#/modifier_admission",
+      "ParameterPolicy": "spec/frontend/frontend-model.json#/admission_policies/parameter",
+      "WhereAllowed": "#/callable_context_policy/where_allowed",
+      "NonEmpty": "#/combinator_contracts",
+      "EnumBodyCommit": "#/commitment_policy",
+      "ConformanceRoutePolicy": "spec/frontend/frontend-model.json#/trait_conformance_surface_contract",
+      "ForAwaitAttached": "#/commitment_policy/for_await",
+      "TupleIdentity": "spec/frontend/frontend-model.json#/pattern_frontend_contract",
+      "ListRestPolicy": "#/pattern_policy",
+      "MutableListEditPolicy": "spec/frontend/frontend-model.json#/mutable_list_structural_edit_frontend_contract",
+      "SpawnOperand": "spec/frontend/frontend-model.json#/concurrency_frontend_contract/spawn_contract"
+    },
+    "dispatch_tables": {
+      "MemberSet": [
+        "#/owner_member_sets",
+        "#/parser_dispatch/member_parser_map"
+      ],
+      "PatternAtomSet": ["#/parser_dispatch/pattern_atom_set"],
+      "ExpressionPrimary": ["#/parser_dispatch/expression_primary"]
+    },
+    "pratt_entries": {
+      "Expression,normal": "spec/frontend/frontend-model.json#/pratt/expression",
+      "Expression,predicate": "spec/frontend/frontend-model.json#/pratt/expression",
+      "Expression,slice_index": "spec/frontend/frontend-model.json#/pratt/slice_index",
+      "Type,normal": "spec/frontend/frontend-model.json#/pratt/type",
+      "Type,non_function_top": "spec/frontend/frontend-model.json#/pratt/type",
+      "Unit,normal": "spec/frontend/frontend-model.json#/pratt/unit"
+    }
+  },
+  "commitment_policy": {
+    "for_await": "`#` followed by contextual `await` must be the existing attached role; attachment is checked by parser context/scanner trivia boundary, not encoded by CFG expansion",
+    "mutable_list_edit": "commit to structural edit only after one exact suffix marker from mutable_list_edit_suffixes",
+    "deferred_message": "defer message form accepts `~` only; `:~` remains excluded",
+    "tilde_call": "ordinary message call accepts `~` or `:~`; tilde argument sequence has no trailing comma",
+    "preview_gate": "required exactly once at the front of Preview source role",
+    "closure_arrow": "if `=>` is selected, LambdaBody is mandatory; otherwise empty/body closure remains available"
+  },
+  "combinator_contracts": {
+    "list<X,min,trail>": {
+      "separator": ",",
+      "min_parameter": "minimum item count",
+      "trail=yes": "optional trailing comma",
+      "trail=no": "trailing comma rejected"
+    },
+    "rows<X,min>": {
+      "shape": "LB X (LB X)* [LB]",
+      "min_parameter": "minimum row count",
+      "note": "used only in owners whose current grammar admits physical-line layout"
+    },
+    "entries<X>": {
+      "separator": "comma optionally followed by LB, or LB",
+      "shape": "X ((, [LB] | LB) X)* [(, [LB] | LB)]",
+      "min_items": 1,
+      "note": "wrap in [...] when the owner admits zero entries"
+    }
+  },
+  "pratt_external_surface_words": {
+    "type_prefix_ownership": [
+      "owned",
+      "borrowed",
+      "mut",
+      "inout"
+    ],
+    "expression_prefix_words": [
+      "not",
+      "move",
+      "borrow",
+      "await"
+    ],
+    "note": "Binding powers/associativity remain in the existing canonical Pratt registry; this list is only an audit projection of word-spelled prefix surfaces."
+  },
+  "pratt_external_surface_operators_audit_only": [
+    "&",
+    "~~"
+  ]
+}

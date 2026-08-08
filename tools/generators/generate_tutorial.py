@@ -24,11 +24,11 @@ SCHEMA_REL = "schemas/language/tutorial-coverage.schema.json"
 MANIFEST_REL = "docs/tutorial/coverage-manifest.json"
 REPORT_REL = "docs/tutorial/coverage-report.md"
 MANIFEST_SCHEMA = "deeplus.tutorial-coverage/r1"
-REVISION = "r51f3-current-implementation-readiness-g4-audit-r1"
+REVISION = "r51f3-current-r77-publication-policy-closure-r1"
 POINTER_REL = "current/current-pointer.json"
 SOURCE_BINDING_RELS = (
     "spec/language.md",
-    "spec/grammar/deeplus.ebnf",
+    "spec/grammar/deeplus.dpg",
     "spec/frontend/frontend-model.json",
     "spec/types/type-system.md",
     "docs/grammar-reference/coverage-manifest.json",
@@ -47,6 +47,9 @@ SEPARATE_ACTION_IDS = (
     "M13-A003",
     "M13-A004",
     "M13-A005",
+)
+AUDIT_ACTION_IDS = (
+    "R77-A006",
 )
 PRODUCT_LANE_COUNT = 15
 PRODUCT_LANE_STATUS = "NOT_RUN"
@@ -221,7 +224,11 @@ def validate_authority_and_pointer(
     ):
         raise TutorialError("current pointer open action shape drift")
     action_ids = [row.get("id") for row in actions]
-    expected_action_ids = [*SEPARATE_ACTION_IDS, *FEATURE_P1_IDS]
+    expected_action_ids = [
+        *SEPARATE_ACTION_IDS,
+        *AUDIT_ACTION_IDS,
+        *FEATURE_P1_IDS,
+    ]
     if (
         len(action_ids) != len(set(action_ids))
         or set(action_ids) != set(expected_action_ids)

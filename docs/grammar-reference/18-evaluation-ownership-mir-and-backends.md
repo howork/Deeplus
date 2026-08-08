@@ -928,7 +928,7 @@ condition·place observation을 복제하거나,
 
 ### 11.3 설명용 syntax
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 private let label = ready ? "ready" : "waiting"
 ```
@@ -1058,7 +1058,7 @@ Map을 publish하지 않는다. Error, Defect 또는 Cancellation으로
 부분 Map을 0개 publish한다. hidden clone, key String화,
 numeric widening이나 implicit conversion은 없다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 private let merged = #map{
     **defaults,
@@ -1525,7 +1525,7 @@ locale·provider를 선택하거나, 알 수 없는 format을 무시해서는 �
 format text가 없는 braced/shorthand hole은 §17.2의
 `LAW_PRESENT` plan을 그대로 사용한다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 private let greeting = "Hello, $user.name"
 ```

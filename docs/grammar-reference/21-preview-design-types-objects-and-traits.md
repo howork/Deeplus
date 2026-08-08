@@ -655,7 +655,7 @@ module-level static-admissible `let`과 명시적 lifecycle 함수가 대안이�
 formatter/LSP는 binding과 Class API를 분리한다.
 
 **활성화 선행 조건**
-Design_의 owner 선택, exact EBNF/root, cycle과 failure algorithm, API/link
+Design_의 owner 선택, exact DPG/root, cycle과 failure algorithm, API/link
 identity, cleanup MIR, multi-module mutation corpus와 target-bound receipt가
 필요하다. 현재 lexer부터 actual user study까지 제품 lane은 `NOT_RUN`이다.
 

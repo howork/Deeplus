@@ -22,7 +22,7 @@
 2. `spec/language.md`
 3. `spec/contracts/**`, `spec/types/**`, `spec/patterns/**`와 canonical
    registry·schema
-4. `spec/grammar/deeplus.ebnf`
+4. `spec/grammar/deeplus.dpg`
 5. `docs/grammar-reference/**`
 
 각 장 첫머리에는 아래 중 하나의 정확한 상태 표식을 둔다. 표식은 제목

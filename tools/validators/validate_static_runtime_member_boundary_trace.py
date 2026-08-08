@@ -74,6 +74,10 @@ R76_PREDECESSOR = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
 R76_OVERLAY = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
 R76_COUNTS = (3709, 4, 508, 0)
 R76_NON_TARGET_SHA256 = "cf5a7544444d434fa888c4f0904642adf09aec779434680ff5b1b45f3725ced0"
+R77_REVISION = "r77-current-implementation-target-rebind-r1"
+R77_BASELINE = "da734c608c0d583a671c0da9e14da00bff42affd"
+R77_COUNTS = (3711, 4, 506, 0)
+R77_NON_TARGET_SHA256 = "734c37e8f4a2919788102f8a0eced90597ab11771818b7f8d3ef8319fc893835"
 OVERLAY_SCHEMA = "schemas/language/static-runtime-member-boundary-evidence-r1.schema.json"
 ROWS = "spec/traceability/implementation-target-profile-r1/rows.json"
 METADATA = "spec/traceability/implementation-target-profile-r1/catalog-metadata.json"
@@ -336,6 +340,13 @@ def validate(
         and metadata.get("local_predecessor_commit") == R76_PREDECESSOR
         and applied_paths[-1:] == [R76_OVERLAY]
     )
+    r77_successor = (
+        metadata.get("revision") == R77_REVISION
+        and metadata.get("canonical_baseline_commit") == R77_BASELINE
+        and metadata.get("local_predecessor_commit") == R77_BASELINE
+        and applied_paths[-1:] == [R76_OVERLAY]
+    )
+    global_successor = r76_successor or r77_successor
 
     require(
         overlay_schema.get("$schema")
@@ -499,7 +510,7 @@ def validate(
         "G03",
         "GENERATED_TARGET_EXACT",
     )
-    if r71_successor or r72_successor or r73_successor or r74_successor or r75_successor or r76_successor:
+    if r71_successor or r72_successor or r73_successor or r74_successor or r75_successor or global_successor:
         r71_target = current_cells.get(R71_TARGET, {})
         require(
             r71_target.get("disposition") == "BOUND_DELEGATED"
@@ -510,7 +521,7 @@ def validate(
             "G03",
             "R71_SUCCESSOR_TARGET_EXACT",
         )
-        if r72_successor or r73_successor or r74_successor or r75_successor or r76_successor:
+        if r72_successor or r73_successor or r74_successor or r75_successor or global_successor:
             r72_target = current_cells.get(R72_TARGET, {})
             r72_detail = r72_target.get("not_applicable") or {}
             require(
@@ -545,9 +556,12 @@ def validate(
                 else r72_successor_non_target_digest(current_cells)
             )
             require(
-                r76_successor
+                global_successor
                 and non_target_digest(current_cells)
-                == (NON_TARGET_COUNT, R76_NON_TARGET_SHA256)
+                == (
+                    NON_TARGET_COUNT,
+                    R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256,
+                )
                 or (
                 before_duplicates == current_duplicates == 0
                 and len(before_cells) == len(current_cells) == 4221
@@ -576,7 +590,7 @@ def validate(
                 "G03",
                 "R72_R73_SUCCESSOR_OTHER_EXACT",
             )
-            if r73_successor or r74_successor or r75_successor or r76_successor:
+            if r73_successor or r74_successor or r75_successor or global_successor:
                 boundary = current_cells.get(R73_BOUNDARY_TARGET, {})
                 reject = current_cells.get(R73_REJECT_TARGET, {})
                 require(
@@ -593,7 +607,7 @@ def validate(
                     "G03",
                     "R73_SUCCESSOR_TARGETS_EXACT",
                 )
-            if r74_successor or r75_successor or r76_successor:
+            if r74_successor or r75_successor or global_successor:
                 r74_target = current_cells.get(R74_TARGET, {})
                 require(
                     r74_target.get("disposition") == "BOUND_DIRECT"
@@ -634,7 +648,7 @@ def validate(
     derived = metadata.get("derived_counts", {})
     require(
         metadata.get("canonical_baseline_commit")
-        == (R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
+        == (R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             (
                 metadata.get("revision") == REVISION
@@ -645,12 +659,12 @@ def validate(
             or r73_successor
             or r74_successor
             or r75_successor
-            or r76_successor
+            or global_successor
         ),
         "G04",
         "METADATA_IDENTITY",
     )
-    if r76_successor:
+    if global_successor:
         require(
             len(applied) == 21
             and sum(row.get("binding_count", 0) for row in applied) == 1381
@@ -731,7 +745,9 @@ def validate(
     require(
         len(registry)
         == (
-            4393
+            4392
+            if r77_successor
+            else 4393
             if r76_successor
             else 3151
             if r75_successor
@@ -746,7 +762,9 @@ def validate(
         "EVIDENCE_REGISTRATION",
     )
     expected_counts = (
-        R76_COUNTS
+        R77_COUNTS
+        if r77_successor
+        else R76_COUNTS
         if r76_successor
         else (2473, 4, 502, 1242)
         if r75_successor
@@ -818,7 +836,7 @@ def validate(
         and governance.get("m13_actions") == "4_OPEN_UNCHANGED"
         and governance.get("product_lanes") == "15_OF_15_NOT_RUN"
         and governance.get("github_publication")
-        == ("NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
+        == ("R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
         and governance.get("e4_e5_evidence_count") == 0,
         "G05",
         "REGISTRY_GOVERNANCE",

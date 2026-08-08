@@ -227,7 +227,7 @@ nominal member와 active extension이 모두 적용 가능한 ordinary selector�
 
 - [Extension 문법과 resolution](../../grammar-reference/06-classes-traits-conformance-and-extensions.md)
 - [호출·message selector](../../grammar-reference/05-functions-methods-closures-and-calls.md)
-- [정확한 EBNF](../../../spec/grammar/deeplus.ebnf)
+- [정확한 DPG](../../../spec/grammar/deeplus.dpg)
 
 다음 장에서는 정적 capability의 네 domain과 associated qualification을
 구분한다.

@@ -1,6 +1,6 @@
 {
   "schema": "deeplus.grammar-reference-contract/r1",
-  "revision": "r51f3-current-implementation-readiness-g4-audit-r1",
+  "revision": "r51f3-current-r77-publication-policy-closure-r1",
   "reference_root": "docs/grammar-reference",
   "authority": {
     "kind": "CANONICAL_DOCUMENTATION_PROJECTION",
@@ -115,6 +115,10 @@
       "M13-A003",
       "M13-A004",
       "M13-A005"
+    ],
+    "audit_action_status": "OPEN",
+    "audit_action_ids": [
+      "R77-A006"
     ],
     "product_lane_status": "NOT_RUN",
     "product_lane_ids": [
@@ -276,7 +280,19 @@
     },
     {
       "id": "exact_grammar",
+      "path": "spec/grammar/deeplus.dpg"
+    },
+    {
+      "id": "parser_contexts",
+      "path": "spec/grammar/deeplus.parser-contexts.json"
+    },
+    {
+      "id": "legacy_surface_census",
       "path": "spec/grammar/deeplus.ebnf"
+    },
+    {
+      "id": "parser_grammar_differential",
+      "path": "spec/contracts/parser-grammar-differential-r1.json"
     },
     {
       "id": "grammar_topology_closure",
@@ -348,10 +364,14 @@
     }
   ],
   "grammar": {
-    "path": "spec/grammar/deeplus.ebnf",
+    "path": "spec/grammar/deeplus.dpg",
+    "contexts_path": "spec/grammar/deeplus.parser-contexts.json",
+    "surface_census_path": "spec/grammar/deeplus.ebnf",
     "frontend_model_path": "spec/frontend/frontend-model.json",
     "topology_contract_path": "spec/contracts/grammar-topology-closure-r1.json",
     "disposition_registry_path": "spec/contracts/grammar-production-disposition-registry-r1.json",
+    "expected_rule_family_count": 280,
+    "expected_rule_clause_count": 301,
     "expected_total": 656,
     "expected_profile_counts": {
       "LEXICAL": 87,

@@ -150,7 +150,7 @@ target type을 쓴다. 직접 원자 literal은 그 target에서 표현 가능�
 아니며 `Float64::nan`, `Float64::positiveInfinity` 같은 type-side constant를
 사용한다.
 
-위 EBNF의 두 마지막 형식은 ordinary 숫자 token과 소유 방식이 다르다.
+위 DPG의 두 마지막 형식은 ordinary 숫자 token과 소유 방식이 다르다.
 `<p/q>`는 식의 prefix 또는 primary가 시작될 수 있는 위치에서만
 transactional하게 탐사하는 복합 리터럴이고, 허수 리터럴은 이미 유효한
 suffix-free 10진 부동소수 바로 뒤에 ASCII `i`가 붙은 하나의 최장 일치
@@ -291,7 +291,7 @@ multiline Unicode String은 `"""`를 사용한다. opener 뒤에는 newline이
 같이 escape와 `${...}` interpolation을 처리한다. 한 줄 triple-quoted
 형식과 raw multiline String은 현행이 아니다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 let customer = "Mina"
 let letter = """
@@ -456,7 +456,7 @@ let cartesian: Complex = 3.0 + 4i
 
 ## 정본 근거
 
-- [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - [`spec/grammar/keyword-vocabulary.json`](../../spec/grammar/keyword-vocabulary.json)
 - [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
 - [`spec/contracts/value-operator-indexing-coherence.json`](../../spec/contracts/value-operator-indexing-coherence.json)

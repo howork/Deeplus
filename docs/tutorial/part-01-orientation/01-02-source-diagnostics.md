@@ -146,7 +146,7 @@ checker가 refinement를 검토하기 전에 attachment/parse 단계가 막힌�
 
 ## 12. 정본 근거와 다음 장
 
-- [통합 EBNF](../../../spec/grammar/deeplus.ebnf)
+- [통합 DPG](../../../spec/grammar/deeplus.dpg)
 - [진단 catalog](../../../spec/diagnostics/catalog)
 - [name/type/call 판정](../../grammar-reference/17-name-resolution-type-inference-and-calls.md)
 - [source에서 HIR/MIR로](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)

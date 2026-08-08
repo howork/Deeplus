@@ -1,0 +1,822 @@
+/*
+ Deeplus Compact Parser Grammar — DPG/1
+ ========================================
+
+ Goal
+ ----
+ Preserve the CURRENT Deeplus source surface while making the grammar a
+ lightweight contract for a Rust handwritten parser.
+
+ The grammar is NOT the whole frontend specification. Recognition is the product:
+
+   Scanner
+ + this structural grammar
+ + ParserContext / Pratt registries
+ + CST boundary & recovery policy
+ + post-parse admission/checking
+
+ This is deliberate. A rule must not be copied merely because an owner has a
+ different semantic policy.
+
+ Notation
+ --------
+ 'x'                 exact token spelling
+ ~x                  contextual word recognized by spelling in this context
+ TOKEN                lexer/scanner outcome
+ [X], X*, X+         optional / repetition
+ X | Y               structural choice
+ R<C>                 parser rule parameterized by context C
+ @Set                 closed set from deeplus.parser-contexts.json
+ dispatch<Table,C>    handwritten dispatcher selected by context
+ pratt<D,M>           Pratt parser for domain D, mode M
+ list<X,min,trail>    comma-list combinator
+ empty                consume no source token
+ rows<X,min>          physical-line list combinator
+ entries<X>           comma-or-linebreak list combinator
+ LB                   line break in lossless trivia
+ END                  statement boundary from BoundaryContext
+ admit<P>(X)          context predicate; no source token of its own
+
+ The names used by @Set, dispatch<Table,C>, admit<P>, pratt<D,M>, LB, END,
+ and upper-case scanner outcomes are closed external bindings. Every one must
+ resolve through deeplus.parser-contexts.json. An unknown binding makes this
+ grammar invalid. Parameter names such as C, M, P, R, and Role are local
+ metagrammar variables rather than source symbols.
+
+ Layer rule
+ ----------
+ The scanner owns characters, comments, strings, compound tokens and lexical
+ modes. The grammar owns structural token order. CST owns lossless trivia and
+ recovery nodes. Pratt/ParserContext owns precedence, stop sets, soft words,
+ owner-specific admission and commitment. AST/checker owns normalization and
+ semantic legality.
+*/
+
+# ============================================================================
+# A. SCANNER INTERFACE — NO CHARACTER-LEVEL LEXER DUPLICATION
+# ============================================================================
+
+Name        := IDENTIFIER ;
+Wildcard    := WILDCARD ;
+Number      := NUMERIC_LITERAL ;
+Imaginary   := IMAGINARY_LITERAL ;
+Rational    := RATIONAL_LITERAL ;
+Char        := CHAR_LITERAL ;
+Bytes       := BYTES_LITERAL ;
+PlainString := PLAIN_STRING_LITERAL ;
+RawString   := RAW_STRING_LITERAL ;
+MultiString := MULTILINE_STRING_LITERAL ;
+NameToken   := NAME_TOKEN ;
+Shebang     := SHEBANG ;
+EOF         := EOF_TOKEN ;
+
+# Interpolated-string mode supplies:
+# STRING_START, STRING_TEXT, STRING_ESCAPE, INTERPOLATION_OPEN,
+# INTERPOLATION_CLOSE, INTERPOLATION_FORMAT_TEXT,
+# INTERPOLATION_BOUNDARY, STRING_END.
+#
+# Script shebang is supplied by the scanner as the existing Shebang outcome.
+# Hard/contextual vocabulary remains owned by keyword-vocabulary.json.
+
+# ============================================================================
+# B. COMMON SURFACES
+# ============================================================================
+
+Path        := Name ('::' Name)* ;
+Visibility  := @TopLevelVisibility ;
+MemberVis   := @MemberVisibility ;
+Tag<C>      := '#' (IDENTIFIER | HARD_KEYWORD) ;      # admit<TagPolicy[C]>
+
+Annotations := Annotation+ ;
+Annotation  := '@' Name [Arguments] LB ;
+
+TypeParams  := '<' list<TypeParam,1,yes> '>' ;
+TypeParam   := [@VarianceMarker] Name [':' @TypeParameterKind] ;
+TypeArgs    := '<' list<TypeArg,1,yes> '>' ;
+TypeArg     := Type | StaticInt | (~error Type) ;
+
+Where       := ~where list<WherePred,1,no> ;
+WherePred   := Type ~conforms QualifiedType
+             | Type '==' Type
+             | Name '<=' EffectRow ;
+
+AssocWhere  := ~where list<AssocPred,1,no> ;
+AssocPred   := Name '==' Type | Name ~conforms QualifiedType ;
+
+EffectRow   := EffectTerm ('|' EffectTerm)* ;
+EffectTerm  := Name | QualifiedType | '{' [list<Name,1,yes>] '}' ;
+ErrorTerm   := Name | QualifiedType ;
+
+TypeAnn     := ':' Type [Refinement] ;
+Refinement  := ~where (Predicate | @OrderedComparison RefineOperand)
+             | 'in' RefineOperand ('..' | '..<') RefineOperand ;
+RefineOperand
+            := Literal | Name | QualifiedStatic ;
+
+Return      := '->' NonFunctionType [',' NonFunctionType (',' NonFunctionType)*] ;
+Throws      := ~throws ErrorTerm ;
+Effects     := ~effects (Name | QualifiedType | '{' '}') ;
+Contract    := (~requires Predicate) | (~ensures Predicate) ;
+
+Responsibilities<C>
+            := [Return] Throws* Effects* Contract* [admit<WhereAllowed[C]>(Where)] ;
+
+StaticInt   := DECIMAL_INTEGER ;
+UnitSyntax  := '(' ')' ;
+Guard       := ('if' Expr) | ('!' 'if' Expr) ;
+
+# ============================================================================
+# C. SOURCE ROLES AND PROFILE OVERLAY
+# ============================================================================
+
+Deeplus     := Source<library,stable>
+             | Source<executable,stable>
+             | Source<script,stable> ;
+
+DeeplusPreview
+            := Source<library,preview>
+             | Source<executable,preview>
+             | Source<script,preview> ;
+
+Source<Role,stable>
+            := SourcePreamble<Role> [ModuleDecl] Item<Role,stable>* EOF ;
+Source<Role,preview>
+            := SourcePreamble<Role> PreviewGate [ModuleDecl] Item<Role,preview>* EOF ;
+SourcePreamble<script>
+            := [Shebang] ;
+SourcePreamble<library>
+            := empty ;
+SourcePreamble<executable>
+            := empty ;
+
+Item<R,P>   := StableItem<R>
+             | admit<P=preview>(PreviewFFI)
+             | Annotations AnnotatedItem<R> ;
+
+StableItem<library>
+            := ImportUse | NonBindingTop | TopBinding ;
+StableItem<executable>
+            := ImportUse | NonBindingTop | EntryFunction ;
+StableItem<script>
+            := ImportUse | NonBindingTop | Statement ;
+
+AnnotatedItem<library>
+            := ImportUse | NonBindingTop | TopBinding ;
+AnnotatedItem<executable>
+            := ImportUse | NonBindingTop | EntryFunction ;
+AnnotatedItem<script>
+            := ImportUse | NonBindingTop ;
+
+ModuleDecl  := 'module' Path END ;
+ImportUse   := ImportDecl | UseDecl | UseExport ;
+ImportDecl  := 'import' Path [('as' Name) | '::' '{' list<Name,1,yes> '}'] END ;
+UseDecl     := 'use' Path END ;
+UseExport   := 'use' ~export Path END ;
+
+# ============================================================================
+# D. DECLARATION DISPATCH — DIFFERENCES LIVE IN OWNER CONTEXT
+# ============================================================================
+
+NonBindingTop
+            := TypeDecl | Function<module> | Function<extension>
+             | Actor | ActorProtocol | Typestate | Capability
+             | ExtensionSet | ExtensionPack | UnitCatalog | ModuleInterface
+             | Conformance | Schema | Bitfield ;
+
+TopBinding  := [Visibility] ('let' | 'var') Name [TypeAnn] '=' Expr END ;
+
+# ---------- callables ----------
+
+DefIntro<C> := 'def' Tag<C>* ;
+
+# One handwritten callable routine family; K selects only the header shape.
+Function<module>
+            := [Visibility] DefIntro<module> Name [TypeParams]
+               Parameters<function> FnTail<normal> ;
+Function<entry>
+            := DefIntro<entry> Name Parameters<entry> FnTail<entry> ;
+Function<extension>
+            := [Visibility] DefIntro<extension> Type ('~'|'::') Name
+               [TypeParams] Parameters<function> FnTail<normal> ;
+Function<local>
+            := [CaptureList] DefIntro<local> Name [TypeParams]
+               Parameters<function> FnTail<normal> ;
+Function<member>
+            := [MemberVis] DefIntro<member> Name @ClassDispatchMarker
+               [TypeParams] Parameters<function> FnTail<normal> ;
+Function<type_member>
+            := [MemberVis] 'def' '::' Name [TypeParams]
+               Parameters<function> FnTail<normal> ;
+Function<trait>
+            := [MemberVis] DefIntro<trait> Name @TraitWitnessMarker
+               [TypeParams] Parameters<function> FnTail<trait> ;
+Function<conformance>
+            := [MemberVis] DefIntro<conformance> (Name | QualifiedType '::' Name)
+               @TraitWitnessMarker [TypeParams]
+               Parameters<function> FnTail<normal> ;
+Function<extension_set>
+            := [MemberVis] 'def' Name [Parameters<function>] [Return]
+               Throws* Effects* [Where] FunctionBody ;
+
+FnTail<C>   := Responsibilities<C> FnEnd<C> ;
+FnEnd<normal>
+            := FunctionBody ;
+FnEnd<entry>:= FunctionBody ;
+FnEnd<trait>:= FunctionBody | END ;
+
+FunctionBody
+            := '=' (CallableBlock | 'return' ReturnValue END | ClauseBody) ;
+CallableBlock
+            := '{' [BlockPrologue] [~static Block] BlockSeq '}' ;
+ClauseBody  := '{{' [LB] MatchArms '}}' ;
+
+EntryFunction
+            := Function<entry> ;
+
+Parameters<C>
+            := admit<ParameterPolicy<C>>(
+                 '(' [list<Parameter,1,yes> | rows<Parameter,1>] ')'
+               ) ;
+Parameter   := ValueParam | ContextParam | WitnessParam | PosRestParam
+             | NamedRestParam | StoredParam ;
+ValueParam  := [@ParameterMode] Name [irrefutable_structural_pattern] TypeAnn ;
+ContextParam:= ~context Name ':' Type ;
+WitnessParam:= ~using Name ':' ~witness Type ;
+PosRestParam:= Name '..' TypeAnn ;
+NamedRestParam
+            := Name '**' [~requires '{' entries<Name ':' Type> '}'] ;
+StoredParam := [MemberVis] ('let'|'var') Name [TypeAnn] ;
+
+Constructor := [MemberVis] 'def' '!' Name Parameters<primary_constructor>
+               [admit<NonEmpty>(Throws* Effects* Contract* [Where])]
+               [':' ConstructorTarget [Guard] (ConstructorTarget [Guard])*]
+               '=' Block ;
+ConstructorTarget
+            := Name Arguments | ~super '!' [Name] Arguments ;
+
+Cleanup     := DefIntro<cleanup> '(' ')' Throws* Effects* FunctionBody ;
+
+# ---------- shared member atoms ----------
+
+Field       := [MemberVis] ('let'|'var') Name [TypeAnn] ['=' Expr] END ;
+TypeField   := [MemberVis] 'let' '::' Name [TypeAnn] ['=' Expr] END ;
+Accessor    := ('let'|'var') Name TypeAnn ':=' (AccessorArm | '{' AccessorArm+ '}') ;
+AccessorArm := [MemberVis] ~get Block
+             | [MemberVis] ~set '(' Name ')' Block ;
+Forward     := [MemberVis] ~forward (Name | '{' list<Name,1,yes> '}')
+               ~to Expr END ;
+
+AssociatedRequirement
+            := 'type' Name [AssocWhere] END
+             | 'let' '::' Name TypeAnn END
+             | 'def' '::' Name Parameters<function>
+               [Return] Throws* Effects* END ;
+AssociatedBinding
+            := 'type' Name '=' Type END
+             | 'let' '::' Name '=' Expr END ;
+ExtensionDelegate
+            := ~delegate Name ~to Type '::' Name '::' Name END ;
+Law         := ~law Name [LawBody] END ;
+LawBody     := '{' LawItem* '}' ;
+LawItem     := [@LawAssertionPrefix] Predicate END ;
+EnumSubsetAlias
+            := '+' 'type' Name '=' Name ('|' Name)* [END] ;
+
+# ---------- nominal declarations ----------
+
+MemberSeq<C>:= dispatch<MemberSet,C>* ;
+MemberBody<C>
+            := '{' MemberSeq<C> '}' ;
+
+NominalConform
+            := LB ~conforms QualifiedType [ConformanceRoute] [Where] ;
+ConformanceRoute
+            := ~via Path | ~by ~auto ;
+
+Class       := [Visibility] [@ClassFlavor] [@ClassModifierSequence]
+               'class' Name [TypeParams] [Parameters<primary_constructor>] [Where]
+               [LB ~derives Type] NominalConform*
+               [CleanupBudget] MemberBody<class>
+             | [Visibility] ~data 'class' Name [TypeParams]
+               [Parameters<primary_constructor>] [Where]
+               NominalConform* [CleanupBudget] [MemberBody<class>] ;
+
+Trait       := [Visibility] 'trait' ['#' @TraitLanguageRole] Name [TypeParams]
+               (LB ~derives QualifiedType)*
+               [LB ~supports ~auto]
+               [MemberBody<trait>] ;
+
+Enum        := [Visibility] 'enum' ['#' @EnumOrderRole] Name [TypeParams]
+               NominalConform* EnumBody ;
+EnumBody    := '{' [admit<EnumBodyCommit>(EnumCommaCases | EnumLayout)] '}' ;
+EnumCommaCases
+            := list<EnumCase,2,yes> ;
+EnumLayout  := (EnumCase [END])* MemberSeq<enum> ;
+EnumCase    := Name ['(' [list<EnumCaseField,1,yes>] ')'] [EnumDisplay] ;
+EnumCaseField
+            := Name TypeAnn | Type ;
+EnumDisplay := '~>' (PlainString | MultiString | Interpolated) ;
+
+Actor       := [Visibility] ~actor [Tag<actor_mailbox> '(' ~capacity ':' StaticInt ')']
+               Name (LB ~conforms QualifiedType [Where])* MemberBody<actor> ;
+
+ActorProtocol
+            := [Visibility] ~protocol Name MemberBody<actor_protocol> ;
+
+Typestate   := [Visibility] ~typestate Name [TypeParams]
+               '{' TypestateTransition* '}' ;
+
+Bitfield    := [Visibility] ~bitfield [Tag<bitfield>] Name
+               ~backing Type ~order '::' ~lsb0
+               '{' BitfieldLayout MemberSeq<bitfield> '}' ;
+BitfieldLayout
+            := (BitfieldSlot END)+ | (FlagSlot END)+ ;
+BitfieldSlot:= [MemberVis] Name ':' StaticInt ['=' Literal]
+             | '_' ':' StaticInt ;
+FlagSlot    := [MemberVis] Name | '_' ':' StaticInt ;
+
+TypeDecl    := Class | Trait | Enum | TypeAlias ;
+
+Conformance := [Visibility] 'type' Type ~conforms QualifiedType
+               ['as' Name] [ConformanceRoute] [Where]
+               admit<ConformanceRoutePolicy>(MemberBody<conformance> | END) ;
+
+ConformBlock
+            := ~conform QualifiedType MemberBody<conformance> ;
+
+ExtensionSet
+            := [Visibility] ~extension Type 'as' Name MemberBody<extension_set> ;
+ExtensionPack
+            := ~extension ~pack Path '{' UseExport* '}' ;
+Capability  := [Visibility] ~capability Name 'for' EffectRow END ;
+
+TypeAlias   := [Visibility] 'type' Name [TypeParams] '='
+               (Type [Refinement] | StaticInt '..' StaticInt) END ;
+
+Schema      := [Visibility] ~schema Name [TypeParams]
+               '{' [list<SchemaField<comma>,1,yes> | rows<SchemaField<layout>,1>] '}' ;
+SchemaField<comma>
+            := Name TypeAnn ['=' Expr] (~where Expr)* [END] ;
+SchemaField<layout>
+            := Name TypeAnn ['=' Expr] (~where Expr)* ;
+
+# Actor/Protocol/Enum/Bitfield special body items are dispatched by MemberSet.
+# Their exact current member sets are in parser-contexts.json.
+
+# ---------- small specialized declarations ----------
+
+ActorOn     := [MemberVis] ~on Name [Parameters<function>]
+               Throws* Effects* FunctionBody ;
+ActorRequest:= [MemberVis] ~request Name [Parameters<function>]
+               Return Throws* Effects* FunctionBody ;
+ProtocolSend:= ~send Name [Parameters<function>] Throws* Effects* END ;
+ProtocolRequest
+            := ~request Name [Parameters<function>]
+               Return Throws* Effects* END ;
+ActorProtocolConform
+            := ~conform QualifiedType MemberBody<actor_protocol_conformance> ;
+
+TypestateTransition
+            := Name '->' Name [FunctionBody] ;
+
+UnitCatalog := [Visibility] ~unit ~catalog Name
+               '{' UnitEntry* '}' ;
+UnitEntry   := ~unit Name ~equalsRatio Measure '/' StaticInt END
+             | Name '=' UnitExpr END ;
+
+ModuleInterface
+            := ([Visibility] 'module' ~signature Path
+               | [Visibility] ~opaque 'module' Path)
+               '{' (ExportDecl | UseExport | ModuleInterface)* '}' ;
+
+ExportableFunction
+            := [Visibility] 'def' Name [TypeParams]
+               Parameters<function> FnTail<normal> ;
+ExportDecl  := ~export (ExportableFunction | TypeDecl | Name) [END] ;
+
+CleanupBudget
+            := ~cleanup ~budget '{'
+               ((~effects '{' [list<Name,1,yes>] '}') | (~errors Type))*
+               '}' ;
+
+# ============================================================================
+# E. TYPE PARSER — PRATT REGISTRY OWNS PRECEDENCE
+# ============================================================================
+
+Type        := pratt<Type,normal> ;
+NonFunctionType
+            := pratt<Type,non_function_top> ;
+
+TypeAtom    := QualifiedType
+             | 'Facet' '<' ~borrow ~any QualifiedType [AssocWhere] '>'
+             | ParenType
+             | '#' StaticDims '[' Type ']'
+             | ~any QualifiedType [AssocWhere]
+             | ~some QualifiedType [AssocWhere]
+             | ~typeof TypeofOperand
+             | '<' Type 'as' QualifiedType '>' '::' Name ;
+
+QualifiedType
+            := Path [TypeArgs] ;
+
+ParenType   := Tag<paren_type>* '(' [list<ParenTypeItem,1,yes>] ')'
+               ['->' NonFunctionType [',' NonFunctionType (',' NonFunctionType)*]
+                Throws* Effects*] ;
+ParenTypeItem
+            := [@ParameterMode] Type | Type '..' | Type '**' ;
+
+StaticDims  := StaticInt (',' StaticInt)* ;
+TypeofOperand
+            := Literal | ListLiteral | MapLiteral | SetLiteral | MutListLiteral
+             | NumericArray | Measure ;
+
+# Prefix/postfix/infix inventory and binding powers remain in the existing
+# Type Pratt registry. No Pratt ladder is duplicated here.
+
+# ============================================================================
+# F. PATTERN PARSER — MODE, NOT COPY/PASTE
+# ============================================================================
+
+Pattern     := Pattern<general> ;
+BindingPattern
+            := Pattern<binding_root> ;
+Assignee    := AssigneeShape ;
+
+Pattern<general>
+            := PatternChain<general> ;
+Pattern<binding_root>
+            := PatternChain<binding_root> [TypeAnn] ;
+PatternChain<M>
+            := ['move'] PatternAtom<M> ['as' Name]
+               ('|' ['move'] PatternAtom<M> ['as' Name])* ;
+
+PatternAtom<general>
+            := dispatch<PatternAtomSet,general> ;
+PatternAtom<binding_root>
+            := dispatch<PatternAtomSet,binding_root> ;
+
+TypedBindingPat
+            := Name ':' Type ;
+GroupedPat  := '(' Pattern ')' ;
+PinPat      := '^' StablePatternValue ;
+StablePatternValue
+            := Name | QualifiedStatic | Literal ;
+PatternBound:= Literal | PinPat ;
+RangePat    := PatternBound ('..'|'..<') PatternBound ;
+RelationalPat
+            := @OrderedComparison PatternBound ;
+
+PatternItems
+            := Pattern ',' | Pattern ',' Pattern (',' Pattern)* [','] ;
+RecordEntry := Name | Name ':' Pattern | (Name|'_') '**' ;
+
+irrefutable_structural_pattern
+            := TuplePat | ListPat | RecordPat | NominalPat ;
+
+# General atom set:
+# typed Name ':' Type, Name, ^stable-value, range/relational,
+# tuple/record/list/map/variant/nominal, '_', (), Literal, grouping.
+# Binding-root atom set is identical except root typed-Name is omitted.
+# Structural children of a binding-root pattern use general mode.
+
+TuplePat    := '(' admit<TupleIdentity>(PatternItems) ')' ;
+RecordPat   := '${' [entries<RecordEntry>] '}' ;
+ListPat     := '[' admit<ListRestPolicy[general]>(list<PatternOrRest,0,yes>) ']' ;
+NominalPat  := Type RecordPat ;
+PatternOrRest
+            := Pattern | (Name | '_') '..' ;
+
+# Assignment patterns intentionally keep the current narrower root: a bare
+# Name or `_` is not an AssigneeShape. Nested items also exclude Nominal.
+AssigneeShape
+            := AssigneeTuple | AssigneeList | AssigneeRecord | AssigneeNominal ;
+AssigneeItem:= Name | '_' | AssigneeTuple | AssigneeList | AssigneeRecord ;
+AssigneeTuple
+            := '(' admit<TupleIdentity>(AssigneeItems) ')' ;
+AssigneeItems
+            := AssigneeItem ','
+             | AssigneeItem ',' AssigneeItem (',' AssigneeItem)* [','] ;
+AssigneeList:= '[' admit<ListRestPolicy[assignee]>(list<AssigneeOrRest,0,yes>) ']' ;
+AssigneeOrRest
+            := AssigneeItem | (Name|'_') '..' ;
+AssigneeRecord
+            := '${' [entries<AssigneeRecordEntry>] '}' ;
+AssigneeRecordEntry
+            := Name | Name ':' AssigneeItem | (Name|'_') '**' ;
+AssigneeNominal
+            := Type AssigneeRecord ;
+
+MapPat      := '#' ~map '{'
+               [entries<Pattern ':' (Literal | '^' StablePatternValue)
+                       | '..' (Name | '_')>]
+               '}' ;
+
+VariantPat  := (Type '::' | '::') Name
+               ['(' [list<Pattern,1,yes>] ')' | RecordPat] ;
+
+# ListRestPolicy implements the existing exact/prefix/middle/suffix/all-rest
+# forms without five separate productions.
+
+# ============================================================================
+# G. STATEMENTS AND CONTROL
+# ============================================================================
+
+Statement   := For | While | Repeat | ForAwait | Match | If
+             | LocalBinding | AssertiveBinding | MutableListEdit
+             | PatternAssignment | ParallelAssignment | ControlTransfer END
+             | Try | Defer | ScopedUse | ScopedImport | ExprStatement ;
+
+Block       := '{' [BlockPrologue] BlockSeq '}' ;
+BlockPrologue
+            := (UseDecl | ImportDecl)+ ;
+BlockSeq    := (Function<local> | Statement)* [BlockFinal] ;
+BlockFinal  := ControlTransfer | BindingCore | Expr ;
+
+BindingCore := ('let' | 'var') BindingHead '=' BindingValue ;
+BindingHead := BindingPattern
+             | BindingPattern ',' BindingPattern (',' BindingPattern)* ;
+BindingValue:= Expr | BareTupleValue ;
+LocalBinding
+            := BindingCore END
+             | Expr '->' DollarBinding END
+             | 'let' Tag<lazy> Name [TypeAnn] '=' Expr END
+             | 'let' '?' BindingPattern '=' Expr 'else' Pattern '=>' GuardedExit [END] ;
+AssertiveBinding
+            := ('let'|'var') '!' BindingPattern '=' Expr END ;
+GuardedExit := 'return' [Expr] | 'throw' Expr | 'break'+ [Expr] | 'break'* ~continue ;
+ScopedUse   := 'use' list<Path,1,no> 'in' Block ;
+ScopedImport:= 'import' list<Path,1,no> 'in' Block ;
+ExprStatement
+            := Expr END ;
+
+ReturnValue := Expr | BareTupleValue ;
+BareTupleValue
+            := Expr ',' Expr (',' Expr)* ;
+
+ControlTransfer
+            := 'return' [ReturnValue] [Guard]
+             | 'throw' Expr [Guard]
+             | 'break'+ [Expr] [Guard]
+             | 'break'* ~continue [Guard]
+             | ~yield [Expr] [Guard | '->' DollarBinding] ;
+DollarBinding
+            := ('$' | '$$') Name [TypeAnn] ;
+
+If          := 'if' Condition ('and' ~then Condition)* Block
+               ['else' (If | Block)] ;
+Condition   := Expr | 'let' Pattern '=' Expr ;
+
+For         := 'for' ['let'] Pattern 'in' Expr [Guard] Block [Match] ;
+ForAwait    := 'for' admit<ForAwaitAttached>('#' ~await)
+               ['let'] Pattern 'in' Expr [Guard] Block ;
+While       := 'while' Condition ('and' ~then Condition)* Block [Match] ;
+Repeat      := 'repeat' Block 'while' Expr [Match] ;
+
+Match       := 'match' MatchCore ;
+MatchValue  := '@' 'match' MatchCore ;
+MatchCore   := MatchSubject '{' [LB] MatchArms '}' ;
+MatchSubject:= MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY ;
+MatchArms   := MatchArm (MatchSeparator MatchArm)* [MatchSeparator] ;
+MatchSeparator
+            := MATCH_ARM_SEPARATOR_BY_CONTEXT ;
+MatchArm    := (BoundedBinder | Pattern | ~otherwise) [Guard] '=>'
+               MatchArmBody ;
+MatchArmBody:= MATCH_ARM_BODY_BY_CONTEXT ;
+BoundedBinder
+            := PatternBound @OrderedComparison Name @OrderedComparison PatternBound ;
+
+Try         := 'try' Block (Catch+ [Finally] | Finally) ;
+Catch       := 'catch' [Pattern] [Guard] Block ;
+Finally     := 'finally' Block ;
+
+DeferredReceiver
+            := (Name | QualifiedStatic) (Index | Member)* ;
+DeferredInvocation
+            := DeferredReceiver Arguments
+             | DeferredReceiver '~' MessageSelector [list<Argument,1,no>] ;
+Defer       := 'defer' DeferredInvocation END ;
+
+PatternAssignment
+            := Assignee '=' Expr END ;
+ParallelAssignment
+            := Name ',' Name (',' Name)* '=' (Expr | BareTupleValue) END ;
+
+MutableListEdit
+            := admit<MutableListEditPolicy>(
+                 MUTABLE_LIST_EDIT_RECEIVER_BY_OWNER
+                 ( @MutableListInsertSuffix '=' (Expr | '*' Expr) END
+                 | @MutableListRemoveSuffix ['->' DollarBinding] END )
+               ) ;
+# Exact insert/remove marker shapes are data in parser-contexts.json, not a
+# production explosion. Receiver commitment and place legality are owner policy.
+
+# ============================================================================
+# H. EXPRESSION PARSER — ONE PRATT ENGINE WITH MODES
+# ============================================================================
+
+Expr        := pratt<Expression,normal> ;
+Predicate   := pratt<Expression,predicate> ;
+SliceIndex  := pratt<Expression,slice_index> ;
+
+ExprAtom    := dispatch<ExpressionPrimary,current> ;
+# Literal, Name, @, (), list/bounded-list/comprehension, materialization,
+# map/set/mut-list, numeric array, measure, qualified static, ::variant,
+# @if/@try/@scope/@match, closure, generator, spawn/concur/unsafe/facet.
+
+# Structural led parselets:
+Postfix     := OrdinaryCall
+             | TildeCall
+             | TupleOrdinal
+             | Index
+             | Member
+             | Transpose
+             | ConstructorCall
+             | Derivation
+             | Cast ;
+
+# Prefix/infix tokens, binding powers, associativity, stop sets and the
+# registration order are owned by the existing Pratt registry.
+
+# ---------- shared invocation model ----------
+
+Invocation  := OrdinaryCall | TildeCall ;
+
+OrdinaryCall:= Arguments [TrailingClosures]
+             | AtomicArgument TrailingClosures ;
+
+Arguments   := '(' ')'
+             | '(' list<Argument,1,yes> ')'
+             | '(' rows<NamedArgument,2> ')' ;
+
+Argument    := ~context Expr
+             | ~using WitnessValue
+             | Name ':' Expr
+             | '*' Expr
+             | '**' Expr
+             | Expr ;
+
+NamedArgument
+            := Name ':' Expr | '**' Expr ;
+WitnessValue:= Name | ConformanceEvidence | ConformanceEvidence '::' Name ;
+AtomicArgument
+            := Literal | Name | QualifiedStatic | '::' Name ;
+
+TrailingClosures
+            := TrailingClosure+ ;
+TrailingClosure
+            := Closure | Name ':' Closure ;
+# Policy: if two or more, all are labeled.
+
+TildeCall   := ('~' | ':~') MessageSelector
+               [list<Argument,1,no>] [TrailingClosures] ;
+MessageSelector
+            := Name | Type '::' Name ['::' Name] ;
+
+# ---------- index / member / constructor / cast ----------
+
+Index       := '[' SliceAxis (',' SliceAxis)* ']' ;
+SliceAxis   := SliceRange | SliceIndex | '*' ;
+SliceRange  := [SliceBound] '..' [SliceBound]
+             | [SliceBound] '..<' SliceBound ;
+SliceBound  := SliceIndex | '^' | '$'
+             | '^' ('+'|'-') Number | '$' ('+'|'-') Number ;
+
+TupleOrdinal:= '.' StaticInt ;
+Member      := '.' Name | '.' '\\' NameToken ;
+Transpose   := '^' ;
+ConstructorCall
+            := '!' Arguments | '!' Name Arguments ;
+Derivation  := ('!' | '!!') '{' [entries<MaterialEntry>] '}' ;
+Cast        := 'as' '?' Type | 'as' '!' Type ;
+
+QualifiedStatic
+            := (QualifiedType | '<' Type 'as' QualifiedType '>') '::' Name ;
+
+# ---------- value control / closure / concurrency ----------
+
+ValueBody   := '{' ReturnValue '}'
+             | '{' (Function<local> | Statement)* ~ret [ReturnValue] [Guard] '}' ;
+
+AtControl   := '@' 'if' Expr ValueBody 'else' ValueBody
+             | '@' 'try' ValueBody (ValueCatch+ [Finally] | Finally)
+             | '@' ~scope @ScopeModifier* ValueBody ;
+ValueCatch  := 'catch' [Pattern] [Guard] ValueBody ;
+
+Closure     := [CaptureList] Tag<closure>* '{' ClosureContent '}' ;
+CaptureList := '[' [list<CaptureItem,1,yes>] ']' ;
+CaptureItem := ('let'|'var') Name '=' Expr | @CaptureMode Name | Name ;
+ClosureContent
+            := [LambdaBody]
+             | [LambdaParams] '=>' LambdaBody ;
+LambdaParams:= list<LambdaParam,1,yes> ;
+LambdaParam := [@ParameterMode] (Name | irrefutable_structural_pattern) [TypeAnn] ;
+LambdaBody  := ReturnValue | LB LambdaBlock ;
+LambdaBlock := (Function<local> | Statement)* [LambdaFinal] ;
+LambdaFinal := ~ret [ReturnValue] [Guard] | Expr ;
+
+Generator   := [CaptureList] (
+                 '@' 'for' Pattern 'in' Expr Block
+               | '@' 'while' Expr Block
+               | '@' 'repeat' Block 'while' Expr
+               ) ;
+
+Spawn       := ~spawn ('{' '=>' [LB] BlockSeq '}' | admit<SpawnOperand>(Expr)) ;
+Concur      := ~concur Block ;
+Unsafe      := ~unsafe Block ;
+Facet       := ~facet '[' ~borrow Expr 'as' QualifiedType [AssocWhere] ']' ;
+
+ConformanceEvidence
+            := ~conformance '(' Type ~conforms QualifiedType ')' ;
+
+# ============================================================================
+# I. LITERALS / COLLECTION PRIMARIES
+# ============================================================================
+
+Literal     := 'true' | 'false'
+             | Number | Imaginary | Rational | Char | Bytes | String ;
+
+ImplicitAt  := '@' ;
+ExpectedVariant
+            := '::' Name ;
+ParenExpr   := '(' ')' | '(' Expr ')' | '(' Expr ',' ')'
+             | '(' Expr ',' list<Expr,1,yes> ')' ;
+
+String      := PlainString | RawString | MultiString | Interpolated ;
+Interpolated:= STRING_START InterpPart* STRING_END ;
+InterpPart  := STRING_TEXT | STRING_ESCAPE
+             | INTERPOLATION_OPEN Expr [':' INTERPOLATION_FORMAT_TEXT]
+               INTERPOLATION_CLOSE
+             | '$' (Name|'@') InterpSelector* [INTERPOLATION_BOUNDARY] ;
+InterpSelector
+            := '.' Name | '.' StaticInt | '[' (StaticInt | Name) ']' ;
+
+ListLiteral := '[' [list<ListEntry,1,yes>] ']' ;
+ListEntry   := Expr | '*' Expr ;
+BoundedList := '[' StaticInt '..' StaticInt ':' [list<ListEntry,1,yes>] ']' ;
+Comprehension
+            := '[' Expr CompClause+ ']' ;
+CompClause  := 'for' Pattern 'in' Expr
+             | 'if' Expr
+             | 'if' 'let' Pattern '=' Expr
+             | 'for' Pattern 'in' '*' Expr ;
+
+Materialization
+            := [Type] '${' [entries<MaterialEntry>] '}' ;
+MaterialEntry
+            := Name | Name ':' Expr | String ':' Expr | '**' Expr ;
+
+MapEntry    := Expr ':' Expr | '**' Expr ;
+MapLiteral  := '#' ~map '{' [entries<MapEntry>] '}' ;
+MapComprehension
+            := '#' ~map '{' MapEntry CompClause+ '}' ;
+SetLiteral  := '#' ~set '{' [list<Expr,1,yes>] '}' ;
+SetComprehension
+            := '#' ~set '{' Expr CompClause+ '}' ;
+MutListLiteral
+            := '#' ~mut '[' [list<Expr,1,yes>] ']' ;
+
+NumericArray:= '#' '[' Expr (',' Expr)* [','] ']'
+             | '#' '[' Expr (';' Expr)+ ']'
+             | '#' StaticDims '[' [ArrayInit] ']' ;
+ArrayInit   := ~repeat ':' Expr
+             | ~generate ':' Expr
+             | Expr ((',' | ';'+) Expr)* [',' | ';'+] ;
+
+Measure     := Number '[' UnitExpr ']' ;
+UnitExpr    := pratt<Unit,normal> ;
+
+# ============================================================================
+# J. PREVIEW OVERLAY
+# ============================================================================
+
+PreviewGate := '#' ~preview '(' list<Name,1,no> ')' LB ;
+
+PreviewFFI  := ~extern '#' ~C 'def' '#' ~unsafe Name Parameters<function>
+               [Return] Throws* Effects* END
+             | ~extern ~c '(' PlainString ')' '{'
+               (~unsafe 'def' Name Parameters<function>
+                 [Return] Throws* Effects* END)*
+               '}' ;
+
+# ============================================================================
+# K. INTENTIONALLY EXTERNAL
+# ============================================================================
+
+# Lexer:
+# Unicode/XID, numbers, comments, trivia, strings, interpolation modes,
+# Rational/imaginary transactionality, escaped names, longest-match punctuation.
+#
+# ParserContext / Pratt:
+# soft/contextual word admission, sigil roles, precedence/associativity,
+# expression/type/unit stop sets, source-role admission, member dispatch,
+# match input supply, for#await attachment, mutable-list edit marker table.
+#
+# CST/recovery:
+# lossless trivia, LB/END, missing/unexpected nodes, synchronization and
+# specialized diagnostics. Recovery never expands the accepted language.
+#
+# AST/checker:
+# normalization (including shared CallExpr mode), type-declaration visibility,
+# irrefutability, conformance route legality, ownership/effects, name/type
+# resolution, exhaustiveness, HIR/MIR lowering.
+*/

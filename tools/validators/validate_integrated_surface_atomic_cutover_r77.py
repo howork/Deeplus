@@ -296,24 +296,24 @@ def evaluate(root: Path, docs: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Li
     examples = docs["examples"]
     prelude = docs["prelude"]
 
-    check = "R77-AT-001-IDENTITY-LOCAL-FENCE"
+    check = "R77-AT-001-IDENTITY-CURRENT-FENCE"
     require(check, contract.get("decision_id") == DECISION_ID, "contract decision ID differs")
     require(check, fixture.get("decision_id") == DECISION_ID, "fixture decision ID differs")
     for fragment in (
         "decision_id: %s" % DECISION_ID,
-        "status: LOCAL_ACCEPTED_NOT_PUBLISHED",
-        "current_binding: false",
-        "github_mutation: none",
+        "status: INTEGRATED_UNVERIFIED_PENDING_PUBLICATION_CLOSURE",
+        "current_binding: true",
+        "github_mutation: semantic surface integrated at da734c608c0d583a671c0da9e14da00bff42affd",
     ):
         require(check, fragment in decision, "decision fence missing: %s" % fragment)
-    require(check, contract.get("status") == "LOCAL_ACCEPTED_NOT_PUBLISHED", "contract status differs")
+    require(check, contract.get("status") == "INTEGRATED_UNVERIFIED_PENDING_PUBLICATION_CLOSURE", "contract status differs")
     transition = contract.get("source_transition", {})
     require(check, transition.get("mode") == "ATOMIC_FORCED_CUTOVER", "cutover mode differs")
     require(check, transition.get("legacy_alias_count") == 0, "legacy alias count is not zero")
-    require(check, transition.get("github_mutation") is False, "contract claims GitHub mutation")
-    require(check, transition.get("current_binding") is False, "local candidate is current-bound")
-    require(check, pointer.get("candidate_binding", {}).get("current_binding") is False,
-            "published pointer claims candidate binding")
+    require(check, transition.get("github_mutation") is True, "contract does not record the semantic main integration")
+    require(check, transition.get("current_binding") is True, "current binding is absent")
+    require(check, pointer.get("candidate_binding", {}).get("current_binding") is True,
+            "current pointer does not bind the R77 semantic target")
 
     check = "R77-AT-002-GOVERNANCE-FENCE"
     evidence = contract.get("evidence", {})
@@ -336,8 +336,9 @@ def evaluate(root: Path, docs: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Li
     require(check, len(action_ids) == len(set(action_ids)), "pointer open-action IDs are duplicated")
     require(check, sorted(value for value in action_ids if value.startswith("M13-")) == sorted(OPEN_M13),
             "pointer M13 action set differs")
-    require(check, sorted(value for value in action_ids if not value.startswith("M13-")) == sorted(OPEN_FEATURE_P1),
+    require(check, sorted(value for value in action_ids if value.startswith(("CE-", "TCC-", "SFD-"))) == sorted(OPEN_FEATURE_P1),
             "pointer feature P1 set differs from exact 22")
+    require(check, "R77-A006" in action_ids, "Failable target-bound closure action is absent")
 
     check = "R77-AT-003-COLLECT-UNFOLD-REQUIRES"
     collect = contract.get("surface", {}).get("collect_unfold", {})
@@ -631,7 +632,7 @@ def evaluate(root: Path, docs: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Li
 
     checks: List[Dict[str, Any]] = []
     check_ids = [
-        "R77-AT-001-IDENTITY-LOCAL-FENCE",
+        "R77-AT-001-IDENTITY-CURRENT-FENCE",
         "R77-AT-002-GOVERNANCE-FENCE",
         "R77-AT-003-COLLECT-UNFOLD-REQUIRES",
         "R77-AT-004-PATTERN-OWNER-PARTITION",
@@ -714,7 +715,7 @@ def main() -> int:
         "result": result,
         "decision_id": DECISION_ID,
         "evidence_level": "E2_DESIGN_STATIC",
-        "scope": "R77_LOCAL_ATOMIC_CUTOVER_NOT_PUBLISHED",
+        "scope": "R77_CURRENT_SEMANTIC_SURFACE_PENDING_PUBLICATION_CLOSURE",
         "check_count": len(checks),
         "passed_check_count": sum(row["result"] == "PASS" for row in checks),
         "checks": checks,
@@ -722,7 +723,7 @@ def main() -> int:
         "counts": counts,
         "semantic_p0": 0,
         "product_execution": "NOT_RUN",
-        "github_mutation": False,
+        "github_mutation": True,
         "implementation_claim": "NOT_RUN",
         "errors": errors,
     }

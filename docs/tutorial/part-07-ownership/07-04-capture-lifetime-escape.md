@@ -276,6 +276,6 @@ proof route가 될 수 있다.
 - [함수·closure 레퍼런스](../../grammar-reference/05-functions-methods-closures-and-calls.md)
 - [소유권 레퍼런스](../../grammar-reference/12-ownership-borrowing-and-responsibility.md)
 - [nonescaping lexical access 계약](../../../spec/contracts/nonescaping-lexical-access.json)
-- [grammar](../../../spec/grammar/deeplus.ebnf)
+- [grammar](../../../spec/grammar/deeplus.dpg)
 
 다음 장에서는 모든 exit path에서 cleanup과 failure transaction을 닫는다.

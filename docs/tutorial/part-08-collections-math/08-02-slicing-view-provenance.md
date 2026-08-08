@@ -206,6 +206,6 @@ parselet 소유이며 slice step을 자동 활성화하지 않는다.
 
 - [index/slice 레퍼런스](../../grammar-reference/09-collections-indexing-and-slicing.md)
 - [MIR index와 slice](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
-- [정확한 grammar](../../../spec/grammar/deeplus.ebnf)
+- [정확한 grammar](../../../spec/grammar/deeplus.dpg)
 
 다음 장에서는 eager comprehension과 lazy generator를 구분한다.

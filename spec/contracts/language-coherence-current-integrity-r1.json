@@ -1,11 +1,11 @@
 {
   "schema": "deeplus.language-coherence-current-integrity-contract/r1",
-  "revision": "r51f3-current-implementation-readiness-g4-audit-r1",
-  "previous_revision": "r51f3-current-global-implementation-target-trace-closure-r76-r1",
-  "materialization_timestamp": "2026-08-04T15:09:44+09:00",
-  "evidence_boundary": "Repository-static canonical closure only; no product lane execution or current Git binding is claimed.",
+  "revision": "r51f3-current-r77-publication-policy-closure-r1",
+  "previous_revision": "r51f3-current-implementation-readiness-g4-audit-r1",
+  "materialization_timestamp": "2026-08-09T00:00:00+09:00",
+  "evidence_boundary": "Repository-static canonical closure binds the already-merged R77 semantic target; no product lane execution is claimed.",
   "semantic_p0": 0,
-  "current_binding": false,
+  "current_binding": true,
   "product_execution": "NOT_RUN",
   "output_ownership": {
     "current/authority-map.yaml": [
@@ -23,6 +23,7 @@
     "M13-A003",
     "M13-A004",
     "M13-A005",
+    "R77-A006",
     "CE-C-P1-001",
     "CE-C-P1-002",
     "CE-C-P1-003",
@@ -76,11 +77,15 @@
     "M13-A004",
     "M13-A005"
   ],
+  "audit_action_ids": [
+    "R77-A006"
+  ],
   "required_next_reviews": [
     "M13-A002: Impl_ + Spec_ + Test_",
     "M13-A003: Design_ + Legal_",
     "M13-A004: Build_",
-    "M13-A005: Design_ + Spec_ + Devel_"
+    "M13-A005: Design_ + Spec_ + Devel_",
+    "R77-A006: Spec_ + Impl_ + Test_"
   ],
   "product_lanes": [
     "rust_frontend_lexer",
@@ -100,6 +105,7 @@
     "actual_user_team_study"
   ],
   "canonical_counts": {
+    "grammar": 656,
     "features": 723,
     "diagnostics": 1486,
     "predicates": 283,
@@ -107,26 +113,27 @@
     "no_go": 154,
     "hard_keywords": 29,
     "contextual_words": 105,
-    "prelude_entries": 81
+    "prelude_entries": 81,
+    "examples": 763
   },
   "authority_domains": [
     {
       "domain": "human_language",
       "path": "spec/language.md",
       "owner": "Spec_",
-      "sha256": "d0ad95a0ec72a626f06e9a1138b8f9a736de5b16a096d4b4a6512e5d8049b620"
+      "sha256": "ce5cb4b7e4d339c313c4c05305757c32884d673d9fd319381764d1b554b079a2"
     },
     {
       "domain": "exact_grammar",
-      "path": "spec/grammar/deeplus.ebnf",
+      "path": "spec/grammar/deeplus.dpg",
       "owner": "Spec_",
-      "sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
+      "sha256": "90f95ba7ff4e163eb1f99752cf70602d2042ab00b8a775cb3cab1259d59d706d"
     },
     {
       "domain": "frontend_admission",
       "path": "spec/frontend/frontend-model.json",
       "owner": "Spec_ + Impl_",
-      "sha256": "2187c63e9b41aaa64a029292a683c3e72182e1a75fb966074242357a756e7ebe"
+      "sha256": "46f8f527dfb317e88d3865003c3e62a68ba7d4c68739a474f74e4474e38e7920"
     },
     {
       "domain": "type_system",
@@ -156,7 +163,7 @@
       "domain": "current_decisions",
       "path": "decisions/language/current-decisions.json",
       "owner": "Design_ + Spec_",
-      "sha256": "52d0fe4ec14af39282ec2f739e0d0869e90056279325341ba543a6f927af186d"
+      "sha256": "81ea686a22a7de04e69e3e7876e32a7613c54b42f75465f2ae3b0d57b69c1d6f"
     },
     {
       "domain": "features",
@@ -177,9 +184,10 @@
       "sha256": "8ab48e9b24798f248687a69d061646761099e463c1622e206b7d3c8b764aec79"
     }
   ],
-  "authority_non_owned_sha256": "84d22bd432bf8ec250c3d69e625258122a69b38753e2c6b9bfdf59cf3687301b",
-  "pointer_non_owned_canonical_sha256": "7954f39758cac3fb05a241ea3f41d6e83e6692149c0ce49d096f8153b76e0ca2",
+  "authority_non_owned_sha256": "8f77d3616ac279e522c964c7a0670d6d1d87344521a7dbafc933708392bd2f79",
+  "pointer_non_owned_canonical_sha256": "912734f33614240116c341818405f7ad83450510ce8b9c03550d6474c6561b17",
   "decision_law_ids": [
+    "DSGN-CURRENT-PARSER-ORIENTED-DPG-CUTOVER-R1",
     "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
     "DSGN-CURRENT-CONTRACT-AUTHORITY-STATUS-RECONCILIATION",
     "DSGN-CURRENT-G4-INDEPENDENT-IMPLEMENTATION-READINESS-PUBLICATION-CLOSURE",
@@ -251,12 +259,16 @@
   ],
   "semantic_authority_files": [
     {
-      "path": "spec/grammar/deeplus.ebnf",
-      "sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
+      "path": "spec/grammar/deeplus.dpg",
+      "sha256": "90f95ba7ff4e163eb1f99752cf70602d2042ab00b8a775cb3cab1259d59d706d"
+    },
+    {
+      "path": "spec/grammar/deeplus.parser-contexts.json",
+      "sha256": "0ab24a754b9f95331c9eddb9bfdf737240f60b15bfb2eed99cdc5959508b7a1b"
     },
     {
       "path": "spec/frontend/frontend-model.json",
-      "sha256": "2187c63e9b41aaa64a029292a683c3e72182e1a75fb966074242357a756e7ebe"
+      "sha256": "46f8f527dfb317e88d3865003c3e62a68ba7d4c68739a474f74e4474e38e7920"
     },
     {
       "path": "spec/types/type-system.md",
@@ -274,7 +286,7 @@
     },
     {
       "path": "decisions/language/current-decisions.json",
-      "sha256": "52d0fe4ec14af39282ec2f739e0d0869e90056279325341ba543a6f927af186d"
+      "sha256": "81ea686a22a7de04e69e3e7876e32a7613c54b42f75465f2ae3b0d57b69c1d6f"
     },
     {
       "path": "docs/guide/design-gallery.md",
@@ -282,7 +294,7 @@
     },
     {
       "path": "docs/internals/grammar-implementation-contract.md",
-      "sha256": "cb3370b1f500cd88703f4633f99ace969f00dc7eb21ff7884be1a06e701d7932"
+      "sha256": "d58bf1c0f05db64926e3a4b2324f03eb4945c580712070231bbdc0a4c002995f"
     },
     {
       "path": "examples/manifests/by-outcome/catalog-metadata.json",
@@ -358,7 +370,7 @@
     },
     {
       "path": "library/prelude/signatures/chunks/part-0001.json",
-      "sha256": "70ef3d1590b2ff11230ca781f2b38e4ffc272772bdb16e27148fdeec99e1a335"
+      "sha256": "456d7d97de48c82add3f4f8dac09db3c812569fe3ce724ccd67aa2688baf714b"
     },
     {
       "path": "schemas/language/checker-predicate-fixture-row.schema.json",
@@ -582,7 +594,7 @@
     },
     {
       "path": "spec/frontend/frontend-model.json",
-      "sha256": "2187c63e9b41aaa64a029292a683c3e72182e1a75fb966074242357a756e7ebe"
+      "sha256": "46f8f527dfb317e88d3865003c3e62a68ba7d4c68739a474f74e4474e38e7920"
     },
     {
       "path": "spec/grammar/deeplus.ebnf",
@@ -594,7 +606,7 @@
     },
     {
       "path": "spec/language.md",
-      "sha256": "d0ad95a0ec72a626f06e9a1138b8f9a736de5b16a096d4b4a6512e5d8049b620"
+      "sha256": "ce5cb4b7e4d339c313c4c05305757c32884d673d9fd319381764d1b554b079a2"
     },
     {
       "path": "spec/mir/semantics.md",
@@ -706,15 +718,15 @@
       "path": "current/language-version.toml",
       "kind": "file",
       "file_count": 1,
-      "bytes": 405,
-      "sha256": "777f86c7b901fc71ffc5d181f14dc020b8fd5082de958006bc585ab7571dbe32"
+      "bytes": 402,
+      "sha256": "2adc08dcbb60459f40ca9a8ee75293416f5e0cc46e38cf412b1dc2425be3503d"
     },
     {
       "path": "current/decision-index.yaml",
       "kind": "file",
       "file_count": 1,
-      "bytes": 8893,
-      "sha256": "4123290212cf89d5939acc5b6553fde5eeba9e1392f7d7f3a08eea2c0a918643"
+      "bytes": 9025,
+      "sha256": "68919d2c53edab6ea4dbcd1bb28392a8babc7629e69c8f5dd6f4d844655580fd"
     },
     {
       "path": "governance/reports/Design_Deeplus_Codex_Design_Authority_Transition_R1.md",
@@ -824,9 +836,9 @@
     {
       "path": "decisions/language",
       "kind": "directory",
-      "file_count": 52,
-      "bytes": 333687,
-      "sha256": "40b1b8ae8a2b44f4adfe33c721c6ccf5f842e21ae7079a318fda5ea1d3396e46"
+      "file_count": 53,
+      "bytes": 339751,
+      "sha256": "bb9e6e7832cc6a8165edcf6cc47741186d75b067282ad7d8d1f869ecf07ef0f7"
     },
     {
       "path": "examples",
@@ -839,15 +851,15 @@
       "path": "library/prelude",
       "kind": "directory",
       "file_count": 10,
-      "bytes": 150501,
-      "sha256": "cf3de148acedaba9ff0d203252c8918c3258717cd7289551a671030b109eaad1"
+      "bytes": 150445,
+      "sha256": "45ab8879e85f379dee4900fdfd2034fb607de8baae89e33d13024dad253e23da"
     },
     {
       "path": "migration/catalog-reassembly.json",
       "kind": "file",
       "file_count": 1,
       "bytes": 20260,
-      "sha256": "ba9efc9e9e39e06b2099edc338bf49fa2c7c1319758f39e582934dffff5c76d6"
+      "sha256": "b6b5bedb2fe584e8db0003f6ea50d4005fdd2994c5b3382d5b1ffcd9004e69ee"
     },
     {
       "path": "roles/current-memory",
@@ -860,8 +872,8 @@
       "path": "schemas/language",
       "kind": "directory",
       "file_count": 139,
-      "bytes": 1618177,
-      "sha256": "130b043897e1a706b339ece92296b2cfe2c84b908180348656e8019ab630da2a"
+      "bytes": 1618821,
+      "sha256": "1401e6fe3fbb4484ee7ae38fce9bc63ed16568a3a67d503f70a073f08ca572c6"
     },
     {
       "path": "spec/compatibility/no-go",
@@ -873,9 +885,9 @@
     {
       "path": "spec/contracts",
       "kind": "directory",
-      "file_count": 89,
-      "bytes": 4290296,
-      "sha256": "23595785f2ce5226efac1c46cac33292a781f0690dfe8760be1f795658b9c4fb"
+      "file_count": 90,
+      "bytes": 4296814,
+      "sha256": "4ec4fdd31c032e38813435f45d9df87abb5f738865bbfd508af21ff7cb570311"
     },
     {
       "path": "spec/diagnostics",
@@ -895,22 +907,22 @@
       "path": "spec/frontend",
       "kind": "directory",
       "file_count": 1,
-      "bytes": 176497,
-      "sha256": "26528b4ebb4f5001b89fdb8c466d0f6692561b4774eead4cea2da05e7d3a6887"
+      "bytes": 177530,
+      "sha256": "070b38e86a1a1a1017f833629d1bcb06dcd6a9224e6711126a79f61c6a955a72"
     },
     {
       "path": "spec/grammar",
       "kind": "directory",
-      "file_count": 2,
-      "bytes": 73209,
-      "sha256": "38a113bbe86acddf395b9cfdedf53a0ce3558656ae48843e9ed1e274147d7e59"
+      "file_count": 4,
+      "bytes": 121261,
+      "sha256": "427be88a0e0b46d47cc57f3ddc006944db31d3f9664b0dfcb41daa8450788aa8"
     },
     {
       "path": "spec/language.md",
       "kind": "file",
       "file_count": 1,
-      "bytes": 527932,
-      "sha256": "d0ad95a0ec72a626f06e9a1138b8f9a736de5b16a096d4b4a6512e5d8049b620"
+      "bytes": 528284,
+      "sha256": "ce5cb4b7e4d339c313c4c05305757c32884d673d9fd319381764d1b554b079a2"
     },
     {
       "path": "spec/mir",
@@ -943,9 +955,9 @@
     {
       "path": "tests/fixtures/current",
       "kind": "directory",
-      "file_count": 52,
-      "bytes": 2063108,
-      "sha256": "293dd775ac72b6fe28660d2d5c2607e13353f487e60997f12041eba279b8fc4c"
+      "file_count": 53,
+      "bytes": 2065464,
+      "sha256": "a3df177d1ae144bf334d0124e0e47891ac0de26dc05b40c9c35cd56484551119"
     },
     {
       "path": "tests/fixtures/imported",
@@ -958,29 +970,29 @@
       "path": "tools/generators",
       "kind": "directory",
       "file_count": 31,
-      "bytes": 498660,
-      "sha256": "b87375a840569d38c773993121880193ada7f4a1c689a8b74e57edcd320433a0"
+      "bytes": 505734,
+      "sha256": "c391c7e35bd2a91fbfec638da9f13df013f1147a7759e4cf0ef912ad0e66c675"
     },
     {
       "path": "tools/validators/validate_workspace.py",
       "kind": "file",
       "file_count": 1,
-      "bytes": 868744,
-      "sha256": "b7e344c51a5a82fdad18beeda0420a61d31aaa281bb2a33cbe2b8150e7bc7d9f"
+      "bytes": 875576,
+      "sha256": "cf31d02b8f2e90947abd11b6e6aea3efcfd3d47e73d33ad18be446220fb9fb95"
     },
     {
       "path": "docs/grammar-reference",
       "kind": "directory",
       "file_count": 34,
-      "bytes": 2093910,
-      "sha256": "286a52d83cd3060b21dc2ddb58c1b68a20397e4463d24598b3792598ba6de31c"
+      "bytes": 2096730,
+      "sha256": "e7ec2f38b863d346608355a249705f15739f8f71dc0a7d778f1ffff6b1bdc267"
     },
     {
       "path": "docs/tutorial",
       "kind": "directory",
       "file_count": 101,
-      "bytes": 789015,
-      "sha256": "a818c0acde31e2b239257e3b6b95a3499ac8614b031a6c099e37d01f50acb5be"
+      "bytes": 788970,
+      "sha256": "c7cf7f7b056c0542ab7d9c776e9e0c4ec87d46e2d78b52f302660300e7343615"
     },
     {
       "path": "governance/reports/Design_Deeplus_R41_Actor_Protocol_Direct_Conformance_Publication_Closure_R1.md",
@@ -1004,5 +1016,5 @@
       "sha256": "f56e173c16cd6802706d4a9aaacf25935c6b11bf2567ecd8fc85bdb3e506d860"
     }
   ],
-  "reassembly_non_owned_canonical_sha256": "3af9bb08bf4cd652463e3aa876b931105c20f5114a96cc914d23972f370612a3"
+  "reassembly_non_owned_canonical_sha256": "097269b705e69a825d514717f8dcae2aa992b5b0da9c4383718bbc392e754c10"
 }

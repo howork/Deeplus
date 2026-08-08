@@ -441,7 +441,7 @@ recovery 상태이면 임의로 추론하지 않고 `사용할 수 없음`으로
 ## 정본 근거
 
 - ownership 문법:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - place state와 type 책임:
   [`spec/types/type-system.md`](../../spec/types/type-system.md)
 - shared-state 계약:

@@ -163,7 +163,7 @@ fixed-glyph conformance의 locality를 결정한다. 지역 `import ... in {}`�
 
 ## 12. 정본 근거와 다음 장
 
-- [source root와 Module EBNF](../../../spec/grammar/deeplus.ebnf)
+- [source root와 Module DPG](../../../spec/grammar/deeplus.dpg)
 - [프로그램·Module·import 참고서](../../grammar-reference/02-programs-modules-and-imports.md)
 - [frontend source-role 모델](../../../spec/frontend/frontend-model.json)
 - [current pointer](../../../current/current-pointer.json)

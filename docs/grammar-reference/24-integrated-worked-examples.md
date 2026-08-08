@@ -34,7 +34,7 @@ effect/error 정책을 명시해야 한다. 경계는
 정확한 권위는 다음 문서에 분산되어 있다.
 
 - token 순서와 구조:
-  [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+  [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
 - source role, admission, parser goal:
   [`spec/frontend/frontend-model.json`](../../spec/frontend/frontend-model.json)
 - 언어 전체 설명:
@@ -69,7 +69,7 @@ effect/error 정책을 명시해야 한다. 경계는
 
 ### 2.2 전체 코드
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 module demo::hello
 
@@ -462,7 +462,7 @@ effectful guard는 `MATCH_GUARD_EFFECT_NOT_ALLOWED`다.
 
 ### 5.2 전체 코드
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 module demo::identity
 
@@ -934,7 +934,7 @@ let first = names[0]
 exact shape의 element 수가 맞지 않으면
 `NUMARR_ELEMENT_COUNT_MISMATCH`다.
 
-<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: REJECTED_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 let invalid = #2,3[
     1, 2;

@@ -20,6 +20,7 @@ REFERENCE_CONTRACT_REL = "spec/contracts/grammar-reference-r1.json"
 DISPOSITION_REL = "spec/contracts/grammar-production-disposition-registry-r1.json"
 MANIFEST_REL = "docs/grammar-reference/coverage-manifest.json"
 COVERAGE_SCHEMA_REL = "schemas/language/grammar-reference-coverage.schema.json"
+PARSER_GRAMMAR_CONTRACT_REL = "spec/contracts/parser-grammar-differential-r1.json"
 
 CHECK_IDS = [
     "R40_CONTRACT_EXACT",
@@ -58,6 +59,7 @@ def load_documents(root: Path) -> dict[str, Any]:
         "disposition": load_json(root / DISPOSITION_REL),
         "manifest": load_json(root / MANIFEST_REL),
         "coverage_schema": load_json(root / COVERAGE_SCHEMA_REL),
+        "parser_grammar_contract": load_json(root / PARSER_GRAMMAR_CONTRACT_REL),
         "claim_texts": {
             row["claim_id"]: (root / row["path"]).read_text(encoding="utf-8")
             for row in contract.get("published_manual_claims", [])
@@ -90,6 +92,18 @@ def evaluate(documents: dict[str, Any], generator: Any) -> list[str]:
     require(
         authority.get("published_projection") == f"{MANIFEST_REL}#/grammar",
         "CONTRACT_PROJECTION",
+    )
+    parser_metrics = documents["parser_grammar_contract"].get("metrics", {})
+    require(
+        authority.get("exact_parser_grammar") == "spec/grammar/deeplus.dpg"
+        and authority.get("parser_contexts")
+        == "spec/grammar/deeplus.parser-contexts.json"
+        and authority.get("surface_census") == GRAMMAR_REL
+        and authority.get("dpg_rule_family_count")
+        == parser_metrics.get("dpg_rule_family_count")
+        and authority.get("dpg_rule_clause_count")
+        == parser_metrics.get("dpg_rule_clause_count"),
+        "CONTRACT_LAYERED_GRAMMAR_AUTHORITY",
     )
     require(
         authority.get("recovery_is_production_profile") is False,
@@ -197,10 +211,10 @@ def main() -> int:
         documents = load_documents(root)
         errors = evaluate(documents, generator)
         mutated = copy.deepcopy(documents)
-        current_stable = documents["contract"]["authority"]["profile_counts"]["STABLE"]
+        current_total = documents["contract"]["authority"]["production_count"]
         mutated["claim_texts"]["R40-CLAIM-STATUS"] = mutated["claim_texts"]["R40-CLAIM-STATUS"].replace(
-            f"| `STABLE` | {current_stable} |",
-            f"| `STABLE` | {current_stable - 1} |",
+            f"| legacy EBNF surface census | {current_total} |",
+            f"| legacy EBNF surface census | {current_total - 1} |",
             1,
         )
         mutation_errors = evaluate(mutated, generator)

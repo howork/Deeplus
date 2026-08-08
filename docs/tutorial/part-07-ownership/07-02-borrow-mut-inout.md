@@ -232,7 +232,7 @@ borrow가 run, Actor, return, storage 또는 escaping closure를 건너려면
 
 ## 12. 정본 근거와 다음 장
 
-- [소유권 mode 문법](../../../spec/grammar/deeplus.ebnf)
+- [소유권 mode 문법](../../../spec/grammar/deeplus.dpg)
 - [소유권 레퍼런스](../../grammar-reference/12-ownership-borrowing-and-responsibility.md)
 - [MIR inout/assignment](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
 

@@ -136,7 +136,7 @@ anchor로 바꾸지 않고 provider dependency와 authority를 report한다.
 formatter/LSP는 context role과 NumericArray token owner를 구분해 표시한다.
 
 **활성화 선행 조건**
-Design_의 token-owner 판정, exact EBNF/diagnostic, type/effect/authority
+Design_의 token-owner 판정, exact DPG/diagnostic, type/effect/authority
 contract, ambiguity mutation corpus, API digest, formatter/LSP와
 artifact-bound execution receipt가 필요하다. 문서만으로 P1이나
 `NOT_RUN` lane은 닫히지 않는다.

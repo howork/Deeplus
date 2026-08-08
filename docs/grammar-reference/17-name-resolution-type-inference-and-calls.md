@@ -817,7 +817,7 @@ witness는 borrowed, nonescaping static evidence다.
 runtime key 선택은 허용되지 않는다.
 같은 Trait 이름을 가진 임의 값은 witness를 대신할 수 없다.
 
-<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.ebnf -->
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
 private def compareWith<T>(
     left: T,
@@ -1759,7 +1759,7 @@ call-shape 설명을 backend call ABI PASS로,
 
 ## 22. 정본 근거
 
-- [`spec/grammar/deeplus.ebnf`](../../spec/grammar/deeplus.ebnf)
+- [`spec/grammar/deeplus.dpg`](../../spec/grammar/deeplus.dpg)
   - source root, module/import/use/export
   - type parameter와 type argument
   - parameter, argument, closure, catch productions

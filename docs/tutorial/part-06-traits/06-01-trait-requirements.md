@@ -230,7 +230,7 @@ statement이므로 허용되지 않는다.
 ## 12. 정본 근거와 다음 장
 
 - [Class·Trait 레퍼런스](../../grammar-reference/06-classes-traits-conformance-and-extensions.md)
-- [Trait 문법](../../../spec/grammar/deeplus.ebnf)
+- [Trait 문법](../../../spec/grammar/deeplus.dpg)
 - [타입 시스템](../../../spec/types/type-system.md)
 - [언어 명세](../../../spec/language.md)
 

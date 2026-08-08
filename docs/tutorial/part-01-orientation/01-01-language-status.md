@@ -41,7 +41,7 @@ target-bound receipt가 없다는 뜻이다. Deeplus는 이 둘을 일부러 분
 
 1. `current/current-pointer.json`
 2. `spec/language.md`
-3. `spec/grammar/deeplus.ebnf`
+3. `spec/grammar/deeplus.dpg`
 4. `spec/contracts/**`, `spec/types/**`, `spec/patterns/**`
 5. canonical registry와 schema
 6. `docs/grammar-reference/**`
@@ -100,7 +100,7 @@ language admission을 말하고 `NOT_RUN`은 제품 증거를 말한다.
 
 ## 7. 허용·거부·경계 사례
 
-- **허용:** 현행 EBNF와 checker 계약에 모두 들어 있는 source.
+- **허용:** 현행 DPG와 checker 계약에 모두 들어 있는 source.
 - **거부:** Current 또는 gated Preview route에 속하지 않는 source.
 - **경계:** Preview-gated FFI처럼 gate가 있어야 parse 후보가 되지만,
   target ABI 실행은 여전히 `NOT_RUN`인 기능.

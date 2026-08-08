@@ -27,6 +27,8 @@ MANIFEST_REL = "release/source-tree-manifest.json"
 VERSION_REL = "current/language-version.toml"
 EXCLUDED_PARTS = {
     ".git",
+    ".codex-worktrees",
+    "audit",
     "target",
     "dist",
     "candidate",
@@ -230,7 +232,7 @@ def assert_write_worktree_isolated(root: Path) -> None:
         {
             path
             for path in [*unstaged, *untracked]
-            if path != MANIFEST_REL
+            if is_source_member(path)
         }
     )
     if disallowed:

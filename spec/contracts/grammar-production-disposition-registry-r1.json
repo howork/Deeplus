@@ -10,6 +10,9 @@
   },
   "grammar": {
     "path": "spec/grammar/deeplus.ebnf",
+    "authority_role": "LEGACY_SURFACE_EQUIVALENCE_CENSUS_NOT_EXACT_GRAMMAR",
+    "canonical_parser_grammar": "spec/grammar/deeplus.dpg",
+    "canonical_parser_contexts": "spec/grammar/deeplus.parser-contexts.json",
     "bytes": 70409,
     "sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9",
     "production_count": 656,
@@ -22,7 +25,7 @@
     "external_parser_entry",
     "reject_before_ast"
   ],
-  "totality_law": "every EBNF production has exactly one disposition row; recovery kinds are separate reject_before_ast rows",
+  "totality_law": "every legacy surface-census EBNF production has exactly one CST/AST disposition row and is cross-bound to the canonical DPG responsibility layers; recovery kinds are separate reject_before_ast rows",
   "reachability_owner_domain": [
     "SCANNER",
     "CURRENT_SOURCE_GRAPH",
@@ -77,6 +80,8 @@
       "AST/AccessorPropertyDecl",
       "AST/ActorDecl",
       "AST/ActorOnDecl",
+      "AST/ActorProtocolConformGroup",
+      "AST/ActorProtocolConformanceRef",
       "AST/ActorProtocolDecl",
       "AST/ActorRequestDecl",
       "AST/AliasPattern",
@@ -87,6 +92,7 @@
       "AST/AssigneeNominalPattern",
       "AST/AssigneePattern",
       "AST/AssigneeRecordPattern",
+      "AST/AssigneeRecordRestPattern",
       "AST/AssigneeRestPattern",
       "AST/AssigneeTuplePattern",
       "AST/AssociatedFunctionRequirementDecl",
@@ -112,6 +118,7 @@
       "AST/BoundedBinderPattern",
       "AST/BoundedListLiteral",
       "AST/BytesLiteral",
+      "AST/CallExpr",
       "AST/CaptureItem",
       "AST/CatchClause",
       "AST/CharLiteralExpr",

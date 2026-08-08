@@ -171,7 +171,7 @@ instrumentation이 실행되었다는 사실을 구분한다. 이 튜토리얼�
 
 - [Class/Trait law 참조](../../grammar-reference/06-classes-traits-conformance-and-extensions.md)
 - [refinement와 guard](../../grammar-reference/04-types-generics-and-refinement.md)
-- [정확 LawDecl 문법](../../../spec/grammar/deeplus.ebnf)
+- [정확 LawDecl 문법](../../../spec/grammar/deeplus.dpg)
 
 다음 장에서는 잘못된 source가 어느 단계에서 어떤 첫 진단으로 끝나는지
 읽는다.

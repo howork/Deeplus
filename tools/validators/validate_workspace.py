@@ -48,6 +48,9 @@ R76_GLOBAL_TRACE_CLOSURE_REVISION = (
 G4_INDEPENDENT_READINESS_REVISION = (
     "r51f3-current-implementation-readiness-g4-audit-r1"
 )
+R77_PUBLICATION_POLICY_CLOSURE_REVISION = (
+    "r51f3-current-r77-publication-policy-closure-r1"
+)
 FRONTEND_SUCCESSOR_REVISIONS = {
     R11_R19_FRONTEND_REVISION,
     R41_ACTOR_PROTOCOL_REVISION,
@@ -58,6 +61,7 @@ FRONTEND_SUCCESSOR_REVISIONS = {
     R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
     R76_GLOBAL_TRACE_CLOSURE_REVISION,
     G4_INDEPENDENT_READINESS_REVISION,
+    R77_PUBLICATION_POLICY_CLOSURE_REVISION,
 }
 CURRENT_MACHINE_REVISIONS = {
     R10_HIR_MIR_REVISION,
@@ -122,6 +126,8 @@ LANGUAGE_COHERENCE_CONTRACT_REL = (
 )
 EXCLUDED_TREE_PARTS = {
     ".git",
+    ".codex-worktrees",
+    "audit",
     "target",
     "dist",
     "candidate",
@@ -201,8 +207,12 @@ EXPECTED_NEXT_REVIEWS = [
     "M13-A004: Build_",
     "M13-A005: Design_ + Spec_ + Devel_",
 ]
+R77_EXPECTED_NEXT_REVIEWS = EXPECTED_NEXT_REVIEWS + [
+    "R77-A006: Spec_ + Impl_ + Test_",
+]
 CURRENT_DECISION_INDEX_PATHS = [
     "decisions/language/current-decisions.json",
+    "decisions/language/Design_Deeplus_Parser_Oriented_DPG_Cutover_R1.md",
     "decisions/language/Design_Deeplus_Pattern_Sequence_MultiValue_Adoption_R1.md",
     "decisions/language/Design_Deeplus_Trait_Operator_Refinement_Adoption_R1.md",
     "decisions/language/Design_Deeplus_Callable_Responsibility_Static_Lexical_Adoption_R1.md",
@@ -707,6 +717,11 @@ SUCCESSOR_ACTION_IDS = EXPECTED_ACTION_IDS + [
     *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
     *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
     "SFD-P1-009",
+]
+R77_ACTION_IDS = [
+    *EXPECTED_ACTION_IDS,
+    "R77-A006",
+    *SUCCESSOR_ACTION_IDS[len(EXPECTED_ACTION_IDS):],
 ]
 POST_PR16_CANONICAL_DELTA_PATHS = {
     "spec/language.md",
@@ -12750,7 +12765,10 @@ def main() -> int:
         "README.md", "GOVERNANCE.md", "CONTRIBUTING.md", "Cargo.toml",
         "current/authority-map.yaml", "current/implementation-status.yaml",
         "current/language-version.toml", "current/product-lanes.json",
-        "spec/language.md", "spec/grammar/deeplus.ebnf",
+        "spec/language.md", "spec/grammar/deeplus.dpg",
+        "spec/grammar/deeplus.parser-contexts.json",
+        "spec/grammar/deeplus.ebnf",
+        "spec/contracts/parser-grammar-differential-r1.json",
         "spec/frontend/frontend-model.json", "spec/types/type-system.md",
         "spec/mir/semantics.md", "library/prelude/prelude.md",
         "examples/guide/review-corpus.md", "migration/import-manifest.json",
@@ -13358,6 +13376,48 @@ def main() -> int:
         r76_detail[-4000:],
     )
 
+    r77_target_validator = (
+        root / "tools/validators/validate_implementation_target_traceability.py"
+    )
+    r77_target_process = subprocess.run(
+        [sys.executable, str(r77_target_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r77_target_detail = (
+        r77_target_process.stdout.strip()
+        if r77_target_process.returncode == 0
+        else r77_target_process.stderr.strip() or r77_target_process.stdout.strip()
+    )
+    check(
+        r77_target_process.returncode == 0,
+        "R77_CURRENT_IMPLEMENTATION_TARGET_REBIND",
+        r77_target_detail[-4000:],
+    )
+
+    r77_validator = root / "tools/validators/validate_integrated_surface_atomic_cutover_r77.py"
+    r77_process = subprocess.run(
+        [sys.executable, str(r77_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r77_detail = (
+        r77_process.stdout.strip()
+        if r77_process.returncode == 0
+        else r77_process.stderr.strip() or r77_process.stdout.strip()
+    )
+    check(
+        r77_process.returncode == 0,
+        "R77_CURRENT_SURFACE_PUBLICATION_POLICY",
+        r77_detail[-4000:],
+    )
+
     g4_validator = root / "tools/validators/validate_implementation_readiness_g4_audit.py"
     g4_process = subprocess.run(
         [sys.executable, str(g4_validator), "--root", str(root)],
@@ -13435,6 +13495,22 @@ def main() -> int:
         check(
             process.returncode == 0,
             "R38_CONTINUATION_INTERFACE",
+            detail[-4000:],
+        )
+        r38_rebinder = root / "tools/generators/rebind_continuation_interface.py"
+        process = subprocess.run(
+            [sys.executable, str(r38_rebinder), "--root", str(root), "--check"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R38_CONTINUATION_INTERFACE_REBIND_BYTES",
             detail[-4000:],
         )
 
@@ -13576,6 +13652,32 @@ def main() -> int:
             process.returncode == 0,
             "EXAMPLE_PROJECTION_GENERATOR_CHECK",
             detail[-2000:],
+        )
+
+    parser_grammar_validator = (
+        root / "tools/validators/validate_parser_grammar_differential.py"
+    )
+    if parser_grammar_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(parser_grammar_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "PARSER_GRAMMAR_DIFFERENTIAL_CHECK",
+            detail[-4000:],
         )
 
     grammar_reference_generator = (
@@ -13941,6 +14043,12 @@ def main() -> int:
     diagnostic_rows = rows("deeplus-0.1.2-baseline-r51f3-diagnostic-registry.json", "diagnostics")
     predicate_rows = rows("deeplus-0.1.2-baseline-r51f3-checker-predicate-catalog.json", "predicates")
     actual = {
+        "grammar": len(
+            re.findall(
+                r"(?m)^[A-Za-z_][A-Za-z0-9_]*[ \t]*::=",
+                (root / "spec/grammar/deeplus.ebnf").read_text(encoding="utf-8"),
+            )
+        ),
         "features": len(feature_rows),
         "diagnostics": len(diagnostic_rows),
         "predicates": len(predicate_rows),
@@ -14359,6 +14467,20 @@ def main() -> int:
         if revision in CURRENT_MACHINE_REVISIONS and rel == "spec/frontend/frontend-model.json":
             continue
         if revision in {LANGUAGE_COHERENCE_REVISION, *CURRENT_MACHINE_REVISIONS}:
+            if rel == "spec/grammar/deeplus.ebnf" and (
+                "spec/grammar/deeplus.dpg" in successor_semantic_files
+            ):
+                for grammar_rel in (
+                    "spec/grammar/deeplus.dpg",
+                    "spec/grammar/deeplus.parser-contexts.json",
+                ):
+                    check(
+                        successor_semantic_files.get(grammar_rel)
+                        == file_sha(root / grammar_rel),
+                        "SUCCESSOR_SEMANTIC_FILE_IDENTITY",
+                        grammar_rel,
+                    )
+                continue
             check(
                 successor_semantic_files.get(rel) == file_sha(root / rel),
                 "SUCCESSOR_SEMANTIC_FILE_IDENTITY",
@@ -17185,6 +17307,7 @@ def main() -> int:
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
                 G4_INDEPENDENT_READINESS_REVISION,
+                R77_PUBLICATION_POLICY_CLOSURE_REVISION,
             }
             else []
         )
@@ -17195,11 +17318,12 @@ def main() -> int:
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
                 G4_INDEPENDENT_READINESS_REVISION,
+                R77_PUBLICATION_POLICY_CLOSURE_REVISION,
             }
             else []
         )
-        + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION} else [])
-        + ([G4_DECISION_PATH] if revision == G4_INDEPENDENT_READINESS_REVISION else [])
+        + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION} else [])
+        + ([G4_DECISION_PATH] if revision in {G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION} else [])
     ]
     indexed_governance_paths = re.findall(
         r"^  - (governance/\S+)$",
@@ -17236,6 +17360,7 @@ def main() -> int:
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
             G4_INDEPENDENT_READINESS_REVISION,
+            R77_PUBLICATION_POLICY_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17248,6 +17373,7 @@ def main() -> int:
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
             G4_INDEPENDENT_READINESS_REVISION,
+            R77_PUBLICATION_POLICY_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17259,6 +17385,7 @@ def main() -> int:
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
             G4_INDEPENDENT_READINESS_REVISION,
+            R77_PUBLICATION_POLICY_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17269,6 +17396,7 @@ def main() -> int:
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
             G4_INDEPENDENT_READINESS_REVISION,
+            R77_PUBLICATION_POLICY_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17278,6 +17406,7 @@ def main() -> int:
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
             G4_INDEPENDENT_READINESS_REVISION,
+            R77_PUBLICATION_POLICY_CLOSURE_REVISION,
         }
         else []
     ) + (
@@ -17286,15 +17415,16 @@ def main() -> int:
             R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
             R76_GLOBAL_TRACE_CLOSURE_REVISION,
             G4_INDEPENDENT_READINESS_REVISION,
+            R77_PUBLICATION_POLICY_CLOSURE_REVISION,
         }
         else []
     ) + (
         [R76_PUBLICATION_CLOSURE_REPORT]
-        if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION}
+        if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION}
         else []
     ) + (
         [G4_PUBLICATION_CLOSURE_REPORT]
-        if revision == G4_INDEPENDENT_READINESS_REVISION
+        if revision in {G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION}
         else []
     )
     check(
@@ -17309,6 +17439,7 @@ def main() -> int:
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
                 G4_INDEPENDENT_READINESS_REVISION,
+                R77_PUBLICATION_POLICY_CLOSURE_REVISION,
             }
             else []
         )
@@ -17319,11 +17450,12 @@ def main() -> int:
                 R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                 R76_GLOBAL_TRACE_CLOSURE_REVISION,
                 G4_INDEPENDENT_READINESS_REVISION,
+                R77_PUBLICATION_POLICY_CLOSURE_REVISION,
             }
             else []
         )
-        + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION} else [])
-        + ([G4_DECISION_PATH] if revision == G4_INDEPENDENT_READINESS_REVISION else [])
+        + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION} else [])
+        + ([G4_DECISION_PATH] if revision in {G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION} else [])
         and indexed_decision_rows == expected_decision_rows
         and all((root / relative).is_file() for relative in CURRENT_DECISION_INDEX_PATHS
                 + ([R10_DECISION_PATH] if revision in CURRENT_MACHINE_REVISIONS else [])
@@ -17336,6 +17468,7 @@ def main() -> int:
                         R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                         R76_GLOBAL_TRACE_CLOSURE_REVISION,
                         G4_INDEPENDENT_READINESS_REVISION,
+                        R77_PUBLICATION_POLICY_CLOSURE_REVISION,
                     }
                     else []
                 )
@@ -17346,11 +17479,12 @@ def main() -> int:
                         R75_ACTOR_CRANELIFT_PROJECTION_REVISION,
                         R76_GLOBAL_TRACE_CLOSURE_REVISION,
                         G4_INDEPENDENT_READINESS_REVISION,
+                        R77_PUBLICATION_POLICY_CLOSURE_REVISION,
                     }
                     else []
                 )
-                + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION} else [])
-                + ([G4_DECISION_PATH] if revision == G4_INDEPENDENT_READINESS_REVISION else []))
+                + ([R76_DECISION_PATH] if revision in {R76_GLOBAL_TRACE_CLOSURE_REVISION, G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION} else [])
+                + ([G4_DECISION_PATH] if revision in {G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION} else []))
         and indexed_governance_paths == expected_governance_paths
         and all(
             (root / relative).is_file()
@@ -19750,7 +19884,9 @@ def main() -> int:
     check(
         current_decisions.get("law_count") == len(current_laws)
         == (
-            68
+            69
+            if revision == R77_PUBLICATION_POLICY_CLOSURE_REVISION
+            else 68
             if revision == G4_INDEPENDENT_READINESS_REVISION
             else 66
             if revision == R76_GLOBAL_TRACE_CLOSURE_REVISION
@@ -20411,34 +20547,51 @@ def main() -> int:
         publication_source = pointer.get("publication_authority_source", {})
         audited_baseline = pointer.get("audited_implementation_baseline", {})
         candidate_binding = pointer.get("candidate_binding", {})
+        r77_publication_closure = revision == R77_PUBLICATION_POLICY_CLOSURE_REVISION
         check(
-            publication_source == {
+            publication_source == ({
+                "kind": "git-commit",
+                "commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+                "role": "r77_semantic_publication_target",
+                "repository": "https://github.com/howork/Deeplus.git",
+            } if r77_publication_closure else {
                 "kind": "git-commit",
                 "commit": CURRENT_PUBLICATION_TARGET_COMMIT,
                 "role": "publication_authority_source",
                 "repository": "https://github.com/howork/Deeplus.git",
-            },
+            }),
             "POINTER_PUBLICATION_SOURCE",
             str(publication_source),
         )
         check(
-            audited_baseline == {
+            audited_baseline == ({
+                "kind": "git-commit",
+                "commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+                "repository": "https://github.com/howork/Deeplus.git",
+                "branch": "main",
+                "role": "r77_publication_policy_repair_base",
+            } if r77_publication_closure else {
                 "kind": "git-commit",
                 "commit": HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT,
                 "repository": "https://github.com/howork/Deeplus.git",
                 "branch": "main",
                 "role": "document_consistency_repair_base",
-            },
+            }),
             "POINTER_AUDITED_BASELINE",
             str(audited_baseline),
         )
         check(
-            candidate_binding == {
+            candidate_binding == ({
+                "mode": "semantic_publication_target_bound_pending_closure_receipt",
+                "receipt_location": "PENDING_POST_MERGE_READBACK_RECEIPT",
+                "current_binding": True,
+                "self_binding_forbidden": True,
+            } if r77_publication_closure else {
                 "mode": "external_post_commit_receipt_required",
                 "receipt_location": "external_result_pack",
                 "current_binding": False,
                 "self_binding_forbidden": True,
-            },
+            }),
             "POINTER_EXTERNAL_BINDING",
             str(candidate_binding),
         )
@@ -20591,7 +20744,9 @@ def main() -> int:
             "HISTORICAL_PREDECESSOR_RECEIPT",
             str(predecessor_receipt.get("pointer_object", {})),
         )
-        if revision == G4_INDEPENDENT_READINESS_REVISION:
+        if revision == R77_PUBLICATION_POLICY_CLOSURE_REVISION:
+            expected_predecessor = G4_INDEPENDENT_READINESS_REVISION
+        elif revision == G4_INDEPENDENT_READINESS_REVISION:
             expected_predecessor = R76_GLOBAL_TRACE_CLOSURE_REVISION
         elif revision == R76_GLOBAL_TRACE_CLOSURE_REVISION:
             expected_predecessor = R75_ACTOR_CRANELIFT_PROJECTION_REVISION
@@ -20632,7 +20787,9 @@ def main() -> int:
         action_ids = [row.get("id") for row in actions]
         next_review_ids = [row.split(":", 1)[0] for row in pointer.get("required_next_reviews", [])]
         expected_action_ids = (
-            SUCCESSOR_ACTION_IDS
+            R77_ACTION_IDS
+            if revision == R77_PUBLICATION_POLICY_CLOSURE_REVISION
+            else SUCCESSOR_ACTION_IDS
             if revision
             in {
                 POST_PR16_REVISION,
@@ -20646,7 +20803,8 @@ def main() -> int:
             and (
                 next_review_ids == action_ids
                 if revision == LEGACY_REVISION
-                else pointer.get("required_next_reviews") == EXPECTED_NEXT_REVIEWS
+                else pointer.get("required_next_reviews")
+                == (R77_EXPECTED_NEXT_REVIEWS if r77_publication_closure else EXPECTED_NEXT_REVIEWS)
             )
             and len(action_ids) == len(set(action_ids))
             and all(set(row) == action_keys and all(bool(row.get(key)) for key in action_keys) for row in actions),
@@ -20672,7 +20830,12 @@ def main() -> int:
             "SFD_P1_009_AUTHORITY_TRANSITION",
             str(sfd_action),
         )
-        check(pointer.get("required_next_reviews") == EXPECTED_NEXT_REVIEWS, "POINTER_NEXT_REVIEW_BINDING", str(pointer.get("required_next_reviews")))
+        check(
+            pointer.get("required_next_reviews")
+            == (R77_EXPECTED_NEXT_REVIEWS if r77_publication_closure else EXPECTED_NEXT_REVIEWS),
+            "POINTER_NEXT_REVIEW_BINDING",
+            str(pointer.get("required_next_reviews")),
+        )
         review_index = parsed.get(root / "release/evidence/current-publication-m1.3-role-review-index.json", {})
         review_roles = [row.get("role") for row in review_index.get("reports", [])]
         check(
@@ -20717,7 +20880,12 @@ def main() -> int:
     ]
     trait_cases = trait_surface_fixtures.get("cases", [])
     check(
-        frontend.get("revision") == revision
+        frontend.get("revision")
+        == (
+            G4_INDEPENDENT_READINESS_REVISION
+            if revision == R77_PUBLICATION_POLICY_CLOSURE_REVISION
+            else revision
+        )
         and trait_surface.get("revision") == R77_INTEGRATED_SURFACE_REVISION
         and trait_surface_fixtures.get("revision")
         == TRAIT_OPERATOR_REFINEMENT_REVISION

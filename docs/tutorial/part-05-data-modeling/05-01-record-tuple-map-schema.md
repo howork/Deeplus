@@ -201,7 +201,7 @@ Class constructor와 schema construction의 차이는 다음 장에서 다룬다
 ## 12. 정본 근거와 다음 장
 
 - [언어 명세 §23~24](../../../spec/language.md)
-- [정확한 문법](../../../spec/grammar/deeplus.ebnf)
+- [정확한 문법](../../../spec/grammar/deeplus.dpg)
 - [Enum·Record·schema 레퍼런스](../../grammar-reference/07-enums-records-schemas-bitfields-and-units.md)
 - [컬렉션 레퍼런스](../../grammar-reference/09-collections-indexing-and-slicing.md)
 
