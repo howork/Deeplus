@@ -1,0 +1,58 @@
+{
+  "$schema": "../../schemas/language/sfd-p1-009-execution-identity-r1.schema.json",
+  "schema": "deeplus.sfd-p1-009-execution-identity/r1",
+  "revision": "r79-sfd-p1-009-execution-identity-route-repair-r1",
+  "canonical_baseline_commit": "10e64f492f0529610673846139afcf0d95175663",
+  "local_predecessor_commit": "2180213dffaf546b5cbe7cdf1d1f295f76f6202b",
+  "candidate_status": "LOCAL_EXECUTABLE_ROUTE_REPAIRED_SFD_P1_OPEN",
+  "identity_domains": {
+    "historical_provenance": {
+      "commit": "f509fce5df6c16b77d3accdccde4c640b093da0a",
+      "role": "IMMUTABLE_DESIGN_PROVENANCE_ONLY",
+      "executable_route_present": false
+    },
+    "execution_target": {
+      "binding": "OBSERVED_CLEAN_CHECKOUT_HEAD",
+      "approval_binding": "EXTERNAL_POST_COMMIT_EXECUTION_RECEIPT",
+      "self_reference": false
+    }
+  },
+  "execution_gate": {
+    "full_commit_sha": true,
+    "tracked_tree_clean": true,
+    "required_paths_owned_by_head": true,
+    "untracked_output_allowed": true,
+    "historical_commit_as_target_rejected": true
+  },
+  "receipt_binding": {
+    "baseline_commit": "OBSERVED_EXECUTION_TARGET_COMMIT",
+    "historical_provenance_commit": "RUN_SUMMARY_ONLY",
+    "current_pointer_digest": "BOUND_AT_EXECUTION",
+    "implementation_digest": "BOUND_AT_EXECUTION",
+    "compiler_binary_digest": "BOUND_AT_EXECUTION",
+    "environment_digest": "BOUND_AT_EXECUTION"
+  },
+  "closure_fence": {
+    "action": "SFD-P1-009",
+    "status": "OPEN",
+    "route_blocker": "RESOLVED_BY_IDENTITY_DOMAIN_SEPARATION",
+    "closure_requires": "EXACT_TARGET_BOUND_POSITIVE_BOUNDARY_REJECT_RECEIPTS_AND_CODEX_DESIGN_DECISION",
+    "execution_receipt_count": 0
+  },
+  "acceptance_cases": [
+    {"id": "R79-AT-001", "kind": "positive", "expected": "A clean checkout records its exact full HEAD as receipt baseline_commit."},
+    {"id": "R79-AT-002", "kind": "positive", "expected": "Every implementation and fixture input is owned by the observed execution-target commit."},
+    {"id": "R79-AT-003", "kind": "boundary", "expected": "Untracked build and receipt output does not alter the tracked execution target."},
+    {"id": "R79-AT-004", "kind": "reject", "expected": "A staged or tracked worktree delta is rejected before fixture loading or output publication."},
+    {"id": "R79-AT-005", "kind": "reject", "expected": "The historical f509 provenance commit is rejected as an execution target because required route paths are absent."},
+    {"id": "R79-AT-006", "kind": "reject", "expected": "An external closure receipt whose target commit differs from the run receipt is rejected."},
+    {"id": "R79-AT-007", "kind": "governance", "expected": "Route repair does not close SFD-P1-009 or claim product execution."}
+  ],
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "NOT_PERFORMED_FOR_R79",
+    "production_implementation": "NOT_AUTHORIZED_OR_PERFORMED"
+  }
+}

@@ -12877,6 +12877,11 @@ def main() -> int:
         "spec/contracts/implementation-readiness-g4-audit-r1.json",
         "schemas/language/implementation-readiness-g4-audit-r1.schema.json",
         "tools/validators/validate_implementation_readiness_g4_audit.py",
+        "spec/contracts/sfd-p1-009-execution-identity-r1.json",
+        "schemas/language/sfd-p1-009-execution-identity-r1.schema.json",
+        "governance/reports/Design_Deeplus_R79_SFD_P1_009_Execution_Identity_Route_Repair_R1.md",
+        "tools/validators/validate_sfd_p1_009_execution_identity.py",
+        "tools/validators/run_sfd_p1_009_execution_identity_mutation_tests.py",
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
         "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
@@ -13441,6 +13446,50 @@ def main() -> int:
         g4_process.returncode == 0,
         "G4_INDEPENDENT_IMPLEMENTATION_READINESS_AUDIT",
         g4_detail[-4000:],
+    )
+
+    r79_validator = root / "tools/validators/validate_sfd_p1_009_execution_identity.py"
+    r79_process = subprocess.run(
+        [sys.executable, str(r79_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r79_detail = (
+        r79_process.stdout.strip()
+        if r79_process.returncode == 0
+        else r79_process.stderr.strip() or r79_process.stdout.strip()
+    )
+    check(
+        r79_process.returncode == 0,
+        "R79_SFD_P1_009_EXECUTION_IDENTITY_ROUTE",
+        r79_detail[-4000:],
+    )
+
+    r79_mutation_runner = (
+        root
+        / "tools/validators/run_sfd_p1_009_execution_identity_mutation_tests.py"
+    )
+    r79_mutation_process = subprocess.run(
+        [sys.executable, str(r79_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r79_mutation_detail = (
+        r79_mutation_process.stdout.strip()
+        if r79_mutation_process.returncode == 0
+        else r79_mutation_process.stderr.strip()
+        or r79_mutation_process.stdout.strip()
+    )
+    check(
+        r79_mutation_process.returncode == 0,
+        "R79_SFD_P1_009_EXECUTION_IDENTITY_MUTATIONS",
+        r79_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

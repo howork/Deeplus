@@ -5,7 +5,9 @@
 
 use base64::Engine as _;
 use base64::engine::general_purpose::STANDARD;
-use deeplus_source::sfd_p1_009::{IngressPhase, PROFILE_ID, REQUIRED_BASELINE, SourceCase};
+use deeplus_source::sfd_p1_009::{
+    HISTORICAL_PROVENANCE_BASELINE, IngressPhase, PROFILE_ID, SourceCase,
+};
 use serde_json::Map;
 pub use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
@@ -73,6 +75,7 @@ impl Selection {
 
 #[derive(Clone, Debug)]
 pub struct ExecutionBindings {
+    pub execution_target_commit: String,
     pub current_pointer_digest: String,
     pub implementation_digest: String,
     pub rust_toolchain: String,
@@ -337,7 +340,8 @@ pub fn run_selection(
     let summary = json!({
         "schema": "SFD-P1-009-RUN-SUMMARY-V1",
         "profile_id": PROFILE_ID,
-        "baseline_commit": REQUIRED_BASELINE,
+        "baseline_commit": bindings.execution_target_commit,
+        "historical_provenance_commit": HISTORICAL_PROVENANCE_BASELINE,
         "selection": match selection {
             Selection::AllExecute => "all-execute".to_owned(),
             Selection::Oracle(id) => format!("oracle:{id}"),
@@ -393,7 +397,11 @@ fn receipt_value(
         .and_then(Value::as_object)
         .cloned()
         .ok_or_else(|| data("receipt_expectations must be an object"))?;
-    replace(&mut receipt, "baseline_commit", json!(REQUIRED_BASELINE));
+    replace(
+        &mut receipt,
+        "baseline_commit",
+        json!(bindings.execution_target_commit),
+    );
     replace(
         &mut receipt,
         "current_pointer_digest",
@@ -598,8 +606,10 @@ fn validate_case(row: &Value, payload: Option<&Value>) -> Result<(), ContractErr
     if receipt.len() != 45 {
         return data_error("receipt expectations must contain exactly 45 fields");
     }
-    if receipt.get("baseline_commit").and_then(Value::as_str) != Some(REQUIRED_BASELINE) {
-        return data_error("receipt baseline is not the controlling main commit");
+    if receipt.get("baseline_commit").and_then(Value::as_str)
+        != Some(HISTORICAL_PROVENANCE_BASELINE)
+    {
+        return data_error("fixture template baseline is not the immutable historical provenance");
     }
     if row.get("execution_status").and_then(Value::as_str) != Some("NOT_RUN") {
         return data_error("preimplementation execution status must remain NOT_RUN");
