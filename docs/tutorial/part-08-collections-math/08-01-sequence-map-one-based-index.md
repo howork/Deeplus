@@ -206,7 +206,7 @@ items[2] = replacement
 - slice 결과는 `ReadonlyView`이며 source coordinate를 보존한다.
 - Pattern remainder는 `ListRestView`이며 source owner와 coordinate를
   보존한다.
-- Map의 `**base` unfold와 call-site static-named `**record` unfold는
+- Map의 owner-bounded `*base` unfold와 call-site static-named `**record` unfold는
   같은 표지를 쓰지만 owner와 source shape가 서로 다르다.
 - String index는 byte나 grapheme가 아니라 Unicode scalar `Char`다.
 

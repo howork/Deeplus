@@ -198,7 +198,9 @@ Tuple products, exact/open Record and Map rows, closed List length/rest cells,
 transparent nominal products, exact ordered scalar intervals, and loop
 outcome. Record-family patterns are exact by default; `_**` ignores and
 `name**` captures an exact static named residual. Map patterns remain distinct:
-`.._` ignores and `..name` captures an exact keyed residual. A nominal type opens only through schema/data/value
+`*_` ignores and `*name` captures an exact keyed residual. The owner-bounded
+prefix `*` does not turn the residual into a positional pack and does not enter
+the static-named call channel. A nominal type opens only through schema/data/value
 identity or an explicit pattern-transparent descriptor. Sealed-Class closure
 does not expose private fields or create a constructor Pattern. Pin keys/bounds
 must be stable and use statically selected pure total equality/order. Float

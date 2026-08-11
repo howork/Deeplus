@@ -13,8 +13,8 @@
     "authority_role": "LEGACY_SURFACE_EQUIVALENCE_CENSUS_NOT_EXACT_GRAMMAR",
     "canonical_parser_grammar": "spec/grammar/deeplus.dpg",
     "canonical_parser_contexts": "spec/grammar/deeplus.parser-contexts.json",
-    "bytes": 70409,
-    "sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9",
+    "bytes": 70469,
+    "sha256": "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2",
     "production_count": 656,
     "external_symbol_count": 41
   },
@@ -8400,8 +8400,8 @@
       "production_id": "MapRestPattern",
       "profile": "STABLE",
       "source_line": 805,
-      "normalized_rhs": "\"..\" RestBinder",
-      "rhs_sha256": "7d31f555570f0346674e6319a19fdf1d9072f4ca4842b52e7f9128a3260c876b",
+      "normalized_rhs": "\"*\" RestBinder",
+      "rhs_sha256": "c235a73350988fac89f232cdbf4c797ee6f1574c4ebbf17addf54d65223030b0",
       "referenced_productions": [
         "RestBinder"
       ],
@@ -13060,11 +13060,10 @@
       "production_id": "MapEntry",
       "profile": "STABLE",
       "source_line": 1313,
-      "normalized_rhs": "Expr \":\" Expr | NamedUnfoldArgument",
-      "rhs_sha256": "cb07de8c54bc69fed0d667b3e0286a2a90061e7744e8cfe7156f75adde8bfcd6",
+      "normalized_rhs": "Expr \":\" Expr | \"*\" Expr",
+      "rhs_sha256": "5fe707ea6353a1d0e1f08822c11a8dafaec12381b94a738efb7e6c7a847499ca",
       "referenced_productions": [
-        "Expr",
-        "NamedUnfoldArgument"
+        "Expr"
       ],
       "reachability_owner": "HANDWRITTEN_PARSER_REGISTRY",
       "disposition": "ast_node",
@@ -13118,11 +13117,11 @@
       "production_id": "MapComprehensionExpr",
       "profile": "STABLE",
       "source_line": 1316,
-      "normalized_rhs": "\"#\" \"map\" \"{\" MapEntry ComprehensionClause+ \"}\"",
-      "rhs_sha256": "0ce34c6c8da5e1a7ac0d40d7b0d72cb506891c6a8182d9f5cc201502990d290b",
+      "normalized_rhs": "\"#\" \"map\" \"{\" Expr \":\" Expr ComprehensionClause+ \"}\"",
+      "rhs_sha256": "c4675f89f8ff59d657891236e2de1ba707ac6e6b35894e4917b61d95b02d3c91",
       "referenced_productions": [
         "ComprehensionClause",
-        "MapEntry"
+        "Expr"
       ],
       "reachability_owner": "HANDWRITTEN_PARSER_REGISTRY",
       "disposition": "ast_node",

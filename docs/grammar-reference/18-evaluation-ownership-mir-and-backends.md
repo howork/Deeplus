@@ -1039,11 +1039,11 @@ static member label이 아니다.
 
 ### 12.5 Map literal plan과 unfold
 
-exact grammar는 `#map{ **expr }` entry를 허용한다.
+exact grammar는 `#map{ *expr }` owner-bounded runtime Map entry를 허용한다.
 진단은 제거된 `...expr`가 current map unfold가 아니며
 call-side Record unfold와 별도임을 닫는다.
 
-정본은 direct entry와 `**base`를
+정본은 direct entry와 `*base`를
 하나의 `MapLiteralPlan`에 넣는다.
 각 key/value 및 unfold source는 source order대로 정확히 한 번
 평가된다. unfold source는 같은 normalized key/value domain의

@@ -397,7 +397,7 @@
 | `MapPatternEntry` | `MapDestination ":" MapKeyPattern \| MapRestPattern` | 802 |
 | `MapDestination` | `Pattern` | 803 |
 | `MapKeyPattern` | `Literal \| PinPattern` | 804 |
-| `MapRestPattern` | `".." RestBinder` | 805 |
+| `MapRestPattern` | `"*" RestBinder` | 805 |
 | `PatternEntrySeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 806 |
 | `ListPattern` | `"[" ListPatternBody? "]"` | 810 |
 | `ListPatternBody` | `IgnoredAllListRest \| ExactListPattern \| PrefixRestListPattern \| SuffixRestListPattern \| MiddleRestListPattern` | 811 |
@@ -630,10 +630,10 @@
 | `MaterializationSeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 1308 |
 | `MapLiteral` | `"#" "map" "{" MapEntryList? "}"` | 1311 |
 | `MapEntryList` | `MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator?` | 1312 |
-| `MapEntry` | `Expr ":" Expr \| NamedUnfoldArgument` | 1313 |
+| `MapEntry` | `Expr ":" Expr \| "*" Expr` | 1313 |
 | `SetLiteral` | `"#" "set" "{" ExpressionList? "}"` | 1314 |
 | `MutListLiteral` | `"#" "mut" "[" ExpressionList? "]"` | 1315 |
-| `MapComprehensionExpr` | `"#" "map" "{" MapEntry ComprehensionClause+ "}"` | 1316 |
+| `MapComprehensionExpr` | `"#" "map" "{" Expr ":" Expr ComprehensionClause+ "}"` | 1316 |
 | `SetComprehensionExpr` | `"#" "set" "{" Expr ComprehensionClause+ "}"` | 1317 |
 | `ComprehensionClause` | `ForClause \| PositiveGuard \| IfLetClause \| UnfoldClause` | 1319 |
 | `ForClause` | `"for" Pattern "in" Expr` | 1320 |

@@ -257,7 +257,7 @@ collection literal의 element와 Map key/value는 owner sequence에 따라
 재해석하지 않는다.
 
 Map literal은 먼저 하나의 `MapLiteralPlan`을 만든다. direct entry와
-`**base` Map unfold를 source order로 각각 한 번 평가하고, 같은 key가
+owner-bounded `*base` Map unfold를 source order로 각각 한 번 평가하고, 같은 key가
 다시 나오면 나중 값이 이기며 대체된 owner는 정확히 한 번 cleanup한다.
 전체 plan이 끝나기 전 key/value 평가, unfold, equality/keyability,
 Error, Defect 또는 Cancellation이 발생하면 partial Map은 publish되지

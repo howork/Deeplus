@@ -201,9 +201,9 @@ let renamed = user!{
     name: "Lee"
 }
 ```
-## EX-R48-012 — Map unfold double star current
+## EX-R48-012 — Map runtime unfold star current
 
-- **source_feature_ids:** `map_unfold_double_star_current`
+- **source_feature_ids:** `map_runtime_unfold_star_current`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -12467,7 +12467,7 @@ let payload = #map{"id": 13, "name": "Ada", "active": true}
 if let #map{
     userId: "id"
     displayName: "name"
-    ..rest
+    *rest
 } = payload {
     consume(userId, displayName, rest)
 }
@@ -13257,7 +13257,7 @@ let ${id: userId, metadata**} = request
 
 if let #map{
     payloadId: "id"
-    ..rest
+    *rest
 } = payload {
     consume(payloadId, rest)
 }

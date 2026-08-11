@@ -11677,8 +11677,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
-            and len(grammar_bytes) == 70409
+            == "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
+            and len(grammar_bytes) == 70469
             and len(production_names) == 656
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
@@ -12894,6 +12894,12 @@ def main() -> int:
         "decisions/language/Design_Deeplus_Scope_Shielded_Cancellation_Semantics_R1.md",
         "tools/validators/validate_scope_shielded_cancellation_semantics.py",
         "tools/validators/run_scope_shielded_cancellation_semantics_mutation_tests.py",
+        "spec/contracts/map-unfold-rest-owner-closure-r1.json",
+        "schemas/language/map-unfold-rest-owner-closure-r1.schema.json",
+        "tests/fixtures/current/map-unfold-rest-owner-closure-r1.json",
+        "decisions/language/Design_Deeplus_Map_Unfold_Rest_Owner_Closure_R1.md",
+        "tools/validators/validate_map_unfold_rest_owner_closure.py",
+        "tools/validators/run_map_unfold_rest_owner_closure_mutation_tests.py",
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
         "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
@@ -13594,6 +13600,52 @@ def main() -> int:
         r81_mutation_process.returncode == 0,
         "R81_SCOPE_SHIELDED_CANCELLATION_SEMANTICS_MUTATIONS",
         r81_mutation_detail[-4000:],
+    )
+
+    r82_validator = (
+        root / "tools/validators/validate_map_unfold_rest_owner_closure.py"
+    )
+    r82_process = subprocess.run(
+        [sys.executable, str(r82_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r82_detail = (
+        r82_process.stdout.strip()
+        if r82_process.returncode == 0
+        else r82_process.stderr.strip() or r82_process.stdout.strip()
+    )
+    check(
+        r82_process.returncode == 0,
+        "R82_MAP_UNFOLD_REST_OWNER_CLOSURE",
+        r82_detail[-4000:],
+    )
+
+    r82_mutation_runner = (
+        root
+        / "tools/validators/run_map_unfold_rest_owner_closure_mutation_tests.py"
+    )
+    r82_mutation_process = subprocess.run(
+        [sys.executable, str(r82_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r82_mutation_detail = (
+        r82_mutation_process.stdout.strip()
+        if r82_mutation_process.returncode == 0
+        else r82_mutation_process.stderr.strip()
+        or r82_mutation_process.stdout.strip()
+    )
+    check(
+        r82_mutation_process.returncode == 0,
+        "R82_MAP_UNFOLD_REST_OWNER_CLOSURE_MUTATIONS",
+        r82_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

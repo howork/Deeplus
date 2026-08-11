@@ -314,7 +314,7 @@
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-CATCH", "PCTX-VALUE-CATCH"],
       "coverage_contribution": "MAP_KEYSET_CELL",
-      "constraints": ["`.._` permits additional keys and creates no residual Map."],
+      "constraints": ["`*_` permits additional keys and creates no residual Map."],
       "product_execution": "NOT_RUN"
     },
     {
@@ -329,7 +329,7 @@
       "ownership_capabilities": ["INSPECT", "COPY_IF_REUSABLE", "SHARED_BORROW", "MOVE_DELAYED_UNTIL_COMMIT"],
       "allowed_context_ids": ["PCTX-ASSERTIVE-LET", "PCTX-ASSERTIVE-VAR", "PCTX-GUARDED-LET", "PCTX-IF-LET", "PCTX-WHILE-LET", "PCTX-PATTERN-CONDITION-CHAIN", "PCTX-FOR-LET", "PCTX-STATEMENT-MATCH", "PCTX-VALUE-MATCH", "PCTX-CATCH", "PCTX-VALUE-CATCH"],
       "coverage_contribution": "MAP_KEYSET_CELL",
-      "constraints": ["`..rest` captures the exact residual Map owner only after all key probes and child patterns succeed.", "Failure publishes no partial residual owner."],
+      "constraints": ["`*rest` captures the exact residual Map owner only after all key probes and child patterns succeed.", "Failure publishes no partial residual owner."],
       "product_execution": "NOT_RUN"
     },
     {

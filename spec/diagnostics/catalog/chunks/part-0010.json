@@ -1040,12 +1040,12 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "map_unfold_double_star_current"
+      "map_runtime_unfold_star_current"
     ],
-    "fixit_hint": "Replace #map{ ...base } with #map{ **base }.",
+    "fixit_hint": "Replace #map{ ...base } with #map{ *base }.",
     "fixit_kind": "suggestion",
-    "fixit_policy": "Replace #map{ ...base } with #map{ **base }.",
-    "message": "`...expr` is not a current map unfold entry. Use `**expr` inside #map{...}.",
+    "fixit_policy": "Replace #map{ ...base } with #map{ *base }.",
+    "message": "`...expr` is not a current Map unfold entry. Use owner-bounded `*expr` inside #map{...}.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -1067,14 +1067,14 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "map_unfold_double_star_current",
+      "map_runtime_unfold_star_current",
       "map_named_argument_spread_forbidden_law",
       "record_named_argument_spread_msp"
     ],
     "fixit_hint": "",
     "fixit_kind": "none",
     "fixit_policy": "",
-    "message": "Map unfold `**expr` is allowed inside `#map{...}` but Map values cannot be spread as call named arguments. Record named-argument spread is a separate argument-list feature.",
+    "message": "Runtime Map unfold `*expr` is allowed only as a `#map{...}` literal entry. Map values cannot feed the static-named call channel; `**record` is a separate static-label feature.",
     "notes": "Current diagnostic contract; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
@@ -1096,12 +1096,12 @@
     "diagnostic_maturity": "active",
     "diagnostic_status": "active",
     "feature_refs": [
-      "map_unfold_double_star_current"
+      "map_runtime_unfold_star_current"
     ],
-    "fixit_hint": "rewrite `...base` as `**base` inside #map{...}; do not use either spelling for call arguments",
+    "fixit_hint": "rewrite Map literal unfold as `*base` and Map Pattern residual as `*name` or `*_`; keep `**` for static-named Record/NamedPack unfold",
     "fixit_kind": "none",
-    "fixit_policy": "rewrite `...base` as `**base` inside #map{...}; do not use either spelling for call arguments",
-    "message": "Map unfold spelling is `**expr` in admitted `#map{...}` unfold positions; `...expr` map unfold is not current source in the current profile.",
+    "fixit_policy": "rewrite only after the parser has identified the exact Map literal or Map Pattern owner",
+    "message": "Map structural spelling is owner-bounded `*`: `*expr` in a Map literal and `*name` or `*_` in a Map Pattern. Map `**expr`, `..name`, `.._`, and `...expr` are not current; `**` remains static-named Record/NamedPack unfold.",
     "notes": "updated canonical spelling.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",

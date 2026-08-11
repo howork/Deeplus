@@ -508,7 +508,7 @@ AssigneeNominal
 
 MapPat      := '#' ~map '{'
                [entries<Pattern ':' (Literal | '^' StablePatternValue)
-                       | '..' (Name | '_')>]
+                       | '*' (Name | '_')>]
                '}' ;
 
 VariantPat  := (Type '::' | '::') Name
@@ -765,10 +765,10 @@ Materialization
 MaterialEntry
             := Name | Name ':' Expr | String ':' Expr | '**' Expr ;
 
-MapEntry    := Expr ':' Expr | '**' Expr ;
+MapEntry    := Expr ':' Expr | '*' Expr ;
 MapLiteral  := '#' ~map '{' [entries<MapEntry>] '}' ;
 MapComprehension
-            := '#' ~map '{' MapEntry CompClause+ '}' ;
+            := '#' ~map '{' Expr ':' Expr CompClause+ '}' ;
 SetLiteral  := '#' ~set '{' [list<Expr,1,yes>] '}' ;
 SetComprehension
             := '#' ~set '{' Expr CompClause+ '}' ;

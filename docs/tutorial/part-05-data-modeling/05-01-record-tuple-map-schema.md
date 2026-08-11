@@ -140,7 +140,7 @@ entry가 앞 값을 대체하며 displaced owner는 한 번 정리된다.
 
 - `${ id, name }` field pun
 - `Target${ id: value }` typed materialization
-- `#map{ **base, key: value }` 같은 exact-domain Map unfold
+- `#map{ *base, key: value }` 같은 exact-domain runtime Map unfold
 - Tuple의 static `.1` projection
 
 거부 예제:

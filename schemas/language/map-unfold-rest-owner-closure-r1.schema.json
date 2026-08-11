@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.example/schemas/language/map-unfold-rest-owner-closure-r1.schema.json",
+  "title": "Deeplus Map unfold/rest owner closure R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "decision_id", "canonical_baseline_commit", "local_predecessor_commit", "candidate_status", "gap_id", "owner_matrix", "parser_contract", "map_literal_semantics", "map_pattern_semantics", "rejected_surfaces", "diagnostics", "tooling", "acceptance", "governance"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "deeplus.map-unfold-rest-owner-closure/r1"},
+    "revision": {"const": "r82-map-unfold-rest-owner-closure-r1"},
+    "decision_id": {"const": "DSGN-CURRENT-MAP-UNFOLD-REST-OWNER-CLOSURE-R1"},
+    "canonical_baseline_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "local_predecessor_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "candidate_status": {"const": "LOCAL_STABLE_DESIGN_CLOSURE_NOT_PUBLISHED"},
+    "gap_id": {"const": "PREIMPL-P0-004C"},
+    "owner_matrix": {"type": "array", "minItems": 4, "maxItems": 4, "items": {"type": "object", "required": ["channel", "surface", "owners", "ast_kind", "source_domain"], "properties": {"channel": {"enum": ["POSITIONAL_RUNTIME", "MAP_RUNTIME", "MAP_PATTERN_RESIDUAL", "STATIC_NAMED"]}, "surface": {"type": "string"}, "owners": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}}, "ast_kind": {"type": "string"}, "source_domain": {"type": "string"}}, "additionalProperties": false}},
+    "parser_contract": {"type": "object"},
+    "map_literal_semantics": {"type": "object"},
+    "map_pattern_semantics": {"type": "object"},
+    "rejected_surfaces": {"type": "object"},
+    "diagnostics": {"type": "object"},
+    "tooling": {"type": "object"},
+    "acceptance": {"type": "object"},
+    "governance": {"type": "object"}
+  }
+}

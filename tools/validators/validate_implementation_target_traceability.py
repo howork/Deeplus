@@ -342,7 +342,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     ids = [row.get("feature_id") for row in rows]
 
     require(len(feature_rows) == 723, "CATALOG_COUNT")
-    require(len(target) == 469 and digest_ids(target) == "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435", "TARGET_IDENTITY")
+    require(len(target) == 469 and digest_ids(target) == "cdfe4d52a537530327b8cba8d556bdff4799ea61302d7e452479bc872d317f65", "TARGET_IDENTITY")
     # The exclusion set is derived from the current catalog and the explicit
     # profile additions above.  Unlike the target set, its historical digest
     # changes whenever a removed spelling moves from a stale Stable row to an

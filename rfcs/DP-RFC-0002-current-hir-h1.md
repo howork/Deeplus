@@ -1347,9 +1347,9 @@ MapLiteralPlan {
 }
 ```
 
-Direct key/value와 Map `**base`는 source order로 각각 한 번 평가한다. `keyable_evidence`의 equality/hash는 borrowed, nonconsuming, synchronous, `throws Never effects {}`, noncancelling, non-authority여야 한다. later-equal key는 earlier value를 교체하고 displaced owner를 정확히 한 번 정리한다. 실패 전에는 partial Map을 publish하지 않는다.
+Direct key/value와 owner-bounded Map `*base`는 source order로 각각 한 번 평가한다. `keyable_evidence`의 equality/hash는 borrowed, nonconsuming, synchronous, `throws Never effects {}`, noncancelling, non-authority여야 한다. later-equal key는 earlier value를 교체하고 displaced owner를 정확히 한 번 정리한다. 실패 전에는 partial Map을 publish하지 않는다.
 
-Map literal의 `**base`는 exact `Map<K,V>` runtime unfold다. call-site `**record`의 static label projection과 같은 node나 channel을 사용하지 않는다.
+Map literal의 `*base`는 exact `Map<K,V>` runtime unfold다. call-site `**record`의 static label projection과 같은 node나 channel을 사용하지 않는다.
 
 ### 15.3 comprehension과 loop
 

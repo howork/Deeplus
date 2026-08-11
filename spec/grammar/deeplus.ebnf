@@ -1,12 +1,12 @@
 (*
- Deeplus Integrated Grammar R51f3
- Status: CURRENT_CANONICAL_LANGUAGE_DESIGN
- Date: 2026-07-15
+ Deeplus Differential Surface Census R82
+ Status: NONAUTHORITATIVE_DIFFERENTIAL_SURFACE_CENSUS
+ Date: 2026-08-11
 
- This is the single human-maintained grammar file for the Rust handwritten frontend.
- It is a projection of the complete syntax contract:
+ The exact structural parser grammar is spec/grammar/deeplus.dpg together with
+ spec/grammar/deeplus.parser-contexts.json; this census is not a second parser authority:
 
-   integrated EBNF
+   nonauthoritative surface census
  + spec/frontend/frontend-model.json
  + Rust handwritten parser algorithms
 
@@ -788,7 +788,7 @@ BindingPatternPrimary ::= Identifier
 (* Record and Map patterns are exact by default but deliberately keep distinct
    entry directions. Record-family entries are label-first and their static
    named residual is the suffix `_**`/`name**`. Map entries retain destination
-   Pattern : key and their dynamic Map remainder remains `.._`/`..name`. *)
+   Pattern : key and use the owner-bounded dynamic remainder `*_`/`*name`. *)
 RecordPattern ::= "${" RecordPatternEntries? "}" ;
 RecordPatternEntries ::= RecordPatternEntry (PatternEntrySeparator RecordPatternEntry)*
                          PatternEntrySeparator? ;
@@ -802,7 +802,7 @@ MapPatternEntries ::= MapPatternEntry (PatternEntrySeparator MapPatternEntry)*
 MapPatternEntry ::= MapDestination ":" MapKeyPattern | MapRestPattern ;
 MapDestination ::= Pattern ;
 MapKeyPattern ::= Literal | PinPattern ;
-MapRestPattern ::= ".." RestBinder ;
+MapRestPattern ::= "*" RestBinder ;
 PatternEntrySeparator ::= "," LineBreakBoundary? | LineBreakBoundary ;
 
 (* List decomposition has exactly one suffix rest binder. It may occur first,
@@ -1310,10 +1310,10 @@ MaterializationSeparator ::= "," LineBreakBoundary? | LineBreakBoundary ;
 (* Prefix and body are coupled structurally; no cross-kind body combinations. *)
 MapLiteral ::= "#" "map" "{" MapEntryList? "}" ;
 MapEntryList ::= MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator? ;
-MapEntry ::= Expr ":" Expr | NamedUnfoldArgument ;
+MapEntry ::= Expr ":" Expr | "*" Expr ;
 SetLiteral ::= "#" "set" "{" ExpressionList? "}" ;
 MutListLiteral ::= "#" "mut" "[" ExpressionList? "]" ;
-MapComprehensionExpr ::= "#" "map" "{" MapEntry ComprehensionClause+ "}" ;
+MapComprehensionExpr ::= "#" "map" "{" Expr ":" Expr ComprehensionClause+ "}" ;
 SetComprehensionExpr ::= "#" "set" "{" Expr ComprehensionClause+ "}" ;
 
 ComprehensionClause ::= ForClause | PositiveGuard | IfLetClause | UnfoldClause ;

@@ -2,8 +2,8 @@
   "schema": "deeplus.parser-contexts/dpg1",
   "purpose": "Closed parser-facing surface sets and owner admission tables extracted from the attached CURRENT grammar. These values are not lexer keyword reclassifications.",
   "source": {
-    "deeplus_ebnf_git_blob_sha1": "d901cf6acb672cf77051e53d09020f3f43d4a01c",
-    "deeplus_ebnf_sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9",
+    "deeplus_ebnf_git_blob_sha1": "45b72512700080d2f8d02a702bbfb69f46b05591",
+    "deeplus_ebnf_sha256": "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2",
     "keyword_vocabulary_git_blob_sha1": "51dd7b44b588757f91535a61f33d182103f3f958",
     "keyword_vocabulary_sha256": "dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4"
   },
@@ -344,7 +344,7 @@
     ]
   },
   "externalized_registries": {
-    "hard_and_contextual_words": "inputs/keyword-vocabulary.json",
+    "hard_and_contextual_words": "spec/grammar/keyword-vocabulary.json",
     "pratt_binding_and_parselet_registration": "spec/frontend/frontend-model.json (existing canonical owner; not duplicated here)",
     "boundary_and_attachment": "existing BoundaryContext / owner policies",
     "recovery": "handwritten parser recovery table/algorithm",
@@ -485,6 +485,27 @@
       "scanner_outcome": "HASH then contextual await",
       "attachment_owner": "ParserContext"
     }
+  },
+  "map_structural_owner_policy": {
+    "map_literal_entry": {
+      "surface": "*Expr",
+      "cst_kind": "MapUnfoldEntry",
+      "ast_kind": "MapUnfold",
+      "source_domain": "EXACT_IMMUTABLE_MAP_K_V"
+    },
+    "map_pattern_remainder": {
+      "surface": "*RestBinder",
+      "cst_kind": "MapRestPattern",
+      "ast_kind": "MapRestPattern",
+      "source_domain": "EXACT_DYNAMIC_KEYED_RESIDUAL_MAP_K_V"
+    },
+    "map_comprehension_head": {
+      "surface": "Expr ':' Expr",
+      "unfold_head_allowed": false
+    },
+    "legacy_alias_count": 0,
+    "general_star_prefix_parselet": false,
+    "commit_before_type_or_overload_selection": true
   },
   "closed_external_bindings": {
     "scanner_outcomes": [

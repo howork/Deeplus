@@ -112,7 +112,7 @@ let ${id: (userId: UserId), _**} = payload
 ```
 
 Map Pattern은 이 규칙의 예외다. Map은 static-named row가 아니므로 다음
-절의 기존 `destination: key` 방향과 `..rest`를 그대로 사용한다.
+절의 `destination: key` 방향과 owner-bounded `*rest`를 사용한다.
 
 ## 5. Map Pattern
 
@@ -122,7 +122,7 @@ Map Pattern도 exact/open/rest를 명시하고 destination을 왼쪽에 둔다.
 if let #map{
     userId: "id"
     displayName: "name"
-    ..rest
+    *rest
 } = payload {
     show(userId, displayName)
 }
@@ -367,7 +367,7 @@ private def first([head, _..]: List<Int>) -> Int = {
    List Pattern을 작성하라.
 2. **Record mapping:** `${sourceName: localPattern, _**}` 방향으로 payload
    Record를 분해하라.
-3. **Map exactness:** `#map{value: "key", ..rest}` Pattern에서 exact와
+3. **Map exactness:** `#map{value: "key", *rest}` Pattern에서 exact와
    open의 차이를 설명하라.
 4. **실패 처리:** `let!`을 guarded `let`으로 바꾸고 failure disposition
    차이를 적어라.

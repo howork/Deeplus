@@ -437,7 +437,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "MapUnfoldEntryAdmitted",
     "source_name": "MapUnfoldEntryAdmitted",
-    "summary": "Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and owner-bounded **Map unfolds.",
+    "summary": "Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and owner-bounded *Map unfolds.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -454,7 +454,7 @@
     "feature_refs": [
       "map_literal_unfold",
       "map_prefixed_literal",
-      "map_unfold_double_star_current"
+      "map_runtime_unfold_star_current"
     ],
     "diagnostic_refs": [
       "MAP_UNFOLD_ELLIPSIS_NOT_CURRENT"
@@ -467,7 +467,7 @@
       "direct/unfold sources evaluate once in order and share one exact K/V pair",
       "Keyable is preselected, nonconsuming, synchronous, throws Never, effects {}, cancellation-forbidden, authority-free",
       "later equal keys replace with one displaced-owner cleanup",
-      "failure publishes zero and reverse-cleans; call **NamedPack is a different static-named owner even though both use the double-star lexical family"
+      "failure publishes zero and reverse-cleans; call **NamedPack is a different static-named owner and runtime Map unfold uses owner-bounded prefix *"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -488,14 +488,14 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "entry kind/source order is closed and excludes call **record",
+      "entry kind/source order is closed, Map unfold is *Expr, and call **record remains excluded",
       "each source evaluates once and has exact K/V",
       "Keyable adds no hidden responsibility",
       "replacement/cleanup/publication obey the failure-atomic plan"
     ],
-    "normalization": "normalize exact K/V, owner-bounded ** entry kind/order, responsibility, and one Keyable witness before overload or runtime selection",
+    "normalization": "normalize exact K/V, owner-bounded * MapUnfold entry kind/order, responsibility, and one Keyable witness before overload or runtime selection",
     "decision_procedure": [
-      "validate the MapLiteralPlan owner; exclude call **record",
+      "validate the MapLiteralPlan owner and *Expr entry; exclude call **record",
       "evaluate each direct/unfold source once in order",
       "require exact K/V and responsibility-free Keyable evidence",
       "later key replaces/cleans once; failure publishes zero and reverse-cleans"

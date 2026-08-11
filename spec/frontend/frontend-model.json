@@ -436,13 +436,11 @@
       "cst_roles": [
         "NamedRestSuffixMarker",
         "NamedUnfoldPrefixMarker",
-        "MapUnfoldPrefixMarker",
         "InfixOperator"
       ],
       "ast_roles": [
         "NamedRestParameterOrPatternOrTypeResidue",
         "NamedUnfold",
-        "MapUnfold",
         "LinearProduct"
       ]
     },
@@ -745,7 +743,9 @@
       "id": "STRUCTURAL_UNFOLD_BY_OWNER",
       "surfaces": {
         "positional": "*Expr",
-        "static_named": "**Expr"
+        "static_named": "**Expr",
+        "runtime_map": "*Expr",
+        "map_pattern_remainder": "*RestBinder"
       },
       "trivia": "NO_TRIVIA_BETWEEN_MARKER_AND_OPERAND",
       "owners": {
@@ -757,12 +757,17 @@
         ],
         "static_named": [
           "call_argument",
-          "record_materialization_entry",
-          "map_entry"
+          "record_materialization_entry"
+        ],
+        "runtime_map": [
+          "map_literal_entry"
+        ],
+        "map_pattern_remainder": [
+          "map_pattern_entry"
         ]
       },
       "general_expression_prefix_parselet": false,
-      "ast": "PositionalUnfold for *Expr or NamedUnfold for **Expr; no unsealed channel variant exists",
+      "ast": "PositionalUnfold for positional *Expr, NamedUnfold for static-named **Expr, MapUnfold for Map-literal *Expr, or MapRestPattern for Map-pattern *RestBinder; the parser owner seals one exact node and no unsealed channel variant exists",
       "seal_before": "the lexical marker fixes the channel before formal binding and overload candidate selection",
       "runtime_shape_selection": false
     },
@@ -2790,7 +2795,7 @@
     "DelimitedSequence engine",
     "Range parselet with owned :step suffix",
     "IndexSuffix comma-axis and open-slice owner",
-    "PositionalUnfold *Expr and NamedUnfold **Expr closed-owner dispatchers",
+    "Owner-bounded *Expr dispatch to PositionalUnfold or MapUnfold, Map-pattern *RestBinder dispatch to MapRestPattern, and **Expr dispatch to NamedUnfold",
     "NamedRestParameter and NamedRestRequirementClause",
     "MutableListStructuralEditStmt",
     "TraitLanguageRole attached annotation",
@@ -3520,7 +3525,7 @@
     "record_field_direction_current": "label: Pattern for Record, nominal named-payload, and variant named-payload owners",
     "record_rest_current": "exact by default; _** open-ignore; name** exact static-named residual",
     "map_pattern_current": "exact/open over literal or pinned stable keys and a pure total closed descriptor",
-    "map_entry_direction_current": "destination Pattern: literal-or-pinned-key; dynamic remainder remains .._ or ..name",
+    "map_entry_direction_current": "destination Pattern: literal-or-pinned-key; owner-bounded dynamic remainder is *_ or *name",
     "list_rest_current": "exact or exactly one attached suffix binder name../_.. at the beginning, middle, or end",
     "list_rest_result": {
       "borrowed_type": "ListRestView<T>",
@@ -3698,11 +3703,13 @@
     "callable_requires_owner_preserved": "RequiresClause ::= requires PredicateExpr",
     "binder_order": "explicit labels, fixed positional suffix from right, fixed positional prefix from left, residual to rest",
     "fixed_suffix_default_after_rest": "REJECT",
-    "structural_unfold_surface": "*Expr positional / **Expr static-named",
+    "structural_unfold_surface": "*Expr positional or runtime-Map by owner / **Expr static-named",
     "positional_unfold_surface": "*Expr",
     "named_unfold_surface": "**Expr",
+    "map_unfold_surface": "*Expr in MapLiteral only",
+    "map_pattern_remainder_surface": "*RestBinder in MapPattern only",
     "structural_unfold_general_prefix": false,
-    "structural_unfold_owner_count": 6,
+    "structural_unfold_owner_count": 8,
     "comprehension_surface": "for Pattern in *Expr",
     "runtime_shape_selection": false,
     "expected_type_or_overload_selects_shape": false,

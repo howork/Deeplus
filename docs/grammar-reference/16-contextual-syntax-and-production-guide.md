@@ -800,7 +800,7 @@ refutability, binding transaction, public signature identity를 보존한다.
 | `(pattern)` / `(p,)` / `(p, q)` | grouping / singleton Tuple / Tuple Pattern |
 | `${field, source: destination, _**}` | exact/open/rest `RecordPattern` |
 | `[head, tail..]`, `[leadings.., last]`, `[first, middle.., last]` | `ListPattern` |
-| `#map{destination: key, .._}` | `MapPattern` |
+| `#map{destination: key, *_}` | `MapPattern` |
 | `Type::case(...)` 또는 `::case(...)` | `VariantPattern` |
 | `::case${field, _**}` | labeled-payload `VariantPattern` |
 | `^stableValue` | `PinPattern` |
@@ -812,7 +812,7 @@ Tuple과 bare comma product는 하나의 Tuple 의미로 정규화된다. List�
 positional rest는 위치와 무관하게 붙은 suffix `name..`/`_..` 하나만
 사용한다. Record-family는 label-first `label: Pattern`과 suffix
 `name**`/`_**` residual을 쓰고, Map은 keyed orientation
-`destination: key`와 `..name`/`.._` remainder를 유지한다.
+`destination: key`와 owner-bounded `*name`/`*_` remainder를 사용한다.
 
 ### 10.3 expected-type input
 

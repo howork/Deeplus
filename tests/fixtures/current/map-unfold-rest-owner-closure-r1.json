@@ -1,0 +1,19 @@
+{
+  "schema": "deeplus.map-unfold-rest-owner-closure-fixtures/r1",
+  "contract": "spec/contracts/map-unfold-rest-owner-closure-r1.json",
+  "cases": [
+    {"id": "R82-MAP-POS-001", "class": "positive", "source": "let merged = #map{\"timeout\": 30, *defaults}", "expected_ast": "MapLiteralPlan(DIRECT,MAP_UNFOLD)", "expected_outcome": "ADMIT_DESIGN_STATIC"},
+    {"id": "R82-MAP-POS-002", "class": "positive", "source": "if let #map{value: \"answer\", *rest} = table { use(value, rest) }", "expected_ast": "MapOpenCapturedPattern", "expected_outcome": "ADMIT_DESIGN_STATIC"},
+    {"id": "R82-MAP-POS-003", "class": "positive", "source": "if let #map{value: \"answer\", *_} = table { use(value) }", "expected_ast": "MapOpenIgnoredPattern", "expected_outcome": "ADMIT_DESIGN_STATIC"},
+    {"id": "R82-MAP-POS-004", "class": "positive", "source": "invoke(**staticRecord)", "expected_ast": "NamedUnfold", "expected_outcome": "ADMIT_STATIC_NAMED_CHANNEL_UNCHANGED"},
+    {"id": "R82-MAP-BOUND-001", "class": "boundary", "source": "let exact = #map{\"one\": 1}", "expected_ast": "MapLiteralPlan(DIRECT)", "expected_outcome": "ADMIT_EXACT_MAP"},
+    {"id": "R82-MAP-BOUND-002", "class": "boundary", "source": "let replaced = #map{\"one\": old(), *base, \"one\": newer()}", "expected_ast": "MapLiteralPlan", "expected_outcome": "LATER_EQUAL_KEY_REPLACES_ONCE"},
+    {"id": "R82-MAP-BOUND-003", "class": "boundary", "source": "let failed = #map{first(): owner(), *fallibleBase(), later(): owner()}", "expected_ast": "MapLiteralPlan", "expected_outcome": "NO_PARTIAL_PUBLICATION_REVERSE_CLEANUP"},
+    {"id": "R82-MAP-BOUND-004", "class": "boundary", "source": "let byId = #map{item.id: item for item in items}", "expected_ast": "MapComprehension(KEY_VALUE_HEAD)", "expected_outcome": "ADMIT_DIRECT_PAIR_HEAD"},
+    {"id": "R82-MAP-REJ-001", "class": "reject", "source": "let legacy = #map{**base}", "expected_diagnostic": "MAP_UNFOLD_SPELLING_AMBIGUOUS", "expected_residue_count": 0},
+    {"id": "R82-MAP-REJ-002", "class": "reject", "source": "if let #map{value: \"answer\", ..rest} = table { use(value) }", "expected_diagnostic": "MAP_UNFOLD_SPELLING_AMBIGUOUS", "expected_residue_count": 0},
+    {"id": "R82-MAP-REJ-003", "class": "reject", "source": "let invalid = #map{*base for item in items}", "expected_diagnostic": "MAP_UNFOLD_ONLY_IN_MAP_LITERAL", "expected_residue_count": 0},
+    {"id": "R82-MAP-REJ-004", "class": "reject", "source": "invoke(**runtimeMap)", "expected_diagnostic": "MAP_NAMED_ARGUMENT_SPREAD_NOT_ALLOWED", "expected_residue_count": 0}
+  ],
+  "expected_counts": {"cases": 12, "positive": 4, "boundary": 4, "reject": 4, "semantic_p0": 0, "feature_p1": 22, "product_lanes": 15, "product_executed": 0}
+}

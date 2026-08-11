@@ -873,7 +873,7 @@ named-rest channel이며 body에서는 `NamedPack<rho>`다.
 suffix `name**` collect와 prefix `**record` unfold는 교환할 수 없다.
 Map key는 runtime value이므로
 call named label을 만들지 못한다.
-`#map{ **base }`의 Map literal unfold는
+`#map{ *base }`의 Map literal unfold는
 호출 named unfold와 같은 의미 owner가 아니다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/types/type-system.md -->

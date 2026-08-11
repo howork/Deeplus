@@ -31,16 +31,16 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `9fc4197e73c2ec37cbf2050c9cdb21b190b269119e07616537d8c2cd5e69b3e1` |
-| `exact_grammar` | `spec/grammar/deeplus.dpg` | `90f95ba7ff4e163eb1f99752cf70602d2042ab00b8a775cb3cab1259d59d706d` |
-| `parser_contexts` | `spec/grammar/deeplus.parser-contexts.json` | `0ab24a754b9f95331c9eddb9bfdf737240f60b15bfb2eed99cdc5959508b7a1b` |
-| `legacy_surface_census` | `spec/grammar/deeplus.ebnf` | `914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9` |
-| `parser_grammar_differential` | `spec/contracts/parser-grammar-differential-r1.json` | `54f3f08b27ceb58333ff70d0b7a522e51ff1b76116fdc78e216c3e2e57601043` |
-| `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `4ede074bd28425c94eda7776093e58d3821dadf8a05212efe3eab5a4a6abb711` |
-| `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `8d612dd6a54a80ec1c77192c3d8f0358e1bc6bea4efa1c822b4b2a4e2aeb8401` |
+| `human_language` | `spec/language.md` | `4cb49e2afd42a39aae426f8fe5753a4c4f9517a916bf277837cd653ea30e4f3d` |
+| `exact_grammar` | `spec/grammar/deeplus.dpg` | `d06dceda812d6965da447f1f6a173d93ba23860f987e4de28dc31c0be78717fb` |
+| `parser_contexts` | `spec/grammar/deeplus.parser-contexts.json` | `d44c118a3de94313ba31ecd35eecaf084ce34f270d1d167ecbb85f1753217f1f` |
+| `legacy_surface_census` | `spec/grammar/deeplus.ebnf` | `f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2` |
+| `parser_grammar_differential` | `spec/contracts/parser-grammar-differential-r1.json` | `d15f215920059220c163de1ddd4804a6718193bbd663235cb23e3e947f8a04b3` |
+| `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `f507c99654d6af6b0beede05b510f736445f6146a605a7d5184c8362bf247ff7` |
+| `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `402438a23f7940741e8f512beaa60af8e028f6f372a6075cc42778021f22fc23` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `e46c8e9a81425ba80cb8336323838112b84a6f39ec667debe37ec0d134c93c7f` |
-| `type_system` | `spec/types/type-system.md` | `b20171185e3f60269ab197682482feef2863b089abc6bc4f5f6568b34ff687fa` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `d3555a70eb98913943041ab0bcf1399fa4f382e23ca76302b3b0016f5aa7c61f` |
+| `type_system` | `spec/types/type-system.md` | `07e6ebcd219486d5c3fab519454d6bc9500499498efb36471badf6f03d988783` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `1998d954c9eeffe5bd524a175d6b41b7ebe95106d14c2860a1ec69246e2617ab` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `45fd39519a3b88f6ff5182c368f4cee760febe4414e4a2d52cdc75f59f69ef84` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `d085b7a1965f037698578c4447685c1f3804ece00d933401cd2066b32a13b976` |

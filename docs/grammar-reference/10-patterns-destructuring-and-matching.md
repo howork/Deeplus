@@ -139,7 +139,7 @@ MapRestPattern ::= ".." ("_" | Identifier)
 ```
 
 Map도 exact-by-default지만 keyed orientation은 Record-family의 label-first
-방향과 다르다. Map은 기존 `destination: key`와 `..rest`/`.._`를 그대로
+방향과 다르다. Map은 `destination: key`와 owner-bounded `*rest`/`*_`를
 유지하며 static named residual이나 `NamedPack`을 만들지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
@@ -147,7 +147,7 @@ Map도 exact-by-default지만 keyed orientation은 Record-family의 label-first
 if let #map{
     userId: "id"
     displayName: "name"
-    ..rest
+    *rest
 } = payload {
     publish(userId, displayName)
 }
@@ -481,7 +481,7 @@ let ${x, y} = exactPoint
 let ${x, y, _**} = extensiblePoint
 let ${x: horizontal, y: vertical, rest**} = extensiblePoint
 
-if let #map{id: "id", .._} = payload {
+if let #map{id: "id", *_} = payload {
     consume(id)
 }
 ```

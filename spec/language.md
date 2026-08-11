@@ -1113,7 +1113,8 @@ comprehension uses `SetComprehensionExpr`; it does not inherit List ordering or
 Map key/value behavior.
 
 A Map literal first builds one `MapLiteralPlan`. Its direct entries and
-`**base` unfolds are evaluated exactly once in left-to-right source order.
+owner-bounded `*base` unfolds are evaluated exactly once in left-to-right
+source order.
 Every unfolded base must have the same normalized key and value domains.
 Within the plan a later occurrence of an equal key replaces the earlier value;
 the displaced owner is cleaned exactly once. No hidden clone, key
@@ -1124,9 +1125,15 @@ cannot hide an additional failure channel. Construction is failure-atomic:
 before final publication, a failed key/value or unfold evaluation—including
 any Error, Defect, effect, cancellation, authority, ownership, or cleanup
 responsibility declared by that expression—publishes no partial Map and cleans
-acquired temporaries in reverse order. `**base` in a Map literal is therefore
+acquired temporaries in reverse order. `*base` in a Map literal is therefore
 a runtime immutable-map unfold and remains distinct from call-site `**record`,
 which expands static labels.
+
+The `*` token does not create a general prefix expression. The owning parser
+context seals it as `MapUnfold` only in a Map literal entry. A Map
+comprehension head is exactly `keyExpr: valueExpr`; `#map{*base for ...}` is
+rejected rather than inventing repeated-unfold, duplicate-key, or cleanup
+semantics.
 
 The built-in default logical index domain of `List`, `String`, and `Bytes` is exactly `1..length`, and its storage projection is `index - 1`. Every `ReadonlyView` preserves its source owner's declared logical coordinates and provenance: a view of one of those ordinary owners is therefore one-based, while a view of a bounded or sliced owner retains that source domain and mapping. Index zero in a default one-based domain, a negative-from-end spelling, and an index greater than the applicable domain are never rewritten. Current bracket access yields a read-only value or borrow and never an assignable place; compound assignment applies only to independently admitted mutable places. `String[index]` selects one Unicode scalar and returns `Char`; it never selects a byte, UTF-16 code unit, or grapheme. `Bytes[index]` returns `UInt8`. A failed type-correct dynamic lookup raises `IndexError::outOfLogicalDomain`; a statically known invalid index is rejected by the corresponding exact diagnostic.
 
@@ -1586,7 +1593,7 @@ nominal named-payload and variant named-payload patterns use label-first
 `label: Pattern`; exact matching has no remainder, while `rest**` captures and
 `_**` ignores the exact static named residual. Their residual publishes only at
 the whole-pattern delayed commit. Map patterns remain distinct and retain the
-keyed orientation `Pattern: key` plus `..rest`/`.._`; a destination that owns a
+keyed orientation `Pattern: key` plus owner-bounded `*rest`/`*_`; a destination that owns a
 colon is parenthesized. Map keys are literals or pinned stable values under one
 compiler-selected pure total key/equality descriptor. A Map residual is not a
 NamedPack.
@@ -2079,8 +2086,8 @@ The Frontend Model supplies the owner policies that DPG deliberately delegates: 
   checker-proven irrefutable body-entry structural Pattern.
 - Tuple patterns are exact. List patterns admit exact shape, `[_..]`, or one
   attached suffix rest at the beginning, middle, or end. Record patterns use
-  `_**`/`name**` static named residuals; Map patterns alone retain
-  `.._`/`..name` keyed residuals.
+  `_**`/`name**` static named residuals; Map patterns alone use the
+  owner-bounded `*_`/`*name` keyed residuals.
 - Bare comma surfaces exist only in the fixed-product return, binding and
   direct-local parallel-assignment owners; Expr has no comma operator.
 - `array` and `case` are ordinary identifiers with no special token, declaration keyword, predeclared/intrinsic nominal-type binding, parser, checker, or formatter owner; ordinary user declarations of those spellings resolve normally.
@@ -2918,8 +2925,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `MAP_NAMED_ARGUMENT_UNFOLD_REJECTED` [error]: Map values cannot be expanded into named arguments. Use a Record `${...}` for `**record`, or pass explicit named arguments.
 - `MAP_NAMED_REST_UNFOLD_NOT_ALLOWED` [error]: Map values cannot feed named rest or named argument spread; use a Record with static labels.
 - `MAP_PERCENT_LITERAL_REMOVED_USE_HASH_MAP` [error]: %{...} map literal is removed; use #map{...}.
-- `MAP_UNFOLD_ELLIPSIS_NOT_CURRENT` [error]: `...expr` is not a current map unfold entry. Use `**expr` inside #map{...}.
-- `MAP_UNFOLD_ONLY_IN_MAP_LITERAL` [error]: Map unfold `**expr` is allowed inside `#map{...}` but Map values cannot be spread as call named arguments. Record named-argument spread is a separate argument-list feature.
+- `MAP_UNFOLD_ELLIPSIS_NOT_CURRENT` [error]: `...expr` is not a current Map unfold entry. Use owner-bounded `*expr` inside `#map{...}`.
+- `MAP_UNFOLD_ONLY_IN_MAP_LITERAL` [error]: Runtime Map unfold `*expr` is allowed only as a `#map{...}` literal entry. Map values cannot feed the static-named call channel; `**record` is a separate static-label feature.
 - `MATCH_GUARD_CONSUME_NOT_ALLOWED` [error]: match/@match guard may not consume or move tentative pattern bindings.
 - `MATCH_GUARD_EFFECT_NOT_ALLOWED` [error]: match/@match arm guard must be pure and have effects {}.
 - `MATCH_GUARD_NOT_BOOL` [error]: match/@match arm guard must have type Bool.
@@ -3527,7 +3534,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` [error]: Complex interpolation expression requires ${...}.
 - `INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM` [error]: Interpolation format spec is admitted only in braced form ${expr:format}.
 - `LAMBDA_PARAM_LIST_PARENS_NOT_CURRENT` [error]: Lambda parameters are written directly before `=>`; write `{ x: T => ... }`.
-- `MAP_UNFOLD_SPELLING_AMBIGUOUS` [error]: Map unfold spelling is `**expr` in admitted `#map{...}` unfold positions; `...expr` map unfold is not current source in the current profile.
+- `MAP_UNFOLD_SPELLING_AMBIGUOUS` [error]: Map structural spelling is owner-bounded `*`: `*expr` in a Map literal and `*name`/`*_` in a Map Pattern. Legacy Map `**expr`, `..name`, `.._`, and `...expr` spellings are rejected; `**` remains static-named Record/NamedPack unfold.
 - `MATCH_ARM_SINGLE_GUARD_ONLY` [error]: A match arm admits at most one `if` or attached `!if` guard.
 - `MATCH_EXPR_REQUIRES_AT_PREFIX` [error]: A value-producing match expression must use `@match`; bare `match` is statement-only.
 - `MIXED_STRICT_AND_SEQUENTIAL_BOOLEAN_REQUIRES_PARENTHESES` [error]: Mixing `and` with `and then` requires parentheses.
