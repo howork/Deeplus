@@ -13497,3 +13497,67 @@ let centered = "${name:^4}" // an odd deficit puts the extra SPACE on the right
 let invalid = "${name:012}"
 // INTERPOLATION_FORMAT_SPEC_INVALID (WIDTH_LEADING_ZERO)
 ```
+
+## EX-R81-SHIELD-P-001 — Shield cleanup before cancellation observation
+
+- **source_feature_ids:** `async_concur_control`
+- **checker_trace_ids:** `ScopeCancellationPlanAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async persist() -> Unit = {
+    @scope isolated shielded {
+        defer { closeJournal() }
+        await writeJournal()
+    }
+}
+```
+
+## EX-R81-SHIELD-BOUND-001 — Nested shields observe only after outer cleanup
+
+- **source_feature_ids:** `async_concur_control`
+- **checker_trace_ids:** `ScopeCancellationPlanAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async publish() -> Unit = {
+    @scope shielded {
+        defer { closeBatch() }
+        @scope shielded {
+            defer { closeEntry() }
+            await writeEntry()
+        }
+    }
+}
+```
+
+## EX-R81-SHIELD-NG-001 — Conflicting cancellation modes are rejected
+
+- **source_feature_ids:** `async_concur_control`
+- **checker_trace_ids:** `ScopeCancellationPlanAdmitted`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `SCOPE_CANCELLATION_MODE_CONFLICT`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async invalid() -> Unit = {
+    @scope cancellable shielded {
+        await work()
+    }
+}
+// SCOPE_CANCELLATION_MODE_CONFLICT
+```

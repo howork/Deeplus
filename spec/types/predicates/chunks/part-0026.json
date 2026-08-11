@@ -165,5 +165,95 @@
     "predecessor_identity": {
       "disposition": "supersedes_deferred_product_handoff_without_product_execution"
     }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ScopeCancellationPlanAdmitted",
+    "source_name": "Scope cancellation-plan admission",
+    "summary": "Normalize one @scope modifier set and seal its cancellation-observation plan before typed HIR.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "modifiers",
+      "cancellation_context",
+      "parent_shield",
+      "cleanup",
+      "failure_precedence"
+    ],
+    "feature_refs": [
+      "async_concur_control"
+    ],
+    "diagnostic_refs": [
+      "SCOPE_MODIFIER_DUPLICATE",
+      "SCOPE_CANCELLATION_MODE_CONFLICT",
+      "SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN",
+      "SCOPE_CANCELLATION_CONTEXT_REQUIRED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ScopeCancellationPlan) | reject(diagnostic_id)",
+    "requires": [
+      "preserve the complete CST modifier list including duplicates",
+      "resolve the nearest cancellation-aware execution context",
+      "resolve whether an active parent shield exists"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/actor-concurrency-coherence.json#ACC-R013",
+    "rule_facets": [
+      "parser",
+      "control",
+      "cancellation",
+      "cleanup",
+      "diagnostic"
+    ],
+    "formal_judgment_id": "J-ScopeCancellationPlanAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "parse a root-connected @scope expression",
+      "preserve source-order modifiers before normalization"
+    ],
+    "normalization": "emit modifiers in isolated then cancellable-or-shielded order; omitted cancellation mode becomes INHERIT",
+    "decision_procedure": [
+      "reject the first duplicate modifier in source order",
+      "reject cancellable together with shielded on one scope",
+      "reject explicit cancellable inside an active parent shield",
+      "reject cancellable or shielded without a cancellation-aware execution context",
+      "emit INHERIT, OBSERVE, or DEFER_TO_OUTERMOST_SHIELD_EXIT with exact cleanup and failure-precedence laws"
+    ],
+    "termination_metric": "one finite modifier list plus one finite lexical parent chain",
+    "success_result": "one canonical ScopeCancellationPlan",
+    "active_primary_diagnostic": "SCOPE_MODIFIER_DUPLICATE",
+    "secondary_diagnostics": [
+      "SCOPE_CANCELLATION_MODE_CONFLICT",
+      "SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN",
+      "SCOPE_CANCELLATION_CONTEXT_REQUIRED"
+    ],
+    "positive_fixture_ids": [
+      "R81-SHIELD-POS-001",
+      "R81-SHIELD-POS-002",
+      "R81-SHIELD-POS-003",
+      "R81-SHIELD-BOUND-001",
+      "R81-SHIELD-BOUND-002",
+      "R81-SHIELD-BOUND-003",
+      "R81-SHIELD-BOUND-004"
+    ],
+    "negative_fixture_ids": [
+      "R81-SHIELD-REJ-001",
+      "R81-SHIELD-REJ-002",
+      "R81-SHIELD-REJ-003",
+      "R81-SHIELD-REJ-004"
+    ],
+    "evaluation_order": "parse -> duplicate -> same-scope conflict -> parent-shield conflict -> context -> plan",
+    "dependency_predicates": [
+      "AsyncSurfaceGateAdmitted"
+    ],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "disposition": "closes_the_previous_negative_only_shielded_contract_without_product_execution"
+    }
   }
 ]

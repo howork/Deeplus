@@ -1,0 +1,208 @@
+{
+  "schema": "deeplus.scope-shielded-cancellation-fixtures/r1",
+  "contract": "spec/contracts/scope-shielded-cancellation-semantics-r1.json",
+  "cases": [
+    {
+      "id": "R81-SHIELD-POS-001",
+      "class": "positive",
+      "modifiers": ["shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "NONE",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected": {
+        "normalized_modifiers": ["shielded"],
+        "phases": ["shield_enter", "scope_cleanup_complete", "shield_exit"],
+        "cleanup_execution_count": 1,
+        "observe_count": 0,
+        "acknowledge_count": 0,
+        "terminal_outcome": "NORMAL",
+        "pending_after_exit": false
+      }
+    },
+    {
+      "id": "R81-SHIELD-POS-002",
+      "class": "positive",
+      "modifiers": ["shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "PENDING_AT_ENTRY",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected": {
+        "normalized_modifiers": ["shielded"],
+        "phases": ["shield_enter", "observation_deferred", "scope_cleanup_complete", "shield_exit", "cancel_observe", "cancel_acknowledge"],
+        "cleanup_execution_count": 1,
+        "observe_count": 1,
+        "acknowledge_count": 1,
+        "terminal_outcome": "CANCELLATION",
+        "pending_after_exit": false
+      }
+    },
+    {
+      "id": "R81-SHIELD-POS-003",
+      "class": "positive",
+      "modifiers": ["isolated", "shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "ARRIVES_IN_BODY",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected": {
+        "normalized_modifiers": ["isolated", "shielded"],
+        "phases": ["shield_enter", "observation_deferred", "scope_cleanup_complete", "shield_exit", "cancel_observe", "cancel_acknowledge"],
+        "cleanup_execution_count": 1,
+        "observe_count": 1,
+        "acknowledge_count": 1,
+        "terminal_outcome": "CANCELLATION",
+        "pending_after_exit": false
+      }
+    },
+    {
+      "id": "R81-SHIELD-BOUND-001",
+      "class": "boundary",
+      "modifiers": ["shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "ARRIVES_DURING_SCOPE_CLEANUP",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected": {
+        "normalized_modifiers": ["shielded"],
+        "phases": ["shield_enter", "observation_deferred", "scope_cleanup_complete", "shield_exit", "cancel_observe", "cancel_acknowledge"],
+        "cleanup_execution_count": 1,
+        "observe_count": 1,
+        "acknowledge_count": 1,
+        "terminal_outcome": "CANCELLATION",
+        "pending_after_exit": false
+      }
+    },
+    {
+      "id": "R81-SHIELD-BOUND-002",
+      "class": "boundary",
+      "modifiers": ["shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": true,
+      "request_site": "ARRIVES_IN_BODY",
+      "nested_depth": 2,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected": {
+        "normalized_modifiers": ["shielded"],
+        "phases": ["shield_enter", "shield_enter", "observation_deferred", "scope_cleanup_complete", "shield_exit", "scope_cleanup_complete", "shield_exit", "cancel_observe", "cancel_acknowledge"],
+        "cleanup_execution_count": 2,
+        "observe_count": 1,
+        "acknowledge_count": 1,
+        "terminal_outcome": "CANCELLATION",
+        "pending_after_exit": false
+      }
+    },
+    {
+      "id": "R81-SHIELD-BOUND-003",
+      "class": "boundary",
+      "modifiers": ["shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "ARRIVES_IN_BODY",
+      "nested_depth": 1,
+      "body_outcome": "ERROR",
+      "cleanup_outcome": "NORMAL",
+      "expected": {
+        "normalized_modifiers": ["shielded"],
+        "phases": ["shield_enter", "observation_deferred", "scope_cleanup_complete", "shield_exit"],
+        "cleanup_execution_count": 1,
+        "observe_count": 0,
+        "acknowledge_count": 0,
+        "terminal_outcome": "ERROR",
+        "pending_after_exit": true
+      }
+    },
+    {
+      "id": "R81-SHIELD-BOUND-004",
+      "class": "boundary",
+      "modifiers": ["shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "PENDING_AT_ENTRY",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "DEFECT",
+      "expected": {
+        "normalized_modifiers": ["shielded"],
+        "phases": ["shield_enter", "observation_deferred", "scope_cleanup_complete", "shield_exit"],
+        "cleanup_execution_count": 1,
+        "observe_count": 0,
+        "acknowledge_count": 0,
+        "terminal_outcome": "DEFECT",
+        "pending_after_exit": false
+      }
+    },
+    {
+      "id": "R81-SHIELD-REJ-001",
+      "class": "reject",
+      "modifiers": ["shielded", "shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "NONE",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected_reason": "DUPLICATE_MODIFIER",
+      "diagnostic": "SCOPE_MODIFIER_DUPLICATE"
+    },
+    {
+      "id": "R81-SHIELD-REJ-002",
+      "class": "reject",
+      "modifiers": ["cancellable", "shielded"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": false,
+      "request_site": "NONE",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected_reason": "CONFLICTING_CANCELLATION_MODE",
+      "diagnostic": "SCOPE_CANCELLATION_MODE_CONFLICT"
+    },
+    {
+      "id": "R81-SHIELD-REJ-003",
+      "class": "reject",
+      "modifiers": ["shielded"],
+      "context_has_cancellation_axis": false,
+      "inside_active_shield": false,
+      "request_site": "NONE",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected_reason": "CANCELLATION_CONTEXT_REQUIRED",
+      "diagnostic": "SCOPE_CANCELLATION_CONTEXT_REQUIRED"
+    },
+    {
+      "id": "R81-SHIELD-REJ-004",
+      "class": "reject",
+      "modifiers": ["cancellable"],
+      "context_has_cancellation_axis": true,
+      "inside_active_shield": true,
+      "request_site": "NONE",
+      "nested_depth": 1,
+      "body_outcome": "NORMAL",
+      "cleanup_outcome": "NORMAL",
+      "expected_reason": "CANCELLABLE_INSIDE_SHIELD",
+      "diagnostic": "SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN"
+    }
+  ],
+  "expected_counts": {
+    "cases": 11,
+    "positive": 3,
+    "boundary": 4,
+    "reject": 4,
+    "semantic_p0": 0,
+    "feature_p1": 22,
+    "product_lanes": 15,
+    "product_executed": 0
+  }
+}

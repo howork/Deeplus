@@ -2404,7 +2404,7 @@ R77_GRAMMAR_SHA256 = (
     "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
 )
 R77_HIR_H1_BRIDGE_SHA256 = (
-    "cf29a17dc84de131f924622fc30874c0fb9a3ebcae55015741f8692fe6eea2ff"
+    "27328f1b0dadefc6a13f58e3d025750082409a7b5c95ef1ae81a5e8c0707c657"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
@@ -3701,8 +3701,8 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1487
-            and relation_metadata_doc.value.get("relation_count") == 614,
+            diagnostic_metadata_doc.value.get("diagnostic_count") == 1491
+            and relation_metadata_doc.value.get("relation_count") == 618,
             "diagnostic/relation canonical counts are not exact current fusion",
         ),
         (

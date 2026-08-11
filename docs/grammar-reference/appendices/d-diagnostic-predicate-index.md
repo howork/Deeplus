@@ -1029,6 +1029,10 @@
 | `SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY` | `checker` | `error` | `active` | Scoped extension activation is lexical; use order is not a priority or tie-breaker. |
 | `SCOPED_IMPORT_BLOCK_IS_STATEMENT_ONLY` | `parser` | `error` | `active` | A scoped import block is a statement and cannot produce a value. |
 | `SCOPED_USE_BLOCK_IS_STATEMENT_ONLY` | `parser` | `error` | `active` | A scoped use block is a statement and cannot produce a value. |
+| `SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN` | `checker` | `error` | `active` | An explicit cancellable scope is not admitted inside an active shielded scope. |
+| `SCOPE_CANCELLATION_CONTEXT_REQUIRED` | `checker` | `error` | `active` | The cancellable and shielded modifiers require a cancellation-aware execution context. |
+| `SCOPE_CANCELLATION_MODE_CONFLICT` | `checker` | `error` | `active` | A @scope cannot be both cancellable and shielded. |
+| `SCOPE_MODIFIER_DUPLICATE` | `parser` | `error` | `active` | A @scope modifier may occur at most once. |
 | `SCRIPT_FILE_IS_NOT_LIBRARY_IMPORT` | `checker` | `error` | `active` | A selected script unit is not an importable library computation; move reusable declarations to a library source. |
 | `SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT` | `parser` | `error` | `active` | A script source file cannot contain an explicit entry declaration; choose the executable root for an explicit entry. |
 | `SEALED_DIRECT_SUBCLASS_DISPOSITION_REQUIRED` | `checker` | `error` | `active` | A direct subclass of a sealed root must explicitly choose final, open, or sealed class. |
@@ -1521,6 +1525,7 @@
 | `ResultThrowsOverlapForbidden` | Result/throws duplicate channel checker | collect recoverable error-family identities from the normalized \`Result<T, error E>\` value channel in source order; collect recoverable error-family identities from the normalized throws ErrorSet in source order; admit exactly when the two identity sets are disjoint; the first Result-family identity also present in throws emits RESULT_THROWS_CHANNEL_OVERLAP | `DESIGN_STATIC_NOT_RUN` |
 | `RightwardLocalBindingNormalizesToOrdinaryBinding` | RightwardLocalBindingNormalizesToOrdinaryBinding | Classify \`$\`/\`$$\`, preserve CST, and normalize to ordinary immutable/mutable local binding before semantic checking. | `DESIGN_STATIC_NOT_RUN` |
 | `SatisfiesConformance` | SatisfiesConformance | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ScopeCancellationPlanAdmitted` | Scope cancellation-plan admission | Normalize one @scope modifier set and seal its cancellation-observation plan before typed HIR. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ScopedActivationGroupAdmitted` | ScopedActivationGroupAdmitted | R51f3 owner-specific static design seed for scoped_import_use_grouping; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ScopedCallableAdmitted` | ScopedCallableAdmitted | assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, concur-run, actor, and isolation escape | `DESIGN_STATIC_NOT_RUN` |
 | `ScopedImportBlockAdmitted` | ScopedImportBlockAdmitted | Admits a current statement-only import environment frame with compile-time body scope. | `DESIGN_STATIC_NOT_RUN` |

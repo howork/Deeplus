@@ -185,8 +185,21 @@ ScopeModifier ::= "isolated" | "cancellable" | "shielded" ;
 ```
 
 이 modifier는 기존 경계를 보존할 뿐 숨은 권한을 만들지 않는다.
-`shielded`도 Cancellation을 버리거나 Error로 바꾸지 않고 정리를
-건너뛰지 않는다.
+`shielded`는 Cancellation을 잡거나 버리거나 Error로 바꾸는 장치가
+아니라, 관찰 시점만 미루는 어휘적 경계다. 요청이 진입 전에 이미
+대기 중이거나 body·cleanup 중에 도착해도 범위 내부에서는 관찰하거나
+acknowledge하지 않는다. 먼저 현재 범위의 cleanup을 정확히 한 번
+완료한다. 중첩된 경우에는 가장 바깥쪽 `shielded` 범위의 cleanup과
+exit가 끝난 뒤에만 pending Cancellation을 한 번 관찰하고 한 번
+acknowledge한다.
+
+`cancellable`과 `shielded`는 같은 범위에 함께 쓸 수 없다. 활성
+`shielded` 안의 자식이 명시적으로 `cancellable`을 사용해 바깥 fence를
+뚫는 것도 허용하지 않는다. 두 modifier는 cancellation-aware 실행
+문맥에서만 사용할 수 있다. `isolated`는 이 선택과 독립이며 formatter는
+`isolated` 다음에 `cancellable` 또는 `shielded`를 출력한다. 이미 선택된
+Error나 cleanup Defect가 있다면 그것이 우선하고 Cancellation을 Error로
+바꾸거나 거짓 terminal cancellation을 만들지 않는다.
 
 ## 허용과 정적 의미
 

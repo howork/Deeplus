@@ -180,6 +180,9 @@
           },
           {
             "$ref": "#/$defs/loop_handlerEvent"
+          },
+          {
+            "$ref": "#/$defs/scopeCancellationEvent"
           }
         ]
       }
@@ -3604,6 +3607,60 @@
             }
           ]
         }
+      }
+    },
+    "scopeCancellationEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "event_id",
+        "sequence",
+        "law_id",
+        "source_span",
+        "scope_id",
+        "execution_id",
+        "cancellation_id_or_null",
+        "parent_shield_scope_id_or_null",
+        "phase",
+        "shield_depth_before",
+        "shield_depth_after",
+        "cleanup_execution_count",
+        "outcome"
+      ],
+      "properties": {
+        "kind": {"const": "scope_cancellation"},
+        "event_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 0},
+        "law_id": {"type": "string", "pattern": "^OP-[A-Z]+(?:-[A-Z]+)*-[0-9]{3}$"},
+        "source_span": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["file", "start", "end"],
+          "properties": {
+            "file": {"type": "string", "minLength": 1},
+            "start": {"type": "integer", "minimum": 0},
+            "end": {"type": "integer", "minimum": 0}
+          }
+        },
+        "scope_id": {"type": "string", "minLength": 1},
+        "execution_id": {"type": "string", "minLength": 1},
+        "cancellation_id_or_null": {"type": ["string", "null"]},
+        "parent_shield_scope_id_or_null": {"type": ["string", "null"]},
+        "phase": {
+          "enum": [
+            "shield_enter",
+            "observation_deferred",
+            "scope_cleanup_complete",
+            "shield_exit",
+            "cancel_observe",
+            "cancel_acknowledge"
+          ]
+        },
+        "shield_depth_before": {"type": "integer", "minimum": 0},
+        "shield_depth_after": {"type": "integer", "minimum": 0},
+        "cleanup_execution_count": {"type": "integer", "minimum": 0},
+        "outcome": {"enum": ["pending", "normal", "error", "defect", "cancelled"]}
       }
     },
     "actor_lifecycleEvent": {

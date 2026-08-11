@@ -527,6 +527,7 @@ def check_schema_and_bindings(
         "semantic_operation_mapping",
         "nominal_construction_lifecycle_mapping",
         "continuation_frame_mapping",
+        "scope_cancellation_projection_contract",
         "capability_gate_contract",
         "ownership_type_qualifier_projection",
         "rows",

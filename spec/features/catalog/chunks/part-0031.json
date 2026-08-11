@@ -1,0 +1,56 @@
+[
+  {
+    "feature_id": "bitfield_checked_raw_codec_msp",
+    "display_name": "Checked bitfield raw and byte codec",
+    "baseline": "0.1.2-baseline.r51f3",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "RUNTIME",
+      "STDLIB"
+    ],
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / RUNTIME / STDLIB",
+    "primary_source": "spec/language.md",
+    "trace_class": "semantic",
+    "depends_on": [
+      "bitfield_unsigned_strict_layout_msp"
+    ],
+    "artifact_trace_refs": [],
+    "normative_trace_refs": {
+      "productions": [],
+      "semantic_reference_productions": [],
+      "diagnostics": [
+        "BITFIELD_C_ABI_NOT_IMPLIED",
+        "BITFIELD_ENDIANNESS_REQUIRED",
+        "BITFIELD_IMPLICIT_RAW_CONVERSION_FORBIDDEN",
+        "BITFIELD_RESERVED_BITS_NONZERO"
+      ],
+      "predicates": [
+        "BitfieldRawAdmitted",
+        "BitfieldDerivationAdmitted"
+      ],
+      "examples": [
+        "EX-R51a1-BITFIELD-NG-002",
+        "EX-R51a1-BITFIELD-P-003"
+      ]
+    },
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "status_enum": "STDLIB_PROFILE",
+    "status_display": "Stdlib profile",
+    "language_status": "Stdlib profile",
+    "source_activation": "stdlib",
+    "notes": "Stable-layout stdlib profile for explicit .raw, checked fromRaw and explicit-endian byte codecs; no implicit conversion or C ABI equivalence. Product runtime NOT_RUN."
+  }
+]

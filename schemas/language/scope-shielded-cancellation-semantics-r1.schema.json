@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.invalid/schemas/language/scope-shielded-cancellation-semantics-r1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema", "schema", "revision", "canonical_baseline_commit",
+    "local_predecessor_commit", "candidate_status", "feature_id", "gap_id",
+    "surface_contract", "static_admission", "frontend_contract", "hir_contract",
+    "dynamic_semantics", "mir_contract", "tooling_obligations", "acceptance",
+    "governance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/scope-shielded-cancellation-semantics-r1.schema.json"},
+    "schema": {"const": "deeplus.scope-shielded-cancellation-semantics/r1"},
+    "revision": {"const": "r81-scope-shielded-cancellation-semantics-closure-r1"},
+    "canonical_baseline_commit": {"const": "10e64f492f0529610673846139afcf0d95175663"},
+    "local_predecessor_commit": {"const": "878f3f4c4bf44586cebb836176c6b58af8da42e5"},
+    "candidate_status": {"const": "LOCAL_STABLE_DESIGN_CLOSURE_NOT_PUBLISHED"},
+    "feature_id": {"const": "async_concur_control"},
+    "gap_id": {"const": "PREIMPL-P0-004B"},
+    "surface_contract": {"type": "object", "additionalProperties": false,
+      "required": ["owner", "modifier_production", "current_modifiers", "isolation_modifier", "cancellation_modes", "duplicate_modifier_allowed", "cancellable_with_shielded_allowed", "isolated_with_cancellation_mode_allowed", "formatter_order"],
+      "properties": {
+        "owner": {"const": "AtScopeExpr"}, "modifier_production": {"const": "ScopeModifier"},
+        "current_modifiers": {"prefixItems": [{"const": "isolated"}, {"const": "cancellable"}, {"const": "shielded"}], "minItems": 3, "maxItems": 3},
+        "isolation_modifier": {"const": "isolated"},
+        "cancellation_modes": {"type": "object"},
+        "duplicate_modifier_allowed": {"const": false},
+        "cancellable_with_shielded_allowed": {"const": false},
+        "isolated_with_cancellation_mode_allowed": {"const": true},
+        "formatter_order": {"prefixItems": [{"const": "isolated"}, {"const": "cancellable_or_shielded"}], "minItems": 2, "maxItems": 2}
+      }
+    },
+    "static_admission": {"type": "object"},
+    "frontend_contract": {"type": "object"},
+    "hir_contract": {"type": "object"},
+    "dynamic_semantics": {"type": "object"},
+    "mir_contract": {"type": "object"},
+    "tooling_obligations": {"type": "object"},
+    "acceptance": {"type": "object"},
+    "governance": {"type": "object", "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes", "production_implementation", "github_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "production_implementation": {"const": "NOT_RUN"},
+        "github_publication": {"const": "NOT_PERFORMED_FOR_R81"}
+      }
+    }
+  }
+}

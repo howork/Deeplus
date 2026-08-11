@@ -1696,6 +1696,22 @@ Current async declarations use the admitted `def#async` owner, and `await` is al
 
 Every successful structured spawn belongs to its nearest lexical `concur` owner and returns `Run<T>`. A `Run<T>` is an affine, one-shot observation handle for that child execution; it preserves result, normalized ErrorSet, Cancellation, isolation, cleanup, and terminal responsibility, cannot escape its owning `concur`, and carries no actor-request correlation or transport responsibility. The owner records its child runs, deterministic lexical `spawn_index` order, cancellation state, failure order, and cleanup obligations; it cannot finish until every admitted child is terminal and required cleanup completes. Deeplus has no detached-run authority. Cancellation is an explicit control axis and terminal run outcome, never an Error value. Delivery is monotonic and idempotent, cleanup cannot be bypassed, and later secondary failures are retained in deterministic suppressed order rather than replacing the primary outcome. `RunGroup<T>` is only a nonactivatable Preview aggregation design and never a second lexical owner.
 
+A Stable `shielded` scope is a lexical cancellation-observation fence. It does
+not catch, discard, acknowledge early, or convert Cancellation into an Error.
+A request that is already pending at entry or becomes pending in the body or
+cleanup remains pending while the shield is active. Every entered scope runs
+its registered cleanup exactly once; nested shields defer observation until the
+outermost shield has completed its own cleanup and exits. Only then are the
+pending cancellation's observe and acknowledge events emitted, in that order.
+An already selected Error remains primary and leaves Cancellation pending for
+the enclosing cancellation-aware owner; a terminal cleanup Defect remains
+primary and records the pending cancellation as unobserved without fabricating
+a terminal-cancelled event. `cancellable` and `shielded` conflict on one scope,
+and an explicit `cancellable` child may not pierce an active parent shield.
+Both modifiers require a cancellation-aware execution context. `isolated` is
+orthogonal and the canonical formatter order is `isolated` followed by the one
+cancellation modifier.
+
 The bounded Stable `#async { ... }` lambda profile is admitted only inside a `concur` owner. It is bound to that owner, is nonescaping, and may be consumed only by a local `await`, a local `spawn`, or an inward nested `concur` use with the same proven ownership chain. Its initial capture profile is empty or an explicit reusable `copy` plan; implicit outer dependency, `borrow`, `inout`, `move`, `clone`, `deep`, actor-isolated reference, scoped access, storage, return, export, and outward or sibling transfer are rejected. General escaping first-class async lambdas remain Preview Design and nonactivatable. Suspension points preserve borrow/ownership rules, cleanup obligations, actor isolation, cancellation responsibility, and failure ordering. A borrow or probe binding may cross suspension only when its region and isolation proof explicitly permit it. Async comprehensions remain Preview Design; admitted asynchronous iteration uses the attached `for#await` role.
 
 ## 38. Actors and messages

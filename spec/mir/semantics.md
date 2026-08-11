@@ -307,6 +307,19 @@ foreign ABI follows from the semantic pair.
 
 Errors, defects and cancellation are distinct. Cancellation progresses through request, observation, acknowledgement, cleanup barrier, and terminal outcome events; each event is monotonic and idempotent for one CancellationId. Primary/suppressed failure order is deterministic: at one `concur` terminal barrier, the failed run with the lowest lexical `spawn_index` becomes primary and the remaining run failures are appended in ascending `spawn_index`; scheduler completion order is not evidence. Cleanup executes exactly once in LIFO region order and cannot be skipped by return, throw, break, cancellation or suspension. Cleanup failures are then appended in their actual deterministic LIFO execution order according to the suppression law and never reorder an already selected primary outcome.
 
+### Scope cancellation plans
+
+`CleanupScopePlan.scope_cancellation_plan` lowers through `HM-LR-TOP-021` and
+threads one linear `CANCELLATION` state through the cleanup region. `INHERIT`
+adds no observation boundary, `OBSERVE` admits the ordinary cancellation point,
+and `DEFER_TO_OUTERMOST_SHIELD_EXIT` emits ordered `shield_enter`, optional
+`observation_deferred`, exact-once `scope_cleanup_complete`, and `shield_exit`
+events. An inner shield never observes while its parent remains active. After
+the outermost cleanup and exit, a still-selected cancellation emits exactly one
+`cancel_observe` followed by one `cancel_acknowledge`; a selected Error or
+Defect follows the bound failure-precedence plan instead. Lowering may neither
+reselect the source mode nor introduce a backend-specific shield operation.
+
 Cleanup-budget checking is completed before verified MIR. Canonical HIR binds
 each construction lifecycle plan to one `CleanupBudgetId`; the module table
 retains declaration mode, family-root identity, normalized effective error and

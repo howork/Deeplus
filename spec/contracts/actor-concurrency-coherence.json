@@ -357,6 +357,7 @@
         "minimum_state_order": [
           "requested",
           "observed",
+          "acknowledged",
           "cleanup_complete",
           "terminal_cancelled"
         ],
@@ -378,9 +379,26 @@
           "shielded"
         ],
         "isolated": "preserves the existing isolation boundary and grants no ambient capability",
-        "cancellable": "permits cooperative observation under ACC-R012",
-        "shielded": "does not convert, discard, or catch Cancellation and cannot bypass cleanup",
-        "combination_admission": "remains owned by the existing scope admission policy",
+        "cancellable": "selects ordinary cooperative observation under ACC-R012 and requires a cancellation-aware execution",
+        "shielded": {
+          "classification": "lexical cancellation-observation fence",
+          "observation": "defer until the outermost shield exits after scope-local cleanup",
+          "pending_at_entry": "enter the body and retain the request as pending",
+          "request_in_body_or_cleanup": "record at most one observation_deferred transition per CancellationId and ScopeId",
+          "nested_exit": "inner cleanup and exit do not observe while a parent shield remains active",
+          "failure_precedence": "an already selected Error or Defect remains primary",
+          "convert_discard_or_catch": false,
+          "cleanup_bypass": false
+        },
+        "combination_admission": {
+          "duplicate_modifier": "reject",
+          "cancellable_with_shielded": "reject",
+          "isolated_with_one_cancellation_mode": "admit",
+          "formatter_order": [
+            "isolated",
+            "cancellable_or_shielded"
+          ]
+        },
         "new_modifier_count": 0
       }
     },

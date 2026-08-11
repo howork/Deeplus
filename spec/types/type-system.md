@@ -803,6 +803,17 @@ Structured concurrency uses a separate nominal `Run<T>` responsibility. `concur 
 
 Before enqueue commit, all moved argument places remain live at the sender and a rejection allocates neither `MessageId` ownership nor `channel_sequence`. A successful commit consumes each moved sender place exactly once, installs exactly one actor-owned payload, and allocates the next strictly increasing sequence for the normalized `(SenderId, ReceiverActorId, MailboxProfileId)` key. Cancellation before commit aborts without transfer; cancellation after commit cannot restore the sender place or retract the message. Cancellation is a control axis and never a member of `ActorMessageError`.
 
+`ScopeCancellationPlanAdmitted` is the closed admission judgment for `@scope`
+cancellation modifiers. The checker preserves the complete source modifier list
+and then applies this fixed precedence: duplicate modifier, same-scope
+`cancellable`/`shielded` conflict, explicit `cancellable` inside an active
+parent shield, and missing cancellation-aware execution context. Rejection
+creates no typed-HIR or MIR residue. Admission emits exactly one of `INHERIT`,
+`OBSERVE`, or `DEFER_TO_OUTERMOST_SHIELD_EXIT`, together with the resolved
+execution owner, optional parent-shield identity, exact-once cleanup fence, and
+failure-precedence plan. Source order cannot choose semantics. The normalized
+formatter order is `isolated` followed by `cancellable` or `shielded`.
+
 An assignment target is checked and evaluated as one place. Compound assignment reads that place once, checks one exact intrinsic operand domain, evaluates the right operand once, and commits at most one result. A precommit `ArithmeticDefect`, `IndexError`, or other failure leaves the prior owner and value unchanged. Assignment expressions have result type `Unit`. Every admitted slice result is a `ReadonlyView`, never an assignable place; its borrow cannot escape its owner, cross isolation, hide a copy, or be implicitly rebased.
 
 MutableList structural-edit statements are not ordinary index assignment. The

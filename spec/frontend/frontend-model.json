@@ -5285,6 +5285,40 @@
     "wrapper_unlock_excluded_from_payload_predicate": true,
     "product_support": "NOT_RUN"
   },
+  "scope_modifier_contract": {
+    "status": "STABLE_DESIGN_PRODUCT_NOT_RUN",
+    "contract": "spec/contracts/scope-shielded-cancellation-semantics-r1.json",
+    "source_modifiers": [
+      "isolated",
+      "cancellable",
+      "shielded"
+    ],
+    "cst_preserves_source_order_and_trivia": true,
+    "ast_cancellation_modes": [
+      "INHERIT",
+      "OBSERVE",
+      "DEFER_TO_OUTERMOST_SHIELD_EXIT"
+    ],
+    "ast_fields": [
+      "normalized_modifiers",
+      "cancellation_mode",
+      "execution_context_id_or_null",
+      "parent_shield_scope_id_or_null"
+    ],
+    "admission_predicate": "ScopeCancellationPlanAdmitted",
+    "duplicate_modifier": "REJECT",
+    "cancellable_with_shielded": "REJECT",
+    "cancellable_inside_active_shield": "REJECT",
+    "cancellation_modifier_without_cancellation_axis": "REJECT",
+    "isolated_is_orthogonal": true,
+    "source_order_selects_semantics": false,
+    "formatter_order": [
+      "isolated",
+      "cancellable_or_shielded"
+    ],
+    "rejected_hir_residue_count": 0,
+    "product_support": "NOT_RUN"
+  },
   "hir_mir_machine_contract": {
     "revision": "r51f3-current-hir-mir-machine-contract-r1",
     "canonical_hir_schema": "deeplus.canonical-hir-h1/r1",

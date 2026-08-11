@@ -3541,6 +3541,83 @@
         }
       }
     },
+    "ScopeCancellationPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normalized_modifiers",
+        "cancellation_mode",
+        "execution_context_id_or_null",
+        "parent_shield_scope_id_or_null",
+        "exit_observation_policy",
+        "cleanup_fence",
+        "failure_precedence"
+      ],
+      "properties": {
+        "normalized_modifiers": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "isolated",
+              "cancellable",
+              "shielded"
+            ]
+          }
+        },
+        "cancellation_mode": {
+          "enum": [
+            "INHERIT",
+            "OBSERVE",
+            "DEFER_TO_OUTERMOST_SHIELD_EXIT"
+          ]
+        },
+        "execution_context_id_or_null": {
+          "$ref": "#/$defs/NullableId"
+        },
+        "parent_shield_scope_id_or_null": {
+          "$ref": "#/$defs/NullableId"
+        },
+        "exit_observation_policy": {
+          "enum": [
+            "INHERIT_PARENT_POLICY",
+            "OBSERVE_AT_ADMITTED_BOUNDARY_WHEN_SHIELD_DEPTH_ZERO",
+            "AFTER_SCOPE_CLEANUP_AT_OUTERMOST_SHIELD_EXIT"
+          ]
+        },
+        "cleanup_fence": {
+          "const": "SCOPE_LOCAL_CLEANUP_EXACTLY_ONCE_BEFORE_OUTERMOST_OBSERVATION"
+        },
+        "failure_precedence": {
+          "const": "SELECTED_ERROR_OR_DEFECT_PRECEDES_PENDING_CANCELLATION"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "cancellation_mode": {
+                "enum": [
+                  "OBSERVE",
+                  "DEFER_TO_OUTERMOST_SHIELD_EXIT"
+                ]
+              }
+            },
+            "required": [
+              "cancellation_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "execution_context_id_or_null": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    },
     "CleanupScopePlan": {
       "allOf": [
         {
@@ -3553,6 +3630,7 @@
             "scope_id",
             "parent_scope_id_or_null",
             "cleanup_budget_id",
+            "scope_cancellation_plan",
             "registrations_in_source_order"
           ],
           "properties": {
@@ -3571,6 +3649,9 @@
             },
             "cleanup_budget_id": {
               "$ref": "#/$defs/Id"
+            },
+            "scope_cancellation_plan": {
+              "$ref": "#/$defs/ScopeCancellationPlan"
             },
             "registrations_in_source_order": {
               "type": "array",
