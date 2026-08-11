@@ -23,6 +23,7 @@ PREDICATE_REL = "spec/types/predicates/chunks/part-0026.json"
 TRACE_REL = "spec/traceability/implementation-target-profile-r1/rows.json"
 LANGUAGE_REL = "spec/language.md"
 MIR_REL = "spec/mir/semantics.md"
+CURRENT_DECISIONS_REL = "decisions/language/current-decisions.json"
 
 
 def load(path: Path) -> Any:
@@ -50,6 +51,7 @@ def validate(
     *,
     contract_override: dict[str, Any] | None = None,
     fixture_override: dict[str, Any] | None = None,
+    decisions_override: dict[str, Any] | None = None,
 ) -> list[str]:
     errors: list[str] = []
     contract = copy.deepcopy(contract_override) if contract_override is not None else load(root / CONTRACT_REL)
@@ -62,6 +64,7 @@ def validate(
     diagnostics = load(root / DIAGNOSTIC_REL)
     predicates = load(root / PREDICATE_REL)
     trace_rows = load(root / TRACE_REL)
+    decisions = copy.deepcopy(decisions_override) if decisions_override is not None else load(root / CURRENT_DECISIONS_REL)
     language = (root / LANGUAGE_REL).read_text(encoding="utf-8")
     mir = (root / MIR_REL).read_text(encoding="utf-8")
 
@@ -199,6 +202,22 @@ def validate(
         and "Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF`" not in mir,
         "G09",
         "NORMATIVE_TEXT_CLOSURE",
+    )
+    decision = next(
+        (
+            item
+            for item in decisions.get("laws", [])
+            if item.get("id") == "DSGN-CURRENT-VALUE-OPERATOR-INDEX-COHERENCE"
+        ),
+        {},
+    )
+    decision_law = decision.get("law", "")
+    require(
+        decision.get("status") == "CURRENT"
+        and "colon format-spec uses the closed Stable `Align? Width` plan" in decision_law
+        and "DEFERRED_PRODUCT_HANDOFF" not in decision_law,
+        "G09",
+        "CURRENT_DECISION_PROJECTION_CLOSED",
     )
     governance = contract.get("governance", {})
     require(
