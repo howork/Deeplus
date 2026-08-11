@@ -884,6 +884,11 @@ static partition analysis, but their clause-owner overlap, input-supply, and
 return-totality obligations are discharged before an admitted ordered clause
 plan reaches lowering; no runtime clause search repairs a rejected partition.
 
+Enum body-mode commitment and match fallback-head commitment are likewise
+parser/checker-only. MIR receives a nonempty sealed Enum case vector and an
+already validated arm plan. There is no empty-Enum opcode, fallback-guard field,
+commitment opcode, runtime mode lookup, or recovery residue.
+
 Tuple Pattern lowering is an exact static product projection. Record/Map
 patterns first compare their exact or explicitly open row/key shapes; nominal
 patterns require one statically selected pattern-transparent descriptor. Pin,

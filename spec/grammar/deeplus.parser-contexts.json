@@ -548,7 +548,7 @@
       "ParameterPolicy": "spec/frontend/frontend-model.json#/admission_policies/parameter",
       "WhereAllowed": "#/callable_context_policy/where_allowed",
       "NonEmpty": "#/combinator_contracts",
-      "EnumBodyCommit": "#/commitment_policy",
+      "EnumBodyCommit": "#/commitment_policy/enum_body",
       "ConformanceRoutePolicy": "spec/frontend/frontend-model.json#/trait_conformance_surface_contract",
       "ForAwaitAttached": "#/commitment_policy/for_await",
       "TupleIdentity": "spec/frontend/frontend-model.json#/pattern_frontend_contract",
@@ -587,6 +587,15 @@
       "pre_marker_failure": "ROLLBACK_ZERO_TOKENS",
       "post_marker_failure": "COMMITTED_DECLARATION_DIAGNOSTIC_NO_FALLBACK",
       "semantic_lookup_count": 0
+    },
+    "enum_body": {
+      "registry": "EnumBodyCommitmentV1",
+      "contract": "spec/contracts/enum-match-boundary-v1.json",
+      "minimum_case_count": 1,
+      "comma_mode_marker": "COMMA_AFTER_FIRST_CASE",
+      "layout_mode_markers": ["END_AFTER_CASE", "CLOSE_AFTER_SINGLE_CASE"],
+      "mixed_separator_count": 0,
+      "empty_enum_profile": "NOT_CURRENT"
     }
   },
   "combinator_contracts": {

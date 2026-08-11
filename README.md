@@ -39,13 +39,13 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 
 <!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
 
-- DPG 구조 rule family: `280` (`301` context-specialized clause)
+- DPG 구조 rule family: `282` (`303` context-specialized clause)
 - legacy EBNF surface census: `656` production
   - 차등 검증 입력이며 exact grammar authority가 아니다.
   - recovery는 DPG rule이 아니라 별도의 CST/parser 복구 정책이다.
 - 기능 레지스트리: `723` (전체 catalog; Implementation Target Profile은 그중 `469`개)
-- 진단 레지스트리: `1,501`
-- 타입 predicate: `289`
+- 진단 레지스트리: `1,504`
+- 타입 predicate: `291`
 - Prelude 서명: `81`
 - 예제 결과: `769`
 - semantic P0: `0`

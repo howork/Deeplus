@@ -782,10 +782,15 @@
     "trace_class": "syntax",
     "normative_trace_refs": {
       "diagnostics": [
+        "ENUM_BODY_REQUIRES_CASE",
+        "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+        "ENUM_CASE_SEPARATOR_MIXED",
         "ENUM_CASE_CONFLICTS_WITH_TYPE_SIDE_MEMBER",
         "ENUM_CASE_KEYWORD_NOT_CANONICAL"
       ],
-      "predicates": [],
+      "predicates": [
+        "EnumBodyCommitted"
+      ],
       "examples": [
         "EX-R48M-ENUM-001",
         "EX-R48M-ENUM-004"
@@ -798,7 +803,13 @@
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/enum-match-boundary-v1.json",
+      "schemas/language/enum-match-boundary-decision-v1.schema.json",
+      "schemas/language/enum-match-boundary-v1.schema.json",
+      "schemas/language/enum-match-boundary-fixtures-v1.schema.json",
+      "tests/fixtures/current/enum-match-boundary-v1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

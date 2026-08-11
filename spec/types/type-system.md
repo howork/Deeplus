@@ -596,6 +596,12 @@ owners, unordered Enums, payload Enums, and generic Enums reject before range
 construction. This language-owned range rule creates no operator-conformance
 hook or implicit whole-Enum iteration.
 
+Every current Enum, ordered or unordered, seals a nonempty `VariantId` vector
+before member checking. The first body item is a case. Comma mode contains at
+least two cases and no members; layout mode contains at least one case followed
+by members. An empty or member-first body fails before nominal identity, derived
+witness, layout, API digest, or MIR residue is formed.
+
 Other glyph families remain intrinsic-only or excluded from conformance
 overloading. Power, strict/short-circuit logical, bitwise, range, and arbitrary
 custom glyphs have no user hook. `TCC-P1-002..008` remain OPEN product and
@@ -1023,6 +1029,12 @@ nominal-family closure for other checker judgments, but that proof is not a
 substitute for absent constructor-pattern syntax. Clause functions and
 declarative clauses reuse the same partition engine while preserving their own
 input-supply, overlap, and return-totality rules.
+
+The fallback arm has a distinct static input shape with no guard slot. Surface
+admission first rejects a guarded `otherwise`, then duplicate `otherwise`, then
+non-final `otherwise`; only after those checks does usefulness select
+`OTHERWISE_UNREACHABLE` or exhaustiveness select the residual diagnostic. No
+recovery path converts a rejected fallback into a pattern arm.
 
 The flow-proof environment `Phi` records closed-union alternative identities, enum-case identities, admitted finite R0 refinement facts, and usable-place state without changing a declaration's normalized semantic type. Structural success narrows an arm to the intersection of `Phi` and its coverage cell. Join is set intersection across incoming paths. Assignment, aliasing mutation, exclusive borrow, escape or capture, consume, and calls whose responsibility summary may mutate the subject kill the affected facts.
 

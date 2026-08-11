@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/enum-match-boundary-fixtures-v1.schema.json",
+  "title": "Enum and match boundary fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "contract", "cases"],
+  "properties": {
+    "schema": {"const": "deeplus.enum-match-boundary-fixtures/v1"},
+    "contract": {"const": "spec/contracts/enum-match-boundary-v1.json"},
+    "cases": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": {"$ref": "enum-match-boundary-decision-v1.schema.json"}
+    }
+  }
+}

@@ -327,6 +327,7 @@
 | `ENTRY_DECL_DUPLICATE` | `checker` | `error` | `active` | An executable target has more than one explicit entry declaration. |
 | `ENTRY_NOT_ALLOWED_IN_LIBRARY_SOURCE` | `parser` | `error` | `active` | A library source file cannot contain an entry declaration, including through an annotation attachment. |
 | `ENTRY_SIGNATURE_NOT_ADMITTED` | `checker` | `error` | `active` | An entry function must have () or (Sequence<String>) parameters and return Unit or ExitCode. |
+| `ENUM_BODY_REQUIRES_CASE` | `parser` | `error` | `active` | A current Enum body must begin with at least one case declaration. |
 | `ENUM_CASE_COMMA_REQUIRES_SINGLE_LINE` | `parser` | `error` | `active` | Comma-separated enum cases must form one physical-line case-only list. |
 | `ENUM_CASE_CONFLICTS_WITH_TYPE_SIDE_MEMBER` | `checker` | `error` | `active` | Enum case names share the enum type static case namespace and cannot conflict with type-side members. |
 | `ENUM_CASE_EXPRESSION_PAYLOAD_MUST_NOT_USE_DECLARATION_PAYLOAD` | `checker` | `error` | `active` | Enum case expression payload uses expression arguments, not enum case declaration field syntax. |
@@ -334,6 +335,7 @@
 | `ENUM_CASE_PATTERN_PAYLOAD_MUST_NOT_USE_DECLARATION_PAYLOAD` | `checker` | `error` | `active` | Enum case pattern payload uses pattern payload syntax, not enum case declaration field syntax. |
 | `ENUM_CASE_PATTERN_USES_COLON_COLON` | `checker` | `error` | `active` | Enum case patterns use \`::case\` or \`EnumType::case\`, not \`.case\`. |
 | `ENUM_CASE_SEPARATOR_MIXED` | `parser` | `error` | `active` | An enum body may not mix comma-list and layout separators for cases. |
+| `ENUM_COMMA_MODE_REQUIRES_TWO_CASES` | `parser` | `error` | `active` | A comma after the first Enum case commits to a case-only list containing at least two cases. |
 | `ENUM_DISPLAY_MAPPING_INCOMPLETE` | `checker` | `error` | `active` | If one inhabitable Enum case has a display mapping, every inhabitable case must have exactly one mapping. |
 | `ENUM_DISPLAY_MAPPING_NOT_GUARD_SAFE` | `checker` | `error` | `active` | An Enum display template must be pure, synchronous, read-only, total, and use only preselected Display evidence. |
 | `ENUM_MEMBER_KIND_NOT_ADMITTED` | `parser` | `error` | `active` | An enum body may contain cases followed by methods, accessors, and type-side members; stored fields, constructors, and lifecycle cleanup declarations are not admitted. |
@@ -791,6 +793,7 @@
 | `ORDINARY_CALL_RESULT_CONTEXT_MISMATCH` | `checker` | `error` | `active` | The selected ordinary-call result is incompatible with the fixed expected type. |
 | `OR_PATTERN_BINDINGS_INCONSISTENT` | `checker` | `error` | `active` | All alternatives of an or-pattern must bind the same names with identical canonical types, modes, mutability, usable lifetimes, and capabilities. |
 | `OTHERWISE_DUPLICATE_CLAUSE` | `checker` | `error` | `active` | A clause block or match may contain at most one \`otherwise\` arm. |
+| `OTHERWISE_GUARD_FORBIDDEN` | `parser` | `error` | `active` | The final \`otherwise\` fallback has no guard; write an explicit guarded pattern arm before it. |
 | `OTHERWISE_MUST_BE_LAST` | `checker` | `error` | `active` | \`otherwise\` must be the last clause or match arm. |
 | `OTHERWISE_UNREACHABLE` | `checker` | `error` | `active` | The \`otherwise\` arm is unreachable because previous clauses already cover all cases. |
 | `OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE` | `checker` | `error` | `active` | Moving or consuming an ancestor place requires an explicit move or once capture, parameter, or owner-transfer carrier. |
@@ -1392,6 +1395,7 @@
 | `EffectRowSubsumes` | EffectRowSubsumes | R9 closed typed decision procedure; static reference validator PASS; integrated product checker NOT_RUN. | `STATIC_REFERENCE_VALIDATOR_PASS` |
 | `EntrySignatureAdmitted` | EntrySignatureAdmitted | source_kind is FunctionType, source_role is executable, and entry_kind is exactly sync or async; the exact (parameters, result) pair is one of ([], Unit), ([Sequence<String>], Unit), ([], ExitCode), or ([Sequence<String>], ExitCode); generic and receiver are false and context_parameters, witness_parameters, rest_parameters, and default_parameters are all zero; error_set normalizes to the empty set (spelled throws Never when written); effect_row is a closed normalized row and does not alter signature-shape admission; call_shape.selected_entry_target_count is present and EntryTargetUnique admits the same descriptor before local signature admission succeeds | `DESIGN_STATIC_NOT_RUN` |
 | `EntryTargetUnique` | EntryTargetUnique | call_shape.selected_entry_target_count is a nonnegative integer; an executable root is admitted exactly when selected_entry_target_count equals one; a zero count emits NO_EXECUTABLE_ENTRY and a count greater than one emits ENTRY_DECL_DUPLICATE; a library root with a nonzero selected count emits ENTRY_NOT_ALLOWED_IN_LIBRARY_SOURCE and a script root with a nonzero selected count emits SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT; library and script roots are admitted exactly when selected_entry_target_count equals zero | `DESIGN_STATIC_NOT_RUN` |
+| `EnumBodyCommitted` | EnumBodyCommitted | Commit one nonempty Enum case vector and exactly one comma or layout body mode before nominal identity; product parser/checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `EnumCaseCommaListAdmitted` | EnumCaseCommaListAdmitted | R51f3 owner-specific static design seed for enum_case_comma_list; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EnumCaseDisplayMappingAdmitted` | EnumCaseDisplayMappingAdmitted | Admit one complete all-or-none enum-owned display mapping and synthesize at most one whole-Enum Display witness. | `` |
 | `EnumCaseDoubleColonAdmitted` | Enum case double-colon injection | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1458,6 +1462,7 @@
 | `LoopOutcomeHandlerAdmitted` | LoopOutcomeHandlerAdmitted | normalize loop and optional handler to one node; run intermediate cleanup/finally while skipping intermediate handlers; only the final break target handler observes ::break and a terminal continue observes none | `DESIGN_STATIC_NOT_RUN` |
 | `MapUnfoldEntryAdmitted` | MapUnfoldEntryAdmitted | Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and owner-bounded *Map unfolds. | `DESIGN_STATIC_NOT_RUN` |
 | `MatchExhaustive` | match exhaustiveness and usefulness | Compute match-arm usefulness and final exhaustiveness over one normalized structural partition, including symbolic complement cells for admitted open scalar domains. | `DESIGN_STATIC_NOT_RUN` |
+| `MatchFallbackAdmitted` | MatchFallbackAdmitted | Admit at most one final unguarded otherwise arm and reject a guarded fallback before AST emission; product parser/checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `MatchGuardPurityAdmitted` | match arm guard purity | Apply the ordinary guard profile, then forbid consuming or escaping probe bindings before atomic commit. | `DESIGN_STATIC_NOT_RUN` |
 | `MaterializationFieldPunAdmitted` | MaterializationFieldPunAdmitted | R51f3 owner-specific static design seed for materialization_derivation_field_punning; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MatrixProductAdmitted` | Matrix product | both operands are rank-2; the left inner dimension equals the right inner dimension; \`**\` participates in the left-to-right LinearProductExpr fold and this predicate is applied independently at the current fold step | `DESIGN_STATIC_NOT_RUN` |

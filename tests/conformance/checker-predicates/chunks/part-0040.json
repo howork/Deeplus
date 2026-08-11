@@ -1,0 +1,302 @@
+[
+  {
+    "fixture_id": "PF-EnumBodyCommitted-POS",
+    "predicate_id": "EnumBodyCommitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "domain": "ENUM_BODY",
+      "input": "enum Color { red; green }",
+      "decision": "ADMIT",
+      "diagnostic_or_null": null,
+      "ast_residue_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "EnumBodyCommitmentV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "layout mode seals one nonempty ordered case vector",
+    "rule_seed": "R89 EnumBodyCommitmentV1 positive fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumBodyCommitted-BOUNDARY",
+    "predicate_id": "EnumBodyCommitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "domain": "ENUM_BODY",
+      "input": "enum Flag { off, on, }",
+      "decision": "ADMIT",
+      "diagnostic_or_null": null,
+      "ast_residue_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "EnumBodyCommitmentV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "comma mode has two cases and one optional trailing comma",
+    "rule_seed": "R89 Enum comma-mode boundary fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumBodyCommitted-NEG-EMPTY",
+    "predicate_id": "EnumBodyCommitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "domain": "ENUM_BODY",
+      "input": "enum Empty {}",
+      "decision": "REJECT",
+      "diagnostic_or_null": "ENUM_BODY_REQUIRES_CASE",
+      "ast_residue_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "EnumBodyCommitmentV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "ENUM_BODY_REQUIRES_CASE",
+    "violated_condition": "NO_FIRST_CASE",
+    "rule_seed": "R89 empty Enum rejection fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-EnumBodyCommitted-NEG-COMMA",
+    "predicate_id": "EnumBodyCommitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "domain": "ENUM_BODY",
+      "input": "enum Bad { only, }",
+      "decision": "REJECT",
+      "diagnostic_or_null": "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+      "ast_residue_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "EnumBodyCommitmentV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+    "violated_condition": "COMMA_WITHOUT_SECOND_CASE",
+    "rule_seed": "R89 comma-mode minimum rejection fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active secondary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-MatchFallbackAdmitted-POS",
+    "predicate_id": "MatchFallbackAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "domain": "MATCH_FALLBACK",
+      "input": "@match x { ::some(v) => v; otherwise => 0 }",
+      "decision": "ADMIT",
+      "diagnostic_or_null": null,
+      "ast_residue_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "MatchFallbackBoundaryV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "one unguarded final otherwise covers the exact residual",
+    "rule_seed": "R89 Match fallback positive fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-MatchFallbackAdmitted-BOUNDARY",
+    "predicate_id": "MatchFallbackAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "domain": "MATCH_FALLBACK",
+      "input": "@match x { ::some(v) if v > 0 => v; ::some(_) => 0; ::none => 0 }",
+      "decision": "ADMIT",
+      "diagnostic_or_null": null,
+      "ast_residue_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "MatchFallbackBoundaryV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "a guarded pattern arm is distinct from a fallback and does not subtract coverage",
+    "rule_seed": "R89 guarded pattern boundary fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-MatchFallbackAdmitted-NEG-GUARD",
+    "predicate_id": "MatchFallbackAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "domain": "MATCH_FALLBACK",
+      "input": "@match x { otherwise if ready => 1 }",
+      "decision": "REJECT",
+      "diagnostic_or_null": "OTHERWISE_GUARD_FORBIDDEN",
+      "ast_residue_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "MatchFallbackBoundaryV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "OTHERWISE_GUARD_FORBIDDEN",
+    "violated_condition": "GUARDED_OTHERWISE",
+    "rule_seed": "R89 guarded otherwise rejection fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-MatchFallbackAdmitted-NEG-ORDER",
+    "predicate_id": "MatchFallbackAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "domain": "MATCH_FALLBACK",
+      "input": "@match x { otherwise => 0; ::some(v) => v }",
+      "decision": "REJECT",
+      "diagnostic_or_null": "OTHERWISE_MUST_BE_LAST",
+      "ast_residue_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "MatchFallbackBoundaryV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "OTHERWISE_MUST_BE_LAST",
+    "violated_condition": "NONFINAL_OTHERWISE",
+    "rule_seed": "R89 non-final otherwise rejection fixture; product parser/checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active secondary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

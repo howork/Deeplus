@@ -1605,6 +1605,21 @@ Cancellation must not bypass cleanup. Async failure aggregation preserves the de
 
 ## 35. Patterns and exhaustiveness
 
+A current Enum declaration is a nonempty nominal sum. Its body begins with at
+least one bare case declaration; `{}` and a member-only body are rejected with
+`ENUM_BODY_REQUIRES_CASE`. A comma after the first case commits to one
+same-line, case-only comma mode containing at least two cases. Layout mode
+contains one or more cases followed by the admitted Enum member sequence.
+Separators do not mix. Empty or uninhabited nominal Enums remain non-current and
+are not inferred from an empty body.
+
+Match arms have two disjoint AST owners. A pattern arm may have one admitted
+guard. The fallback owner is exactly `otherwise => body`; it has no guard field,
+occurs at most once, and is final. `otherwise if condition => body` is rejected
+with `OTHERWISE_GUARD_FORBIDDEN` before an arm AST is formed. A final
+`otherwise` covers only the exact nonempty residual partition; no wildcard or
+implicit fallback is synthesized.
+
 One lossless Pattern CST and one normalized Pattern AST are shared by every
 admitting owner; a context-policy row, not a second semantic grammar, decides
 refutability, guard admission, failure disposition, and exhaustiveness. Plain

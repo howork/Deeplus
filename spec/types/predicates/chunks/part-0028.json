@@ -1,0 +1,170 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "EnumBodyCommitted",
+    "source_name": "EnumBodyCommitted",
+    "summary": "Commit one nonempty Enum case vector and exactly one comma or layout body mode before nominal identity; product parser/checker NOT_RUN.",
+    "input_descriptor": "EnumMatchBoundaryDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/enum-match-boundary-decision-v1.schema.json",
+    "descriptor_axes": [
+      "domain",
+      "input",
+      "decision",
+      "diagnostic_or_null",
+      "ast_residue_count"
+    ],
+    "rule_facets": [
+      "nonempty_case_vector",
+      "comma_mode",
+      "layout_mode",
+      "case_before_member",
+      "no_empty_enum_inference"
+    ],
+    "feature_refs": [
+      "enum_bare_case_declaration_canonical"
+    ],
+    "diagnostic_refs": [
+      "ENUM_BODY_REQUIRES_CASE",
+      "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+      "ENUM_CASE_SEPARATOR_MIXED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "commit(EnumBodyMode, NonEmptyVector<EnumCase>) | reject(diagnostic_id)",
+    "requires": [
+      "the first Enum body item is one bare Enum case",
+      "a comma after the first case commits to at least two same-line cases and no members",
+      "layout mode contains at least one case followed only by admitted Enum members",
+      "separator mixing and empty/member-first bodies create no nominal or witness residue"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/enum-match-boundary-v1.json",
+    "formal_judgment_id": "J-EnumBodyCommitted",
+    "algorithm_owner": "enum_body_parser_context_before_nominal_identity",
+    "preconditions": [
+      "Enum introducer and owner name are committed",
+      "lossless token boundaries are available"
+    ],
+    "normalization": "preserve separators in CST; seal one body mode and a nonempty ordered case vector in AST",
+    "decision_procedure": [
+      "reject close-brace or a member starter before the first case",
+      "parse one case and inspect the next structural boundary",
+      "commit comma mode on comma and require a second case",
+      "otherwise commit layout mode on END or close after the single case",
+      "reject any later cross-mode separator before AST emission"
+    ],
+    "termination_metric": "one finite body span and one monotone case/member phase transition",
+    "success_result": "EnumBodyCommitmentFact",
+    "active_primary_diagnostic": "ENUM_BODY_REQUIRES_CASE",
+    "secondary_diagnostics": [
+      "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+      "ENUM_CASE_SEPARATOR_MIXED"
+    ],
+    "positive_fixture_ids": [
+      "PF-EnumBodyCommitted-POS",
+      "PF-EnumBodyCommitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-EnumBodyCommitted-NEG-EMPTY",
+      "PF-EnumBodyCommitted-NEG-COMMA"
+    ],
+    "evaluation_order": "first item -> first case -> mode marker -> remaining cases -> members -> AST seal",
+    "dependency_predicates": [],
+    "diagnostic_dispatch": {
+      "NO_FIRST_CASE": "ENUM_BODY_REQUIRES_CASE",
+      "COMMA_WITHOUT_SECOND_CASE": "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+      "MIXED_SEPARATOR": "ENUM_CASE_SEPARATOR_MIXED"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "MatchFallbackAdmitted",
+    "source_name": "MatchFallbackAdmitted",
+    "summary": "Admit at most one final unguarded otherwise arm and reject a guarded fallback before AST emission; product parser/checker NOT_RUN.",
+    "input_descriptor": "EnumMatchBoundaryDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/enum-match-boundary-decision-v1.schema.json",
+    "descriptor_axes": [
+      "domain",
+      "input",
+      "decision",
+      "diagnostic_or_null",
+      "ast_residue_count"
+    ],
+    "rule_facets": [
+      "separate_arm_owner",
+      "no_guard_slot",
+      "unique_fallback",
+      "final_fallback",
+      "exact_residual"
+    ],
+    "feature_refs": [
+      "match_otherwise_default_arm",
+      "match_exhaustiveness_phase_a"
+    ],
+    "diagnostic_refs": [
+      "OTHERWISE_GUARD_FORBIDDEN",
+      "OTHERWISE_DUPLICATE_CLAUSE",
+      "OTHERWISE_MUST_BE_LAST"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "commit(PatternMatchArm | OtherwiseMatchArm) | reject(diagnostic_id)",
+    "requires": [
+      "otherwise has no Guard child or AST field",
+      "otherwise occurs at most once and is final",
+      "otherwise covers only the exact nonempty residual",
+      "no wildcard alias or implicit fallback is synthesized"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/enum-match-boundary-v1.json",
+    "formal_judgment_id": "J-MatchFallbackAdmitted",
+    "algorithm_owner": "match_arm_surface_then_exhaustiveness_checker",
+    "preconditions": [
+      "the match subject is fixed",
+      "arm separators and head tokens are lossless"
+    ],
+    "normalization": "retain PatternMatchArm(optional guard) or OtherwiseMatchArm(no guard) as disjoint AST variants",
+    "decision_procedure": [
+      "reject a guard token after otherwise before arm AST construction",
+      "reject a second otherwise",
+      "reject any arm after otherwise",
+      "delegate residual usefulness and exhaustiveness to MatchExhaustive"
+    ],
+    "termination_metric": "one finite source-ordered arm vector",
+    "success_result": "MatchFallbackFact",
+    "active_primary_diagnostic": "OTHERWISE_GUARD_FORBIDDEN",
+    "secondary_diagnostics": [
+      "OTHERWISE_DUPLICATE_CLAUSE",
+      "OTHERWISE_MUST_BE_LAST"
+    ],
+    "positive_fixture_ids": [
+      "PF-MatchFallbackAdmitted-POS",
+      "PF-MatchFallbackAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-MatchFallbackAdmitted-NEG-GUARD",
+      "PF-MatchFallbackAdmitted-NEG-ORDER"
+    ],
+    "evaluation_order": "arm head shape -> guard exclusion -> uniqueness -> finality -> usefulness/exhaustiveness",
+    "dependency_predicates": [
+      "MatchExhaustive"
+    ],
+    "diagnostic_dispatch": {
+      "GUARDED_OTHERWISE": "OTHERWISE_GUARD_FORBIDDEN",
+      "DUPLICATE_OTHERWISE": "OTHERWISE_DUPLICATE_CLAUSE",
+      "NONFINAL_OTHERWISE": "OTHERWISE_MUST_BE_LAST"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  }
+]

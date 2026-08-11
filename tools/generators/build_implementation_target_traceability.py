@@ -67,6 +67,17 @@ EXCLUDED_CURRENT_FEATURE_REASONS = {
     }
 }
 TARGET_ADDITIONS = DEPENDENCY_ADDITIONS | NEGATIVE_COMPATIBILITY_ADDITIONS
+# These rows own parser/checker boundaries only. Their R89 contract artifacts
+# make the static trace explicit but intentionally add no distinct MIR/runtime
+# behavior; preserve the predecessor dynamic-stage non-applicability instead of
+# treating the mere presence of a contract path as a runtime gap.
+STATIC_ONLY_DYNAMIC_NA_FEATURES = {
+    "source_role_contract",
+    "member_visibility_sigil_surface_phase_a",
+    "enum_bare_case_declaration_canonical",
+    "match_otherwise_default_arm",
+    "match_exhaustiveness_phase_a",
+}
 STAGES = [
     "SOURCE_GRAMMAR",
     "AST_FRONTEND",
@@ -362,14 +373,7 @@ def main() -> None:
         value = apply_overlay(feature_id, "STATIC_SEMANTICS", None, value)
         stages.append({"stage": "STATIC_SEMANTICS", **value})
 
-        if feature_id == "source_role_contract":
-            value = not_applicable(
-                "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
-                "MIR_RUNTIME_AUTHORITY",
-                [feature_ref, primary_ref],
-                "The catalog class is lexical/syntactic and binds no runtime artifact.",
-            )
-        elif feature_id == "member_visibility_sigil_surface_phase_a":
+        if feature_id in STATIC_ONLY_DYNAMIC_NA_FEATURES:
             value = not_applicable(
                 "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
                 "MIR_RUNTIME_AUTHORITY",

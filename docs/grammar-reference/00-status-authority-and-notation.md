@@ -83,8 +83,8 @@ DPG는 다음 책임을 의도적으로 프런트엔드 모델에 위임한다.
 
 | 항목 | 수 | 역할 |
 |---|---:|---|
-| DPG rule family | 280 | 공유 handwritten parser routine의 구조 단위 |
-| context-specialized clause | 301 | source role·owner·parse mode별 명시적 진입 조항 |
+| DPG rule family | 282 | 공유 handwritten parser routine의 구조 단위 |
+| context-specialized clause | 303 | source role·owner·parse mode별 명시적 진입 조항 |
 | legacy EBNF surface census | 656 | R77 표면의 CST/AST 책임을 대조하는 비권위 차등 입력 |
 
 차등 validator는 656개 census row가 모두 disposition registry에 남고,

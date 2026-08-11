@@ -3,6 +3,27 @@
 <!-- deeplus-reference: narrative; authority: documentation-projection -->
 <!-- deeplus-grammar-reference-status: CURRENT_CANONICAL_DOCUMENTATION_PROJECTION -->
 
+## `otherwise`는 guard 없는 최종 fallback이다
+
+pattern arm에는 guard를 붙일 수 있지만 `otherwise`는 pattern이 아니다.
+`otherwise => body`는 남은 partition 전체를 받는 별도 arm owner이며 guard
+field가 없다. 한 match에 최대 한 번, 마지막에만 쓴다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-match-boundary-v1.json -->
+```deeplus
+public def describe(value: Option<Int>) -> String = {
+    return @match value {
+        ::some(number) if number > 0 => "positive"
+        ::some(_) => "non-positive"
+        otherwise => "missing"
+    }
+}
+```
+
+`otherwise if ready => ...`는 guard가 false일 때의 residual 의미를 다시
+만들기 때문에 허용하지 않는다. 조건부 동작이 필요하면 명시적인 pattern
+arm에 guard를 두고, 마지막 `otherwise`를 별도로 둔다.
+
 ## 상태
 
 Pattern은 `match`에만 붙는 보조 문법이 아니다. Deeplus에서는 지역

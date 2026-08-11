@@ -18,6 +18,31 @@ measure/unit 표면을 설명한다.
 | measure literal, 단위 곱/몫/거듭제곱, exact-ratio catalog | `CURRENT` |
 | dynamic/calendar/market conversion | 명시적 `STDLIB_PROFILE`/provider만 |
 | Enum declaration-order `Ord`, case display mapping, exact-variant subset alias | `STABLE_DESIGN`, 제품 실행 `NOT_RUN` |
+
+### Enum body는 하나 이상의 case로 시작한다
+
+현행 Enum은 비어 있지 않은 nominal sum이다. 따라서 `{}`는 유효한 Enum
+선언이 아니며, body의 첫 항목을 메서드나 type-side member로 시작할 수도
+없다. 최소 한 case가 먼저 와야 한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-match-boundary-v1.json -->
+```deeplus
+public enum Result {
+    ok(value: Int)
+    error(message: String)
+
+    +def isOk(self) -> Bool = {
+        return @match self {
+            ::ok(_) => true
+            otherwise => false
+        }
+    }
+}
+```
+
+쉼표 mode는 같은 물리 행의 case-only 목록이며 최소 두 case가 필요하다.
+layout mode는 하나 이상의 case 뒤에 허용된 member를 둔다. 빈 Enum이나
+member-only Enum은 AST/HIR identity를 만들기 전에 거부된다.
 | successor uniform-within-case payload와 final-dot-only Enum member | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | raw/ABI profile, external residual spelling, A3, empty Enum | `PREVIEW_DESIGN_NONACTIVATABLE` 또는 deferred |
 | 제품 parser/checker/MIR/runtime/formatter/LSP | `NOT_RUN` |

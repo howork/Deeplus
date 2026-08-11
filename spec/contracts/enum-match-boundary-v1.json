@@ -1,0 +1,87 @@
+{
+  "$schema": "../../schemas/language/enum-match-boundary-v1.schema.json",
+  "schema": "deeplus.enum-match-boundary/v1",
+  "gap_id": "IR-PARSE-P1-059",
+  "status": "LOCAL_DESIGN_CANDIDATE_NOT_CANONICAL",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "commit": "10e64f492f0529610673846139afcf0d95175663"
+  },
+  "enum_body": {
+    "identity": "EnumBodyCommitmentV1",
+    "minimum_case_count": 1,
+    "first_item": "EnumCase",
+    "empty_body": "REJECT_ENUM_BODY_REQUIRES_CASE",
+    "member_first_body": "REJECT_ENUM_BODY_REQUIRES_CASE",
+    "modes": {
+      "COMMA_CASES": {
+        "commit_marker": "COMMA_AFTER_FIRST_CASE",
+        "minimum_case_count": 2,
+        "same_physical_line": true,
+        "optional_trailing_comma_count": 1,
+        "member_count": 0
+      },
+      "LAYOUT_CASES_THEN_MEMBERS": {
+        "commit_markers": ["END_AFTER_CASE", "CLOSE_AFTER_SINGLE_CASE"],
+        "minimum_case_count": 1,
+        "case_member_order": "ALL_CASES_BEFORE_MEMBERS",
+        "admitted_member_set": "MemberSeq<enum>"
+      }
+    },
+    "mixed_separator_count": 0,
+    "empty_enum_profile": "NOT_CURRENT",
+    "uninhabited_nominal_inference": false
+  },
+  "match_fallback": {
+    "identity": "MatchFallbackBoundaryV1",
+    "pattern_arm": "(BoundedBinder | Pattern) [Guard] => MatchArmBody",
+    "fallback_arm": "otherwise => MatchArmBody",
+    "fallback_guard_field": "ABSENT",
+    "maximum_fallback_count": 1,
+    "fallback_must_be_final": true,
+    "wildcard_fallback_alias_count": 0,
+    "guarded_fallback_ast_count": 0,
+    "guarded_pattern_arm_subtracts_coverage": false,
+    "unguarded_pattern_arm_subtracts_coverage": true,
+    "otherwise_covers": "EXACT_NONEMPTY_RESIDUAL",
+    "implicit_fallback_count": 0
+  },
+  "diagnostic_precedence": [
+    "ENUM_BODY_REQUIRES_CASE",
+    "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+    "ENUM_CASE_SEPARATOR_MIXED",
+    "OTHERWISE_GUARD_FORBIDDEN",
+    "OTHERWISE_DUPLICATE_CLAUSE",
+    "OTHERWISE_MUST_BE_LAST",
+    "OTHERWISE_UNREACHABLE",
+    "MATCH_NOT_EXHAUSTIVE"
+  ],
+  "frontend_fence": {
+    "lossless_enum_cst": "EnumBodyCst(mode, nonempty case vector, members, separators)",
+    "normalized_enum_ast": "EnumDecl(cases: NonEmptyVector<EnumCase>, members)",
+    "lossless_match_cst": "PatternMatchArmCst | OtherwiseMatchArmCst",
+    "normalized_match_ast": "PatternMatchArm(pattern, optional_guard, body) | OtherwiseMatchArm(body)",
+    "otherwise_guard_slot_count": 0,
+    "rejected_ast_count": 0,
+    "rejected_hir_count": 0,
+    "rejected_mir_count": 0,
+    "runtime_commitment_operation_count": 0
+  },
+  "validation": {
+    "fixture": "tests/fixtures/current/enum-match-boundary-v1.json",
+    "fixture_schema": "schemas/language/enum-match-boundary-fixtures-v1.schema.json",
+    "normal_count": 5,
+    "boundary_count": 5,
+    "reject_count": 6,
+    "mutation_count": 9
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "new_feature_p1": 0,
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_parser_checker_tooling": "NOT_RUN",
+    "github_mutation": "NOT_PERFORMED"
+  }
+}

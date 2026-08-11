@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/enum-match-boundary-decision-v1.schema.json",
+  "title": "EnumMatchBoundaryDecisionV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["domain", "input", "decision", "diagnostic_or_null", "ast_residue_count"],
+  "properties": {
+    "domain": {"enum": ["ENUM_BODY", "MATCH_FALLBACK"]},
+    "input": {"type": "string", "minLength": 1},
+    "decision": {"enum": ["ADMIT", "REJECT"]},
+    "diagnostic_or_null": {"type": ["string", "null"]},
+    "ast_residue_count": {"type": "integer", "minimum": 0, "maximum": 1}
+  }
+}
