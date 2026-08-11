@@ -2607,7 +2607,8 @@
         },
         "sender_id": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "x-deeplus-semantic-domain": "SenderIdV1"
         },
         "channel_id": {
           "type": "string",
@@ -2720,7 +2721,8 @@
         },
         "sender_id": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "x-deeplus-semantic-domain": "SenderIdV1"
         },
         "channel_id": {
           "type": "string",
@@ -3803,7 +3805,8 @@
             "string",
             "null"
           ],
-          "minLength": 1
+          "minLength": 1,
+          "x-deeplus-semantic-domain": "SenderIdV1"
         },
         "mailbox_id": {
           "type": [
@@ -5102,6 +5105,7 @@
     "concur_run_failure_order": "at one ConcurId aggregation barrier, a body failure remains primary; otherwise the minimum lexical spawn_index child Run failure is primary, sibling failures are suppressed in ascending spawn_index, and cleanup failures follow in actual LIFO execution order",
     "concur_run_order_non_evidence": "scheduler completion order and source-file enumeration order are never failure-order evidence; the fixture registry includes two ConcurRunId children that complete in reverse spawn order and a rejection case that incorrectly chooses the first completion",
     "actor_fifo": "actor_enqueue is an admitted ownership-commit event and assigns its non-null channel_sequence at that commit; the sequence is FIFO within the key sender_id, receiver_id, mailbox_profile_id, channel_id, and no cross-channel global order is promised",
+    "actor_sender_identity": "sender_id is the exact tagged SenderIdV1 value Actor(ActorInstanceId) while actor-turn authority is active or Execution(ExecutionId) otherwise; suspension preserves it, restart and structured child spawn replace the underlying origin identity, queued residue may outlive the origin without authority, and send-time allocation, lookup, address/thread inference, serialization identity and untagged collision are forbidden",
     "actor_transfer": "receiver/capacity rejection is actor_lifecycle admission_rejected before allocation; managed storage failure is allocation_rejected with AllocationError/allocate, null message/sequence/reply/correlation and sender_retained; a successful actor_enqueue publishes only an all_ready precommit allocation plan with exactly one ownership commit and zero postcommit allocation",
     "actor_reply": "one correlation_id has exactly one terminal reply, declared failure, or cancellation outcome",
     "actor_request_reply_responsibility": "an actor_lifecycle enqueue_committed event with non-null correlation_id requires actor_request_reply_responsibilities; descriptor (reply_id, correlation_id) pairs form a one-to-one set with distinct admitted-request correlation_id values in the record, while a record without such an admitted request has zero actor-request descriptors; every descriptor has result_type, normalized_handler_error_set, cancellation_axis, isolation_owner, reply_id, correlation_id, and terminal_transport_failure={receiverClosedBeforeReply}; structured spawn yields owner-bound Run<T> without actor transport residue, while actor request admission yields Reply<T>; await exposes normalize(normalized_handler_error_set | ActorMessageError::receiverClosedBeforeReply), while mailboxFull and receiverClosedBeforeAdmission remain admission Result errors and are forbidden in the descriptor",

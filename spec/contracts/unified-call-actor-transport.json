@@ -114,7 +114,10 @@
     "canonical_hir_trailing_closure_array_count": 0,
     "current_mode_target_pair_count": 10,
     "actor_transport_allocation_plan_count": 1,
-    "actor_transport_postcommit_allocation_count": 0
+    "actor_transport_postcommit_allocation_count": 0,
+    "actor_sender_identity_plan_count": 1,
+    "actor_sender_identity_variant_count": 2,
+    "actor_sender_identity_send_time_allocation_count": 0
   },
   "canonical_hir_projection": {
     "schema": "deeplus.canonical-hir-h1/r1",
@@ -143,6 +146,14 @@
       "MESSAGE::RESERVED_OPERATION",
       "ACTOR_MESSAGE::ACTOR_TRANSPORT"
     ],
-    "valid_mode_target_pair_count": 10
+    "valid_mode_target_pair_count": 10,
+    "actor_sender_identity": {
+      "plan": "ActorSenderIdentityPlanV1",
+      "plan_id_field": "sender_identity_plan_id",
+      "runtime_domain": ["Actor(ActorInstanceId)", "Execution(ExecutionId)"],
+      "selection": "active actor turn, otherwise current execution",
+      "send_time_identity_allocation_count": 0,
+      "runtime_search_count": 0
+    }
   }
 }

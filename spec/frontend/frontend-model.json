@@ -4500,12 +4500,14 @@
       "ActorProtocolConformanceId",
       "ActorProtocolRequirementId",
       "ActorProtocolBindingId",
-      "ActorProtocolBindingTableId"
+      "ActorProtocolBindingTableId",
+      "ActorSenderIdentityPlanId"
     ],
     "mir_runtime_only_identities": [
       "ActorInstanceId",
       "ActorRuntimeRootOwnerId",
       "ActorTurnId",
+      "SenderId",
       "DefectId"
     ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
@@ -4632,6 +4634,18 @@
         "MailboxProfileId"
       ],
       "successful_channel_sequence": "strictly_increasing_per_fifo_key"
+    },
+    "sender_identity_contract": {
+      "contract": "spec/contracts/actor-sender-identity-v1.json",
+      "hir_plan": "ActorSenderIdentityPlanV1",
+      "sender_variants": ["Actor(ActorInstanceId)", "Execution(ExecutionId)"],
+      "selection_precedence": ["ACTIVE_ACTOR_TURN_USES_ACTOR_INSTANCE", "OTHERWISE_CURRENT_EXECUTION"],
+      "structured_child_inherits_actor_turn": false,
+      "suspend_resume_preserves_identity": true,
+      "restart_or_child_spawn_reuses_identity": false,
+      "send_time_identity_allocation_count": 0,
+      "runtime_search_count": 0,
+      "source_constructor_count": 0
     },
     "cancellation_phase_split": {
       "before_commit": "abort, sender retains owners, no channel_sequence, Cancellation is not ActorMessageError",

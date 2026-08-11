@@ -24,6 +24,7 @@
 | `ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN` | `checker` | `error` | `active` | A one-way send/on operation cannot declare a recoverable ErrorSet; use request returning Unit for an acknowledged fallible command. |
 | `ACTOR_PROTOCOL_SIGNATURE_MISMATCH` | `checker` | `error` | `active` | The Actor protocol implementation is incompatible with the requirement's normalized channels, result, ErrorSet, or EffectRow. |
 | `ACTOR_PROTOCOL_TARGET_KIND_MISMATCH` | `checker` | `error` | `active` | An Actor protocol conformance target must resolve to an Actor Protocol. |
+| `ACTOR_SENDER_CONTEXT_UNAVAILABLE` | `checker` | `error` | `active` | Actor transport requires one exact current actor-incarnation or execution sender context. |
 | `ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE` | `checker` | `error` | `active` | Actor transport uses :~; ~ is the ordinary message-call mode. |
 | `ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED` | `checker` | `error` | `active` | Actor transport requires the independent \`AllocationError\` and \`allocate\` responsibility. |
 | `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER` | `parser` | `error` | `active` | An actor :~ admission result cannot be silently discarded by defer. |
@@ -668,6 +669,7 @@
 | `MEMBER_NOT_FOUND` | `checker` | `error` | `active` | No member, extension, or witness selector is available in the active lookup domain. |
 | `MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING` | `checker` | `error` | `active` | The omitted member visibility requires a resolution anchor that was not bound. |
 | `MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID` | `checker` | `error` | `active` | The member visibility omission is not admitted for this declaration owner and parent context. |
+| `MIR_ACTOR_SENDER_IDENTITY_INVALID` | `verifier` | `error` | `active` | Verified actor transport contains an invalid sender identity origin, tag, or lifetime transition. |
 | `MIR_LOAN_UNBALANCED` | `checker` | `error` | `active` | A MIR loan activation is not closed exactly once on every reachable path. |
 | `MISSING_EXPLICIT_RETURN` | `checker` | `error` | `active` | A normal non-Unit named-function path must return a value explicitly; Unit fallthrough is canonical. |
 | `MIXED_STRICT_AND_SEQUENTIAL_BOOLEAN_REQUIRES_PARENTHESES` | `parser` | `error` | `active` | Mixing \`and\` with \`and then\` requires parentheses. |
@@ -1322,6 +1324,7 @@
 | 술어 ID | 원천 이름 | 요약 | 증거 |
 |---|---|---|---|
 | `ActorProtocolGateAdmitted` | Actor Protocol direct conformance | Admit one explicit direct Actor-to-ActorProtocol relation and bind every exact requirement origin to exactly one compatible block-local on/request implementation without structural or order-based fallback. | `DESIGN_STATIC_NOT_RUN` |
+| `ActorSenderIdentityAdmitted` | ActorSenderIdentityAdmitted | Seal one tagged SenderId from the current actor incarnation or execution, with deterministic suspension, child-spawn, restart and queued-message lifetime laws; product checker/MIR/runtime NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ActorTransportAllocationAdmitted` | ActorTransportAllocationAdmitted | Seal one precommit actor transport allocation transaction with AllocationError/allocate responsibility and zero postcommit allocation; product checker/MIR/runtime NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AllNamedArgumentLayoutOnlyAllNamed` | AllNamedArgumentLayoutOnlyAllNamed | the layout has at least two arguments; every argument is named or named-unfold; no positional, context, or witness argument occurs | `DESIGN_STATIC_NOT_RUN` |
 | `ApiContractDigestProjection` | ApiContractDigestProjection | Project normalized public type and responsibility data into a deterministic API digest. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |

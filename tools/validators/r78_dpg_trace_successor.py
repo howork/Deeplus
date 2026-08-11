@@ -9,7 +9,7 @@ from typing import Any
 REVISION = "r78-dpg-implementation-target-traceability-closure-r1"
 CANONICAL_BASELINE = "10e64f492f0529610673846139afcf0d95175663"
 LOCAL_PREDECESSOR = "7d4e6c48b9374bec34a60b970530174dd9b4e145"
-COUNTS = (3712, 4, 505, 0)
+COUNTS = (3713, 4, 504, 0)
 # R83 adds the exact OrdinaryCallSelectionV1 evidence locators.  The R84
 # RefinementR0V1 closure, R85 member-visibility omission closure, R86
 # strong-comparison coherence closure, R87 Trait auto-policy registry closure,
@@ -19,7 +19,7 @@ COUNTS = (3712, 4, 505, 0)
 # target-cell partition. Historical validators
 # import this successor count only after first validating the complete current
 # trace through is_successor().
-EVIDENCE_COUNT = 4544
+EVIDENCE_COUNT = 4555
 GITHUB_PUBLICATION = "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR"
 
 

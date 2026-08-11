@@ -13,6 +13,7 @@ mailbox와 request responsibility의 current static contract를 설명한다.
 - enqueue precommit failure와 postcommit reply failure를 나눈다.
 - one-way와 request expression의 정확한 Result shape을 읽는다.
 - actor crossing의 ownership/isolation 조건을 적용한다.
+- actor incarnation과 task execution의 `SenderId` lifetime을 구분한다.
 
 ## 3. 선수 지식
 
@@ -40,6 +41,9 @@ retry safety를 판단할 수 없다.
 - each successful request creates one non-forgeable `ReplyId` and one request
   correlation identity; module API records only their
   `per_value_non_forgeable` policy markers.
+- sender key는 `Actor(ActorInstanceId)` 또는 `Execution(ExecutionId)`의
+  태그된 내부 identity다. actor suspend/resume은 같은 key를 유지하고,
+  actor restart와 structured child spawn은 새 key를 만든다.
 
 Cancellation은 이 family에 들어가지 않는다.
 
@@ -113,6 +117,12 @@ sender가 moved owner를 유지한다. admission 성공 순간 enqueue commit과
 mailbox sequence가 생기고 owner가 이동한다. request라면 같은 commit에서
 reply correlation과 `Reply<T>` 책임이 생기며, 이후 handler Error와
 `receiverClosedBeforeReply`는 reply terminal에서 관찰한다.
+
+send가 `SenderId`를 새로 할당하는 것은 아니다. actor turn 안에서는 이미
+존재하는 `ActorInstanceId`, 일반/root/child execution에서는 이미 존재하는
+`ExecutionId`를 `ActorSenderIdentityPlanV1`이 선택한다. actor handler가
+spawn한 child는 lexical 위치와 무관하게 actor-turn authority를 상속하지
+않으므로 child의 execution sender를 사용한다.
 
 | 단계 | one-way 관찰 | request 관찰 |
 |---|---|---|

@@ -318,7 +318,7 @@ def main(root: Path = ROOT) -> None:
         in (
             [f"ACC-R{i:03d}" for i in range(1, 20)],
             [f"ACC-R{i:03d}" for i in range(1, 21)],
-            [f"ACC-R{i:03d}" for i in range(1, 22)],
+            [f"ACC-R{i:03d}" for i in range(1, 23)],
         ),
         "actor rule set must be an exact contiguous supported revision",
     )

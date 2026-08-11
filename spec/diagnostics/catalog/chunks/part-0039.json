@@ -1,0 +1,58 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ACTOR_SENDER_CONTEXT_UNAVAILABLE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "actor_mailbox_capacity",
+      "actor_minimum_lifecycle_r1"
+    ],
+    "fixit_hint": "evaluate the actor operation in an admitted actor turn or execution context",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "Do not substitute ActorId, ActorTurnId, a thread/address value, or a per-send identity.",
+    "message": "Actor transport requires one exact current actor-incarnation or execution sender context.",
+    "notes": "The checker seals ActorSenderIdentityPlanV1; product checker execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/actor-sender-identity-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "MIR / RUNTIME",
+    "authority_set": [
+      "MIR",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MIR_ACTOR_SENDER_IDENTITY_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "actor_mailbox_capacity",
+      "actor_minimum_lifecycle_r1"
+    ],
+    "fixit_hint": "preserve the tagged SenderId projected from the current ActorInstanceId or ExecutionId",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "Never repair malformed MIR by inventing, hashing, truncating, reusing, or searching for a sender identity.",
+    "message": "Verified actor transport contains an invalid sender identity origin, tag, or lifetime transition.",
+    "notes": "Internal MIR/runtime invariant; product lowering and runtime execution remain NOT_RUN.",
+    "primary_source": "spec/contracts/actor-sender-identity-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  }
+]

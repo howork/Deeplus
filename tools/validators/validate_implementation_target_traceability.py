@@ -561,7 +561,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
             (2463, 3, 501, 1254),
             (2464, 3, 501, 1253),
             (2466, 3, 501, 1251),
-            (3712, 4, 505, 0),
+            (3713, 4, 504, 0),
             (direct, delegated, na, blocked),
         },
         "DERIVED_LEGACY_OR_CURRENT_COUNTS",
@@ -569,7 +569,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 469, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (3712, 4, 505, 0),
+        (direct, delegated, na, blocked) == (3713, 4, 504, 0),
             "R77_CURRENT_TARGET_REBIND_COUNTS",
     )
     governance = metadata.get("governance", {})

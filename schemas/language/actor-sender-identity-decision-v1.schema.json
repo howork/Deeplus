@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.invalid/schemas/actor-sender-identity-decision-v1.schema.json",
+  "title": "Actor Sender Identity Decision V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["context", "actor_turn_authority", "actor_instance_available", "execution_id_available", "phase", "proposed_sender_kind", "relation", "decision", "diagnostic_or_null", "send_time_identity_allocation_count"],
+  "properties": {
+    "context": {"enum": ["ACTOR_TURN", "EXECUTION", "STRUCTURED_CHILD_EXECUTION", "NO_EXECUTION_CONTEXT"]},
+    "actor_turn_authority": {"type": "boolean"},
+    "actor_instance_available": {"type": "boolean"},
+    "execution_id_available": {"type": "boolean"},
+    "phase": {"enum": ["INITIAL", "SUSPENDED", "RESUMED", "RESTARTED", "ORIGIN_TERMINATED_MESSAGE_QUEUED"]},
+    "proposed_sender_kind": {"enum": ["ACTOR_INSTANCE", "EXECUTION", "NONE", "STATIC_ACTOR_DECLARATION", "ACTOR_TURN", "PER_SEND", "UNTAGGED"]},
+    "relation": {"enum": ["INITIAL_BINDING", "SAME_AS_PRE_SUSPEND", "DISTINCT_FROM_PARENT", "DISTINCT_FROM_PRE_RESTART", "PRESERVED_IN_QUEUED_MESSAGE", "NOT_APPLICABLE"]},
+    "decision": {"enum": ["ADMIT_ACTOR", "ADMIT_EXECUTION", "PRESERVE_QUEUED", "REJECT_STATIC", "REJECT_MIR"]},
+    "diagnostic_or_null": {"type": ["string", "null"]},
+    "send_time_identity_allocation_count": {"type": "integer", "minimum": 0, "maximum": 1}
+  }
+}

@@ -439,6 +439,15 @@ handler spelling만으로 actor protocol conformance가 생기지 않는다.
 엄격하게 증가하고 그 순서로 dequeue된다. 거부된 시도에는 sequence가
 없다.
 
+여기서 sender identity는 내부 태그 합
+`SenderId = Actor(ActorInstanceId) | Execution(ExecutionId)`이다. actor turn
+권한이 활성화된 실행은 현재 actor incarnation을, 그 밖의 실행은 현재
+`ExecutionId`를 사용한다. suspend/resume은 같은 identity를 유지하지만,
+actor restart와 structured child spawn은 각각 새 instance/execution
+identity를 얻는다. queued message는 origin 종료 뒤에도 그 값을 보존하되
+authority를 보존하지 않는다. `ActorId`, `ActorTurnId`, thread/address 값과
+send마다 새로 만든 ID는 sender identity가 아니다.
+
 언어가 보장하는 최소 happens-before edge는 다음과 같다.
 
 - 한 execution 안의 program order;

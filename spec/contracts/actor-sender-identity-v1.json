@@ -1,0 +1,45 @@
+{
+  "$schema": "../../schemas/language/actor-sender-identity-v1.schema.json",
+  "schema": "deeplus.actor-sender-identity/r1",
+  "status": "LOCAL_STABLE_DESIGN_CANDIDATE_NOT_INTEGRATED",
+  "gap_id": "IR-ACTOR-P1-061",
+  "identity_domain": {
+    "name": "SenderId",
+    "variants": ["Actor(ActorInstanceId)", "Execution(ExecutionId)"],
+    "tagged_disjoint": true,
+    "source_constructor_count": 0,
+    "send_time_identity_allocation_count": 0,
+    "serialization_or_abi_identity": false,
+    "authority_grant": false
+  },
+  "selection": {
+    "plan": "ActorSenderIdentityPlanV1",
+    "precedence": ["ACTIVE_ACTOR_TURN_USES_ACTOR_INSTANCE", "OTHERWISE_CURRENT_EXECUTION"],
+    "actor_turn_required_for_actor_variant": true,
+    "structured_child_inherits_actor_turn": false,
+    "runtime_search_count": 0,
+    "source_order_winner_count": 0
+  },
+  "lifetime": {
+    "actor_suspend_resume": "PRESERVE_ACTOR_INSTANCE_SENDER",
+    "execution_suspend_resume": "PRESERVE_EXECUTION_SENDER",
+    "actor_restart": "NEW_ACTOR_INSTANCE_NEW_SENDER",
+    "structured_child": "NEW_EXECUTION_NEW_SENDER",
+    "queued_message_after_origin_termination": "PRESERVE_IMMUTABLE_SENDER_VALUE",
+    "identity_reuse_while_observable": false
+  },
+  "channel_binding": {
+    "key": ["SenderId", "ReceiverActorId", "MailboxProfileId"],
+    "channel_id_derivation": "INJECTIVE_FROM_EXACT_TAGGED_KEY",
+    "fifo_scope": "ONE_EXACT_CHANNEL_KEY",
+    "global_order": false,
+    "fairness": false
+  },
+  "no_go": ["STATIC_ACTOR_ID_AS_SENDER", "ACTOR_TURN_ID_AS_SENDER", "PER_SEND_IDENTITY", "THREAD_OR_ADDRESS_IDENTITY", "RESTART_IDENTITY_REUSE", "UNTAGGED_COLLISION", "SOURCE_CONSTRUCTION", "SERIALIZATION_OR_ABI_IDENTITY"],
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_mutation": "NOT_PERFORMED"
+  }
+}

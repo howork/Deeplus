@@ -866,6 +866,8 @@ Structured concurrency uses a separate nominal `Run<T>` responsibility. `concur 
 
 Before enqueue commit, all moved argument places remain live at the sender and a rejection allocates neither `MessageId` ownership nor `channel_sequence`. A successful commit consumes each moved sender place exactly once, installs exactly one actor-owned payload, and allocates the next strictly increasing sequence for the normalized `(SenderId, ReceiverActorId, MailboxProfileId)` key. Cancellation before commit aborts without transfer; cancellation after commit cannot restore the sender place or retract the message. Cancellation is a control axis and never a member of `ActorMessageError`.
 
+`ActorSenderIdentityAdmitted` seals the first component of that key. `SenderId` is a disjoint internal sum of `Actor(ActorInstanceId)` and `Execution(ExecutionId)`, never a source-constructible value. The actor variant is selected exactly when the current execution owns an active actor-turn authority; otherwise a current `ExecutionId` is required. Inline await preserves the current selection, structured spawn creates a distinct execution sender, actor suspension preserves its incarnation sender, and actor restart creates a distinct incarnation sender. The tagged identity is copied into committed transport residue and remains observable there after its origin terminates, without extending isolation or execution authority. No send operation allocates, hashes, truncates, serializes or re-derives this identity.
+
 `ScopeCancellationPlanAdmitted` is the closed admission judgment for `@scope`
 cancellation modifiers. The checker preserves the complete source modifier list
 and then applies this fixed precedence: duplicate modifier, same-scope

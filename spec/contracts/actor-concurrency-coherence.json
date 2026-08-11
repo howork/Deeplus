@@ -621,6 +621,24 @@
         "allocation_to_defect_count": 0,
         "product_support": "NOT_RUN"
       }
+    },
+    {
+      "rule_id": "ACC-R022",
+      "domain": "actor_sender_identity",
+      "title": "actor channel sender identity has one tagged origin and lifetime law",
+      "contract": {
+        "contract": "spec/contracts/actor-sender-identity-v1.json",
+        "sender_domain": ["Actor(ActorInstanceId)", "Execution(ExecutionId)"],
+        "selection_precedence": ["active actor turn uses ActorInstanceId", "otherwise current ExecutionId"],
+        "actor_suspend_resume": "same SenderId",
+        "execution_suspend_resume": "same SenderId",
+        "actor_restart": "new ActorInstanceId and SenderId",
+        "structured_child": "new ExecutionId and SenderId",
+        "queued_origin_termination": "preserve immutable SenderId without authority",
+        "send_time_identity_allocation_count": 0,
+        "runtime_sender_search_count": 0,
+        "product_support": "NOT_RUN"
+      }
     }
   ],
   "unclosed_product_gates": [
@@ -662,7 +680,7 @@
     }
   ],
   "machine_acceptance": {
-    "rule_count": 21,
+    "rule_count": 22,
     "rule_ids_unique": true,
     "gate_count": 6,
     "new_source_syntax_count": 4,
@@ -694,6 +712,10 @@
     "reply_responsibility_implicit_erasure_count": 0,
     "second_lexical_group_owner_count": 0,
     "rejected_attempt_channel_sequence_count": 0,
+    "sender_identity_variant_count": 2,
+    "sender_identity_send_time_allocation_count": 0,
+    "sender_identity_runtime_search_count": 0,
+    "sender_identity_source_constructor_count": 0,
     "closed_feature_p1_count": 0,
     "new_feature_p1_count": 0,
     "product_execution_receipt_count": 0,
