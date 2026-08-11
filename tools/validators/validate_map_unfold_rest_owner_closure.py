@@ -26,6 +26,7 @@ PATTERN_LOWERING_REL = "spec/patterns/pattern-lowering.json"
 HIR_REL = "schemas/language/canonical-hir-h1.schema.json"
 MIR_REL = "spec/mir/semantics.md"
 DECISION_REL = "decisions/language/Design_Deeplus_Map_Unfold_Rest_Owner_Closure_R1.md"
+GRAMMAR_REFERENCE_REL = "docs/grammar-reference/10-patterns-destructuring-and-matching.md"
 
 
 def load(path: Path) -> Any:
@@ -74,6 +75,7 @@ def validate(
     types = (root / TYPE_REL).read_text(encoding="utf-8")
     mir = (root / MIR_REL).read_text(encoding="utf-8")
     decision = (root / DECISION_REL).read_text(encoding="utf-8")
+    grammar_reference = (root / GRAMMAR_REFERENCE_REL).read_text(encoding="utf-8")
     diagnostics = {row.get("diagnostic_id"): row for row in chunk_rows(root, "spec/diagnostics/catalog/chunks/*.json")}
     features = {row.get("feature_id"): row for row in chunk_rows(root, "spec/features/catalog/chunks/*.json")}
 
@@ -144,6 +146,8 @@ def validate(
     require("owner-bounded `*base` unfolds" in language and "`*rest`/`*_`" in language, "G05", "LANGUAGE_CURRENT_SURFACES")
     require("#map{*base for ...}` is\nrejected" in language, "G05", "LANGUAGE_COMPREHENSION_FENCE")
     require("`*_` ignores and `*name` captures" in types, "G05", "TYPE_MAP_RESIDUAL")
+    require('MapRestPattern ::= "*" ("_" | Identifier)' in grammar_reference, "G05", "GRAMMAR_REFERENCE_MAP_REST_STAR")
+    require('MapRestPattern ::= ".." ("_" | Identifier)' not in grammar_reference, "G05", "GRAMMAR_REFERENCE_LEGACY_MAP_REST_ZERO")
     require(pattern_lowering.get("r77_pattern_surface_direction", {}).get("map_remainder_preserved") == "*name/*_", "G05", "PATTERN_LOWERING_SURFACE")
     kind_text = json.dumps(pattern_kinds, ensure_ascii=False)
     require("`*_` permits additional keys" in kind_text and "`*rest` captures the exact residual Map" in kind_text, "G05", "PATTERN_KIND_SURFACE")

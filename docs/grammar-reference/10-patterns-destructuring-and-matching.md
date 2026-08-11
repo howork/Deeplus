@@ -156,7 +156,7 @@ MapPattern ::= "#" "map" "{" MapPatternEntries? "}"
 MapPatternEntry ::= MapValueTarget ":" MapKeyPattern
                   | MapRestPattern
 MapKeyPattern ::= Literal | PinPattern
-MapRestPattern ::= ".." ("_" | Identifier)
+MapRestPattern ::= "*" ("_" | Identifier)
 ```
 
 Map도 exact-by-default지만 keyed orientation은 Record-family의 label-first
