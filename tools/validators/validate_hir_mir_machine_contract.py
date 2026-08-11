@@ -533,6 +533,7 @@ def check_schema_and_bindings(
         "rows",
         "status_fence",
         "actor_protocol_binding_contract",
+        "actor_transport_allocation_contract",
         "closure_capture_plan_lowering_contract",
         "deferred_call_plan_projection_contract",
         "type_header_cleanup_budget_projection_contract",

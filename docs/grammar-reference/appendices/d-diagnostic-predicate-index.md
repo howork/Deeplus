@@ -25,7 +25,9 @@
 | `ACTOR_PROTOCOL_SIGNATURE_MISMATCH` | `checker` | `error` | `active` | The Actor protocol implementation is incompatible with the requirement's normalized channels, result, ErrorSet, or EffectRow. |
 | `ACTOR_PROTOCOL_TARGET_KIND_MISMATCH` | `checker` | `error` | `active` | An Actor protocol conformance target must resolve to an Actor Protocol. |
 | `ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE` | `checker` | `error` | `active` | Actor transport uses :~; ~ is the ordinary message-call mode. |
+| `ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED` | `checker` | `error` | `active` | Actor transport requires the independent \`AllocationError\` and \`allocate\` responsibility. |
 | `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER` | `parser` | `error` | `active` | An actor :~ admission result cannot be silently discarded by defer. |
+| `ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN` | `verifier` | `error` | `active` | Verified actor transport may not allocate required admission storage after enqueue commit. |
 | `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` | `checker` | `error` | `active` | An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress. |
 | `AFFINE_UNIT_NOT_IN_PHASE_A` | `checker` | `error` | `active` | Affine units such as degrees Celsius are not part of the current profile measure profile. |
 | `ALIASABLE_REJECTS_LIFECYCLE_OWNER` | `checker` | `error` | `active` | Aliasable is removed and lifecycle owners cannot be hidden behind alias vocabulary. |
@@ -1320,6 +1322,7 @@
 | 술어 ID | 원천 이름 | 요약 | 증거 |
 |---|---|---|---|
 | `ActorProtocolGateAdmitted` | Actor Protocol direct conformance | Admit one explicit direct Actor-to-ActorProtocol relation and bind every exact requirement origin to exactly one compatible block-local on/request implementation without structural or order-based fallback. | `DESIGN_STATIC_NOT_RUN` |
+| `ActorTransportAllocationAdmitted` | ActorTransportAllocationAdmitted | Seal one precommit actor transport allocation transaction with AllocationError/allocate responsibility and zero postcommit allocation; product checker/MIR/runtime NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AllNamedArgumentLayoutOnlyAllNamed` | AllNamedArgumentLayoutOnlyAllNamed | the layout has at least two arguments; every argument is named or named-unfold; no positional, context, or witness argument occurs | `DESIGN_STATIC_NOT_RUN` |
 | `ApiContractDigestProjection` | ApiContractDigestProjection | Project normalized public type and responsibility data into a deterministic API digest. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AsQueryReturnsOption` | AsQueryReturnsOption | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |

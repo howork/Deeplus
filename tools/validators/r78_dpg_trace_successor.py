@@ -19,7 +19,7 @@ COUNTS = (3712, 4, 505, 0)
 # target-cell partition. Historical validators
 # import this successor count only after first validating the complete current
 # trace through is_successor().
-EVIDENCE_COUNT = 4529
+EVIDENCE_COUNT = 4544
 GITHUB_PUBLICATION = "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR"
 
 

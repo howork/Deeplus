@@ -3719,6 +3719,12 @@
         "supervisor_id",
         "root_owner_id",
         "message_id",
+        "transport_attempt_id",
+        "allocation_stage",
+        "allocation_error",
+        "allocation_effect",
+        "allocation_reservation_count",
+        "postcommit_allocation_count",
         "phase",
         "outcome",
         "lifecycle_policy",
@@ -3909,6 +3915,27 @@
           ],
           "minLength": 1
         },
+        "transport_attempt_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "allocation_stage": {
+          "enum": ["not_applicable", "not_started", "envelope_storage", "mailbox_storage", "request_responsibility_storage", "all_ready"]
+        },
+        "allocation_error": {
+          "enum": [null, "AllocationError"]
+        },
+        "allocation_effect": {
+          "enum": ["not_applicable", "allocate"]
+        },
+        "allocation_reservation_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "postcommit_allocation_count": {
+          "const": 0
+        },
         "phase": {
           "enum": [
             "create_prepare",
@@ -3919,6 +3946,7 @@
             "initialized_resource_cleaned",
             "prepare_send",
             "admission_rejected",
+            "allocation_rejected",
             "enqueue_committed",
             "dequeue",
             "turn_start",
@@ -3946,6 +3974,7 @@
             "capacity_rejected",
             "receiver_closed",
             "protocol_rejected",
+            "allocation_error",
             "error",
             "defect",
             "cancelled"
@@ -3954,6 +3983,7 @@
         "lifecycle_policy": {
           "enum": [
             "TRANSPORT_ONLY_V1",
+            "TRANSPORT_ALLOCATION_V1",
             "CREATE_FAIL_CLOSED_V1",
             "DRAIN_ALL_COMMITTED_V1",
             "STOP_AND_FAIL_PENDING_V1"
@@ -4143,7 +4173,64 @@
               },
               "state_region_authority": {
                 "const": "not_applicable"
+              },
+              "allocation_stage": {
+                "const": "not_started"
+              },
+              "allocation_error": {
+                "type": "null"
+              },
+              "allocation_effect": {
+                "const": "allocate"
+              },
+              "allocation_reservation_count": {
+                "const": 0
               }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "allocation_rejected"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "receiver_id": {"type": "string", "minLength": 1},
+              "sender_id": {"type": "string", "minLength": 1},
+              "mailbox_id": {"type": "string", "minLength": 1},
+              "channel_id": {"type": "string", "minLength": 1},
+              "mailbox_profile_id": {"type": "string", "minLength": 1},
+              "transport_attempt_id": {"type": "string", "minLength": 1},
+              "channel_sequence": {"type": "null"},
+              "message_id": {"type": "null"},
+              "correlation_id": {"type": "null"},
+              "reply_id": {"type": "null"},
+              "outcome": {"const": "allocation_error"},
+              "lifecycle_policy": {"const": "TRANSPORT_ALLOCATION_V1"},
+              "capacity_outcome": {"const": "not_applicable"},
+              "ownership_commit_state": {"const": "precommit"},
+              "ownership_commit_count": {"const": 0},
+              "transfer_disposition": {"const": "sender_retained"},
+              "allocation_stage": {"enum": ["envelope_storage", "mailbox_storage", "request_responsibility_storage"]},
+              "allocation_error": {"const": "AllocationError"},
+              "allocation_effect": {"const": "allocate"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"phase": {"const": "enqueue_committed"}},
+            "required": ["phase"]
+          },
+          "then": {
+            "properties": {
+              "transport_attempt_id": {"type": "string", "minLength": 1},
+              "allocation_stage": {"const": "all_ready"},
+              "allocation_error": {"type": "null"},
+              "allocation_effect": {"const": "allocate"},
+              "allocation_reservation_count": {"type": "integer", "minimum": 1, "maximum": 3},
+              "postcommit_allocation_count": {"const": 0}
             }
           }
         },
@@ -4904,6 +4991,12 @@
         "supervisor_id",
         "root_owner_id",
         "message_id",
+        "transport_attempt_id",
+        "allocation_stage",
+        "allocation_error",
+        "allocation_effect",
+        "allocation_reservation_count",
+        "postcommit_allocation_count",
         "phase",
         "outcome",
         "lifecycle_policy",
@@ -5009,7 +5102,7 @@
     "concur_run_failure_order": "at one ConcurId aggregation barrier, a body failure remains primary; otherwise the minimum lexical spawn_index child Run failure is primary, sibling failures are suppressed in ascending spawn_index, and cleanup failures follow in actual LIFO execution order",
     "concur_run_order_non_evidence": "scheduler completion order and source-file enumeration order are never failure-order evidence; the fixture registry includes two ConcurRunId children that complete in reverse spawn order and a rejection case that incorrectly chooses the first completion",
     "actor_fifo": "actor_enqueue is an admitted ownership-commit event and assigns its non-null channel_sequence at that commit; the sequence is FIFO within the key sender_id, receiver_id, mailbox_profile_id, channel_id, and no cross-channel global order is promised",
-    "actor_transfer": "a rejected precommit send is represented only by actor_lifecycle admission_rejected with null channel_sequence, ownership_commit_count zero, and sender_retained; a successful actor_enqueue has exactly one commit and receiver_owned or shared_evidence",
+    "actor_transfer": "receiver/capacity rejection is actor_lifecycle admission_rejected before allocation; managed storage failure is allocation_rejected with AllocationError/allocate, null message/sequence/reply/correlation and sender_retained; a successful actor_enqueue publishes only an all_ready precommit allocation plan with exactly one ownership commit and zero postcommit allocation",
     "actor_reply": "one correlation_id has exactly one terminal reply, declared failure, or cancellation outcome",
     "actor_request_reply_responsibility": "an actor_lifecycle enqueue_committed event with non-null correlation_id requires actor_request_reply_responsibilities; descriptor (reply_id, correlation_id) pairs form a one-to-one set with distinct admitted-request correlation_id values in the record, while a record without such an admitted request has zero actor-request descriptors; every descriptor has result_type, normalized_handler_error_set, cancellation_axis, isolation_owner, reply_id, correlation_id, and terminal_transport_failure={receiverClosedBeforeReply}; structured spawn yields owner-bound Run<T> without actor transport residue, while actor request admission yields Reply<T>; await exposes normalize(normalized_handler_error_set | ActorMessageError::receiverClosedBeforeReply), while mailboxFull and receiverClosedBeforeAdmission remain admission Result errors and are forbidden in the descriptor",
     "reply_responsibility_compatibility": "compatibility, storage, await, and API export preserve ReplyResponsibility residue; static fields require exact normalized equality unless an explicit admitted error-set-subsumption proof widens normalized_handler_error_set, and each per-value ReplyId and correlation_id remains non-forgeable and unerased; Run and Reply never substitute for one another",

@@ -131,7 +131,7 @@ PROTECTED_R68 = {
     "spec/traceability/implementation-target-profile-r1/region-lifetime-dynamic-trace-evidence-r1.json": "fa7c36221c90c0524504ea8a2b8df9ab574cd2e791a80073ecb15affef28d389",
     "schemas/language/region-lifetime-dynamic-trace-evidence-r1.schema.json": "6068e688032a00ac25ba9197c93257b0f762a5bdb33b017fe8ae80475eb23df6",
     "decisions/language/Design_Deeplus_R68_Region_Lifetime_Dynamic_Trace_Closure_R1.md": "b643b85394b23204715c2e0cb0cd428e8399c046c4327d6b29ed5a85310696bf",
-    "tools/validators/validate_region_lifetime_dynamic_trace.py": "3d0a40b79dbd1ea7bb4b8e5b9afb28204dbf3b235d22dac6a5491e3e737040fe",
+    "tools/validators/validate_region_lifetime_dynamic_trace.py": "3634b09f6e7d8194ebd1974ffc2b312e79990fb98d24dea417170dcc5ec18abf",
     "tools/validators/run_region_lifetime_dynamic_trace_mutation_tests.py": "9bab831f61909af072cda60577464d677cdf9458adfd1a317bd1a491cb192926",
 }
 

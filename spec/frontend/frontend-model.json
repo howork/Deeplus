@@ -4617,7 +4617,14 @@
     },
     "enqueue_commit_contract": {
       "precommit_owner": "sender",
+      "transport_allocation_plan": "ActorTransportAllocationPlanV1",
+      "transport_error_set": ["AllocationError"],
+      "transport_effect_row": ["allocate"],
+      "admission_precedence": ["receiver_closed", "bounded_capacity_full", "allocation"],
+      "precommit_allocation_stages": ["envelope_storage", "mailbox_storage_if_required", "request_responsibility_storage_if_request"],
+      "allocation_failure_publication_count": 0,
       "commit_count": "exactly_one_on_success",
+      "postcommit_allocation_count": 0,
       "rejected_channel_sequence": null,
       "successful_fifo_key": [
         "SenderId",

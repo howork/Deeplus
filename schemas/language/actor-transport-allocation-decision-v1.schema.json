@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.invalid/schemas/actor-transport-allocation-decision-v1.schema.json",
+  "title": "Actor Transport Allocation Decision V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["profile", "operation", "receiver_state", "capacity_state", "allocation_stage", "decision", "diagnostic_or_null", "published_residue_count"],
+  "properties": {
+    "profile": {"enum": ["logical_unbounded_v1", "bounded_reject_v1"]},
+    "operation": {"enum": ["SEND", "REQUEST"]},
+    "receiver_state": {"enum": ["OPEN", "CLOSED"]},
+    "capacity_state": {"enum": ["AVAILABLE", "FULL", "NOT_APPLICABLE"]},
+    "allocation_stage": {"enum": ["NOT_STARTED", "ENVELOPE_STORAGE", "MAILBOX_STORAGE", "REQUEST_RESPONSIBILITY_STORAGE", "ALL_READY", "POSTCOMMIT"]},
+    "decision": {"enum": ["ADMIT", "RESULT_RECEIVER_CLOSED", "RESULT_MAILBOX_FULL", "THROW_ALLOCATION_ERROR", "REJECT_STATIC", "REJECT_MIR"]},
+    "diagnostic_or_null": {"type": ["string", "null"]},
+    "published_residue_count": {"type": "integer", "minimum": 0, "maximum": 1}
+  }
+}

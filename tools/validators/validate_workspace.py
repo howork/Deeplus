@@ -135,8 +135,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1504, "predicates": 291,
-    "predicate_fixtures": 900, "no_go": 154,
+    "features": 723, "diagnostics": 1506, "predicates": 292,
+    "predicate_fixtures": 904, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -12526,7 +12526,7 @@ def r22_actor_lifecycle_workspace_check(root: Path) -> dict[str, Any]:
 
     runner = root / "tools/validators/validate_actor_minimum_lifecycle.py"
     expected = (
-        "ACTOR_MINIMUM_LIFECYCLE_PASS: rules=20 fixtures=10 admit=5 "
+        "ACTOR_MINIMUM_LIFECYCLE_PASS: rules=21 fixtures=10 admit=5 "
         "reject=5 guards=12 trace=complete restart=0 interleaving=0 "
         "product=NOT_RUN"
     )
@@ -12782,8 +12782,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 291
-                and fixed_counts.get("predicate_fixtures") == 900
+                and fixed_counts.get("predicates") == 292
+                and fixed_counts.get("predicate_fixtures") == 904
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -13112,6 +13112,18 @@ def main() -> int:
         "tests/fixtures/current/enum-match-boundary-v1.json",
         "tools/validators/validate_enum_match_boundary_v1.py",
         "tools/validators/run_enum_match_boundary_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Actor_Transport_Allocation_Closure_R1.md",
+        "schemas/language/actor-transport-allocation-decision-v1.schema.json",
+        "schemas/language/actor-transport-allocation-fixtures-v1.schema.json",
+        "schemas/language/actor-transport-allocation-v1.schema.json",
+        "spec/contracts/actor-transport-allocation-v1.json",
+        "spec/diagnostics/catalog/chunks/part-0038.json",
+        "spec/diagnostics/relations/chunks/part-0019.json",
+        "spec/types/predicates/chunks/part-0029.json",
+        "tests/conformance/checker-predicates/chunks/part-0041.json",
+        "tests/fixtures/current/actor-transport-allocation-v1.json",
+        "tools/validators/validate_actor_transport_allocation_v1.py",
+        "tools/validators/run_actor_transport_allocation_v1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -14030,6 +14042,52 @@ def main() -> int:
         r89_mutation_process.returncode == 0,
         "R89_ENUM_MATCH_BOUNDARY_V1_MUTATIONS",
         r89_mutation_detail[-4000:],
+    )
+
+    r90_validator = (
+        root / "tools/validators/validate_actor_transport_allocation_v1.py"
+    )
+    r90_process = subprocess.run(
+        [sys.executable, str(r90_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r90_detail = (
+        r90_process.stdout.strip()
+        if r90_process.returncode == 0
+        else r90_process.stderr.strip() or r90_process.stdout.strip()
+    )
+    check(
+        r90_process.returncode == 0,
+        "R90_ACTOR_TRANSPORT_ALLOCATION_V1",
+        r90_detail[-4000:],
+    )
+
+    r90_mutation_runner = (
+        root
+        / "tools/validators/run_actor_transport_allocation_v1_mutation_tests.py"
+    )
+    r90_mutation_process = subprocess.run(
+        [sys.executable, str(r90_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r90_mutation_detail = (
+        r90_mutation_process.stdout.strip()
+        if r90_mutation_process.returncode == 0
+        else r90_mutation_process.stderr.strip()
+        or r90_mutation_process.stdout.strip()
+    )
+    check(
+        r90_mutation_process.returncode == 0,
+        "R90_ACTOR_TRANSPORT_ALLOCATION_V1_MUTATIONS",
+        r90_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

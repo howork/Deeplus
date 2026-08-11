@@ -11450,7 +11450,7 @@ public actor #mailbox(capacity: 8) Counter {
     request current() -> Int = { return 0 }
 }
 public def#async observe(counter: Counter) -> Int
-    throws ActorMessageError
+    throws ActorMessageError throws AllocationError effects allocate
 = {
     let Result::ok(_) = counter :~ add value: 1
     else Result::err(error) => throw error
@@ -11541,6 +11541,7 @@ public actor Worker {
 }
 public def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
+    throws AllocationError effects allocate
 = {
     return worker :~ run move job
 }

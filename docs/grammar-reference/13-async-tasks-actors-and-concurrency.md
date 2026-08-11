@@ -315,6 +315,10 @@ mailbox clause가 없으면 `logical_unbounded_v1`이다. 이것은
 언어 수준의 capacity rejection이 없다는 뜻일 뿐, 구현 저장 공간이
 무한하다는 뜻이 아니다. 자원 고갈을
 `ActorMessageError::mailboxFull`로 바꾸지도 않는다.
+전송 envelope, mailbox storage와 request의 Reply/correlation storage를
+준비하다 자원이 부족하면 독립된 `AllocationError`가 발생하며, `:~`를
+포함한 callable은 `throws AllocationError effects allocate` 책임을
+보존해야 한다.
 
 `#mailbox(capacity: N)`이 있으면 `bounded_reject_v1`이다. `N`은 양의
 정적 정수이며, mailbox가 가득 찬 경우 enqueue commit 전에 즉시
@@ -334,13 +338,15 @@ Cancellation은 이 error family로 바뀌지 않는다.
 
 ### 단방향 전송과 요청
 
-one-way message expression의 정확한 형식은
+one-way message expression의 정확한 값 형식은
 `Result<Unit, error ActorMessageError>`이다. `Result::ok(Unit)`은 enqueue
 commit 뒤에만 생기며 reply channel은 없다.
 
-reply type이 `T`인 request expression의 즉시 형식은
+reply type이 `T`인 request expression의 즉시 값 형식은
 `Result<Reply<T>, error ActorMessageError>`이다. source는 먼저 admission
 `Result`에서 `Reply<T>`를 꺼낸 뒤 그 reply에 `await`를 적용해야 한다.
+두 값 형식은 모두 별도의 `throws AllocationError effects allocate` 책임을
+가진다. allocation failure는 `Result::err`로 정규화되지 않는다.
 request enqueue commit 뒤에 correlation identity가 한 번 만들어지며,
 reply, 선언된 failure, Cancellation 중 정확히 하나로 끝난다. request를
 ordinary method return처럼 취급하거나 암시적으로 기다리지 않는다.
@@ -406,7 +412,8 @@ actor Directory {
 }
 
 def#async inspect(directory: Directory, id: Int) -> Status
-    throws ActorMessageError throws LookupError = {
+    throws ActorMessageError throws LookupError throws AllocationError
+    effects allocate = {
     let? reply = directory :~ find id: id
     else admissionError => throw admissionError
 
@@ -584,7 +591,7 @@ public actor #mailbox(capacity: 8) Counter {
     request current() -> Int = { return 0 }
 }
 public def#async observe(counter: Counter) -> Int
-    throws ActorMessageError
+    throws ActorMessageError throws AllocationError effects allocate
 = {
     let Result::ok(_) = counter :~ add value: 1
     else Result::err(error) => throw error
@@ -638,6 +645,7 @@ public actor Worker {
 }
 public def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
+    throws AllocationError effects allocate
 = {
     return worker :~ run move job
 }
@@ -768,8 +776,11 @@ PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지
 - `spec/language.md`
   - 비동기 함수·run·suspension, actor와 message, Preview·비현행 경계.
 - `spec/contracts/actor-concurrency-coherence.json`
-  - `ACC-R001..R018`, mailbox profile, actor admission, structured run,
+  - `ACC-R001..R021`, mailbox profile, actor admission, structured run,
     Cancellation, ordering, MIR와 제품 증거 경계.
+- `spec/contracts/actor-transport-allocation-v1.json`
+  - precommit allocation staging, failure-atomic cleanup, enqueue commit와
+    `AllocationError effects allocate` 책임.
 - `spec/contracts/unified-call-actor-transport.json`
   - 통합 `CallExpr`, `~`/`:~`, argument channel과 actor result contract.
 - `spec/contracts/type-flow-callable-coherence.json`

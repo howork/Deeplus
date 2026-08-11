@@ -1263,6 +1263,8 @@ mailbox clause가 없으면
 `logical_unbounded_v1`이다.
 이는 language capacity rejection이 없다는 뜻이지
 무한 저장 공간을 약속한다는 뜻이 아니다.
+물리 storage 준비 실패는 `ActorMessageError::mailboxFull`이 아니라
+독립된 `AllocationError effects allocate` 책임이다.
 
 positive static `#mailbox(capacity: N)`은
 `bounded_reject_v1`이다.
@@ -1289,6 +1291,11 @@ precommit rejection은 다음을 보장한다.
 - ownership commit 없음
 - hidden retry 없음
 
+capacity와 receiver 상태를 통과하면 runtime은 envelope, 필요한 mailbox
+storage, request-only Reply/correlation storage를 모두 stage한다. 이 중
+하나라도 실패하면 `AllocationError`를 던지고 역순 cleanup하며 message,
+sequence, identity와 normal `Result`를 하나도 publish하지 않는다.
+
 성공한 enqueue commit은
 payload owner를 actor에 정확히 한 번 넘기고
 다음 `channel_sequence`를 할당한다.
@@ -1308,7 +1315,8 @@ exactly-once delivery는 보장하지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/actor-concurrency-coherence.json -->
 ```deeplus
-private def sendTwo(counter: Counter) -> Unit = {
+private def sendTwo(counter: Counter) -> Unit
+    throws AllocationError effects allocate = {
     let first = counter :~ add value: 1
     let second = counter :~ add value: 2
 }

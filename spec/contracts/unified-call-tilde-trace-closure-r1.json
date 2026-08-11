@@ -161,11 +161,13 @@
     "lowering_successor_mapping": {
       "SUCCESS": "NORMAL_RESULT_OK",
       "REJECTED": "NORMAL_RESULT_ERR",
+      "ERROR": "ERROR",
       "DEFECT": "DEFECT",
       "CANCEL": "CANCELLATION"
     },
     "lowering_row_successor_roles": [
       "NORMAL",
+      "ERROR",
       "DEFECT",
       "CANCELLATION"
     ],
@@ -174,7 +176,9 @@
     "one_way_result": "Result<Unit, error ActorMessageError>",
     "one_way_reply_identity_count": 0,
     "request_result": "Result<Reply<T>, error ActorMessageError>",
-    "request_reply_identity_creation": "SUCCESSFUL_ADMISSION_COMMIT_ONLY",
+    "transport_error_set": ["AllocationError"],
+    "transport_effect_row": ["allocate"],
+    "request_reply_identity_creation": "RESERVED_PRECOMMIT_PUBLISHED_BY_SUCCESSFUL_ADMISSION_COMMIT_ONLY",
     "reply_wait": "SEPARATE_ONE_SHOT_EXPLICIT_AWAIT",
     "admission_errors": [
       "mailboxFull",
@@ -187,6 +191,9 @@
     "precommit_owner_retained": true,
     "precommit_envelope_publish_count": 0,
     "precommit_sequence_allocation_count": 0,
+    "allocation_failure_result_publish_count": 0,
+    "allocation_failure_reply_or_correlation_publish_count": 0,
+    "postcommit_allocation_count": 0,
     "successful_envelope_publish_count": 1,
     "successful_moved_owner_transfer_count_each": 1,
     "global_fifo_or_fairness_claim": false
@@ -225,7 +232,7 @@
     {"rule_id": "UCTC-R010", "text": "Ordinary and message modes use only the closed valid mode-target pairs; actor-message uses ActorTransport only and has no ordinary fallback."},
     {"rule_id": "UCTC-R011", "text": "The ten existing HM-LR-CALL rows are the complete current CallPlan lowering table; no new HIR identity, MIR operation or runtime lookup is introduced."},
     {"rule_id": "UCTC-R012", "text": "Actor :~ performs immediate admission and never implicitly suspends, blocks or retries."},
-    {"rule_id": "UCTC-R013", "text": "Actor admission rejection is a Result error on normal expression flow; one-way send creates no reply token and request creates Reply identities only after successful commit."},
+    {"rule_id": "UCTC-R013", "text": "Actor receiver/capacity admission rejection is a Result error on normal expression flow; transport storage failure propagates AllocationError effects allocate with zero publication; request identities are reserved before commit and become observable only at successful commit."},
     {"rule_id": "UCTC-R014", "text": "Actor transport consumes one exact preverified protocol binding and never reselects by runtime, source or import order."},
     {"rule_id": "UCTC-R015", "text": "Actor declarations require explicit top-level visibility, admit an empty body, and delegate invalid mailbox capacity rejection to actor_mailbox_capacity."},
     {"rule_id": "UCTC-R016", "text": "Formatter and LSP preserve CallMode, selector qualification, comma ownership and trailing-closure attachment without semantic rewrite."},

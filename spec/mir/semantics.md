@@ -421,16 +421,24 @@ Actor transport is not a method call. The Stable `:~` surface selects one
 `ActorTransport` plan before MIR; it has no ordinary-message or method fallback.
 Prepare-send evaluates the receiver and every `CallArgument` left-to-right
 exactly once without transferring ownership, binds the selected formals, proves
-transfer/isolation, and stages one compiler-internal envelope. A trailing
+transfer/isolation, and seals one `ActorTransportAllocationPlanV1`. Under the
+mailbox admission lock it checks receiver closure and bounded capacity before
+allocating, then stages the envelope, any required mailbox growth, and
+request-only Reply/correlation responsibility storage. A trailing
 closure crossing actor isolation is admitted only when its capture environment
 independently satisfies transfer, suspension, effect, error, and cleanup rules.
 The absence of a mailbox clause binds `logical_unbounded_v1`; positive static
 `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never
-blocks, retries, suspends, or drops. All failures before commit retain every
-sender owner and allocate neither envelope nor sequence. Admission commits
-exactly one envelope, one ownership transition, and one sequence. A one-way
-commit returns `Result::ok(Unit)`; a request commit creates one CorrelationId and
-ReplyId and returns `Result::ok(Reply<T>)` plus its non-forgeable
+blocks, retries, suspends, or drops. Receiver-closed and bounded-full outcomes
+are normal `ActorMessageError` Result values and precede allocation. Failure of
+any required storage throws existing `AllocationError` with effect `allocate`,
+retains every sender owner, reverse-cleans staged resources, and publishes no
+envelope, sequence, ReplyId, CorrelationId, or Result. It is not converted into
+`mailboxFull`, Cancellation, or Defect. Admission commits exactly one prepared
+envelope, one ownership transition, and one sequence; required postcommit
+allocation count is zero. A one-way commit returns `Result::ok(Unit)`; a request
+transaction reserves one CorrelationId and ReplyId before commit, makes them
+observable only at commit, and returns `Result::ok(Reply<T>)` plus its non-forgeable
 `ReplyResponsibility` descriptor. The descriptor preserves normalized result
 type, handler ErrorSet, cancellation axis, isolation owner, ReplyId,
 CorrelationId, and terminal transport failure. `:~` itself never suspends or retries; source

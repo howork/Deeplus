@@ -1,0 +1,59 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / MIR",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "MIR"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "actor_mailbox_capacity",
+      "actor_request_reply"
+    ],
+    "fixit_hint": "preserve `throws AllocationError effects allocate` on the enclosing callable or handle AllocationError explicitly",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not convert allocation failure into ActorMessageError, Cancellation, or Defect.",
+    "message": "Actor transport requires the independent `AllocationError` and `allocate` responsibility.",
+    "notes": "The value Result and ActorMessageError family remain unchanged; production checker execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/actor-transport-allocation-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "MIR / RUNTIME",
+    "authority_set": [
+      "MIR",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "actor_mailbox_capacity",
+      "actor_request_reply"
+    ],
+    "fixit_hint": "move envelope, mailbox, Reply and correlation storage preparation before enqueue commit",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "Never repair an admitted message by allocating after ownership and sequence commit.",
+    "message": "Verified actor transport may not allocate required admission storage after enqueue commit.",
+    "notes": "Internal HIR/MIR verifier invariant; production lowering/runtime execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/actor-transport-allocation-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  }
+]

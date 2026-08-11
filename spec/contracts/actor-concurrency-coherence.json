@@ -124,7 +124,7 @@
         "dynamic_capacity": "reject in the minimum current profile",
         "clause_present_profile": "bounded_reject_v1",
         "clause_absent_profile": "logical_unbounded_v1",
-        "logical_unbounded_meaning": "no language-level capacity rejection; implementation storage remains finite and resource exhaustion is not converted into ActorMessageError.mailboxFull",
+        "logical_unbounded_meaning": "no language-level capacity rejection; implementation storage remains finite and resource exhaustion propagates existing AllocationError effects allocate and is not converted into ActorMessageError.mailboxFull",
         "bounded_full_outcome": "immediate Result::err(ActorMessageError::mailboxFull) before enqueue commit",
         "receiver_closed_before_admission": "immediate Result::err(ActorMessageError::receiverClosedBeforeAdmission) before enqueue commit",
         "receiver_closed_before_reply": "a successfully admitted request Reply terminates through its declared ActorMessageError failure axis with ActorMessageError::receiverClosedBeforeReply",
@@ -133,6 +133,9 @@
         "implicit_retry": false,
         "implicit_block_or_suspend": false,
         "policy_selector_surface_count": 0,
+        "allocation_contract": "spec/contracts/actor-transport-allocation-v1.json",
+        "allocation_failure_axis": "throws AllocationError effects allocate before enqueue commit",
+        "postcommit_allocation_count": 0,
         "product_policy_status": "NOT_RUN"
       }
     },
@@ -191,13 +194,14 @@
       "contract": {
         "protocol_one_way_owner": "ActorProtocolSendRequirement",
         "actor_handler_surface": "ActorOnDecl",
-        "message_expression_type": "Result<Unit, error ActorMessageError>",
+        "message_expression_type": "Result<Unit, error ActorMessageError> throws AllocationError effects allocate",
         "success_value": "Result::ok with a Unit payload only after successful enqueue commit",
         "admission_failure_values": [
           "ActorMessageError::mailboxFull",
           "ActorMessageError::receiverClosedBeforeAdmission"
         ],
         "reply_channel": false,
+        "transport_allocation_failure": "AllocationError before enqueue commit with zero Result, envelope, sequence or owner transfer",
         "implicit_request_conversion": false,
         "implicit_protocol_conformance": false,
         "handler_binding": "must be established by the existing checker and conformance authority; spelling alone is insufficient"
@@ -210,13 +214,14 @@
       "contract": {
         "protocol_owner": "ActorProtocolRequestRequirement",
         "handler_owner": "ActorRequestDecl",
-        "message_expression_type": "Result<Reply<T>, error ActorMessageError>, where T is the selected request reply type",
+        "message_expression_type": "Result<Reply<T>, error ActorMessageError> throws AllocationError effects allocate, where T is the selected request reply type",
         "admission_success": "Result::ok(reply) only after successful enqueue commit; source must extract Reply<T> before one-shot await",
         "admission_failure_values": [
           "ActorMessageError::mailboxFull",
           "ActorMessageError::receiverClosedBeforeAdmission"
         ],
-        "correlation_identity_creation": "after successful request enqueue commit",
+        "correlation_identity_creation": "reserved with Reply responsibility storage before enqueue commit and made observable only by the successful atomic commit",
+        "transport_allocation_failure": "AllocationError before enqueue commit with zero Result, envelope, sequence, ReplyId, CorrelationId or owner transfer",
         "terminal_outcomes": [
           "reply",
           "declared failure",
@@ -453,7 +458,8 @@
         "required_event_families": [
           "concur run spawn and terminal join",
           "async suspend and resume",
-          "cancellation request, observation, cleanup completion, and terminal cancellation",
+          "cancellation request, observation, acknowledgement, cleanup completion, and terminal cancellation",
+          "actor transport precommit allocation rejection and atomic enqueue commit",
           "actor enqueue and dequeue",
           "bounded admission success or immediate ActorMessageError rejection without channel_sequence",
           "request creation and correlated terminal reply/failure/cancellation",
@@ -595,6 +601,26 @@
         "acceptance_guard_coverage": "12_OF_12",
         "debugger_projection": "RECEIPT_BOUND_READ_ONLY_IDENTITY_STATE_AND_COMMITTED_EVENT_ORDER_PRODUCT_NOT_RUN"
       }
+    },
+    {
+      "rule_id": "ACC-R021",
+      "domain": "actor_transport_allocation",
+      "title": "actor transport allocation is explicit, precommit, and failure-atomic",
+      "contract": {
+        "contract": "spec/contracts/actor-transport-allocation-v1.json",
+        "value_result_axis": "ActorMessageError remains the closed admission and receiver-lifecycle family",
+        "dynamic_error_axis": ["AllocationError"],
+        "dynamic_effect_axis": ["allocate"],
+        "admission_precedence": ["receiverClosedBeforeAdmission", "mailboxFull only for bounded_reject_v1", "AllocationError"],
+        "precommit_allocation_stages": ["envelope storage", "mailbox storage if required", "Reply/correlation responsibility storage for request"],
+        "allocation_failure": "sender retains owners; reverse-clean staged resources; publish no message, sequence, ReplyId, CorrelationId or Result",
+        "commit": "publish all prepared resources, one sequence and every moved owner atomically",
+        "postcommit_allocation_count": 0,
+        "allocation_to_mailbox_full_count": 0,
+        "allocation_to_cancellation_count": 0,
+        "allocation_to_defect_count": 0,
+        "product_support": "NOT_RUN"
+      }
     }
   ],
   "unclosed_product_gates": [
@@ -636,7 +662,7 @@
     }
   ],
   "machine_acceptance": {
-    "rule_count": 20,
+    "rule_count": 21,
     "rule_ids_unique": true,
     "gate_count": 6,
     "new_source_syntax_count": 4,

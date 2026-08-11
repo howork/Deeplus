@@ -5050,6 +5050,29 @@
             "$ref": "#/$defs/Id"
           }
         },
+        "transport_allocation_plan_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "transport_error_set": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "prefixItems": [{"const": "AllocationError"}],
+          "items": false
+        },
+        "transport_effect_row": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "prefixItems": [{"const": "allocate"}],
+          "items": false
+        },
+        "allocation_publish_phase": {
+          "const": "ENQUEUE_COMMIT"
+        },
+        "postcommit_allocation_count": {
+          "const": 0
+        },
         "request_responsibility_or_null": {
           "anyOf": [
             {
@@ -5140,6 +5163,11 @@
               "argument_binding_plan",
               "transfer_plan",
               "admission_error_set",
+              "transport_allocation_plan_id",
+              "transport_error_set",
+              "transport_effect_row",
+              "allocation_publish_phase",
+              "postcommit_allocation_count",
               "request_responsibility_or_null",
               "actor_protocol_conformance_id",
               "actor_protocol_requirement_id",
@@ -5193,6 +5221,31 @@
                 {
                   "required": [
                     "admission_error_set"
+                  ]
+                },
+                {
+                  "required": [
+                    "transport_allocation_plan_id"
+                  ]
+                },
+                {
+                  "required": [
+                    "transport_error_set"
+                  ]
+                },
+                {
+                  "required": [
+                    "transport_effect_row"
+                  ]
+                },
+                {
+                  "required": [
+                    "allocation_publish_phase"
+                  ]
+                },
+                {
+                  "required": [
+                    "postcommit_allocation_count"
                   ]
                 },
                 {

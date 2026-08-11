@@ -184,7 +184,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Absent clause selects logical_unbounded_v1. Positive static #mailbox(capacity: N) selects bounded_reject_v1 with immediate ActorMessageError and no block/retry/suspend/drop. N is a manual choice. Product NOT_RUN.",
+    "notes": "Absent clause selects logical_unbounded_v1: no language-level capacity rejection, not infinite storage. Positive static #mailbox(capacity: N) selects bounded_reject_v1 with immediate ActorMessageError and no block/retry/suspend/drop. Both preserve the independent precommit AllocationError effects allocate transport responsibility. N is a manual choice. Product NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -197,9 +197,13 @@
     "trace_class": "semantic",
     "normative_trace_refs": {
       "diagnostics": [
-        "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT"
+        "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT",
+        "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+        "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN"
       ],
-      "predicates": [],
+      "predicates": [
+        "ActorTransportAllocationAdmitted"
+      ],
       "examples": [
         "EX-R51f3-COH-008",
         "EX-R51f3-COH-009",
@@ -212,6 +216,9 @@
     },
     "artifact_trace_refs": [
       "spec/contracts/actor-concurrency-coherence.json",
+      "spec/contracts/actor-transport-allocation-v1.json",
+      "schemas/language/actor-transport-allocation-v1.schema.json",
+      "tests/fixtures/current/actor-transport-allocation-v1.json",
       "tests/fixtures/current/actor-concurrency-coherence-r1.json",
       "library/prelude/signatures/chunks/part-0001.json"
     ],
@@ -314,7 +321,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "An actor :~ request immediately returns Result<Reply<T>, error ActorMessageError>; source extracts the one-shot Reply<T> before explicit await, and receiver closure before reply terminates that correlated reply through its declared failure axis. Reply<T> is not a structured-concurrency Run<T>, and :~ itself never suspends or retries.",
+    "notes": "An actor :~ request has value carrier Result<Reply<T>, error ActorMessageError> plus independent throws AllocationError effects allocate. All Reply/correlation storage is prepared before the atomic enqueue commit; source extracts the one-shot Reply<T> before explicit await, and receiver closure before reply terminates that correlated reply through its declared failure axis. Reply<T> is not Run<T>, and :~ itself never suspends or retries.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -328,10 +335,13 @@
     "normative_trace_refs": {
       "diagnostics": [
         "ACTOR_OPERATION_KIND_COLLISION",
-        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
+        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+        "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+        "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN"
       ],
       "predicates": [
-        "ActorProtocolGateAdmitted"
+        "ActorProtocolGateAdmitted",
+        "ActorTransportAllocationAdmitted"
       ],
       "examples": [
         "EX-R48E-019",
@@ -348,6 +358,9 @@
     },
     "artifact_trace_refs": [
       "spec/contracts/actor-concurrency-coherence.json",
+      "spec/contracts/actor-transport-allocation-v1.json",
+      "schemas/language/actor-transport-allocation-v1.schema.json",
+      "tests/fixtures/current/actor-transport-allocation-v1.json",
       "tests/fixtures/current/actor-concurrency-coherence-r1.json",
       "library/prelude/signatures/chunks/part-0001.json"
     ],

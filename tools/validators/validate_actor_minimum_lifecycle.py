@@ -265,8 +265,8 @@ def main() -> int:
     mir = (ROOT / "spec/mir/semantics.md").read_text(encoding="utf-8")
 
     rules = {row["rule_id"]: row["contract"] for row in contract["rules"]}
-    if list(rules) != [f"ACC-R{i:03d}" for i in range(1, 21)]:
-        fail("rule IDs are not the exact contiguous ACC-R001..020 set")
+    if list(rules) != [f"ACC-R{i:03d}" for i in range(1, 22)]:
+        fail("rule IDs are not the exact contiguous ACC-R001..021 set")
     r41 = rules["ACC-R019"]
     if (
         r41.get("binding_identity")
@@ -325,7 +325,7 @@ def main() -> int:
         fail("Defect cleanup/reply/root observation order drift")
 
     machine = contract["machine_acceptance"]
-    if machine.get("rule_count") != 20 or machine.get("gate_count") != 6:
+    if machine.get("rule_count") != 21 or machine.get("gate_count") != 6:
         fail("contract count closure drift")
     if machine.get("product_execution_receipt_count") != 0:
         fail("product execution overclaim")
@@ -494,7 +494,7 @@ def main() -> int:
 
     print(
         "ACTOR_MINIMUM_LIFECYCLE_PASS: "
-        "rules=20 fixtures=10 admit=5 reject=5 guards=12 trace=complete "
+        "rules=21 fixtures=10 admit=5 reject=5 guards=12 trace=complete "
         "restart=0 interleaving=0 product=NOT_RUN"
     )
     return 0

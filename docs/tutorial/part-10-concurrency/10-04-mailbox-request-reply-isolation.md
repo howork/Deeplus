@@ -31,6 +31,9 @@ retry safety를 판단할 수 없다.
 - `#mailbox(capacity: N)`: `bounded_reject_v1`; N은 positive StaticInt.
 - one-way result: `Result<Unit,error ActorMessageError>`.
 - request immediate result: `Result<Reply<T>,error ActorMessageError>`.
+- transport dynamic responsibility: `throws AllocationError effects allocate`.
+- `logical_unbounded_v1`은 capacity rejection이 없을 뿐 무한 storage를
+  보장하지 않는다.
 - admission errors: `mailboxFull`, `receiverClosedBeforeAdmission`.
 - admitted reply terminal transport error:
   `receiverClosedBeforeReply`.
@@ -56,7 +59,8 @@ admission Result를 먼저 푼 뒤 reply를 await한다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def#async inspect(directory: Directory, id: Int) -> Status
-    throws ActorMessageError throws LookupError
+    throws ActorMessageError throws LookupError throws AllocationError
+    effects allocate
 = {
     let Result::ok(reply) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError
@@ -75,6 +79,7 @@ def#async inspect(directory: Directory, id: Int) -> Status
 ```deeplus
 def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
+    throws AllocationError effects allocate
 = {
     return worker :~ run move job
 }
@@ -111,7 +116,8 @@ reply correlation과 `Reply<T>` 책임이 생기며, 이후 handler Error와
 
 | 단계 | one-way 관찰 | request 관찰 |
 |---|---|---|
-| precommit 거부 | `Result::err(ActorMessageError)`와 sender owner 유지 | 같은 admission error, reply/correlation 없음 |
+| precommit admission 거부 | `Result::err(ActorMessageError)`와 sender owner 유지 | 같은 admission error, reply/correlation 없음 |
+| precommit allocation 실패 | `AllocationError`, sender owner 유지, Result 없음 | `AllocationError`, reply/correlation 없음 |
 | enqueue commit | `Result::ok(Unit)`과 owner 이동 | `Result::ok(Reply<T>)`와 correlation 생성 |
 | postcommit terminal | 별도 reply 없음 | value, handler Error, reply transport failure 또는 Cancellation |
 
