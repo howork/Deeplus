@@ -32,6 +32,14 @@ INHERITED_COMPONENT_REVISION = "r51f3-current-trait-operator-refinement-r1"
 CONTRACT_REL = "spec/contracts/language-coherence-current-integrity-r1.json"
 AUTHORITY_REL = "current/authority-map.yaml"
 POINTER_REL = "current/current-pointer.json"
+R77_RECEIPT_REL = (
+    "release/evidence/"
+    "r77-integrated-surface-publication-closure-readback.json"
+)
+R77_CLOSURE_REPORT_REL = (
+    "governance/reports/"
+    "Design_Deeplus_R77_Integrated_Surface_Publication_Closure_R1.md"
+)
 OUTPUTS = (AUTHORITY_REL, POINTER_REL)
 EXCLUDED_PARTS = {".git", "__pycache__", "target", "dist", "candidate", "tmp"}
 R2_REASSEMBLY_REL = "migration/catalog-reassembly.json"
@@ -444,10 +452,16 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
 
 
 def validate_required_bound_roots(paths: list[str]) -> None:
-    if "docs/tutorial" not in paths:
+    required = {
+        "docs/tutorial",
+        R77_RECEIPT_REL,
+        R77_CLOSURE_REPORT_REL,
+    }
+    missing = sorted(required - set(paths))
+    if missing:
         raise GeneratorError(
             "LANGUAGE_COHERENCE_CONTRACT",
-            "docs/tutorial bound root is required",
+            "required bound roots missing: " + ", ".join(missing),
         )
 
 
@@ -482,6 +496,43 @@ def validate_state(root: Path, pointer: dict[str, Any], contract: dict[str, Any]
         is not contract.get("current_binding")
     ):
         raise GeneratorError("LANGUAGE_COHERENCE_CURRENT_BINDING", "contract parity")
+
+    binding = pointer.get("candidate_binding", {})
+    receipt = read_json(
+        safe_path(root, R77_RECEIPT_REL),
+        "LANGUAGE_COHERENCE_PUBLICATION_RECEIPT",
+    )
+    semantic = receipt.get("semantic_publication", {})
+    closure = receipt.get("publication_closure", {})
+    receipt_binding = receipt.get("binding", {})
+    if (
+        binding
+        != {
+            "mode": "semantic_publication_target_bound_by_external_post_merge_receipt",
+            "receipt_location": R77_RECEIPT_REL,
+            "current_binding": False,
+            "self_binding_forbidden": True,
+        }
+        or receipt.get("result") != "VERIFIED_CLOSED"
+        or semantic.get("merge_commit")
+        != "da734c608c0d583a671c0da9e14da00bff42affd"
+        or closure.get("merge_commit")
+        != "10e64f492f0529610673846139afcf0d95175663"
+        or closure.get("tree")
+        != "8e08d498795c1054e392f82802f54d92cf2c215a"
+        or closure.get("live_main_exact_match_at_audit_start") is not True
+        or receipt_binding
+        != {
+            "semantic_authority_active": True,
+            "artifact_self_binding": False,
+            "pointer_current_binding": False,
+            "binding_mechanism": "EXTERNAL_POST_MERGE_READBACK_RECEIPT",
+        }
+    ):
+        raise GeneratorError(
+            "LANGUAGE_COHERENCE_PUBLICATION_RECEIPT",
+            "R77 semantic/closure identity or self-binding fence",
+        )
 
     lane_ids = contract["product_lanes"]
     expected_lanes = {lane: "NOT_RUN" for lane in lane_ids}
@@ -669,6 +720,10 @@ def refresh_contract(root: Path) -> dict[str, Any]:
         bound_paths.append("docs/grammar-reference")
     if "docs/tutorial" not in bound_paths:
         bound_paths.append("docs/tutorial")
+    if R77_RECEIPT_REL not in bound_paths:
+        bound_paths.append(R77_RECEIPT_REL)
+    if R77_CLOSURE_REPORT_REL not in bound_paths:
+        bound_paths.append(R77_CLOSURE_REPORT_REL)
     contract["bound_roots"] = [
         bound_identity(root, path) for path in bound_paths
     ]

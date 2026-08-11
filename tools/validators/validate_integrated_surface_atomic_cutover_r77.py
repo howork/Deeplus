@@ -28,6 +28,10 @@ FIXTURE_REL = "tests/fixtures/current/integrated-surface-atomic-cutover-r77-r1.j
 FRONTEND_REL = "spec/frontend/frontend-model.json"
 GRAMMAR_REL = "spec/grammar/deeplus.ebnf"
 POINTER_REL = "current/current-pointer.json"
+RECEIPT_REL = (
+    "release/evidence/"
+    "r77-integrated-surface-publication-closure-readback.json"
+)
 HIR_SCHEMA_REL = "schemas/language/canonical-hir-h1.schema.json"
 API_SCHEMA_REL = "schemas/language/module-api-digest.schema.json"
 
@@ -287,6 +291,7 @@ def evaluate(root: Path, docs: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Li
     fixture = docs["fixture"]
     frontend = docs["frontend"]
     pointer = docs["pointer"]
+    receipt = docs["receipt"]
     decision = docs["decision"]
     grammar = docs["grammar"]
     productions, grammar_without_comments = grammar_productions(grammar)
@@ -301,19 +306,41 @@ def evaluate(root: Path, docs: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], Li
     require(check, fixture.get("decision_id") == DECISION_ID, "fixture decision ID differs")
     for fragment in (
         "decision_id: %s" % DECISION_ID,
-        "status: INTEGRATED_UNVERIFIED_PENDING_PUBLICATION_CLOSURE",
-        "current_binding: true",
+        "status: VERIFIED_CLOSED_BY_POST_MERGE_READBACK",
+        "current_authority_active: true",
+        "artifact_self_binding: false",
         "github_mutation: semantic surface integrated at da734c608c0d583a671c0da9e14da00bff42affd",
+        "publication_closure: PR #77 / 10e64f492f0529610673846139afcf0d95175663 / tree 8e08d498795c1054e392f82802f54d92cf2c215a",
     ):
         require(check, fragment in decision, "decision fence missing: %s" % fragment)
-    require(check, contract.get("status") == "INTEGRATED_UNVERIFIED_PENDING_PUBLICATION_CLOSURE", "contract status differs")
+    require(check, contract.get("status") == "VERIFIED_CLOSED_BY_POST_MERGE_READBACK", "contract status differs")
     transition = contract.get("source_transition", {})
     require(check, transition.get("mode") == "ATOMIC_FORCED_CUTOVER", "cutover mode differs")
     require(check, transition.get("legacy_alias_count") == 0, "legacy alias count is not zero")
     require(check, transition.get("github_mutation") is True, "contract does not record the semantic main integration")
-    require(check, transition.get("current_binding") is True, "current binding is absent")
-    require(check, pointer.get("candidate_binding", {}).get("current_binding") is True,
-            "current pointer does not bind the R77 semantic target")
+    require(check, transition.get("current_authority_active") is True, "current authority is absent")
+    require(check, transition.get("artifact_self_binding") is False, "artifact self-binding fence differs")
+    require(check, transition.get("semantic_publication_commit") == "da734c608c0d583a671c0da9e14da00bff42affd", "semantic publication commit differs")
+    require(check, transition.get("publication_closure_commit") == "10e64f492f0529610673846139afcf0d95175663", "publication closure commit differs")
+    require(check, transition.get("publication_closure_receipt") == RECEIPT_REL, "publication receipt path differs")
+    require(check, pointer.get("candidate_binding") == {
+        "mode": "semantic_publication_target_bound_by_external_post_merge_receipt",
+        "receipt_location": RECEIPT_REL,
+        "current_binding": False,
+        "self_binding_forbidden": True,
+    }, "current pointer receipt/self-binding fence differs")
+    semantic_receipt = receipt.get("semantic_publication", {})
+    closure_receipt = receipt.get("publication_closure", {})
+    binding_receipt = receipt.get("binding", {})
+    require(check, receipt.get("result") == "VERIFIED_CLOSED", "receipt result differs")
+    require(check, semantic_receipt.get("merge_commit") == "da734c608c0d583a671c0da9e14da00bff42affd", "receipt semantic commit differs")
+    require(check, closure_receipt.get("merge_commit") == "10e64f492f0529610673846139afcf0d95175663", "receipt closure commit differs")
+    require(check, closure_receipt.get("tree") == "8e08d498795c1054e392f82802f54d92cf2c215a", "receipt closure tree differs")
+    require(check, closure_receipt.get("live_main_exact_match_at_audit_start") is True, "receipt live-main readback differs")
+    require(check, binding_receipt.get("semantic_authority_active") is True
+            and binding_receipt.get("artifact_self_binding") is False
+            and binding_receipt.get("pointer_current_binding") is False,
+            "receipt authority/self-binding semantics differ")
 
     check = "R77-AT-002-GOVERNANCE-FENCE"
     evidence = contract.get("evidence", {})
@@ -683,6 +710,7 @@ def load_documents(root: Path) -> Tuple[Dict[str, Any], List[str]]:
         "fixture": one(FIXTURE_REL),
         "frontend": one(FRONTEND_REL),
         "pointer": one(POINTER_REL),
+        "receipt": one(RECEIPT_REL),
         "hir_schema": one(HIR_SCHEMA_REL),
         "api_schema": one(API_SCHEMA_REL),
         "diagnostics": load_chunk_rows(root, "spec/diagnostics/catalog/chunks/*.json", parsed),
@@ -715,7 +743,7 @@ def main() -> int:
         "result": result,
         "decision_id": DECISION_ID,
         "evidence_level": "E2_DESIGN_STATIC",
-        "scope": "R77_CURRENT_SEMANTIC_SURFACE_PENDING_PUBLICATION_CLOSURE",
+        "scope": "R77_CURRENT_SEMANTIC_SURFACE_VERIFIED_CLOSED_BY_POST_MERGE_READBACK",
         "check_count": len(checks),
         "passed_check_count": sum(row["result"] == "PASS" for row in checks),
         "checks": checks,

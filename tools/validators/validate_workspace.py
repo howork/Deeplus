@@ -212,6 +212,7 @@ R77_EXPECTED_NEXT_REVIEWS = EXPECTED_NEXT_REVIEWS + [
 ]
 CURRENT_DECISION_INDEX_PATHS = [
     "decisions/language/current-decisions.json",
+    "decisions/language/Design_Deeplus_Integrated_Surface_Atomic_Cutover_R77_R1.md",
     "decisions/language/Design_Deeplus_Parser_Oriented_DPG_Cutover_R1.md",
     "decisions/language/Design_Deeplus_Pattern_Sequence_MultiValue_Adoption_R1.md",
     "decisions/language/Design_Deeplus_Trait_Operator_Refinement_Adoption_R1.md",
@@ -274,6 +275,10 @@ R76_DECISION_PATH = (
 G4_DECISION_PATH = (
     "decisions/language/"
     "Design_Deeplus_G4_Independent_Implementation_Readiness_Audit_R1.md"
+)
+R77_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R77_Integrated_Surface_Publication_Closure_R1.md"
 )
 R10_DECISION_ID = "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
 AUTHORITY_TRANSITION_REPORT = (
@@ -17426,6 +17431,10 @@ def main() -> int:
         [G4_PUBLICATION_CLOSURE_REPORT]
         if revision in {G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION}
         else []
+    ) + (
+        [R77_PUBLICATION_CLOSURE_REPORT]
+        if revision == R77_PUBLICATION_POLICY_CLOSURE_REVISION
+        else []
     )
     check(
         indexed_decision_paths == CURRENT_DECISION_INDEX_PATHS
@@ -20566,10 +20575,10 @@ def main() -> int:
         check(
             audited_baseline == ({
                 "kind": "git-commit",
-                "commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+                "commit": "10e64f492f0529610673846139afcf0d95175663",
                 "repository": "https://github.com/howork/Deeplus.git",
                 "branch": "main",
-                "role": "r77_publication_policy_repair_base",
+                "role": "r77_publication_closure_readback_base",
             } if r77_publication_closure else {
                 "kind": "git-commit",
                 "commit": HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT,
@@ -20582,9 +20591,9 @@ def main() -> int:
         )
         check(
             candidate_binding == ({
-                "mode": "semantic_publication_target_bound_pending_closure_receipt",
-                "receipt_location": "PENDING_POST_MERGE_READBACK_RECEIPT",
-                "current_binding": True,
+                "mode": "semantic_publication_target_bound_by_external_post_merge_receipt",
+                "receipt_location": "release/evidence/r77-integrated-surface-publication-closure-readback.json",
+                "current_binding": False,
                 "self_binding_forbidden": True,
             } if r77_publication_closure else {
                 "mode": "external_post_commit_receipt_required",

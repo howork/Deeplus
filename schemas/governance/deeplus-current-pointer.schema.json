@@ -28,7 +28,12 @@
       "properties": {
         "kind": {"const": "git-commit"},
         "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
-        "role": {"const": "publication_authority_source"},
+        "role": {
+          "enum": [
+            "publication_authority_source",
+            "r77_semantic_publication_target"
+          ]
+        },
         "repository": {"type": "string", "minLength": 1}
       }
     },
@@ -41,7 +46,12 @@
         "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
         "repository": {"type": "string", "minLength": 1},
         "branch": {"const": "main"},
-        "role": {"const": "document_consistency_repair_base"}
+        "role": {
+          "enum": [
+            "document_consistency_repair_base",
+            "r77_publication_closure_readback_base"
+          ]
+        }
       }
     },
     "candidate_binding": {
@@ -49,8 +59,21 @@
       "additionalProperties": false,
       "required": ["mode", "receipt_location", "current_binding", "self_binding_forbidden"],
       "properties": {
-        "mode": {"const": "external_post_commit_receipt_required"},
-        "receipt_location": {"const": "external_result_pack"},
+        "mode": {
+          "enum": [
+            "external_post_commit_receipt_required",
+            "semantic_publication_target_bound_by_external_post_merge_receipt"
+          ]
+        },
+        "receipt_location": {
+          "anyOf": [
+            {"const": "external_result_pack"},
+            {
+              "type": "string",
+              "pattern": "^release/evidence/[A-Za-z0-9._-]+\\.json$"
+            }
+          ]
+        },
         "current_binding": {"const": false},
         "self_binding_forbidden": {"const": true}
       }

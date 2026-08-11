@@ -9,10 +9,13 @@ branch: main
 baseline_commit: 9f7041c6aff80cf2a725b737d68a197caabc0005
 baseline_tree: 18c627e294b28d6b3f4a04f54d3c7caacd892c38
 authority: Codex Design_ under the user's current delegated language-design authority
-status: INTEGRATED_UNVERIFIED_PENDING_PUBLICATION_CLOSURE
-current_binding: true
+status: VERIFIED_CLOSED_BY_POST_MERGE_READBACK
+current_authority_active: true
+artifact_self_binding: false
 product_lanes: 15/15 NOT_RUN
 github_mutation: semantic surface integrated at da734c608c0d583a671c0da9e14da00bff42affd; this closure has no product implementation claim
+publication_closure: PR #77 / 10e64f492f0529610673846139afcf0d95175663 / tree 8e08d498795c1054e392f82802f54d92cf2c215a
+closure_receipt: release/evidence/r77-integrated-surface-publication-closure-readback.json
 ```
 
 This decision reconstructs eight review inputs into one Deeplus contract. It
