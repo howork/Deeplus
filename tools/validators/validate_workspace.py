@@ -13149,6 +13149,12 @@ def main() -> int:
         "decisions/language/Design_Deeplus_Formatter_LSP_DPG_Authority_Rebase_R1.md",
         "tools/validators/validate_formatter_lsp_dpg_authority_rebase.py",
         "tools/validators/run_formatter_lsp_dpg_authority_rebase_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Publication_Current_Pointer_Binding_Closure_R1.md",
+        "schemas/language/publication-current-pointer-binding-r1.schema.json",
+        "spec/contracts/publication-current-pointer-binding-r1.json",
+        "tests/fixtures/current/publication-current-pointer-binding-r1.json",
+        "tools/validators/validate_publication_current_pointer_binding_r1.py",
+        "tools/validators/run_publication_current_pointer_binding_r1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -14245,6 +14251,52 @@ def main() -> int:
         r93_mutation_process.returncode == 0,
         "R93_FORMATTER_LSP_DPG_AUTHORITY_REBASE_R1_MUTATIONS",
         r93_mutation_detail[-4000:],
+    )
+
+    r94_validator = (
+        root / "tools/validators/validate_publication_current_pointer_binding_r1.py"
+    )
+    r94_process = subprocess.run(
+        [sys.executable, str(r94_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r94_detail = (
+        r94_process.stdout.strip()
+        if r94_process.returncode == 0
+        else r94_process.stderr.strip() or r94_process.stdout.strip()
+    )
+    check(
+        r94_process.returncode == 0,
+        "R94_PUBLICATION_CURRENT_POINTER_BINDING_R1",
+        r94_detail[-4000:],
+    )
+
+    r94_mutation_runner = (
+        root
+        / "tools/validators/run_publication_current_pointer_binding_r1_mutation_tests.py"
+    )
+    r94_mutation_process = subprocess.run(
+        [sys.executable, str(r94_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r94_mutation_detail = (
+        r94_mutation_process.stdout.strip()
+        if r94_mutation_process.returncode == 0
+        else r94_mutation_process.stderr.strip()
+        or r94_mutation_process.stdout.strip()
+    )
+    check(
+        r94_mutation_process.returncode == 0,
+        "R94_PUBLICATION_CURRENT_POINTER_BINDING_R1_MUTATIONS",
+        r94_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

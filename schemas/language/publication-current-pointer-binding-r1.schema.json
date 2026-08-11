@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "deeplus.publication-current-pointer-binding-r1.schema.json",
+  "title": "Deeplus publication and current pointer binding R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "status",
+    "gap_id",
+    "baseline_main",
+    "identity_roles",
+    "pointer_binding",
+    "state_machine",
+    "acceptance",
+    "governance"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.publication-current-pointer-binding/r1"},
+    "status": {"const": "LOCAL_VERIFIED_CANDIDATE_NOT_INTEGRATED"},
+    "gap_id": {"const": "IR-GOV-P0-064"},
+    "baseline_main": {"const": "10e64f492f0529610673846139afcf0d95175663"},
+    "identity_roles": {"type": "object"},
+    "pointer_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "receipt_location",
+        "current_binding",
+        "semantic_authority_active",
+        "artifact_self_binding",
+        "self_binding_forbidden"
+      ],
+      "properties": {
+        "mode": {"const": "semantic_publication_target_bound_by_external_post_merge_receipt"},
+        "receipt_location": {"const": "release/evidence/r77-integrated-surface-publication-closure-readback.json"},
+        "current_binding": {"const": false},
+        "semantic_authority_active": {"const": true},
+        "artifact_self_binding": {"const": false},
+        "self_binding_forbidden": {"const": true}
+      }
+    },
+    "state_machine": {"type": "object"},
+    "acceptance": {"type": "object"},
+    "governance": {"type": "object"}
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "$schema": "../../schemas/language/publication-current-pointer-binding-r1.schema.json",
+  "schema": "deeplus.publication-current-pointer-binding/r1",
+  "status": "LOCAL_VERIFIED_CANDIDATE_NOT_INTEGRATED",
+  "gap_id": "IR-GOV-P0-064",
+  "baseline_main": "10e64f492f0529610673846139afcf0d95175663",
+  "identity_roles": {
+    "semantic_publication": {
+      "role": "R77_SEMANTIC_PUBLICATION_TARGET",
+      "pull_request": 76,
+      "commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+      "tree": "ab37f3a91745c3b90e87eeaf15868007ef08ef69"
+    },
+    "publication_closure_readback": {
+      "role": "R77_PUBLICATION_CLOSURE_READBACK",
+      "pull_request": 77,
+      "commit": "10e64f492f0529610673846139afcf0d95175663",
+      "tree": "8e08d498795c1054e392f82802f54d92cf2c215a",
+      "parent": "da734c608c0d583a671c0da9e14da00bff42affd"
+    },
+    "artifact_byte_identity": {
+      "role": "REPOSITORY_FILE_SHA256",
+      "may_equal_git_commit_identity": false
+    }
+  },
+  "pointer_binding": {
+    "mode": "semantic_publication_target_bound_by_external_post_merge_receipt",
+    "receipt_location": "release/evidence/r77-integrated-surface-publication-closure-readback.json",
+    "current_binding": false,
+    "semantic_authority_active": true,
+    "artifact_self_binding": false,
+    "self_binding_forbidden": true
+  },
+  "state_machine": {
+    "states": [
+      {
+        "state": "SEMANTIC_TARGET_NOT_MERGED",
+        "semantic_authority_active": false,
+        "receipt_required": false,
+        "current_binding": false
+      },
+      {
+        "state": "SEMANTIC_MERGED_AWAITING_CLOSURE_READBACK",
+        "semantic_authority_active": true,
+        "receipt_required": true,
+        "current_binding": false
+      },
+      {
+        "state": "VERIFIED_BY_EXTERNAL_POST_MERGE_READBACK",
+        "semantic_authority_active": true,
+        "receipt_required": true,
+        "current_binding": false
+      }
+    ],
+    "forbidden_states": [
+      "PENDING_RECEIPT_AND_CURRENT_BINDING_TRUE",
+      "ABSENT_RECEIPT_AND_CURRENT_BINDING_TRUE",
+      "PREDICTED_FUTURE_COMMIT_IN_SELF_CONTAINING_ARTIFACT",
+      "SEMANTIC_AND_CLOSURE_COMMIT_ROLE_CONFLATION",
+      "ARTIFACT_SHA256_AND_GIT_COMMIT_SHA_COMPARISON"
+    ],
+    "verified_transition": "semantic target is an ancestor of the closure commit; exact commits and trees, required CI conclusions and live-main readback are recorded by an external receipt",
+    "main_advance_after_receipt": "REBASE_NEXT_CLUSTER_OR_RECORD_NEW_READBACK_WITHOUT_REWRITING_IMMUTABLE_RECEIPT"
+  },
+  "acceptance": {
+    "receipt_result": "VERIFIED_CLOSED",
+    "receipt_verdict": "VERIFIED_CLOSED_BY_POST_MERGE_READBACK",
+    "semantic_commit_exists": true,
+    "closure_commit_exists": true,
+    "closure_parent_is_semantic_commit": true,
+    "closure_live_main_exact_at_recording": true,
+    "required_ci_workflows": [
+      "Canonical integrity",
+      "Rust workspace"
+    ],
+    "required_ci_conclusion": "SUCCESS",
+    "pending_receipt_current_binding_true_count": 0,
+    "self_referential_commit_count": 0,
+    "identity_role_conflation_count": 0
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_mutation": false
+  }
+}

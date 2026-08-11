@@ -1,0 +1,36 @@
+{
+  "schema": "deeplus.publication-current-pointer-binding-fixtures/r1",
+  "contract": "spec/contracts/publication-current-pointer-binding-r1.json",
+  "cases": [
+    {"test_id": "R94-P-01-EXTERNAL-RECEIPT", "class": "positive", "scenario": "Exact semantic and closure commits, trees, CI and readback are bound by the external receipt.", "expected": "ACCEPT_VERIFIED_EXTERNAL_BINDING"},
+    {"test_id": "R94-P-02-ACTIVE-NONSELF", "class": "positive", "scenario": "Semantic authority is active while artifact current_binding and self-binding remain false.", "expected": "ACCEPT_ACTIVE_SEMANTICS_WITHOUT_ARTIFACT_SELF_BINDING"},
+    {"test_id": "R94-P-03-ROLE-SEPARATION", "class": "positive", "scenario": "Semantic merge and closure readback have distinct commits and identity roles.", "expected": "ACCEPT_TWO_PHASE_PUBLICATION"},
+    {"test_id": "R94-B-01-AWAITING-RECEIPT", "class": "boundary", "scenario": "Semantic merge exists but closure readback is not yet available.", "expected": "HOLD_WITH_CURRENT_BINDING_FALSE"},
+    {"test_id": "R94-B-02-MAIN-ADVANCED", "class": "boundary", "scenario": "Live main advances after the immutable closure receipt.", "expected": "REBASE_NEXT_CLUSTER_WITHOUT_REWRITING_RECEIPT"},
+    {"test_id": "R94-B-03-CI-PENDING", "class": "boundary", "scenario": "Closure commit exists but a required CI conclusion is pending.", "expected": "HOLD_VERIFICATION_WITH_CURRENT_BINDING_FALSE"},
+    {"test_id": "R94-B-04-SEMANTIC-ANCESTOR", "class": "boundary", "scenario": "Closure is a later descendant rather than the direct parent of semantic publication.", "expected": "REQUIRE_EXPLICIT_ANCESTRY_AND_INTERMEDIATE_SCOPE_AUDIT"},
+    {"test_id": "R94-N-01-PENDING-TRUE", "class": "negative", "scenario": "Pointer says PENDING_POST_MERGE_READBACK_RECEIPT and current_binding true.", "expected": "REJECT_FALSE_PUBLICATION_BINDING"},
+    {"test_id": "R94-N-02-ABSENT-TRUE", "class": "negative", "scenario": "Receipt is absent while current_binding is true.", "expected": "REJECT_MISSING_BINDING_EVIDENCE"},
+    {"test_id": "R94-N-03-SELF-COMMIT", "class": "negative", "scenario": "A file predicts the commit that contains its own final bytes.", "expected": "REJECT_SELF_REFERENTIAL_COMMIT_IDENTITY"},
+    {"test_id": "R94-N-04-ROLE-CONFLATION", "class": "negative", "scenario": "Semantic publication and closure readback commits are treated as one role.", "expected": "REJECT_PUBLICATION_IDENTITY_ROLE_CONFLATION"},
+    {"test_id": "R94-N-05-HASH-DOMAIN-CONFLATION", "class": "negative", "scenario": "A 64-character artifact SHA-256 is compared directly with a 40-character Git commit SHA.", "expected": "REJECT_HASH_DOMAIN_CONFLATION"},
+    {"test_id": "R94-N-06-CI-FAILURE", "class": "negative", "scenario": "The external receipt records a failed required CI workflow as verified closure.", "expected": "REJECT_FAILED_PUBLICATION_GATE"},
+    {"test_id": "R94-N-07-PRODUCT-OVERCLAIM", "class": "negative", "scenario": "Repository-static publication closure is reported as production implementation PASS.", "expected": "REJECT_PRODUCT_SUPPORT_OVERCLAIM"}
+  ],
+  "mutations": [
+    {"mutation_id": "R94-M-01-CURRENT-BINDING-TRUE", "expected": "REJECT"},
+    {"mutation_id": "R94-M-02-PENDING-RECEIPT", "expected": "REJECT"},
+    {"mutation_id": "R94-M-03-SEMANTIC-COMMIT-DRIFT", "expected": "REJECT"},
+    {"mutation_id": "R94-M-04-CLOSURE-COMMIT-DRIFT", "expected": "REJECT"},
+    {"mutation_id": "R94-M-05-CLOSURE-TREE-DRIFT", "expected": "REJECT"},
+    {"mutation_id": "R94-M-06-RECEIPT-BINDING-TRUE", "expected": "REJECT"},
+    {"mutation_id": "R94-M-07-CI-FAILURE", "expected": "REJECT"},
+    {"mutation_id": "R94-M-08-PRODUCT-PASS", "expected": "REJECT"}
+  ],
+  "execution": {
+    "static_validation": "EXECUTED_PASS",
+    "production_implementation": "NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "open_feature_p1_count": 22
+  }
+}
