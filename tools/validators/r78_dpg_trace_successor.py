@@ -12,13 +12,13 @@ LOCAL_PREDECESSOR = "7d4e6c48b9374bec34a60b970530174dd9b4e145"
 COUNTS = (3712, 4, 505, 0)
 # R83 adds the exact OrdinaryCallSelectionV1 evidence locators.  The R84
 # RefinementR0V1 closure, R85 member-visibility omission closure, R86
-# strong-comparison coherence closure, and R87 Trait auto-policy registry
-# closure then add their canonical artifact, feature, predicate, diagnostic,
-# and acceptance locators without changing the R78
-# parser-authority projection or any existing target cell. Historical validators
+# strong-comparison coherence closure, R87 Trait auto-policy registry closure,
+# and R88 SourceItemCommitmentV1 then add their canonical artifact, feature,
+# predicate, diagnostic, and acceptance locators without changing the R78
+# target-cell partition. Historical validators
 # import this successor count only after first validating the complete current
 # trace through is_successor().
-EVIDENCE_COUNT = 4486
+EVIDENCE_COUNT = 4504
 GITHUB_PUBLICATION = "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR"
 
 

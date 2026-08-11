@@ -9,6 +9,16 @@ binding, and requires a non-null effective domain in typed HIR. MIR receives no
 no operation for `IR-VIS-P1-057`. xVM and Cranelift may not reinterpret an
 owner default, inherited slot, Trait requirement, or actor transport domain.
 
+Source-item ownership is likewise sealed before HIR and MIR.
+`SourceItemCommitmentV1` preserves its row and marker span only in the lossless
+CST; normalized AST contains the selected declaration or statement owner, and
+MIR receives neither a commitment node nor a fallback branch. A contextual
+declaration that fails after its marker has no runtime meaning and never lowers.
+MIR, xVM and Cranelift perform zero contextual-word, symbol, type, overload or
+source-order lookup and cannot reinterpret `actor Worker { ... }` as a call.
+The parenthesized `actor(Worker) { ... }` form is already an ordinary call before
+lowering. Product frontend and backend execution remain `NOT_RUN`.
+
 ## 1. Machine state and observation
 
 A step state contains the current MIR frame, ordered operand stack, places and ownership states, cleanup-region stack, effect/error continuation, execution/concur/actor state, provider bindings, and source provenance. Observable events are ordered result/failure, I/O or authority events, message enqueue/dequeue, run spawn/join, suspension/resume, cancellation, cleanup and provider observation. Backend-private allocation and instruction selection are not observations.

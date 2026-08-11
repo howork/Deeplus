@@ -4,6 +4,44 @@
 <!-- deeplus-grammar-reference-status: CURRENT_CANONICAL_DOCUMENTATION_PROJECTION -->
 <!-- deeplus-status-fence: CURRENT -->
 
+## SourceItemCommitmentV1: 소스 시작점의 문맥 선언 결정
+
+소스 역할과 Stable/Preview profile은 parsing 전에 이미 정해진다. 각
+source item 시작점에서 parser는 한 번 checkpoint하고
+`SourceItemCommitmentV1`의 닫힌 13개 행을 검사한다. 이 검사는 token,
+부착 여부, 줄 경계, 균형 delimiter와 DPG의 구문적 Type parse만 사용한다.
+이름이나 타입이 실제로 선언되어 있는지는 보지 않는다.
+
+commit marker 이전에 행이 맞지 않으면 token을 하나도 소비하지 않고
+되돌아간다. script root라면 그때 같은 입력을 statement로 읽을 수 있다.
+marker 이후에는 선언 owner가 확정되므로 뒤의 header/body 오류를 call로
+재해석하지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/source-item-commitment-v1.json -->
+```deeplus
+actor Worker {
+}
+```
+
+위 코드는 source item 시작점에서 `actor` 선언으로 확정된다. 같은 이름의
+값을 trailing closure와 함께 호출하려면 첫 인자를 괄호로 감싸 의도를
+분명히 한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/source-item-commitment-v1.json -->
+```deeplus
+actor(Worker) { =>
+    start()
+}
+```
+
+`public actor Worker {}`의 visibility도 같은 transaction 안에서 처리한다.
+반면 annotation은 이미 `AnnotatedItem`을 선택하므로 annotation 뒤의
+표면이 선언으로 이어지지 않으면 `ANNOTATION_TARGET_REQUIRED`이며 statement
+fallback은 없다. 정확한 행, CST recovery와 진단 우선순위는
+[`source-item-commitment-v1.json`](../../spec/contracts/source-item-commitment-v1.json)에
+있다. 이 계약은 design-static이며 production parser/formatter/LSP 실행은
+`15/15 NOT_RUN`이다.
+
 ## 1. 이 장의 목적
 
 이 장은

@@ -1,0 +1,32 @@
+[
+  {
+    "authority": "LANGUAGE / PARSER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "source_role_contract"
+    ],
+    "fixit_hint": "complete the committed declaration, or parenthesize the first argument if the contextual name was intended as a call",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Never fall back to a statement or trailing-closure call after the SourceItemCommitmentV1 marker.",
+    "message": "The source item reached a contextual declaration commitment marker but did not complete that declaration.",
+    "notes": "The diagnostic preserves deterministic declaration ownership and lossless recovery; production parser execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/source-item-commitment-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "top_level_script_root_msp"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

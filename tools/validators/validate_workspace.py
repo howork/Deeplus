@@ -135,8 +135,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1500, "predicates": 288,
-    "predicate_fixtures": 888, "no_go": 154,
+    "features": 723, "diagnostics": 1501, "predicates": 289,
+    "predicate_fixtures": 892, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -12782,8 +12782,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 288
-                and fixed_counts.get("predicate_fixtures") == 888
+                and fixed_counts.get("predicates") == 289
+                and fixed_counts.get("predicate_fixtures") == 892
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -13096,6 +13096,14 @@ def main() -> int:
         "tests/fixtures/current/trait-auto-policy-registry-v1.json",
         "tools/validators/validate_trait_auto_policy_registry_v1.py",
         "tools/validators/run_trait_auto_policy_registry_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Source_Item_Commitment_Closure_R1.md",
+        "schemas/language/source-item-commitment-decision-v1.schema.json",
+        "schemas/language/source-item-commitment-v1.schema.json",
+        "schemas/language/source-item-commitment-fixtures-v1.schema.json",
+        "spec/contracts/source-item-commitment-v1.json",
+        "tests/fixtures/current/source-item-commitment-v1.json",
+        "tools/validators/validate_source_item_commitment_v1.py",
+        "tools/validators/run_source_item_commitment_v1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -13922,6 +13930,52 @@ def main() -> int:
         r87_mutation_process.returncode == 0,
         "R87_TRAIT_AUTO_POLICY_REGISTRY_V1_MUTATIONS",
         r87_mutation_detail[-4000:],
+    )
+
+    r88_validator = (
+        root / "tools/validators/validate_source_item_commitment_v1.py"
+    )
+    r88_process = subprocess.run(
+        [sys.executable, str(r88_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r88_detail = (
+        r88_process.stdout.strip()
+        if r88_process.returncode == 0
+        else r88_process.stderr.strip() or r88_process.stdout.strip()
+    )
+    check(
+        r88_process.returncode == 0,
+        "R88_SOURCE_ITEM_COMMITMENT_V1",
+        r88_detail[-4000:],
+    )
+
+    r88_mutation_runner = (
+        root
+        / "tools/validators/run_source_item_commitment_v1_mutation_tests.py"
+    )
+    r88_mutation_process = subprocess.run(
+        [sys.executable, str(r88_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r88_mutation_detail = (
+        r88_mutation_process.stdout.strip()
+        if r88_mutation_process.returncode == 0
+        else r88_mutation_process.stderr.strip()
+        or r88_mutation_process.stdout.strip()
+    )
+    check(
+        r88_mutation_process.returncode == 0,
+        "R88_SOURCE_ITEM_COMMITMENT_V1_MUTATIONS",
+        r88_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

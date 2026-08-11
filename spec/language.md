@@ -43,6 +43,27 @@ infer either axis by trying roots.
 - A script source may contain top-level executable statements under the script root contract.
 - Package and Module identities are static but distinct. A Package is the unit of distribution, dependency resolution, build configuration, and artifact provenance. A Module is the unit of namespace, visibility, static name resolution, and source composition. Runtime strings become neither identity.
 
+Every source-item boundary uses the closed `SourceItemCommitmentV1` parser
+context after the source role and activation profile have been selected.
+Contextual words remain identifiers while the probe is uncommitted. The probe
+takes one checkpoint, uses only token spelling/kind, attachment, trivia
+boundaries, balanced delimiters and a syntactic DPG Type parse, and consumes
+zero tokens when no row reaches its marker. It performs no name, type,
+overload, import or source-order lookup.
+
+Once a row reaches its structural marker, its declaration owner is final. A
+later malformed header or body emits
+`SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE`; the parser must not reinterpret
+the same tokens as an expression or parenless trailing-closure call. Thus
+source-initial `actor Worker { ... }` is an Actor declaration. A script that
+calls a value named `actor` writes the unambiguous `actor(Worker) { ... }`.
+Optional `public`, `private`, or `common` is part of the transaction. An
+annotation already selects `AnnotatedItem`, so it has no statement fallback.
+The exact thirteen-row Stable/Preview table and recovery/CST obligations are in
+`spec/contracts/source-item-commitment-v1.json`. This R88 design closure binds
+audit gap `IR-PARSE-P1-058`; parser, formatter and LSP product execution remain
+`15/15 NOT_RUN`.
+
 The implementation must preserve source role through CST, AST/HIR, module API digest, and diagnostic reporting. Entry selection is a checker/linker responsibility; source order is not a tie-breaker.
 
 A Stable carrier profile requires the absence of `#preview(...)`. A Preview

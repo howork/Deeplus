@@ -1,0 +1,190 @@
+{
+  "schema": "deeplus.source-item-commitment/v1",
+  "contract_schema": "schemas/language/source-item-commitment-v1.schema.json",
+  "revision": "R88-SOURCE-ITEM-COMMITMENT-R1",
+  "status": "LOCAL_VERIFIED_DESIGN_CANDIDATE",
+  "authority": "CODEX_DESIGN_IMPLEMENTATION_READINESS_GOAL",
+  "audit_gap_binding": {
+    "id": "IR-PARSE-P1-058",
+    "severity": "P1",
+    "feature_p1_created": 0
+  },
+  "source_boundary": {
+    "role_selected_before_parse": true,
+    "activation_profile_selected_before_parse": true,
+    "applies_to": ["StableItem", "AnnotatedItem", "PreviewFFI"],
+    "member_item_scope_added": false,
+    "grammar_production_change_count": 0
+  },
+  "commitment_law": {
+    "checkpoint_count_per_probe": 1,
+    "pre_marker_failure": "ROLLBACK_ZERO_TOKENS",
+    "post_marker_failure": "COMMITTED_DECLARATION_DIAGNOSTIC_NO_FALLBACK",
+    "declaration_precedence_after_marker": true,
+    "semantic_lookup_count": 0,
+    "type_lookup_count": 0,
+    "overload_lookup_count": 0,
+    "source_order_winner_count": 0,
+    "allowed_probe_inputs": ["TOKEN_KIND", "TOKEN_SPELLING", "ATTACHMENT", "TRIVIA_BOUNDARY", "BALANCED_DELIMITER", "DPG_SYNTACTIC_TYPE_PARSE"],
+    "script_statement_fallback_before_marker": true,
+    "library_executable_statement_fallback": false,
+    "contextual_name_call_escape": "PARENTHESIZE_FIRST_ARGUMENT",
+    "visibility_prefix_is_transactional": true,
+    "annotation_selects_annotated_item_without_statement_fallback": true
+  },
+  "rows": [
+    {
+      "row_id": "SIC-R01",
+      "starter": "data|value|resource|final|open|abstract|sealed",
+      "production_owner": "Class",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "hard class token after one admitted Class flavor/modifier sequence",
+      "probe": "parse the finite DPG ClassFlavor and ClassModifierSequence prefix without crossing LB/END",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R02",
+      "starter": "actor",
+      "production_owner": "Actor",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "Name after optional attached #mailbox(capacity: StaticInt)",
+      "probe": "recognize the attached mailbox tag if present, then one lexical Name",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R03",
+      "starter": "protocol",
+      "production_owner": "ActorProtocol",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "Name",
+      "probe": "recognize one lexical Name after protocol",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R04",
+      "starter": "typestate",
+      "production_owner": "Typestate",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "Name",
+      "probe": "recognize one lexical Name after typestate",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R05",
+      "starter": "bitfield",
+      "production_owner": "Bitfield",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "contextual backing after optional attached tag and Name",
+      "probe": "recognize the finite bitfield tag prefix, one Name and backing",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R06",
+      "starter": "extension",
+      "production_owner": "ExtensionSet",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "contextual as after one complete syntactic Type",
+      "probe": "run the DPG Type parser transactionally; no type or name resolution",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R07",
+      "starter": "extension",
+      "production_owner": "ExtensionPack",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "contextual pack",
+      "probe": "recognize the exact adjacent contextual pair extension pack",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R08",
+      "starter": "capability",
+      "production_owner": "Capability",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "contextual for after Name",
+      "probe": "recognize one lexical Name followed by for",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R09",
+      "starter": "schema",
+      "production_owner": "Schema",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "Name",
+      "probe": "recognize one lexical Name after schema; source-initial schema Name { is declaration-shaped",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R10",
+      "starter": "unit",
+      "production_owner": "UnitCatalog",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "contextual catalog",
+      "probe": "recognize the exact adjacent contextual pair unit catalog",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R11",
+      "starter": "opaque",
+      "production_owner": "ModuleInterface",
+      "profiles": ["stable", "preview"],
+      "commit_marker": "hard module token",
+      "probe": "recognize opaque followed by the hard module token without crossing LB/END",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R12",
+      "starter": "extern",
+      "production_owner": "PreviewFFI.Function",
+      "profiles": ["preview"],
+      "commit_marker": "hard def token after attached #C",
+      "probe": "recognize extern#C def#unsafe with exact attachment",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    },
+    {
+      "row_id": "SIC-R13",
+      "starter": "extern",
+      "production_owner": "PreviewFFI.Block",
+      "profiles": ["preview"],
+      "commit_marker": "contextual c followed by opening parenthesis",
+      "probe": "recognize extern c( and retain balanced-string/delimiter ownership in the committed declaration",
+      "fallback_before_marker": "ROLLBACK_ZERO_TOKENS",
+      "fallback_after_marker": "FORBIDDEN"
+    }
+  ],
+  "cst_ast_tooling": {
+    "lossless_cst_node": "SourceItemCommitmentCst",
+    "cst_fields": ["source_role", "activation_profile", "checkpoint_offset", "row_id_or_null", "marker_span_or_null", "selected_owner", "recovery_owner"],
+    "normalized_ast_commitment_node_count": 0,
+    "ast_owner": "SELECTED_DECLARATION_OR_STATEMENT_ONLY",
+    "formatter_uses_symbol_lookup": false,
+    "formatter_preserves_parenthesized_contextual_name_call": true,
+    "lsp_recovery_crosses_commit_marker": false,
+    "incremental_reparse_owner": "SMALLEST_SOURCE_ITEM_THEN_PARENT_ASCENT",
+    "product_execution": "NOT_RUN"
+  },
+  "diagnostics": [
+    "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+    "ANNOTATION_TARGET_REQUIRED",
+    "TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT"
+  ],
+  "governance": {
+    "semantic_p0": 0,
+    "global_open_feature_p1": 22,
+    "new_feature_p1_count": 0,
+    "product_lanes": "15/15_NOT_RUN",
+    "github_mutation": "NOT_PERFORMED"
+  }
+}

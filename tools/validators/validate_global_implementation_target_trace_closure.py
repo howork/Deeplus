@@ -28,6 +28,13 @@ R77_CURRENT_TARGET_TRACE_COUNTS = {
     "NOT_APPLICABLE": 505,
     "APPLICABLE_BLOCKED_BY_GAP": 0,
 }
+R88_CATALOG_REASSEMBLY_RELOCATIONS = {
+    (
+        "static_evidence_selector_msp",
+        "spec/features/catalog/chunks/part-0015.json",
+        "/36",
+    ): ("spec/features/catalog/chunks/part-0034.json", "/0"),
+}
 
 
 def load(path: Path) -> Any:
@@ -111,7 +118,11 @@ def validate_data(root: Path, contract: dict[str, Any], overlay: dict[str, Any],
             row = catalog[feature_id]
             location = locations[feature_id]
             snapshot = cell.get("feature_contract", {})
-            require((snapshot.get("path"), snapshot.get("json_pointer")) == location, f"{prefix}_LOCATION")
+            historical_location = (snapshot.get("path"), snapshot.get("json_pointer"))
+            accepted_location = R88_CATALOG_REASSEMBLY_RELOCATIONS.get(
+                (feature_id, *historical_location), historical_location
+            )
+            require(accepted_location == location, f"{prefix}_LOCATION")
             require(snapshot.get("status_enum") == row.get("status_enum"), f"{prefix}_STATUS")
             require(snapshot.get("feature_kind") == row.get("feature_kind"), f"{prefix}_KIND")
             require(snapshot.get("trace_class") == row.get("trace_class"), f"{prefix}_CLASS")

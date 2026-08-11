@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r88/source-item-commitment-decision-v1.schema.json",
+  "title": "Deeplus source-item commitment decision V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "source_role", "activation_profile", "annotation_prefix",
+    "visibility_prefix_or_null", "contextual_starter",
+    "declaration_family_or_null", "commit_marker_reached",
+    "declaration_parse_succeeds", "statement_parse_succeeds",
+    "semantic_lookup_count", "committed_token_count_before_marker"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.source-item-commitment-decision/v1"},
+    "source_role": {"enum": ["library", "executable", "script"]},
+    "activation_profile": {"enum": ["stable", "preview"]},
+    "annotation_prefix": {"type": "boolean"},
+    "visibility_prefix_or_null": {"type": ["string", "null"], "enum": ["public", "private", "common", null]},
+    "contextual_starter": {"type": "string", "minLength": 1},
+    "declaration_family_or_null": {
+      "type": ["string", "null"],
+      "enum": [
+        "CONTEXTUAL_CLASS", "ACTOR", "ACTOR_PROTOCOL", "TYPESTATE",
+        "BITFIELD", "EXTENSION_SET", "EXTENSION_PACK", "CAPABILITY",
+        "SCHEMA", "UNIT_CATALOG", "OPAQUE_MODULE",
+        "PREVIEW_EXTERN_FUNCTION", "PREVIEW_EXTERN_BLOCK", null
+      ]
+    },
+    "commit_marker_reached": {"type": "boolean"},
+    "declaration_parse_succeeds": {"type": "boolean"},
+    "statement_parse_succeeds": {"type": "boolean"},
+    "semantic_lookup_count": {"type": "integer", "minimum": 0},
+    "committed_token_count_before_marker": {"type": "integer", "minimum": 0}
+  },
+  "x-product-parser": "NOT_RUN"
+}

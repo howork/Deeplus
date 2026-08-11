@@ -1,0 +1,98 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "SourceItemOwnerCommitted",
+    "source_name": "SourceItemOwnerCommitted",
+    "summary": "Select one contextual declaration or statement owner at a source-item boundary without semantic lookup or post-marker fallback; product parser NOT_RUN.",
+    "input_descriptor": "SourceItemCommitmentDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/source-item-commitment-decision-v1.schema.json",
+    "descriptor_axes": [
+      "source_role",
+      "activation_profile",
+      "annotation_prefix",
+      "visibility_prefix",
+      "contextual_starter",
+      "declaration_family",
+      "commit_marker",
+      "declaration_parse",
+      "statement_parse",
+      "semantic_lookup_count",
+      "pre_marker_token_commit_count"
+    ],
+    "rule_facets": [
+      "role_selected_before_parse",
+      "closed_contextual_row",
+      "transactional_probe",
+      "declaration_precedence",
+      "annotation_boundary",
+      "lossless_recovery"
+    ],
+    "feature_refs": [
+      "source_role_contract"
+    ],
+    "diagnostic_refs": [
+      "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+      "ANNOTATION_TARGET_REQUIRED",
+      "TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "commit(DeclarationOwner) | rollback_and_parse(Statement) | reject(diagnostic_id)",
+    "requires": [
+      "source role and activation profile are fixed before the source-item probe",
+      "the probe uses one checkpoint and only lexical or syntactic DPG evidence",
+      "failure before a row marker consumes zero tokens and emits no diagnostic",
+      "a reached marker commits the declaration and forbids expression or trailing-closure fallback",
+      "annotation selects AnnotatedItem and therefore has no statement fallback",
+      "symbol, type, overload, import and source-order lookup counts are zero"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/source-item-commitment-v1.json",
+    "formal_judgment_id": "J-SourceItemOwnerCommitted",
+    "algorithm_owner": "role_selected_source_parser_before_source_item_cst_commit",
+    "preconditions": [
+      "scanner token and trivia stream is lossless",
+      "exact source role and activation profile are known",
+      "DPG and ParserContext digests are bound"
+    ],
+    "normalization": "preserve contextual spelling and optional visibility; normalize only the selected row ID and source owner",
+    "decision_procedure": [
+      "take one token checkpoint before optional visibility and contextual starter",
+      "probe only the thirteen ordered structural rows admitted by the selected profile",
+      "on no marker restore the checkpoint and, only in a script without annotation, parse a statement",
+      "on a marker commit the row's declaration owner",
+      "if the committed declaration fails emit SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE without fallback",
+      "preserve the row and marker span in lossless CST but emit no commitment node in normalized AST"
+    ],
+    "termination_metric": "one finite thirteen-row table and one finite syntactic token span bounded by the current source item",
+    "success_result": "SourceItemOwnerFact",
+    "active_primary_diagnostic": "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+    "secondary_diagnostics": [
+      "ANNOTATION_TARGET_REQUIRED",
+      "TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT"
+    ],
+    "positive_fixture_ids": [
+      "PF-SourceItemOwnerCommitted-POS",
+      "PF-SourceItemOwnerCommitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-SourceItemOwnerCommitted-NEG-COMMITTED",
+      "PF-SourceItemOwnerCommitted-NEG-ROLE"
+    ],
+    "evaluation_order": "selected role/profile -> annotation/visibility wrapper -> closed row probe -> marker commit or zero-token rollback -> declaration/statement parse -> deterministic diagnostic",
+    "dependency_predicates": [
+      "SourceRoleAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "COMMITTED_DECLARATION_INCOMPLETE": "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+      "ANNOTATED_STATEMENT_FALLBACK_FORBIDDEN": "ANNOTATION_TARGET_REQUIRED",
+      "TOP_LEVEL_STATEMENT_ROLE_FORBIDDEN": "TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  }
+]

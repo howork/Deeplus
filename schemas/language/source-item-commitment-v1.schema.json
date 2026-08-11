@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r88/source-item-commitment-v1.schema.json",
+  "title": "Deeplus SourceItemCommitmentV1 contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "contract_schema", "revision", "status", "authority",
+    "audit_gap_binding", "source_boundary", "commitment_law", "rows",
+    "cst_ast_tooling", "diagnostics", "governance"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.source-item-commitment/v1"},
+    "contract_schema": {"const": "schemas/language/source-item-commitment-v1.schema.json"},
+    "revision": {"const": "R88-SOURCE-ITEM-COMMITMENT-R1"},
+    "status": {"const": "LOCAL_VERIFIED_DESIGN_CANDIDATE"},
+    "authority": {"const": "CODEX_DESIGN_IMPLEMENTATION_READINESS_GOAL"},
+    "audit_gap_binding": {
+      "const": {"id": "IR-PARSE-P1-058", "severity": "P1", "feature_p1_created": 0}
+    },
+    "source_boundary": {"type": "object"},
+    "commitment_law": {"type": "object"},
+    "rows": {
+      "type": "array", "minItems": 13, "maxItems": 13, "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": [
+          "row_id", "starter", "production_owner", "profiles",
+          "commit_marker", "probe", "fallback_before_marker",
+          "fallback_after_marker"
+        ],
+        "properties": {
+          "row_id": {"type": "string", "pattern": "^SIC-R[0-9]{2}$"},
+          "starter": {"type": "string", "minLength": 1},
+          "production_owner": {"type": "string", "minLength": 1},
+          "profiles": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": {"enum": ["stable", "preview"]}
+          },
+          "commit_marker": {"type": "string", "minLength": 1},
+          "probe": {"type": "string", "minLength": 1},
+          "fallback_before_marker": {"const": "ROLLBACK_ZERO_TOKENS"},
+          "fallback_after_marker": {"const": "FORBIDDEN"}
+        }
+      }
+    },
+    "cst_ast_tooling": {"type": "object"},
+    "diagnostics": {
+      "const": [
+        "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+        "ANNOTATION_TARGET_REQUIRED",
+        "TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT"
+      ]
+    },
+    "governance": {"type": "object"}
+  },
+  "x-product-parser": "NOT_RUN"
+}
