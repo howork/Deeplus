@@ -829,7 +829,7 @@
       "schema": "deeplus.r4-name-resolution-module-predicate-fixture/r1",
       "test_class": "boundary",
       "scenario": "A callable overload set remains ResolvedOverloadSetRef in analysis HIR and is not offered to canonical HIR-H1.",
-      "expected_outcome": "BYPASS_CALLABLE_OVERLOAD_SET_TO_NEXT_CLUSTER",
+      "expected_outcome": "ROUTE_CALLABLE_OVERLOAD_SET_TO_ORDINARY_CALL_SELECTION_V1",
       "primary_reason": null
     },
     "descriptor_v5": {
@@ -850,8 +850,8 @@
         "isolation": "local"
       }
     },
-    "admitted_condition": "the callable overload set is fenced to analysis HIR and the next cluster",
-    "rule_seed": "BYPASS_CALLABLE_OVERLOAD_SET_TO_NEXT_CLUSTER",
+    "admitted_condition": "the callable overload set is fenced to analysis HIR and routed to OrdinaryCallSelectionClosed before canonical HIR",
+    "rule_seed": "ROUTE_CALLABLE_OVERLOAD_SET_TO_ORDINARY_CALL_SELECTION_V1",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "no diagnostic",
     "baseline": "0.1.2-baseline.r51f3",

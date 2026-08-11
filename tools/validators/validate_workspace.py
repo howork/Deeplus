@@ -135,8 +135,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1491, "predicates": 285,
-    "predicate_fixtures": 877, "no_go": 154,
+    "features": 723, "diagnostics": 1494, "predicates": 286,
+    "predicate_fixtures": 880, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -1003,10 +1003,10 @@ R4_NRM_ACCEPTANCE_TEST_IDS = tuple(
     for suffix in ("P", "B", "N")
 )
 R4_NRM_ACCEPTANCE_ORACLE_SHA256 = (
-    "454cbbdfaa62cd8892c93c7eb812e9ad1b21dd4eceb3fb3711bee48728b32be3"
+    "26a6b88d49c67a69c083f57b97e362686c3e01c01dc09a90dbc760b49257438b"
 )
 R4_NRM_PREDICATE_FIXTURE_TUPLE_SHA256 = (
-    "508990469db894889f6952f84836c11744e13a44f0d7cb0a624c4766b9258d19"
+    "2a02fe026d63ef2c8ed69db5357d48b4f62d311d91683e1bf705c3cbb862ce82"
 )
 R4_NRM_ACCEPTANCE_ARTIFACT_REFS = {
     ("IR-RES-P0-040", "positive"): (
@@ -1500,8 +1500,13 @@ def r4_nrm_contract_results(
         ),
     )
 
-    new_predicates = documents[
+    r4_predicate_shard = documents[
         "spec/types/predicates/chunks/part-0018.json"
+    ]
+    new_predicates = [
+        row
+        for row in r4_predicate_shard
+        if row.get("predicate_id") in precedence_ids
     ]
     observed_predicate_ids = [
         row.get("predicate_id") for row in new_predicates
@@ -1511,6 +1516,11 @@ def r4_nrm_contract_results(
         + (
             ["MemberVisibilityAdmitted"]
             if predicate_id == "ReferenceVisibilityActivationAdmitted"
+            else []
+        )
+        + (
+            ["OrdinaryCallSelectionClosed"]
+            if predicate_id == "ResolverHirSealAdmitted"
             else []
         )
         for index, predicate_id in enumerate(precedence_ids)
@@ -1777,9 +1787,13 @@ def r4_nrm_contract_results(
         == "design_algorithm"
         and collision_predicate.get("emission_eligible") is True
         and method_predicate.get("dependency_predicates")
-        == ["MemberExtensionCollisionRejected"]
-        and method_predicate.get("predicate_maturity") == "design_seed"
-        and method_predicate.get("emission_eligible") is False
+        == [
+            "MemberExtensionCollisionRejected",
+            "OrdinaryCallSelectionClosed",
+        ]
+        and method_predicate.get("predicate_maturity")
+        == "design_algorithm"
+        and method_predicate.get("emission_eligible") is True
         and method_predicate.get("evidence_status")
         == "DESIGN_STATIC_NOT_RUN"
         and method_predicate.get("execution_receipt") is None,
@@ -1813,7 +1827,7 @@ def r4_nrm_contract_results(
         "ROW_INFERENCE_RESULT",
         "RETURN_TYPE_ONLY_WINNER",
     )
-    deferred_collision_cases = {
+    closed_collision_cases = {
         case.get("id"): case.get("expected", {}).get(
             "selected_count_or_null"
         )
@@ -1823,22 +1837,24 @@ def r4_nrm_contract_results(
     }
     record(
         "ResolvedOverloadSetRef" in method_fence_text
-        and "next cluster" in method_fence_text
-        and "selection_deferred" in method_fence_text
-        and "selected_count = unspecified_in_R4" in method_fence_text
+        and "OrdinaryCallSelectionClosed" in method_fence_text
+        and "OrdinaryCallSelectionV1" in method_fence_text
+        and "selected_count = 1" in method_fence_text
+        and "next cluster" not in method_fence_text
+        and "selection_deferred" not in method_fence_text
         and all(
             phrase not in method_fence_text
             for phrase in forbidden_method_fence_phrases
         )
-        and deferred_collision_cases
+        and closed_collision_cases
         == {
-            "IR-R4-RES041-POS": None,
-            "IR-R4-RES041-BOUND": None,
+            "IR-R4-RES041-POS": 1,
+            "IR-R4-RES041-BOUND": 1,
         },
-        "R4_NRM_COLLISION_SELECTION_DEFERRED",
+        "R4_NRM_COLLISION_SELECTION_CLOSED",
         (
             f"method={method_predicate.get('predicate_maturity')} "
-            f"selected={deferred_collision_cases}"
+            f"selected={closed_collision_cases}"
         ),
     )
 
@@ -1999,14 +2015,14 @@ def r4_nrm_contract_results(
     noncall_text = json.dumps(noncall_predicate, ensure_ascii=False)
     record(
         "ResolvedOverloadSetRef" in noncall_text
-        and "next cluster" in noncall_text
-        and "generic substitution" in noncall_text
+        and "OrdinaryCallSelectionClosed" in noncall_text
+        and "next cluster" not in noncall_text
         and hir_boundary_fixture.get("descriptor", {}).get(
             "expected_outcome"
         )
-        == "BYPASS_CALLABLE_OVERLOAD_SET_TO_NEXT_CLUSTER",
-        "R4_NRM_NEXT_CLUSTER_FENCE",
-        "callable overload winner remains outside R4",
+        == "ROUTE_CALLABLE_OVERLOAD_SET_TO_ORDINARY_CALL_SELECTION_V1",
+        "R4_NRM_ORDINARY_CALL_SELECTION_BINDING",
+        "analysis-HIR overload sets route to the closed ordinary-call selector",
     )
     record(
         all(
@@ -12755,8 +12771,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 285
-                and fixed_counts.get("predicate_fixtures") == 877
+                and fixed_counts.get("predicates") == 286
+                and fixed_counts.get("predicate_fixtures") == 880
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -13646,6 +13662,52 @@ def main() -> int:
         r82_mutation_process.returncode == 0,
         "R82_MAP_UNFOLD_REST_OWNER_CLOSURE_MUTATIONS",
         r82_mutation_detail[-4000:],
+    )
+
+    r83_validator = (
+        root / "tools/validators/validate_ordinary_call_selection_v1.py"
+    )
+    r83_process = subprocess.run(
+        [sys.executable, str(r83_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r83_detail = (
+        r83_process.stdout.strip()
+        if r83_process.returncode == 0
+        else r83_process.stderr.strip() or r83_process.stdout.strip()
+    )
+    check(
+        r83_process.returncode == 0,
+        "R83_ORDINARY_CALL_SELECTION_V1",
+        r83_detail[-4000:],
+    )
+
+    r83_mutation_runner = (
+        root
+        / "tools/validators/run_ordinary_call_selection_v1_mutation_tests.py"
+    )
+    r83_mutation_process = subprocess.run(
+        [sys.executable, str(r83_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r83_mutation_detail = (
+        r83_mutation_process.stdout.strip()
+        if r83_mutation_process.returncode == 0
+        else r83_mutation_process.stderr.strip()
+        or r83_mutation_process.stdout.strip()
+    )
+    check(
+        r83_mutation_process.returncode == 0,
+        "R83_ORDINARY_CALL_SELECTION_V1_MUTATIONS",
+        r83_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

@@ -542,7 +542,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ResolvedNoncallReferenceSelected",
     "source_name": "deterministic noncall reference selection",
-    "summary": "Select one deterministic noncall reference while leaving callable overload sets to the next cluster.",
+    "summary": "Select one deterministic noncall reference while routing callable overload sets to OrdinaryCallSelectionClosed.",
     "input_descriptor": "RCTSDescriptorV5",
     "input_adapter": "R4ResolvedNoncallReferenceDescriptor",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
@@ -572,7 +572,7 @@
     "requires": [
       "only noncall reference namespaces are eligible for winner selection",
       "a callable overload set remains ResolvedOverloadSetRef in analysis HIR",
-      "generic substitution, applicability and specificity are owned by the next cluster",
+      "generic substitution, applicability and specificity are owned by OrdinaryCallSelectionClosed",
       "source enumeration order is not a tie-breaker"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
@@ -586,14 +586,14 @@
     ],
     "normalization": "partition callable-overload candidates from noncall reference candidates before selection",
     "decision_procedure": [
-      "if the reference is callable, return ResolvedOverloadSetRef to analysis HIR without selecting a winner",
+      "if the reference is callable, return ResolvedOverloadSetRef to analysis HIR for OrdinaryCallSelectionClosed",
       "for a noncall reference, filter to the exact namespace and lowest reachable lookup tier",
       "reject zero or multiple candidates after filtering",
       "reject any outcome that requires an order tie-breaker",
       "otherwise commit one existing typed ResolvedRef"
     ],
     "termination_metric": "finite visible candidate set and finite lookup tiers",
-    "success_result": "ResolvedRef or analysis-HIR ResolvedOverloadSetRef bypass",
+    "success_result": "ResolvedRef or analysis-HIR ResolvedOverloadSetRef routed to OrdinaryCallSelectionClosed",
     "active_primary_diagnostic": "NONCALL_REFERENCE_SELECTION_FAILED",
     "secondary_diagnostics": [],
     "positive_fixture_ids": [
@@ -663,7 +663,7 @@
       "noncall candidate_set_count is zero",
       "each resolved reference carries an existing typed identity and visibility proof",
       "runtime relookup residue count is zero",
-      "callable overload sets remain outside canonical HIR-H1 until the next cluster selects a winner"
+      "every callable overload set is consumed by OrdinaryCallSelectionClosed before canonical HIR-H1"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -672,12 +672,12 @@
     "algorithm_owner": "integrated_checker",
     "preconditions": [
       "all R4 graph, scope, candidate, visibility and noncall selection stages succeeded",
-      "analysis-HIR callable overload sets are fenced from canonical HIR-H1"
+      "OrdinaryCallSelectionClosed consumed every analysis-HIR callable overload set"
     ],
     "normalization": "sort resolver trace rows by stable SourceOriginId and preserve existing typed identity domains",
     "decision_procedure": [
       "reject any unbound primary diagnostic state",
-      "reject nonzero unresolved or noncall candidate-set counts",
+      "reject nonzero unresolved, noncall candidate-set, or callable-overload-residue counts",
       "reject missing typed identity or visibility proof",
       "reject runtime relookup residue",
       "otherwise seal the R4-resolved portion of canonical HIR-H1"
@@ -701,7 +701,8 @@
       "ResolverScopeTreeAdmitted",
       "ReferenceCandidateSetResolved",
       "ReferenceVisibilityActivationAdmitted",
-      "ResolvedNoncallReferenceSelected"
+      "ResolvedNoncallReferenceSelected",
+      "OrdinaryCallSelectionClosed"
     ],
     "diagnostic_dispatch": {
       "UNBOUND_PRIMARY": "RESOLVER_HIR_SEAL_INCOMPLETE",
@@ -797,6 +798,121 @@
     "diagnostic_dispatch": {
       "MISSING_EXPORT_EDGE": "MODULE_INTERFACE_DIGEST_MISMATCH",
       "INTERFACE_DIGEST_MISMATCH": "MODULE_INTERFACE_DIGEST_MISMATCH"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "OrdinaryCallSelectionClosed",
+    "source_name": "candidate-local ordinary-call selection",
+    "summary": "Consume one finite ResolvedOverloadSetRef through candidate-local inference, applicability, closed specificity, and a unique-maximal winner before canonical HIR.",
+    "input_descriptor": "OrdinaryCallSelectionInputV1",
+    "input_adapter": "OrdinaryCallSelectionInputV1",
+    "input_descriptor_schema": "schemas/language/ordinary-call-selection-input-v1.schema.json",
+    "descriptor_axes": [
+      "call_head_id",
+      "call_mode",
+      "candidate_domains",
+      "arguments",
+      "expected_result_type_id_or_null",
+      "activation_profile_id"
+    ],
+    "rule_facets": [
+      "candidate_local_substitution",
+      "applicability",
+      "member_extension_domain_fence",
+      "channel_generality",
+      "input_domain_specificity",
+      "post_winner_result_verification"
+    ],
+    "feature_refs": [
+      "exact_function_signature_callshape_law",
+      "generic_parameter_model_phase_a",
+      "rest_parameter_overload_specificity_law",
+      "implicit_lambda_overload_staging_law",
+      "method_extension_resolution_policy"
+    ],
+    "diagnostic_refs": [
+      "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+      "ORDINARY_CALL_OVERLOAD_AMBIGUOUS",
+      "ORDINARY_CALL_RESULT_CONTEXT_MISMATCH",
+      "MEMBER_EXTENSION_COLLISION",
+      "IMPLICIT_LAMBDA_EXPECTED_CALLABLE_AMBIGUOUS",
+      "TRAILING_CLOSURE_OVERLOAD_AMBIGUOUS",
+      "AMBIGUOUS_REST_PARAMETER_OVERLOAD",
+      "AMBIGUOUS_NAMED_REST_OVERLOAD"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(OrdinaryCallSelectionV1) | reject(reason)",
+    "requires": [
+      "every candidate receives isolated fresh generic variables and one noncommitting applicability probe",
+      "defaults and expected result contribute zero inference constraints",
+      "member and extension domains are never compared by specificity",
+      "specificity uses only the closed channel and input-domain proof rules",
+      "one unique maximal applicable candidate is required",
+      "canonical HIR contains no ResolvedOverloadSetRef"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "R4 callable-overload analysis-HIR defer",
+    "formal_judgment_id": "J-OrdinaryCallSelectionClosed",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "ReferenceCandidateSetResolved produced finite prepartitioned callable domains",
+      "the parser fixed every argument channel before type checking",
+      "global duplicate/overlap static-label checks completed"
+    ],
+    "normalization": "sort candidates only for digest and diagnostic presentation by stable callable identity; run inference and applicability independently; never turn order into preference",
+    "decision_procedure": [
+      "build one nonexecuting descriptor for each explicit argument",
+      "run Phase-A inference, where/conformance, call-shape, ownership, context, effect/error, isolation and suspension checks independently for each candidate",
+      "reject a simultaneous nonempty nominal and extension applicable domain with MEMBER_EXTENSION_COLLISION",
+      "inside the sole applicable domain compare channel generality then the three admitted pointwise input-domain proofs",
+      "treat every unproved relation as incomparable and require one unique maximal candidate",
+      "check a fixed expected result only against the selected winner",
+      "seal OrdinaryCallSelectionV1 with selected identities, complete substitution, call shape and specificity proof"
+    ],
+    "termination_metric": "finite candidate domains, finite candidates, finite declared generic variables, finite arguments, and an acyclic strict partial-order comparison",
+    "success_result": "OrdinaryCallSelectionV1(selected_count=1, unresolved_count=0)",
+    "active_primary_diagnostic": "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+    "secondary_diagnostics": [
+      "ORDINARY_CALL_OVERLOAD_AMBIGUOUS",
+      "ORDINARY_CALL_RESULT_CONTEXT_MISMATCH",
+      "MEMBER_EXTENSION_COLLISION",
+      "IMPLICIT_LAMBDA_EXPECTED_CALLABLE_AMBIGUOUS",
+      "TRAILING_CLOSURE_OVERLOAD_AMBIGUOUS",
+      "AMBIGUOUS_REST_PARAMETER_OVERLOAD",
+      "AMBIGUOUS_NAMED_REST_OVERLOAD"
+    ],
+    "positive_fixture_ids": [
+      "PF-OrdinaryCallSelectionClosed-POS",
+      "PF-OrdinaryCallSelectionClosed-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-OrdinaryCallSelectionClosed-NEG"
+    ],
+    "evaluation_order": "static descriptor normalization -> candidate-local inference/applicability -> domain collision fence -> closed specificity -> unique winner -> expected-result verification -> HIR seal; runtime evaluation starts afterward",
+    "dependency_predicates": [
+      "ReferenceCandidateSetResolved",
+      "ReferenceVisibilityActivationAdmitted",
+      "GenericConstraintSatisfied",
+      "TypeParamKindAdmitted",
+      "MemberExtensionCollisionRejected",
+      "ImplicitLambdaOverloadStagingAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "ZERO_APPLICABLE_CANDIDATES": "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+      "BOTH_NOMINAL_AND_EXTENSION_DOMAINS_APPLICABLE": "MEMBER_EXTENSION_COLLISION",
+      "IMPLICIT_LAMBDA_EXPECTED_TYPE_REQUIRED": "IMPLICIT_LAMBDA_EXPECTED_CALLABLE_AMBIGUOUS",
+      "TRAILING_CLOSURE_BINDING_REQUIRED": "TRAILING_CLOSURE_OVERLOAD_AMBIGUOUS",
+      "ALL_MAXIMA_NAMED_REST": "AMBIGUOUS_NAMED_REST_OVERLOAD",
+      "ALL_MAXIMA_REPEATED": "AMBIGUOUS_REST_PARAMETER_OVERLOAD",
+      "OTHER_MULTIPLE_MAXIMA": "ORDINARY_CALL_OVERLOAD_AMBIGUOUS",
+      "WINNER_RESULT_CONTEXT_MISMATCH": "ORDINARY_CALL_RESULT_CONTEXT_MISMATCH"
     },
     "execution_receipt": null,
     "diagnostic_disposition": "active_primary_design_algorithm_product_not_run",

@@ -1,0 +1,163 @@
+{
+  "schema": "deeplus.ordinary-call-selection/v1",
+  "revision": "preimpl-p1-ordinary-call-selection-r1",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED",
+  "gap_id": "IR-CALL-P1-055",
+  "input_descriptor_schema": "schemas/language/ordinary-call-selection-input-v1.schema.json",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "observed_live_main": "10e64f492f0529610673846139afcf0d95175663",
+    "local_predecessor_commit": "2df0dd46ba6258ac0851946ffc6952e1ccf9c4cb"
+  },
+  "scope": {
+    "included_call_modes": ["ORDINARY", "MESSAGE"],
+    "included_domains": ["DIRECT_FUNCTION", "NOMINAL_MEMBER", "TRAIT_REQUIREMENT", "QUALIFIED_EXTENSION"],
+    "excluded_owners": ["ACTOR_TRANSPORT", "FIXED_OPERATOR_CONFORMANCE", "TRAIT_WITNESS_DISCOVERY", "TRAIT_WITNESS_MATERIALIZATION", "RESERVED_OPERATION", "DYNAMIC_LOOKUP"],
+    "new_surface_count": 0
+  },
+  "domain_fence": {
+    "resolver_output": "ResolvedOverloadSetRef",
+    "candidate_domains_are_prepartitioned": true,
+    "nominal_extension_applicability_is_independent": true,
+    "both_nominal_and_extension_applicable": "MEMBER_EXTENSION_COLLISION",
+    "cross_domain_specificity_count": 0,
+    "source_import_registration_order_priority": false
+  },
+  "selection_phases": [
+    "NORMALIZE_CALL_HEAD_AND_SYNTACTIC_CHANNELS",
+    "BUILD_NONEXECUTING_ARGUMENT_DESCRIPTORS",
+    "PARTITION_EXISTING_CALLABLE_DOMAINS",
+    "RUN_CANDIDATE_LOCAL_PHASE_A_INFERENCE",
+    "PROVE_CANDIDATE_APPLICABILITY",
+    "APPLY_MEMBER_EXTENSION_COLLISION_FENCE",
+    "COMPUTE_CLOSED_SPECIFICITY_PARTIAL_ORDER",
+    "REQUIRE_ONE_UNIQUE_MAXIMAL_CANDIDATE",
+    "VERIFY_FIXED_EXPECTED_RESULT_AFTER_WINNER",
+    "SEAL_ORDINARY_CALL_SELECTION_V1",
+    "LOWER_SELECTED_CALL_PLAN"
+  ],
+  "candidate_local_inference": {
+    "fresh_variable_owner": "EXACT_CANDIDATE_GENERIC_OWNER",
+    "constraint_sources": ["EXPLICIT_GENERIC_ARGUMENTS", "EXPLICIT_VALUE_ARGUMENT_DESCRIPTORS"],
+    "cross_candidate_constraint_flow": false,
+    "default_argument_contributes_constraints": false,
+    "expected_result_contributes_constraints": false,
+    "expected_result_filters_candidates": false,
+    "required_outcome": "ONE_COMPLETE_NORMALIZED_SUBSTITUTION",
+    "failed_candidate_state_commit_count": 0,
+    "unresolved_variable_generalization_count": 0,
+    "anonymous_union_fallback_count": 0
+  },
+  "context_dependent_argument_staging": {
+    "implicit_lambda_or_trailing_closure_before_unique_expected_callable": "STRUCTURAL_ARITY_AND_LABEL_SHAPE_ONLY",
+    "candidate_local_body_probe_count": 0,
+    "body_check_count_after_unique_winner": 1,
+    "body_state_commit_before_winner_count": 0
+  },
+  "applicability": {
+    "noncommitting": true,
+    "checks": [
+      "STATIC_CALL_SHAPE",
+      "GENERIC_KIND_AND_OCCURS",
+      "COMPLETE_SUBSTITUTION",
+      "WHERE_AND_CONFORMANCE",
+      "OWNERSHIP_AND_PLACE",
+      "EFFECT_AND_ERROR_CONTEXT",
+      "ISOLATION_AND_SUSPENSION",
+      "CONTEXT_AND_EXPLICIT_EVIDENCE"
+    ],
+    "rejection_reason_codes": [
+      "CALL_SHAPE_MISMATCH",
+      "GENERIC_ARITY_OR_KIND_MISMATCH",
+      "GENERIC_OCCURS_CHECK_FAILED",
+      "GENERIC_SUBSTITUTION_INCOMPLETE",
+      "GENERIC_SUBSTITUTION_AMBIGUOUS",
+      "WHERE_OR_CONFORMANCE_UNSATISFIED",
+      "OWNERSHIP_OR_PLACE_MISMATCH",
+      "EFFECT_OR_ERROR_CONTEXT_MISMATCH",
+      "ISOLATION_OR_SUSPENSION_MISMATCH",
+      "CONTEXT_OR_EVIDENCE_MISMATCH"
+    ],
+    "result_compatibility_stage": "POST_WINNER_VERIFICATION"
+  },
+  "specificity": {
+    "relation": "STRICT_PARTIAL_ORDER",
+    "channel_generality": ["FIXED", "REPEATED", "NAMED_REST", "REPEATED_AND_NAMED"],
+    "same_rank_input_domain_proofs": [
+      "EXACT_NOMINAL_SUBTYPE",
+      "CONCRETE_OR_CONSTRUCTED_OVER_BARE_TYPE_PARAMETER",
+      "STRICT_TRAIT_BOUND_SUPERSET"
+    ],
+    "pointwise_all_equal_or_narrower": true,
+    "strict_component_required": true,
+    "unknown_proof_result": "INCOMPARABLE",
+    "preference_forbidden_axes": [
+      "EXPECTED_RESULT_TYPE",
+      "RETURN_TYPE",
+      "OWNERSHIP_MODE",
+      "EFFECT_ROW",
+      "ERROR_SET",
+      "DEFAULT_COUNT",
+      "REFINEMENT_OR_WHERE_SPELLING",
+      "SOURCE_ORDER",
+      "DECLARATION_ORDER",
+      "IMPORT_ORDER",
+      "PROVIDER_ORDER",
+      "RUNTIME_VALUE"
+    ],
+    "winner_rule": "EXACTLY_ONE_MAXIMAL_APPLICABLE_CANDIDATE"
+  },
+  "diagnostic_precedence": [
+    {"rank": 1, "condition": "PRESELECTION_STATIC_CALL_SHAPE_FAILURE", "diagnostic": "STATIC_CALL_SHAPE_NOT_ADMITTED"},
+    {"rank": 2, "condition": "NOMINAL_AND_EXTENSION_DOMAINS_BOTH_APPLICABLE", "diagnostic": "MEMBER_EXTENSION_COLLISION"},
+    {"rank": 3, "condition": "ZERO_APPLICABLE_CANDIDATES", "diagnostic": "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE"},
+    {"rank": 4, "condition": "MULTIPLE_MAXIMA_IMPLICIT_LAMBDA_EXPECTED_TYPE_REQUIRED", "diagnostic": "IMPLICIT_LAMBDA_EXPECTED_CALLABLE_AMBIGUOUS"},
+    {"rank": 5, "condition": "MULTIPLE_MAXIMA_TRAILING_CLOSURE_BINDING_REQUIRED", "diagnostic": "TRAILING_CLOSURE_OVERLOAD_AMBIGUOUS"},
+    {"rank": 6, "condition": "MULTIPLE_MAXIMA_ALL_NAMED_REST", "diagnostic": "AMBIGUOUS_NAMED_REST_OVERLOAD"},
+    {"rank": 7, "condition": "MULTIPLE_MAXIMA_ALL_REPEATED", "diagnostic": "AMBIGUOUS_REST_PARAMETER_OVERLOAD"},
+    {"rank": 8, "condition": "OTHER_MULTIPLE_MAXIMA", "diagnostic": "ORDINARY_CALL_OVERLOAD_AMBIGUOUS"},
+    {"rank": 9, "condition": "WINNER_RESULT_INCOMPATIBLE_WITH_FIXED_EXPECTED_TYPE", "diagnostic": "ORDINARY_CALL_RESULT_CONTEXT_MISMATCH"}
+  ],
+  "canonical_output": {
+    "identity": "OrdinaryCallSelectionV1",
+    "required_fields": [
+      "selection_id",
+      "candidate_domain_id",
+      "candidate_set_digest",
+      "argument_descriptor_digest",
+      "selected_callable_declaration_id",
+      "selected_callable_implementation_id",
+      "substitution_id",
+      "canonical_call_shape_id",
+      "specificity_proof_id"
+    ],
+    "applicable_candidate_count_minimum": 1,
+    "selected_count": 1,
+    "unresolved_count": 0,
+    "analysis_overload_set_residue_count": 0
+  },
+  "runtime_and_lowering": {
+    "runtime_selection_count": 0,
+    "mir_specificity_ranking_count": 0,
+    "backend_relookup_count": 0,
+    "operand_runtime_evaluation_before_seal_count": 0,
+    "selected_callee_or_receiver_evaluation_count": 1,
+    "explicit_argument_evaluation": "LEFT_TO_RIGHT_EXACTLY_ONCE_AFTER_SEAL",
+    "selected_default_evaluation": "FORMAL_DECLARATION_ORDER_AFTER_EXPLICIT_ARGUMENTS",
+    "unselected_candidate_default_evaluation_count": 0,
+    "unselected_candidate_body_evaluation_count": 0
+  },
+  "metamorphic_invariants": [
+    "DECLARATION_IMPORT_AND_SOURCE_ORDER_PERMUTATION_PRESERVES_OUTCOME",
+    "ADDING_AN_INAPPLICABLE_CANDIDATE_PRESERVES_WINNER",
+    "CHANGING_ONLY_EXPECTED_RESULT_PRESERVES_WINNER_ID",
+    "DUPLICATING_AN_EQUAL_MAXIMAL_DOMAIN_CHANGES_WINNER_TO_AMBIGUITY"
+  ],
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_publication": "NOT_PERFORMED"
+  }
+}

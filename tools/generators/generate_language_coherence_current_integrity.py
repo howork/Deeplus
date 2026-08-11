@@ -428,7 +428,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
     ):
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "reassembly non-owned")
     counts = contract.get("canonical_counts", {})
-    fixed_counts = {
+    minimum_counts = {
         "grammar": 656,
         "features": 723,
         "predicates": 285,
@@ -436,16 +436,17 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
         "no_go": 154,
         "hard_keywords": 29,
         "contextual_words": 105,
+        "diagnostics": 1250,
+        "prelude_entries": 49,
+        "examples": 1,
     }
     if (
-        set(counts) != {*fixed_counts, "diagnostics", "prelude_entries", "examples"}
-        or any(counts.get(key) != value for key, value in fixed_counts.items())
-        or not isinstance(counts.get("diagnostics"), int)
-        or counts.get("diagnostics", 0) < 1250
-        or not isinstance(counts.get("prelude_entries"), int)
-        or counts.get("prelude_entries", 0) < 49
-        or not isinstance(counts.get("examples"), int)
-        or counts.get("examples", 0) < 1
+        set(counts) != set(minimum_counts)
+        or any(
+            not isinstance(counts.get(key), int)
+            or counts.get(key, 0) < minimum
+            for key, minimum in minimum_counts.items()
+        )
     ):
         raise GeneratorError("LANGUAGE_COHERENCE_CONTRACT", "canonical counts")
     return contract

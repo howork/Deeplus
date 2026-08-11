@@ -295,12 +295,15 @@ cancellation, measure와 witness identity를 정규화한다. 정규화는
 discriminant, ABI 및 backend layout과 별개이다. 추론은 bidirectional이고
 지역적이며 결과 타입이나 source order를 숨은 tie-breaker로 쓰지 않는다.
 
-Phase-A generic inference는 선택된 선언이 실제로 가진 parameter에만
-fresh variable을 만든다. 명시적 value argument를 왼쪽부터 읽어 constraint를
-모으고, 정규화·occurs check·kind check 뒤 정확히 하나의 substitution을
-요구한다. 이미 고정된 expected result type은 그 substitution을
-검증할 수 있지만 overload 선택이나 유일한 추론 근거가 될 수 없다.
-그 다음 `where` obligation과 explicit conformance evidence를 확인한다.
+Phase-A generic inference는 ordinary-call 후보마다 그 선언이 실제로 가진
+parameter에만 독립된 fresh variable을 만든다. 명시적 generic/value
+argument만 후보-local constraint를 만들며 sibling 후보, default와 expected
+result에서는 constraint를 가져오지 않는다. 정규화·occurs check·kind check
+뒤 각 applicable 후보는 정확히 하나의 complete substitution을 가져야 한다.
+이미 고정된 expected result type은 unique winner가 정해진 뒤 그
+substitution/result를 검증할 수 있지만 overload 선택이나 유일한 추론
+근거가 될 수 없다. 그 다음 후보-local `where` obligation과 explicit
+conformance evidence를 확인한다.
 
 `StaticInt`, `EffectRow`, `ErrorSet` kind도 ordinary type으로 뭉개지 않는다.
 argument constraint가 한 exact normalized 값을 정하지 못하면 해당

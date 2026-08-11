@@ -606,12 +606,20 @@ remains required with binding `self`. A missing, extra, stale, or graph-unbound
 pair rejects before this seal and creates no provider lookup, event, or
 backend repair route.
 
-`ResolvedOverloadSetRef` is
-analysis-HIR-only and cannot enter `ExecutableHirH1` or MIR; an exact call
-winner and complete generic substitution belong to the subsequent generic and
-ordinary-overload cluster. MIR must not rank applicability or specificity,
-choose by expected/result type, infer a row, merge lexical overload sets, or
-perform name/member/extension/witness lookup.
+`ResolvedOverloadSetRef` is analysis-HIR-only and cannot enter
+`ExecutableHirH1` or MIR. `OrdinaryCallSelectionV1` seals one exact declaration,
+`CallableImplementationId`, complete `SubstitutionId`, canonical call shape,
+candidate-set/argument-descriptor digests, and specificity proof before HIR
+handoff. MIR must not rank applicability or specificity, choose by
+expected/result type, infer a row, merge lexical overload sets, or perform
+name/member/extension/witness lookup.
+
+Call selection is a static, nonexecuting proof. Runtime evaluates the selected
+callee or receiver and explicit arguments left-to-right only after the seal,
+then evaluates omitted defaults of the selected declaration in formal order.
+No unselected default, closure body, candidate body, or candidate-local
+temporary is evaluated. xVM and Cranelift consume the same sealed selection
+identity and have no fallback or re-ranking path.
 
 For an ordinary selector with a nonempty nominal set and a nonempty active
 extension set, the frontend emits `MEMBER_EXTENSION_COLLISION` and produces no

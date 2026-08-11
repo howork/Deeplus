@@ -286,16 +286,24 @@ The implementation may choose internal Rust types, but it must preserve the foll
 
 Call checking performs these steps in order:
 
-1. resolve the callee domain and candidate set without using the result type as a tie-breaker;
-2. evaluate argument expressions in source order;
-3. bind fixed positional and fixed named parameters;
-4. bind the optional repeated positional channel `T..` into a finite nonescaping `PositionalPack<T>`;
-5. prove and expand each named unfold `**record` from a statically known Record label row;
-6. bind the optional static named-rest channel `NamedPack**` into a finite nonescaping `NamedPack<rho>` and verify its optional required-label clause;
-7. reject missing, duplicate, overlapping, indeterminate, or extra labels;
-8. check ownership, context, witness, effects, errors, isolation, and return compatibility;
-9. choose the unique most-specific candidate, preferring fixed arity, then repeated positional, then named rest;
-10. emit a normalized CallShape for Deeplus MIR.
+1. resolve and prepartition the finite callee domain into a `ResolvedOverloadSetRef` without using result, source, import, declaration, or provider order;
+2. normalize the call head and syntactically fixed argument channels, and build one nonexecuting static descriptor per explicit argument;
+3. reject globally invalid duplicate, overlapping, indeterminate, or extra static labels before candidate work;
+4. for every candidate independently, instantiate only its generic parameters and require one complete substitution from explicit generic/value arguments; defaults and expected result contribute no constraint;
+5. candidate-locally bind fixed positional/named parameters, optional repeated `T..`, and optional static named-rest `NamedPack**`, including its required-label clause;
+6. candidate-locally prove ownership/place, context/evidence, effect/error, isolation, and suspension obligations without committing place, capture, or binding state;
+7. apply the existing nominal-member versus active-extension collision fence to the independently applicable domains;
+8. order applicable candidates inside the sole surviving domain by channel generality `FIXED < REPEATED < NAMED_REST < REPEATED_AND_NAMED`;
+9. at equal channel rank, apply only the closed pointwise input-domain proofs: exact nominal subtype, concrete/constructed formal over a bare type parameter, or strict exact Trait-bound superset; treat every unproved relation as incomparable;
+10. require exactly one maximal candidate; expected/return type, ownership mode, effect/error row, defaults, refinement/`where` spelling, and all enumeration orders add zero preference;
+11. verify the fixed expected result against that winner without changing its identity;
+12. seal `OrdinaryCallSelectionV1` and emit the normalized `CallShape`/`CallPlan` for Deeplus MIR.
+
+Implicit-parameter lambda and trailing-closure bodies are not candidate probes.
+While multiple candidates remain they contribute only structural arity and
+label shape. The body is checked once after one expected callable type has
+been selected, and a failed probe cannot leak a binding, capture, loan, effect,
+or diagnostic state.
 
 The source parameter `options**` and the function-type item `NamedPack**` denote the same named-rest residue. The body binding is a `NamedPack<rho>`, not a Record or Map; its finite normalized row/witness digest remains public call identity. `*value` is the owner-bounded positional outward unfold and `**value` is the owner-bounded static-named outward unfold, not a parameter/type suffix. The lexical marker fixes the channel before overload selection; expected formals, results, selected overloads and runtime values cannot choose it.
 
@@ -1106,13 +1114,14 @@ binding `self`. Missing, extra, stale, or graph-unbound pairs fail
 `DependencyInterfaceBindingClosed` before canonical HIR.
 
 The R4 seal may emit a closed noncall `ResolvedRef`, name/import traces, and a
-visibility proof. A callable candidate group is
-`ResolvedOverloadSetRef` in analysis HIR only. Selecting its function,
-completing generics, expected-type-directed choice, applicability/specificity
-ranking, row inference, and result-type-only choice are expressly outside this
-judgment and must be closed before canonical HIR-H1. This section preserves
-already admitted `EvidenceOriginId` values but neither creates nor replaces
-Trait witnesses.
+visibility proof. A callable candidate group is `ResolvedOverloadSetRef` in
+analysis HIR only. `OrdinaryCallSelectionV1` must consume it before canonical
+HIR-H1, preserving one selected declaration, callable implementation, complete
+substitution, canonical call shape, candidate-set and argument-descriptor
+digests, and specificity proof. Result-type-only selection is forbidden and a
+fixed expected result is a post-winner compatibility check. This section
+preserves already admitted `EvidenceOriginId` values but neither creates nor
+replaces Trait witnesses.
 
 Primary failure is the first failed stage in this exact order:
 package/module/source graph; module skeleton; dependency interface; resolver

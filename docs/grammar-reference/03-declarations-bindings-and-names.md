@@ -351,7 +351,8 @@ def incrementCount() -> Int = {
   resolved target과 `SourceOriginId`는 trace content다.
 - canonical HIR에는 analysis-HIR의 unresolved name이나
   `ResolvedOverloadSetRef`를 남기지 않는다. exact callable winner는
-  다음 generic/ordinary-overload cluster의 책임이다.
+  `OrdinaryCallSelectionV1`이 candidate-local inference와 specificity를
+  닫은 뒤 sealed call plan으로 넘긴다.
 - 멤버 가시성과 class dispatch marker는 서로 다른 축이다. 예를 들어
   `+def render.()`의 `+`는 가시성이고 `.`은 final dispatch slot이다.
 - `#lazy`의 `#`는 member visibility가 아니라 선언 profile role이다.

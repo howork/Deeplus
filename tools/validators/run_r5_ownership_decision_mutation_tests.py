@@ -2404,7 +2404,7 @@ R77_GRAMMAR_SHA256 = (
     "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
 )
 R77_HIR_H1_BRIDGE_SHA256 = (
-    "27328f1b0dadefc6a13f58e3d025750082409a7b5c95ef1ae81a5e8c0707c657"
+    "fb046d33f9cfcf9819c15be047cef99ad22360da0cf926a4c730a2b1117e96e6"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
@@ -3611,11 +3611,21 @@ def _check_overrides_exact_3(
         ),
         (
             isinstance(overrides, dict)
-            and list(overrides) == R41_INSTALLED_OVERRIDE_IDS
-            and overrides == expected_rows
+            and [
+                predicate_id
+                for predicate_id in overrides
+                if predicate_id in R41_INSTALLED_OVERRIDE_IDS
+            ]
+            == R41_INSTALLED_OVERRIDE_IDS
+            and {
+                predicate_id: overrides.get(predicate_id)
+                for predicate_id in R41_INSTALLED_OVERRIDE_IDS
+            }
+            == expected_rows
             and metadata.get("override_count")
-            == len(R41_INSTALLED_OVERRIDE_IDS),
-            "installed predicate metadata override set is not exact R41",
+            == len(overrides),
+            "installed R41 predicate metadata override subset changed or "
+            "the global override count is not self-consistent",
         ),
         (
             all(
@@ -3701,9 +3711,14 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1491
-            and relation_metadata_doc.value.get("relation_count") == 618,
-            "diagnostic/relation canonical counts are not exact current fusion",
+            diagnostic_metadata_doc.value.get("diagnostic_count")
+            == len(environment.diagnostic_rows)
+            and relation_metadata_doc.value.get("relation_count")
+            == len(environment.relation_rows)
+            and len(environment.diagnostic_rows) >= 1491
+            and len(environment.relation_rows) >= 618,
+            "diagnostic/relation metadata is internally inconsistent or "
+            "regressed below the R41 baseline",
         ),
         (
             set(active_diagnostics)

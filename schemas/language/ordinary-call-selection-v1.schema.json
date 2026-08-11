@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/ordinary-call-selection-v1.schema.json",
+  "title": "Deeplus OrdinaryCallSelectionV1 contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "revision", "status", "gap_id", "input_descriptor_schema", "baseline", "scope",
+    "domain_fence", "selection_phases", "candidate_local_inference",
+    "context_dependent_argument_staging", "applicability", "specificity",
+    "diagnostic_precedence", "canonical_output", "runtime_and_lowering",
+    "metamorphic_invariants", "governance"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.ordinary-call-selection/v1"},
+    "revision": {"const": "preimpl-p1-ordinary-call-selection-r1"},
+    "status": {"const": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED"},
+    "gap_id": {"const": "IR-CALL-P1-055"},
+    "input_descriptor_schema": {"const": "schemas/language/ordinary-call-selection-input-v1.schema.json"},
+    "baseline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository", "observed_live_main", "local_predecessor_commit"],
+      "properties": {
+        "repository": {"const": "howork/Deeplus"},
+        "observed_live_main": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "local_predecessor_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "scope": {"type": "object"},
+    "domain_fence": {"type": "object"},
+    "selection_phases": {"type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true, "items": {"type": "string"}},
+    "candidate_local_inference": {"type": "object"},
+    "context_dependent_argument_staging": {"type": "object"},
+    "applicability": {"type": "object"},
+    "specificity": {"type": "object"},
+    "diagnostic_precedence": {
+      "type": "array", "minItems": 9, "maxItems": 9,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["rank", "condition", "diagnostic"],
+        "properties": {
+          "rank": {"type": "integer", "minimum": 1, "maximum": 9},
+          "condition": {"type": "string", "minLength": 1},
+          "diagnostic": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}
+        }
+      }
+    },
+    "canonical_output": {"type": "object"},
+    "runtime_and_lowering": {"type": "object"},
+    "metamorphic_invariants": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+    "governance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes", "production_implementation", "github_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "production_implementation": {"const": "NOT_RUN"},
+        "github_publication": {"const": "NOT_PERFORMED"}
+      }
+    }
+  }
+}

@@ -1261,7 +1261,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Exact function signature and CallShape law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "OrdinaryCallSelectionV1 closes candidate-local inference, applicability, strict-partial-order specificity, unique-maximal selection, and the exact selected CallShape/implementation identity. Expected result and all enumeration orders add zero winner preference; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1273,9 +1273,14 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "BARE_FUNCTION_TYPE_REMOVED"
+        "BARE_FUNCTION_TYPE_REMOVED",
+        "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+        "ORDINARY_CALL_OVERLOAD_AMBIGUOUS",
+        "ORDINARY_CALL_RESULT_CONTEXT_MISMATCH"
       ],
-      "predicates": [],
+      "predicates": [
+        "OrdinaryCallSelectionClosed"
+      ],
       "examples": [],
       "productions": [],
       "semantic_reference_productions": []

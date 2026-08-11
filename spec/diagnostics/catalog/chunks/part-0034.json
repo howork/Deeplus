@@ -1,0 +1,101 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "exact_function_signature_callshape_law",
+      "generic_parameter_model_phase_a",
+      "rest_parameter_overload_specificity_law"
+    ],
+    "fixit_hint": "make one candidate applicable by changing explicit arguments, labels, ownership, context, or explicit generic arguments",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not choose a sibling candidate, infer from defaults/results, or insert conversions automatically.",
+    "message": "No ordinary-call candidate independently satisfies the complete call contract.",
+    "notes": "OrdinaryCallSelectionV1 rank 3; per-candidate rejection reasons are related evidence sorted by stable callable identity. Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/ordinary-call-selection-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "implicit_lambda_overload_staging_law",
+      "method_extension_resolution_policy"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ORDINARY_CALL_OVERLOAD_AMBIGUOUS",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "exact_function_signature_callshape_law",
+      "generic_parameter_model_phase_a",
+      "rest_parameter_overload_specificity_law"
+    ],
+    "fixit_hint": "qualify the callable domain or make the explicit input contract select one strictly more-specific candidate",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Return type, expected type, source/import/declaration order, defaults, effects, and runtime values are not legal fixes or tie-breakers.",
+    "message": "More than one ordinary-call candidate is maximal under the closed specificity relation.",
+    "notes": "OrdinaryCallSelectionV1 generic ambiguity fallback after the existing implicit-lambda, trailing-closure, repeated, and named-rest ambiguity families. Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/ordinary-call-selection-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "implicit_lambda_overload_staging_law",
+      "trailing_closure_argument_msp",
+      "method_extension_resolution_policy"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ORDINARY_CALL_RESULT_CONTEXT_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "exact_function_signature_callshape_law",
+      "generic_parameter_model_phase_a"
+    ],
+    "fixit_hint": "change the explicit call or surrounding expected type; the expected result does not reselect the overload",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Preserve the sealed winner identity and report the post-winner result incompatibility.",
+    "message": "The selected ordinary-call result is incompatible with the fixed expected type.",
+    "notes": "OrdinaryCallSelectionV1 rank 9 post-winner verification. Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/ordinary-call-selection-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

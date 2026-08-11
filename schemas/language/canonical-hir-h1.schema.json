@@ -4923,6 +4923,46 @@
         }
       ]
     },
+    "OrdinaryCallSelectionV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selection_version",
+        "selection_id",
+        "candidate_domain_id",
+        "candidate_set_digest",
+        "argument_descriptor_digest",
+        "selected_callable_declaration_id",
+        "selected_callable_implementation_id",
+        "substitution_id",
+        "canonical_call_shape_id",
+        "specificity_proof_id",
+        "applicable_candidate_count",
+        "selected_count",
+        "unresolved_count",
+        "result_context_verification",
+        "cross_domain_specificity_count",
+        "runtime_selection_count"
+      ],
+      "properties": {
+        "selection_version": { "const": "OrdinaryCallSelectionV1" },
+        "selection_id": { "$ref": "#/$defs/Id" },
+        "candidate_domain_id": { "$ref": "#/$defs/Id" },
+        "candidate_set_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "argument_descriptor_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "selected_callable_declaration_id": { "$ref": "#/$defs/Id" },
+        "selected_callable_implementation_id": { "$ref": "#/$defs/Id" },
+        "substitution_id": { "$ref": "#/$defs/Id" },
+        "canonical_call_shape_id": { "$ref": "#/$defs/Id" },
+        "specificity_proof_id": { "$ref": "#/$defs/Id" },
+        "applicable_candidate_count": { "type": "integer", "minimum": 1 },
+        "selected_count": { "const": 1 },
+        "unresolved_count": { "const": 0 },
+        "result_context_verification": { "enum": ["NOT_REQUIRED", "VERIFIED"] },
+        "cross_domain_specificity_count": { "const": 0 },
+        "runtime_selection_count": { "const": 0 }
+      }
+    },
     "CallPlan": {
       "type": "object",
       "additionalProperties": false,
@@ -4963,6 +5003,9 @@
         },
         "outcome_responsibility_profile_id": {
           "$ref": "#/$defs/Id"
+        },
+        "ordinary_call_selection": {
+          "$ref": "#/$defs/OrdinaryCallSelectionV1"
         },
         "trait_associated_static_selection": {
           "$ref": "#/$defs/TraitAssociatedStaticSelection"
@@ -5031,6 +5074,31 @@
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode_target_pair": {
+                "enum": [
+                  "ORDINARY::DIRECT_IMPLEMENTATION",
+                  "ORDINARY::VIRTUAL_SLOT",
+                  "ORDINARY::TRAIT_WITNESS",
+                  "ORDINARY::EXTENSION_STATIC",
+                  "MESSAGE::DIRECT_IMPLEMENTATION",
+                  "MESSAGE::VIRTUAL_SLOT",
+                  "MESSAGE::TRAIT_WITNESS",
+                  "MESSAGE::EXTENSION_STATIC"
+                ]
+              }
+            },
+            "required": ["mode_target_pair"]
+          },
+          "then": {
+            "required": ["ordinary_call_selection"]
+          },
+          "else": {
+            "not": { "required": ["ordinary_call_selection"] }
+          }
+        },
         {
           "if": { "required": ["trait_associated_static_selection"] },
           "then": {
@@ -7154,6 +7222,7 @@
       "Require every MutableList structural-edit surface to disappear into an existing CallExpr and closed CallPlan/CallableImplementationId; reject an edit-specific HIR or MIR opcode and require receiver, selector, and payload evaluation exactly once before one mutation commit.",
       "Reject every removed numeric type suffix before canonical CST/AST/HIR; one recovery diagnostic may exist outside this schema but no split numeric prefix or suffix identifier can validate.",
       "Require any repeated TraitAssociatedStaticSelection with the same selection_id in ResolvedRef, CallPlan, or MIR static identity residue to be byte-for-byte equal after canonical serialization; associated-type selections never occur as ResolvedRefExpr or ReferenceCapture values.",
+      "Require every ORDINARY or MESSAGE non-reserved CallPlan to carry exactly one OrdinaryCallSelectionV1 whose candidate-domain and argument-descriptor digests bind the consumed analysis-HIR ResolvedOverloadSetRef, whose selected declaration, implementation, substitution, call shape, and specificity proof are closed before operand evaluation, and whose selected_count is one with no runtime or backend relookup.",
       "Reject any reuse of callable ResponsibilityProfileId as ResponsibilityRuleId or ResponsibilityEvidenceId and forbid runtime or backend responsibility-evidence relookup.",
       "Require responsibility_evidence_descriptors to be strictly ordered by responsibility_evidence_id, unique by that ID, and fully reachable from the typed-HIR semantic facts that selected them.",
       "Allow only LOWER or NO_RUNTIME_EMISSION lowering rows. Capability insufficiency is not represented as a lowering row; preserve the verified HIR semantic digest exactly and do not create ExecutableHirH1.",

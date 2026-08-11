@@ -1289,16 +1289,19 @@ Nominal class identity is distinct from structural Record identity and Trait evi
 
 Inference must not use hidden runtime values, result type alone, or source-order tie-breaking. Unsatisfied or ambiguous constraints produce deterministic diagnostics.
 
-Phase-A generic inference creates fresh variables only for the parameters
-declared by the selected generic owner. It gathers constraints from explicit
-value arguments in left-to-right source order, normalizes them, performs the
-occurs and kind checks, and requires one unique substitution. A fixed expected
-result type may verify that substitution after argument solving; it cannot
-choose an overload or become the sole source of an otherwise unconstrained
-parameter. The checker then applies `where` constraints and selects explicit
-conformance evidence. `StaticInt`, `EffectRow`, and `ErrorSet` parameters must
-be supplied explicitly unless the preceding argument constraints determine one
-exact normalized value. No unresolved variable is generalized, replaced by an
+Phase-A generic inference creates fresh variables independently for the
+parameters declared by each ordinary-call candidate. It gathers constraints
+only from that candidate's explicit generic arguments and explicit value
+argument descriptors, normalizes them, performs the occurs and kind checks,
+and requires one unique complete substitution. Candidate constraints, failed
+bindings, and defaults never flow to a sibling candidate. A fixed expected
+result type verifies the already selected winner after argument solving; it
+cannot filter candidates, choose an overload, or become the sole source of an
+otherwise unconstrained parameter. The checker then applies `where`
+constraints and selects explicit conformance evidence candidate-locally.
+`StaticInt`, `EffectRow`, and `ErrorSet` parameters must be supplied explicitly
+unless the preceding explicit argument constraints determine one exact
+normalized value. No unresolved variable is generalized, replaced by an
 anonymous Union, or guessed from source order.
 
 A refinement suffix keeps an explicit parse boundary. `T where > bound` is
@@ -2233,14 +2236,51 @@ different general-number rules of RFC 8785.
 The R4 resolver may seal `RESOLVED_NONCALL_REFERENCE`,
 `NAME_RESOLUTION_TRACE`, `IMPORT_BINDING_TRACE`, and `VISIBILITY_PROOF`.
 Callable lookup may leave a `ResolvedOverloadSetRef` only in analysis HIR.
-Canonical HIR-H1 must not contain it until the separate generic-inference and
-ordinary-overload cluster has selected an exact winner. This resolver contract
-does not define an overload winner, complete generic substitution, expected
-type preference, applicability/specificity rank, row-inference result, or a
-return-type-only winner. Trait witness selection and materialization remain
+`OrdinaryCallSelectionV1` consumes that finite set before canonical HIR-H1.
+Each candidate independently closes generic substitution and applicability;
+the checker then requires one unique maximal candidate under the closed
+specificity partial order. Trait witness selection and materialization remain
 under the existing Trait-conformance authority.
 
-The checker evaluates callable channels in this order: ordinary parameters, repeated positional residue, named-rest residue, ownership/place requirements, effect/error rows, isolation/context, and return compatibility. It then applies overload specificity. Named unfold first proves a structural Record with a statically known label row; it then contributes each label once. Duplicate or possibly overlapping labels are rejected before body lowering. A `Map` cannot pass this proof because its key set is a runtime value.
+Call checking first normalizes the call head and syntactically fixed channels,
+then builds nonexecuting static argument descriptors. Named unfold first proves
+a structural Record with a statically known label row and contributes each
+label once. Duplicate or possibly overlapping labels reject before candidate
+work; a `Map` cannot pass this proof because its key set is a runtime value.
+For each candidate, the checker binds fixed parameters, repeated positional
+residue, named-rest residue, ownership/place requirements, effect/error rows,
+isolation/context, and explicit evidence without committing state. Implicit
+parameter lambdas and trailing closures contribute only structural arity and
+labels until one expected callable remains; their bodies are never probed per
+candidate.
+
+Specificity is evaluated only inside one already selected callable domain.
+Channel generality is `FIXED < REPEATED < NAMED_REST <
+REPEATED_AND_NAMED`. At equal rank, every compared input domain must be equal
+or narrower and at least one must be strictly narrower. The only Stable proof
+rules are exact nominal subtyping, a concrete or constructed formal over a bare
+type parameter, and a strict exact Trait-bound superset. An unknown relation is
+incomparable. Return/expected type, ownership mode, effects, errors, defaults,
+refinement or `where` spelling, provider, source, declaration, import, and
+runtime order add no preference. The fixed expected result is checked only
+after the winner is sealed, so result-only overloads remain ambiguous.
+
+Nominal-member and active-extension applicability are computed separately. If
+both domains are nonempty, the existing `MEMBER_EXTENSION_COLLISION` fence
+rejects before specificity; ordinary selection never ranks across that
+boundary. Zero applicable candidates emit
+`ORDINARY_CALL_NO_APPLICABLE_CANDIDATE`; multiple maximal candidates emit the
+most specific existing rest/closure diagnostic when its condition applies, or
+`ORDINARY_CALL_OVERLOAD_AMBIGUOUS` otherwise. A post-winner expected-result
+failure emits `ORDINARY_CALL_RESULT_CONTEXT_MISMATCH` without changing the
+winner identity.
+
+The sealed selection preserves the candidate-domain and argument-descriptor
+digests, selected declaration and `CallableImplementationId`, complete
+`SubstitutionId`, canonical call shape, and specificity proof. Only then may
+runtime evaluation begin. MIR, xVM, and Cranelift never re-rank, re-infer, or
+look up the call, and no default or body belonging to an unselected candidate
+is evaluated.
 
 Function-type compatibility preserves `T..` and `NamedPack**` as different residues. It must not erase either residue to a collection carrier. The named residue also records its normalized finite row and witness digest. A public API digest records the residue, parameter label policy, effects, errors, ownership, and witness/extension requirements. Two digests that differ in any responsibility-bearing field are not equal merely because their machine ABI could be made identical.
 
@@ -3010,6 +3050,9 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `NUMERIC_OPERATOR_CORE_REQUIRED` [error]: Numeric operator use requires the current profile numeric operator core law.
 - `OPAQUE_RESULT_CONCRETE_TYPE_MISMATCH` [error]: some Trait function must return one hidden concrete type on all success paths.
 - `OPEN_MEMBER_REQUIRES_INHERITABLE_TYPE` [error]: Open member requires an open, sealed, or abstract containing type.
+- `ORDINARY_CALL_NO_APPLICABLE_CANDIDATE` [error]: No ordinary-call candidate independently satisfies the complete call contract.
+- `ORDINARY_CALL_OVERLOAD_AMBIGUOUS` [error]: More than one ordinary-call candidate is maximal under the closed specificity relation.
+- `ORDINARY_CALL_RESULT_CONTEXT_MISMATCH` [error]: The selected ordinary-call result is incompatible with the fixed expected type; expected type does not reselect the overload.
 - `OPERATOR_CONFORMANCE_AMBIGUOUS` [error]: More than one admitted direct-global conformance matches the normalized fixed-operator key; source or import order cannot select a winner.
 - `OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED` [error]: Fixed-operator conformance accepts only left-owner DIRECT_GLOBAL evidence; via, VIA, AUTO, local/case, extension, provider and specialization routes are forbidden.
 - `OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED` [error]: This normalized operand pair is reserved to intrinsic dispatch and cannot declare or select a user operator conformance.

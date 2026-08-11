@@ -2553,15 +2553,16 @@
         "recovery_binding",
         "runtime_relookup_residue"
       ],
-      "deferred_to_generic_and_ordinary_overload_cluster": [
-        "OVERLOAD_WINNER_FUNCTION_ID",
-        "COMPLETE_GENERIC_SUBSTITUTION",
-        "EXPECTED_TYPE_DIRECTED_WINNER",
-        "APPLICABILITY_RANK",
-        "SPECIFICITY_WINNER",
-        "ROW_INFERENCE_RESULT",
-        "RETURN_TYPE_ONLY_WINNER"
-      ],
+      "closed_by_ordinary_call_selection_v1": {
+        "contract": "spec/contracts/ordinary-call-selection-v1.json",
+        "analysis_input": "ResolvedOverloadSetRef",
+        "canonical_output": "OrdinaryCallSelectionV1",
+        "candidate_local_generic_substitution": true,
+        "applicability_and_specificity_closed": true,
+        "expected_type_directed_winner": false,
+        "return_type_only_winner": false,
+        "analysis_overload_set_in_canonical_hir": false
+      },
       "trait_witness_selection_or_materialization_added": false,
       "mir_repeats_name_resolution": false,
       "module_artifact_identity": {
@@ -3690,6 +3691,37 @@
       "parse_format_parse_ast_equivalence_required": true,
       "product_support": "NOT_RUN"
     }
+  },
+  "ordinary_call_selection_contract": {
+    "contract": "spec/contracts/ordinary-call-selection-v1.json",
+    "gap_id": "IR-CALL-P1-055",
+    "analysis_input": "ResolvedOverloadSetRef",
+    "included_call_modes": ["Ordinary", "Message"],
+    "excluded_call_mode": "ActorMessage",
+    "candidate_local_phase_a": {
+      "fresh_variables_per_candidate": true,
+      "cross_candidate_constraint_flow": false,
+      "defaults_contribute_constraints": false,
+      "expected_result_contributes_constraints": false,
+      "required_substitution_cardinality": 1
+    },
+    "context_dependent_arguments": {
+      "implicit_lambda_or_trailing_closure_before_winner": "STRUCTURAL_SHAPE_ONLY",
+      "candidate_body_probe_count": 0,
+      "body_check_count_after_unique_expected_callable": 1
+    },
+    "applicability_order": ["STATIC_CALL_SHAPE", "GENERIC_SUBSTITUTION", "WHERE_AND_CONFORMANCE", "OWNERSHIP_AND_PLACE", "EFFECT_AND_ERROR_CONTEXT", "ISOLATION_AND_SUSPENSION", "CONTEXT_AND_EVIDENCE"],
+    "specificity": {
+      "relation": "STRICT_PARTIAL_ORDER",
+      "channel_generality": ["FIXED", "REPEATED", "NAMED_REST", "REPEATED_AND_NAMED"],
+      "same_rank_proofs": ["EXACT_NOMINAL_SUBTYPE", "CONCRETE_OR_CONSTRUCTED_OVER_BARE_TYPE_PARAMETER", "STRICT_TRAIT_BOUND_SUPERSET"],
+      "unknown_relation": "INCOMPARABLE",
+      "winner": "EXACTLY_ONE_MAXIMAL_APPLICABLE_CANDIDATE"
+    },
+    "forbidden_preference_axes": ["EXPECTED_RESULT_TYPE", "RETURN_TYPE", "SOURCE_ORDER", "DECLARATION_ORDER", "IMPORT_ORDER", "PROVIDER_ORDER", "RUNTIME_VALUE"],
+    "canonical_output": "OrdinaryCallSelectionV1",
+    "runtime_or_mir_ranking_count": 0,
+    "product_support": "NOT_RUN"
   },
   "integrated_collect_unfold_frontend_contract": {
     "decision": "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
@@ -5045,7 +5077,8 @@
         "DirectDecl(DeclId)"
       ],
       "analysis_hir_callable_projection": "ResolvedOverloadSetRef",
-      "canonical_hir_callable_projection_before_next_cluster": "FORBIDDEN"
+      "canonical_hir_callable_projection": "OrdinaryCallSelectionV1",
+      "canonical_hir_callable_projection_without_selection": "FORBIDDEN"
     },
     "member_extension_collision": {
       "ordinary_selector_both_domains_nonempty": "REJECT",

@@ -1153,12 +1153,12 @@
       "EXTENSION_IMPORTED_BUT_NOT_ACTIVE",
       "RECEIVER_MODE_MISMATCH"
     ],
-    "output": "design_seed(ResolvedOverloadSetRef, selection_deferred) | reject_after_next_cluster(diagnostic_id)",
+    "output": "admit(OrdinaryCallSelectionV1) | reject(diagnostic_id)",
     "requires": [
       "methods are slots; extensions are static functions",
       "import is not use; runtime receiver type never drives lookup",
       "cross-domain collision precedes ranking; qualification selects one extension domain",
-      "the next cluster owns applicability, substitution, rank and winner"
+      "OrdinaryCallSelectionClosed owns candidate-local applicability, substitution, rank and winner"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -1182,17 +1182,17 @@
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
       "candidate, activation and call-shape identities are normalized",
-      "the next cluster supplies any applicable-domain partition"
+      "OrdinaryCallSelectionClosed supplies independently applicable nominal and extension domains"
     ],
     "normalization": "normalize receiver, call, activation and candidate IDs; preserve unordered partitions",
     "decision_procedure": [
       "collect nominal and active-extension IDs separately; qualification restricts the extension domain",
-      "hand ResolvedOverloadSetRef to the next cluster without applicability, substitution, rank or winner",
-      "when supplied applicability has both domains, run MemberExtensionCollisionRejected before selection",
-      "otherwise selection_deferred with selected_count = unspecified_in_R4; emit nothing and never runtime-relook up"
+      "hand ResolvedOverloadSetRef to OrdinaryCallSelectionClosed for candidate-local substitution and applicability",
+      "when supplied applicability has both domains, run MemberExtensionCollisionRejected before specificity",
+      "otherwise require one OrdinaryCallSelectionV1 winner inside the sole surviving domain and never runtime-relook up"
     ],
-    "termination_metric": "finite normalized domains; R4 performs no winner search",
-    "success_result": "selection_deferred(ResolvedOverloadSetRef, selected_count = unspecified_in_R4)",
+    "termination_metric": "finite normalized domains and the finite OrdinaryCallSelectionClosed partial order",
+    "success_result": "OrdinaryCallSelectionV1(selected_count = 1, cross_domain_specificity_count = 0)",
     "active_primary_diagnostic": "AMBIGUOUS_EXTENSION_CANDIDATE",
     "secondary_diagnostics": [
       "DYNAMIC_EXTENSION_DISPATCH_FORBIDDEN",
@@ -1206,14 +1206,15 @@
     "negative_fixture_ids": [
       "PF-MethodExtensionResolutionAdmitted-NEG"
     ],
-    "evaluation_order": "normalize -> partition -> ResolvedOverloadSetRef -> next cluster applicability -> collision check -> defer",
+    "evaluation_order": "normalize -> partition -> candidate-local applicability -> collision check -> sole-domain specificity -> OrdinaryCallSelectionV1 seal",
     "dependency_predicates": [
-      "MemberExtensionCollisionRejected"
+      "MemberExtensionCollisionRejected",
+      "OrdinaryCallSelectionClosed"
     ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_selection_deferred_to_next_cluster",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "72df3e69ab5dd66910d01208033b52dcdad161dcbec4e27d5a0e69202ec177e3",

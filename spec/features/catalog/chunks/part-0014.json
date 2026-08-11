@@ -679,7 +679,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Overload resolution prefers exact fixed arity over positional `name..`, and positional rest over static named `name**`. Explicit named binding occurs before right-reserving a fixed positional suffix and left-filling the prefix. A fixed suffix after rest has no default. Remaining ties are errors; source order is not a tie-breaker.",
+    "notes": "OrdinaryCallSelectionV1 ranks channel generality as FIXED < REPEATED < NAMED_REST < REPEATED_AND_NAMED. Explicit named binding occurs before right-reserving a fixed positional suffix and left-filling the prefix. A fixed suffix after rest has no default. Equal-rank input domains use only the closed specificity proofs; remaining maxima are errors and expected/result/source/import/declaration order never breaks a tie.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -693,9 +693,13 @@
     "normative_trace_refs": {
       "diagnostics": [
         "AMBIGUOUS_NAMED_REST_OVERLOAD",
-        "AMBIGUOUS_REST_PARAMETER_OVERLOAD"
+        "AMBIGUOUS_REST_PARAMETER_OVERLOAD",
+        "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+        "ORDINARY_CALL_OVERLOAD_AMBIGUOUS"
       ],
-      "predicates": [],
+      "predicates": [
+        "OrdinaryCallSelectionClosed"
+      ],
       "examples": [],
       "productions": [
         "NamedRestParameter",

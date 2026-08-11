@@ -462,7 +462,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Minimum generic parameter and type argument model required by current Deeplus responsibility types.",
+    "notes": "Minimum generic parameter and type argument model required by current Deeplus responsibility types. During overload selection each candidate owns isolated fresh variables and must derive one complete substitution from explicit generic/value arguments; defaults and expected result contribute zero constraints.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -479,11 +479,15 @@
         "GENERIC_PARAMETER_DEFAULTS_TO_INVARIANT",
         "GENERIC_PARAM_KIND_MISMATCH",
         "GENERIC_TYPE_CONSTRUCTOR_INVARIANT",
-        "GENERIC_TYPE_CONSTRUCTOR_INVARIANT_BY_DEFAULT"
+        "GENERIC_TYPE_CONSTRUCTOR_INVARIANT_BY_DEFAULT",
+        "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+        "ORDINARY_CALL_OVERLOAD_AMBIGUOUS",
+        "ORDINARY_CALL_RESULT_CONTEXT_MISMATCH"
       ],
       "predicates": [
         "GenericConstraintSatisfied",
-        "TypeParamKindAdmitted"
+        "TypeParamKindAdmitted",
+        "OrdinaryCallSelectionClosed"
       ],
       "examples": [
         "EX-R48-018",

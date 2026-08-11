@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/ordinary-call-selection-input-v1.schema.json",
+  "title": "Deeplus OrdinaryCallSelectionInputV1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "call_head_id", "call_mode", "candidate_domains",
+    "arguments", "expected_result_type_id_or_null", "activation_profile_id"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.ordinary-call-selection-input/v1"},
+    "call_head_id": {"$ref": "#/$defs/id"},
+    "call_mode": {"enum": ["ORDINARY", "MESSAGE"]},
+    "candidate_domains": {
+      "type": "array", "minItems": 1,
+      "items": {"$ref": "#/$defs/candidateDomain"}
+    },
+    "arguments": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/argument"}
+    },
+    "expected_result_type_id_or_null": {"anyOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+    "activation_profile_id": {"$ref": "#/$defs/id"}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1},
+    "candidateDomain": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_domain_id", "domain_kind", "candidates"],
+      "properties": {
+        "candidate_domain_id": {"$ref": "#/$defs/id"},
+        "domain_kind": {"enum": ["DIRECT_FUNCTION", "NOMINAL_MEMBER", "TRAIT_REQUIREMENT", "QUALIFIED_EXTENSION"]},
+        "candidates": {
+          "type": "array", "minItems": 1,
+          "items": {"$ref": "#/$defs/candidate"}
+        }
+      }
+    },
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "callable_declaration_id", "callable_implementation_id",
+        "source_origin_id", "signature_digest", "channel_generality",
+        "generic_parameter_ids", "declared_input_domains",
+        "result_type_id", "responsibility_profile_id", "default_formal_ids"
+      ],
+      "properties": {
+        "callable_declaration_id": {"$ref": "#/$defs/id"},
+        "callable_implementation_id": {"$ref": "#/$defs/id"},
+        "source_origin_id": {"$ref": "#/$defs/id"},
+        "signature_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "channel_generality": {"enum": ["FIXED", "REPEATED", "NAMED_REST", "REPEATED_AND_NAMED"]},
+        "generic_parameter_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "declared_input_domains": {"type": "array", "items": {"$ref": "#/$defs/inputDomain"}},
+        "result_type_id": {"$ref": "#/$defs/id"},
+        "responsibility_profile_id": {"$ref": "#/$defs/id"},
+        "default_formal_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}}
+      }
+    },
+    "inputDomain": {
+      "type": "object", "additionalProperties": false,
+      "required": ["formal_id", "label_or_null", "formal_kind", "normalized_type_id_or_null", "bare_parameter_id_or_null", "trait_bound_ids", "ownership_mode"],
+      "properties": {
+        "formal_id": {"$ref": "#/$defs/id"},
+        "label_or_null": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "formal_kind": {"enum": ["EXACT", "CONSTRUCTED", "BARE_TYPE_PARAMETER"]},
+        "normalized_type_id_or_null": {"anyOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "bare_parameter_id_or_null": {"anyOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "trait_bound_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+        "ownership_mode": {"enum": ["VALUE", "MUT", "BORROW", "MOVE", "INOUT"]}
+      }
+    },
+    "argument": {
+      "type": "object", "additionalProperties": false,
+      "required": ["argument_id", "source_eval_ordinal", "channel", "label_or_null", "normalized_type_id_or_null", "contextual_shape_or_null"],
+      "properties": {
+        "argument_id": {"$ref": "#/$defs/id"},
+        "source_eval_ordinal": {"type": "integer", "minimum": 0},
+        "channel": {"enum": ["POSITIONAL", "NAMED", "POSITIONAL_UNFOLD", "NAMED_UNFOLD", "CONTEXT", "WITNESS", "TRAILING_CLOSURE"]},
+        "label_or_null": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "normalized_type_id_or_null": {"anyOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "contextual_shape_or_null": {
+          "anyOf": [
+            {
+              "type": "object", "additionalProperties": false,
+              "required": ["kind", "parameter_count", "labels"],
+              "properties": {
+                "kind": {"enum": ["IMPLICIT_LAMBDA", "TRAILING_CLOSURE"]},
+                "parameter_count": {"type": "integer", "minimum": 0},
+                "labels": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+              }
+            },
+            {"type": "null"}
+          ]
+        }
+      }
+    }
+  }
+}

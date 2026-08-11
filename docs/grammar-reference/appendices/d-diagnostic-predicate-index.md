@@ -782,6 +782,9 @@
 | `OPTION_IMPLICIT_LIFT_NOT_ALLOWED` | `checker` | `error` | `active` | T is not a subtype of Option<T>. Exactly one top-level \`some\` insertion is admitted only after an explicit local Option target is fixed; call arguments, returns, lambda results, collection elements, generic-driving inference, and nested lifts never insert it. |
 | `OPTION_NONE_REQUIRES_EXPECTED_TYPE` | `checker` | `error` | `active` | \`::none\` requires an expected Option<T> / T? type; otherwise use \`Option<T>::none\`. |
 | `OPTION_SOME_PAYLOAD_TYPE_MISMATCH` | `checker` | `error` | `active` | \`::some\` payload does not match the expected Option element type. |
+| `ORDINARY_CALL_NO_APPLICABLE_CANDIDATE` | `checker` | `error` | `active` | No ordinary-call candidate independently satisfies the complete call contract. |
+| `ORDINARY_CALL_OVERLOAD_AMBIGUOUS` | `checker` | `error` | `active` | More than one ordinary-call candidate is maximal under the closed specificity relation. |
+| `ORDINARY_CALL_RESULT_CONTEXT_MISMATCH` | `checker` | `error` | `active` | The selected ordinary-call result is incompatible with the fixed expected type. |
 | `OR_PATTERN_BINDINGS_INCONSISTENT` | `checker` | `error` | `active` | All alternatives of an or-pattern must bind the same names with identical canonical types, modes, mutability, usable lifetimes, and capabilities. |
 | `OTHERWISE_DUPLICATE_CLAUSE` | `checker` | `error` | `active` | A clause block or match may contain at most one \`otherwise\` arm. |
 | `OTHERWISE_MUST_BE_LAST` | `checker` | `error` | `active` | \`otherwise\` must be the last clause or match arm. |
@@ -1487,6 +1490,7 @@
 | `OptionLocalTargetInsertionAdmitted` | OptionLocalTargetInsertionAdmitted | an explicit local binding or field target was independently fixed to exactly Option<T>; the insertion depth is exactly one; the context is not call, return, lambda, collection, generic-driving, or nested | `DESIGN_STATIC_NOT_RUN` |
 | `OptionSurfaceCanonicalAdmitted` | OptionSurfaceCanonicalAdmitted | Option cases use ::some/::none and no bare or dot-case alias is present | `DESIGN_STATIC_NOT_RUN` |
 | `OptionalSuffixSingleLayerAdmitted` | Single compact optional suffix | normalize one attached question mark to exactly Option<T>; reject a second compact attached question mark; express nested absence explicitly as Option<T?> | `DESIGN_STATIC_NOT_RUN` |
+| `OrdinaryCallSelectionClosed` | candidate-local ordinary-call selection | Consume one finite ResolvedOverloadSetRef through candidate-local inference, applicability, closed specificity, and a unique-maximal winner before canonical HIR. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `OrdinaryLocalBindingAdmitted` | OrdinaryLocalBindingAdmitted | Shared local binding checker for direct let/var and normalized rightward surfaces. | `DESIGN_STATIC_NOT_RUN` |
 | `OwnedDowncastAdmitted` | OwnedDowncastAdmitted | attempt dynamic type test without consuming into an unrecoverable state; return matched Target or unmatched original Source exactly once | `DESIGN_STATIC_NOT_RUN` |
 | `OwnershipModeAdmitted` | OwnershipModeAdmitted | ordinary mut acquires one argument into a callee-owned mutable local with no caller alias/writeback and retains the caller owner on precommit failure; borrow is a nonescaping shared region; inout is one exclusive caller-place borrow whose successful writes are visible to the caller; move transfers ownership once; cleanup remains with the current owner | `DESIGN_STATIC_NOT_RUN` |
@@ -1517,7 +1521,7 @@
 | `RefutableCatchPatternAdmitted` | Refutable catch Pattern admission | Admit source-ordered refutable catch Patterns with pure guards and propagation of unmatched recoverable errors. | `` |
 | `RepeatedParameterOrderAndElementType` | RepeatedParameterOrderAndElementType | R51a1 closed design algorithm for RepeatedParameterOrderAndElementType; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResolveIntersectionEvidenceBundle` | ResolveIntersectionEvidenceBundle | Resolve a coherent evidence bundle for all intersection contracts. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `ResolvedNoncallReferenceSelected` | deterministic noncall reference selection | Select one deterministic noncall reference while leaving callable overload sets to the next cluster. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ResolvedNoncallReferenceSelected` | deterministic noncall reference selection | Select one deterministic noncall reference while routing callable overload sets to OrdinaryCallSelectionClosed. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResolverHirSealAdmitted` | resolver-to-canonical-HIR seal | Admit canonical HIR-H1 only when every noncall reference is fully resolved and no runtime relookup residue remains. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResolverScopeTreeAdmitted` | resolver lexical-frame tree | Admit deterministic lexical name frames while keeping name, extension-activation and witness-visibility environments separate. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResponsibilitySubsumes` | ResponsibilitySubsumes | Compare ownership, effect, failure, authority, isolation and cleanup axes independently. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |

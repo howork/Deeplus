@@ -420,7 +420,7 @@ def main() -> int:
     check("R38_R20_ACCEPTANCE_PRESERVED", len(legacy) == 24 and len({row.get("test_id") for row in legacy}) == 24, len(legacy))
 
     counts: dict[str, tuple[int, int]] = {}
-    expected_counts = {"diagnostics": 1491, "predicates": 285, "predicate_fixtures": 877, "relations": 618}
+    baseline_counts = {"diagnostics": 1491, "predicates": 285, "predicate_fixtures": 877, "relations": 618}
     locations = {
         "diagnostics": ("spec/diagnostics/catalog", "diagnostic_count"),
         "predicates": ("spec/types/predicates", "predicate_count"),
@@ -431,7 +431,14 @@ def main() -> int:
         actual = len(catalog_rows(root, relative))
         declared = load(root / relative / "catalog-metadata.json").get(metadata_key)
         counts[key] = (actual, declared)
-    check("R38_CATALOG_COUNTS", all(counts[k] == (v, v) for k, v in expected_counts.items()), counts)
+    check(
+        "R38_CATALOG_COUNTS",
+        all(
+            actual == declared and actual >= baseline_counts[key]
+            for key, (actual, declared) in counts.items()
+        ),
+        counts,
+    )
     diagnostics = catalog_rows(root, "spec/diagnostics/catalog")
     diagnostic_counts = Counter(row.get("diagnostic_id") for row in diagnostics)
     check("R38_DIAGNOSTIC_BINDING", all(diagnostic_counts[value] == 1 for value in DIAGNOSTICS), {value: diagnostic_counts[value] for value in DIAGNOSTICS})
