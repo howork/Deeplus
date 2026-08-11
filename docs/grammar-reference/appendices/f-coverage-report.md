@@ -39,7 +39,7 @@
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `f507c99654d6af6b0beede05b510f736445f6146a605a7d5184c8362bf247ff7` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `402438a23f7940741e8f512beaa60af8e028f6f372a6075cc42778021f22fc23` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `9551a021c2fdb71b8504a318c022915bf644b17d668e9a89cd846f25f342841e` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `bb0c31f9f06a617029091260a9e0096c06cc35332edc0adf157fac4f1fa27d15` |
 | `type_system` | `spec/types/type-system.md` | `52c24fc1ac16e6bc27bacc886683246d9b2a2772bb8bb73cbd0caa346d9fdd77` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `0037fee1f949477fb99cadfdb6e97999cacc008071a5ff529eaa7a232223b0b6` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `f8f6e8e0eb9acdce4a905ac043b8e86ebc6c3f99f379f9e7a166d04e7f83f185` |

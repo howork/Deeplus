@@ -14,13 +14,43 @@
     "IR-FE-P1-034"
   ],
   "inputs": {
-    "grammar": "spec/grammar/deeplus.ebnf",
+    "parser_authority": "spec/contracts/parser-authority-traceability-r1.json",
+    "structural_grammar": "spec/grammar/deeplus.dpg",
+    "parser_contexts": "spec/grammar/deeplus.parser-contexts.json",
+    "pratt_contract": "spec/contracts/closed-pratt-parse-goal-contract-r1.json",
+    "surface_census": "spec/grammar/deeplus.ebnf",
     "grammar_disposition_registry": "spec/contracts/grammar-production-disposition-registry-r1.json",
     "grammar_topology": "spec/contracts/grammar-topology-closure-r1.json",
     "frontend_model": "spec/frontend/frontend-model.json",
     "recovery_contract": "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json",
     "parser_boundary_contract": "spec/contracts/parser-boundary-match-arm-contract-r1.json",
     "scanner_contract": "spec/contracts/complete-token-lexical-goal-contract-r1.json"
+  },
+  "parser_authority_rebase": {
+    "gap_id": "IR-FE-P1-063",
+    "baseline_main": "10e64f492f0529610673846139afcf0d95175663",
+    "decision": "decisions/language/Design_Deeplus_Formatter_LSP_DPG_Authority_Rebase_R1.md",
+    "authority_contract": {
+      "path": "spec/contracts/parser-authority-traceability-r1.json",
+      "sha256": "9f8b60146298a930f7fe3f63408a8e89c8ac57e540595902e954d66852792133"
+    },
+    "authority_digest_set": [
+      {"axis": "STRUCTURAL_DPG", "path": "spec/grammar/deeplus.dpg", "sha256": "fefec3a3c8425d4911c8a162fd7f51ee4a63c946f32bcbba0face055a1c9863f"},
+      {"axis": "PARSER_CONTEXT", "path": "spec/grammar/deeplus.parser-contexts.json", "sha256": "9464f078bfac5429bc71339ed9ea52c68e18dc588fd65ddfb541ed0a8efbefaf"},
+      {"axis": "PRATT", "path": "spec/contracts/closed-pratt-parse-goal-contract-r1.json", "sha256": "143bfc0248ee473d7d6855cf1145a401ef931fa71a6037049c1e48b5189ccd4b"},
+      {"axis": "SCANNER", "path": "spec/contracts/complete-token-lexical-goal-contract-r1.json", "sha256": "ad75bdc19e4dcdeed68c77a3db046cf7d1fa57480696a9d60e15b769ef801d46"}
+    ],
+    "snapshot_component": "ParserAuthorityDigestSetR1",
+    "surface_census": {
+      "path": "spec/grammar/deeplus.ebnf",
+      "sha256": "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2",
+      "semantic_authority": false,
+      "role": "FORMATTER_CST_AST_DISPOSITION_CROSSWALK_ONLY"
+    },
+    "full_parse_reference": "SCANNER_PLUS_DPG_PLUS_PARSER_CONTEXT_PLUS_PRATT_PLUS_LOSSLESS_CST_RECOVERY_PLUS_AST_CHECKER",
+    "ebnf_only_admission_count": 0,
+    "incremental_source_language_widening_count": 0,
+    "tooling_parser_semantic_reselection_count": 0
   },
   "responsibility_separation": {
     "formatter": "selects only declared layout actions over an admitted lossless CST and proves parse-format-parse AST equivalence plus idempotence",
@@ -158,7 +188,7 @@
         "source_bytes_sha256",
         "source_role",
         "activation_profile",
-        "grammar_sha256",
+        "parser_authority_digest_set",
         "frontend_contract_digest_set"
       ],
       "owns": [
@@ -171,7 +201,7 @@
     },
     "CstContentId": {
       "recipe": [
-        "production_id",
+        "structural_cst_owner_id",
         "profile",
         "ordered child CstContentId or exact token kind and bytes",
         "lossless trivia ownership"
@@ -205,9 +235,9 @@
         "new DocumentRevisionId and new ParseSnapshotId",
         "source_role",
         "activation_profile",
-        "grammar_sha256",
+        "parser_authority_digest_set",
         "frontend_contract_digest_set",
-        "production_id",
+        "structural_cst_owner_id",
         "CstContentId",
         "exact token and trivia partition",
         "recovery taint identity"
@@ -272,8 +302,8 @@
     "lexical_expansion": "expand each edit through the smallest scanner-mode envelope whose entry and exit lexical states can be recomputed exactly",
     "reparse_owner_eligibility": [
       "a source root",
-      "a PRODUCTION_NODE row with disposition ast_node or normalize_to",
-      "an exact external parser entry with a declared parent splice slot"
+      "a lossless CST structural owner with one exact DPG and ParserContext reparse entry and exit contract",
+      "an exact Pratt or scanner external entry with a declared parent splice slot"
     ],
     "owner_selection": "choose the smallest eligible old CST owner containing every lexically expanded edit interval; ties are impossible because CST ownership is a tree",
     "mandatory_ascent_conditions": [
@@ -284,7 +314,7 @@
       "splice partition or unchanged-sibling proof failed",
       "node reuse is ambiguous",
       "selected external entry lacks one parent splice slot"
-      ,"grammar, source role, activation profile, scanner goal, or frontend contract digest changed"
+      ,"parser authority digest set, source role, activation profile, scanner goal, or frontend contract digest changed"
       ,"boundary trivia or a contextual newline is owned outside the selected subtree"
     ],
     "ascent": "move to the nearest eligible parent and retry exactly once per ancestor",
@@ -292,10 +322,10 @@
     "splice_gate": [
       "the reparse consumes exactly the deterministic new interval mapped from the selected old owner interval",
       "entry and exit scanner states match the new surrounding snapshot",
-      "source role, activation profile, grammar and contract digests match",
+      "source role, activation profile, parser authority digest set and frontend contract digests match",
       "the child byte partition is total, ordered and nonoverlapping",
       "unchanged siblings have one-to-one reuse receipts",
-      "the new subtree has the selected production owner",
+      "the new subtree has the selected structural CST owner",
       "canonical AST normalization succeeds only when recovery taint is empty"
     ],
     "snapshot_read_lease": "a formatter, parser, LSP, code-action, or reuse-receipt operation retains its exact ParseSnapshotId until result completion",
@@ -327,7 +357,7 @@
       "ParseSnapshotId",
       "source role",
       "activation profile",
-      "grammar sha256",
+      "parser authority digest set",
       "frontend contract digest set",
       "source bytes sha256",
       "line map digest and negotiated position encoding"

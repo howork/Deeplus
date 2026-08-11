@@ -13146,6 +13146,9 @@ def main() -> int:
         "tests/fixtures/current/xvm-xbc-projection-r1.json",
         "tools/validators/validate_xvm_xbc_projection_r1.py",
         "tools/validators/run_xvm_xbc_projection_r1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Formatter_LSP_DPG_Authority_Rebase_R1.md",
+        "tools/validators/validate_formatter_lsp_dpg_authority_rebase.py",
+        "tools/validators/run_formatter_lsp_dpg_authority_rebase_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -14196,6 +14199,52 @@ def main() -> int:
         r92_mutation_process.returncode == 0,
         "R92_XVM_XBC_PROJECTION_R1_MUTATIONS",
         r92_mutation_detail[-4000:],
+    )
+
+    r93_validator = (
+        root / "tools/validators/validate_formatter_lsp_dpg_authority_rebase.py"
+    )
+    r93_process = subprocess.run(
+        [sys.executable, str(r93_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r93_detail = (
+        r93_process.stdout.strip()
+        if r93_process.returncode == 0
+        else r93_process.stderr.strip() or r93_process.stdout.strip()
+    )
+    check(
+        r93_process.returncode == 0,
+        "R93_FORMATTER_LSP_DPG_AUTHORITY_REBASE_R1",
+        r93_detail[-4000:],
+    )
+
+    r93_mutation_runner = (
+        root
+        / "tools/validators/run_formatter_lsp_dpg_authority_rebase_mutation_tests.py"
+    )
+    r93_mutation_process = subprocess.run(
+        [sys.executable, str(r93_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r93_mutation_detail = (
+        r93_mutation_process.stdout.strip()
+        if r93_mutation_process.returncode == 0
+        else r93_mutation_process.stderr.strip()
+        or r93_mutation_process.stdout.strip()
+    )
+    check(
+        r93_mutation_process.returncode == 0,
+        "R93_FORMATTER_LSP_DPG_AUTHORITY_REBASE_R1_MUTATIONS",
+        r93_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (
