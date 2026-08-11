@@ -1000,6 +1000,27 @@ For a closed Union scrutinee only, a typed child binder naming exactly one decla
 
 Refinement admission at construction, typed-pattern, argument, return, and explicit cast boundaries is three-valued: `PROVED` admits, `DISPROVED` emits the exact literal/range contradiction, and `UNKNOWN` emits `REFINEMENT_PROOF_REQUIRED`. A silent conversion outside those boundaries emits `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN`. `as?`, `as!`, and `T::check` retain their distinct Option, defect, and Result outcomes.
 
+The three values above are computed only by `RefinementR0V1`, defined by
+`spec/contracts/refinement-r0-calculus-v1.json`. It validates one closed typed
+formula vocabulary, proves every term total over the declared normalized input
+domain, converts the formula to bounded negation-normal form and bounded DNF,
+then intersects typed interval, identity, exclusion, congruence, Bool, and
+IEEE-NaN cells. A cell is `SAT`, `UNSAT`, or `UNKNOWN`. `Phi` implies a target
+only when `Phi and not(target)` is `UNSAT`; it disproves the target only when
+`Phi and target` is `UNSAT`. All other cases, including proof-budget
+exhaustion, are `UNKNOWN`. Union formation admits only a proved `DISJOINT`
+pair; an equivalent or directed-implying member is subsumed, and `OVERLAPS` or
+`UNKNOWN` rejects.
+
+The R0 value domains are Bool, signed and unsigned exact integers,
+`StaticInt`, Float32, Float64, Rational, Char scalar, and ordered Enum. The only
+initial total projections are String scalar length, Bytes length, List length,
+and ReadonlyView length. User-selected operator conformances and ordinary
+calls cannot enter an R0 formula. Integer `/` and `%` require a static safe
+divisor; other checked integer arithmetic requires a closed no-overflow proof.
+Float arithmetic remains exact IEEE evaluation, but comparison complement is
+logical negation and never an inverse-operator rewrite that would discard NaN.
+
 `T where > bound` is syntax sugar only for `T where this > bound`. Its right
 side uses the bounded `RefinementComparisonOperand` parse goal—literal,
 identifier, or qualified static value—rather than `PredicateExpr`; compound
@@ -1032,6 +1053,13 @@ Stored Bool results, wrappers, indirect calls, invalid or stale summaries, and
 unstable actuals remain opaque. Existing mutation, aliasing, borrow, capture,
 consume, suspension, and may-mutate/may-consume-call rules kill such facts. A
 guarded arm never subtracts from exhaustiveness coverage.
+
+Each `GuardSummaryV1.normalized_formula` is the typed formula node from
+`RefinementR0V1` and carries its exact `formula_digest`. Formal `PARAMETER`
+terms are capture-free. Direct-call substitution replaces them with exact
+stable `PLACE` terms only in the branch-local fact; a stored summary itself may
+not contain a place identity. The formula digest participates in the summary
+and API digests, while no formula or proof object survives as runtime data.
 
 ## 18. MIR responsibility projection and evidence boundary
 

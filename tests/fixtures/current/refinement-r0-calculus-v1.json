@@ -1,0 +1,161 @@
+{
+  "schema": "deeplus.refinement-r0-calculus-fixtures/v1",
+  "contract": "spec/contracts/refinement-r0-calculus-v1.json",
+  "formula_cases": [
+    {
+      "id": "R0-P-001", "class": "positive", "scenario": "inclusive Int interval",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": ["Int"],
+        "formula": {"kind": "ALL", "terms": [
+          {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GE", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "1"}}}},
+          {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "LE", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "65535"}}}}
+        ]},
+        "formula_digest": "ce02def065ef954347d80848d59e6a581e907690ff9563c33bd16c3c085ffd30"
+      },
+      "expected": "ADMIT_CANONICAL_R0"
+    },
+    {
+      "id": "R0-P-002", "class": "positive", "scenario": "current Even refinement uses remainder by a static safe divisor",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": ["Int"],
+        "formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "EQ", "left": {"kind": "BINARY", "type_id": "Int", "operator": "REMAINDER", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "2"}}}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+        "formula_digest": "54f6e09b3744d8d4777d37939ed0430821c1697ec5bcc657386eb9aad481659e"
+      },
+      "expected": "ADMIT_CANONICAL_R0"
+    },
+    {
+      "id": "R0-P-003", "class": "positive", "scenario": "registered String scalar length projection",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": ["String"],
+        "formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "INTRINSIC", "type_id": "UInt", "intrinsic_id": "STRING_SCALAR_LENGTH", "arguments": [{"kind": "PARAMETER", "type_id": "String", "parameter_index": 0}]}, "right": {"kind": "STATIC_VALUE", "type_id": "UInt", "value": {"kind": "UNSIGNED_INTEGER", "decimal": "0"}}}},
+        "formula_digest": "39647282bc4fe13081ac4943ba1e24d09586aa81620794c26578c45b24a10bba"
+      },
+      "expected": "ADMIT_CANONICAL_R0"
+    },
+    {
+      "id": "R0-P-004", "class": "positive", "scenario": "IEEE logical complement retains unordered NaN",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": ["Float64"],
+        "formula": {"kind": "NOT", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PARAMETER", "type_id": "Float64", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Float64", "value": {"kind": "FLOAT64", "bits": "0000000000000000"}}}},
+        "formula_digest": "5e8bebe47ecb236bea2545b6bb80e598009b978ac0bff40685a90bad7ac09783"
+      },
+      "expected": "ADMIT_WITH_NAN_IN_COMPLEMENT"
+    },
+    {
+      "id": "R0-B-001", "class": "boundary", "scenario": "positive Rational bound",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": ["Rational"],
+        "formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PARAMETER", "type_id": "Rational", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Rational", "value": {"kind": "RATIONAL", "numerator": "0", "denominator": "1"}}}},
+        "formula_digest": "aa58769c7e725a78b04c5a1dbf580b76bc31a2abe756b9b5a62b370b1945b428"
+      },
+      "expected": "ADMIT_CANONICAL_R0"
+    },
+    {
+      "id": "R0-B-002", "class": "boundary", "scenario": "ordered Enum inclusive interval",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": ["Priority"],
+        "formula": {"kind": "ALL", "terms": [
+          {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GE", "left": {"kind": "PARAMETER", "type_id": "Priority", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Priority", "value": {"kind": "ORDERED_ENUM", "enum_type_id": "Priority", "variant_id": "Priority::low", "ordinal": "0"}}}},
+          {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "LE", "left": {"kind": "PARAMETER", "type_id": "Priority", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Priority", "value": {"kind": "ORDERED_ENUM", "enum_type_id": "Priority", "variant_id": "Priority::high", "ordinal": "2"}}}}
+        ]},
+        "formula_digest": "1f64c2bde01f33ffe13a69689589053fd97cc0772dc40826594a80a1fe9213be"
+      },
+      "expected": "ADMIT_CANONICAL_R0"
+    },
+    {
+      "id": "R0-B-003", "class": "boundary", "scenario": "Bool parameter equality",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": ["Bool"],
+        "formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "EQ", "left": {"kind": "PARAMETER", "type_id": "Bool", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Bool", "value": {"kind": "BOOL", "value": true}}}},
+        "formula_digest": "1da42418c0abd3f22e0494339d98b046dcf28516c8e42cd424872b72f415ae14"
+      },
+      "expected": "ADMIT_CANONICAL_R0"
+    },
+    {
+      "id": "R0-B-004", "class": "boundary", "scenario": "GuardSummary substitution replaces a parameter with one stable place",
+      "document": {
+        "schema": "deeplus.refinement-r0-formula/v1", "parameter_type_ids": [],
+        "formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PLACE", "type_id": "Int", "place_id": "local:x"}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+        "formula_digest": "bec2ea8bfaaeec23151eb6a4a81b619c01bd4571f316e2fe96bf7aa183ffc36e"
+      },
+      "expected": "ADMIT_SUBSTITUTED_PHI_FACT_ONLY"
+    }
+  ],
+  "query_cases": [
+    {
+      "id": "R0-Q-001", "expected": "ADMIT_FORMULA",
+      "descriptor": {
+        "schema": "deeplus.refinement-r0-query/v1", "query_kind": "FORMULA_ADMISSION", "parameter_type_ids": ["Int"],
+        "left_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GE", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+        "right_formula_or_null": null, "boundary_kind": "NOT_APPLICABLE",
+        "selected_r0_row_ids": ["R0ROW-INTRINSIC-INT-GE"],
+        "responsibility": {"effects": false, "errors": false, "suspends": false, "authority": false, "mutates": false, "consumes": false, "observable_allocation": false},
+        "totality": "PROVED",
+        "resource_usage": {"formula_nodes": 5, "formula_depth": 3, "term_nodes": 2, "term_depth": 1, "dnf_cells": 1, "proof_steps": 8}
+      }
+    },
+    {
+      "id": "R0-Q-002", "expected": "PROVED",
+      "descriptor": {
+        "schema": "deeplus.refinement-r0-query/v1", "query_kind": "BOUNDARY_PROOF", "parameter_type_ids": ["Int"],
+        "left_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "EQ", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "20"}}}},
+        "right_formula_or_null": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+        "boundary_kind": "ARGUMENT", "selected_r0_row_ids": ["R0ROW-INTRINSIC-INT-EQ", "R0ROW-INTRINSIC-INT-GT"],
+        "responsibility": {"effects": false, "errors": false, "suspends": false, "authority": false, "mutates": false, "consumes": false, "observable_allocation": false},
+        "totality": "PROVED",
+        "resource_usage": {"formula_nodes": 10, "formula_depth": 3, "term_nodes": 4, "term_depth": 1, "dnf_cells": 1, "proof_steps": 18}
+      }
+    },
+    {
+      "id": "R0-Q-003", "expected": "DISJOINT",
+      "descriptor": {
+        "schema": "deeplus.refinement-r0-query/v1", "query_kind": "RELATION", "parameter_type_ids": ["Int"],
+        "left_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "LE", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+        "right_formula_or_null": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+        "boundary_kind": "NOT_APPLICABLE", "selected_r0_row_ids": ["R0ROW-INTRINSIC-INT-LE", "R0ROW-INTRINSIC-INT-GT"],
+        "responsibility": {"effects": false, "errors": false, "suspends": false, "authority": false, "mutates": false, "consumes": false, "observable_allocation": false},
+        "totality": "PROVED",
+        "resource_usage": {"formula_nodes": 10, "formula_depth": 3, "term_nodes": 4, "term_depth": 1, "dnf_cells": 1, "proof_steps": 18}
+      }
+    }
+  ],
+  "relation_cases": [
+    {"id": "R0-R-001", "left_formula_case": "R0-P-001", "right_formula_case": "R0-P-001", "expected_relation": "EQUIVALENT"},
+    {
+      "id": "R0-R-002", "scenario": "Int this <= 0 and Int this > 0", "parameter_type_ids": ["Int"],
+      "left_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "LE", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+      "right_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+      "expected_relation": "DISJOINT"
+    },
+    {
+      "id": "R0-R-003", "scenario": "Int remainder 2 equals 0 versus equals 1", "parameter_type_ids": ["Int"],
+      "left_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "EQ", "left": {"kind": "BINARY", "type_id": "Int", "operator": "REMAINDER", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "2"}}}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "0"}}}},
+      "right_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "EQ", "left": {"kind": "BINARY", "type_id": "Int", "operator": "REMAINDER", "left": {"kind": "PARAMETER", "type_id": "Int", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "2"}}}, "right": {"kind": "STATIC_VALUE", "type_id": "Int", "value": {"kind": "SIGNED_INTEGER", "decimal": "1"}}}},
+      "expected_relation": "DISJOINT"
+    },
+    {
+      "id": "R0-R-004", "scenario": "Float x <= 0 implies not(x > 0), but NaN prevents equivalence", "parameter_type_ids": ["Float64"],
+      "left_formula": {"kind": "NOT", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PARAMETER", "type_id": "Float64", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Float64", "value": {"kind": "FLOAT64", "bits": "0000000000000000"}}}},
+      "right_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "LE", "left": {"kind": "PARAMETER", "type_id": "Float64", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Float64", "value": {"kind": "FLOAT64", "bits": "0000000000000000"}}}},
+      "expected_relation": "RIGHT_IMPLIES_LEFT"
+    },
+    {
+      "id": "R0-R-005", "scenario": "nonlinear Float products have no bounded algebraic relation proof", "parameter_type_ids": ["Float64"],
+      "left_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "BINARY", "type_id": "Float64", "operator": "MULTIPLY", "left": {"kind": "PARAMETER", "type_id": "Float64", "parameter_index": 0}, "right": {"kind": "PARAMETER", "type_id": "Float64", "parameter_index": 0}}, "right": {"kind": "STATIC_VALUE", "type_id": "Float64", "value": {"kind": "FLOAT64", "bits": "4000000000000000"}}}},
+      "right_formula": {"kind": "ATOM", "atom": {"kind": "COMPARE", "operator": "GT", "left": {"kind": "PARAMETER", "type_id": "Float64", "parameter_index": 0}, "right": {"kind": "STATIC_VALUE", "type_id": "Float64", "value": {"kind": "FLOAT64", "bits": "0000000000000000"}}}},
+      "expected_relation": "UNKNOWN"
+    }
+  ],
+  "rejection_cases": [
+    {"id": "R0-N-001", "scenario": "1 / parameter where zero is in the declared domain", "diagnostic": "R0_GUARD_NOT_GUARD_SAFE"},
+    {"id": "R0-N-002", "scenario": "comparison or arithmetic resolves through user conformance", "diagnostic": "REFINEMENT_R0_PREDICATE_NOT_ADMITTED"},
+    {"id": "R0-N-003", "scenario": "summary formula is an untyped source string", "diagnostic": "GUARD_REFINEMENT_SUMMARY_NOT_R0"},
+    {"id": "R0-N-004", "scenario": "formula admission exceeds node or depth limit", "diagnostic": "REFINEMENT_R0_PREDICATE_NOT_ADMITTED"},
+    {"id": "R0-N-005", "scenario": "union disjointness proof exhausts its relation budget", "diagnostic": "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT"}
+  ],
+  "expected_counts": {
+    "formula_cases": 8, "positive": 4, "boundary": 4,
+    "query_cases": 3, "relation_cases": 5, "rejection_cases": 5,
+    "semantic_p0": 0, "feature_p1": 22, "product_lanes": 15, "product_executed": 0
+  }
+}

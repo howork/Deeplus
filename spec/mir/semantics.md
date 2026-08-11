@@ -979,6 +979,16 @@ or a may-mutate/may-consume call kills the durable fact. MIR does not materializ
 
 Refinement boundaries preserve their selected outcome: proven construction has no duplicate predicate call, `as?` retains Option success/failure, `as!` retains its declared defect edge, and `T::check` retains Result detail. For a direct truth test, checker/HIR may substitute facts from a verified finite `GuardSummaryV1` and omit a redundant later refinement check. No summary or proof value is carried into MIR or runtime; stored, indirect, wrapped, or invalidated guard results remain opaque.
 
+`RefinementR0V1` is exhausted before MIR. Canonical HIR may retain the selected
+boundary outcome and the exact formula digest needed for static provenance,
+but never an open solver, source-text predicate, or runtime proof plan. MIR
+either lowers the already selected predicate evaluation with its existing
+failure edge or omits a check proved redundant by the checker. It does not
+renormalize the formula, invert IEEE comparisons, repeat a guard call, search
+for a witness, or ask xVM/Cranelift/host code to decide implication or
+disjointness. The normative static contract is
+`spec/contracts/refinement-r0-calculus-v1.json`.
+
 ## 15. Post-PR16 nonactivatable Preview operational contracts
 
 > Status fence: this section is governed by Part XII's current preimplementation Preview boundary. Current MIR behavior remains authoritative; the successor material is nonactivatable, implementation begins only after Deeplus 0.1.3 is established, and this text closes no P1 or product lane.

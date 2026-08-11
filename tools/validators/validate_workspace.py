@@ -13710,6 +13710,49 @@ def main() -> int:
         r83_mutation_detail[-4000:],
     )
 
+    r84_validator = root / "tools/validators/validate_refinement_r0_v1.py"
+    r84_process = subprocess.run(
+        [sys.executable, str(r84_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r84_detail = (
+        r84_process.stdout.strip()
+        if r84_process.returncode == 0
+        else r84_process.stderr.strip() or r84_process.stdout.strip()
+    )
+    check(
+        r84_process.returncode == 0,
+        "R84_REFINEMENT_R0_V1",
+        r84_detail[-4000:],
+    )
+
+    r84_mutation_runner = (
+        root / "tools/validators/run_refinement_r0_v1_mutation_tests.py"
+    )
+    r84_mutation_process = subprocess.run(
+        [sys.executable, str(r84_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r84_mutation_detail = (
+        r84_mutation_process.stdout.strip()
+        if r84_mutation_process.returncode == 0
+        else r84_mutation_process.stderr.strip()
+        or r84_mutation_process.stdout.strip()
+    )
+    check(
+        r84_mutation_process.returncode == 0,
+        "R84_REFINEMENT_R0_V1_MUTATIONS",
+        r84_mutation_detail[-4000:],
+    )
+
     r76_mutation_runner = (
         root
         / "tools/validators/run_global_implementation_target_trace_closure_mutation_tests.py"
@@ -16769,6 +16812,15 @@ def main() -> int:
         if row.get("predicate_id") in trn_predicate_ids
     }
     trn_schema_rel = "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json"
+    r0_query_schema_rel = "schemas/language/refinement-r0-query-v1.schema.json"
+    expected_trn_predicate_schemas = {
+        "GuardPredicateAdmitted": trn_schema_rel,
+        "MatchExhaustive": trn_schema_rel,
+        "NarrowUnionByPattern": trn_schema_rel,
+        "NormalizeUnion": trn_schema_rel,
+        "R0GuardSafe": r0_query_schema_rel,
+        "RefinementCheckBoundaryAdmitted": r0_query_schema_rel,
+    }
     descriptor_binding_ok = (
         len(trn_inputs) == len(trn_input_ids) == len(set(trn_input_ids)) == 12
         and all(
@@ -16777,10 +16829,22 @@ def main() -> int:
             for rows in trn_input_groups.values()
         )
         and set(trn_predicate_rows) == trn_predicate_ids
+        and trn_contract.get("predicate_inputs_role")
+        == "CROSS_PREDICATE_INTEGRATION_ENVELOPE_NOT_CHECKER_INPUT"
+        and trn_contract.get("predicate_integration_descriptor_schema")
+        == trn_schema_rel
+        and trn_contract.get("predicate_input_schema_by_predicate")
+        == expected_trn_predicate_schemas
         and all(
-            row.get("input_descriptor") == "TRNCoherenceDescriptor"
-            and row.get("input_descriptor_schema") == trn_schema_rel
-            for row in trn_predicate_rows.values()
+            row.get("input_descriptor_schema")
+            == expected_trn_predicate_schemas[predicate_id]
+            and (
+                row.get("input_descriptor") == "RefinementR0QueryV1"
+                if expected_trn_predicate_schemas[predicate_id]
+                == r0_query_schema_rel
+                else row.get("input_descriptor") == "TRNCoherenceDescriptor"
+            )
+            for predicate_id, row in trn_predicate_rows.items()
         )
     )
     match_descriptors = [

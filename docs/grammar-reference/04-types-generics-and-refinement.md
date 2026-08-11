@@ -282,6 +282,47 @@ base type identity를 명시하는 구간 refinement는
 않는다. bound는 literal, 정적 이름 또는 qualified static value이고
 source expression을 평가하거나 provider를 탐색하지 않는다.
 
+### RefinementR0V1의 실제 판정 범위
+
+위 표면은 문자열 조건으로 저장되지 않는다. checker는 조건을
+`RefinementR0V1`의 폐쇄형 typed AST로 정규화한다. 정본 계약은
+[`spec/contracts/refinement-r0-calculus-v1.json`](../../spec/contracts/refinement-r0-calculus-v1.json),
+formula schema는
+[`schemas/language/refinement-r0-formula-v1.schema.json`](../../schemas/language/refinement-r0-formula-v1.schema.json)이다.
+
+초기 R0는 다음 값을 다룬다.
+
+- `Bool`, signed/unsigned integer, `StaticInt`
+- `Float32`, `Float64`, `Rational`
+- `Char` scalar와 순서가 활성화된 Enum
+- 등록된 `String`, `Bytes`, `List`, `ReadonlyView`의 `length` projection
+
+연산자 모양만 맞는다고 R0가 되는 것은 아니다. compiler 또는 Prelude가
+등록한 exact R0 row가 선택되어야 하며 사용자 operator conformance,
+provider, reflection, 임의 함수 호출은 들어올 수 없다. checked integer
+연산은 선언된 입력 domain 전체에서 overflow가 없음을 증명해야 한다.
+정수 `/`, `%`와 Rational `/`, `%`는 정적으로 안전한 divisor가 필요하다.
+따라서 다음의 `% 2`는 total이지만 `1 / value`는 `value`가 0이 아님을 다른
+conjunct에 적었다는 이유만으로 total이 되지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/refinement-r0-calculus-v1.json -->
+```deeplus
+public type Even = Int where this % 2 == 0
+
+// R0로 거부: full Int domain에서 division이 total하지 않다.
+public type ReciprocalPositive = Int where 1 / this > 0
+```
+
+증명기는 `SAT`, `UNSAT`, `UNKNOWN`의 세 결과를 사용한다. 정해진 proof
+budget을 소진하면 `UNKNOWN`이며 PASS가 아니다. construction/argument/
+return/pattern boundary에서 target을 증명하지 못하면
+`REFINEMENT_PROOF_REQUIRED`, Union alternative의 disjointness를 증명하지
+못하면 `UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT`가 선택된다.
+
+Float의 보수는 특히 주의한다. `not(x > 0.0)`은 NaN을 포함하지만
+`x <= 0.0`은 NaN을 포함하지 않는다. 따라서 checker는 전자를 후자로
+바꾸지 않고 negated IEEE comparison atom으로 보존한다.
+
 ## 허용과 정적 의미
 
 ### 정규화와 타입 identity

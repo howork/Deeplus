@@ -232,7 +232,16 @@
     "REFINEMENT_RANGE_BOUND_STATIC_INT_REQUIRED",
         "PATTERN_PIN_REQUIRES_STABLE_VALUE"
   ],
-  "predicate_input_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+  "predicate_inputs_role": "CROSS_PREDICATE_INTEGRATION_ENVELOPE_NOT_CHECKER_INPUT",
+  "predicate_integration_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+  "predicate_input_schema_by_predicate": {
+    "GuardPredicateAdmitted": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "MatchExhaustive": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "NarrowUnionByPattern": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "NormalizeUnion": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "R0GuardSafe": "schemas/language/refinement-r0-query-v1.schema.json",
+    "RefinementCheckBoundaryAdmitted": "schemas/language/refinement-r0-query-v1.schema.json"
+  },
   "predicate_inputs": [
     {"fixture_id":"TRN-DESC-NARROW-POS","predicate_id":"NarrowUnionByPattern","expected":"admitted","diagnostic_or_null":null,"descriptor":{"subject":"value","declared_type":"Int | String","current_alternatives":["Int","String"],"pattern_coverage":["Int"],"arm_order":["n: Int"],"arms":[{"arm_id":"n: Int","kind":"PATTERN","coverage_cells":["Int"],"guard_origin":"NONE","binder_contract":["n:Int"],"entry_place_state":["value:available"],"exit_place_state":["value:available"]}],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"TYPED_PATTERN","proof_state":"PROVED","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":"Int","commit_count":1}},
     {"fixture_id":"TRN-DESC-NARROW-NEG","predicate_id":"NarrowUnionByPattern","expected":"rejected","diagnostic_or_null":"MATCH_ARM_UNREACHABLE","descriptor":{"subject":"value","declared_type":"Int | String","current_alternatives":["String"],"pattern_coverage":["Int"],"arm_order":["n: Int"],"arms":[{"arm_id":"n: Int","kind":"PATTERN","coverage_cells":["Int"],"guard_origin":"NONE","binder_contract":["n:Int"],"entry_place_state":["value:available"],"exit_place_state":["value:available"]}],"guard_origin":"NONE","guard_result_type":"NOT_APPLICABLE","boundary_kind":"TYPED_PATTERN","proof_state":"DISPROVED","type_relation":"DISJOINT","responsibilities":{"errors":false,"effects":false,"suspends":false,"authorities":false,"mutates":false,"consumes":false,"control_transfer":false},"output_type_or_null":null,"commit_count":0}},

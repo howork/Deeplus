@@ -632,17 +632,17 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "GuardRefinementSummaryAdmitted",
     "source_name": "GuardRefinementSummaryAdmitted",
-    "summary": "Admit exactly one fresh identity-bound GuardSummaryV1 whose normalized formula is in the finite R0 reflection calculus.",
+    "summary": "Admit exactly one fresh identity-bound GuardSummaryV1 whose normalized formula is a canonical typed RefinementR0V1 tree with an exact formula digest.",
     "input_descriptor": "GuardRefinementPredicateDescriptorR1",
     "input_descriptor_schema": "schemas/language/guard-refinement-predicate-descriptor.schema.json",
     "preconditions": [
       "the selected declaration is exactly one def#guard CallableImplementationId",
       "summary metadata is available before call-site flow transfer"
     ],
-    "normalization": "validate and canonicalize the GuardSummaryV1 parameter identities and R0 Boolean formula without evaluating the guard or creating a runtime proof object",
+    "normalization": "validate and canonicalize the GuardSummaryV1 parameter identities and typed RefinementR0V1 formula, recompute formula_digest and summary_digest, and create no runtime proof object",
     "decision_procedure": [
       "reject a missing summary with GUARD_REFINEMENT_SUMMARY_REQUIRED",
-      "reject a formula outside the finite R0 calculus with GUARD_REFINEMENT_SUMMARY_NOT_R0",
+      "reject an untyped, noncanonical, resource-exceeding, place-bearing, or otherwise non-R0 summary formula with GUARD_REFINEMENT_SUMMARY_NOT_R0",
       "bind the callable implementation and normalized parameter identities exactly or reject with GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH",
       "verify body, summary, API, and language-profile digests or reject with GUARD_REFINEMENT_SUMMARY_METADATA_STALE",
       "return one immutable summary admission record"
@@ -652,7 +652,7 @@
       "the body is not evaluated by this predicate",
       "the declared callable type and return type remain unchanged"
     ],
-    "termination_metric": "one finite summary record and one finite normalized R0 formula",
+    "termination_metric": "one finite summary record and the exact RefinementR0V1 admission limits",
     "success_result": "one validated GuardSummaryV1 admission record",
     "active_primary_diagnostic": "GUARD_REFINEMENT_SUMMARY_REQUIRED",
     "secondary_diagnostics": [
@@ -689,12 +689,12 @@
       "GuardRefinementSummaryAdmitted has returned one fresh summary admission record",
       "the condition expression retains the exact call identity and source edge"
     ],
-    "normalization": "substitute stable actual place identities into the already normalized summary formula without wrapper traversal, stored-Bool reuse, or a second predicate evaluation",
+    "normalization": "substitute exact stable PLACE terms for formal PARAMETER terms in the already canonical RefinementR0V1 formula without wrapper traversal, stored-Bool reuse, or a second predicate evaluation",
     "decision_procedure": [
       "require exact direct callable selection or reject with GUARD_REFINEMENT_CALL_NOT_DIRECT",
       "require every substituted actual to be a stable place or reject with GUARD_REFINEMENT_ACTUAL_NOT_STABLE",
       "revalidate the exact summary identity and metadata binding",
-      "substitute P on the true edge or the exact finite complement not(P) on the false edge",
+      "substitute P on the true edge or compute the exact RefinementR0V1 NNF complement not(P) on the false edge without IEEE inverse-comparison rewriting",
       "return the edge-local Phi facts without altering the declared semantic type or exhaustiveness residual"
     ],
     "requires": [
@@ -702,7 +702,7 @@
       "ordinary Bool calls add no fact",
       "kill events remove the fact before an invalid use"
     ],
-    "termination_metric": "one finite direct-call descriptor and one finite summary substitution",
+    "termination_metric": "one finite direct-call descriptor, at most 32 formal substitutions, and the exact RefinementR0V1 formula limits",
     "success_result": "one edge-local finite Phi fact set",
     "active_primary_diagnostic": "GUARD_REFINEMENT_CALL_NOT_DIRECT",
     "secondary_diagnostics": [

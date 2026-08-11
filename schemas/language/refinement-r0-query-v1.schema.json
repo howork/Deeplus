@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/refinement-r0-query-v1.schema.json",
+  "title": "Deeplus RefinementR0QueryV1 checker input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "query_kind", "parameter_type_ids", "left_formula",
+    "right_formula_or_null", "boundary_kind", "selected_r0_row_ids",
+    "responsibility", "totality", "resource_usage"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.refinement-r0-query/v1"},
+    "query_kind": {"enum": ["FORMULA_ADMISSION", "BOUNDARY_PROOF", "RELATION"]},
+    "parameter_type_ids": {
+      "type": "array", "maxItems": 32,
+      "items": {"type": "string", "minLength": 1, "maxLength": 256}
+    },
+    "left_formula": {"$ref": "./refinement-r0-formula-v1.schema.json#/$defs/formula"},
+    "right_formula_or_null": {
+      "oneOf": [
+        {"$ref": "./refinement-r0-formula-v1.schema.json#/$defs/formula"},
+        {"type": "null"}
+      ]
+    },
+    "boundary_kind": {
+      "enum": ["NOT_APPLICABLE", "IMPLICIT", "CONSTRUCTION", "TYPED_PATTERN", "ARGUMENT", "RETURN", "AS_OPTION", "AS_ASSERT", "CHECK_RESULT"]
+    },
+    "selected_r0_row_ids": {
+      "type": "array", "maxItems": 256, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^R0ROW-[A-Z0-9_-]+$"}
+    },
+    "responsibility": {
+      "type": "object", "additionalProperties": false,
+      "required": ["effects", "errors", "suspends", "authority", "mutates", "consumes", "observable_allocation"],
+      "properties": {
+        "effects": {"type": "boolean"},
+        "errors": {"type": "boolean"},
+        "suspends": {"type": "boolean"},
+        "authority": {"type": "boolean"},
+        "mutates": {"type": "boolean"},
+        "consumes": {"type": "boolean"},
+        "observable_allocation": {"type": "boolean"}
+      }
+    },
+    "totality": {"enum": ["PROVED", "DISPROVED"]},
+    "resource_usage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["formula_nodes", "formula_depth", "term_nodes", "term_depth", "dnf_cells", "proof_steps"],
+      "properties": {
+        "formula_nodes": {"type": "integer", "minimum": 0, "maximum": 256},
+        "formula_depth": {"type": "integer", "minimum": 0, "maximum": 32},
+        "term_nodes": {"type": "integer", "minimum": 0, "maximum": 256},
+        "term_depth": {"type": "integer", "minimum": 0, "maximum": 24},
+        "dnf_cells": {"type": "integer", "minimum": 0, "maximum": 256},
+        "proof_steps": {"type": "integer", "minimum": 0, "maximum": 100000}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"query_kind": {"const": "FORMULA_ADMISSION"}}},
+      "then": {"properties": {"right_formula_or_null": {"type": "null"}, "boundary_kind": {"const": "NOT_APPLICABLE"}}}
+    },
+    {
+      "if": {"properties": {"query_kind": {"const": "BOUNDARY_PROOF"}}},
+      "then": {
+        "properties": {
+          "right_formula_or_null": {"$ref": "./refinement-r0-formula-v1.schema.json#/$defs/formula"},
+          "boundary_kind": {"enum": ["IMPLICIT", "CONSTRUCTION", "TYPED_PATTERN", "ARGUMENT", "RETURN", "AS_OPTION", "AS_ASSERT", "CHECK_RESULT"]}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"query_kind": {"const": "RELATION"}}},
+      "then": {"properties": {"right_formula_or_null": {"$ref": "./refinement-r0-formula-v1.schema.json#/$defs/formula"}, "boundary_kind": {"const": "NOT_APPLICABLE"}}}
+    }
+  ]
+}

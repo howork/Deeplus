@@ -1317,6 +1317,19 @@ resolve statically to one stable, pure value in the ordered base domain;
 ordinary runtime bounds are rejected. Bounds are read lower then upper for
 normalization and are neither duplicated nor reordered.
 
+`RefinementR0V1` is the sole checker-internal formula and relation contract
+for these refinements, inline R0 guards, exported `GuardSummaryV1` values, and
+closed-Union refinement relations. Its normative machine contract is
+`spec/contracts/refinement-r0-calculus-v1.json`. The formula is a closed typed
+AST, never source text: Bool, exact integer/`StaticInt`, Float32/Float64,
+Rational, Char scalar, and ordered-Enum values are admitted, together with the
+registered String/Bytes/List/ReadonlyView length projections. Every arithmetic
+or comparison node must select an exact sealed compiler or Prelude R0 row;
+user conformance, provider lookup, reflection, and arbitrary calls are not R0.
+Checked arithmetic must be proven total over the declared input domain before
+the formula is admitted. Proof search is bounded and three-valued. Budget
+exhaustion yields `UNKNOWN`, never a successful proof.
+
 ## 31. Union, intersection, Option, and Result
 
 Anonymous unions are closed alternatives. Contract intersections combine compatible obligations. Option represents presence/absence; Result represents success/failure. A Result use always spells its error-channel argument as `Result<T, error E>`; the generic declaration may name `E: ErrorSet` without repeating the use-site role marker. Compact optional suffix denotes one layer. `?:` is the Option-coalescing operator and does not silently consume Result/error effects.
@@ -1687,6 +1700,15 @@ performs backtracking.
 `Identifier : TypeRef` remains an irrefutable static typed binder except in a refutable owner over an already normalized closed Union. There, and only when `TypeRef` is exactly one declared alternative identity, the checker elaborates it to a union-alternative binder and tests the Union's stored injection identity. This bounded discriminator read is not a general runtime type test: it performs no subtyping search, refinement execution, reflection, provider lookup, or Trait discovery.
 
 The checker maintains a flow-proof environment `Phi` separately from each binding's declared semantic type. A successful structural pattern intersects `Phi` with its exact enum case or union alternative; an inline admitted R0 guard may add finite facts on its true edge. Every admitted `def#guard` has one verified, versioned `GuardSummaryV1` containing a finite normalized R0 Boolean formula bound to its exact `CallableImplementationId`, parameter types, body digest, summary digest, and profile version. A direct truth-test of that exact guard over stable actual places substitutes the actuals into the summary once: the true edge adds `P` and the false edge adds the exact logical `not(P)` to `Phi`. The runtime Bool call still executes exactly once; no proof object or second predicate evaluation exists, and the declared type is unchanged. Stored Bool results, wrappers, dynamic dispatch, first-class callable erasure, arbitrary helpers, and unstable actuals add no fact. For IEEE values the complement remains logical negation and is never rewritten into an algebraically stronger comparison that erases NaN behavior. Guard facts do not make a guarded match arm exhaustive. Summary construction failure is a declaration error rather than an opaque fallback; use `def#pure` for a pure Bool helper that intentionally exports no narrowing proof. Joins retain only facts present on every incoming edge, and assignment, aliasing mutation, exclusive borrow, escape, mutable capture, consume, suspension, or a call permitted to mutate or consume the subject kills affected facts.
+
+The normalized formula and every substituted `Phi` fact use
+`RefinementR0V1`; strings such as `"x > 0"` are not evidence. Canonical
+formula bytes use sorted-key, whitespace-free UTF-8 JSON with exact numeric
+payloads represented by canonical decimal strings or fixed-width IEEE bits.
+`formula_digest` is the SHA-256 of those bytes. Boolean normalization may
+flatten and order total pure Boolean children, but it never reassociates
+arithmetic. IEEE `not(x > c)` remains a negated comparison atom rather than
+`x <= c`, because NaN satisfies the former and not the latter.
 
 Usefulness and exhaustiveness are one ordered structural-partition pass. The checker first restricts every arm to the normalized subject domain, which is either a finite constructor/type partition or an admitted finite symbolic scalar partition with a complement cell, and then removes cells already covered by earlier reachable unguarded arms. An empty result is `MATCH_ARM_UNREACHABLE`. A guarded arm is checked for usefulness and recorded as mentioning its structural cells, but it never subtracts coverage. `MATCH_NONEXHAUSTIVE_AFTER_GUARDS` is selected only when every final residual cell was mentioned by one or more guarded arms; if even one residual cell was never mentioned, the diagnostic is `MATCH_NOT_EXHAUSTIVE`. `otherwise` after an empty residual is `OTHERWISE_UNREACHABLE`. These design-static rules determine the primary diagnostic; they do not yet claim a product checker's residual-witness spelling or ordering. A sealed Class may prove nominal-family closure for other judgments, but absent constructor-pattern syntax that proof does not manufacture match cells.
 

@@ -512,8 +512,8 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "R0GuardSafe",
     "source_name": "R0GuardSafe",
-    "summary": "Admit only a finite total, exact-Bool, responsibility-free R0 expression.",
-    "input_descriptor": "TRNCoherenceDescriptor",
+    "summary": "Admit only one typed canonical RefinementR0V1 formula whose selected rows are sealed and whose terms are total, exact-Bool, and responsibility-free.",
+    "input_descriptor": "RefinementR0QueryV1",
     "descriptor_axes": [
       "subject",
       "guard_result_type",
@@ -529,9 +529,9 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "expression syntax is in the finite R0 whitelist",
-      "the expression is total for every value in its normalized input domain",
-      "result is Bool and responsibilities are empty"
+      "query_kind is FORMULA_ADMISSION and the formula validates against RefinementR0FormulaV1",
+      "every operation selects an exact sealed compiler or Prelude R0 row and is total for every value in the declared normalized input domain",
+      "result is exact Bool, every responsibility bit is false, and resource usage is within the closed R0 limits"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -543,20 +543,21 @@
     ],
     "formal_judgment_id": "J-R0GuardSafe",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/refinement-r0-query-v1.schema.json",
     "preconditions": [
-      "expression syntax is in the finite R0 whitelist",
-      "the expression is total over its input domain",
-      "result is Bool and responsibilities are empty"
+      "validate one FORMULA_ADMISSION query and its typed formula",
+      "prove term totality over the declared input domain without conjunct or short-circuit assumptions",
+      "require exact Bool, sealed R0 rows, empty responsibilities, and bounded resource usage"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize aliases and exact parameter TypeIds, lower only the closed R0 term/operator/intrinsic vocabulary to bounded NNF, and bind the canonical formula digest under spec/contracts/refinement-r0-calculus-v1.json",
     "decision_procedure": [
-      "reject nodes outside the finite R0 whitelist",
-      "prove totality over the input domain",
-      "require exact Bool and empty responsibilities",
-      "otherwise emit R0_GUARD_NOT_GUARD_SAFE before commit"
+      "validate RefinementR0QueryV1 and the closed typed formula vocabulary",
+      "require exact sealed R0 operation rows and reject user dispatch, provider, reflection, ordinary calls, or untyped source strings",
+      "prove totality from declared normalized parameter domains only",
+      "require exact Bool, empty responsibilities, canonical bytes and admitted resource counts",
+      "otherwise emit R0_GUARD_NOT_GUARD_SAFE before any fact or summary commit"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "termination_metric": "formula nodes <= 256, depth <= 32, term nodes <= 256, term depth <= 24, and proof steps <= 100000",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "R0_GUARD_NOT_GUARD_SAFE",
     "secondary_diagnostics": [],
@@ -833,8 +834,8 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "RefinementCheckBoundaryAdmitted",
     "source_name": "RefinementCheckBoundaryAdmitted",
-    "summary": "Apply three-valued proof at explicit refinement boundaries.",
-    "input_descriptor": "TRNCoherenceDescriptor",
+    "summary": "Apply the closed RefinementR0V1 three-valued relation procedure at one explicit refinement boundary.",
+    "input_descriptor": "RefinementR0QueryV1",
     "descriptor_axes": [
       "declared_type",
       "boundary_kind",
@@ -853,8 +854,8 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "classify the refinement boundary",
-      "obtain PROVED, DISPROVED, or UNKNOWN from Phi and the finite R0 relation",
+      "query_kind is BOUNDARY_PROOF and both Phi and target are typed canonical R0 formulas",
+      "obtain PROVED, DISPROVED, or UNKNOWN from the bounded RefinementR0V1 relation procedure",
       "preserve the boundary outcome"
     ],
     "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
@@ -867,22 +868,22 @@
     ],
     "formal_judgment_id": "J-RefinementCheckBoundaryAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/refinement-r0-query-v1.schema.json",
     "preconditions": [
-      "classify explicit boundary",
-      "obtain proof state from Phi and finite R0 relation",
+      "validate one explicit BOUNDARY_PROOF query",
+      "require canonical Phi and target formulas with one exact parameter/place identity domain",
       "reject silent conversion outside an admitted boundary"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize Phi and target through RefinementR0V1 without algebraic Float complement inversion or arithmetic reassociation",
     "decision_procedure": [
-      "validate the closed RCTS-V5 input variant",
-      "normalize every declared descriptor axis",
+      "validate the closed RefinementR0QueryV1 BOUNDARY_PROOF input",
+      "classify Phi and not(target), then Phi and target, as SAT, UNSAT, or UNKNOWN within the exact proof budget",
       "outside an explicit boundary emit REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN",
-      "at a static boundary PROVED admits, DISPROVED emits the contradiction, and UNKNOWN emits REFINEMENT_PROOF_REQUIRED",
+      "when Phi and not(target) is UNSAT return PROVED; otherwise when Phi and target is UNSAT return DISPROVED; every other or budget-exhausted result is UNKNOWN",
       "as? returns Option<T>; as! preserves the declared defect edge; T::check returns Result<T,error E>",
       "opaque stored Bool and unsummarized, indirect, wrapped, stale, or invalid def#guard calls create no proof fact; an exact direct call with a fresh valid GuardSummaryV1 and stable actual places contributes its normalized branch fact"
     ],
-    "termination_metric": "finite descriptor size plus decreasing candidate count",
+    "termination_metric": "bounded NNF/DNF cells <= 256, atoms per cell <= 128, and proof steps <= 100000",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "REFINEMENT_PROOF_REQUIRED",
     "secondary_diagnostics": [
@@ -922,8 +923,8 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "RefinementR0PredicateAdmitted",
     "source_name": "RefinementR0PredicateAdmitted",
-    "summary": "the predicate syntax belongs to the finite R0 operator/name whitelist; effect_row and authority are empty and suspension is none; the predicate is total for every value in the normalized input domain and cannot throw, allocate observable identity, mutate, perform I/O, query a provider, reflect, or search with a solver; evaluation occurs only at the declared construction, cast, argument, return, or pattern boundary",
-    "input_descriptor": "RCTSDescriptorV5",
+    "summary": "admit one canonical typed RefinementR0V1 formula only when every term is total, every selected operation row is sealed R0 authority, all responsibilities are empty, and all resource bounds are satisfied",
+    "input_descriptor": "RefinementR0QueryV1",
     "descriptor_axes": [
       "source_kind",
       "normalized_type",
@@ -947,9 +948,9 @@
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "the predicate syntax belongs to the finite R0 operator/name whitelist",
-      "effect_row and authority are empty and suspension is none",
-      "the predicate is total for every value in the normalized input domain and cannot throw, allocate observable identity, mutate, perform I/O, query a provider, reflect, or search with a solver",
+      "the typed formula belongs to the closed RefinementR0V1 vocabulary and uses canonical bytes",
+      "every responsibility bit is false and selected rows are exact sealed compiler or Prelude R0 rows",
+      "the predicate is total for every value in the declared normalized input domain and cannot use user dispatch, provider, reflection, arbitrary call, or unbounded solver search",
       "evaluation occurs only at the declared construction, cast, argument, return, or pattern boundary"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
@@ -964,21 +965,21 @@
     ],
     "formal_judgment_id": "J-RefinementR0PredicateAdmitted",
     "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "input_descriptor_schema": "schemas/language/refinement-r0-query-v1.schema.json",
     "preconditions": [
-      "the predicate syntax belongs to the finite R0 operator/name whitelist",
-      "effect_row and authority are empty and suspension is none",
-      "the predicate is total for every value in the normalized input domain and cannot throw, allocate observable identity, mutate, perform I/O, query a provider, reflect, or search with a solver",
+      "validate one FORMULA_ADMISSION query and typed formula",
+      "require all responsibility bits false and exact sealed R0 operation rows",
+      "prove totality over the declared normalized input domains and enforce every closed resource limit",
       "evaluation occurs only at the declared construction, cast, argument, return, or pattern boundary"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize to the canonical RefinementR0V1 typed NNF formula and SHA-256 formula digest without arithmetic reassociation or IEEE inverse-comparison complement",
     "decision_procedure": [
-      "validate the closed RCTS-V5 descriptor",
+      "validate the closed RefinementR0QueryV1 descriptor and RefinementR0FormulaV1 tree",
       "evaluate dependency predicates left-to-right in listed order",
-      "apply RefinementR0PredicateAdmitted local rule: the predicate syntax belongs to the finite R0 operator/name whitelist; effect_row and authority are empty and suspension is none; the predicate is total for every value in the normalized input domain and cannot throw, allocate observable identity, mutate, perform I/O, query a provider, reflect, or search with a solver; evaluation occurs only at the declared construction, cast, argument, return, or pattern boundary",
+      "require typed closed vocabulary, sealed R0 row identities, exact Bool, empty responsibilities, declared-domain totality, canonical bytes, and bounded resource usage",
       "on local-rule failure emit active_primary_diagnostic; secondary_diagnostics are trace alternatives, not a batch emission list"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "termination_metric": "the exact RefinementR0V1 node, depth, cell, atom, integer-bit and proof-step limits",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "REFINEMENT_R0_PREDICATE_NOT_ADMITTED",
     "secondary_diagnostics": [],

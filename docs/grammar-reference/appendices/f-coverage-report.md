@@ -31,7 +31,7 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `4c8a58c68b555bab0acd6f446bc9829ce621dd67c016cd1e2febbd4b64f7e09a` |
+| `human_language` | `spec/language.md` | `f709887452ac440c7da2872dfc1b9e594e551c02d136e959e6d29d7844ad624e` |
 | `exact_grammar` | `spec/grammar/deeplus.dpg` | `d06dceda812d6965da447f1f6a173d93ba23860f987e4de28dc31c0be78717fb` |
 | `parser_contexts` | `spec/grammar/deeplus.parser-contexts.json` | `d44c118a3de94313ba31ecd35eecaf084ce34f270d1d167ecbb85f1753217f1f` |
 | `legacy_surface_census` | `spec/grammar/deeplus.ebnf` | `f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2` |
@@ -39,9 +39,9 @@
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `f507c99654d6af6b0beede05b510f736445f6146a605a7d5184c8362bf247ff7` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `402438a23f7940741e8f512beaa60af8e028f6f372a6075cc42778021f22fc23` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `799071710693964c228e3b0d88edd3a06e8dc8aec2123c86bd4670579ddace08` |
-| `type_system` | `spec/types/type-system.md` | `747d498e50997df21a3f8d87fa7d02e6b4abf18f3bbb41eeb4d5ae138088fc20` |
-| `mir_observable_semantics` | `spec/mir/semantics.md` | `9e1db1b50f76bb97baf220e774b0bc8a9e21297889831d24c96c71fd4df8b5be` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `7f221062b9bd3f4e80c1d9582dc5dc13a3263932b3e2131418e2725028910714` |
+| `type_system` | `spec/types/type-system.md` | `c6775512d5c056becd52019c3bf0cc921a1f1e5e3fd5aee36be4e19aa1ba5c9a` |
+| `mir_observable_semantics` | `spec/mir/semantics.md` | `87aebeb194599fcea309db16671ecda3779b4e79a8eed3fc13ce86d91fc82dc8` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `f8f6e8e0eb9acdce4a905ac043b8e86ebc6c3f99f379f9e7a166d04e7f83f185` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `d085b7a1965f037698578c4447685c1f3804ece00d933401cd2066b32a13b976` |
 | `actor_concurrency_coherence` | `spec/contracts/actor-concurrency-coherence.json` | `4e1948381756bd0c5d940b9f40b3c57165d44df6886f718815b3c7c3ee09e979` |
