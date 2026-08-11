@@ -431,7 +431,7 @@ def load_contract(root: Path, *, relaxed: bool = False) -> dict[str, Any]:
     fixed_counts = {
         "grammar": 656,
         "features": 723,
-        "predicates": 283,
+        "predicates": 284,
         "predicate_fixtures": 877,
         "no_go": 154,
         "hard_keywords": 29,

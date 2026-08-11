@@ -1,0 +1,93 @@
+{
+  "$schema": "../../schemas/language/string-interpolation-format-spec-core-r1.schema.json",
+  "schema": "deeplus.string-interpolation-format-spec-core/r1",
+  "revision": "r80-string-interpolation-format-spec-core-closure-r1",
+  "canonical_baseline_commit": "10e64f492f0529610673846139afcf0d95175663",
+  "local_predecessor_commit": "79da7863a61d3018215c06d463e15e9d6375357c",
+  "candidate_status": "LOCAL_STABLE_DESIGN_CLOSURE_NOT_PUBLISHED",
+  "feature_id": "string_interpolation_format_spec_core",
+  "surface_contract": {
+    "outer_form": "${expr:format}",
+    "scanner_token": "INTERPOLATION_FORMAT_TEXT",
+    "inner_grammar": "Align? Width",
+    "align_tokens": ["<", ">", "^"],
+    "default_alignment": "LEFT",
+    "width_decimal_min": 1,
+    "width_decimal_max": 1000000,
+    "width_leading_zero_allowed": false,
+    "sign_allowed": false,
+    "underscore_allowed": false,
+    "whitespace_allowed": false,
+    "arbitrary_fill_allowed": false
+  },
+  "static_admission": {
+    "predicate_id": "StringInterpolationFormatSpecAdmitted",
+    "unbraced_diagnostic": "INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM",
+    "invalid_spec_diagnostic": "INTERPOLATION_FORMAT_SPEC_INVALID",
+    "reason_precedence": [
+      "EMPTY_FORMAT",
+      "INVALID_GRAMMAR",
+      "WIDTH_LEADING_ZERO",
+      "WIDTH_OUT_OF_RANGE"
+    ],
+    "invalid_spec_hir_residue_count": 0,
+    "invalid_spec_mir_residue_count": 0
+  },
+  "hir_contract": {
+    "segment_kind": "DISPLAY_HOLE",
+    "field": "format_plan_or_null",
+    "absent_colon_value": null,
+    "admitted_plan_revision": "FORMAT_SPEC_V1",
+    "plan_fields": [
+      "revision",
+      "alignment",
+      "minimum_width",
+      "fill_scalar",
+      "width_unit",
+      "overflow_policy",
+      "center_remainder_bias"
+    ]
+  },
+  "dynamic_semantics": {
+    "evaluation_order": [
+      "EVALUATE_HOLE_VALUE_ONCE",
+      "USE_STRING_DIRECTLY_OR_INVOKE_PRESELECTED_DISPLAY_ONCE",
+      "COUNT_DISPLAY_RESULT_UNICODE_SCALARS",
+      "APPLY_INTERPOLATION_OWNED_PADDING",
+      "STAGE_PADDED_SEGMENT_ONCE"
+    ],
+    "width_unit": "UNICODE_SCALAR_VALUE",
+    "fill_scalar": "U+0020",
+    "width_is_minimum": true,
+    "truncation": "NEVER",
+    "left_alignment_padding": "RIGHT_ONLY",
+    "right_alignment_padding": "LEFT_ONLY",
+    "center_alignment_padding": "LEFT_FLOOR_RIGHT_REMAINDER",
+    "display_receives_format_argument": false,
+    "string_hole_display_invocation_count": 0,
+    "non_string_hole_display_invocation_count": 1,
+    "new_locale_provider_serialization_authority_count": 0,
+    "failure_and_cleanup": "INHERIT_INTERPOLATION_BUILDER_TRANSACTION"
+  },
+  "tooling_obligations": {
+    "formatter_emission": "COLON_THEN_CANONICAL_ALIGN_IF_EXPLICIT_THEN_CANONICAL_WIDTH_NO_SPACES",
+    "formatter_may_change_explicit_default_alignment": false,
+    "lsp_exposes": ["alignment", "minimum_width", "width_unit", "truncation"],
+    "scanner_keeps_format_text_opaque": true,
+    "dpg_inner_grammar_expansion_count": 0
+  },
+  "acceptance": {
+    "fixture": "tests/fixtures/current/string-interpolation-format-spec-core-r1.json",
+    "positive_count": 4,
+    "boundary_count": 3,
+    "reject_count": 4,
+    "mutation_count": 8
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_publication": "NOT_PERFORMED_FOR_R80"
+  }
+}

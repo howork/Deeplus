@@ -2486,6 +2486,90 @@
         }
       ]
     },
+    "InterpolationFormatPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "alignment",
+        "minimum_width",
+        "fill_scalar",
+        "width_unit",
+        "overflow_policy",
+        "center_remainder_bias"
+      ],
+      "properties": {
+        "revision": {
+          "const": "FORMAT_SPEC_V1"
+        },
+        "alignment": {
+          "enum": [
+            "LEFT",
+            "RIGHT",
+            "CENTER"
+          ]
+        },
+        "minimum_width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "fill_scalar": {
+          "const": "U+0020"
+        },
+        "width_unit": {
+          "const": "UNICODE_SCALAR_VALUE"
+        },
+        "overflow_policy": {
+          "const": "PRESERVE_NO_TRUNCATION"
+        },
+        "center_remainder_bias": {
+          "const": "EXTRA_PAD_RIGHT"
+        }
+      }
+    },
+    "InterpolationFormatPlanOrNull": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/InterpolationFormatPlan"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "InterpolationRenderRoute": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "DIRECT_STRING"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "display_evidence_id"
+          ],
+          "properties": {
+            "kind": {
+              "const": "DISPLAY"
+            },
+            "display_evidence_id": {
+              "$ref": "#/$defs/Id"
+            }
+          }
+        }
+      ]
+    },
     "InterpolationSegment": {
       "oneOf": [
         {
@@ -2510,8 +2594,9 @@
           "required": [
             "kind",
             "value_expr_id",
-            "display_evidence_id",
+            "render_route",
             "shorthand_projection_or_null",
+            "format_plan_or_null",
             "temporary_cleanup_ids"
           ],
           "properties": {
@@ -2522,11 +2607,14 @@
               "$ref": "#/$defs/Id",
               "x-deeplus-reference-role": "OWNING_CHILD_EXPR"
             },
-            "display_evidence_id": {
-              "$ref": "#/$defs/Id"
+            "render_route": {
+              "$ref": "#/$defs/InterpolationRenderRoute"
             },
             "shorthand_projection_or_null": {
               "$ref": "#/$defs/RootOnceProjectionOrNull"
+            },
+            "format_plan_or_null": {
+              "$ref": "#/$defs/InterpolationFormatPlanOrNull"
             },
             "temporary_cleanup_ids": {
               "type": "array",

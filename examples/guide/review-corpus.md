@@ -13446,3 +13446,54 @@ let complex: Complex<Float32> = real + 4.0i
 let legacy = 255u8
 // NUMERIC_TYPE_SUFFIX_REMOVED
 ```
+
+## EX-R80-FMT-P-001 — Closed interpolation alignment forms
+
+- **source_feature_ids:** `string_interpolation_format_spec_core`
+- **checker_trace_ids:** `StringInterpolationFormatSpecAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let left = "${name:<12}"
+let right = "${name:>12}"
+let center = "${name:^12}"
+let defaultLeft = "${name:12}"
+```
+
+## EX-R80-FMT-BOUND-001 — Width is a scalar minimum, never truncation
+
+- **source_feature_ids:** `string_interpolation_format_spec_core`
+- **checker_trace_ids:** `StringInterpolationFormatSpecAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let unchanged = "${longName:1}"
+let centered = "${name:^4}" // an odd deficit puts the extra SPACE on the right
+```
+
+## EX-R80-FMT-NG-001 — Noncanonical interpolation format is rejected
+
+- **source_feature_ids:** `string_interpolation_format_spec_core`
+- **checker_trace_ids:** `StringInterpolationFormatSpecAdmitted`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `INTERPOLATION_FORMAT_SPEC_INVALID`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = "${name:012}"
+// INTERPOLATION_FORMAT_SPEC_INVALID (WIDTH_LEADING_ZERO)
+```

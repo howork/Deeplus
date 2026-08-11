@@ -44,10 +44,10 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
   - 차등 검증 입력이며 exact grammar authority가 아니다.
   - recovery는 DPG rule이 아니라 별도의 CST/parser 복구 정책이다.
 - 기능 레지스트리: `723` (전체 catalog; Implementation Target Profile은 그중 `469`개)
-- 진단 레지스트리: `1,486`
-- 타입 predicate: `283`
+- 진단 레지스트리: `1,487`
+- 타입 predicate: `284`
 - Prelude 서명: `81`
-- 예제 결과: `763`
+- 예제 결과: `766`
 - semantic P0: `0`
 - 기능 P1: `22 OPEN`
 - 별도 action: `M13-A002..005` 네 건 `OPEN`

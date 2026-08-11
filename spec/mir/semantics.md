@@ -258,11 +258,26 @@ An ordinary local binding evaluates its initializer exactly once while the targe
 Plain and raw source strings lower to immutable `ConstString` payloads. The raw scanner supplies the exact body scalars; escape and interpolation machines are not invoked. xVM and both Cranelift backends observe the same String value.
 
 Interpolated strings lower to an ordered segment plan. Direct segments are
-constants; each hole retains one source evaluation and one preselected
-`Display` witness invocation. Shorthand projections are read-only and braced
+constants; each hole retains one source evaluation, a direct String route or
+one preselected `Display` witness invocation. Shorthand projections are read-only and braced
 expressions use ordinary MIR. The plan commits one final String only after all
 segments succeed, carries no locale/provider/serialization/redaction
 observation, and performs reverse temporary cleanup on an earlier failure.
+
+### 4.1 Stable interpolation format plan
+
+An admitted colon format lowers as the hole's immutable `FORMAT_SPEC_V1` plan:
+alignment is `LEFT`, `RIGHT`, or `CENTER`; minimum width is 1 through 1,000,000;
+fill is U+0020; and the width unit is Unicode scalar value. The ordered builder
+stage evaluates the hole value once, uses a String value directly or invokes
+the preselected `Display` evidence once for a non-String value, counts the
+resulting segment's scalars, applies only the missing padding,
+and stages that segment once. Center padding uses floor on the left and the
+remainder on the right. A segment already at or above the minimum is unchanged;
+there is no truncation operation or hidden call into a locale, provider,
+serialization or reflection service. Invalid format text is rejected before
+HIR and creates no MIR. Padding allocation and cleanup remain within the same
+interpolation builder transaction and introduce no new outcome family.
 
 MIR value identity records the semantic type and value, not a storage address, serialization tag, runtime discriminant, ABI, or backend layout. Unsuffixed `Int` constants inhabit the signed 64-bit mathematical domain. Explicit integer domains remain distinct. Integer arithmetic is checked: a dynamic overflow or division or remainder by zero emits deterministic `ArithmeticDefect` before any enclosing place commit; wrapping and saturation occur only through named calls. Integer division truncates toward zero, and remainder preserves `a == trunc(a / b) * b + r` with `r == 0` or the dividend sign and `|r| < |b|`; signed `MIN / -1` and `MIN % -1` take the overflow edge. Floating and Complex `%` have no MIR operation. A statically rejected failure creates no MIR.
 
@@ -903,13 +918,13 @@ This section classifies the frozen required 20-feature audit set without changin
 | `match_arm_guard_msp` | `GENERIC_LAW_PRESENT` | §§2 and 11 bind subject-once evaluation and atomic binding after static admission. |
 | `bytes_literal_hash_bytes_msp` | `LAW_PRESENT` | §4 binds raw byte values and forbids hidden text conversion without selecting storage. |
 | `string_interpolation_braced_expr_core` | `LAW_PRESENT` | §4 binds ordered single evaluation, preselected Display evidence, final publication and cleanup. |
-| `string_interpolation_format_spec_core` | `DEFERRED_PRODUCT_HANDOFF` | The exact format-text grammar, argument mapping, width unit, padding/truncation and invalid-format outcome are not yet closed; no backend may invent them. |
+| `string_interpolation_format_spec_core` | `LAW_PRESENT` | §4.1 binds `Align? Width`, Unicode-scalar minimum width, SPACE padding, no truncation, checker rejection and the ordered Display-then-padding builder plan. |
 | `string_interpolation_shorthand_factor_msp` | `LAW_PRESENT` | §4 binds one root evaluation and read-only projection before the same Display plan. |
 | `numeric_array_postfix_transpose_caret_msp` | `LAW_PRESENT` | §11 binds an owner-bounded readonly view, axis/orientation transform, lifetime, and the no-implicit-element-copy boundary without selecting backend storage. |
 
 The supplemental features `no_string_char_bytes_implicit_conversion_law` and `text_model_char_grapheme_current_law` are `LAW_PRESENT` under §4; they do not replace or enlarge the required 20-feature set.
 
-Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF` in this 20-feature audit set: `string_interpolation_format_spec_core`. Braced-expression and shorthand-hole evaluation remain `LAW_PRESENT`, but a colon format text supplies no runtime formatting authority until its grammar, mapping, width/padding/truncation rules and invalid-format outcome are separately ratified. All product lanes remain `NOT_RUN`. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim. In particular, this static closure does not prove that xVM or either Cranelift backend implements ternary branching, interpolation planning, or transpose-view lowering.
+No required row remains `DEFERRED_PRODUCT_HANDOFF` in this 20-feature audit set. The interpolation format row is now `LAW_PRESENT` under §4.1. All product lanes remain `NOT_RUN`. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim. In particular, this static closure does not prove that xVM or either Cranelift backend implements ternary branching, interpolation planning, padding, or transpose-view lowering.
 
 ## 14.1 Closed-union, refinement, guard, and pattern-flow handoff
 

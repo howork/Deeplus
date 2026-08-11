@@ -1177,13 +1177,24 @@ implicit. `Secret` or `Redacted` values must first pass through an explicit
 redaction API. Failure while evaluating a braced expression occurs before the
 final String is published and cleans temporary segments in reverse order.
 
-The scanner preserves the text after the colon in `${expr:format}`, but the
-internal format-text grammar, its mapping to a rendering argument, width unit,
-padding and truncation behavior, and invalid-format outcome are not yet
-ratified. That format-spec core remains `DEFERRED_PRODUCT_HANDOFF`.
-Implementations must not borrow another language's format mini-language,
-silently ignore the text, or infer locale/provider authority. A hole without a
-colon follows the closed `Display` plan above.
+The Stable format core after the colon is `Align? Width`. `Align` is `<`, `>`
+or `^`; when it is omitted, alignment is left. `Width` is a canonical decimal
+integer from 1 through 1,000,000 with no sign, underscore, leading zero or
+whitespace. The only fill scalar is U+0020 SPACE. Width counts Unicode scalar
+values and is a minimum width: a longer rendered segment is preserved without
+truncation. Left alignment pads on the right, right alignment pads on the left,
+and center alignment splits the deficit with the extra scalar on the right.
+
+The scanner still preserves one opaque `INTERPOLATION_FORMAT_TEXT` token; the
+checker owns the bounded inner grammar and emits
+`INTERPOLATION_FORMAT_SPEC_INVALID` before HIR for malformed text. Canonical HIR
+records `format_plan_or_null` on each display hole. Runtime evaluates the hole
+once, uses a String value directly or invokes the preselected `Display` witness
+once for a non-String value, then applies interpolation-owned padding. The
+format plan is never passed to `Display` and
+adds no locale, provider, serialization, parsing, reflection, redaction or ABI
+authority. A hole without a colon stores a null plan and follows the same
+closed `Display` transaction.
 
 ## 26. NumericArray
 

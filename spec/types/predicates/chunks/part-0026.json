@@ -85,5 +85,85 @@
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
     "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "StringInterpolationFormatSpecAdmitted",
+    "source_name": "String interpolation format spec admission",
+    "summary": "Parse the bounded Align? Width language and seal one deterministic interpolation padding plan before HIR.",
+    "input_descriptor": "StringInterpolationFormatTextV1",
+    "input_descriptor_schema": "schemas/language/string-interpolation-format-spec-core-r1.schema.json",
+    "descriptor_axes": [
+      "raw_format_text",
+      "alignment",
+      "minimum_width",
+      "width_unit",
+      "overflow_policy"
+    ],
+    "feature_refs": [
+      "string_interpolation_format_spec_core"
+    ],
+    "diagnostic_refs": [
+      "INTERPOLATION_FORMAT_SPEC_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(InterpolationFormatPlan) | reject(INTERPOLATION_FORMAT_SPEC_INVALID, reason)",
+    "requires": [
+      "the scanner has isolated one braced INTERPOLATION_FORMAT_TEXT token",
+      "the raw token matches optional < > ^ followed by canonical decimal width 1 through 1000000"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/language.md#string-interpolation",
+    "rule_facets": [
+      "format_grammar",
+      "width_domain",
+      "alignment",
+      "hir_plan",
+      "diagnostic_precedence"
+    ],
+    "formal_judgment_id": "J-StringInterpolationFormatSpecAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "require braced interpolation before invoking this predicate",
+      "preserve the raw token without whitespace normalization"
+    ],
+    "normalization": "map omitted alignment to LEFT, < to LEFT, > to RIGHT and ^ to CENTER; parse width as canonical base-10 integer",
+    "decision_procedure": [
+      "reject an empty token with EMPTY_FORMAT",
+      "reject characters outside optional < > ^ and ASCII decimal digits with INVALID_GRAMMAR",
+      "reject a multi-digit width beginning with zero with WIDTH_LEADING_ZERO",
+      "reject width outside 1 through 1000000 with WIDTH_OUT_OF_RANGE",
+      "emit FORMAT_SPEC_V1 with U+0020 fill, Unicode-scalar minimum width, no truncation and extra center remainder on the right"
+    ],
+    "termination_metric": "one finite scanner token and one bounded decimal parse",
+    "success_result": "one canonical InterpolationFormatPlan",
+    "active_primary_diagnostic": "INTERPOLATION_FORMAT_SPEC_INVALID",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "R80-FMT-POS-001",
+      "R80-FMT-POS-002",
+      "R80-FMT-POS-003",
+      "R80-FMT-POS-004",
+      "R80-FMT-BOUND-001",
+      "R80-FMT-BOUND-002",
+      "R80-FMT-BOUND-003"
+    ],
+    "negative_fixture_ids": [
+      "R80-FMT-REJ-001",
+      "R80-FMT-REJ-002",
+      "R80-FMT-REJ-003",
+      "R80-FMT-REJ-004"
+    ],
+    "evaluation_order": "braced parser gate -> empty -> grammar -> leading zero -> range -> HIR plan",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "disposition": "supersedes_deferred_product_handoff_without_product_execution"
+    }
   }
 ]

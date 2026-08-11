@@ -541,6 +541,7 @@
 | `INTERPOLATION_BOUNDARY_OUTSIDE_PATH` | `lexer` | `error` | `active` | A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode. |
 | `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` | `parser` | `error` | `active` | Complex interpolation expression requires ${...}. |
 | `INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM` | `parser` | `error` | `active` | Interpolation format spec is admitted only in braced form ${expr:format}. |
+| `INTERPOLATION_FORMAT_SPEC_INVALID` | `checker` | `error` | `active` | Interpolation format must be Align? Width with optional <, > or ^ and canonical decimal width 1 through 1000000. |
 | `INTERPOLATION_INDEX_OUT_OF_DOMAIN` | `checker` | `error` | `active` | The interpolation selector index is outside the value's logical index domain. |
 | `INTERPOLATION_MEMBER_NOT_FOUND` | `checker` | `error` | `active` | The selected interpolation member does not exist on the statically known value type. |
 | `INTERPOLATION_SECRET_REQUIRES_EXPLICIT_REDACTION` | `checker` | `error` | `active` | Secret/Redacted values require explicit redaction before interpolation. |
@@ -1550,6 +1551,7 @@
 | `StaticNamedEvidenceSelectorAdmitted` | StaticNamedEvidenceSelectorAdmitted | Admits one visible named conformance selected only in the explicit using evidence channel. | `DESIGN_STATIC_NOT_RUN` |
 | `StrictSequentialBooleanAdmitted` | StrictSequentialBooleanAdmitted | strict Bool operands; sequential right operand is conditionally evaluated; product checker NOT_RUN | `DESIGN_STATIC_NOT_RUN` |
 | `StringCharBytesBoundaryAdmitted` | StringCharBytesBoundaryAdmitted | Design seed for text/binary/display boundary. | `DESIGN_STATIC_NOT_RUN` |
+| `StringInterpolationFormatSpecAdmitted` | String interpolation format spec admission | Parse the bounded Align? Width language and seal one deterministic interpolation padding plan before HIR. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `StringRenderAdmitted` | StringRenderAdmitted | Type and lower String::render as single evaluation plus one nonescaping renderer invocation. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `StructuredControlTargetResolved` | StructuredControlTargetResolved | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `StructuredRecordMapPatternAdmitted` | Record and Map structural Pattern admission | Admit label-first Record-family exact/static-named-residual patterns and keyed Map patterns without conflating their directions or rest markers. | `` |

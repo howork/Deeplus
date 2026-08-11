@@ -135,7 +135,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1486, "predicates": 283,
+    "features": 723, "diagnostics": 1487, "predicates": 284,
     "predicate_fixtures": 877, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
@@ -179,7 +179,7 @@ MIR_DISPOSITIONS = {
     "match_arm_guard_msp": "GENERIC_LAW_PRESENT",
     "bytes_literal_hash_bytes_msp": "LAW_PRESENT",
     "string_interpolation_braced_expr_core": "LAW_PRESENT",
-    "string_interpolation_format_spec_core": "DEFERRED_PRODUCT_HANDOFF",
+    "string_interpolation_format_spec_core": "LAW_PRESENT",
     "string_interpolation_shorthand_factor_msp": "LAW_PRESENT",
     "numeric_array_postfix_transpose_caret_msp": "LAW_PRESENT",
 }
@@ -12755,7 +12755,7 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 283
+                and fixed_counts.get("predicates") == 284
                 and fixed_counts.get("predicate_fixtures") == 877
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
@@ -12882,6 +12882,12 @@ def main() -> int:
         "governance/reports/Design_Deeplus_R79_SFD_P1_009_Execution_Identity_Route_Repair_R1.md",
         "tools/validators/validate_sfd_p1_009_execution_identity.py",
         "tools/validators/run_sfd_p1_009_execution_identity_mutation_tests.py",
+        "spec/contracts/string-interpolation-format-spec-core-r1.json",
+        "schemas/language/string-interpolation-format-spec-core-r1.schema.json",
+        "tests/fixtures/current/string-interpolation-format-spec-core-r1.json",
+        "decisions/language/Design_Deeplus_String_Interpolation_Format_Spec_Core_R1.md",
+        "tools/validators/validate_string_interpolation_format_spec_core.py",
+        "tools/validators/run_string_interpolation_format_spec_core_mutation_tests.py",
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
         "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
@@ -13490,6 +13496,52 @@ def main() -> int:
         r79_mutation_process.returncode == 0,
         "R79_SFD_P1_009_EXECUTION_IDENTITY_MUTATIONS",
         r79_mutation_detail[-4000:],
+    )
+
+    r80_validator = (
+        root / "tools/validators/validate_string_interpolation_format_spec_core.py"
+    )
+    r80_process = subprocess.run(
+        [sys.executable, str(r80_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r80_detail = (
+        r80_process.stdout.strip()
+        if r80_process.returncode == 0
+        else r80_process.stderr.strip() or r80_process.stdout.strip()
+    )
+    check(
+        r80_process.returncode == 0,
+        "R80_STRING_INTERPOLATION_FORMAT_SPEC_CORE",
+        r80_detail[-4000:],
+    )
+
+    r80_mutation_runner = (
+        root
+        / "tools/validators/run_string_interpolation_format_spec_core_mutation_tests.py"
+    )
+    r80_mutation_process = subprocess.run(
+        [sys.executable, str(r80_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r80_mutation_detail = (
+        r80_mutation_process.stdout.strip()
+        if r80_mutation_process.returncode == 0
+        else r80_mutation_process.stderr.strip()
+        or r80_mutation_process.stdout.strip()
+    )
+    check(
+        r80_mutation_process.returncode == 0,
+        "R80_STRING_INTERPOLATION_FORMAT_SPEC_CORE_MUTATIONS",
+        r80_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (
@@ -14496,13 +14548,13 @@ def main() -> int:
         if disposition == "DEFERRED_PRODUCT_HANDOFF"
     }
     check(
-        deferred_required == {"string_interpolation_format_spec_core"}
+        deferred_required == set()
         and all(
             f"`{feature_id}`" in mir_section[-1]
             for feature_id in SUPPLEMENTAL_MIR_FEATURE_IDS
         )
         and mir_section[-1].count("are `LAW_PRESENT`") == 1
-        and "Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF`"
+        and "No required row remains `DEFERRED_PRODUCT_HANDOFF`"
         in mir_section[-1]
         and "All product lanes remain `NOT_RUN`" in mir_section[-1]
         and "not a product execution receipt" in mir_section[-1],

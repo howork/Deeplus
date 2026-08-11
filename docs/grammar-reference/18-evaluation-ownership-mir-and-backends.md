@@ -38,9 +38,9 @@ provider observation을 바꿀 수 없다.
 - 설계 정적 계약과 제품 실행 receipt의 차이
 
 이 장은 MIR opcode 목록이나 storage layout을 발명하지 않는다.
-이번 정본 보완으로 필수 20개 MIR 감사 집합에서
-`DEFERRED_PRODUCT_HANDOFF`는 format-spec 1개만 남았지만,
-이는 정적 source-observable 법칙이 닫혔다는 뜻일 뿐이다.
+이번 정본 보완으로 필수 20개 MIR 감사 집합의
+`DEFERRED_PRODUCT_HANDOFF`는 0개다. format-spec도 닫힌
+source-observable 법칙을 갖지만, 이는 제품 구현이 끝났다는 뜻이 아니다.
 xVM·Cranelift 실행, backend opcode, 표현, 성능 및 제품 지원은
 계속 `NOT_RUN`이다.
 
@@ -1510,20 +1510,31 @@ provider, reflection, redaction 또는 authority lookup은 암시되지 않는�
 hole 평가 실패는 final String publish 전에 발생하며
 temporary segment를 역순 cleanup한다.
 
-### 17.3 format spec의 정확한 미폐쇄 경계
+### 17.3 Stable format spec
 
-`${expr:format}`의 colon 뒤 format text를 scanner가 구분한다는 사실은
-닫혀 있지만, 그 text의 내부 grammar와 의미는 아직 닫히지 않았다.
-특히 alignment glyph, width의 단위, padding scalar, truncation,
-overflow, invalid format 진단과 Display 호출에 전달되는 normalized
-argument가 정본에 없다. 따라서
-`string_interpolation_format_spec_core`만
-`DEFERRED_PRODUCT_HANDOFF`로 남는다.
+`${expr:format}`의 내부 문법은 작은 `Align? Width`로 닫힌다. `Align`은
+`<`, `>`, `^`이고 생략하면 왼쪽 정렬이다. `Width`는 선행 0·부호·밑줄·
+공백이 없는 1부터 1,000,000까지의 10진수다. fill은 U+0020 SPACE 하나며,
+폭은 Unicode scalar 개수로 센다. 폭보다 긴 결과는 절대 자르지 않는다.
 
-backend나 library는 Python/Rust/printf의 format 문법을 가져오거나,
-locale·provider를 선택하거나, 알 수 없는 format을 무시해서는 안 된다.
-format text가 없는 braced/shorthand hole은 §17.2의
-`LAW_PRESENT` plan을 그대로 사용한다.
+왼쪽 정렬은 오른쪽, 오른쪽 정렬은 왼쪽을 채운다. 가운데 정렬은 부족한
+개수의 절반을 왼쪽에 내림 배치하고 나머지를 오른쪽에 둔다. 따라서 홀수
+padding의 여분 SPACE 하나는 오른쪽에 온다.
+
+scanner는 raw format text와 span을 하나의 opaque token으로 보존하고,
+checker가 내부 문법을 검증한다. 잘못된 text는
+`INTERPOLATION_FORMAT_SPEC_INVALID`로 HIR 전에 거부된다. String hole은
+값을 그대로 사용하고 non-String hole만 선택된 `Display`를 한 번 호출한
+후 padding한다. format plan은 `Display`에 전달되지 않으며 locale,
+provider, serialization 또는 custom formatter 권한을 만들지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/string-interpolation-format-spec-core-r1.json -->
+```deeplus
+let left = "${name:<12}"
+let right = "${name:>12}"
+let centered = "${name:^12}"
+let defaultLeft = "${name:12}"
+```
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/grammar/deeplus.dpg -->
 ```deeplus
@@ -1923,7 +1934,7 @@ source-observable 법칙을 다음처럼 고정한다.
 | 항목 | 현재 정적으로 닫힌 법칙 | 여전히 주장하지 않는 것 |
 |---|---|---|
 | ternary | condition-once, one lazy arm, responsibility join | backend opcode·실행 PASS |
-| interpolation | braced/shorthand의 preselected Display, ordered holes, atomic publication | colon format-spec 문법·전달·폭·padding·invalid-format 결과와 제품 지원 |
+| interpolation | braced/shorthand의 direct String 또는 preselected Display, ordered holes, `Align? Width`, Unicode-scalar SPACE padding, no truncation, atomic publication | parser/checker/xVM/Cranelift/formatter 제품 실행 PASS |
 | NumericArray postfix transpose | owner-bounded read-only coordinate view | 실제 layout·backend 지원 |
 | Map unfold | later key wins, exact cleanup, failure-atomic plan | hash representation·성능 |
 | actor request declared failure | `ReplyResponsibility`에 ErrorSet·correlation·terminal failure 보존 | actor runtime 실행 PASS |
@@ -2016,7 +2027,7 @@ normative design을 설명하는 conceptual trace다.
 24. shared-state event identity를 보존하는가.
 25. Plain에서 raw layout을 추론하지 않는가.
 26. semantic type과 ABI/layout을 분리하는가.
-27. ternary·기본 interpolation·transpose의 닫힌 관찰 법칙을 보존하고 format-spec 의미를 발명하지 않는가.
+27. interpolation의 `Align? Width`, scalar padding, direct String/Display-once와 no-truncation 법칙을 그대로 보존하는가.
 28. xVM/Object AOT/JIT trace를 같은 기준으로 비교하는가.
 29. tooling side receipt가 program event를 바꾸지 않는가.
 30. product claim이 target-bound receipt를 갖는가.
