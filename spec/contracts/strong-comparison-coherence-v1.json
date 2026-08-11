@@ -1,0 +1,63 @@
+{
+  "$schema": "../../schemas/language/strong-comparison-coherence-v1.schema.json",
+  "schema": "deeplus.strong-comparison-coherence/v1",
+  "revision": "preimpl-p1-tcc-003-strong-comparison-r1",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED",
+  "feature_p1_binding": "TCC-P1-003_REMAINS_OPEN",
+  "descriptor_schema": "schemas/language/strong-comparison-decision-v1.schema.json",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "observed_live_main": "10e64f492f0529610673846139afcf0d95175663",
+    "local_predecessor_commit": "1a16e6b52a9230279ae113d89e87ad2497e05f01"
+  },
+  "trait_domain": {
+    "strong_eq": "Eq<Rhs>",
+    "strong_ord": "Ord<Rhs> derives Eq<Rhs>",
+    "partial_profiles_do_not_imply_strong_evidence": true
+  },
+  "admission": {
+    "intrinsic_reserved": "BYPASS_CONFORMANCE",
+    "user_defined": "NORMALIZED_RHS_MUST_EQUAL_SELF",
+    "heterogeneous": "SEALED_BILATERAL_FAMILY_ONLY"
+  },
+  "sealed_bilateral_family_contract": {
+    "authority": "COMPILER_OR_PRELUDE_SEALED",
+    "unordered_pair_key": "sort(NormalizedTypeId(A),NormalizedTypeId(B))",
+    "oriented_witness_count": 2,
+    "normalization_domain_required": true,
+    "eq_symmetry_required": true,
+    "ord_sign_reversal_required": true,
+    "ord_zero_agreement_required": true,
+    "runtime_lookup_count": 0
+  },
+  "current_sealed_bilateral_families": [],
+  "law_domain": {
+    "eq": ["reflexive", "symmetric", "transitive", "total_bool"],
+    "ord": ["total", "trichotomy", "transitive", "antisymmetric", "reverse_sign", "zero_iff_eq"]
+  },
+  "canonical_identity": {
+    "self_domain_family_id": null,
+    "heterogeneous_family_id_required": true,
+    "reverse_witness_id_required": true,
+    "hir_runtime_relookup_count": 0
+  },
+  "diagnostic_precedence": [
+    "malformed_or_unresolved_trait_head",
+    "intrinsic_reserved_pair",
+    "strong_comparison_rhs_not_admitted",
+    "sealed_bilateral_family_invalid",
+    "ordinary_conformance_locality_overlap_or_witness_failure"
+  ],
+  "acceptance": {
+    "normal": 3,
+    "boundary": 4,
+    "reject": 5,
+    "mutations": 8
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "github_publication": "NOT_PERFORMED"
+  }
+}

@@ -542,6 +542,16 @@ projects the sign of the same comparison result; no per-glyph order witness
 exists. `Ord<Rhs> derives Eq<Rhs>`, and comparison zero must be exactly the
 strong-equality relation.
 
+Strong comparison is homogeneous for user and language-derived evidence. After
+normalization, `Eq<Rhs>` and `Ord<Rhs>` require `Rhs == Self`
+(`NORMALIZED_RHS_MUST_EQUAL_SELF`). A heterogeneous row is admitted only as one
+compiler- or Prelude-sealed bilateral family
+(`SEALED_BILATERAL_FAMILY_ONLY`). Such a family owns the unordered normalized
+type pair, both oriented witnesses, one normalization domain, Eq symmetry, Ord
+sign reversal, and zero-to-Eq agreement. The current registry contains no such
+family. Independent left-owned rows, implicit conversion, or reverse-row
+inference cannot manufacture bilateral evidence.
+
 Intrinsic-reserved normalized operand pairs use `INTRINSIC_ONLY` and perform no
 conformance lookup. Every other admitted operand or pair must select exactly one
 left-nominal-owner `DIRECT_GLOBAL` conformance from
@@ -549,7 +559,8 @@ left-nominal-owner `DIRECT_GLOBAL` conformance from
 extension/local/case/provider/`via`/`VIA`/`AUTO`/specialization evidence,
 source/import order, runtime relookup, and fallback neither create nor rank a
 candidate. The selected conformance, witness, method, substitution, output type,
-and responsibility profile are static identity. Its method borrows both
+responsibility profile, and any sealed comparison family, reverse witness, and
+normalization domain are static identity. Its method borrows both
 operands, is synchronous, non-consuming and non-mutating, and has
 `throws Never effects {}`. An admitted numeric operation may terminate through
 the closed nonrecoverable `ArithmeticDefect` profile before commit; that

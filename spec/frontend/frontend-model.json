@@ -3993,6 +3993,19 @@
       "order_tie_break_count": 0,
       "runtime_lookup_or_fallback_count": 0
     },
+    "strong_comparison_coherence": {
+      "user_or_language_derived_rhs_policy": "NORMALIZED_RHS_MUST_EQUAL_SELF",
+      "heterogeneous_policy": "SEALED_BILATERAL_FAMILY_ONLY",
+      "current_sealed_bilateral_family_count": 0,
+      "family_identity": "unordered normalized type pair plus two oriented witnesses and one normalization domain",
+      "required_laws": [
+        "Eq symmetry",
+        "Ord reverse sign",
+        "Ord zero iff the same Eq relation"
+      ],
+      "independent_reverse_row_synthesis_count": 0,
+      "runtime_lookup_count": 0
+    },
     "typed_hir_residue": {
       "node": "FixedOperatorConformanceCall",
       "required_fields": [
@@ -4005,7 +4018,10 @@
         "method_id",
         "substitution",
         "output_type_id",
-        "responsibility_profile_id"
+        "responsibility_profile_id",
+        "strong_comparison_family_id_or_null",
+        "reverse_witness_id_or_null",
+        "normalization_domain_id_or_null"
       ],
       "operand_evaluation_order": "unary operand once; binary left then right once each; chained comparison retains each middle operand once and the chain alone owns later-operand short circuit",
       "selected_identity_erased_before_mir": false

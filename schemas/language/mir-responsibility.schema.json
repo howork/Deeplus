@@ -466,6 +466,9 @@
         "substitution_id",
         "output_type_id",
         "responsibility_profile_id",
+        "strong_comparison_family_id",
+        "reverse_witness_id",
+        "normalization_domain_id",
         "dispatch_route",
         "runtime_relookup_count",
         "fallback_count"
@@ -527,6 +530,27 @@
         },
         "responsibility_profile_id": {
           "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        },
+        "strong_comparison_family_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "reverse_witness_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "normalization_domain_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
         },
         "dispatch_route": {
           "const": "DIRECT_GLOBAL"
@@ -5014,7 +5038,10 @@
       "method_id": "method_id",
       "substitution": "substitution_id",
       "output_type_id": "output_type_id",
-      "responsibility_profile_id": "responsibility_profile_id"
+      "responsibility_profile_id": "responsibility_profile_id",
+      "strong_comparison_family_id_or_null": "strong_comparison_family_id",
+      "reverse_witness_id_or_null": "reverse_witness_id",
+      "normalization_domain_id_or_null": "normalization_domain_id"
     },
     "schema_stage_constant_fields": {
       "dispatch_route": "DIRECT_GLOBAL",

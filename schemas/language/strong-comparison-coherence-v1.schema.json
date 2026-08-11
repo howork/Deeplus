@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/strong-comparison-coherence-v1.schema.json",
+  "title": "Deeplus strong Eq/Ord coherence V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "revision",
+    "status",
+    "feature_p1_binding",
+    "descriptor_schema",
+    "baseline",
+    "trait_domain",
+    "admission",
+    "sealed_bilateral_family_contract",
+    "current_sealed_bilateral_families",
+    "law_domain",
+    "canonical_identity",
+    "diagnostic_precedence",
+    "acceptance",
+    "governance"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "deeplus.strong-comparison-coherence/v1"},
+    "revision": {"const": "preimpl-p1-tcc-003-strong-comparison-r1"},
+    "status": {"const": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED"},
+    "feature_p1_binding": {"const": "TCC-P1-003_REMAINS_OPEN"},
+    "descriptor_schema": {"const": "schemas/language/strong-comparison-decision-v1.schema.json"},
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "observed_live_main", "local_predecessor_commit"],
+      "properties": {
+        "repository": {"const": "howork/Deeplus"},
+        "observed_live_main": {"pattern": "^[0-9a-f]{40}$"},
+        "local_predecessor_commit": {"pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "trait_domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strong_eq", "strong_ord", "partial_profiles_do_not_imply_strong_evidence"],
+      "properties": {
+        "strong_eq": {"const": "Eq<Rhs>"},
+        "strong_ord": {"const": "Ord<Rhs> derives Eq<Rhs>"},
+        "partial_profiles_do_not_imply_strong_evidence": {"const": true}
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intrinsic_reserved", "user_defined", "heterogeneous"],
+      "properties": {
+        "intrinsic_reserved": {"const": "BYPASS_CONFORMANCE"},
+        "user_defined": {"const": "NORMALIZED_RHS_MUST_EQUAL_SELF"},
+        "heterogeneous": {"const": "SEALED_BILATERAL_FAMILY_ONLY"}
+      }
+    },
+    "sealed_bilateral_family_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authority",
+        "unordered_pair_key",
+        "oriented_witness_count",
+        "normalization_domain_required",
+        "eq_symmetry_required",
+        "ord_sign_reversal_required",
+        "ord_zero_agreement_required",
+        "runtime_lookup_count"
+      ],
+      "properties": {
+        "authority": {"const": "COMPILER_OR_PRELUDE_SEALED"},
+        "unordered_pair_key": {"const": "sort(NormalizedTypeId(A),NormalizedTypeId(B))"},
+        "oriented_witness_count": {"const": 2},
+        "normalization_domain_required": {"const": true},
+        "eq_symmetry_required": {"const": true},
+        "ord_sign_reversal_required": {"const": true},
+        "ord_zero_agreement_required": {"const": true},
+        "runtime_lookup_count": {"const": 0}
+      }
+    },
+    "current_sealed_bilateral_families": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "law_domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eq", "ord"],
+      "properties": {
+        "eq": {"const": ["reflexive", "symmetric", "transitive", "total_bool"]},
+        "ord": {"const": ["total", "trichotomy", "transitive", "antisymmetric", "reverse_sign", "zero_iff_eq"]}
+      }
+    },
+    "canonical_identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["self_domain_family_id", "heterogeneous_family_id_required", "reverse_witness_id_required", "hir_runtime_relookup_count"],
+      "properties": {
+        "self_domain_family_id": {"const": null},
+        "heterogeneous_family_id_required": {"const": true},
+        "reverse_witness_id_required": {"const": true},
+        "hir_runtime_relookup_count": {"const": 0}
+      }
+    },
+    "diagnostic_precedence": {
+      "const": [
+        "malformed_or_unresolved_trait_head",
+        "intrinsic_reserved_pair",
+        "strong_comparison_rhs_not_admitted",
+        "sealed_bilateral_family_invalid",
+        "ordinary_conformance_locality_overlap_or_witness_failure"
+      ]
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["normal", "boundary", "reject", "mutations"],
+      "properties": {
+        "normal": {"const": 3},
+        "boundary": {"const": 4},
+        "reject": {"const": 5},
+        "mutations": {"const": 8}
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes", "github_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "NOT_PERFORMED"}
+      }
+    }
+  }
+}

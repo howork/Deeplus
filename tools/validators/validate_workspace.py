@@ -135,8 +135,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1496, "predicates": 286,
-    "predicate_fixtures": 880, "no_go": 154,
+    "features": 723, "diagnostics": 1498, "predicates": 287,
+    "predicate_fixtures": 884, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -642,6 +642,9 @@ FIXED_OPERATOR_HIR_REQUIRED_FIELDS = [
     "substitution",
     "output_type_id",
     "responsibility_profile_id",
+    "strong_comparison_family_id_or_null",
+    "reverse_witness_id_or_null",
+    "normalization_domain_id_or_null",
 ]
 FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS = [
     "operator_id",
@@ -654,6 +657,9 @@ FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS = [
     "substitution_id",
     "output_type_id",
     "responsibility_profile_id",
+    "strong_comparison_family_id",
+    "reverse_witness_id",
+    "normalization_domain_id",
     "dispatch_route",
     "runtime_relookup_count",
     "fallback_count",
@@ -669,6 +675,9 @@ FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP = {
     "substitution": "substitution_id",
     "output_type_id": "output_type_id",
     "responsibility_profile_id": "responsibility_profile_id",
+    "strong_comparison_family_id_or_null": "strong_comparison_family_id",
+    "reverse_witness_id_or_null": "reverse_witness_id",
+    "normalization_domain_id_or_null": "normalization_domain_id",
 }
 FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS = {
     "dispatch_route": "DIRECT_GLOBAL",
@@ -12771,8 +12780,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 286
-                and fixed_counts.get("predicate_fixtures") == 880
+                and fixed_counts.get("predicates") == 287
+                and fixed_counts.get("predicate_fixtures") == 884
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -13070,6 +13079,13 @@ def main() -> int:
         "tests/fixtures/current/member-visibility-omission-v1.json",
         "tools/validators/validate_member_visibility_omission_v1.py",
         "tools/validators/run_member_visibility_omission_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Strong_Comparison_Coherence_Closure_R1.md",
+        "schemas/language/strong-comparison-coherence-v1.schema.json",
+        "schemas/language/strong-comparison-decision-v1.schema.json",
+        "spec/contracts/strong-comparison-coherence-v1.json",
+        "tests/fixtures/current/strong-comparison-coherence-v1.json",
+        "tools/validators/validate_strong_comparison_coherence_v1.py",
+        "tools/validators/run_strong_comparison_coherence_v1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -13804,6 +13820,52 @@ def main() -> int:
         r85_mutation_process.returncode == 0,
         "R85_MEMBER_VISIBILITY_OMISSION_V1_MUTATIONS",
         r85_mutation_detail[-4000:],
+    )
+
+    r86_validator = (
+        root / "tools/validators/validate_strong_comparison_coherence_v1.py"
+    )
+    r86_process = subprocess.run(
+        [sys.executable, str(r86_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r86_detail = (
+        r86_process.stdout.strip()
+        if r86_process.returncode == 0
+        else r86_process.stderr.strip() or r86_process.stdout.strip()
+    )
+    check(
+        r86_process.returncode == 0,
+        "R86_STRONG_COMPARISON_COHERENCE_V1",
+        r86_detail[-4000:],
+    )
+
+    r86_mutation_runner = (
+        root
+        / "tools/validators/run_strong_comparison_coherence_v1_mutation_tests.py"
+    )
+    r86_mutation_process = subprocess.run(
+        [sys.executable, str(r86_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r86_mutation_detail = (
+        r86_mutation_process.stdout.strip()
+        if r86_mutation_process.returncode == 0
+        else r86_mutation_process.stderr.strip()
+        or r86_mutation_process.stdout.strip()
+    )
+    check(
+        r86_mutation_process.returncode == 0,
+        "R86_STRONG_COMPARISON_COHERENCE_V1_MUTATIONS",
+        r86_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

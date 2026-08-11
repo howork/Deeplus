@@ -1,0 +1,64 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "fixit_hint": "use Eq<Self> or Ord<Self>, a named conversion/comparison API, or an authorized sealed bilateral Prelude family",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not synthesize a reverse witness, conversion, partial comparison, or second owner conformance.",
+    "message": "Strong Eq/Ord conformance requires Rhs to normalize to Self unless one sealed bilateral comparison family owns both orientations.",
+    "notes": "TCC-P1-003 design closure; product checker execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/strong-comparison-coherence-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "fixit_hint": "use a homogeneous strong comparison or bind the complete compiler/Prelude-owned bilateral family",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not accept a unilateral row, unrelated reverse row, missing normalization domain, or unproved equality/order law.",
+    "message": "The heterogeneous strong comparison family is not bilaterally closed.",
+    "notes": "The family must own both oriented witnesses, one normalized pair identity, Eq symmetry, Ord sign reversal and zero/equality agreement. Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/strong-comparison-coherence-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

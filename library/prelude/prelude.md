@@ -428,6 +428,15 @@ payload-free nongeneric ordered Enum receives one whole-Enum Eq/Ord pair; an
 explicit Enum range is semantic-ascending under that order and never follows a
 raw/tag/layout/ABI identity.
 
+User and language-derived strong comparison rows are homogeneous:
+`NORMALIZED_RHS_MUST_EQUAL_SELF`. A heterogeneous strong comparison is
+`SEALED_BILATERAL_FAMILY_ONLY` and must be owned by one compiler/Prelude row
+family containing both orientations, a shared normalization domain, Eq
+symmetry, Ord reverse-sign and zero/equality agreement. The current Prelude
+registers no heterogeneous strong-comparison family. Intrinsic-reserved pairs
+remain outside this conformance lookup, and separately named partial equality
+does not create Eq evidence.
+
 `Display.display()` borrows its receiver, is deterministic, synchronous,
 non-consuming, authority-free, `throws Never`, and performs no hidden locale,
 provider, serialization, parsing, or redaction operation. String interpolation

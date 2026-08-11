@@ -1124,6 +1124,8 @@
 | `STRING_NORMALIZATION_IS_EXPLICIT` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `STRING_NOT_IMPLICITLY_CONVERTIBLE_TO_BYTES` | `checker` | `error` | `active` | String is not implicitly convertible to Bytes. |
 | `STRING_RENDERER_MUST_RETURN_STRING` | `checker` | `error` | `active` | String::render requires its trailing renderer closure to return String. |
+| `STRONG_COMPARISON_BILATERAL_FAMILY_INVALID` | `checker` | `error` | `active` | The heterogeneous strong comparison family is not bilaterally closed. |
+| `STRONG_COMPARISON_RHS_NOT_ADMITTED` | `checker` | `error` | `active` | Strong Eq/Ord conformance requires Rhs to normalize to Self unless one sealed bilateral comparison family owns both orientations. |
 | `STRUCTURAL_CONFORMANCE_FORBIDDEN` | `checker` | `error` | `active` | Structural method matching does not create conformance. |
 | `STRUCTURAL_CONFORMANCE_NOT_CURRENT` | `checker` | `error` | `active` | The surface \`structural conformance\` is recognized but is not current Deeplus. |
 | `STRUCTURAL_DUCK_TYPING_CONFORMANCE_FORBIDDEN` | `checker` | `error` | `active` | Structural shape coincidence does not form stable conformance. |
@@ -1564,6 +1566,7 @@
 | `StringCharBytesBoundaryAdmitted` | StringCharBytesBoundaryAdmitted | Design seed for text/binary/display boundary. | `DESIGN_STATIC_NOT_RUN` |
 | `StringInterpolationFormatSpecAdmitted` | String interpolation format spec admission | Parse the bounded Align? Width language and seal one deterministic interpolation padding plan before HIR. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `StringRenderAdmitted` | StringRenderAdmitted | Type and lower String::render as single evaluation plus one nonescaping renderer invocation. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `StrongComparisonConformanceAdmitted` | StrongComparisonConformanceAdmitted | Admit strong Eq/Ord only for one homogeneous Self domain or one compiler/Prelude-sealed bilateral family; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `StructuredControlTargetResolved` | StructuredControlTargetResolved | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `StructuredRecordMapPatternAdmitted` | Record and Map structural Pattern admission | Admit label-first Record-family exact/static-named-residual patterns and keyed Map patterns without conflating their directions or rest markers. | `` |
 | `TerminalUnitReturnAdmitted` | TerminalUnitReturnAdmitted | a non-Unit named-function path that reaches the end without an explicit value return emits MISSING_EXPLICIT_RETURN; a terminal valueless return in a Unit function is semantically admitted but emits REDUNDANT_FINAL_VALUELESS_RETURN as a lint; Unit fallthrough is canonical and an early valueless return remains admitted control flow without the terminal-return lint | `DESIGN_STATIC_NOT_RUN` |

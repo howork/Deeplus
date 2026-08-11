@@ -884,6 +884,18 @@ each operand at most once, retains the middle operand, and short-circuits.
 Only monotone `<`, `<=`, `>`, `>=` chains are admitted; equality and `is` do
 not join that chain family.
 
+For a user-defined or language-derived strong comparison, aliases and type
+arguments normalize before admission and `Rhs` must be the exact `Self` type
+(`NORMALIZED_RHS_MUST_EQUAL_SELF`). A heterogeneous strong comparison is
+admitted only by one compiler- or Prelude-sealed bilateral family
+(`SEALED_BILATERAL_FAMILY_ONLY`) that owns the unordered normalized type pair,
+both oriented witnesses, one normalization domain, Eq symmetry, Ord sign
+reversal, and zero/equality agreement. The current sealed bilateral family
+registry is empty. Two independent left-owner rows cannot form such a family.
+Intrinsic-reserved pairs bypass this conformance rule. Rejection occurs before
+ordinary locality, overlap, and witness selection and leaves no HIR/MIR
+residue.
+
 The design promotion creates or closes no feature P1:
 `TCC-P1-002..008` remain exactly seven OPEN implementation/conformance
 evidence gates, and all product lanes remain `NOT_RUN`.

@@ -31,5 +31,207 @@
     "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-StrongComparisonConformanceAdmitted-POS",
+    "predicate_id": "StrongComparisonConformanceAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.strong-comparison-decision/v1",
+      "trait_role": "EQ",
+      "left_type_id": "Money",
+      "right_type_id": "Money",
+      "strong_profile_eligible": true,
+      "evidence_origin": "USER_LEFT_OWNER",
+      "declaring_owner_type_id_or_null": "Money",
+      "family_id_or_null": null,
+      "reverse_witness_id_or_null": null,
+      "normalization_domain_id_or_null": null,
+      "laws": {
+        "reflexive": true,
+        "symmetric": true,
+        "transitive": true,
+        "total": true,
+        "reverse_sign": true,
+        "zero_iff_eq": true
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "StrongComparisonDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "normalized Rhs equals Self and the left nominal owner supplies the one homogeneous strong Eq row",
+    "rule_seed": "TCC-P1-003 homogeneous user strong-comparison fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-StrongComparisonConformanceAdmitted-BOUNDARY",
+    "predicate_id": "StrongComparisonConformanceAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.strong-comparison-decision/v1",
+      "trait_role": "ORD",
+      "left_type_id": "Meters",
+      "right_type_id": "Centimeters",
+      "strong_profile_eligible": true,
+      "evidence_origin": "PRELUDE_SEALED_FAMILY",
+      "declaring_owner_type_id_or_null": null,
+      "family_id_or_null": "LengthOrdFamily/v1",
+      "reverse_witness_id_or_null": "OrdCentimetersMeters",
+      "normalization_domain_id_or_null": "ExactLengthBaseUnit",
+      "laws": {
+        "reflexive": true,
+        "symmetric": true,
+        "transitive": true,
+        "total": true,
+        "reverse_sign": true,
+        "zero_iff_eq": true
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "StrongComparisonDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "a fixture-only sealed bilateral family binds both orientations, normalization, reverse sign and zero/equality agreement",
+    "rule_seed": "TCC-P1-003 bilateral family boundary probe; no current family is registered and product checker is NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-StrongComparisonConformanceAdmitted-NEG-RHS",
+    "predicate_id": "StrongComparisonConformanceAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.strong-comparison-decision/v1",
+      "trait_role": "EQ",
+      "left_type_id": "Meters",
+      "right_type_id": "Centimeters",
+      "strong_profile_eligible": true,
+      "evidence_origin": "USER_LEFT_OWNER",
+      "declaring_owner_type_id_or_null": "Meters",
+      "family_id_or_null": null,
+      "reverse_witness_id_or_null": null,
+      "normalization_domain_id_or_null": null,
+      "laws": {
+        "reflexive": true,
+        "symmetric": true,
+        "transitive": true,
+        "total": true,
+        "reverse_sign": true,
+        "zero_iff_eq": true
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "StrongComparisonDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+    "violated_condition": "RHS_NOT_SELF_OR_SEALED_FAMILY",
+    "rule_seed": "TCC-P1-003 unilateral user heterogeneous Eq rejection; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-StrongComparisonConformanceAdmitted-NEG-FAMILY",
+    "predicate_id": "StrongComparisonConformanceAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.strong-comparison-decision/v1",
+      "trait_role": "ORD",
+      "left_type_id": "Meters",
+      "right_type_id": "Centimeters",
+      "strong_profile_eligible": true,
+      "evidence_origin": "PRELUDE_SEALED_FAMILY",
+      "declaring_owner_type_id_or_null": null,
+      "family_id_or_null": "LengthOrdFamily/v1",
+      "reverse_witness_id_or_null": null,
+      "normalization_domain_id_or_null": "ExactLengthBaseUnit",
+      "laws": {
+        "reflexive": true,
+        "symmetric": true,
+        "transitive": true,
+        "total": true,
+        "reverse_sign": true,
+        "zero_iff_eq": true
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "StrongComparisonDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID",
+    "violated_condition": "BILATERAL_FAMILY_INVALID",
+    "rule_seed": "TCC-P1-003 missing reverse witness rejection; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active secondary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }
 ]

@@ -66,6 +66,15 @@ conformance lookup. A non-intrinsic exact unary `+`/`-`, binary
 `MethodId`, normalized substitution, `OutputTypeId`, and
 `ResponsibilityProfileId` selected statically by the checker.
 
+For strong Eq/Ord, the checker also seals
+`StrongComparisonFamilyId?`, `ReverseWitnessId?`, and
+`NormalizationDomainId?`. All three are null for a homogeneous Self row. A
+heterogeneous row reaches MIR only when one compiler/Prelude-sealed bilateral
+family supplies all three identities and proves the paired law vector; the
+current family registry is empty. MIR cannot pair independent witness rows,
+infer a reverse relation, normalize through an implicit conversion, or repeat
+comparison selection at runtime.
+
 Both operands evaluate once, left-to-right, before the borrowed, pure, total,
 synchronous witness call. The node has no implicit conversion, expected-result
 selection, provider/extension/local/case/`via`/`VIA`/`AUTO`/specialization

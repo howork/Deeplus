@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/strong-comparison-decision-v1.schema.json",
+  "title": "Deeplus StrongComparisonDecisionV1 input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "trait_role",
+    "left_type_id",
+    "right_type_id",
+    "strong_profile_eligible",
+    "evidence_origin",
+    "declaring_owner_type_id_or_null",
+    "family_id_or_null",
+    "reverse_witness_id_or_null",
+    "normalization_domain_id_or_null",
+    "laws"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.strong-comparison-decision/v1"},
+    "trait_role": {"enum": ["EQ", "ORD"]},
+    "left_type_id": {"type": "string", "minLength": 1},
+    "right_type_id": {"type": "string", "minLength": 1},
+    "strong_profile_eligible": {"type": "boolean"},
+    "evidence_origin": {"enum": ["INTRINSIC_RESERVED", "USER_LEFT_OWNER", "LANGUAGE_DERIVED_SELF", "PRELUDE_SEALED_FAMILY"]},
+    "declaring_owner_type_id_or_null": {"type": ["string", "null"]},
+    "family_id_or_null": {"type": ["string", "null"]},
+    "reverse_witness_id_or_null": {"type": ["string", "null"]},
+    "normalization_domain_id_or_null": {"type": ["string", "null"]},
+    "laws": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reflexive", "symmetric", "transitive", "total", "reverse_sign", "zero_iff_eq"],
+      "properties": {
+        "reflexive": {"type": "boolean"},
+        "symmetric": {"type": "boolean"},
+        "transitive": {"type": "boolean"},
+        "total": {"type": "boolean"},
+        "reverse_sign": {"type": "boolean"},
+        "zero_iff_eq": {"type": "boolean"}
+      }
+    }
+  }
+}

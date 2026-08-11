@@ -1590,10 +1590,13 @@
         "OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION",
         "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
         "OPERATOR_NOT_CONFORMANCE_OVERLOADABLE",
-        "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN"
+        "RETURN_TYPE_DIRECTED_OPERATOR_RESOLUTION_FORBIDDEN",
+        "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+        "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"
       ],
       "predicates": [
-        "NumericOperatorCoreAdmitted"
+        "NumericOperatorCoreAdmitted",
+        "StrongComparisonConformanceAdmitted"
       ],
       "examples": [
         "EX-R51FOC-P-001",
@@ -1601,7 +1604,9 @@
       ]
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/strong-comparison-coherence-v1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"

@@ -148,6 +148,15 @@ terminal diagnostic이며 intrinsic 또는 named API로 fallback하지 않는다
 metadata에 고정되고 runtime relookup과 fallback count는 0이다. `!=`와
 네 ordering glyph, compound assignment는 별도 witness를 만들지 않는다.
 
+사용자 또는 언어가 파생하는 strong `Eq<Rhs>`와 `Ord<Rhs>`에서 정규화된
+`Rhs`는 반드시 `Self`와 같아야 한다. 따라서 한쪽 owner가 선언한
+`Eq<Other>`만으로 대칭 비교를 만들거나, 서로 무관한 두 방향 row를 묶어
+하나의 total order로 간주할 수 없다. 이종 strong 비교는 compiler 또는
+Prelude가 봉인한 bilateral family가 두 방향 witness, 공통 정규화 domain,
+Eq 대칭성과 Ord 부호 반전 법칙을 함께 소유할 때만 가능하다. 현행 registry에는
+그러한 family가 없다. `Float`와 `Complex`의 partial equality도 strong `Eq`
+evidence를 암묵적으로 만들지 않는다.
+
 두 operand는 왼쪽부터 정확히 한 번 평가한다. witness는 두 operand를
 borrow하고 `throws Never`, `effects {}`, synchronous, non-consuming,
 non-mutating이어야 한다. 따라서 operator 선택 자체가 mutation, suspend,

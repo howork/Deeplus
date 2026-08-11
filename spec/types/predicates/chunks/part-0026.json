@@ -255,5 +255,97 @@
     "predecessor_identity": {
       "disposition": "closes_the_previous_negative_only_shielded_contract_without_product_execution"
     }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "StrongComparisonConformanceAdmitted",
+    "source_name": "StrongComparisonConformanceAdmitted",
+    "summary": "Admit strong Eq/Ord only for one homogeneous Self domain or one compiler/Prelude-sealed bilateral family; product checker NOT_RUN.",
+    "input_descriptor": "StrongComparisonDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/strong-comparison-decision-v1.schema.json",
+    "descriptor_axes": [
+      "trait_role",
+      "left_type_id",
+      "right_type_id",
+      "strong_profile_eligible",
+      "evidence_origin",
+      "declaring_owner_type_id_or_null",
+      "family_id_or_null",
+      "reverse_witness_id_or_null",
+      "normalization_domain_id_or_null",
+      "laws"
+    ],
+    "rule_facets": [
+      "trait_role",
+      "normalized_left_type",
+      "normalized_right_type",
+      "strong_profile_eligible",
+      "evidence_origin",
+      "bilateral_family_identity",
+      "law_domain"
+    ],
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "diagnostic_refs": [
+      "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+      "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(SelfStrongComparison | SealedBilateralStrongComparison) | bypass(INTRINSIC_RESERVED) | reject(diagnostic_id)",
+    "requires": [
+      "Eq denotes strong reflexive symmetric transitive equality and Ord denotes a total order whose zero agrees with Eq",
+      "intrinsic-reserved normalized pairs bypass conformance lookup",
+      "a user or language-derived strong comparison normalizes Rhs to exact Self",
+      "a heterogeneous family is compiler/Prelude sealed and owns both oriented witnesses plus one normalization domain",
+      "Ord bilateral rows prove reverse-sign and zero/equality agreement",
+      "selection remains left-owner DIRECT_GLOBAL with zero conversion, fallback or runtime lookup"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/strong-comparison-coherence-v1.json",
+    "formal_judgment_id": "J-StrongComparisonConformanceAdmitted",
+    "algorithm_owner": "integrated_checker_before_conformance_selection_and_hir_seal",
+    "preconditions": [
+      "Trait and normalized operand types are resolved",
+      "intrinsic reservation is known",
+      "the declaring owner or sealed family evidence is bound"
+    ],
+    "normalization": "normalize aliases and type arguments, preserve nominal identity, form the ordered operand key and, only for a sealed family, the sorted unordered pair key",
+    "decision_procedure": [
+      "if the normalized pair is intrinsic-reserved return BYPASS_CONFORMANCE",
+      "reject a noneligible strong comparison profile",
+      "for user or language-derived evidence require normalized Rhs == Self and, for user evidence, the declaring owner == Self",
+      "for heterogeneous evidence require compiler/Prelude authority, a family ID, both oriented witnesses and one normalization-domain ID",
+      "require Eq total Boolean reflexivity, symmetry and transitivity",
+      "for Ord additionally require totality, trichotomy, transitivity, antisymmetry, reverse-sign and zero iff Eq",
+      "seal the witness and optional family identity before canonical HIR; runtime relookup count remains zero"
+    ],
+    "termination_metric": "one normalized pair, one finite family row and a closed Boolean law vector",
+    "success_result": "StrongComparisonFact",
+    "active_primary_diagnostic": "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+    "secondary_diagnostics": [
+      "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"
+    ],
+    "positive_fixture_ids": [
+      "PF-StrongComparisonConformanceAdmitted-POS",
+      "PF-StrongComparisonConformanceAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-StrongComparisonConformanceAdmitted-NEG-RHS",
+      "PF-StrongComparisonConformanceAdmitted-NEG-FAMILY"
+    ],
+    "evaluation_order": "malformed or unresolved Trait head -> intrinsic reservation -> strong-profile and Self-domain admission -> bilateral family closure -> ordinary locality/overlap/witness selection",
+    "dependency_predicates": [],
+    "diagnostic_dispatch": {
+      "RHS_NOT_SELF_OR_SEALED_FAMILY": "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+      "BILATERAL_FAMILY_INVALID": "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
   }
 ]
