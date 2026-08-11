@@ -459,10 +459,17 @@ An external record may retain `as name`, lowercase `via Provider`, a local
 `where` condition, and an explicit body. Lowercase `via` may have a body and
 does not denote a separate semantic conformance for the same normalized ground
 key. A bodyless direct record is admitted only when compatible defaults close
-every requirement. `supports auto` registers a closed synthesis policy on the
-Trait; bodyless `by auto` invokes only that exact policy. An unregistered,
-ambiguous, structural, extension-derived, provider-discovered, or runtime
-policy produces zero candidates.
+every requirement. `supports auto` only asserts that a core/Prelude-owned
+Trait has one exact `(TraitId, PolicyVersion)` row in
+`TraitAutoPolicyRegistryV1`; source declaration never creates a policy, and a
+user-owned Trait carrying the clause is rejected. Bodyless `by auto` invokes
+only that row. The current rows are `ShareableObservationSafe` for Shareable
+and `TransferableAcrossIsolation` for Transferable, both under the finite
+memoized `RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1` algorithm. A missing or
+digest-mismatched row, unknown/failed input proof, unbounded graph, direct
+witness, extension, provider, source/import order or runtime evidence produces
+zero candidates. Successful synthesis seals policy, conformance, witness,
+input-evidence and derivation identities before canonical HIR.
 
 A nominal `conform Trait { ... }` block groups witnesses for one matching
 header clause and is admitted only inside that Class or Enum body. Lexical

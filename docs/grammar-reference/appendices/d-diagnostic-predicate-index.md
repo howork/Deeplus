@@ -206,7 +206,9 @@
 | `CONCUR_LOCAL_ASYNC_LAMBDA_REQUIRES_OWNER` | `checker` | `error` | `active` | A bounded concur-local #async callable literal requires one immediately enclosing concur owner. |
 | `CONDITION_HAS_EFFECTFUL_OPERAND` | `checker` | `error` | `active` | A condition operand has effects; use explicit sequencing or a pure guard. |
 | `CONFORMANCE_AUTO_BODY_FORBIDDEN` | `parser` | `error` | `active` | A \`by auto\` conformance is bodyless. |
+| `CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED` | `checker` | `error` | `active` | The registered auto policy cannot prove its complete finite input-evidence graph. |
 | `CONFORMANCE_AUTO_POLICY_NOT_REGISTERED` | `checker` | `error` | `active` | \`by auto\` requires one closed synthesis policy registered by a Trait that declares \`supports auto\`. |
+| `CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN` | `checker` | `error` | `active` | \`supports auto\` is restricted to a core/Prelude-owned Trait bound to TraitAutoPolicyRegistryV1. |
 | `CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD` | `parser` | `error` | `active` | Conformance declarations use \`type Target conforms Trait\`; a type alias instead uses \`type Name = Type\`. |
 | `CONFORMANCE_EVIDENCE_ORIGIN_NOT_UNIQUE` | `checker` | `error` | `active` | A root conformance evidence selector must resolve to exactly one visible coherent nominal conformance. |
 | `CONFORMANCE_EXTENSION_DELEGATION_MUST_BE_EXPLICIT` | `checker` | `error` | `active` | Delegation from a conformance requirement to an extension selector must be explicit and fully identified. |
@@ -1576,6 +1578,7 @@
 | `TrailingClosureCardinalityAdmitted` | TrailingClosureCardinalityAdmitted | one trailing closure may be unlabeled or labeled; two or more require every item to have a unique label | `DESIGN_STATIC_NOT_RUN` |
 | `TrailingClosureSuffixAdmitted` | TrailingClosureSuffixAdmitted | a shared ordinary-or-message trailing-closure group is admitted only when every item binds to an exact closure/function-typed formal; without such a formal the suffix emits TRAILING_CLOSURE_REQUIRES_FUNCTION_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
 | `TraitAssociatedStaticSelectionAdmitted` | Trait-qualified associated static selection | Resolve <T as Trait>::item through exactly one static conformance and preserve all identity and responsibility residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `TraitAutoPolicyAdmitted` | TraitAutoPolicyAdmitted | Bind supports auto/by auto to one exact core or Prelude policy row and finite input proof before canonical HIR; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TraitVariancePositionAdmitted` | TraitVariancePositionAdmitted | a variance marker is admitted only on a trait type parameter in the current Stable profile; an \`out\` parameter occurs only in producer/covariant positions and an \`in\` parameter only in consumer/contravariant positions after alias expansion; unmarked parameters are invariant; any declaration-role or use-position violation emits VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
 | `TransferableAcrossIsolation` | Transferable | R30 closed deterministic admission algorithm for Transferable; production checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TransparentNominalPatternAdmitted` | Transparent nominal and named Enum Pattern admission | Open only explicitly Pattern-transparent products and match named Enum payloads by their declared labels. | `` |

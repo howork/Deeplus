@@ -60,5 +60,67 @@
     "stage": "checker",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "trait_witness_coherence_phase_a"
+    ],
+    "fixit_hint": "remove supports auto and write an explicit conformance; only a core/Prelude-owned Trait with an exact registry row may expose auto synthesis",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Never create a policy row from a user Trait declaration.",
+    "message": "`supports auto` is restricted to a core/Prelude-owned Trait bound to TraitAutoPolicyRegistryV1.",
+    "notes": "TCC-P1-005 constructibility closure; product checker execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/trait-auto-policy-registry-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "conformance_declaration_surface"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "trait_witness_coherence_phase_a"
+    ],
+    "fixit_hint": "make every finite component satisfy the registered predicate or write an explicit admissible conformance",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not consult extensions, providers, source order, import order, runtime state, opaque graphs or unbounded generic structure.",
+    "message": "The registered auto policy cannot prove its complete finite input-evidence graph.",
+    "notes": "A registered row exists, but its exact predicate or finite-graph gate failed. Product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/trait-auto-policy-registry-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "responsibility_identity_registry_r1"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   }
 ]

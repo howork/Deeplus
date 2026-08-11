@@ -20,7 +20,7 @@ conformance evidence와 lexical extension을 설명한다. 네 관계는 서로
 | 함수 body의 `static { ... }` activation | `STABLE` |
 | Class body의 `scope#static` activation | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | 현재 소문자 `via` conformance route | `CURRENT` |
-| 등록된 폐쇄형 `supports auto` 정책과 bodyless `by auto` | `CURRENT` |
+| core/Prelude 레지스트리에 결속된 `supports auto`와 bodyless `by auto` | `CURRENT`; 현재 Shareable/Transferable 2개 정책 |
 | named extension set/pack과 lexical activation | `CURRENT` |
 | sealed Class constructor-pattern 또는 Class 내부 분해 pattern | 현행 아님 |
 | 별도 대문자 successor route `VIA`/`AUTO`, specialization, 자식 로컬 parent witness replacement | `PREVIEW_DESIGN_NONACTIVATABLE` |
@@ -222,8 +222,11 @@ AssociatedFunctionRequirementDecl ::= "def" "::" Identifier ParameterList
 
 Trait parent는 물리 줄 경계에서 시작하는 `derives Parent` 절을 반복해
 명시한다. `requires`는 callable contract에만 남으며 Trait 상속을
-표현하지 않는다. 닫힌 자동 합성 정책을 소유한 Trait만 별도 줄의
-`supports auto`로 이를 선언한다.
+표현하지 않는다. `supports auto`는 사용자가 합성 알고리즘을 작성하는
+확장점이 아니다. core/Prelude 소유 Trait가 exact `TraitId`와
+`PolicyVersion`으로 `TraitAutoPolicyRegistryV1`의 행을 주장할 때만 쓴다.
+현재 행은 Shareable과 Transferable 두 개이며, 사용자 Trait의
+`supports auto`는 checker가 거부한다.
 
 Trait method의 marker는 Class marker와 glyph를 공유하지만 AST와 identity
 domain은 `TraitWitnessKind`이다. associated type/value/non-method function은
@@ -464,8 +467,24 @@ AssociatedRequirementBinding ::= "type" Identifier "=" TypeRef
 `type T conforms Trait { ... }`는 타입 선언 밖에서 checker-visible
 evidence를 만드는 외부 conformance 형식이다.
 `as name`은 명시적 conformance 이름이고 소문자 `via path`는 body를
-가질 수 있는 현행 route다. `by auto`는 `supports auto`로 등록된 닫힌
-정책만 호출하며 반드시 bodyless다.
+가질 수 있는 현행 route다. `by auto`는 `supports auto`와 정확히 결속된
+core/Prelude 정책만 호출하며 반드시 bodyless다. checker는 policy ID,
+version, digest, 유한 component evidence, 합성된 ConformanceId/WitnessId와
+derivation digest를 HIR 전에 봉인한다. 현재 Display, Eq, Ord와 사용자
+Trait에는 auto-policy 행이 없으므로 `by auto`가 후보를 만들지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/trait-auto-policy-registry-v1.json -->
+```deeplus
+public data class Snapshot(id: UInt, title: String)
+conforms Shareable by auto
+
+public resource class OwnedMessage(payload: String)
+conforms Transferable by auto
+```
+
+두 예제는 각각 등록된 `ShareableObservationSafe`와
+`TransferableAcrossIsolation` 입력 증명을 요구한다. 동일 이름 method,
+extension, provider, import 순서 또는 runtime state는 증명이 아니다.
 
 Class 또는 Enum이 자기 본문에서 witness를 함께 정의할 때에는 header에
 `conforms Trait`를 선언하고 같은 본문 안에 `conform Trait { ... }`를
@@ -506,7 +525,8 @@ identity, 전역 coherence, orphan/overlap 검사, source·import·link order
 있다. 이 의미 핵심은 새 source spelling이나 제품 지원을 활성화하지 않는다.
 
 현행 source는 `type T conforms Trait { ... }`, nominal header의 반복
-`conforms`, parent `derives`, 등록된 `supports auto`와 bodyless `by auto`,
+`conforms`, parent `derives`, core/Prelude 레지스트리 행을 주장하는
+`supports auto`와 bodyless `by auto`,
 Class/Enum body 안의 `conform Trait { ... }`, 소문자 `via`를 사용한다.
 local/first-class witness와 specialization은 현행 문법으로 채택하지
 않는다.

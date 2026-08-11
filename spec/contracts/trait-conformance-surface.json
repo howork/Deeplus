@@ -65,6 +65,13 @@
     "by_auto": {
       "body_allowed": false,
       "closed_registered_policy_required": true,
+      "registry": "TraitAutoPolicyRegistryV1",
+      "registry_owner": "CORE_OR_PRELUDE_ONLY",
+      "current_policy_trait_ids": [
+        "TraitId:core::Shareable",
+        "TraitId:core::Transferable"
+      ],
+      "user_trait_declaration_creates_policy": false,
       "runtime_or_provider_search_count": 0
     }
   },
@@ -100,6 +107,7 @@
   "preserved_identity_fields": [
     "TraitId",
     "TraitLanguageRoleId",
+    "TraitAutoPolicyId",
     "ConformanceId",
     "TraitWitnessId",
     "RequirementId",
@@ -194,6 +202,8 @@
     "CLASS_COLON_INHERITANCE_REMOVED",
     "TRAIT_REQUIRES_INHERITANCE_REMOVED",
     "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+    "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+    "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED",
     "CONFORMANCE_AUTO_BODY_FORBIDDEN",
     "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
     "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",

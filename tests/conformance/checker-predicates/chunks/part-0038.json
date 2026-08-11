@@ -233,5 +233,205 @@
     "diagnostic_disposition": "active secondary design algorithm; product NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TraitAutoPolicyAdmitted-POS",
+    "predicate_id": "TraitAutoPolicyAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.trait-auto-policy-decision/v1",
+      "action": "BY_AUTO_REQUEST",
+      "trait_id": "TraitId:core::Shareable",
+      "declaration_owner": "PRELUDE",
+      "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1",
+      "policy_version_or_null": 1,
+      "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+      "target_type_id_or_null": "TypeId:Snapshot",
+      "target_kind_or_null": "data_class",
+      "input_predicate_id_or_null": "ShareableObservationSafe",
+      "input_graph_finite": true,
+      "component_evidence_ids": [
+        "EvidenceId:Shareable:String"
+      ],
+      "policy_input_satisfied": true,
+      "direct_user_witness_count": 0,
+      "extension_evidence_count": 0,
+      "provider_search_count": 0,
+      "runtime_lookup_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "TraitAutoPolicyDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "one exact Shareable policy row and finite predicate evidence synthesize one static witness",
+    "rule_seed": "TCC-P1-005 registry-bound Shareable fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TraitAutoPolicyAdmitted-BOUNDARY",
+    "predicate_id": "TraitAutoPolicyAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.trait-auto-policy-decision/v1",
+      "action": "TRAIT_OPT_IN",
+      "trait_id": "TraitId:core::Transferable",
+      "declaration_owner": "CORE",
+      "policy_id_or_null": "TraitAutoPolicyId:core::Transferable::structural/v1",
+      "policy_version_or_null": 1,
+      "policy_digest_or_null": "7212175f023a09bf73b3ce2a4393b33c40847d243ae6853b2c9380952b990faa",
+      "target_type_id_or_null": null,
+      "target_kind_or_null": null,
+      "input_predicate_id_or_null": "TransferableAcrossIsolation",
+      "input_graph_finite": true,
+      "component_evidence_ids": [],
+      "policy_input_satisfied": true,
+      "direct_user_witness_count": 0,
+      "extension_evidence_count": 0,
+      "provider_search_count": 0,
+      "runtime_lookup_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "TraitAutoPolicyDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the core Transferable declaration asserts, but does not create, its exact registry row",
+    "rule_seed": "TCC-P1-005 core opt-in boundary fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TraitAutoPolicyAdmitted-NEG-OWNER",
+    "predicate_id": "TraitAutoPolicyAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.trait-auto-policy-decision/v1",
+      "action": "TRAIT_OPT_IN",
+      "trait_id": "TraitId:user::AutoIdentity",
+      "declaration_owner": "USER",
+      "policy_id_or_null": null,
+      "policy_version_or_null": null,
+      "policy_digest_or_null": null,
+      "target_type_id_or_null": null,
+      "target_kind_or_null": null,
+      "input_predicate_id_or_null": null,
+      "input_graph_finite": true,
+      "component_evidence_ids": [],
+      "policy_input_satisfied": false,
+      "direct_user_witness_count": 0,
+      "extension_evidence_count": 0,
+      "provider_search_count": 0,
+      "runtime_lookup_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "TraitAutoPolicyDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+    "violated_condition": "USER_TRAIT_POLICY_OWNER",
+    "rule_seed": "TCC-P1-005 user policy-language rejection; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-TraitAutoPolicyAdmitted-NEG-INPUT",
+    "predicate_id": "TraitAutoPolicyAdmitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.trait-auto-policy-decision/v1",
+      "action": "BY_AUTO_REQUEST",
+      "trait_id": "TraitId:core::Shareable",
+      "declaration_owner": "CORE",
+      "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1",
+      "policy_version_or_null": 1,
+      "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+      "target_type_id_or_null": "TypeId:UnsafeCell",
+      "target_kind_or_null": "ordinary_class",
+      "input_predicate_id_or_null": "ShareableObservationSafe",
+      "input_graph_finite": true,
+      "component_evidence_ids": [],
+      "policy_input_satisfied": false,
+      "direct_user_witness_count": 0,
+      "extension_evidence_count": 0,
+      "provider_search_count": 0,
+      "runtime_lookup_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "TraitAutoPolicyDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED",
+    "violated_condition": "INPUT_EVIDENCE_UNSATISFIED",
+    "rule_seed": "TCC-P1-005 unsatisfied closed input graph rejection; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active secondary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }
 ]

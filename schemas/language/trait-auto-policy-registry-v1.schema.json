@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r87/trait-auto-policy-registry-v1.schema.json",
+  "title": "Deeplus Trait auto-policy registry V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "contract_schema", "revision", "status", "authority",
+    "feature_p1_binding", "source_surface", "registry", "decision_procedure",
+    "hir_and_api_residue", "diagnostics", "governance"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.trait-auto-policy-registry/v1"},
+    "contract_schema": {"const": "schemas/language/trait-auto-policy-registry-v1.schema.json"},
+    "revision": {"const": "R87-TRAIT-AUTO-POLICY-REGISTRY-R1"},
+    "status": {"const": "LOCAL_VERIFIED_DESIGN_CANDIDATE"},
+    "authority": {"const": "CODEX_DESIGN_IMPLEMENTATION_READINESS_GOAL"},
+    "feature_p1_binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "status", "new_feature_p1_count"],
+      "properties": {
+        "id": {"const": "TCC-P1-005"},
+        "status": {"const": "OPEN"},
+        "new_feature_p1_count": {"const": 0}
+      }
+    },
+    "source_surface": {"type": "object"},
+    "registry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["registry_revision", "owner", "policy_key", "policy_count", "rows"],
+      "properties": {
+        "registry_revision": {"const": "TraitAutoPolicyRegistryV1"},
+        "owner": {"const": "CORE_OR_PRELUDE_ONLY"},
+        "policy_key": {"const": ["TraitId", "PolicyVersion"]},
+        "policy_count": {"const": 2},
+        "rows": {
+          "type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true,
+          "items": {"$ref": "#/$defs/policyRow"}
+        }
+      }
+    },
+    "decision_procedure": {"type": "array", "minItems": 8, "items": {"type": "string"}},
+    "hir_and_api_residue": {"type": "object"},
+    "diagnostics": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string"}},
+    "governance": {"type": "object"}
+  },
+  "$defs": {
+    "policyRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id", "trait_id", "policy_version", "policy_digest",
+        "digest_recipe", "policy_kind", "algorithm_id", "input_predicate_id",
+        "input_schema", "source_request_target_kinds", "termination",
+        "output", "excluded_evidence_sources"
+      ],
+      "properties": {
+        "policy_id": {"type": "string", "pattern": "^TraitAutoPolicyId:[^\\s]+$"},
+        "trait_id": {"enum": ["TraitId:core::Shareable", "TraitId:core::Transferable"]},
+        "policy_version": {"const": 1},
+        "policy_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "digest_recipe": {"type": "string", "minLength": 1},
+        "policy_kind": {"const": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT"},
+        "algorithm_id": {"const": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1"},
+        "input_predicate_id": {"enum": ["ShareableObservationSafe", "TransferableAcrossIsolation"]},
+        "input_schema": {"const": "schemas/language/responsibility-identity-input-r1.schema.json"},
+        "source_request_target_kinds": {
+          "const": ["ordinary_class", "value_class", "resource_class", "data_class", "enum"]
+        },
+        "termination": {
+          "type": "object", "additionalProperties": false,
+          "required": ["finite_nominal_graph", "memoized_identity_subject_pairs", "cycle_detection", "metric"],
+          "properties": {
+            "finite_nominal_graph": {"const": true},
+            "memoized_identity_subject_pairs": {"const": true},
+            "cycle_detection": {"const": true},
+            "metric": {"const": "UNVISITED_TYPE_ID_RESPONSIBILITY_RULE_ID_PAIRS"}
+          }
+        },
+        "output": {
+          "type": "object", "additionalProperties": false,
+          "required": ["evidence_kind", "conformance_id_recipe", "witness_id_recipe", "derivation_digest_required"],
+          "properties": {
+            "evidence_kind": {"const": "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS"},
+            "conformance_id_recipe": {"type": "string", "minLength": 1},
+            "witness_id_recipe": {"type": "string", "minLength": 1},
+            "derivation_digest_required": {"const": true}
+          }
+        },
+        "excluded_evidence_sources": {
+          "const": ["USER_POLICY_DECLARATION", "EXTENSION_SHAPE", "PROVIDER", "SOURCE_ORDER", "IMPORT_ORDER", "RUNTIME_STATE"]
+        }
+      }
+    }
+  },
+  "x-product-compiler": "NOT_RUN"
+}

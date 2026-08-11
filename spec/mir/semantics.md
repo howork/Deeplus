@@ -75,6 +75,17 @@ current family registry is empty. MIR cannot pair independent witness rows,
 infer a reverse relation, normalize through an implicit conversion, or repeat
 comparison selection at runtime.
 
+Automatic Trait synthesis also closes before MIR. `supports auto` binds only a
+core/Prelude-owned `(TraitId, PolicyVersion)` row in
+`TraitAutoPolicyRegistryV1`; it does not define an executable source policy.
+The only current rows are Shareable and Transferable under
+`RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1`. A successful bodyless `by auto`
+request seals `TraitAutoPolicyId`, policy digest, finite sorted input evidence,
+`ConformanceId`, emitted `TraitWitnessId` values and `DerivationDigest` in HIR
+and public conformance residue. MIR adds no auto-policy operation and performs
+zero extension, provider, registry, source-order or runtime relookup; later
+uses consume the already selected witness and existing responsibility residue.
+
 Both operands evaluate once, left-to-right, before the borrowed, pure, total,
 synchronous witness call. The node has no implicit conversion, expected-result
 selection, provider/extension/local/case/`via`/`VIA`/`AUTO`/specialization

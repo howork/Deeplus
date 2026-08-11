@@ -76,6 +76,30 @@ EXPECTED_P1 = [
     "SFD-P1-009",
 ]
 EXPECTED_M13 = ["M13-A002", "M13-A003", "M13-A004", "M13-A005"]
+EXPECTED_TRAIT_AUTO_POLICY_BINDING = {
+    "registry": "TraitAutoPolicyRegistryV1",
+    "policy_count": 2,
+    "rows": [
+        {
+            "identity_id": "Shareable",
+            "trait_id": "TraitId:core::Shareable",
+            "policy_id": "TraitAutoPolicyId:core::Shareable::structural/v1",
+            "policy_version": 1,
+            "policy_digest": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+            "input_predicate_id": "ShareableObservationSafe",
+        },
+        {
+            "identity_id": "Transferable",
+            "trait_id": "TraitId:core::Transferable",
+            "policy_id": "TraitAutoPolicyId:core::Transferable::structural/v1",
+            "policy_version": 1,
+            "policy_digest": "7212175f023a09bf73b3ce2a4393b33c40847d243ae6853b2c9380952b990faa",
+            "input_predicate_id": "TransferableAcrossIsolation",
+        },
+    ],
+    "source_declaration_creates_policy": False,
+    "user_owned_policy_count": 0,
+}
 PRODUCT_LANES = [
     "rust_frontend_lexer",
     "rust_frontend_parser",
@@ -388,6 +412,11 @@ def contract_errors(
             and row.get("evidence_mode") == "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
             f"{identity_id.upper()}_SEALED_AUTO_POLICY",
         )
+    require(
+        contract.get("trait_auto_policy_binding")
+        == EXPECTED_TRAIT_AUTO_POLICY_BINDING,
+        "TRAIT_AUTO_POLICY_BINDING_EXACT",
+    )
     copy_value = by_id.get("CopyValue", {})
     require(
         copy_value.get("public_spelling_or_null") is None

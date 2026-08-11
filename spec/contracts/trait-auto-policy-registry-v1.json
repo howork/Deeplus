@@ -1,0 +1,115 @@
+{
+  "schema": "deeplus.trait-auto-policy-registry/v1",
+  "contract_schema": "schemas/language/trait-auto-policy-registry-v1.schema.json",
+  "revision": "R87-TRAIT-AUTO-POLICY-REGISTRY-R1",
+  "status": "LOCAL_VERIFIED_DESIGN_CANDIDATE",
+  "authority": "CODEX_DESIGN_IMPLEMENTATION_READINESS_GOAL",
+  "feature_p1_binding": {
+    "id": "TCC-P1-005",
+    "status": "OPEN",
+    "new_feature_p1_count": 0
+  },
+  "source_surface": {
+    "trait_opt_in": "supports auto",
+    "use": "by auto",
+    "by_auto_body_allowed": false,
+    "trait_declaration_creates_policy": false,
+    "user_owned_trait_opt_in": "REJECT",
+    "core_or_prelude_trait_requires_exact_registry_row": true,
+    "unregistered_candidate_count": 0,
+    "grammar_change_count": 0
+  },
+  "registry": {
+    "registry_revision": "TraitAutoPolicyRegistryV1",
+    "owner": "CORE_OR_PRELUDE_ONLY",
+    "policy_key": ["TraitId", "PolicyVersion"],
+    "policy_count": 2,
+    "rows": [
+      {
+        "policy_id": "TraitAutoPolicyId:core::Shareable::structural/v1",
+        "trait_id": "TraitId:core::Shareable",
+        "policy_version": 1,
+        "policy_digest": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+        "digest_recipe": "deeplus.auto-policy/core::Shareable/v1/RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1/ShareableObservationSafe",
+        "policy_kind": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT",
+        "algorithm_id": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1",
+        "input_predicate_id": "ShareableObservationSafe",
+        "input_schema": "schemas/language/responsibility-identity-input-r1.schema.json",
+        "source_request_target_kinds": ["ordinary_class", "value_class", "resource_class", "data_class", "enum"],
+        "termination": {
+          "finite_nominal_graph": true,
+          "memoized_identity_subject_pairs": true,
+          "cycle_detection": true,
+          "metric": "UNVISITED_TYPE_ID_RESPONSIBILITY_RULE_ID_PAIRS"
+        },
+        "output": {
+          "evidence_kind": "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+          "conformance_id_recipe": "sha256(registry_revision,policy_id,policy_digest,target_type_id,sorted_component_evidence_ids)",
+          "witness_id_recipe": "sha256(conformance_id,trait_id,input_predicate_id)",
+          "derivation_digest_required": true
+        },
+        "excluded_evidence_sources": ["USER_POLICY_DECLARATION", "EXTENSION_SHAPE", "PROVIDER", "SOURCE_ORDER", "IMPORT_ORDER", "RUNTIME_STATE"]
+      },
+      {
+        "policy_id": "TraitAutoPolicyId:core::Transferable::structural/v1",
+        "trait_id": "TraitId:core::Transferable",
+        "policy_version": 1,
+        "policy_digest": "7212175f023a09bf73b3ce2a4393b33c40847d243ae6853b2c9380952b990faa",
+        "digest_recipe": "deeplus.auto-policy/core::Transferable/v1/RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1/TransferableAcrossIsolation",
+        "policy_kind": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT",
+        "algorithm_id": "RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1",
+        "input_predicate_id": "TransferableAcrossIsolation",
+        "input_schema": "schemas/language/responsibility-identity-input-r1.schema.json",
+        "source_request_target_kinds": ["ordinary_class", "value_class", "resource_class", "data_class", "enum"],
+        "termination": {
+          "finite_nominal_graph": true,
+          "memoized_identity_subject_pairs": true,
+          "cycle_detection": true,
+          "metric": "UNVISITED_TYPE_ID_RESPONSIBILITY_RULE_ID_PAIRS"
+        },
+        "output": {
+          "evidence_kind": "EXACT_COMPILER_SYNTHESIZED_TRAIT_WITNESS",
+          "conformance_id_recipe": "sha256(registry_revision,policy_id,policy_digest,target_type_id,sorted_component_evidence_ids)",
+          "witness_id_recipe": "sha256(conformance_id,trait_id,input_predicate_id)",
+          "derivation_digest_required": true
+        },
+        "excluded_evidence_sources": ["USER_POLICY_DECLARATION", "EXTENSION_SHAPE", "PROVIDER", "SOURCE_ORDER", "IMPORT_ORDER", "RUNTIME_STATE"]
+      }
+    ]
+  },
+  "decision_procedure": [
+    "normalize the TraitId and target TypeId before registry lookup",
+    "reject supports auto on a user-owned Trait",
+    "select exactly one row by normalized TraitId and PolicyVersion",
+    "require the source assertion and registry policy digest to agree",
+    "build one closed ResponsibilityIdentityInputR1 descriptor for every finite component edge",
+    "reject opaque, unbounded or non-finite input graphs before synthesis",
+    "evaluate the registered predicate with memoized identity-subject pairs and cycle detection",
+    "reject a disproved or unknown required input without consulting extensions or providers",
+    "seal one deterministic ConformanceId, TraitWitnessId set and DerivationDigest before canonical HIR"
+  ],
+  "hir_and_api_residue": {
+    "exact_fields": [
+      "TraitAutoPolicyId", "PolicyVersion", "PolicyDigest", "TraitId", "TargetTypeId",
+      "InputPredicateId", "InputEvidenceIds", "ConformanceId", "TraitWitnessIds", "DerivationDigest"
+    ],
+    "input_evidence_order": "STRICT_UNICODE_SCALAR_SORTED_UNIQUE",
+    "mir_new_operation_count": 0,
+    "mir_runtime_relookup_count": 0,
+    "api_policy_change_is_breaking": true
+  },
+  "diagnostics": [
+    "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+    "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+    "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"
+  ],
+  "governance": {
+    "semantic_p0": 0,
+    "global_open_feature_p1": 22,
+    "tcc_p1_005": "OPEN",
+    "current_policy_count": 2,
+    "user_defined_policy_count": 0,
+    "product_lanes": "15/15_NOT_RUN",
+    "github_mutation": "NOT_PERFORMED"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r87/trait-auto-policy-decision-v1.schema.json",
+  "title": "Deeplus Trait auto-policy admission decision V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "action",
+    "trait_id",
+    "declaration_owner",
+    "policy_id_or_null",
+    "policy_version_or_null",
+    "policy_digest_or_null",
+    "target_type_id_or_null",
+    "target_kind_or_null",
+    "input_predicate_id_or_null",
+    "input_graph_finite",
+    "component_evidence_ids",
+    "policy_input_satisfied",
+    "direct_user_witness_count",
+    "extension_evidence_count",
+    "provider_search_count",
+    "runtime_lookup_count"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.trait-auto-policy-decision/v1"},
+    "action": {"enum": ["TRAIT_OPT_IN", "BY_AUTO_REQUEST"]},
+    "trait_id": {"type": "string", "pattern": "^TraitId:[^\\s]+$"},
+    "declaration_owner": {"enum": ["CORE", "PRELUDE", "USER"]},
+    "policy_id_or_null": {
+      "type": ["string", "null"],
+      "pattern": "^TraitAutoPolicyId:[^\\s]+$"
+    },
+    "policy_version_or_null": {"type": ["integer", "null"], "minimum": 1},
+    "policy_digest_or_null": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "target_type_id_or_null": {"type": ["string", "null"]},
+    "target_kind_or_null": {
+      "type": ["string", "null"],
+      "enum": ["ordinary_class", "value_class", "resource_class", "data_class", "enum", null]
+    },
+    "input_predicate_id_or_null": {
+      "type": ["string", "null"],
+      "enum": ["ShareableObservationSafe", "TransferableAcrossIsolation", null]
+    },
+    "input_graph_finite": {"type": "boolean"},
+    "component_evidence_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "policy_input_satisfied": {"type": "boolean"},
+    "direct_user_witness_count": {"type": "integer", "minimum": 0},
+    "extension_evidence_count": {"type": "integer", "minimum": 0},
+    "provider_search_count": {"type": "integer", "minimum": 0},
+    "runtime_lookup_count": {"type": "integer", "minimum": 0}
+  },
+  "x-product-compiler": "NOT_RUN"
+}

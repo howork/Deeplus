@@ -135,8 +135,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1498, "predicates": 287,
-    "predicate_fixtures": 884, "no_go": 154,
+    "features": 723, "diagnostics": 1500, "predicates": 288,
+    "predicate_fixtures": 888, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -687,14 +687,14 @@ FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS = {
 TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-POS-001": "200a65fcdb4f4048e8ca3a9c47ee9a6a3b064d0e1a4c3cb213cee813eaa93964",
     "TCS-R1-POS-002": "bcf8175f86f6beeb7a2f408fb2c6caf0b01b3d7f22a330359a28c9de9a6bc987",
-    "TCS-R1-POS-003": "9c590a40ab916786032584ffa2fd94b900a9d97194293710f15c8a63fb892635",
-    "TCS-R1-POS-004": "75e53f203bfc6f8644e443b95bd8093627a69c7bbfdab057185dd3963e7529c3",
+    "TCS-R1-POS-003": "8cccb967ca4f8b0c70d9c309969cf6c64bb7049b089236e263d7195a65a739a8",
+    "TCS-R1-POS-004": "7520211232d387d913f88b21be1976f7a5518551efe9d7ab05ed0db5dd4a767a",
     "TCS-R1-POS-005": "a3d5f4ac2214934e98d4c46becf91e46c5c0a5ce85a7ffb4627fe0104c8d8677",
     "TCS-R1-POS-006": "6c9343d277a11511992a25c3d57f2bc442332529ef21e739aa2da664f208becb",
     "TCS-R1-POS-007": "7efc43d30b3ed5d4914c0fc06de63c57efcdf761d705d8ac5140af1ce6b20d60",
     "TCS-R1-POS-008": "720eb7a5e2c34957aed727753021715c349265dbb2fca89e73ae35a0b8531065",
-    "TCS-R1-POS-009": "a517e10df764ba6e632ed864e19da000ea1de90591e59f62fcc6d86ae1248cc9",
-    "TCS-R1-POS-010": "c16cab0427163c5821fb444476cfa070043d26fb4893e42e0482ce0d03bdd056",
+    "TCS-R1-POS-009": "78d78f3b81dadcb580ae24308067188d7b2bc193b413f7596b8db6eb6666fbaf",
+    "TCS-R1-POS-010": "c7645c83cac2d83e7d2348d7707a7ac03fa3ca77c978d00245bbe69a1b581b81",
     "TCS-R1-POS-011": "770707cc84b0399689e885e0be7132d03ef76b404bbf17bd0ae65bd63a5f31da",
     "TCS-R1-POS-012": "4dcf319599787633d85666851aea9503495e5fba4825c20c6f8f67f4045ae8ab",
     "TCS-R1-POS-013": "02e69912455fe5f6e5f9ddbcb49efc25021e7d9bd017ea1c32e19f9b2416146d",
@@ -710,6 +710,8 @@ TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-NEG-009": "398a9621caf006a6f21d74388e95865ed43034101acc50ad3a6dfe769d09f9a0",
     "TCS-R1-NEG-010": "a2c6c0761757bb0d2fc74330ddb9af587798a29f5c5d3f15b96df8e4d69f8dde",
     "TCS-R1-NEG-011": "d1bf0fe69fa1dc6a3160db99d90c0b9ce0d641a904515fd3bc54f4868ed48c91",
+    "TCS-R1-NEG-012": "5f85b0cc98d6afd580e828446409aea0f2904bbd6586d1142578af7cc87a6363",
+    "TCS-R1-NEG-013": "ffb0ed1012735e10d0ca7a7da093a62def798823931089e09f746a016e40b95e",
 }
 REFINEMENT_SURFACE_CASE_SHA256 = {
     "TRN-R1-POS-046": "a1847aaebbdd743d8aacc74eb99bc85fdcddf047a15cc39676e82190ae04ecca",
@@ -12780,8 +12782,8 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 287
-                and fixed_counts.get("predicate_fixtures") == 884
+                and fixed_counts.get("predicates") == 288
+                and fixed_counts.get("predicate_fixtures") == 888
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -13086,6 +13088,14 @@ def main() -> int:
         "tests/fixtures/current/strong-comparison-coherence-v1.json",
         "tools/validators/validate_strong_comparison_coherence_v1.py",
         "tools/validators/run_strong_comparison_coherence_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Trait_Auto_Policy_Registry_Closure_R1.md",
+        "schemas/language/trait-auto-policy-decision-v1.schema.json",
+        "schemas/language/trait-auto-policy-registry-v1.schema.json",
+        "schemas/language/trait-auto-policy-fixtures-v1.schema.json",
+        "spec/contracts/trait-auto-policy-registry-v1.json",
+        "tests/fixtures/current/trait-auto-policy-registry-v1.json",
+        "tools/validators/validate_trait_auto_policy_registry_v1.py",
+        "tools/validators/run_trait_auto_policy_registry_v1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -13866,6 +13876,52 @@ def main() -> int:
         r86_mutation_process.returncode == 0,
         "R86_STRONG_COMPARISON_COHERENCE_V1_MUTATIONS",
         r86_mutation_detail[-4000:],
+    )
+
+    r87_validator = (
+        root / "tools/validators/validate_trait_auto_policy_registry_v1.py"
+    )
+    r87_process = subprocess.run(
+        [sys.executable, str(r87_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r87_detail = (
+        r87_process.stdout.strip()
+        if r87_process.returncode == 0
+        else r87_process.stderr.strip() or r87_process.stdout.strip()
+    )
+    check(
+        r87_process.returncode == 0,
+        "R87_TRAIT_AUTO_POLICY_REGISTRY_V1",
+        r87_detail[-4000:],
+    )
+
+    r87_mutation_runner = (
+        root
+        / "tools/validators/run_trait_auto_policy_registry_v1_mutation_tests.py"
+    )
+    r87_mutation_process = subprocess.run(
+        [sys.executable, str(r87_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r87_mutation_detail = (
+        r87_mutation_process.stdout.strip()
+        if r87_mutation_process.returncode == 0
+        else r87_mutation_process.stderr.strip()
+        or r87_mutation_process.stdout.strip()
+    )
+    check(
+        r87_mutation_process.returncode == 0,
+        "R87_TRAIT_AUTO_POLICY_REGISTRY_V1_MUTATIONS",
+        r87_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (
@@ -21321,6 +21377,8 @@ def main() -> int:
         "CLASS_COLON_INHERITANCE_REMOVED",
         "TRAIT_REQUIRES_INHERITANCE_REMOVED",
         "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+        "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+        "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED",
         "CONFORMANCE_AUTO_BODY_FORBIDDEN",
         "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
         "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",
@@ -21377,9 +21435,9 @@ def main() -> int:
         and len(trait_cases) == len(
             {row.get("fixture_id") for row in trait_cases if isinstance(row, dict)}
         )
-        == 25
+        == 27
         and trait_surface_fixtures.get("counts")
-        == {"positive": 14, "negative": 11, "total": 25, "executed": 0},
+        == {"positive": 14, "negative": 13, "total": 27, "executed": 0},
         "TRAIT_CONFORMANCE_SUCCESSOR_SURFACE",
         f"revision={frontend.get('revision')} p1={len(global_open_p1)} fixtures={len(trait_cases)}",
     )
@@ -21407,19 +21465,22 @@ def main() -> int:
         and trait_case_projection_sha256
         == TRAIT_SURFACE_CASE_PROJECTION_SHA256
         and trait_auto_receipt_case.get("expected") == "ACCEPT_STATIC"
-        and "public trait AutoUserIdentity\nsupports auto {"
+        and "conforms Shareable by auto"
         in trait_auto_receipt_case.get("source", "")
-        and "closed_test_auto_policy"
+        and "policy_id=TraitAutoPolicyId:core::Shareable::structural/v1"
         in trait_auto_receipt_case.get("assertions", [])
         and trait_auto_enum_case.get("expected") == "ACCEPT_STATIC"
-        and "public trait AutoEnumIdentity\nsupports auto {"
+        and "conforms Transferable by auto"
         in trait_auto_enum_case.get("source", "")
-        and "closed_test_auto_policy"
+        and "policy_id=TraitAutoPolicyId:core::Transferable::structural/v1"
         in trait_auto_enum_case.get("assertions", [])
-        and trait_auto_boundary_case.get("expected")
-        == "ACCEPT_STATIC_IF_POLICY_REGISTERED"
-        and "closed_test_auto_policy"
-        not in trait_auto_boundary_case.get("assertions", []),
+        and trait_auto_boundary_case.get("expected") == "ACCEPT_STATIC"
+        and "policy_id=TraitAutoPolicyId:core::Shareable::structural/v1"
+        in trait_auto_boundary_case.get("assertions", [])
+        and trait_case_by_id.get("TCS-R1-NEG-012", {}).get("diagnostic")
+        == "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN"
+        and trait_case_by_id.get("TCS-R1-NEG-013", {}).get("diagnostic")
+        == "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
         "TRAIT_CONFORMANCE_CASE_SOURCE_OUTCOME_POLICY_EXACT_BINDING",
         (
             f"cases={len(trait_case_projection_sha256)} "

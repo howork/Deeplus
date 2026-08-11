@@ -347,5 +347,101 @@
     "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "TraitAutoPolicyAdmitted",
+    "source_name": "TraitAutoPolicyAdmitted",
+    "summary": "Bind supports auto/by auto to one exact core or Prelude policy row and finite input proof before canonical HIR; product checker NOT_RUN.",
+    "input_descriptor": "TraitAutoPolicyDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/trait-auto-policy-decision-v1.schema.json",
+    "descriptor_axes": [
+      "action",
+      "trait_id",
+      "declaration_owner",
+      "policy_identity",
+      "target_identity",
+      "input_predicate",
+      "finite_component_evidence",
+      "noncanonical_evidence_counts"
+    ],
+    "rule_facets": [
+      "registry_owner",
+      "policy_identity",
+      "policy_digest",
+      "termination",
+      "input_evidence",
+      "synthesized_conformance_identity"
+    ],
+    "feature_refs": [
+      "trait_witness_coherence_phase_a"
+    ],
+    "diagnostic_refs": [
+      "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+      "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(TraitAutoPolicyBinding) | synthesize(ConformanceId,TraitWitnessIds,DerivationDigest) | reject(diagnostic_id)",
+    "requires": [
+      "supports auto is an assertion on a core or Prelude Trait and does not create a policy",
+      "one exact registry row exists for normalized TraitId and PolicyVersion",
+      "policy ID, digest, input predicate and algorithm identity match the row",
+      "the normalized component graph is finite and evaluated with memoized identity-subject pairs and cycle detection",
+      "extensions, providers, source/import order and runtime state contribute zero evidence",
+      "successful synthesis seals policy, conformance, witness and derivation identities before canonical HIR"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/trait-auto-policy-registry-v1.json",
+    "formal_judgment_id": "J-TraitAutoPolicyAdmitted",
+    "algorithm_owner": "integrated_checker_before_conformance_candidate_construction_and_hir_seal",
+    "preconditions": [
+      "TraitId and target TypeId are normalized",
+      "declaration authority and PolicyVersion are known",
+      "ResponsibilityIdentityInputR1 component descriptors are closed"
+    ],
+    "normalization": "sort unique component evidence IDs by Unicode scalar order and key the registry only by normalized TraitId plus PolicyVersion",
+    "decision_procedure": [
+      "reject a user-owned Trait supports auto clause",
+      "select one exact row or emit CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "require policy ID, digest and input predicate equality",
+      "for a Trait opt-in seal the registry binding without a target witness",
+      "for by auto require an admitted source target kind and finite component graph",
+      "run only the row's registered input predicate; unknown or disproved input rejects",
+      "reject any direct witness, extension, provider or runtime contribution",
+      "seal deterministic conformance, witness and derivation identities"
+    ],
+    "termination_metric": "finite registry of two rows plus unvisited (TypeId,ResponsibilityRuleId) pairs in one finite nominal graph",
+    "success_result": "TraitAutoPolicyFact",
+    "active_primary_diagnostic": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+    "secondary_diagnostics": [
+      "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"
+    ],
+    "positive_fixture_ids": [
+      "PF-TraitAutoPolicyAdmitted-POS",
+      "PF-TraitAutoPolicyAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-TraitAutoPolicyAdmitted-NEG-OWNER",
+      "PF-TraitAutoPolicyAdmitted-NEG-INPUT"
+    ],
+    "evaluation_order": "owner -> exact registry row -> digest/predicate identity -> finite graph -> registered predicate -> noncanonical evidence fence -> HIR seal",
+    "dependency_predicates": [
+      "ShareableObservationSafe",
+      "TransferableAcrossIsolation"
+    ],
+    "diagnostic_dispatch": {
+      "USER_TRAIT_POLICY_OWNER": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+      "REGISTRY_ROW_MISSING_OR_MISMATCHED": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "INPUT_EVIDENCE_UNSATISFIED": "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
   }
 ]

@@ -5019,6 +5019,7 @@
     "shared_cell": "withValue observe_begin/observe_end is nonconsuming and nonescaping; replace_commit is the single sequentially-consistent owner commit and returns the prior owner",
     "shared_mutex": "one lock_acquire owns one non-suspending scoped inout region and exactly one lock_release on every outcome; release handoff_index precedes the next acquire for the same sync_id",
     "fixed_operator_conformance": "an intrinsic-reserved operand domain has no fixed_operator_dispatches row; each admitted non-intrinsic exact unary +/-, arithmetic +,-,*,/,% or equality/order glyph has one statically selected row whose identity fields survive HIR/MIR/API lowering; != and the four order projections share Eq/Ord evidence, compound assignment and range have no independent hook, and route, responsibility, ArithmeticDefect precommit, runtime lookup and fallback constants are exact",
+    "trait_auto_policy": "supports auto and by auto are resolved entirely before MIR through TraitAutoPolicyRegistryV1; current Shareable and Transferable synthesis emits ordinary static ConformanceId/TraitWitnessId and existing responsibility derivation residue, while MIR auto-policy operation count, registry/provider/extension search and runtime relookup are zero",
     "actor_protocol_binding": "each statically selected Actor Protocol transport operation carries exactly one ActorProtocolBindingTableId plus the complete canonical R41 tuple ActorProtocolConformanceId, ActorProtocolRequirementId, ActorProtocolBindingId, typed ActorHandlerId-or-ActorRequestId, ResponsibilityId and binding-row digest through MIR; requirement and implementation identities agree with the receipt-bound serialized row, while runtime selector lookup, reselection, fallback and registration-order selection are forbidden",
     "nonescaping_lexical_access": "callable_residence_descriptors use unique callable_id values and keep residence and explicit environment as orthogonal axes; only a non-closed RegionBound callable may carry shared-read call-duration lexical dependencies, present-empty [] is represented by closed_ancestor_frame_assertion=true with zero dependencies, RegionId remains internal proof metadata and no lexical read creates a new observable event",
     "closure_capture_plan": "closure_capture_plans preserve one unique HIR/MIR plan identity, ABSENT versus PRESENT_EMPTY versus PRESENT_NONEMPTY list state, exact FrameIndependent or RegionBound residence, closed-ancestor assertion, sorted unique lexical dependencies, and source-ordered tagged ReferenceCapture or InitializerCapture fields with unique CaptureFieldId, contiguous source ordinal, exact normalized type, and LET or VAR initializer kind",
@@ -5050,6 +5051,20 @@
     },
     "field_mapping": "TOTAL_INJECTIVE_DETERMINISTIC",
     "operator_role_binding": "EXACT_13_IF_THEN_ROWS"
+  },
+  "x-deeplus-trait-auto-policy-contract": {
+    "registry": "TraitAutoPolicyRegistryV1",
+    "current_policy_trait_ids": ["TraitId:core::Shareable", "TraitId:core::Transferable"],
+    "hir_sealed_fields": [
+      "TraitAutoPolicyId", "PolicyVersion", "PolicyDigest", "TraitId", "TargetTypeId",
+      "InputPredicateId", "InputEvidenceIds", "ConformanceId", "TraitWitnessIds", "DerivationDigest"
+    ],
+    "mir_new_operation_count": 0,
+    "mir_registry_lookup_count": 0,
+    "mir_provider_search_count": 0,
+    "runtime_relookup_count": 0,
+    "existing_residue_reused": ["ConformanceId", "TraitWitnessId", "ResponsibilityEvidenceId", "RegistryRevision", "DerivationDigest"],
+    "product_support": "NOT_RUN"
   },
   "x-deeplus-fixture-registry": "tests/fixtures/imported/mir-responsibility-fixtures.json",
   "x-deeplus-actor-lifecycle-ordering": {

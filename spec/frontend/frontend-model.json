@@ -3099,10 +3099,28 @@
     "automatic_synthesis": {
       "trait_opt_in_surface": "supports auto",
       "use_surface": "by auto",
+      "registry_identity": "TraitAutoPolicyRegistryV1",
+      "registry_owner": "CORE_OR_PRELUDE_ONLY",
+      "registry_key": ["TraitId", "PolicyVersion"],
+      "current_policy_trait_ids": ["TraitId:core::Shareable", "TraitId:core::Transferable"],
+      "user_trait_declaration_creates_policy": false,
       "closed_registered_policy_required": true,
       "unregistered_policy_candidate_count": 0,
       "extension_shape_creates_policy": false,
-      "runtime_search_count": 0
+      "provider_search_count": 0,
+      "runtime_search_count": 0,
+      "hir_exact_fields": [
+        "TraitAutoPolicyId",
+        "PolicyVersion",
+        "PolicyDigest",
+        "TraitId",
+        "TargetTypeId",
+        "InputPredicateId",
+        "InputEvidenceIds",
+        "ConformanceId",
+        "TraitWitnessIds",
+        "DerivationDigest"
+      ]
     },
     "language_role_registry": {
       "identity_domain": "TraitLanguageRoleId distinct from TraitId",
@@ -3187,6 +3205,7 @@
     "preserved_identity_fields": [
       "TraitId",
       "TraitLanguageRoleId",
+      "TraitAutoPolicyId",
       "ConformanceId",
       "TraitWitnessId",
       "RequirementId",

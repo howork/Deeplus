@@ -688,22 +688,13 @@ constraint or the following relation. Subclassing and Trait evidence remain
 different identity domains.
 
 ```deeplus
-public trait AutoReceiptIdentity
+// Prelude-owned declaration; ordinary user modules cannot create this policy.
+public trait Shareable
 supports auto {
-    +def identity.() -> String throws Never effects {}
 }
 
-public class User
-conforms Display
-conforms AutoReceiptIdentity by auto {
-    +let name: String
-
-    conform Display {
-        def display.() -> String = {
-            return self.name
-        }
-    }
-}
+public data class Receipt(id: UInt, title: String)
+conforms Shareable by auto
 ```
 
 An external conformance begins with `type`, and the `conforms` lookahead keeps
@@ -744,12 +735,16 @@ success commits bindings. `Option<T>` uses `Failure = Unit` and
 patterns; `if let?`, `while let?`, `var?`, bare `let?`, implicit propagation,
 and runtime/fallback evidence routes are absent.
 
-A Trait may opt into one registered synthesis family with `supports auto`, and
-a type requests that policy with `by auto`. The request is bodyless. The
-checker admits it only when the Trait owns one closed, deterministic,
-machine-checkable policy and all required input evidence is unique. Merely
-having same-named methods, importing an extension, or finding a provider does
-not create an automatic candidate.
+`supports auto` is an assertion on a core/Prelude-owned Trait that its exact
+normalized `TraitId` has one row in `TraitAutoPolicyRegistryV1`; the clause
+does not create or modify a policy, and a user-owned Trait carrying it is
+rejected. A type requests that exact row with bodyless `by auto`. The current
+registry has exactly the `Shareable` and `Transferable` responsibility rows.
+The checker binds policy ID, version, digest, finite input evidence, synthesized
+conformance/witness identities and derivation digest before canonical HIR.
+`Display`, `Eq`, `Ord`, arbitrary user Traits and Preview `DeepClone` have no
+current row. Same-named methods, extensions, providers, source/import order and
+runtime state create no candidate.
 
 `conform Trait { ... }` is admitted only as an item of the same Class or Enum
 body whose header already declares `conforms Trait`. The nominal owner is
