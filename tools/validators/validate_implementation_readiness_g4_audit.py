@@ -11,6 +11,12 @@ from typing import Any
 
 
 CONTRACT_REL = "spec/contracts/implementation-readiness-g4-audit-r1.json"
+REVALIDATION_REL = (
+    "spec/contracts/implementation-readiness-g4-dpg-revalidation-r1.json"
+)
+REVALIDATION_SCHEMA_REL = (
+    "schemas/language/implementation-readiness-g4-dpg-revalidation-r1.schema.json"
+)
 METADATA_REL = "spec/traceability/implementation-target-profile-r1/catalog-metadata.json"
 ROWS_REL = "spec/traceability/implementation-target-profile-r1/rows.json"
 POINTER_REL = "current/current-pointer.json"
@@ -34,17 +40,32 @@ def validate(root: Path) -> list[str]:
         if not condition:
             errors.append(code)
 
-    contract = load(root / CONTRACT_REL)
+    historical = load(root / CONTRACT_REL)
+    contract = load(root / REVALIDATION_REL)
     metadata = load(root / METADATA_REL)
     rows = load(root / ROWS_REL)
     pointer = load(root / POINTER_REL)
     r76_receipt = load(root / R76_RECEIPT_REL)
 
-    require(contract.get("canonical_baseline_commit") == BASELINE, "BASELINE_COMMIT")
-    require(contract.get("canonical_baseline_tree") == BASELINE_TREE, "BASELINE_TREE")
+    require(historical.get("canonical_baseline_commit") == BASELINE, "HISTORICAL_BASELINE_COMMIT")
+    require(historical.get("canonical_baseline_tree") == BASELINE_TREE, "HISTORICAL_BASELINE_TREE")
+    require(
+        contract.get("historical_audit")
+        == {
+            "path": CONTRACT_REL,
+            "preserved_immutable": True,
+            "interpretation": "HISTORICAL_SNAPSHOT_NOT_CURRENT_GRAMMAR_AUTHORITY",
+        },
+        "HISTORICAL_AUDIT_FENCE",
+    )
+    require(
+        contract.get("baseline", {}).get("canonical_commit")
+        == "10e64f492f0529610673846139afcf0d95175663",
+        "CURRENT_BASELINE_COMMIT",
+    )
     require(
         contract.get("verdict")
-        == "IMPLEMENTATION_TARGET_PROFILE_SPECIFICATION_READY",
+        == "IMPLEMENTATION_TARGET_PROFILE_SPECIFICATION_READY_LOCAL_REVALIDATION",
         "VERDICT",
     )
     require(contract.get("evidence_level") == "E2_STRUCTURED_STATIC", "EVIDENCE_LEVEL")
@@ -71,6 +92,7 @@ def validate(root: Path) -> list[str]:
     require(metadata.get("base_count") == 462, "BASE_STATUS_COUNT")
     require(metadata.get("dependency_addition_count") == 6, "DEPENDENCY_COUNT")
     require(metadata.get("negative_compatibility_addition_count") == 1, "NEGATIVE_COMPATIBILITY_COUNT")
+    expected_trace.update({"bound_direct": 3711, "not_applicable": 506})
     require(contract.get("traceability") == expected_trace, "CONTRACT_TRACE_COUNTS")
     require(derived.get("feature_rows") == 469, "DERIVED_FEATURE_ROWS")
     require(derived.get("stage_cells") == 3283, "DERIVED_STAGE_CELLS")
@@ -82,6 +104,14 @@ def validate(root: Path) -> list[str]:
     require(derived.get("missing_cells") == 0, "DERIVED_MISSING")
     require(derived.get("conflict_cells") == 0, "DERIVED_CONFLICT")
     require(derived.get("product_not_run_rows") == 469, "DERIVED_PRODUCT_NOT_RUN")
+
+    parser = contract.get("parser_authority", {})
+    require(parser.get("structural_grammar") == "spec/grammar/deeplus.dpg", "DPG_AUTHORITY")
+    require(parser.get("parser_context") == "spec/grammar/deeplus.parser-contexts.json", "PARSER_CONTEXT_AUTHORITY")
+    require(parser.get("surface_census_semantic_authority") is False, "EBNF_NONAUTHORITY")
+    require(parser.get("legacy_ebnf_authority_evidence_count") == 0, "EBNF_AUTHORITY_ZERO")
+    require(parser.get("surface_census_locator_count") == 297, "CENSUS_LOCATOR_COUNT")
+    require(parser.get("direct_source_cell_count") == 438, "DIRECT_SOURCE_CELL_COUNT")
 
     gates = contract.get("gates", [])
     require([gate.get("id") for gate in gates] == ["G0", "G1", "G2", "G3", "G4"], "GATE_IDS")
@@ -119,13 +149,13 @@ def validate(root: Path) -> list[str]:
         "R76_CLOSURE_EVIDENCE",
     )
     require(
-        contract.get("next_nonblocking_cluster")
+        contract.get("next_blocking_cluster")
         == {
-            "gap_id": "IR-ACTOR-P2-008",
-            "status": "EXPLICITLY_DEFERRED_NONBLOCKING_REVIEW_ELIGIBLE",
+            "gap_id": "PREIMPL-P0-003",
+            "name": "SFD-P1-009 impossible target-bound route",
             "activated": False,
         },
-        "NEXT_NONBLOCKING_CLUSTER",
+        "NEXT_BLOCKING_CLUSTER",
     )
     require(
         contract.get("conflict_register")
@@ -134,7 +164,12 @@ def validate(root: Path) -> list[str]:
                 "id": "G4-CONFLICT-001",
                 "disposition": "EXPLAINED_TYPED_HISTORICAL_PROMOTION_STATE",
                 "source_repair": "NOT_REQUIRED",
-            }
+            },
+            {
+                "id": "G4-CONFLICT-002",
+                "disposition": "CLOSED_IN_LOCAL_R78_BY_DPG_AUTHORITY_REBIND",
+                "source_repair": "PARSER_AUTHORITY_ENSEMBLE_AND_LOCATOR_ENFORCEMENT",
+            },
         ],
         "CONFLICT_REGISTER",
     )
@@ -146,13 +181,24 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path("."))
     args = parser.parse_args()
-    errors = validate(args.root.resolve())
+    root = args.root.resolve()
+    errors = validate(root)
+    try:
+        import jsonschema
+
+        jsonschema.Draft202012Validator(load(root / REVALIDATION_SCHEMA_REL)).validate(
+            load(root / REVALIDATION_REL)
+        )
+    except ImportError:
+        pass
+    except Exception as exc:  # pragma: no cover - reported as a stable receipt code
+        errors.append(f"JSON_SCHEMA:{exc}")
     if errors:
         print("G4 IMPLEMENTATION READINESS AUDIT: FAIL")
         for error in errors:
             print(f"- {error}")
         return 1
-    print("G4 HISTORICAL AUDIT + R77 CURRENT TARGET REBIND: PASS")
+    print("G4 HISTORICAL AUDIT + R78 DPG AUTHORITY REVALIDATION: PASS")
     print("- readiness gates: 5/5 PASS_E2")
     print("- target rows: 469 (including one explicit negative-compatibility obligation)")
     print("- atomic trace cells: 4221")

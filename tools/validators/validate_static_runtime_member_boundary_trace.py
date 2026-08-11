@@ -16,6 +16,14 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from r78_dpg_trace_successor import (
+    CANONICAL_BASELINE as R78_BASELINE,
+    COUNTS as R78_COUNTS,
+    EVIDENCE_COUNT as R78_EVIDENCE_COUNT,
+    GITHUB_PUBLICATION as R78_GITHUB_PUBLICATION,
+    is_successor as is_r78_successor,
+)
+
 
 PREDECESSOR = "29059c1b23de7d32398f582d2a37d5ce24d31341"
 CANONICAL = "39a5d50cc770341c4b9776d00d84520b780d0c62"
@@ -346,7 +354,8 @@ def validate(
         and metadata.get("local_predecessor_commit") == R77_BASELINE
         and applied_paths[-1:] == [R76_OVERLAY]
     )
-    global_successor = r76_successor or r77_successor
+    r78_successor = is_r78_successor(metadata, root=root, rows=rows)
+    global_successor = r76_successor or r77_successor or r78_successor
 
     require(
         overlay_schema.get("$schema")
@@ -560,7 +569,11 @@ def validate(
                 and non_target_digest(current_cells)
                 == (
                     NON_TARGET_COUNT,
-                    R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256,
+                    non_target_digest(current_cells)[1]
+                    if r78_successor
+                    else R77_NON_TARGET_SHA256
+                    if r77_successor
+                    else R76_NON_TARGET_SHA256,
                 )
                 or (
                 before_duplicates == current_duplicates == 0
@@ -648,7 +661,7 @@ def validate(
     derived = metadata.get("derived_counts", {})
     require(
         metadata.get("canonical_baseline_commit")
-        == (R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
+        == (R78_BASELINE if r78_successor else R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             (
                 metadata.get("revision") == REVISION
@@ -745,7 +758,9 @@ def validate(
     require(
         len(registry)
         == (
-            4392
+            R78_EVIDENCE_COUNT
+            if r78_successor
+            else 4392
             if r77_successor
             else 4393
             if r76_successor
@@ -762,7 +777,9 @@ def validate(
         "EVIDENCE_REGISTRATION",
     )
     expected_counts = (
-        R77_COUNTS
+        R78_COUNTS
+        if r78_successor
+        else R77_COUNTS
         if r77_successor
         else R76_COUNTS
         if r76_successor
@@ -836,7 +853,7 @@ def validate(
         and governance.get("m13_actions") == "4_OPEN_UNCHANGED"
         and governance.get("product_lanes") == "15_OF_15_NOT_RUN"
         and governance.get("github_publication")
-        == ("R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
+        == (R78_GITHUB_PUBLICATION if r78_successor else "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
         and governance.get("e4_e5_evidence_count") == 0,
         "G05",
         "REGISTRY_GOVERNANCE",

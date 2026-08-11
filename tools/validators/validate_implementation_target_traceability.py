@@ -15,6 +15,8 @@ from typing import Any
 
 META_REL = "spec/traceability/implementation-target-profile-r1/catalog-metadata.json"
 SCHEMA_REL = "schemas/language/implementation-target-traceability-r1.schema.json"
+PARSER_AUTHORITY_CONTRACT_REL = "spec/contracts/parser-authority-traceability-r1.json"
+PARSER_AUTHORITY_SCHEMA_REL = "schemas/language/parser-authority-traceability-r1.schema.json"
 OVERLAY_SPECS = [
     (
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
@@ -140,6 +142,15 @@ NA_REASONS = {
     "CONFORMANCE_TESTS": {"NA_TEST_NO_DISTINCT_REJECTION_CLASS"},
 }
 BOUNDARIES = {"GRAMMAR_AUTHORITY", "FRONTEND_AUTHORITY", "TYPE_CHECKER_AUTHORITY", "MIR_RUNTIME_AUTHORITY", "DIAGNOSTIC_AUTHORITY", "TOOLING_AUTHORITY", "CONFORMANCE_AUTHORITY", "PRELUDE_PROVIDER_AUTHORITY", "PUBLICATION_AUTHORITY"}
+SOURCE_AUTHORITY_CLASSES = {
+    "DPG_RULE_FAMILY_ID",
+    "PARSER_CONTEXT_REGISTRY",
+    "PRATT_PARSE_GOAL_CONTRACT",
+    "SCANNER_LEXICAL_GOAL_CONTRACT",
+}
+GRAMMAR_LOCATOR_CLASSES = SOURCE_AUTHORITY_CLASSES | {
+    "GRAMMAR_SURFACE_CENSUS_ID"
+}
 
 
 def load(path: Path) -> Any:
@@ -241,10 +252,25 @@ def evidence_locator_resolves(root: Path, item: dict[str, Any]) -> bool:
             return False
     if kind != "REGISTRY_ID" or not locator:
         return False
-    if evidence_class == "GRAMMAR_PRODUCTION_ID":
+    if evidence_class == "GRAMMAR_SURFACE_CENSUS_ID":
         if not path.is_file():
             return False
-        return bool(re.search(rf"(?m)^\s*{re.escape(locator)}\s*=", path.read_text(encoding="utf-8")))
+        return bool(
+            re.search(
+                rf"(?m)^\s*{re.escape(locator)}\s*::=",
+                path.read_text(encoding="utf-8"),
+            )
+        )
+    if evidence_class == "DPG_RULE_FAMILY_ID":
+        if not path.is_file():
+            return False
+        return bool(
+            re.search(
+                rf"(?m)^\s*{re.escape(locator)}(?:<[^>\r\n]+>)?\s*"
+                rf"(?::=|\r?\n\s*:=)",
+                path.read_text(encoding="utf-8"),
+            )
+        )
     if locator in registry_strings(str(path.resolve())):
         return True
     if path.is_file() and path.suffix.lower() != ".json":
@@ -261,6 +287,32 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     def require(condition: bool, code: str) -> None:
         if not condition:
             errors.append(code)
+
+    parser_authority = load(root / PARSER_AUTHORITY_CONTRACT_REL)
+    require(
+        parser_authority.get("schema")
+        == "deeplus.parser-authority-traceability/r1"
+        and parser_authority.get("revision")
+        == "r78-dpg-implementation-target-traceability-closure-r1",
+        "PARSER_AUTHORITY_CONTRACT_IDENTITY",
+    )
+    require(
+        metadata.get("source_grammar_authority")
+        == {
+            "contract": PARSER_AUTHORITY_CONTRACT_REL,
+            "authority_axes": [
+                "structural_grammar",
+                "parser_context",
+                "pratt",
+                "scanner",
+            ],
+            "surface_census_path": "spec/grammar/deeplus.ebnf",
+            "surface_census_semantic_authority": False,
+            "direct_cell_requires_all_authority_axes": True,
+            "ebnf_only_binding_rejected": True,
+        },
+        "SOURCE_GRAMMAR_AUTHORITY_METADATA",
+    )
 
     overlays = [(rel, load(root / rel), expected) for rel, _, expected in OVERLAY_SPECS]
     overlay_entries: dict[str, dict[str, Any]] = {}
@@ -323,11 +375,22 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
         path = item.get("path", "")
         require(safe_rel(path), f"EVIDENCE_PATH_SAFE:{ev_id}")
         require((root / path).exists(), f"EVIDENCE_PATH_EXISTS:{ev_id}")
-        # Bounded evidence-closure overlays add locator-resolution enforcement.
-        # Legacy registry rows retain their R53 existence-level validation until
-        # their own bounded evidence-closure cluster upgrades them.
-        if ev_id in overlay_evidence_ids:
+        # Parser-authority evidence is current only when its exact locator
+        # resolves. Other legacy rows retain their bounded overlay policy.
+        if ev_id in overlay_evidence_ids or item.get("class") in GRAMMAR_LOCATOR_CLASSES:
             require(evidence_locator_resolves(root, item), f"EVIDENCE_LOCATOR_RESOLVES:{ev_id}")
+        if item.get("class") == "GRAMMAR_SURFACE_CENSUS_ID":
+            require(
+                item.get("path") == "spec/grammar/deeplus.ebnf"
+                and item.get("stage_role")
+                == "SOURCE_GRAMMAR:SURFACE_CENSUS_NONAUTHORITY",
+                f"SURFACE_CENSUS_NONAUTHORITY:{ev_id}",
+            )
+        if item.get("class") in SOURCE_AUTHORITY_CLASSES:
+            require(
+                item.get("path") != "spec/grammar/deeplus.ebnf",
+                f"EBNF_CANNOT_BE_PARSER_AUTHORITY:{ev_id}",
+            )
         require(item.get("evidence_level") == "E2_STRUCTURED_STATIC", f"EVIDENCE_LEVEL:{ev_id}")
 
     direct = delegated = na = blocked = 0
@@ -387,6 +450,35 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
                         pending_projection or not cell.get("blocked_gap_ids"),
                         f"DIRECT_BLOCKED:{feature_id}:{stage_name}",
                     )
+                    if stage_name == "SOURCE_GRAMMAR":
+                        ref_items = [evidence[ref] for ref in refs if ref in evidence]
+                        ref_classes = {item.get("class") for item in ref_items}
+                        require(
+                            SOURCE_AUTHORITY_CLASSES <= ref_classes,
+                            f"SOURCE_AUTHORITY_AXES:{feature_id}",
+                        )
+                        require(
+                            not any(
+                                item.get("class") == "GRAMMAR_PRODUCTION_ID"
+                                or (
+                                    item.get("path") == "spec/grammar/deeplus.ebnf"
+                                    and item.get("class")
+                                    != "GRAMMAR_SURFACE_CENSUS_ID"
+                                )
+                                for item in ref_items
+                            ),
+                            f"SOURCE_EBNF_AUTHORITY_FORBIDDEN:{feature_id}",
+                        )
+                        trace = catalog.get("normative_trace_refs", {})
+                        needs_census = bool(
+                            trace.get("productions")
+                            or trace.get("semantic_reference_productions")
+                        )
+                        require(
+                            not needs_census
+                            or "GRAMMAR_SURFACE_CENSUS_ID" in ref_classes,
+                            f"SOURCE_CENSUS_LOCATOR_REQUIRED:{feature_id}",
+                        )
                 elif disposition == "NOT_APPLICABLE":
                     na += 1
                     detail = (
@@ -482,10 +574,10 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     )
     governance = metadata.get("governance", {})
     require(governance.get("gap_id") == "IR-XCUT-P1-054", "GOVERNANCE_GAP")
-    require(governance.get("gap_status") == "INTEGRATED_UNVERIFIED_R77_CURRENT_REBIND", "GOVERNANCE_STATUS")
+    require(governance.get("gap_status") == "LOCAL_VERIFIED_CANDIDATE_NOT_INTEGRATED", "GOVERNANCE_STATUS")
     require(governance.get("semantic_p0") == 0 and governance.get("feature_p1") == "22_OPEN_UNCHANGED", "GOVERNANCE_SEMANTIC")
     require(governance.get("product_lanes") == "15_OF_15_NOT_RUN" and governance.get("e4_e5_evidence_count") == 0, "GOVERNANCE_PRODUCT")
-    require(governance.get("github_publication") == "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN", "GOVERNANCE_GITHUB")
+    require(governance.get("github_publication") == "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR", "GOVERNANCE_GITHUB")
     return errors
 
 
@@ -506,6 +598,9 @@ def main() -> int:
     try:
         import jsonschema
         jsonschema.Draft202012Validator(load(root / SCHEMA_REL)).validate(metadata)
+        jsonschema.Draft202012Validator(
+            load(root / PARSER_AUTHORITY_SCHEMA_REL)
+        ).validate(load(root / PARSER_AUTHORITY_CONTRACT_REL))
         for overlay_rel, overlay_schema_rel, _ in OVERLAY_SPECS:
             jsonschema.Draft202012Validator(load(root / overlay_schema_rel)).validate(
                 load(root / overlay_rel)

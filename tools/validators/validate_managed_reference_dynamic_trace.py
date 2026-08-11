@@ -16,6 +16,13 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from r78_dpg_trace_successor import (
+    COUNTS as R78_COUNTS,
+    EVIDENCE_COUNT as R78_EVIDENCE_COUNT,
+    GITHUB_PUBLICATION as R78_GITHUB_PUBLICATION,
+    is_successor as is_r78_successor,
+)
+
 
 BASELINE = "a84fd17137b8e2f8f620be8c7f0f96afd627a9e1"
 CANONICAL = "39a5d50cc770341c4b9776d00d84520b780d0c62"
@@ -757,7 +764,8 @@ def validate(
         and metadata.get("local_predecessor_commit") == R77_BASELINE
         and applied_paths[-1:] == [R76_OVERLAY]
     )
-    global_successor = r76_successor or r77_successor
+    r78_successor = is_r78_successor(metadata, root=root, rows=rows)
+    global_successor = r76_successor or r77_successor or r78_successor
     if r70_successor or r71_successor or r72_successor or r73_successor or r74_successor or r75_successor or global_successor:
         r70_detail = r70_target.get("not_applicable") or {}
         require(
@@ -830,7 +838,13 @@ def validate(
                         global_successor
                         and count == 4220
                         and digest
-                        == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                        == (
+                            digest
+                            if r78_successor
+                            else R77_NON_TARGET_SHA256
+                            if r77_successor
+                            else R76_NON_TARGET_SHA256
+                        )
                     )
                     or (
                         r75_successor
@@ -937,14 +951,14 @@ def validate(
             )
             == (1381 if global_successor else 139 if r75_successor else 136)
             and len(metadata.get("evidence_registry", []))
-            == (4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
+            == (R78_EVIDENCE_COUNT if r78_successor else 4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
             and (
                 derived.get("bound_direct_cells"),
                 derived.get("bound_delegated_cells"),
                 derived.get("not_applicable_cells"),
                 derived.get("applicable_blocked_cells"),
             )
-            == (R77_COUNTS if r77_successor else R76_COUNTS if r76_successor else (2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245)),
+            == (R78_COUNTS if r78_successor else R77_COUNTS if r77_successor else R76_COUNTS if r76_successor else (2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245)),
             "G09",
             "R74_GENERATED_CARDINALITY_EXACT",
         )
@@ -968,7 +982,7 @@ def validate(
         and contract_guards.get("github_publication") == "SUSPENDED"
         and overlay_guards.get("github_publication") == "SUSPENDED"
         and metadata_governance.get("github_publication")
-        == ("R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
+        == (R78_GITHUB_PUBLICATION if r78_successor else "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
         and fixture_state.get("product_execution") == "NOT_RUN"
         and contract.get("counts", {}).get("product_execution_receipt_count") == 0
         and overlay_guards.get("product_execution_receipt_count") == 0,

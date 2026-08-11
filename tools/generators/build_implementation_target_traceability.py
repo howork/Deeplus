@@ -17,6 +17,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "spec/traceability/implementation-target-profile-r1"
 CHUNKS = OUT / "chunks"
+PARSER_AUTHORITY_CONTRACT = ROOT / "spec/contracts/parser-authority-traceability-r1.json"
 OVERLAYS = [
     OUT / "scalar-numeric-fixed-operator-evidence-r1.json",
     OUT / "lexical-trivia-source-root-evidence-r1.json",
@@ -106,6 +107,14 @@ def evidence_id(evidence_class: str, path: str, locator_kind: str, locator: str,
 
 
 def main() -> None:
+    parser_authority = read_json(PARSER_AUTHORITY_CONTRACT)
+    if (
+        parser_authority.get("schema")
+        != "deeplus.parser-authority-traceability/r1"
+        or parser_authority.get("revision")
+        != "r78-dpg-implementation-target-traceability-closure-r1"
+    ):
+        raise ValueError("PARSER_AUTHORITY_CONTRACT_IDENTITY")
     overlays = [(path, read_json(path)) for path in OVERLAYS]
     overlay_evidence: dict[str, dict[str, Any]] = {}
     overlay_bindings: dict[tuple[str, str, str | None], dict[str, Any]] = {}
@@ -171,18 +180,33 @@ def main() -> None:
 
     def registry_evidence(kind: str, locator: str, stage: str) -> str:
         paths = {
-            "production": "spec/grammar/deeplus.ebnf",
+            "production": parser_authority["surface_census"]["path"],
             "predicate": "spec/types/predicates",
             "diagnostic": "spec/diagnostics/catalog",
             "example": "examples/guide/review-corpus.md",
         }
         classes = {
-            "production": "GRAMMAR_PRODUCTION_ID",
+            "production": "GRAMMAR_SURFACE_CENSUS_ID",
             "predicate": "CHECKER_PREDICATE_ID",
             "diagnostic": "DIAGNOSTIC_REGISTRY_ID",
             "example": "TEACHING_EXAMPLE_ID",
         }
         return add_evidence(classes[kind], paths[kind], "REGISTRY_ID", locator, stage)
+
+    def parser_authority_refs() -> list[str]:
+        refs = []
+        for axis in ("structural_grammar", "parser_context", "pratt", "scanner"):
+            item = parser_authority["authority_ensemble"][axis]
+            refs.append(
+                add_evidence(
+                    item["class"],
+                    item["path"],
+                    item["locator_kind"],
+                    item["locator"],
+                    item["stage_role"],
+                )
+            )
+        return refs
 
     def direct(refs: list[str]) -> dict[str, Any]:
         return {"disposition": "BOUND_DIRECT", "evidence_refs": sorted(set(refs)), "delegate_feature_id": None, "not_applicable": None, "blocked_gap_ids": []}
@@ -269,7 +293,15 @@ def main() -> None:
         feature_ref = row_evidence(feature_id, "CATALOG_BINDING")
         primary = row.get("primary_source", "spec/language.md")
         primary_ref = path_evidence(primary, "NORMATIVE_SOURCE")
-        production_refs = [registry_evidence("production", item, "SOURCE_GRAMMAR") for item in productions + semantic_productions]
+        production_refs = [
+            registry_evidence(
+                "production",
+                item,
+                parser_authority["surface_census"]["stage_role"],
+            )
+            for item in productions + semantic_productions
+        ]
+        source_authority_refs = parser_authority_refs()
         predicate_refs = [registry_evidence("predicate", item, "STATIC_SEMANTICS") for item in predicates]
         diagnostic_refs = [registry_evidence("diagnostic", item, "DIAGNOSTICS") for item in diagnostics]
         example_refs = [registry_evidence("example", item, "CONFORMANCE_TESTS") for item in examples]
@@ -287,7 +319,11 @@ def main() -> None:
         elif library_only and not productions and not semantic_productions:
             value = not_applicable("NA_SOURCE_INTERNAL_NO_PROGRAMMER_FORM", "PRELUDE_PROVIDER_AUTHORITY", [feature_ref, primary_ref], "The library/provider profile introduces no core-language grammar production.")
         else:
-            value = direct([feature_ref, primary_ref] + production_refs)
+            value = direct(
+                [feature_ref, primary_ref]
+                + source_authority_refs
+                + production_refs
+            )
         value = apply_overlay(feature_id, "SOURCE_GRAMMAR", None, value)
         stages.append({"stage": "SOURCE_GRAMMAR", **value})
 
@@ -426,9 +462,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r77-current-implementation-target-rebind-r1",
-        "canonical_baseline_commit": "da734c608c0d583a671c0da9e14da00bff42affd",
-        "local_predecessor_commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+        "revision": "r78-dpg-implementation-target-traceability-closure-r1",
+        "canonical_baseline_commit": "10e64f492f0529610673846139afcf0d95175663",
+        "local_predecessor_commit": "7d4e6c48b9374bec34a60b970530174dd9b4e145",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),
@@ -444,6 +480,14 @@ def main() -> None:
         "excluded_feature_id_list_sha256": digest_ids(excluded_ids),
         "stage_order": STAGES,
         "test_outcome_order": OUTCOMES,
+        "source_grammar_authority": {
+            "contract": PARSER_AUTHORITY_CONTRACT.relative_to(ROOT).as_posix(),
+            "authority_axes": list(parser_authority["authority_ensemble"]),
+            "surface_census_path": parser_authority["surface_census"]["path"],
+            "surface_census_semantic_authority": False,
+            "direct_cell_requires_all_authority_axes": True,
+            "ebnf_only_binding_rejected": True,
+        },
         "chunks": chunks,
         "applied_evidence_overlays": [{
             "path": path.relative_to(ROOT).as_posix(),
@@ -465,12 +509,12 @@ def main() -> None:
         },
         "governance": {
             "gap_id": "IR-XCUT-P1-054",
-            "gap_status": "INTEGRATED_UNVERIFIED_R77_CURRENT_REBIND",
+            "gap_status": "LOCAL_VERIFIED_CANDIDATE_NOT_INTEGRATED",
             "semantic_p0": 0,
             "feature_p1": "22_OPEN_UNCHANGED",
             "m13_actions": "4_OPEN_UNCHANGED",
             "product_lanes": "15_OF_15_NOT_RUN",
-            "github_publication": "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN",
+            "github_publication": "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR",
             "e4_e5_evidence_count": 0,
         },
     }

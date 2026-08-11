@@ -1,0 +1,66 @@
+{
+  "$schema": "../../schemas/language/parser-authority-traceability-r1.schema.json",
+  "schema": "deeplus.parser-authority-traceability/r1",
+  "revision": "r78-dpg-implementation-target-traceability-closure-r1",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "canonical_commit": "10e64f492f0529610673846139afcf0d95175663",
+    "local_predecessor_commit": "7d4e6c48b9374bec34a60b970530174dd9b4e145"
+  },
+  "authority_ensemble": {
+    "structural_grammar": {
+      "class": "DPG_RULE_FAMILY_ID",
+      "path": "spec/grammar/deeplus.dpg",
+      "locator_kind": "REGISTRY_ID",
+      "locator": "Deeplus",
+      "stage_role": "SOURCE_GRAMMAR:STRUCTURAL_AUTHORITY"
+    },
+    "parser_context": {
+      "class": "PARSER_CONTEXT_REGISTRY",
+      "path": "spec/grammar/deeplus.parser-contexts.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/dpg_metamodel",
+      "stage_role": "SOURCE_GRAMMAR:PARSER_CONTEXT_AUTHORITY"
+    },
+    "pratt": {
+      "class": "PRATT_PARSE_GOAL_CONTRACT",
+      "path": "spec/contracts/closed-pratt-parse-goal-contract-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/dispatch_law",
+      "stage_role": "SOURCE_GRAMMAR:PRATT_AUTHORITY"
+    },
+    "scanner": {
+      "class": "SCANNER_LEXICAL_GOAL_CONTRACT",
+      "path": "spec/contracts/complete-token-lexical-goal-contract-r1.json",
+      "locator_kind": "JSON_POINTER",
+      "locator": "/lexical_goals",
+      "stage_role": "SOURCE_GRAMMAR:SCANNER_AUTHORITY"
+    }
+  },
+  "surface_census": {
+    "class": "GRAMMAR_SURFACE_CENSUS_ID",
+    "path": "spec/grammar/deeplus.ebnf",
+    "locator_kind": "REGISTRY_ID",
+    "stage_role": "SOURCE_GRAMMAR:SURFACE_CENSUS_NONAUTHORITY",
+    "semantic_authority": false,
+    "purpose": "Exact source-surface inventory locator retained after the DPG cutover; it cannot satisfy SOURCE_GRAMMAR without the complete authority ensemble."
+  },
+  "binding_law": {
+    "direct_source_cell_requires_all_authority_axes": true,
+    "surface_production_cell_requires_census_locator": true,
+    "ebnf_only_binding_rejected": true,
+    "all_grammar_locators_resolve": true,
+    "one_to_one_ebnf_to_dpg_rule_mapping_required": false,
+    "reason": "DPG intentionally collapses owner-equivalent structural shapes and delegates context, precedence, scanner transactions, and admission to closed side contracts."
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "candidate_status": "LOCAL_VERIFIED_CANDIDATE_NOT_INTEGRATED",
+    "canonical_source_mutation": false,
+    "github_mutation": false
+  }
+}

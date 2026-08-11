@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/implementation-readiness-g4-dpg-revalidation-r1.schema.json",
+  "title": "Deeplus G4 DPG authority revalidation R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "historical_audit", "baseline", "candidate_status", "verdict", "evidence_level", "parser_authority", "traceability", "gates", "authority_fence", "conflict_register", "next_blocking_cluster", "external_post_commit_receipt_required"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/implementation-readiness-g4-dpg-revalidation-r1.schema.json"},
+    "schema": {"const": "deeplus.implementation-readiness-g4-dpg-revalidation/r1"},
+    "revision": {"const": "r78-dpg-implementation-target-traceability-closure-r1"},
+    "historical_audit": {"type": "object"},
+    "baseline": {"type": "object"},
+    "candidate_status": {"const": "LOCAL_REVALIDATED_NOT_INTEGRATED"},
+    "verdict": {"const": "IMPLEMENTATION_TARGET_PROFILE_SPECIFICATION_READY_LOCAL_REVALIDATION"},
+    "evidence_level": {"const": "E2_STRUCTURED_STATIC"},
+    "parser_authority": {"type": "object"},
+    "traceability": {
+      "const": {
+        "feature_rows": 469,
+        "stage_cells": 3283,
+        "conformance_outcome_cells": 1407,
+        "atomic_cells": 4221,
+        "bound_direct": 3711,
+        "bound_delegated": 4,
+        "not_applicable": 506,
+        "applicable_blocked": 0,
+        "missing": 0,
+        "conflicting": 0
+      }
+    },
+    "gates": {"type": "array", "minItems": 5, "maxItems": 5},
+    "authority_fence": {"type": "object"},
+    "conflict_register": {"type": "array", "minItems": 2, "maxItems": 2},
+    "next_blocking_cluster": {"type": "object"},
+    "external_post_commit_receipt_required": {"const": true}
+  }
+}
