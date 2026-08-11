@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r92/xvm-xbc-projection-contract-r1.schema.json",
+  "title": "Deeplus xVM XBC projection contract R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema", "schema", "status", "gap_id", "authority", "source_binding",
+    "container", "opcode_contract", "body_projection", "managed_root_projection",
+    "continuation_projection", "verification_pipeline", "execution_fence",
+    "diagnostic_contract", "governance"
+  ],
+  "properties": {
+    "$schema": {"const": "https://deeplus-lang.org/schema/r92/xvm-xbc-projection-contract-r1.schema.json"},
+    "schema": {"const": "deeplus.xvm-xbc-projection-contract/r1"},
+    "status": {"const": "STABLE_DESIGN_PRODUCT_NOT_RUN"},
+    "gap_id": {"const": "IR-XVM-P1-062"},
+    "authority": {"type": "object", "minProperties": 5},
+    "source_binding": {"type": "object", "minProperties": 7},
+    "container": {"type": "object", "minProperties": 20},
+    "opcode_contract": {"type": "object", "minProperties": 6},
+    "body_projection": {"type": "object", "minProperties": 8},
+    "managed_root_projection": {"type": "object", "minProperties": 6},
+    "continuation_projection": {"type": "object", "minProperties": 6},
+    "verification_pipeline": {"type": "array", "minItems": 11, "maxItems": 11, "uniqueItems": true},
+    "execution_fence": {"type": "object", "minProperties": 5},
+    "diagnostic_contract": {"type": "object", "minProperties": 2},
+    "governance": {"type": "object", "minProperties": 6}
+  }
+}

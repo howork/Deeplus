@@ -705,6 +705,37 @@ final value or failure, place/cleanup balance, provider replay identity,
 cancellation/suspension and actor/concur ordering. A design-static PASS in this
 package is not such a receipt.
 
+The xVM path consumes canonical XBC R1 under
+`spec/contracts/xvm-xbc-projection-r1.json`. XBC is a deterministic execution
+projection of one exact `Verified<DeeplusMirR1>`, never a second semantic IR.
+Its fixed 128-byte header binds version 1.0, the source MIR semantic digest, the
+XBC logical digest and the projection-contract digest. Ten fixed-order section
+payloads use RFC 8949 deterministic CBOR and are individually SHA-256 bound.
+The 48 current MIR operation kinds use opcodes `0x0000..0x002f` in exact
+machine-registry order; the 17 terminators use `0x8000..0x8010`. Every other
+opcode, registry-digest mismatch, noncanonical payload or unknown section is a
+pre-execution rejection, not a forward-compatible skip.
+
+XBC body slots are typed dense projection ordinals in disjoint value, place,
+linear-token, continuation-frame and static-table namespaces. They are not MIR
+identity, source serialization tag, ABI identity, byte offset, native address
+or register identity. Branches name block ordinals rather than byte offsets.
+The decoder reconstructs the logical MIR projection, verifies the exact source
+MIR digest, and reruns the applicable CFG, SSA, ownership, loan, cleanup,
+outcome, safepoint, root and continuation obligations before acquiring a
+runtime resource or executing an operation.
+
+Managed roots project bijectively to typed xVM locations while preserving the
+semantic `RootId`; static XBC contains no handle generation or referent address.
+Continuation slots bind the exact continuation-interface digest and preserve
+the owner/loan/cleanup/authority partition, root-rebind law and one
+resume-or-cancel winner. The module also binds the exact
+`deeplus-xvm-portable-r1` internal-runtime projection and typed helper table;
+host defaults and runtime semantic reselection are forbidden. The artifact
+receipt keeps MIR semantic identity, XBC logical identity and complete encoded
+byte identity in distinct digest domains. Emitter and interpreter product
+execution remain `NOT_RUN`.
+
 CLIF is backend-private. Its values, blocks, stack slots, signatures, function
 references, relocations, registers and native addresses never become HIR or MIR
 semantic identity. Module-local function/data IDs and symbol spellings are

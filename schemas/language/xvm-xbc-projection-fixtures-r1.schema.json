@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r92/xvm-xbc-projection-fixtures-r1.schema.json",
+  "title": "Deeplus xVM XBC projection decision fixtures R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "contract", "cases", "expected_counts", "governance"],
+  "properties": {
+    "schema": {"const": "deeplus.xvm-xbc-projection-fixtures/r1"},
+    "contract": {"const": "spec/contracts/xvm-xbc-projection-r1.json"},
+    "cases": {"type": "array", "minItems": 18, "maxItems": 18, "items": {"$ref": "#/$defs/case"}},
+    "expected_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "boundary", "reject"],
+      "properties": {"positive": {"const": 5}, "boundary": {"const": 5}, "reject": {"const": 8}}
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"}
+      }
+    }
+  },
+  "$defs": {
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "class", "scenario", "condition", "expected", "diagnostic_or_null"],
+      "properties": {
+        "case_id": {"type": "string", "pattern": "^R92-XBC-(POS|BND|NEG)-[0-9]{3}$"},
+        "class": {"enum": ["positive", "boundary", "reject"]},
+        "scenario": {"type": "string", "minLength": 1},
+        "condition": {"type": "string", "minLength": 1},
+        "expected": {"enum": ["ADMIT_STATIC_PROJECTION", "REJECT_BEFORE_EXECUTION"]},
+        "diagnostic_or_null": {"oneOf": [{"enum": ["XBC_CONTAINER_INVALID", "XBC_VERSION_OR_BINDING_UNSUPPORTED", "XBC_SECTION_CANONICALITY_INVALID", "XBC_INSTRUCTION_OR_CFG_INVALID", "XBC_RESPONSIBILITY_OR_ROOT_INVALID", "XBC_ARTIFACT_DIGEST_MISMATCH"]}, {"type": "null"}]}
+      }
+    }
+  }
+}

@@ -1315,6 +1315,12 @@
 | `WORD_COMMENT_NOT_CALL_LABEL` | `lexer` | `error` | `active` | A word comment is lossless trivia, not a named argument label or overload selector. |
 | `WORD_COMMENT_OPENER_PRIORITY_REQUIRED` | `design_static` | `note` | `seed` | The lexer recognizes a backtick word-comment opener at its declared priority; \`///\` is an ordinary \`//\` line comment. |
 | `WORD_COMMENT_WHITESPACE_FORBIDDEN_AFTER_BACKTICK` | `lexer` | `error` | `active` | Whitespace is not allowed immediately after a backtick word comment opener. |
+| `XBC_ARTIFACT_DIGEST_MISMATCH` | `verifier` | `error` | `active` | The XBC logical digest or complete encoded-byte digest does not match its artifact receipt. |
+| `XBC_CONTAINER_INVALID` | `verifier` | `error` | `active` | The XBC container header, bounds, reserved fields, or full layout is invalid. |
+| `XBC_INSTRUCTION_OR_CFG_INVALID` | `verifier` | `error` | `active` | An XBC opcode, typed slot reference, block edge, SSA relation, or terminator is invalid. |
+| `XBC_RESPONSIBILITY_OR_ROOT_INVALID` | `verifier` | `error` | `active` | The XBC ownership, cleanup, managed-root, continuation, or outcome projection is invalid. |
+| `XBC_SECTION_CANONICALITY_INVALID` | `verifier` | `error` | `active` | The XBC section universe, order, extent, digest, or deterministic-CBOR encoding is invalid. |
+| `XBC_VERSION_OR_BINDING_UNSUPPORTED` | `verifier` | `error` | `active` | The XBC version or one of its exact semantic/runtime bindings is unsupported. |
 | `YIELD_RESPONSE_BINDING_NOT_ALLOWED_IN_GENERATOR` | `checker` | `error` | `active` | Yield guard and response binding are not both allowed in the same yield form. |
 | `ZERO_BASED_INDEX_NOT_CURRENT` | `checker` | `error` | `active` | Index zero is outside a built-in default one-based sequence or NumericArray axis; use logical coordinate 1 for its first element. |
 | `ZERO_TO_ZERO_POWER_USES_COMPUTATIONAL_CONVENTION` | `checker` | `warning` | `active` | Infix zero to the zero power evaluates to one; use powChecked for an analytic indeterminate outcome. |

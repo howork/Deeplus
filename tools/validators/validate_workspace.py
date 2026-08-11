@@ -135,7 +135,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1508, "predicates": 293,
+    "features": 723, "diagnostics": 1514, "predicates": 293,
     "predicate_fixtures": 908, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
@@ -13136,6 +13136,16 @@ def main() -> int:
         "tests/fixtures/current/actor-sender-identity-v1.json",
         "tools/validators/validate_actor_sender_identity_v1.py",
         "tools/validators/run_actor_sender_identity_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_XVM_XBC_Projection_Closure_R1.md",
+        "schemas/language/xvm-xbc-module-r1.schema.json",
+        "schemas/language/xvm-xbc-projection-contract-r1.schema.json",
+        "schemas/language/xvm-xbc-projection-fixtures-r1.schema.json",
+        "schemas/language/xvm-xbc-projection-receipt-r1.schema.json",
+        "spec/contracts/xvm-xbc-projection-r1.json",
+        "spec/diagnostics/catalog/chunks/part-0040.json",
+        "tests/fixtures/current/xvm-xbc-projection-r1.json",
+        "tools/validators/validate_xvm_xbc_projection_r1.py",
+        "tools/validators/run_xvm_xbc_projection_r1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -14143,6 +14153,49 @@ def main() -> int:
         r91_mutation_process.returncode == 0,
         "R91_ACTOR_SENDER_IDENTITY_V1_MUTATIONS",
         r91_mutation_detail[-4000:],
+    )
+
+    r92_validator = root / "tools/validators/validate_xvm_xbc_projection_r1.py"
+    r92_process = subprocess.run(
+        [sys.executable, str(r92_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r92_detail = (
+        r92_process.stdout.strip()
+        if r92_process.returncode == 0
+        else r92_process.stderr.strip() or r92_process.stdout.strip()
+    )
+    check(
+        r92_process.returncode == 0,
+        "R92_XVM_XBC_PROJECTION_R1",
+        r92_detail[-4000:],
+    )
+
+    r92_mutation_runner = (
+        root / "tools/validators/run_xvm_xbc_projection_r1_mutation_tests.py"
+    )
+    r92_mutation_process = subprocess.run(
+        [sys.executable, str(r92_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r92_mutation_detail = (
+        r92_mutation_process.stdout.strip()
+        if r92_mutation_process.returncode == 0
+        else r92_mutation_process.stderr.strip()
+        or r92_mutation_process.stdout.strip()
+    )
+    check(
+        r92_mutation_process.returncode == 0,
+        "R92_XVM_XBC_PROJECTION_R1_MUTATIONS",
+        r92_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

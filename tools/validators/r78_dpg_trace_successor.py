@@ -9,17 +9,20 @@ from typing import Any
 REVISION = "r78-dpg-implementation-target-traceability-closure-r1"
 CANONICAL_BASELINE = "10e64f492f0529610673846139afcf0d95175663"
 LOCAL_PREDECESSOR = "7d4e6c48b9374bec34a60b970530174dd9b4e145"
-COUNTS = (3713, 4, 504, 0)
+COUNTS = (3714, 4, 503, 0)
 # R83 adds the exact OrdinaryCallSelectionV1 evidence locators.  The R84
 # RefinementR0V1 closure, R85 member-visibility omission closure, R86
 # strong-comparison coherence closure, R87 Trait auto-policy registry closure,
-# R88 SourceItemCommitmentV1, and R89 EnumBodyCommitmentV1 /
-# MatchFallbackBoundaryV1 then add their canonical artifact, feature,
-# predicate, diagnostic, and acceptance locators without changing the R78
-# target-cell partition. Historical validators
+# R88 SourceItemCommitmentV1, R89 EnumBodyCommitmentV1 /
+# MatchFallbackBoundaryV1, R90 actor transport allocation closure, R91
+# SenderId identity closure, and R92 XBC projection closure then add their
+# canonical artifact, feature, predicate, diagnostic, and acceptance locators.
+# R92 deliberately changes one XBC DYNAMIC_LOWERING cell from NOT_APPLICABLE
+# to BOUND_DIRECT; all other target-cell dispositions remain unchanged.
+# Historical validators
 # import this successor count only after first validating the complete current
 # trace through is_successor().
-EVIDENCE_COUNT = 4555
+EVIDENCE_COUNT = 4589
 GITHUB_PUBLICATION = "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR"
 
 

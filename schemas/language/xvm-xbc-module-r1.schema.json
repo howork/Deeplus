@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r92/xvm-xbc-module-r1.schema.json",
+  "title": "Deeplus xVM canonical XBC R1 decoded module",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "header",
+    "directory",
+    "module_descriptor",
+    "type_table",
+    "static_identity_table",
+    "responsibility_evidence_table",
+    "constant_table",
+    "closure_environment_plan_table",
+    "body_table",
+    "managed_memory_plan",
+    "continuation_interface",
+    "debug_provenance"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.xvm-xbc-module/r1"},
+    "header": {"$ref": "#/$defs/header"},
+    "directory": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {"$ref": "#/$defs/directoryEntry"}
+    },
+    "module_descriptor": {"$ref": "#/$defs/moduleDescriptor"},
+    "type_table": {"$ref": "#/$defs/denseRows"},
+    "static_identity_table": {"$ref": "#/$defs/denseRows"},
+    "responsibility_evidence_table": {"$ref": "#/$defs/denseRows"},
+    "constant_table": {"$ref": "#/$defs/denseRows"},
+    "closure_environment_plan_table": {"$ref": "#/$defs/denseRows"},
+    "body_table": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/body"}
+    },
+    "managed_memory_plan": {"$ref": "#/$defs/optionalProjection"},
+    "continuation_interface": {"$ref": "#/$defs/optionalProjection"},
+    "debug_provenance": {"$ref": "#/$defs/debugProvenance"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "u32": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+    "u64": {"type": "integer", "minimum": 0, "maximum": 18446744073709551615},
+    "sectionKind": {
+      "enum": [
+        "MODULE_DESCRIPTOR",
+        "TYPE_TABLE",
+        "STATIC_IDENTITY_TABLE",
+        "RESPONSIBILITY_EVIDENCE_TABLE",
+        "CONSTANT_TABLE",
+        "CLOSURE_ENVIRONMENT_PLAN_TABLE",
+        "BODY_TABLE",
+        "MANAGED_MEMORY_PLAN",
+        "CONTINUATION_INTERFACE",
+        "DEBUG_PROVENANCE"
+      ]
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["magic_hex", "major", "minor", "flags", "section_count", "directory_bytes", "payload_bytes", "source_mir_semantic_digest", "xbc_logical_digest", "contract_digest"],
+      "properties": {
+        "magic_hex": {"const": "4450584243000d0a"},
+        "major": {"const": 1},
+        "minor": {"const": 0},
+        "flags": {"const": 0},
+        "section_count": {"const": 10},
+        "directory_bytes": {"const": 560},
+        "payload_bytes": {"$ref": "#/$defs/u64"},
+        "source_mir_semantic_digest": {"$ref": "#/$defs/sha256"},
+        "xbc_logical_digest": {"$ref": "#/$defs/sha256"},
+        "contract_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "directoryEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "ordinal", "flags", "offset", "length", "payload_sha256"],
+      "properties": {
+        "kind": {"$ref": "#/$defs/sectionKind"},
+        "ordinal": {"type": "integer", "minimum": 0, "maximum": 9},
+        "flags": {"const": 0},
+        "offset": {"$ref": "#/$defs/u64"},
+        "length": {"$ref": "#/$defs/u64"},
+        "payload_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "moduleDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mir_schema_id", "mir_schema_digest", "mir_machine_registry_id", "mir_machine_registry_digest", "source_mir_semantic_digest", "feature_profile_id", "feature_profile_digest", "runtime_abi_id", "runtime_abi_digest", "runtime_projection_digest", "managed_memory_plan_digest_or_null", "continuation_interface_digest_or_null", "projection_capability_id"],
+      "properties": {
+        "mir_schema_id": {"const": "deeplus.mir/r1"},
+        "mir_schema_digest": {"$ref": "#/$defs/sha256"},
+        "mir_machine_registry_id": {"const": "deeplus.mir-machine-registry/r1"},
+        "mir_machine_registry_digest": {"$ref": "#/$defs/sha256"},
+        "source_mir_semantic_digest": {"$ref": "#/$defs/sha256"},
+        "feature_profile_id": {"type": "string", "minLength": 1},
+        "feature_profile_digest": {"$ref": "#/$defs/sha256"},
+        "runtime_abi_id": {"const": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1"},
+        "runtime_abi_digest": {"$ref": "#/$defs/sha256"},
+        "runtime_projection_digest": {"$ref": "#/$defs/sha256"},
+        "managed_memory_plan_digest_or_null": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "continuation_interface_digest_or_null": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "projection_capability_id": {"const": "PROJ-CAP-XVM-CANONICAL-XBC-R1"}
+      }
+    },
+    "denseRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "source_id", "entry_digest", "payload"],
+      "properties": {
+        "ordinal": {"$ref": "#/$defs/u32"},
+        "source_id": {"type": "string", "minLength": 1},
+        "entry_digest": {"$ref": "#/$defs/sha256"},
+        "payload": {"type": "object"}
+      }
+    },
+    "denseRows": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/denseRow"}
+    },
+    "slotRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "ordinal"],
+      "properties": {
+        "namespace": {"enum": ["TYPE", "STATIC_IDENTITY", "RESPONSIBILITY_EVIDENCE", "CONSTANT", "BODY", "BLOCK", "VALUE", "PLACE", "LINEAR_TOKEN", "CONTINUATION_FRAME_SLOT", "ROOT"]},
+        "ordinal": {"$ref": "#/$defs/u32"}
+      }
+    },
+    "instruction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "opcode", "operation_kind", "inputs", "outputs", "payload"],
+      "properties": {
+        "ordinal": {"$ref": "#/$defs/u32"},
+        "opcode": {"type": "integer", "minimum": 0, "maximum": 47},
+        "operation_kind": {"type": "string", "minLength": 1},
+        "inputs": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}},
+        "outputs": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}},
+        "payload": {"type": "object"}
+      }
+    },
+    "successor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["block_ordinal", "arguments"],
+      "properties": {
+        "block_ordinal": {"$ref": "#/$defs/u32"},
+        "arguments": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}}
+      }
+    },
+    "terminator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opcode", "terminator_kind", "inputs", "successors", "payload"],
+      "properties": {
+        "opcode": {"type": "integer", "minimum": 32768, "maximum": 32784},
+        "terminator_kind": {"type": "string", "minLength": 1},
+        "inputs": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}},
+        "successors": {"type": "array", "items": {"$ref": "#/$defs/successor"}},
+        "payload": {"type": "object"}
+      }
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "source_block_id", "parameter_slots", "instructions", "terminator"],
+      "properties": {
+        "ordinal": {"$ref": "#/$defs/u32"},
+        "source_block_id": {"type": "string", "minLength": 1},
+        "parameter_slots": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}},
+        "instructions": {"type": "array", "items": {"$ref": "#/$defs/instruction"}},
+        "terminator": {"$ref": "#/$defs/terminator"}
+      }
+    },
+    "body": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ordinal", "source_body_id", "entry_block_ordinal", "value_slots", "place_slots", "linear_token_slots", "continuation_frame_slots", "blocks", "body_projection_digest"],
+      "properties": {
+        "ordinal": {"$ref": "#/$defs/u32"},
+        "source_body_id": {"type": "string", "minLength": 1},
+        "entry_block_ordinal": {"$ref": "#/$defs/u32"},
+        "value_slots": {"$ref": "#/$defs/denseRows"},
+        "place_slots": {"$ref": "#/$defs/denseRows"},
+        "linear_token_slots": {"$ref": "#/$defs/denseRows"},
+        "continuation_frame_slots": {"$ref": "#/$defs/denseRows"},
+        "blocks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/block"}},
+        "body_projection_digest": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "optionalProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present", "semantic_digest_or_null", "payload"],
+      "properties": {
+        "present": {"type": "boolean"},
+        "semantic_digest_or_null": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "payload": {"oneOf": [{"type": "object"}, {"type": "null"}]}
+      }
+    },
+    "debugProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_origin_rows", "path_is_semantic_identity", "provenance_digest"],
+      "properties": {
+        "source_origin_rows": {"type": "array", "items": {"$ref": "#/$defs/denseRow"}},
+        "path_is_semantic_identity": {"const": false},
+        "provenance_digest": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "x-deeplus-cross-field-contract": {
+    "directory": "exact section order, ordinal 0..9, contiguous offsets from byte 688, no overlap/gap/trailing bytes, exact payload digests",
+    "opcodes": "operation opcode equals exact machine-registry ordinal 0..47; terminator opcode equals 32768 plus exact ordinal 0..16",
+    "dense_ordinals": "every namespace is contiguous from zero and follows the exact verified-MIR table order",
+    "payloads": "every instruction and terminator payload is the exact bound machine-registry payload with typed ordinal references",
+    "verification": "reconstruct exact source MIR semantic digest and rerun applicable MIR verifier obligations before execution"
+  }
+}
