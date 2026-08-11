@@ -135,7 +135,7 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1494, "predicates": 286,
+    "features": 723, "diagnostics": 1496, "predicates": 286,
     "predicate_fixtures": 880, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
@@ -13063,6 +13063,13 @@ def main() -> int:
         "schemas/language/actor-cranelift-projection-dynamic-evidence-r1.schema.json",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Member_Visibility_Omission_Closure_R1.md",
+        "schemas/language/member-visibility-omission-v1.schema.json",
+        "schemas/language/member-visibility-resolution-v1.schema.json",
+        "spec/contracts/member-visibility-omission-v1.json",
+        "tests/fixtures/current/member-visibility-omission-v1.json",
+        "tools/validators/validate_member_visibility_omission_v1.py",
+        "tools/validators/run_member_visibility_omission_v1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -13751,6 +13758,52 @@ def main() -> int:
         r84_mutation_process.returncode == 0,
         "R84_REFINEMENT_R0_V1_MUTATIONS",
         r84_mutation_detail[-4000:],
+    )
+
+    r85_validator = (
+        root / "tools/validators/validate_member_visibility_omission_v1.py"
+    )
+    r85_process = subprocess.run(
+        [sys.executable, str(r85_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r85_detail = (
+        r85_process.stdout.strip()
+        if r85_process.returncode == 0
+        else r85_process.stderr.strip() or r85_process.stdout.strip()
+    )
+    check(
+        r85_process.returncode == 0,
+        "R85_MEMBER_VISIBILITY_OMISSION_V1",
+        r85_detail[-4000:],
+    )
+
+    r85_mutation_runner = (
+        root
+        / "tools/validators/run_member_visibility_omission_v1_mutation_tests.py"
+    )
+    r85_mutation_process = subprocess.run(
+        [sys.executable, str(r85_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r85_mutation_detail = (
+        r85_mutation_process.stdout.strip()
+        if r85_mutation_process.returncode == 0
+        else r85_mutation_process.stderr.strip()
+        or r85_mutation_process.stdout.strip()
+    )
+    check(
+        r85_mutation_process.returncode == 0,
+        "R85_MEMBER_VISIBILITY_OMISSION_V1_MUTATIONS",
+        r85_mutation_detail[-4000:],
     )
 
     r76_mutation_runner = (

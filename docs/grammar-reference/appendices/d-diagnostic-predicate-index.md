@@ -660,6 +660,8 @@
 | `MEMBER_DISPATCH_MARKER_ORDER_INVALID` | `checker` | `error` | `active` | Member dispatch markers must be ordered as *+. |
 | `MEMBER_EXTENSION_COLLISION` | `checker` | `error` | `active` | A member slot and an active extension candidate both apply to the same message call shape. |
 | `MEMBER_NOT_FOUND` | `checker` | `error` | `active` | No member, extension, or witness selector is available in the active lookup domain. |
+| `MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING` | `checker` | `error` | `active` | The omitted member visibility requires a resolution anchor that was not bound. |
+| `MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID` | `checker` | `error` | `active` | The member visibility omission is not admitted for this declaration owner and parent context. |
 | `MIR_LOAN_UNBALANCED` | `checker` | `error` | `active` | A MIR loan activation is not closed exactly once on every reachable path. |
 | `MISSING_EXPLICIT_RETURN` | `checker` | `error` | `active` | A normal non-Unit named-function path must return a value explicitly; Unit fallthrough is canonical. |
 | `MIXED_STRICT_AND_SEQUENTIAL_BOOLEAN_REQUIRES_PARENTHESES` | `parser` | `error` | `active` | Mixing \`and\` with \`and then\` requires parentheses. |
@@ -1457,7 +1459,7 @@
 | `MeasureUnitWitnessAdmitted` | MeasureUnitWitnessAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MemberExtensionCollisionPolicyAdmitted` | MemberExtensionCollisionPolicyAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MemberExtensionCollisionRejected` | MemberExtensionCollisionRejected | Reject ordinary member/extension collisions before within-domain ranking. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `MemberVisibilityAdmitted` | MemberVisibilityAdmitted | R58 exact member-visibility surface, omission, lattice, and original-slot override admission; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `MemberVisibilityAdmitted` | MemberVisibilityAdmitted | Owner-bound resolution of the exact member-visibility surface and OMITTED AST state before canonical HIR; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `MethodExtensionResolutionAdmitted` | method/extension message resolution | Preserve method/extension domains and defer selection. | `DESIGN_STATIC_NOT_RUN` |
 | `ModuleInterfaceDigestVerified` | module interface and dependency-receipt digest verification | Verify that each dependency receipt binds the exact normalized provider module interface without treating private implementation bytes as interface identity. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ModuleItemSkeletonSetAdmitted` | module item-skeleton merge | Merge all source contributions of one ModuleId into one conflict-free declaration skeleton set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |

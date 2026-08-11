@@ -262,12 +262,26 @@ introducing another spelling: `MemberFunctionDecl`,
 `FieldDecl`, `TypeSideFieldDecl`, `AccessorDecl`, `ForwardDecl`,
 `TraitMethodDecl`, `ConformanceMethodDecl`, `ExtensionSetFunctionDecl`,
 `ActorOnDecl`, `ActorRequestDecl`, `BitfieldNamedSlot`, and `FlagNamedSlot`.
-The optional grammar term is a source-preservation boundary, not a defaulting
-rule. When the sigil is absent, CST and frontend normalization preserve
-`MemberVisibility = OMITTED` (serialized as `null`). R58 assigns no global
-member default; the immediate parent-owner contract must either resolve the
-omission or reject it. An unresolved omission never participates in the
-`- < # < +` comparison.
+The optional grammar term is a source-preservation boundary, not a global
+defaulting rule. When the sigil is absent, CST and AST normalization preserve
+`MemberVisibility = OMITTED` (serialized as `null`). The owner-bound
+`MemberVisibilityOmissionV1` contract closes `IR-VIS-P1-057` before canonical
+HIR sealing. A newly declared member slot defaults to `PRIVATE`; this applies
+to constructors, promoted fields, ordinary and type-side fields, each accessor
+arm, each generated forwarding slot, new methods, extension-set functions, and
+bitfield/flag slots. An omitted override inherits its original slot, and an
+omitted Trait fulfillment inherits its selected requirement. A type-side
+associated-function fulfillment inherits the associated requirement domain.
+Missing inheritance or requirement evidence is rejected rather than replaced
+with a private default.
+
+An omitted standalone actor operation derives the enclosing Actor transport
+visibility. Inside a direct ActorProtocol conformance it derives exactly
+`meet(ActorDecl.visibility, ActorProtocolDecl.visibility)`; handlers do not
+acquire an independent visibility axis. Thus there is still no single global
+member default. The checker must seal one concrete effective domain and its
+provenance, or reject the declaration. `OMITTED` itself never enters the
+`- < # < +` comparison, canonical HIR, or module API residue.
 
 An inherited slot retains its original declaring-nominal access anchor through
 every override. After the parent-owner contract has resolved any omission, an
@@ -280,12 +294,14 @@ checked independently against the requirement and retains the existing
 Diagnostic precedence is owner-first and deterministic. A top-level visibility
 word on a member callable, or the unsupported word `protected`, is rejected
 first with `CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN`; `public def` is the canonical
-wrong-word example. No override or Trait visibility comparison is attempted for
-that malformed owner. For a callable with a valid member sigil,
-inherited-slot narrowing is diagnosed next with
-`OVERRIDE_VISIBILITY_CANNOT_NARROW`, before a later Trait requirement mismatch.
-A well-formed, non-narrowing witness that still fails its requirement uses
-`TRAIT_REQUIREMENT_VISIBILITY_MISMATCH`.
+wrong-word example. An invalid owner/context pair then emits
+`MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID`, and a required but missing
+original slot, Trait requirement, Actor, or ActorProtocol anchor emits
+`MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING`. Only a well-formed resolved owner
+continues to explicit override narrowing
+(`OVERRIDE_VISIBILITY_CANNOT_NARROW`), Trait requirement comparison
+(`TRAIT_REQUIREMENT_VISIBILITY_MISMATCH`), and reference-site access
+(`REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION`), in that order.
 
 Member visibility is entirely static. It adds no runtime member search,
 visibility check, registry entry, MIR operation, xVM instruction, or backend
@@ -3008,6 +3024,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `MEMBER_DISPATCH_MARKER_ORDER_INVALID` [error]: Member dispatch markers must be ordered as *+.
 - `MEMBER_EXTENSION_COLLISION` [error]: A member slot and an active extension candidate both apply to the same message call shape.
 - `MEMBER_NOT_FOUND` [error]: No member, extension, or witness selector is available in the active lookup domain.
+- `MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING` [error]: Omitted member visibility requires an original slot, Trait requirement, Actor, or ActorProtocol resolution anchor that was not bound.
+- `MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID` [error]: Omitted member visibility is not admitted for this declaration owner and parent context.
 - `MISSING_EXPLICIT_RETURN` [error]: A normal non-Unit named-function path must return a value explicitly; Unit fallthrough is canonical.
 - `MIXED_UNIT_ADDITION_REQUIRES_DISPLAY_UNIT_DECISION` [error]: Mixed-unit addition requires an explicit display-unit decision via `asUnit` or an enabled context anchor.
 - `MODULE_IS_NOT_A_VALUE` [error]: A module/static path is not a runtime value.

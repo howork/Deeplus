@@ -97,5 +97,69 @@
     "stage": "checker",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "member_visibility_sigil_surface_phase_a",
+      "member_visibility_sigils_only"
+    ],
+    "fixit_hint": "move the declaration to an owner that admits it or provide the member form required by that owner",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not guess a private default, rewrite the owner, or create HIR residue for an invalid owner/context pair.",
+    "message": "The member visibility omission is not admitted for this declaration owner and parent context.",
+    "notes": "MemberVisibilityOmissionV1 rank 2. Product parser and checker execution remain NOT_RUN.",
+    "primary_source": "spec/contracts/member-visibility-omission-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "member_visibility_hierarchy_protected"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "member_visibility_sigil_surface_phase_a",
+      "member_visibility_sigils_only"
+    ],
+    "fixit_hint": "bind the exact original slot, Trait requirement, Actor, or ActorProtocol responsibility before resolving the omission",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not synthesize a private fallback or infer an anchor from source order or structural similarity.",
+    "message": "The omitted member visibility requires a resolution anchor that was not bound.",
+    "notes": "MemberVisibilityOmissionV1 rank 3. Rejection creates no canonical HIR or API residue; product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/member-visibility-omission-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "member_visibility_hierarchy_protected"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   }
 ]

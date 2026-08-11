@@ -374,9 +374,33 @@ MemberVisibilitySurface ::= EXPLICIT_MINUS | EXPLICIT_HASH | EXPLICIT_PLUS | OMI
 OMITTED                  ::= null
 ```
 
-`OMITTED` is not an element of the three-point order. R58 supplies no global
-default. The immediate parent-owner contract must preserve, resolve, or reject
-it before a judgment that needs a concrete member domain.
+`OMITTED` is not an element of the three-point order. R58 remains the immutable
+surface-preservation predecessor; `MemberVisibilityOmissionV1` closes
+`IR-VIS-P1-057` with the following owner-bound static judgment before typed HIR:
+
+```text
+ResolveMemberVisibility(owner, parent_context, surface, anchors)
+    -> EffectiveMemberDomain | diagnostic
+```
+
+New member slots owned by `ConstructorDecl`, `StoredParameter`, `FieldDecl`,
+`TypeSideFieldDecl`, each `AccessorDecl`, each generated `ForwardDecl` slot,
+`ExtensionSetFunctionDecl`, `BitfieldNamedSlot`, and `FlagNamedSlot` resolve an
+omission to `PRIVATE`. A new `MemberFunctionDecl`, nominal/extension
+`TypeSideMemberFunctionDecl`, or new `TraitMethodDecl` does the same. An
+override inherits the exact original slot and anchor; a conformance method
+inherits the exact selected Trait requirement; and an associated-function
+fulfillment inherits its Trait-associated requirement domain. A required
+anchor that is absent is an error, never permission to fall back to private.
+
+`ActorOnDecl` and `ActorRequestDecl` use the enclosing Actor transport domain.
+A standalone operation derives `ActorDecl.visibility`; a direct protocol
+fulfillment derives `meet(ActorDecl.visibility,
+ActorProtocolDecl.visibility)`. The transport lattice is
+`private < common < public` and remains distinct from `- < # < +`.
+Canonical HIR therefore contains one non-null effective domain plus its
+resolution provenance. Unresolved omission count in typed HIR and module API
+residue is exactly zero.
 
 For a concrete visibility `v`, static access is admitted exactly when both
 `OwnerReachable(owner, site)` and `MemberDomainAdmits(v, anchor, site)` hold.
@@ -398,12 +422,15 @@ witness does not satisfy the requirement.
 
 Primary diagnostics follow declaration admission order. On a member callable,
 the wrong word `public`, `common`, `private`, or `protected` emits
-`CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` before any slot comparison. With a
-valid sigil, override narrowing emits `OVERRIDE_VISIBILITY_CANNOT_NARROW`
-before a later Trait requirement visibility comparison. The visibility proof
-is compile-time metadata only: it introduces no runtime lookup, check, registry,
-MIR operation, xVM instruction, or backend instruction. A rejected declaration
-or access produces no HIR residue.
+`CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` before any slot comparison. Invalid
+owner/context and missing-anchor failures then emit
+`MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID` and
+`MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING`. With a valid resolved owner,
+override narrowing emits `OVERRIDE_VISIBILITY_CANNOT_NARROW` before a later
+Trait requirement visibility comparison. The visibility proof is compile-time
+metadata only: it introduces no runtime lookup, check, registry, MIR operation,
+xVM instruction, or backend instruction. A rejected declaration or access
+produces no HIR residue.
 
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
 

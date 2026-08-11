@@ -2,6 +2,13 @@
 
 Deeplus MIR is the canonical semantic authority. Rust frontend structures, xVM bytecode, Cranelift IR (CLIF), AOT code, and Cranelift JITModule code are projections that must preserve MIR-observable behavior. Product execution is `NOT_RUN`.
 
+Member visibility is sealed before MIR. `MemberVisibilityOmissionV1` preserves
+an absent sigil only through CST and AST, resolves it after exact owner and slot
+binding, and requires a non-null effective domain in typed HIR. MIR receives no
+`OMITTED` state, performs no visibility lookup or runtime access check, and adds
+no operation for `IR-VIS-P1-057`. xVM and Cranelift may not reinterpret an
+owner default, inherited slot, Trait requirement, or actor transport domain.
+
 ## 1. Machine state and observation
 
 A step state contains the current MIR frame, ordered operand stack, places and ownership states, cleanup-region stack, effect/error continuation, execution/concur/actor state, provider bindings, and source provenance. Observable events are ordered result/failure, I/O or authority events, message enqueue/dequeue, run spawn/join, suspension/resume, cancellation, cleanup and provider observation. Backend-private allocation and instruction selection are not observations.

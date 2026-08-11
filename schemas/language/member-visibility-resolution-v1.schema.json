@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/member-visibility-resolution-v1.schema.json",
+  "title": "Deeplus MemberVisibilityResolutionV1 descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "owner_production",
+    "parent_context",
+    "surface_state",
+    "explicit_visibility_or_null",
+    "original_slot_anchor_id_or_null",
+    "original_slot_visibility_or_null",
+    "requirement_id_or_null",
+    "requirement_visibility_or_null",
+    "actor_visibility_or_null",
+    "actor_protocol_visibility_or_null"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.member-visibility-resolution/v1"},
+    "owner_production": {
+      "enum": [
+        "MemberFunctionDecl",
+        "TypeSideMemberFunctionDecl",
+        "ConstructorDecl",
+        "StoredParameter",
+        "FieldDecl",
+        "TypeSideFieldDecl",
+        "AccessorDecl",
+        "ForwardDecl",
+        "TraitMethodDecl",
+        "ConformanceMethodDecl",
+        "ExtensionSetFunctionDecl",
+        "ActorOnDecl",
+        "ActorRequestDecl",
+        "BitfieldNamedSlot",
+        "FlagNamedSlot"
+      ]
+    },
+    "parent_context": {
+      "enum": [
+        "NEW_MEMBER",
+        "OVERRIDE_SLOT",
+        "NOMINAL_TYPE_SIDE",
+        "EXTENSION_SET_TYPE_SIDE",
+        "CONFORMANCE_ASSOCIATED_FUNCTION",
+        "TRAIT_NEW_MEMBER",
+        "TRAIT_OVERRIDE_SLOT",
+        "CONFORMANCE_REQUIREMENT",
+        "ACTOR_STANDALONE_OPERATION",
+        "ACTOR_PROTOCOL_CONFORMANCE_OPERATION",
+        "BITFIELD_LAYOUT"
+      ]
+    },
+    "surface_state": {
+      "enum": ["OMITTED", "EXPLICIT_MINUS", "EXPLICIT_HASH", "EXPLICIT_PLUS"]
+    },
+    "explicit_visibility_or_null": {
+      "oneOf": [
+        {"enum": ["PRIVATE", "HIERARCHY_PROTECTED", "PUBLIC"]},
+        {"type": "null"}
+      ]
+    },
+    "original_slot_anchor_id_or_null": {
+      "oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]
+    },
+    "original_slot_visibility_or_null": {
+      "oneOf": [
+        {"enum": ["PRIVATE", "HIERARCHY_PROTECTED", "PUBLIC"]},
+        {"type": "null"}
+      ]
+    },
+    "requirement_id_or_null": {
+      "oneOf": [{"type": "string", "minLength": 1}, {"type": "null"}]
+    },
+    "requirement_visibility_or_null": {
+      "oneOf": [
+        {"enum": ["PRIVATE", "HIERARCHY_PROTECTED", "PUBLIC", "TRAIT_ASSOCIATED_REQUIREMENT_DOMAIN"]},
+        {"type": "null"}
+      ]
+    },
+    "actor_visibility_or_null": {
+      "oneOf": [{"enum": ["private", "common", "public"]}, {"type": "null"}]
+    },
+    "actor_protocol_visibility_or_null": {
+      "oneOf": [{"enum": ["private", "common", "public"]}, {"type": "null"}]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"surface_state": {"const": "OMITTED"}}},
+      "then": {"properties": {"explicit_visibility_or_null": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"surface_state": {"const": "EXPLICIT_MINUS"}}},
+      "then": {"properties": {"explicit_visibility_or_null": {"const": "PRIVATE"}}}
+    },
+    {
+      "if": {"properties": {"surface_state": {"const": "EXPLICIT_HASH"}}},
+      "then": {"properties": {"explicit_visibility_or_null": {"const": "HIERARCHY_PROTECTED"}}}
+    },
+    {
+      "if": {"properties": {"surface_state": {"const": "EXPLICIT_PLUS"}}},
+      "then": {"properties": {"explicit_visibility_or_null": {"const": "PUBLIC"}}}
+    }
+  ]
+}
