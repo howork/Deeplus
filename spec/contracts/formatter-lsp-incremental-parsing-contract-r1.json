@@ -35,15 +35,31 @@
       "sha256": "9f8b60146298a930f7fe3f63408a8e89c8ac57e540595902e954d66852792133"
     },
     "authority_digest_set": [
-      {"axis": "STRUCTURAL_DPG", "path": "spec/grammar/deeplus.dpg", "sha256": "fefec3a3c8425d4911c8a162fd7f51ee4a63c946f32bcbba0face055a1c9863f"},
-      {"axis": "PARSER_CONTEXT", "path": "spec/grammar/deeplus.parser-contexts.json", "sha256": "9464f078bfac5429bc71339ed9ea52c68e18dc588fd65ddfb541ed0a8efbefaf"},
-      {"axis": "PRATT", "path": "spec/contracts/closed-pratt-parse-goal-contract-r1.json", "sha256": "143bfc0248ee473d7d6855cf1145a401ef931fa71a6037049c1e48b5189ccd4b"},
-      {"axis": "SCANNER", "path": "spec/contracts/complete-token-lexical-goal-contract-r1.json", "sha256": "ad75bdc19e4dcdeed68c77a3db046cf7d1fa57480696a9d60e15b769ef801d46"}
+      {
+        "axis": "STRUCTURAL_DPG",
+        "path": "spec/grammar/deeplus.dpg",
+        "sha256": "fefec3a3c8425d4911c8a162fd7f51ee4a63c946f32bcbba0face055a1c9863f"
+      },
+      {
+        "axis": "PARSER_CONTEXT",
+        "path": "spec/grammar/deeplus.parser-contexts.json",
+        "sha256": "91c6fe48284dfdc810a02680ac980bcd1daf4edb19667b0ef8e33dc88bd5b409"
+      },
+      {
+        "axis": "PRATT",
+        "path": "spec/contracts/closed-pratt-parse-goal-contract-r1.json",
+        "sha256": "e12b0558b20dbcbaf1eb1665b7fd1d7da554afcf3c694a21ebd43c65ad898308"
+      },
+      {
+        "axis": "SCANNER",
+        "path": "spec/contracts/complete-token-lexical-goal-contract-r1.json",
+        "sha256": "cb16f71b5ea188bc45293afdf28add542b86540a6986bdf0a15583172e5ef3f3"
+      }
     ],
     "snapshot_component": "ParserAuthorityDigestSetR1",
     "surface_census": {
       "path": "spec/grammar/deeplus.ebnf",
-      "sha256": "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2",
+      "sha256": "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84",
       "semantic_authority": false,
       "role": "FORMATTER_CST_AST_DISPOSITION_CROSSWALK_ONLY"
     },
@@ -276,9 +292,9 @@
       "CstContentId == CstOccurrenceId",
       "CstOccurrenceId == IncrementalNodeHandleId",
       "tooling identity == DeclId or HirId",
-      "source byte offset alone == stable node identity"
-      ,"AstNodeId == NormalizedAstSemanticDigest"
-      ,"tooling identity participates in R23 Actor or binding identity preimage"
+      "source byte offset alone == stable node identity",
+      "AstNodeId == NormalizedAstSemanticDigest",
+      "tooling identity participates in R23 Actor or binding identity preimage"
     ]
   },
   "incremental_reparse": {
@@ -313,9 +329,9 @@
       "old or new recovery taint crosses the owner boundary",
       "splice partition or unchanged-sibling proof failed",
       "node reuse is ambiguous",
-      "selected external entry lacks one parent splice slot"
-      ,"parser authority digest set, source role, activation profile, scanner goal, or frontend contract digest changed"
-      ,"boundary trivia or a contextual newline is owned outside the selected subtree"
+      "selected external entry lacks one parent splice slot",
+      "parser authority digest set, source role, activation profile, scanner goal, or frontend contract digest changed",
+      "boundary trivia or a contextual newline is owned outside the selected subtree"
     ],
     "ascent": "move to the nearest eligible parent and retry exactly once per ancestor",
     "root_fallback": "reparse the selected source root; if it remains tainted, return analysis CST and no canonical AST seal",
@@ -384,11 +400,11 @@
     "INCREMENTAL_SPLICE_GATE_FAILED",
     "INCREMENTAL_REPARSE_ASCENDED",
     "INCREMENTAL_NODE_REUSE_AMBIGUOUS",
-    "INCREMENTAL_STALE_DOCUMENT_REVISION"
-    ,"TOOLING_POSITION_INVALID"
-    ,"TOOLING_STALE_ACTION"
-    ,"INCREMENTAL_DIAGNOSTIC_PARITY_FAILED"
-    ,"TOOLING_SNAPSHOT_LEASE_VIOLATION"
+    "INCREMENTAL_STALE_DOCUMENT_REVISION",
+    "TOOLING_POSITION_INVALID",
+    "TOOLING_STALE_ACTION",
+    "INCREMENTAL_DIAGNOSTIC_PARITY_FAILED",
+    "TOOLING_SNAPSHOT_LEASE_VIOLATION"
   ],
   "diagnostic_policy": {
     "reason_codes_are_final_registry_ids": false,

@@ -1,0 +1,120 @@
+{
+  "schema": "deeplus.parser-scanner-pratt-authority-r99-fixture/r1",
+  "contract": "spec/contracts/parser-scanner-pratt-authority-r99.json",
+  "cases": [
+    {
+      "id": "R99-POS-SEMICOLON-001",
+      "kind": "POSITIVE",
+      "source": "#[1;2]",
+      "expected": "SEMICOLON_TOKEN_PRESERVED"
+    },
+    {
+      "id": "R99-BOUND-SEMICOLON-001",
+      "kind": "BOUNDARY",
+      "source": "#2,2[1,2;3,4;]",
+      "expected": "TWO_SEMICOLON_TOKENS",
+      "expected_physical_token_count": 2,
+      "expected_cst_roles": [
+        "INTERNAL_ROW_SEPARATOR",
+        "TRAILING_ROW_BOUNDARY"
+      ]
+    },
+    {
+      "id": "R99-POS-ADAPTER-001",
+      "kind": "POSITIVE",
+      "source": "13",
+      "expected": "ONE_INTEGER_LITERAL_MATCHES_NUMERIC_LITERAL_WITHOUT_DUPLICATE_TOKEN"
+    },
+    {
+      "id": "R99-BOUND-ADAPTER-001",
+      "kind": "BOUNDARY",
+      "source": "#! /usr/bin/env deeplus",
+      "expected": "BYTE_ZERO_SHEBANG_TRIVIA_MATCHES_SCRIPT_SOURCE_PREAMBLE_ONLY"
+    },
+    {
+      "id": "R99-POS-RANGE-001",
+      "kind": "POSITIVE",
+      "source": "1..10:2",
+      "expected": "RangeExpr(inclusive,start=1,end=10,step=2)"
+    },
+    {
+      "id": "R99-POS-RANGE-002",
+      "kind": "POSITIVE",
+      "source": "1...",
+      "expected": "RangeExpr(one_sided,start=1,end=absent,step=default)"
+    },
+    {
+      "id": "R99-BOUND-RANGE-001",
+      "kind": "BOUNDARY",
+      "source": "10..1:-1",
+      "expected": "RangeExpr(inclusive,start=10,end=1,step=-1)"
+    },
+    {
+      "id": "R99-REJECT-RANGE-001",
+      "kind": "REJECT",
+      "source": "1...4",
+      "expected": "REJECT_TRAILING_EXPRESSION_AFTER_ONE_SIDED_RANGE"
+    },
+    {
+      "id": "R99-REJECT-RANGE-002",
+      "kind": "REJECT",
+      "source": "1..10:0",
+      "expected": "PARSE_RANGE_THEN_RANGE_STEP_ZERO"
+    },
+    {
+      "id": "R99-POS-MEASURE-001",
+      "kind": "POSITIVE",
+      "source": "13[cm]",
+      "expected": "MeasureLiteralExpr"
+    },
+    {
+      "id": "R99-BOUND-MEASURE-001",
+      "kind": "BOUNDARY",
+      "source": "value[cm]",
+      "expected": "IndexExpr"
+    },
+    {
+      "id": "R99-REJECT-MEASURE-001",
+      "kind": "REJECT",
+      "source": "13 [cm]",
+      "expected": "UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED"
+    },
+    {
+      "id": "R99-BOUND-MEASURE-002",
+      "kind": "BOUNDARY",
+      "source": "13[0]",
+      "expected": "IndexExpr_AFTER_ATTACHED_UNITEXPR_PROBE_FAILURE"
+    },
+    {
+      "id": "R99-BOUND-MEASURE-003",
+      "kind": "BOUNDARY",
+      "source": "13 [0]",
+      "expected": "IndexExpr_AFTER_SEPARATED_UNITEXPR_PROBE_FAILURE"
+    },
+    {
+      "id": "R99-POS-UNARY-001",
+      "kind": "POSITIVE",
+      "source": "-2 ^ 2",
+      "expected": "NumericSignExpr(PowerExpr(2,2)); intrinsic lookup count 0"
+    },
+    {
+      "id": "R99-POS-UNARY-002",
+      "kind": "POSITIVE",
+      "source": "-nominal",
+      "expected": "one exact UnaryMinus witness after parsing"
+    },
+    {
+      "id": "R99-REJECT-UNARY-001",
+      "kind": "REJECT",
+      "source": "-missingWitness",
+      "expected": "FIXED_OPERATOR_CONFORMANCE_NOT_FOUND"
+    }
+  ],
+  "counts": {
+    "total": 17,
+    "positive": 7,
+    "boundary": 6,
+    "reject": 4
+  },
+  "product_execution": "NOT_RUN"
+}

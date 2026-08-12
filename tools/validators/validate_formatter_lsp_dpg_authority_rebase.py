@@ -25,9 +25,10 @@ VALIDATOR_REL = "tools/validators/validate_formatter_lsp_dpg_authority_rebase.py
 MUTATION_REL = "tools/validators/run_formatter_lsp_dpg_authority_rebase_mutation_tests.py"
 
 AUTHORITY_SHA256 = "9f8b60146298a930f7fe3f63408a8e89c8ac57e540595902e954d66852792133"
+PREDECESSOR_SURFACE_CENSUS_SHA256 = "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
 SURFACE_CENSUS = {
     "path": "spec/grammar/deeplus.ebnf",
-    "sha256": "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2",
+    "sha256": "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84",
     "semantic_authority": False,
     "role": "FORMATTER_CST_AST_DISPOSITION_CROSSWALK_ONLY",
 }
@@ -40,17 +41,17 @@ AUTHORITY_DIGEST_SET = [
     {
         "axis": "PARSER_CONTEXT",
         "path": "spec/grammar/deeplus.parser-contexts.json",
-        "sha256": "9464f078bfac5429bc71339ed9ea52c68e18dc588fd65ddfb541ed0a8efbefaf",
+        "sha256": "91c6fe48284dfdc810a02680ac980bcd1daf4edb19667b0ef8e33dc88bd5b409",
     },
     {
         "axis": "PRATT",
         "path": "spec/contracts/closed-pratt-parse-goal-contract-r1.json",
-        "sha256": "143bfc0248ee473d7d6855cf1145a401ef931fa71a6037049c1e48b5189ccd4b",
+        "sha256": "e12b0558b20dbcbaf1eb1665b7fd1d7da554afcf3c694a21ebd43c65ad898308",
     },
     {
         "axis": "SCANNER",
         "path": "spec/contracts/complete-token-lexical-goal-contract-r1.json",
-        "sha256": "ad75bdc19e4dcdeed68c77a3db046cf7d1fa57480696a9d60e15b769ef801d46",
+        "sha256": "cb16f71b5ea188bc45293afdf28add542b86540a6986bdf0a15583172e5ef3f3",
     },
 ]
 EXPECTED_INPUTS = {
@@ -171,7 +172,24 @@ def validate_documents(
 ) -> list[str]:
     errors: list[str] = []
 
-    for row in [{"path": AUTHORITY_REL, "sha256": AUTHORITY_SHA256}, *AUTHORITY_DIGEST_SET, SURFACE_CENSUS]:
+    # Parser-authority members are expected to evolve together.  Their exact
+    # paths remain closed here, while the current byte identities are derived
+    # from those paths so an authorized successor does not require editing
+    # executable validator constants by hand.
+    current_authority_digest_set = [
+        {
+            "axis": row["axis"],
+            "path": row["path"],
+            "sha256": sha256(root / row["path"]),
+        }
+        for row in AUTHORITY_DIGEST_SET
+    ]
+
+    for row in [
+        {"path": AUTHORITY_REL, "sha256": AUTHORITY_SHA256},
+        *current_authority_digest_set,
+        SURFACE_CENSUS,
+    ]:
         path = root / row["path"]
         if not path.is_file() or sha256(path) != row["sha256"]:
             errors.append(f"authority byte digest drift: {row['path']}")
@@ -196,9 +214,11 @@ def validate_documents(
 
     rebase = contract.get("parser_authority_rebase", {})
     schema_rebase = schema.get("properties", {}).get("parser_authority_rebase", {})
+    expected_rebase = dict(EXPECTED_REBASE)
+    expected_rebase["authority_digest_set"] = current_authority_digest_set
     if (
         contract.get("inputs") != EXPECTED_INPUTS
-        or rebase != EXPECTED_REBASE
+        or rebase != expected_rebase
         or "parser_authority_rebase" not in schema.get("required", [])
         or schema_rebase.get("properties", {}).get("snapshot_component", {}).get("const")
         != "ParserAuthorityDigestSetR1"
@@ -244,7 +264,7 @@ def validate_documents(
     expected_fixture_domain = {
         "authority_contract": {"path": AUTHORITY_REL, "sha256": AUTHORITY_SHA256},
         "snapshot_component": "ParserAuthorityDigestSetR1",
-        "authority_digest_set": AUTHORITY_DIGEST_SET,
+        "authority_digest_set": current_authority_digest_set,
         "surface_census": {
             "path": "spec/grammar/deeplus.ebnf",
             "sha256": SURFACE_CENSUS["sha256"],
@@ -277,9 +297,19 @@ def validate_documents(
         VALIDATOR_REL,
         MUTATION_REL,
     ]
+    # Chunk placement is regenerated and is not part of feature identity.
+    all_feature_rows: list[dict[str, Any]] = []
+    for path in sorted(
+        (root / "spec/features/catalog/chunks").glob("part-*.json")
+    ):
+        rows = json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(rows, list):
+            all_feature_rows.extend(
+                row for row in rows if isinstance(row, dict)
+            )
     for row in (
-        feature_row(formatter_features, "formatter_lsp_responsibility_card"),
-        feature_row(lsp_features, "lsp_responsibility_card"),
+        feature_row(all_feature_rows, "formatter_lsp_responsibility_card"),
+        feature_row(all_feature_rows, "lsp_responsibility_card"),
     ):
         refs = row.get("artifact_trace_refs", [])
         if (

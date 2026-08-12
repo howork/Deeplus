@@ -19,6 +19,18 @@
     "semantic_reason": "assignment at 10 remains the only lower family; ternary at 20 remains the next higher family; ~ is left-associative and :~ is terminal",
     "new_surface_count": 0
   },
+  "additional_conflict_resolutions": [
+    {
+      "id": "MEASURE_LITERAL_VS_INDEX",
+      "decision": "an attached '[' immediately after one physical numeric literal token first runs the Measure structured-primary probe; after nonempty trivia, a transactional separated-measure lookahead parses UnitExpr and the closing ']' without type information, emits UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED with one recovery CST node only when that lookahead succeeds, and otherwise consumes zero bracket tokens and emits zero diagnostics before ordinary IndexSuffix remains available",
+      "type_information_used": false
+    },
+    {
+      "id": "RANGE_STEP_VS_TERNARY_COLON",
+      "decision": "after '..', '..<', or '...' commits RangeExpr, one following ':' belongs to the Range parselet and consumes the step expression; otherwise ':' retains its existing owner",
+      "type_information_used": false
+    }
+  ],
   "dispatch_law": {
     "key": "(parse_goal, exact attached token sequence or structured lookahead signature)",
     "priority": [
@@ -226,7 +238,7 @@
       "associativity": "right_operand",
       "ast_target": "NumericSignExpr",
       "profile": "STABLE",
-      "semantic_boundary": "language-reserved numeric sign; never conformance lookup"
+      "semantic_boundary": "parsing preserves NumericSignExpr; static selection uses the intrinsic implementation for an intrinsic-reserved operand domain and otherwise requires exactly one admitted left-owner DIRECT_GLOBAL UnaryPlus or UnaryMinus witness"
     },
     {
       "id": "boolean_not",
@@ -314,6 +326,29 @@
     }
   ],
   "primary_dispatch": [
+    {
+      "id": "measure_literal",
+      "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL immediately followed by attached [",
+      "grammar_owner": "Measure",
+      "ast_target": "MeasureLiteralExpr",
+      "kind": "STRUCTURED_NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "probe_failure": "consume zero tokens, emit zero diagnostics, and resume literal plus ordinary postfix dispatch",
+      "trivia_between_number_and_bracket": false,
+      "separated_measure_lookahead": {
+        "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL followed by nonempty trivia and then [",
+        "probe": "transactionally parse one complete UnitExpr followed by ] without type information",
+        "success": "emit UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED at the first separating trivia byte, consume through the matched ], retain one recovery CST error node, and emit zero canonical MeasureLiteralExpr or IndexExpr AST nodes",
+        "failure": "consume zero bracket or trivia tokens, emit zero diagnostics, and resume ordinary IndexSuffix dispatch",
+        "non_unit_examples": [
+          "13[0]",
+          "13 [0]"
+        ]
+      },
+      "profile": "STABLE"
+    },
     {
       "id": "literal",
       "trigger": "Literal scanner token",
@@ -787,12 +822,19 @@
         ],
         [
           "..<"
+        ],
+        [
+          "..."
         ]
       ],
       "lbp": 120,
       "rbp": 121,
       "associativity": "nonassociative",
       "ast_target": "RangeExpr",
+      "rhs": "required for '..' and '..<'; absent for '...'",
+      "step_suffix": "after the range core, an optional ':' consumes exactly one step Expr under the Range owner",
+      "evaluation_order": "start, then end when present, then step when present, each exactly once left-to-right",
+      "one_sided_trailing_expression": "reject without reparsing as a bounded range",
       "profile": "STABLE"
     },
     {
@@ -917,6 +959,7 @@
       "lbp": 190,
       "rbp": null,
       "associativity": "left_attachment",
+      "measure_boundary": "a numeric-literal owner reaches IndexSuffix only after the attached Measure structured-primary probe or the separated UnitExpr lookahead has failed without consuming bracket tokens or emitting diagnostics",
       "profile": "STABLE"
     },
     {
@@ -1210,7 +1253,8 @@
     "type_union_and_intersection": "parse left, then flatten and canonicalize under the type-system contract",
     "unit_product_division": "parse left; semantic unit normalization reduces to exact dimension vector and scale",
     "unit_power": "consume exactly one SignedStaticInt and reject a second unparenthesized caret",
-    "numeric_sign_and_power": "numeric sign rbp 159 and power lbp 160/rbp 159 preserve -(2 ^ 2) and 2 ^ (-3)"
+    "numeric_sign_and_power": "numeric sign rbp 159 and power lbp 160/rbp 159 preserve -(2 ^ 2) and 2 ^ (-3); intrinsic-versus-witness selection occurs only after parsing",
+    "range_core_and_step": "seal exactly one bounded-inclusive, bounded-exclusive, or one-sided RangeExpr before consuming its optional Range-owned step suffix"
   },
   "ast_and_cst_fence": {
     "lossless_cst_preserves": [

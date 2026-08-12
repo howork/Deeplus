@@ -344,8 +344,15 @@
             ]
           },
           "result_type_role": "ARITHMETIC_OUTPUT_DERIVED_AFTER_SELECTION;_COMPARISON_RESULT_FIXED_BOOL;_NEVER_A_SELECTION_KEY",
-          "responsibility_profile": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
-          "comparison_chain_profile": "CHAIN_OWNS_SHORT_CIRCUIT;_EACH_SELECTED_EQ_OR_ORD_CALL_IS_PURE_AND_EVALUATES_ITS_OPERANDS_ONCE;_MIDDLE_OPERAND_RETAINED_ONCE",
+          "responsibility_profile": "BORROWED_SELECTED_EXACT_SUBSET_OF_ALLOCATION_ENVELOPE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "responsibility_contract": "spec/contracts/exact-numeric-operator-allocation-r99.json",
+          "trait_requirement_envelopes": {
+            "Eq<Rhs>": "throws Never effects {}",
+            "other_eight_roots": "throws AllocationError effects allocate",
+            "concrete_witness_rule": "exact normalized subset",
+            "generic_bound_rule": "full requirement envelope unless a narrower exact witness is sealed"
+          },
+          "comparison_chain_profile": "CHAIN_OWNS_SHORT_CIRCUIT;_EACH_SELECTED_EQ_OR_ORD_CALL_EVALUATES_OPERANDS_ONCE_AND_PROPAGATES_ITS_EXACT_RESPONSIBILITY;_MIDDLE_OPERAND_RETAINED_ONCE",
           "range_operator_conformance_hook_count": 0,
           "arbitrary_custom_operator_count": 0,
           "implicit_conversion_count": 0,

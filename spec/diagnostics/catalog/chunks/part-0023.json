@@ -275,7 +275,7 @@
     "diagnostic_maturity": "active",
     "diagnostic_class": "current_source",
     "emission_domain": "source",
-    "message": "The selected fixed-operator witness violates the borrowed, pure, synchronous, throws-Never responsibility profile or introduces a terminal other than the admitted precommit ArithmeticDefect.",
+    "message": "The selected fixed-operator witness violates its closed borrowed synchronous responsibility envelope, exceeds AllocationError/allocate where admitted, or introduces a terminal other than the admitted precommit ArithmeticDefect.",
     "feature_refs": [
       "fixed_operator_conformance_overloading"
     ],
@@ -284,7 +284,7 @@
     ],
     "stage": "checker",
     "severity": "error",
-    "primary_source": "spec/contracts/value-operator-indexing-coherence.json",
+    "primary_source": "spec/contracts/exact-numeric-operator-allocation-r99.json",
     "product_support": "NOT_RUN",
     "authority_set": [
       "LANGUAGE",
@@ -293,8 +293,8 @@
     ],
     "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
     "fixit_kind": "manual_review",
-    "fixit_hint": "borrow every operand and use throws Never effects {} with no mutation, consume, suspension, or authority; expose only the declared nonrecoverable ArithmeticDefect before commit",
-    "fixit_policy": "never erase responsibility to make the witness fit",
+    "fixit_hint": "borrow every operand; use only an exact subset of AllocationError/allocate where the Trait permits it, with no mutation, consume, suspension, cancellation, or authority",
+    "fixit_policy": "never erase allocation responsibility or invent another failure channel to make the witness fit",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "notes": "The checker validates responsibility before HIR/MIR residue is admitted."
   },

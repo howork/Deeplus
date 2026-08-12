@@ -1,0 +1,67 @@
+{
+  "schema": "deeplus.callable-exact-signature-facade/v1",
+  "revision": "r99-callable-facade-closure-r1",
+  "gap_id": "IR-CALL-P1-068",
+  "feature_id": "callable_facade_preview",
+  "status": "STABLE_DESIGN_LOCAL_CANDIDATE_PRODUCT_NOT_RUN",
+  "surface": {
+    "canonical_shape": "Callable<Sig>",
+    "type_argument_count": 1,
+    "sig_requirement": "Sig normalizes to one exact function signature type",
+    "new_grammar_production_count": 0,
+    "grammar_route": "QualifiedType plus existing TypeArgs and function Type",
+    "bare_callable_admitted": false
+  },
+  "exact_signature_identity_fields": [
+    "ordered parameter labels",
+    "ordered parameter channel and ownership modes",
+    "parameter types and positional/named-rest residue",
+    "result type",
+    "normalized ErrorSet",
+    "normalized EffectRow",
+    "capture and ownership responsibility",
+    "call right",
+    "suspension and cancellation responsibility",
+    "isolation",
+    "context and witness requirements"
+  ],
+  "normalization": {
+    "rule": "Callable<Sig> normalizes exactly to Sig",
+    "distinct_nominal_type_id": false,
+    "distinct_runtime_representation": false,
+    "dynamic_erasure": false,
+    "existential_packaging": false,
+    "hidden_allocation": false,
+    "hir_rule": "retain the normalized exact function-type identity; facade spelling is CST-only",
+    "api_digest_rule": "hash the exact normalized signature fields, never the word Callable alone",
+    "mir_rule": "use the selected exact callable identity and ordinary INVOKE path"
+  },
+  "compatibility_and_invocation": {
+    "assignment": "identical to the normalized exact function signature",
+    "variance": "existing exact function-type variance and row-subsumption law",
+    "invocation": "identical CallPlan, CallableImplementationId and call-right checks as Sig",
+    "overload_discriminator": false,
+    "runtime_lookup": false
+  },
+  "rejections": [
+    "Callable without a type argument",
+    "Callable with more than one type argument",
+    "Callable<T> where T is not an exact function signature",
+    "Callable<any Trait> or another erased/dynamic signature",
+    "conversion that drops an error, effect, ownership, call-right, isolation, context or witness field"
+  ],
+  "diagnostics": {
+    "invalid_facade": "CALLABLE_EXACT_SIGNATURE_FACADE_REQUIRED",
+    "removed_bare_function": "BARE_FUNCTION_TYPE_REMOVED"
+  },
+  "acceptance": {
+    "positive": "Callable<(Int) -> String throws IOError> is type-identical to that exact signature and invokes through its exact responsibility",
+    "boundary": "aliases and generic substitutions are fully normalized before the one-signature check",
+    "reject": "bare, non-function, erased, or responsibility-dropping facade use emits one diagnostic and creates no callable HIR identity"
+  },
+  "authority_fence": {
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_checker_execution": "NOT_RUN"
+  }
+}

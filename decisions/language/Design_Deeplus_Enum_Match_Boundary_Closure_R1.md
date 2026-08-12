@@ -1,6 +1,6 @@
 # Design: Enum body commitment and match fallback boundary
 
-Status: `LOCAL_DESIGN_CANDIDATE_NOT_CANONICAL`
+Status: `CURRENT_DESIGN_STATIC_VALIDATED_PRODUCT_NOT_RUN`
 
 Baseline main: `10e64f492f0529610673846139afcf0d95175663`
 
@@ -41,6 +41,7 @@ contains a nonempty Enum case vector and distinguishes `PatternMatchArm` from
 HIR/MIR/runtime residue. Product parser, checker, formatter and LSP execution
 remain `NOT_RUN`.
 
-This local design candidate creates or closes no feature P1. The existing 22
-feature P1 remain OPEN, semantic P0 remains 0, and product execution remains
-`15/15 NOT_RUN`. GitHub publication was not performed.
+This current stable design decision creates or closes no feature P1. The
+existing 22 feature P1 remain OPEN, semantic P0 remains 0, and product
+execution remains `15/15 NOT_RUN`. This bounded authority repair does not claim
+GitHub publication or product implementation.

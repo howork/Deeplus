@@ -533,9 +533,9 @@ ExtensionPackBody ::= "{" UseExportDecl* "}" ;
 EnumDecl ::= TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList?
              NominalConformanceClause* EnumBody ;
 EnumOrderRole ::= "#" ("increasing" | "decreasing") ;
-EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody)? "}" ;
+EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody) "}" ;
 EnumCommaCaseSequence ::= EnumCaseCore ("," EnumCaseCore)+ ","? ;
-EnumLayoutBody ::= EnumCaseDecl* EnumMemberDecl* ;
+EnumLayoutBody ::= EnumCaseDecl+ EnumMemberDecl* ;
 EnumCaseDecl ::= EnumCaseCore StatementBoundary? ;
 EnumCaseCore ::= Identifier EnumCasePayload? EnumCaseDisplayMapping? ;
 EnumCasePayload ::= "(" EnumCaseFieldList? ")" ;

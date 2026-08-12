@@ -451,6 +451,30 @@ result convention, but that spelling is not globally mandatory. Property
 initialization and accessor visibility must preserve field ownership and
 mutation responsibility.
 
+The Stable accessor-property surface is closed by
+`AccessorPropertyForwardingR100`. A declaration uses `let` or `var`, a name,
+an explicit type, `:=`, and either one accessor arm or a braced nonempty arm
+sequence. Visibility never appears on the property header; it belongs to each
+`get` or `set(name)` arm. An omitted arm visibility is preserved until
+`MemberVisibilityOmissionV1` resolves a newly declared arm to private. There
+must be exactly one getter and at most one setter. A `let` property cannot have
+a setter, and a setter cannot be more visible than its getter.
+
+An accessor property is computed behavior, not disguised storage. Its
+`AccessorPropertyDecl` AST and HIR record the declared type, one getter identity, an optional setter identity,
+and each effective visibility, but no field, backing-storage, layout, or hidden
+cleanup identity. Accessor arms are synchronous `throws Never effects {}` in
+the Stable profile. A by-value getter result must be reusable, no-drop, and
+lifecycle-free; resource observation uses a named method, borrow, or `with`
+API instead. A read evaluates the receiver and invokes the selected getter
+exactly once. A write evaluates receiver then right-hand side once each,
+left-to-right, and invokes the selected setter once. Failure creates no hidden
+property state and discharges prepared temporaries exactly once.
+
+Extension accessor properties use precisely the same contract. They add no
+storage or layout, require ordinary lexical extension activation, and cannot
+widen access to private state of the extended nominal.
+
 ## 8. Functions and declaration profiles
 
 Functions and methods use `def`. The current closed profile families include ordinary functions and the admitted `#entry`, `#async`, `#pure`, `#guard`, `#mut`, `#consume`, and `#cleanup` combinations declared by the Frontend Model. A profile valid for one owner is not automatically valid for another.
@@ -495,6 +519,39 @@ type/API equivalent. This Preview does not change current
 rewrite of affected private/local declarations and an explicit supersession of
 that feature. It also does not apply to lambdas, accessors, or another owner
 whose grammar has no responsibility clauses.
+
+Current private ErrorSet inference is the closed `PrivateErrorInferenceV1`
+procedure, not an unconstrained body guess. It applies only to a nested local
+function or an effectively private top-level, nominal-member, or extension
+callable whose `throws` row is omitted. Name resolution, overload selection,
+generic substitution, and visibility normalization finish first. The checker
+then forms a finite graph keyed by exact callable implementation and
+substitution identities, computes strongly connected components, and takes the
+source-order-independent least fixed point of direct `throw`/propagation rows
+and already declared callee rows. Effects are never inferred. An unresolved or
+ambiguous call edge stops inference; a public/common callable, Trait or Actor
+requirement/implementation, constructor, cleanup hook, accessor, or closure
+must follow its explicit responsibility contract. Typed HIR stores the exact
+normalized `ErrorSetId`, graph/SCC identity and proof digest; MIR consumes that
+sealed row and never repeats inference. A private Error identity that would
+escape through a wider API is rejected.
+
+Recursive inference edges are finite by construction: after alias and
+associated-binding normalization, caller and callee must have exactly the same
+complete substitution vector. A different or expansive vector, such as
+`f<T>` recursively selecting `f<List<T>>`, requires an explicit `throws` row and
+is rejected before an inferred HIR callable is sealed.
+
+The Stable callable facade is similarly exact rather than erased:
+`Callable<Sig>` is admitted only when its single argument normalizes to one
+exact function signature type. It then normalizes to `Sig` itself and preserves
+all parameter/channel, result, error, effect, ownership, call-right,
+suspension/cancellation, isolation, context and witness fields. It creates no
+distinct nominal or runtime identity, allocation, existential package, dynamic
+lookup, or overload discriminator. Bare `Callable`, a non-function argument,
+or any conversion that drops a responsibility-bearing field is rejected. The
+facade uses the existing `QualifiedType`/type-argument route and adds no grammar
+production.
 
 Responsibility compatibility is not one undifferentiated equality check. A
 Trait witness may narrow its requirement's declared rows, an override preserves
@@ -837,7 +894,7 @@ metatype value.
 
 Extensions are statically identified sets. Activation is lexical/module scoped. A scoped group uses `use a, b in { ... }` or `import a, b in { ... }`; it creates one compile-time frame for the block, does not leak, and never becomes runtime loading. Extension members use plain `def` inside the extension set unless another owner explicitly requires a marker. Member identity includes the extension-set identity; import/source order is not a tie-breaker.
 
-`+forward { name, age, city } to profile` expands to the listed forwarding declarations in source order. The list is finite and explicit; wildcard, rename, hidden witness creation, duplicate and collision are forbidden.
+`+forward { name, age, city } to profile` expands to the listed forwarding declarations in source order. The list is finite and explicit; wildcard, rename, hidden witness creation, duplicate and collision are forbidden. Each generated slot seals its target member, call shape, ownership, ErrorSet, EffectRow, and result responsibility before canonical HIR. At each forwarded operation the forwarding owner receiver is evaluated first, the target expression exactly once, and forwarded arguments left-to-right. Forwarding performs no runtime lookup or reselection, creates no subtype edge, storage, hidden closure, or cleanup owner, and preserves the selected operation's failure, suspension, and cleanup behavior.
 
 Ordinary selector resolution computes the applicable nominal-member set and the
 applicable active-extension set independently. If both sets are nonempty, the
@@ -880,9 +937,23 @@ evidence, import or source ordering, fallback, and runtime relookup are
 forbidden. The selected `OperatorId`, `ConformanceId`, `WitnessId`, `MethodId`,
 substitution, `OutputTypeId`, and responsibility profile become typed HIR/MIR
 and public API identity. The witness borrows both operands, is synchronous,
-non-consuming and non-mutating, and has `throws Never effects {}`. A declared
-`ArithmeticDefect` is a nonrecoverable precommit terminal, not a hidden member
-of the throws set.
+non-consuming and non-mutating, and has one exact normalized responsibility
+row. `Eq` remains bounded by `throws Never effects {}`. The other eight Trait
+roots admit at most `throws AllocationError effects allocate`; each concrete
+conformance may declare the exact empty subset. The selected concrete witness
+row, not the maximum Trait envelope, becomes expression HIR/API/MIR
+responsibility. Generic code that knows only an allocating-capable operator
+bound must expose the full envelope. A declared `ArithmeticDefect` is a
+nonrecoverable precommit terminal, not a hidden member of the throws set.
+
+This envelope makes arbitrary-precision behavior representation independent.
+BigInt/Rational value-producing arithmetic and Rational ordering expose
+`AllocationError` and `allocate` even when a small-value optimization happens
+not to allocate. Rational identity/equality, primitive and fixed-width rows,
+and the current fixed-width Complex rows have exact empty responsibility.
+Allocation failure retains both operands, publishes no numeric result, cleans
+staged storage in reverse order, and performs no compound-assignment write.
+Neither xVM nor Cranelift may replace it with an OOM Defect.
 
 `+=`, `-=`, `*=`, `/=`, and `%=` derive from the corresponding binary
 operation only when its result is exactly assignable to the original place.
@@ -1318,6 +1389,70 @@ Bitfield declarations use unsigned strict layout. `#flags` supplies the finite-u
 ## 28. Measures and units
 
 Measure types preserve dimension and exact-ratio conversions. Unit product and quotient use the current unit operator owners. Calendar units are a `STDLIB_PROFILE`: month/year conversions require an explicit calendar/provider context and are never implicit core exact-ratio conversions. The same source and activation profile must have one outcome.
+
+Measure attachment is syntax-directed and does not consult type information.
+`13[cm]` first runs the attached Measure primary probe. If nonempty trivia
+separates the numeric literal from `[`, the parser transactionally probes for
+one complete `UnitExpr` followed by `]`. A successful separated probe emits
+`UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED`, consumes through the matched bracket
+only for recovery, retains one CST error node, and emits no canonical Measure
+or Index AST. A failed separated probe consumes no bracket or trivia token and
+emits no diagnostic, so ordinary indexing remains available: `13[0]` and
+`13 [0]` both parse as `IndexExpr` before normal receiver admissibility is
+checked. A nonnumeric receiver such as `value[cm]` is always indexing, never a
+Measure literal.
+
+`exact_ratio_unit_conversion_msp` is the single current semantic identity for
+static exact unit conversion. The older
+`static_exact_unit_conversion_msp` identity is an absorbed, nonactivatable
+alias and owns no independent rule. Each catalog scale is a strictly positive
+`ReducedPositiveRational`; numerator and denominator are arbitrary-precision
+integers, the denominator is nonzero, and the pair is reduced by gcd. A unit
+catalog has exactly one canonical unit per `DimensionId`. All finite paths
+between two `UnitId` values must reduce to the same ratio and every cycle must
+reduce to `1/1`; declaration or traversal order never selects a winner.
+
+Conversion first resolves both unit identities in already selected active
+catalogs, rejects approximate, affine, calendar, provider-backed, zero, or
+negative scale rows, requires equal dimensions, and reduces
+`sourceScale / targetScale`. It then requires either an explicit target display
+unit or one exact context-anchor decision. Only then may the checker seal a
+`UnitConversionPlanV1` containing the two units, dimension, reduced ratio,
+display unit, and already selected scalar operation plan. HIR, MIR, xVM, and
+Cranelift may preserve that plan but may not choose a display unit, consult a
+provider, or reinterpret the ratio.
+
+Known unit evidence is selected by a finite canonical-order search of active
+catalogs. An explicit unit carrier wins; otherwise exactly one already sealed
+context anchor is required. Typed HIR records `KnownUnitWitnessId`, catalog,
+unit, dimension, and representation identities. `Measure<Rep, Dim>` alone does
+not preserve display identity across a function boundary. The conversion plan
+also contains one `ScaleByReducedRatio<Rep>` identity: Rational accepts every
+exact ratio; integral representations require an integral, representable checked
+result; Float and other representations require an explicit deterministic
+rounding or exact-scaling witness. No implicit truncation or promotion occurs.
+
+Affine point/delta units remain outside the first implementation target. The
+current UnitCatalog surface has no point/delta or offset declaration, so a
+Celsius- or Fahrenheit-style source row is rejected with
+`AFFINE_UNIT_NOT_IN_PHASE_A`. A future profile must separately close at least
+`Point + Delta -> Point`, `Point - Point -> Delta`, `Delta +/- Delta -> Delta`,
+and rejection of `Point + Point`; this deferred algebra is not current source
+admission.
+
+The shaped initializer `generate: expr` is independent of arbitrary-generator
+provider availability. For a finite static shape, its cardinality is the
+checked product of the dimensions. A positive cardinality evaluates `expr`
+once to one already selected ordinary callable and invokes that callable once
+per logical coordinate in row-major order. A zero-cardinality shape evaluates
+neither `expr` nor a provider. The callable's exact result, effects, errors,
+ownership, and cleanup are preserved. Storage reservation precedes the first
+call; failure cleans the constructed prefix in reverse order and publishes no
+partial array. `arbitrary_generator_stdlib_profile` is optional provenance,
+is excluded from the first implementation target, and may not change checker
+admission, add effects or errors, provide defaults, or trigger hidden cloning.
+The exact machine contract is
+`spec/contracts/measure-collection-bootstrap-r99.json`.
 
 # Part VI — Type system and responsibility
 
@@ -2059,7 +2194,9 @@ R69 clarifies the managed-reference dynamic boundary without adding syntax.
 The deterministic managed-memory plan contains static logical root-map
 templates; runtime handle generations and the publish/commit/release lifecycle
 belong only to an execution-time managed-root receipt. The current continuation
-interface digest is `2ccf2acd...c8b4`, and the former `0dc489...1271` binding
+interface digest is
+`6dcb8964c1d8fb788e7946f8cdaa54f2d31d6d003fdece7161a8713c1e858d50`;
+predecessor bindings
 does not select the successor seam. `RegionId` and `LoanId` are never `RootId`:
 a borrowed or `inout` view gains neither an independent root nor a longer
 lifetime merely because its referent uses managed storage.
@@ -2720,8 +2857,9 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `AWAIT_REQUIRED_FOR_ASYNC_CALL` [error]: Async function or async message result must be awaited in an async context.
 - `BARE_CARET_IS_POWER_NOT_BITWISE_XOR` [error]: Bare infix `^` is the right-associative power operator, not bitwise XOR; current bitwise XOR is `^^`.
 - `BARE_ENUM_CASE_NOT_ALLOWED` [error]: Bare enum case names are not injected into ordinary value namespace. Use `::case` or `EnumType::case`.
+- `CALLABLE_EXACT_SIGNATURE_FACADE_REQUIRED` [error]: `Callable` requires exactly one type argument that normalizes to an exact function signature; bare, non-function, erased, or responsibility-dropping forms are forbidden.
 - `BARE_FUNCTION_CALL_REQUIRES_TRAILING_CLOSURE` [error]: Bare ordinary call without a trailing closure is not part of this feature; use parentheses.
-- `BARE_FUNCTION_TYPE_REMOVED` [error]: Bare Function is not current source; use an exact function signature or the Stable Callable facade profile.
+- `BARE_FUNCTION_TYPE_REMOVED` [error]: Bare Function is not current source; use an exact function signature or `Callable<Sig>` where `Sig` is that exact signature.
 - `BASIC_INDEX_OPERATOR_STABLE_LAW` [note]: Basic index operator is stable design; advanced slicing/custom index surfaces remain separate features.
 - `BITFIELD_BACKING_MUST_BE_UNSIGNED_FIXED_WIDTH` [error]: Bitfield backing must be UInt8, UInt16, UInt32, UInt64, or UInt128.
 - `BITFIELD_C_ABI_NOT_IMPLIED` [error]: A Deeplus bitfield does not imply C compiler bitfield ABI compatibility.
@@ -2862,6 +3000,10 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `EFFECTFUL_OTHERWISE_RIGHT_OPERAND` [error]: Right operand of `otherwise` has effects and is conditionally evaluated; make that responsibility explicit.
 - `EFFECTROW_UNSAFE_AXIS_FORBIDDEN` [error]: `unsafe` is a safety/authority axis, not an EffectRow atom; use an explicit unsafe boundary.
 - `EFFECT_ROW_VARIABLE_UNBOUND` [error]: Effect row variable is not bound in the generic/effect environment.
+- `ERROR_ROW_PRIVATE_INFERENCE_NOT_ADMITTED` [error]: Omitted throws inference is admitted only for the closed lexical/private callable owner set.
+- `ERROR_ROW_PRIVATE_INFERENCE_UNSEALED_CALL` [error]: Private ErrorSet inference requires every call edge to have a selected callable or an exact function-type ErrorSet.
+- `ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH` [error]: Private ErrorSet inference rejects recursive generic edges whose normalized substitution vector differs from the caller; declare an exact `throws` row instead.
+- `ERROR_ROW_PRIVATE_TYPE_LEAK` [error]: An inferred private Error identity cannot escape through a wider callable API.
 - `EMPTY_NULLARY_LAMBDA_REQUIRES_EXPECTED_FUNCTION_TYPE` [error]: Empty `{}` can mean `() -> Unit` only with an expected function type.
 - `ENTRY_DECL_DUPLICATE` [error]: An executable target has more than one explicit entry declaration.
 - `ENTRY_SIGNATURE_NOT_ADMITTED` [error]: An entry function must have () or (Sequence<String>) parameters and return Unit or ExitCode.
@@ -3481,6 +3623,8 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `UNIT_MIDDLE_DOT_REMOVED_USE_STAR` [error]: Unit multiplication uses `*`; the middle-dot spelling is not a current Deeplus surface.
 - `UNIT_CONTEXT_ANCHOR_NOT_A_VALUE` [error]: A unit context anchor is not a first-class value.
 - `UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS` [error]: Unit context anchor requires a statically known unit witness.
+- `UNIT_CONVERSION_SCALAR_PLAN_REQUIRED` [error]: Exact-ratio conversion requires one sealed `ScaleByReducedRatio<Rep>` plan; no implicit rounding or representation promotion is selected.
+- `UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED` [error]: Integral Measure conversion requires a reduced result denominator of one and a representable checked result.
 - `UNIT_CONVERSION_APPROXIMATE_REQUIRES_POLICY` [error]: Approximate unit conversion requires an explicit approximation policy.
 - `UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED` [error]: Exact conversion must use an exact ratio form.
 - `UNIT_CONVERSION_GRAPH_NOT_CLOSED` [error]: Unit conversion graph must be deterministic and closed for admitted static conversions.

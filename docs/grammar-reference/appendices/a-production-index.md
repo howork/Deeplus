@@ -273,9 +273,9 @@
 | `ExtensionPackBody` | `"{" UseExportDecl* "}"` | 529 |
 | `EnumDecl` | `TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList? NominalConformanceClause* EnumBody` | 533 |
 | `EnumOrderRole` | `"#" ("increasing" \| "decreasing")` | 535 |
-| `EnumBody` | `"{" (EnumCommaCaseSequence \| EnumLayoutBody)? "}"` | 536 |
+| `EnumBody` | `"{" (EnumCommaCaseSequence \| EnumLayoutBody) "}"` | 536 |
 | `EnumCommaCaseSequence` | `EnumCaseCore ("," EnumCaseCore)+ ","?` | 537 |
-| `EnumLayoutBody` | `EnumCaseDecl* EnumMemberDecl*` | 538 |
+| `EnumLayoutBody` | `EnumCaseDecl+ EnumMemberDecl*` | 538 |
 | `EnumCaseDecl` | `EnumCaseCore StatementBoundary?` | 539 |
 | `EnumCaseCore` | `Identifier EnumCasePayload? EnumCaseDisplayMapping?` | 540 |
 | `EnumCasePayload` | `"(" EnumCaseFieldList? ")"` | 541 |

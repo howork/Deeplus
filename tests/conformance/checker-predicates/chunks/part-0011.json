@@ -1184,10 +1184,10 @@
     "predicate_id": "HasKnownUnitWitness",
     "expected": "rejected",
     "expected_primary_diagnostic": "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "diagnostic_disposition": "active_primary",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "descriptor_mutation": {
-      "local_violation": "HasKnownUnitWitness"
+      "local_violation": "implicit context anchor has no explicit carrier or sealed KnownUnitWitnessId"
     },
     "fixture_kind": "mutation_recipe",
     "descriptor_v5": {
@@ -1256,7 +1256,7 @@
       "element_types": null
     },
     "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "execution_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
@@ -1277,6 +1277,46 @@
         "isolation": "local"
       }
     },
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-HasKnownUnitWitness-BOUNDARY",
+    "predicate_id": "HasKnownUnitWitness",
+    "expected": "admitted",
+    "descriptor": {
+      "source_kind": "MeasureFunctionResult",
+      "normalized_type": "Measure<Rational, Length>",
+      "witness_id": null,
+      "product_evidence": {
+        "explicit_unit_witness_carrier": "1[m]",
+        "active_catalog_id": "std::units::si",
+        "expected_known_unit_witness_id": "KnownUnitWitnessId:std::units::si:m:Rational"
+      }
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "Measure<Rational, Length>"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "a function result loses display identity, then one explicit unit carrier deterministically rebinds it",
+    "rule_seed": "R99 finite known-unit witness boundary; product checker NOT_RUN.",
+    "execution_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "fixture_kind": "concrete_positive",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   },
@@ -1341,8 +1381,8 @@
       },
       "lookup_domain": null,
       "extension_member_id": null,
-      "witness_id": null,
-      "implementation_id": null,
+      "witness_id": "KnownUnitWitnessId:std::units::si:cm:Rational",
+      "implementation_id": "UnitCatalogId:std::units::si",
       "class_disposition": null,
       "sealed_module_identity": null,
       "ast_stage": null,
@@ -1350,7 +1390,10 @@
       "unicode_scalar_constraint": null,
       "label_row": null,
       "product_evidence": {
-        "fixture": true
+        "fixture": true,
+        "unit_id": "cm",
+        "dimension_id": "Length",
+        "rep_type_id": "Rational"
       },
       "source_role": null,
       "entry_kind": null,
@@ -1546,9 +1589,9 @@
       "orientation": null,
       "element_types": null
     },
-    "rule_seed": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
+    "rule_seed": "R99 finite known-unit witness selection algorithm; product checker NOT_RUN.",
+    "execution_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
     "fixture_kind": "concrete_positive",
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
@@ -1873,38 +1916,6 @@
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "active design algorithm",
     "fixture_kind": "concrete_positive",
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
-  },
-  {
-    "fixture_id": "PF-KeyableAdmissible-NEG",
-    "predicate_id": "KeyableAdmissible",
-    "expected": "rejected",
-    "expected_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
-    "diagnostic_disposition": "design_seed_nonemitting_expected_candidate",
-    "execution_status": "DESIGN_STATIC_NOT_RUN",
-    "descriptor_mutation": {
-      "local_violation": "KeyableAdmissible"
-    },
-    "fixture_kind": "mutation_recipe",
-    "descriptor_v5": {
-      "schema": "deeplus.rcts-v5/descriptor",
-      "variant": "responsibility_core",
-      "semantic_type": {
-        "kind": "nominal",
-        "type_id": "PF-KeyableAdmissible-NEG"
-      },
-      "responsibility": {
-        "ownership": "reusable",
-        "cleanup": "none",
-        "effects": [],
-        "errors": [],
-        "cancellation": "forbidden",
-        "authorities": [],
-        "suspends": false,
-        "isolation": "local"
-      }
-    },
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
   }

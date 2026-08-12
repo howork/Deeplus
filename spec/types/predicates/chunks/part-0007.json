@@ -233,7 +233,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "HasKnownUnitWitness",
     "source_name": "HasKnownUnitWitness",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Selects and seals one finite known unit witness from active catalogs or an explicit carrier; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -256,9 +256,11 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "finite active UnitCatalogId set",
+      "resolved UnitId, DimensionId and RepTypeId",
+      "an explicit unit witness carrier or exactly one in-scope context anchor"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -275,21 +277,26 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "active catalogs and unit rows are finite",
+      "UnitId resolution has no provider fallback",
+      "the expected Measure<Rep, Dim> is independently fixed"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "sort active catalogs by canonical UnitCatalogId; normalize UnitId, DimensionId, RepTypeId and any explicit/context witness identity",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record HasKnownUnitWitness requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the closed descriptor variant and fixed expected Measure<Rep, Dim>",
+      "resolve the unit symbol to exactly one UnitId in active catalogs ordered by canonical UnitCatalogId",
+      "require the resolved DimensionId and Rep constraints to match the expected Measure type",
+      "prefer the explicit unit witness carrier; otherwise require exactly one already sealed context anchor",
+      "seal KnownUnitWitnessId, UnitCatalogId, UnitId, DimensionId and RepTypeId in typed HIR",
+      "after a function boundary carrying only Measure<Rep, Dim>, require an explicit witness carrier or separately preserved context anchor instead of reconstructing display identity"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "termination_metric": "finite active catalog count plus finite unit row count plus at most one explicit/context anchor",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS",
     "secondary_diagnostics": [],
     "positive_fixture_ids": [
-      "PF-HasKnownUnitWitness-POS"
+      "PF-HasKnownUnitWitness-POS",
+      "PF-HasKnownUnitWitness-BOUNDARY"
     ],
     "negative_fixture_ids": [
       "PF-HasKnownUnitWitness-NEG"
@@ -297,9 +304,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "35ae21108b3cbabefd1913987db00136dba26d52b35574885a4c8e59d76c954d",

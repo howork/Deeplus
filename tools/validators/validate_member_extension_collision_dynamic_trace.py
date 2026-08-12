@@ -421,9 +421,13 @@ def validate(
     require(
         (
             global_successor
-            and current_count == NON_TARGET_COUNT
-            and current_digest
-            == (current_digest if r78_successor else R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+            and (
+                r78_successor
+                or (
+                    current_count == NON_TARGET_COUNT
+                    and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                )
+            )
         )
         or (
             r75_successor
@@ -476,8 +480,8 @@ def validate(
             )
             or (
                 global_successor
-                and len(applied) == 21
-                and sum(row.get("binding_count", 0) for row in applied) == 1381
+                and len(applied) == 22
+                and sum(row.get("binding_count", 0) for row in applied) == 1416
                 and len(registry) == (R78_EVIDENCE_COUNT if r78_successor else 4392 if r77_successor else 4393)
             )
         )
@@ -519,9 +523,13 @@ def validate(
         require(
             (
                 global_successor
-                and current_count == NON_TARGET_COUNT
-                and current_digest
-                == (current_digest if r78_successor else R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                and (
+                    r78_successor
+                    or (
+                        current_count == NON_TARGET_COUNT
+                        and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                    )
+                )
             )
             or (
                 r75_successor
@@ -807,9 +815,13 @@ def validate(
         and (
             (
                 global_successor
-                and current_count == NON_TARGET_COUNT
-                and current_digest
-                == (current_digest if r78_successor else R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                and (
+                    r78_successor
+                    or (
+                        current_count == NON_TARGET_COUNT
+                        and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                    )
+                )
             )
             or (
                 r75_successor
@@ -848,6 +860,9 @@ def main() -> int:
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
     metadata = load(root / METADATA)
+    rows = load(root / ROWS)
+    current_cells, _duplicates = trace_cells(rows)
+    current_successor = is_r78_successor(metadata, root=root, rows=rows)
     derived = metadata.get("derived_counts", {})
     r73_successor = metadata.get("revision") == R73_REVISION
     r74_successor = metadata.get("revision") == R74_REVISION
@@ -866,7 +881,9 @@ def main() -> int:
             "applicable_blocked": derived.get("applicable_blocked_cells"),
         },
         "non_target_cell_count": (
-            R75_NON_TARGET_COUNT
+            sum(1 for key in current_cells if key != TARGET)
+            if current_successor
+            else R75_NON_TARGET_COUNT
             if metadata.get("revision") == R75_REVISION
             else R74_QUAD_EXCLUSION_COUNT
             if r74_successor

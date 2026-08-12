@@ -1,0 +1,31 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "CALLABLE_EXACT_SIGNATURE_FACADE_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "callable_facade_preview",
+      "exact_function_signature_callshape_law"
+    ],
+    "fixit_hint": "write Callable<ExactFunctionSignature> or the exact function signature directly",
+    "fixit_kind": "deterministic_rewrite",
+    "fixit_policy": "preserve every responsibility-bearing exact-signature field",
+    "message": "Callable requires exactly one type argument that normalizes to an exact function signature; bare, non-function, erased, or responsibility-dropping forms are forbidden.",
+    "notes": "Current source diagnostic contract; product checker emission receipt remains NOT_RUN.",
+    "primary_source": "spec/contracts/callable-exact-signature-facade-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

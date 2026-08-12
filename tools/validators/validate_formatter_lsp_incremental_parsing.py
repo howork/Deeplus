@@ -571,7 +571,7 @@ def contract_errors(
     feature_rows = {
         row.get("feature_id"): row
         for row in [*formatter_features, *lsp_features]
-        if isinstance(row, dict)
+        if isinstance(row.get("feature_id"), str)
     }
     for feature_id in (
         "formatter_lsp_responsibility_card",
@@ -767,8 +767,18 @@ def main() -> int:
         registry = strict_load(root / REGISTRY_REL)
         frontend = strict_load(root / FRONTEND_REL)
         recovery = strict_load(root / RECOVERY_REL)
-        formatter_features = strict_load(root / FORMATTER_FEATURE_REL)
-        lsp_features = strict_load(root / LSP_FEATURE_REL)
+        # Chunk placement is generator-owned. Load the full catalog so feature
+        # identity survives a valid reassembly.
+        all_feature_rows = [
+            row
+            for path in sorted(
+                (root / "spec/features/catalog/chunks").glob("part-*.json")
+            )
+            for row in strict_load(path)
+            if isinstance(row, dict)
+        ]
+        formatter_features = all_feature_rows
+        lsp_features = all_feature_rows
         errors = contract_errors(
             contract,
             schema,

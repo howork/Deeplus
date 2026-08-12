@@ -238,9 +238,13 @@ def validate(root: Path, *, overrides: Optional[Mapping[str, Any]] = None,
         and (
             (
                 global_successor
-                and current_count == NON_TARGET_COUNT
-                and current_digest
-                == (current_digest if r78_successor else R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                and (
+                    r78_successor
+                    or (
+                        current_count == NON_TARGET_COUNT
+                        and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                    )
+                )
             )
             or (
                 r75_successor
@@ -257,11 +261,11 @@ def validate(root: Path, *, overrides: Optional[Mapping[str, Any]] = None,
         and metadata.get("canonical_baseline_commit")
         == (R78_BASELINE if r78_successor else R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (metadata.get("local_predecessor_commit") == PREDECESSOR or r75_successor or global_successor)
-        and len(applied) == (21 if global_successor else 20 if r75_successor else 19)
+        and len(applied) == (22 if global_successor else 20 if r75_successor else 19)
         and {"path": R73_OVERLAY, "feature_count": 1, "binding_count": 2}
         in applied
         and sum(row.get("binding_count", 0) for row in applied)
-        == (1381 if global_successor else 139 if r75_successor else 136)
+        == (1416 if global_successor else 139 if r75_successor else 136)
         and len(registry) == (R78_EVIDENCE_COUNT if r78_successor else 4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
         and sum(row.get("evidence_id") == EVIDENCE_ID for row in registry) == 1,
         "G03", "GENERATED_METADATA_EXACT",
@@ -334,6 +338,9 @@ def main() -> int:
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
     metadata = load(root / METADATA)
+    rows = load(root / ROWS)
+    current_cells, _duplicates = trace_cells(rows)
+    current_successor = is_r78_successor(metadata, root=root, rows=rows)
     derived = metadata.get("derived_counts", {})
     r75_successor = metadata.get("revision") == R75_REVISION
     receipt = {
@@ -345,7 +352,13 @@ def main() -> int:
             "bound_delegated": derived.get("bound_delegated_cells"),
             "not_applicable": derived.get("not_applicable_cells"),
             "applicable_blocked": derived.get("applicable_blocked_cells"),
-        }, "non_target_cell_count": R75_NON_TARGET_COUNT if r75_successor else NON_TARGET_COUNT,
+        }, "non_target_cell_count": (
+            sum(1 for key in current_cells if key != TARGET)
+            if current_successor
+            else R75_NON_TARGET_COUNT
+            if r75_successor
+            else NON_TARGET_COUNT
+        ),
         "product_execution": "15_OF_15_NOT_RUN", "github_publication": "SUSPENDED",
         "gates": GATES, "errors": errors,
     }

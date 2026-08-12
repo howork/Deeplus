@@ -1,0 +1,182 @@
+{
+  "schema": "deeplus.measure-collection-bootstrap/r99",
+  "revision": "r99-measure-collection-bootstrap-r1",
+  "status": "LOCAL_DESIGN_STATIC_CANDIDATE",
+  "gaps": [
+    "IR-MEASURE-P1-069",
+    "IR-COLL-P1-070",
+    "IR-MEASURE-P1-071"
+  ],
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_execution": "NOT_RUN",
+    "github_mutation": "NOT_PERFORMED"
+  },
+  "exact_ratio_conversion": {
+    "canonical_feature_id": "exact_ratio_unit_conversion_msp",
+    "absorbed_alias_feature_id": "static_exact_unit_conversion_msp",
+    "independent_semantic_identity_count_for_alias": 0,
+    "input": {
+      "source_dimension_id": "DimensionId",
+      "target_dimension_id": "DimensionId",
+      "source_scale": "ReducedPositiveRational",
+      "target_scale": "ReducedPositiveRational",
+      "source_catalog_id": "UnitCatalogId",
+      "target_catalog_id": "UnitCatalogId",
+      "display_unit_decision": "EXPLICIT_TARGET_OR_SINGLE_CONTEXT_ANCHOR",
+      "representation_type_id": "RepTypeId",
+      "rounding_witness_id_or_null": "RoundingWitnessId?"
+    },
+    "reduced_positive_rational": {
+      "numerator": "positive arbitrary-precision integer",
+      "denominator": "positive nonzero arbitrary-precision integer",
+      "canonical_form": "gcd(numerator, denominator) == 1",
+      "sign_location": "none; a unit scale is strictly positive"
+    },
+    "decision_order": [
+      "resolve both unit symbols in the already selected active catalogs",
+      "require exactly one catalog row per resolved UnitId and exactly one canonical unit per DimensionId",
+      "reject an approximate, provider-backed, offset, calendar, zero, negative or non-rational edge",
+      "normalize every exact scale to ReducedPositiveRational",
+      "require source_dimension_id == target_dimension_id",
+      "compute conversion_ratio = reduce(source_scale / target_scale)",
+      "require an explicit target display unit or one exact context-anchor display decision",
+      "select exactly one ScaleByReducedRatio<Rep> plan under the closed representation matrix",
+      "seal UnitConversionPlanV1"
+    ],
+    "catalog_closure": {
+      "edge_kind": "EXACT_RATIO_ONLY",
+      "cycle_law": "the reduced product of every finite cycle is exactly 1/1",
+      "path_law": "all finite paths between the same two UnitIds reduce to the same ratio",
+      "source_order_winner_count": 0,
+      "provider_fallback_count": 0
+    },
+    "known_unit_witness_selection": {
+      "input": [
+        "active UnitCatalogId set",
+        "resolved UnitId",
+        "DimensionId",
+        "RepTypeId",
+        "explicit witness carrier or context-anchor identity"
+      ],
+      "algorithm": [
+        "sort active catalogs by canonical UnitCatalogId",
+        "resolve the unit symbol to exactly one UnitId without provider fallback",
+        "require that UnitId's DimensionId and Rep constraints to match the expected Measure type",
+        "if an explicit unit witness carrier is present, seal it; otherwise require exactly one in-scope context anchor",
+        "seal KnownUnitWitnessId plus UnitCatalogId, UnitId, DimensionId and RepTypeId in typed HIR"
+      ],
+      "termination_measure": "finite active catalogs plus finite unit rows plus at most one explicit/context anchor",
+      "source_order_winner_count": 0,
+      "provider_fallback_count": 0,
+      "function_boundary_law": "Measure<Rep, Dim> alone preserves no display UnitId; an explicit unit witness parameter/carrier or a separately sealed context anchor is required after such a boundary",
+      "loss_rule": "crossing a boundary whose type/API digest carries no KnownUnitWitnessId discards display identity deterministically and never reconstructs it from runtime values",
+      "primary_diagnostic": "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS"
+    },
+    "scalar_operation_plan": {
+      "identity": "ScaleByReducedRatio<Rep>",
+      "selection_time": "after unit ratio and Rep are fixed, before UnitConversionPlanV1 is sealed",
+      "matrix": {
+        "Rational": "admit every reduced exact ratio; checked AllocationError/allocate responsibility follows the selected Rational witness",
+        "integral": "admit only when the fully reduced numeric result denominator is exactly 1 and the checked result is representable; overflow is ArithmeticDefect before commit",
+        "Float32_or_Float64": "admit only with one explicit deterministic RoundingWitnessId bound in the API/checker environment",
+        "other_Rep": "admit only with one exact selected ScaleByReducedRatio<Rep> conformance whose responsibility and rounding law are sealed"
+      },
+      "implicit_representation_promotion_count": 0,
+      "implicit_rounding_policy_count": 0,
+      "silent_truncation_count": 0,
+      "primary_diagnostic": "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED",
+      "integral_fraction_diagnostic": "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED"
+    },
+    "hir": {
+      "identity": "UnitConversionPlanV1",
+      "fields": [
+        "source_unit_id",
+        "target_unit_id",
+        "dimension_id",
+        "reduced_numerator",
+      "reduced_denominator",
+      "display_unit_id",
+      "known_unit_witness_id",
+      "unit_catalog_id",
+      "representation_type_id",
+      "scalar_operation_plan_id",
+      "rounding_witness_id_or_null"
+      ],
+      "unresolved_field_count_before_seal": 0
+    },
+    "dynamic_boundary": "The sealed ScaleByReducedRatio<Rep> plan performs the numeric multiply/divide under its exact representation and rounding law. The backend may not replace the ratio, promote Rep, truncate, choose rounding or display identity, reconstruct a witness, or invoke a provider.",
+    "diagnostic_order": [
+      "UNKNOWN_UNIT_SYMBOL",
+      "AMBIGUOUS_UNIT_SYMBOL",
+      "UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED",
+      "DIMENSION_MISMATCH",
+      "MIXED_UNIT_ADDITION_REQUIRES_DISPLAY_UNIT_DECISION",
+      "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS",
+      "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED",
+      "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED"
+    ]
+  },
+  "affine_units": {
+    "feature_id": "affine_unit_profile_msp",
+    "implementation_target_disposition": "EXPLICITLY_DEFERRED_TARGET_EXCLUDED",
+    "current_source_admission": "REJECT",
+    "primary_diagnostic": "AFFINE_UNIT_NOT_IN_PHASE_A",
+    "reason": "The current UnitCatalog grammar has no point/delta or offset declaration and therefore cannot bind a sound Point/Delta law without adding a new source surface.",
+    "deferred_minimum_law": [
+      "Point + Delta -> Point",
+      "Point - Point -> Delta",
+      "Delta + Delta -> Delta",
+      "Delta - Delta -> Delta",
+      "Point + Point is rejected"
+    ],
+    "reopen_conditions": [
+      "a separate Design_ decision selects exact source declarations for point and delta units",
+      "offset and scale normalization are closed without implicit provider lookup",
+      "positive, boundary and rejection fixtures bind the selected surface"
+    ]
+  },
+  "shaped_generator_boundary": {
+    "feature_id": "shaped_generator_initializer_msp",
+    "stdlib_profile_id": "arbitrary_generator_stdlib_profile",
+    "stdlib_profile_disposition": "EXPLICITLY_DEFERRED_TARGET_EXCLUDED_OPTIONAL_PROVIDER",
+    "language_dependency_edge_count_from_shaped_initializer_to_profile": 0,
+    "provider_availability_changes_checker_result_count": 0,
+    "source_contract": {
+      "shape": "finite statically known nonnegative StaticInt dimensions",
+      "cardinality": "checked product of dimensions",
+      "generator_expression_evaluation_count": "exactly one when cardinality > 0; zero when cardinality == 0",
+      "element_request_order": "row-major logical coordinate order, each coordinate exactly once",
+      "result_contract": "the already selected ordinary callable accepts the exact logical coordinate tuple and returns the array element type",
+      "effect_error_contract": "the callable's sealed EffectRow and ErrorSet are preserved; no provider effects or errors are inferred",
+      "failure_atomicity": "shape validation and result storage reservation precede the first call; a failed call cleans the constructed prefix in reverse order and publishes no partial array",
+      "provider_lookup_count": 0,
+      "hidden_clone_or_default_count": 0
+    },
+    "diagnostic_order": [
+      "FILL_REPEAT_ADMISSIBILITY_FAILED"
+    ]
+  },
+  "acceptance": {
+    "positive": [
+      "Measure<Rational, Length> containing 250[cm] converts exactly to 5/2[m]",
+      "Measure<Int, Length> containing 2500[m] converts to 2[km] only when the fully reduced result is integral and representable",
+      "a nonempty shaped generator invokes the exact selected callable once per logical coordinate"
+    ],
+    "boundary": [
+      "a zero-cardinality shaped generator evaluates neither generator expression nor provider",
+      "multiple exact catalog paths are admitted only when their reduced ratios are identical"
+    ],
+    "reject": [
+      "zero or negative unit scale",
+      "dimension mismatch",
+      "Measure<Int, Length> containing 250[cm] cannot convert to metres because the reduced result denominator is not 1",
+      "Float or other Rep conversion without one exact rounding or ScaleByReducedRatio witness",
+      "implicit context anchor after a function boundary that preserved only Measure<Rep, Dim>",
+      "affine point unit in the current source profile",
+      "provider availability used to change shaped-generator admission"
+    ]
+  }
+}

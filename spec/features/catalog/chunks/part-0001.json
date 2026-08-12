@@ -13,7 +13,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Accessor property := surface. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 closes the := accessor-property parse and admission surface: header visibility is forbidden, one getter is required, an optional setter belongs only to var, and no backing-storage identity is synthesized. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -33,7 +33,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -52,7 +55,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Accessor visibility restored law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 binds effective get/set visibility to each accessor arm, resolves omission through MemberVisibilityOmissionV1, and requires setter visibility not to exceed getter visibility. The rule is static-only and product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -72,7 +75,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -91,7 +97,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Accessor visibility surface phase a. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 preserves explicit or omitted visibility on each get/set arm and forbids visibility on the accessor-property header; OMITTED is eliminated before canonical HIR. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -111,7 +117,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -390,7 +399,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "Celsius/Fahrenheit point/delta separation is excluded from Phase A measure positive corpus. Current contract: Celsius/Fahrenheit style point/delta units are stdlib/profile law, not implicit core conversion.",
+    "notes": "Affine point/delta units are an explicitly deferred stdlib profile and are excluded from the first implementation target. Current source rejects them with AFFINE_UNIT_NOT_IN_PHASE_A until a separate surface and offset law are approved.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -409,7 +418,8 @@
       "semantic_reference_productions": []
     },
     "artifact_trace_refs": [
-      "library/prelude/prelude.md"
+      "library/prelude/prelude.md",
+      "spec/contracts/measure-collection-bootstrap-r99.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -702,7 +712,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "Current contract: stdlib generator profile seed is a stdlib/profile dependency for shaped generator initializers, not a language Preview gate.",
+    "notes": "Optional provider provenance only. It is explicitly excluded from the first implementation target and is never a normative dependency of shaped generator initialization.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -721,7 +731,8 @@
       "semantic_reference_productions": []
     },
     "artifact_trace_refs": [
-      "library/prelude/prelude.md"
+      "library/prelude/prelude.md",
+      "spec/contracts/measure-collection-bootstrap-r99.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1673,56 +1684,6 @@
       "productions": [],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
-    "authority_set": [
-      "LANGUAGE",
-      "TYPE_SYSTEM",
-      "CHECKER"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [
-      "index_operator"
-    ],
-    "display_name": "Basic index operator",
-    "feature_id": "basic_index_operator",
-    "feature_kind": "canonical_feature",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "IndexSuffix needs at least one comma-separated axis. Closed intrinsic carriers admit read-only selection and owner-bounded open slices; conformance cannot activate brackets and ordinary brackets never yield a place. MutableList structural-edit statements are a separate closed parser owner that lowers to exact Prelude calls and does not activate ordinary MutableList bracket replacement. Product checker NOT_RUN.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "normative_trace_refs": {
-      "diagnostics": [
-        "BASIC_INDEX_OPERATOR_STABLE_LAW",
-        "INDEX_SUFFIX_REQUIRES_AXIS",
-        "LOGICAL_INDEX_DOMAIN_MISMATCH"
-      ],
-      "predicates": [
-        "BasicIndexOperatorAdmitted",
-        "LogicalIndexDomainAdmitted"
-      ],
-      "examples": [],
-      "productions": [
-        "IndexSuffix"
-      ],
-      "semantic_reference_productions": []
-    },
-    "trace_class": "syntax",
     "artifact_trace_refs": [],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

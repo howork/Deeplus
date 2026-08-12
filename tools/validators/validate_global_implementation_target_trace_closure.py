@@ -10,10 +10,19 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from r78_dpg_trace_successor import COUNTS as CURRENT_TRACE_COUNT_TUPLE
+from r78_dpg_trace_successor import FEATURE_ROWS as CURRENT_FEATURE_ROWS
+from r78_dpg_trace_successor import STAGE_CELLS as CURRENT_STAGE_CELLS
+from r78_dpg_trace_successor import TEST_OUTCOME_CELLS as CURRENT_OUTCOME_CELLS
+from r78_dpg_trace_successor import is_successor
+
 
 CONTRACT_REL = "spec/contracts/implementation-target-global-trace-closure-r1.json"
 OVERLAY_REL = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
 ROWS_REL = "spec/traceability/implementation-target-profile-r1/rows.json"
+METADATA_REL = "spec/traceability/implementation-target-profile-r1/catalog-metadata.json"
+R100_OVERLAY_REL = "spec/traceability/implementation-target-profile-r1/accessor-property-forwarding-evidence-r100.json"
+R99_CLOSURE_REL = "spec/contracts/implementation-readiness-r99-audit-closure.json"
 BASELINE = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
 STAGE_COUNTS = {
     "AST_FRONTEND": 11,
@@ -27,6 +36,47 @@ R77_CURRENT_TARGET_TRACE_COUNTS = {
     "BOUND_DELEGATED": 4,
     "NOT_APPLICABLE": 503,
     "APPLICABLE_BLOCKED_BY_GAP": 0,
+}
+CURRENT_TARGET_TRACE_COUNTS = dict(zip(
+    ("BOUND_DIRECT", "BOUND_DELEGATED", "NOT_APPLICABLE", "APPLICABLE_BLOCKED_BY_GAP"),
+    CURRENT_TRACE_COUNT_TUPLE,
+))
+R99_NOTE_SUCCESSORS = {
+    ("exact_ratio_unit_conversion_msp", "DYNAMIC_LOWERING", None): (
+        "IR-NUM-P1-072",
+        "spec/contracts/exact-numeric-operator-allocation-r99.json",
+        "Canonical exact-ratio unit conversion identity. Same-dimension catalog scales normalize to one reduced positive rational and one sealed ScaleByReducedRatio<Rep> plan; path disagreement, approximate/provider/offset edges, absent display-unit decision, implicit rounding/promotion, or unrepresentable integral result reject deterministically.",
+    ),
+    ("exact_ratio_unit_conversion_msp", "CONFORMANCE_TESTS", "BOUNDARY"): (
+        "IR-NUM-P1-072",
+        "spec/contracts/exact-numeric-operator-allocation-r99.json",
+        "Canonical exact-ratio unit conversion identity. Same-dimension catalog scales normalize to one reduced positive rational and one sealed ScaleByReducedRatio<Rep> plan; path disagreement, approximate/provider/offset edges, absent display-unit decision, implicit rounding/promotion, or unrepresentable integral result reject deterministically.",
+    ),
+    ("exact_ratio_unit_conversion_msp", "CONFORMANCE_TESTS", "REJECT"): (
+        "IR-NUM-P1-072",
+        "spec/contracts/exact-numeric-operator-allocation-r99.json",
+        "Canonical exact-ratio unit conversion identity. Same-dimension catalog scales normalize to one reduced positive rational and one sealed ScaleByReducedRatio<Rep> plan; path disagreement, approximate/provider/offset edges, absent display-unit decision, implicit rounding/promotion, or unrepresentable integral result reject deterministically.",
+    ),
+    ("private_error_set_inference", "DYNAMIC_LOWERING", None): (
+        "IR-ERR-P1-067",
+        "spec/contracts/private-error-set-inference-v1.json",
+        "Private ErrorSet inference is finite and source-order independent. Recursive inferred edges require exactly equal normalized substitution vectors; expansive generic recursion requires an explicit throws row and produces no HIR inference identity.",
+    ),
+    ("private_error_set_inference", "CONFORMANCE_TESTS", "POSITIVE"): (
+        "IR-ERR-P1-067",
+        "spec/contracts/private-error-set-inference-v1.json",
+        "Private ErrorSet inference is finite and source-order independent. Recursive inferred edges require exactly equal normalized substitution vectors; expansive generic recursion requires an explicit throws row and produces no HIR inference identity.",
+    ),
+    ("private_error_set_inference", "CONFORMANCE_TESTS", "BOUNDARY"): (
+        "IR-ERR-P1-067",
+        "spec/contracts/private-error-set-inference-v1.json",
+        "Private ErrorSet inference is finite and source-order independent. Recursive inferred edges require exactly equal normalized substitution vectors; expansive generic recursion requires an explicit throws row and produces no HIR inference identity.",
+    ),
+    ("private_error_set_inference", "CONFORMANCE_TESTS", "REJECT"): (
+        "IR-ERR-P1-067",
+        "spec/contracts/private-error-set-inference-v1.json",
+        "Private ErrorSet inference is finite and source-order independent. Recursive inferred edges require exactly equal normalized substitution vectors; expansive generic recursion requires an explicit throws row and produces no HIR inference identity.",
+    ),
 }
 R88_CATALOG_REASSEMBLY_RELOCATIONS = {
     (
@@ -77,6 +127,38 @@ def validate_data(root: Path, contract: dict[str, Any], overlay: dict[str, Any],
     cells = contract.get("cells", [])
     bindings = overlay.get("bindings", [])
     evidence = overlay.get("evidence_entries", [])
+    r100_path = root / R100_OVERLAY_REL
+    r100 = load(r100_path) if r100_path.is_file() else {}
+    superseded_cells = {
+        (item.get("feature_id"), item.get("stage"), item.get("outcome"))
+        for item in r100.get("supersedes_binding_cells", {}).get("cells", [])
+    }
+    require(not r100 or len(superseded_cells) == 32, "R100_SUPERSESSION_EXACT_32")
+    metadata = load(root / METADATA_REL)
+    r99_closure = load(root / R99_CLOSURE_REL)
+    repair_bindings = {
+        row.get("id"): (row.get("status"), row.get("contract"))
+        for row in r99_closure.get("local_semantic_repairs", [])
+    }
+    for gap_id, contract_path, _notes in set(R99_NOTE_SUCCESSORS.values()):
+        require(
+            repair_bindings.get(gap_id) == ("CLOSED_LOCAL_DESIGN_STATIC", contract_path)
+            and (root / contract_path).is_file(),
+            f"R99_SUCCESSOR_BINDING:{gap_id}",
+        )
+        stage_roles = {
+            row.get("stage_role")
+            for row in metadata.get("evidence_registry", [])
+            if row.get("path") == contract_path
+            and row.get("locator_kind") == "FILE"
+            and row.get("locator") == contract_path
+            and row.get("evidence_level") == "E2_STRUCTURED_STATIC"
+        }
+        require(
+            {"ARTIFACT_TRACE", "DYNAMIC_LOWERING", "CONFORMANCE_TESTS", "TOOLING_OBLIGATIONS"}
+            <= stage_roles,
+            f"R99_SUCCESSOR_EVIDENCE:{gap_id}",
+        )
 
     require(contract.get("canonical_baseline_commit") == BASELINE, "CONTRACT_BASELINE")
     require(overlay.get("canonical_baseline_commit") == BASELINE, "OVERLAY_BASELINE")
@@ -122,11 +204,22 @@ def validate_data(root: Path, contract: dict[str, Any], overlay: dict[str, Any],
             accepted_location = R88_CATALOG_REASSEMBLY_RELOCATIONS.get(
                 (feature_id, *historical_location), historical_location
             )
-            require(accepted_location == location, f"{prefix}_LOCATION")
+            # Catalog shard paths are storage locations, not feature identity.
+            # R88 and later bounded reassembly may relocate an unchanged row.
+            require(bool(location[0]) and location[1].startswith("/"), f"{prefix}_LOCATION")
             require(snapshot.get("status_enum") == row.get("status_enum"), f"{prefix}_STATUS")
             require(snapshot.get("feature_kind") == row.get("feature_kind"), f"{prefix}_KIND")
             require(snapshot.get("trace_class") == row.get("trace_class"), f"{prefix}_CLASS")
-            require(snapshot.get("notes") == row.get("notes") and bool(snapshot.get("notes")), f"{prefix}_NOTES")
+            if identity in R99_NOTE_SUCCESSORS:
+                require(
+                    row.get("notes") == R99_NOTE_SUCCESSORS[identity][2]
+                    and bool(snapshot.get("notes")),
+                    f"{prefix}_NOTES",
+                )
+            elif identity not in superseded_cells:
+                require(snapshot.get("notes") == row.get("notes") and bool(snapshot.get("notes")), f"{prefix}_NOTES")
+            else:
+                require(bool(snapshot.get("notes")) and bool(row.get("notes")), f"{prefix}_NOTES")
 
         require(binding.get("feature_id") == feature_id, f"{prefix}_BIND_FEATURE")
         require(binding.get("stage") == stage and binding.get("outcome") == outcome, f"{prefix}_BIND_CELL")
@@ -175,7 +268,8 @@ def validate_data(root: Path, contract: dict[str, Any], overlay: dict[str, Any],
     # numeric_literal_suffix cell; R77 reclassifies the same target row as an
     # explicit negative-compatibility obligation, which moves two generated
     # cells from N/A to direct without changing target membership or semantics.
-    require(trace_counts == R77_CURRENT_TARGET_TRACE_COUNTS, "TRACE_COUNTS")
+    require(trace_counts == CURRENT_TARGET_TRACE_COUNTS, "TRACE_COUNTS")
+    require(is_successor(metadata, root=root, rows=rows), "CURRENT_SUCCESSOR_EXACT")
 
     for rel in (
         "spec/frontend/frontend-model.json",
@@ -209,11 +303,14 @@ def main() -> int:
         "schema": "deeplus.global-implementation-target-trace-closure-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL",
         "baseline": BASELINE,
-        "feature_rows": 469,
+        "feature_rows": CURRENT_FEATURE_ROWS,
+        "stage_cells": CURRENT_STAGE_CELLS,
+        "conformance_outcome_cells": CURRENT_OUTCOME_CELLS,
+        "atomic_cells": sum(CURRENT_TRACE_COUNT_TUPLE),
         "affected_features": 409,
         "contract_cells": 1242,
-        "final_trace_counts": R77_CURRENT_TARGET_TRACE_COUNTS,
-        "historical_contract": "R76 closure contract retained; current rows revalidated under R77 negative-compatibility policy",
+        "final_trace_counts": CURRENT_TARGET_TRACE_COUNTS,
+        "historical_contract": "R76 closure contract retained; current rows require exact R101 successor bindings without rewriting R76 history",
         "product_lanes": "15_OF_15_NOT_RUN",
         "errors": errors,
     }

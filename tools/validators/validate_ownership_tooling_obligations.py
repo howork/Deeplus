@@ -240,7 +240,7 @@ def validate_documents(root: Path, docs: dict[str, Any]) -> tuple[list[dict[str,
     dependency_shapes = [row.get("bound_shape") for row in dependencies]
     check(errors, checks, dependency_core == [
         {"dependency_id": "MANAGED_REFERENCE_MEMORY_PROFILE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "root_rows", "required_digest_or_null": "c7edbfe73ce68116525bc430de9b009e3b563f0bb8fa6d7a787a35f558927287"},
-        {"dependency_id": "CONTINUATION_INTERFACE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "continuation_rows", "required_digest_or_null": "52eff7187a3fd4abfd9f8dad38c6b6592f9d75ed1596121463c018be92aebb53"},
+        {"dependency_id": "CONTINUATION_INTERFACE", "status": "CANONICALLY_BOUND_DESIGN_STATIC", "panel": "continuation_rows", "required_digest_or_null": "6dcb8964c1d8fb788e7946f8cdaa54f2d31d6d003fdece7161a8713c1e858d50"},
     ] and dependency_shapes == [
         {"semantic_references": ["RootId"], "required_receipt": "exact runtime/debug receipt additionally bound to the canonical managed-reference profile digest", "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"},
         {"semantic_references": ["ContinuationReceiptId"], "fields": ["frame state", "winner"], "required_receipt": "exact runtime/debug receipt additionally bound to the canonical continuation-interface digest", "current_rows": "EMPTY_UNAVAILABLE_RUNTIME_NOT_RUN"},
@@ -374,6 +374,16 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
     docs = {name: load_json(root, relative) for name, relative in FILES.items() if relative.endswith(".json")}
+    # A generated reassembly may move a feature between shards. The feature
+    # ID, not its historical part file, owns the tooling obligation.
+    docs["feature"] = [
+        row
+        for path in sorted(
+            (root / "spec/features/catalog/chunks").glob("part-*.json")
+        )
+        for row in json.loads(path.read_text(encoding="utf-8"))
+        if isinstance(row, dict)
+    ]
     errors, checks = validate_documents(root, docs)
     mutation_results = []
     if not errors:

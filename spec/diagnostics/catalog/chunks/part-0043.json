@@ -1,0 +1,91 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "private_error_set_inference"
+    ],
+    "fixit_hint": "declare the exact throws row on the recursive callable boundary",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not bound, truncate, or source-order an expansive generic recursion graph",
+    "message": "Private ErrorSet inference admits recursive edges only when caller and callee have the same normalized substitution vector.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/private-error-set-inference-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "TYPE_SYSTEM / CHECKER / STDLIB",
+    "authority_set": [
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "STDLIB"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "exact_ratio_unit_conversion_msp",
+      "unit_operation_policy_msp"
+    ],
+    "fixit_hint": "use Rational, prove an integral result, or provide one explicit rounding witness for the selected Rep",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never silently truncate, promote, or select a rounding policy",
+    "message": "Exact-ratio conversion requires one sealed ScaleByReducedRatio<Rep> plan.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/measure-collection-bootstrap-r99.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "measure_semantic_core"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "TYPE_SYSTEM / CHECKER / STDLIB",
+    "authority_set": [
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "STDLIB"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "exact_ratio_unit_conversion_msp"
+    ],
+    "fixit_hint": "use Rational or choose units whose reduced result has denominator 1",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not truncate or insert a hidden Rational-to-integral conversion",
+    "message": "An integral Measure representation admits exact-ratio conversion only when the reduced result denominator is one.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/measure-collection-bootstrap-r99.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "measure_semantic_core"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

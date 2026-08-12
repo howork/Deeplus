@@ -716,6 +716,15 @@ machine-registry order; the 17 terminators use `0x8000..0x8010`. Every other
 opcode, registry-digest mismatch, noncanonical payload or unknown section is a
 pre-execution rejection, not a forward-compatible skip.
 
+For the R99 implementation target, opcode identity alone is insufficient. Each
+operation and terminator also binds the exact payload-contract identity in
+`spec/contracts/xbc-typed-payload-registry-r99.json`. Its 48 operation rows,
+17 terminator rows, and closed 73-field domain table decide whether each field
+is a value, place, token, frame, body, static-identity, constant or closed
+scalar reference. Equal numeric ordinals in different namespaces never
+interchange, and an opcode/kind/payload-contract mismatch is rejected before
+execution.
+
 XBC body slots are typed dense projection ordinals in disjoint value, place,
 linear-token, continuation-frame and static-table namespaces. They are not MIR
 identity, source serialization tag, ABI identity, byte offset, native address
@@ -750,6 +759,18 @@ mode additionally binds object bytes, object format, linker identity and final
 artifact. JIT mode binds the import allowlist, resolved import map, executable
 memory policy, finalized image and retirement lifetime. Host defaults cannot
 supply any omitted input.
+
+The implementation target additionally binds the 50 ordered argument/result
+records and 25 effective helper signatures (22 base plus 3 active conditional
+helpers) in
+`spec/contracts/runtime-abi-record-registry-r99.json`, the three complete
+target mapping preimages in
+`spec/contracts/runtime-target-mapping-registry-r99.json`, and the total
+48-operation/17-terminator lowering table in
+`spec/contracts/mir-clif-projection-registry-r99.json`. A digest without its
+local mapping preimage, a helper signature that omits either record digest, or
+a MIR kind without exactly one lowering row is a pre-emission rejection. These
+design-static registries do not claim that Cranelift is linked or executed.
 
 Error, Defect, Cancellation, suspension and cleanup remain explicit MIR
 outcomes and edges. They cannot be replaced by native exceptions, personality
@@ -803,7 +824,9 @@ storage-location `RootId` and trace-descriptor bindings, never a runtime handle
 generation or receipt lifecycle. At an executed safepoint the runtime receipt
 checks exact generations, is published before the may-collect entry, remains
 live through MIR outcome commit, and is then released. The current continuation
-interface digest is `2ccf2acd...c8b4`; predecessor `0dc489...1271` pointers do
+interface digest is
+`6dcb8964c1d8fb788e7946f8cdaa54f2d31d6d003fdece7161a8713c1e858d50`;
+predecessor pointers do
 not select successor semantics. `RegionId` and `LoanId` remain verifier
 identities: a managed root neither creates nor extends a loan.
 
@@ -1318,7 +1341,7 @@ relookup, reselection, or inference of either identity is forbidden.
 
 The current Stable-design machine schema is `deeplus.mir/r1`, and deterministic
 lowering produces `Verified<DeeplusMirR1>`. The closed machine registry is
-`deeplus.mir-machine-registry/r1`: exactly 29 semantic operations, 17
+`deeplus.mir-machine-registry/r1`: exactly 48 semantic operations, 17
 terminators, 12 linear token kinds, 11 responsibility axes in their canonical
 order, and 26 design capabilities. These are backend-neutral identities; XBC,
 CLIF, registers, addresses, object layout, calling convention, and ABI remain

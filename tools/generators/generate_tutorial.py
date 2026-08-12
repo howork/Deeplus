@@ -103,6 +103,13 @@ def canonical_json(value: Any) -> bytes:
     ).encode("utf-8")
 
 
+def contract_json(value: Any) -> bytes:
+    """Serialize the hand-maintained contract without reordering its fields."""
+    return (json.dumps(value, ensure_ascii=False, indent=2) + "\n").encode(
+        "utf-8"
+    )
+
+
 def atomic_write(path: Path, data: bytes) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, raw_temp = tempfile.mkstemp(prefix=f".{path.name}.", dir=path.parent)
@@ -249,6 +256,41 @@ def validate_authority_and_pointer(
     ):
         raise TutorialError("current pointer product lane drift")
     return source_bindings
+
+
+def refresh_source_bindings(root: Path) -> None:
+    """Rebind only the contract's closed tutorial source input set.
+
+    This is the canonical synchronization path after one of the eight declared
+    sources changes.  It deliberately cannot add, remove, or reorder inputs.
+    """
+    contract_path = root / CONTRACT_REL
+    contract = read_json(contract_path)
+    bindings = contract.get("source_bindings")
+    if (
+        not isinstance(bindings, list)
+        or [row.get("path") for row in bindings if isinstance(row, dict)]
+        != list(SOURCE_BINDING_RELS)
+        or any(
+            not isinstance(row, dict)
+            or set(row) != {"path", "sha256"}
+            for row in bindings
+        )
+    ):
+        raise TutorialError(
+            "refusing to refresh a tutorial source binding set with shape drift"
+        )
+    contract["source_bindings"] = [
+        {
+            "path": identity["path"],
+            "sha256": identity["sha256"],
+        }
+        for identity in (
+            checked_file_identity(root, relative)
+            for relative in SOURCE_BINDING_RELS
+        )
+    ]
+    atomic_write(contract_path, contract_json(contract))
 
 
 def classify(relative_to_tutorial: PurePosixPath) -> str:
@@ -787,16 +829,19 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument("--refresh-bindings", action="store_true")
     args = parser.parse_args()
     root = args.root.resolve()
     try:
+        if args.refresh_bindings:
+            refresh_source_bindings(root)
         manifest, manifest_data = build(root)
         report_data = report_bytes(manifest)
         outputs = {
             root / MANIFEST_REL: manifest_data,
             root / REPORT_REL: report_data,
         }
-        if args.write:
+        if args.write or args.refresh_bindings:
             for path, data in outputs.items():
                 atomic_write(path, data)
         else:

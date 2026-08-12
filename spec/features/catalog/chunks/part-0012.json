@@ -400,7 +400,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Private error set inference. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "Private ErrorSet inference is finite and source-order independent. Recursive inferred edges require exactly equal normalized substitution vectors; expansive generic recursion requires an explicit throws row and produces no HIR inference identity.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -411,7 +411,12 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
+      "diagnostics": [
+        "ERROR_ROW_PRIVATE_INFERENCE_NOT_ADMITTED",
+        "ERROR_ROW_PRIVATE_INFERENCE_UNSEALED_CALL",
+        "ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH",
+        "ERROR_ROW_PRIVATE_TYPE_LEAK"
+      ],
       "predicates": [],
       "examples": [],
       "productions": [],
@@ -419,7 +424,9 @@
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [
-      "spec/language.md"
+      "spec/language.md",
+      "spec/contracts/private-error-set-inference-v1.json",
+      "tests/fixtures/current/checker-bootstrap-r99.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -684,7 +691,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Property default accessor. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 requires exactly one getter, permits at most one setter only on var, seals Stable accessor arms as synchronous throws Never effects {}, and defines single-evaluation failure-atomic read/write lowering without backing storage. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -700,7 +707,12 @@
         "ACCESSOR_PROPERTY_MULTIPLE_ACCESSORS_REQUIRE_BLOCK",
         "ACCESSOR_PROPERTY_SEPARATOR_REQUIRED",
         "ACCESSOR_PROPERTY_VISIBILITY_ON_ACCESSOR_REQUIRED",
-        "PROPERTY_VALUE_REQUIRES_REUSABLE_NODROP"
+        "PROPERTY_VALUE_REQUIRES_REUSABLE_NODROP",
+        "ACCESSOR_PROPERTY_GETTER_REQUIRED",
+        "ACCESSOR_PROPERTY_DUPLICATE_GETTER",
+        "ACCESSOR_PROPERTY_DUPLICATE_SETTER",
+        "LET_PROPERTY_CANNOT_HAVE_SETTER",
+        "SETTER_VISIBILITY_CANNOT_EXCEED_GETTER"
       ],
       "predicates": [],
       "examples": [],
@@ -710,7 +722,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -768,7 +783,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for PropertyValue admissibility law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 admits a by-value property result only when it is reusable, no-drop, lifecycle-free, and ownership-compatible; resource observation uses a named method, borrow, or with-style API. The law is static-only and product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -788,7 +803,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1654,48 +1672,6 @@
     "primary_source": "spec/language.md",
     "row_schema_version": "deeplus.feature-row/r51f3",
     "notes": "Example corpus Markdown drives manifest, blocks, smoke, parser seed, negative fixtures.",
-    "language_status": "Official tooling",
-    "status_display": "Official tooling",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "formatter_lsp": "NOT_RUN",
-    "runtime_xvm": "NOT_RUN",
-    "actual_user_team_study": "NOT_RUN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "trace_class": "tooling",
-    "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
-      "examples": [],
-      "productions": [],
-      "semantic_reference_productions": [
-        "ClosureExpr",
-        "LambdaBody",
-        "LambdaParameterList"
-      ]
-    },
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "feature_id": "r49_double_colon_namespace_closure",
-    "display_name": "double-colon namespace closure",
-    "status_enum": "OFFICIAL_TOOLING",
-    "source_activation": "documentation",
-    "feature_kind": "official_tooling",
-    "authority_set": [
-      "OFFICIAL_TOOLING",
-      "DOCUMENTATION"
-    ],
-    "authority": "OFFICIAL_TOOLING / DOCUMENTATION",
-    "depends_on": [],
-    "baseline": "0.1.2-baseline.r51f3",
-    "primary_source": "spec/language.md",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "notes": "Documentation/projection closure for `::` policy.",
     "language_status": "Official tooling",
     "status_display": "Official tooling",
     "product_support": "NOT_RUN",

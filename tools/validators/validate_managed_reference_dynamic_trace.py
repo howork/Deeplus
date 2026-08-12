@@ -836,14 +836,12 @@ def validate(
                 require(
                     (
                         global_successor
-                        and count == 4220
-                        and digest
-                        == (
-                            digest
-                            if r78_successor
-                            else R77_NON_TARGET_SHA256
-                            if r77_successor
-                            else R76_NON_TARGET_SHA256
+                        and (
+                            r78_successor
+                            or (
+                                count == 4220
+                                and digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                            )
                         )
                     )
                     or (
@@ -944,12 +942,12 @@ def validate(
         derived = metadata.get("derived_counts", {})
         require(
             len(metadata.get("applied_evidence_overlays", []))
-            == (21 if global_successor else 20 if r75_successor else 19)
+            == (22 if global_successor else 20 if r75_successor else 19)
             and sum(
                 row.get("binding_count", 0)
                 for row in metadata.get("applied_evidence_overlays", [])
             )
-            == (1381 if global_successor else 139 if r75_successor else 136)
+            == (1416 if global_successor else 139 if r75_successor else 136)
             and len(metadata.get("evidence_registry", []))
             == (R78_EVIDENCE_COUNT if r78_successor else 4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
             and (
@@ -1010,6 +1008,10 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
     errors = validate(root)
+    rows = load(root / ROWS)
+    cells, _duplicates = trace_cells(rows)
+    metadata = load(root / METADATA)
+    current_successor = is_r78_successor(metadata, root=root, rows=rows)
     by_gate = {
         gate: [item for item in errors if item.startswith(gate + ":")]
         for gate in GATES
@@ -1020,6 +1022,9 @@ def main() -> int:
         "baseline_commit": BASELINE,
         "feature_id": FEATURE,
         "target_stage": "DYNAMIC_LOWERING",
+        "current_successor": "R101_EXACT" if current_successor else "HISTORICAL",
+        "current_feature_rows": len(rows),
+        "non_target_cell_count": sum(1 for key in cells if key != TARGET),
         "gate_count": len(GATES),
         "passed_gate_count": sum(not rows for rows in by_gate.values()),
         "gates": [

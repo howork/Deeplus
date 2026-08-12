@@ -238,7 +238,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ExactRatioUnitConversionAdmitted",
     "source_name": "ExactRatioUnitConversionAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Admits one same-dimension exact-ratio conversion under the closed R99 unit conversion plan; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -250,16 +250,19 @@
       "exact_ratio_unit_conversion_msp"
     ],
     "diagnostic_refs": [
-      "UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED"
+      "UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED",
+      "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED",
+      "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED"
     ],
     "design_seed_diagnostic_refs": [
       "UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED"
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "ratio expression exact",
-      "dimension compatible",
-      "unit operation policy stable"
+      "source and target scales are reduced positive rationals",
+      "source and target DimensionId are equal",
+      "one explicit target or context-anchor display unit is selected",
+      "one exact ScaleByReducedRatio<Rep> plan is selected"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -274,21 +277,28 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "ratio expression exact",
-      "dimension compatible",
-      "unit operation policy stable"
+      "both unit identities resolve in already selected active catalogs",
+      "both catalog rows are exact-ratio non-affine rows",
+      "RepTypeId is independently fixed before scalar-plan selection"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "reduce positive source and target scales independently, require equal DimensionId, then reduce source_scale / target_scale",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ExactRatioUnitConversionAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "resolve source and target UnitId without provider fallback",
+      "reject zero, negative, approximate, affine, calendar or provider-backed scale rows",
+      "require equal DimensionId",
+      "reduce source_scale / target_scale by Euclid gcd over finite integers",
+      "require exactly one explicit target or context-anchor display decision",
+      "select ScaleByReducedRatio<Rational> for every exact ratio; for integral Rep require the fully reduced result denominator to equal 1 and check representability",
+      "for Float32, Float64 or another Rep require one explicit deterministic rounding or exact ScaleByReducedRatio witness; never truncate or promote implicitly",
+      "seal UnitConversionPlanV1 or emit the first diagnostic in the R99 contract order"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "termination_metric": "two finite unit rows plus Euclid gcd on strictly decreasing positive remainders",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED",
-    "secondary_diagnostics": [],
+    "secondary_diagnostics": [
+      "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED",
+      "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED"
+    ],
     "positive_fixture_ids": [
       "PF-ExactRatioUnitConversionAdmitted-POS"
     ],
@@ -298,9 +308,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "3ab75d097ac30380bbe398ea87c8b096aee0da8f0b285fabc848dd41a4848fce",

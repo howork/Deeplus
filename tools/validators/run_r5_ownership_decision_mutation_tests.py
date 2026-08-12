@@ -2403,6 +2403,9 @@ R8_GRAMMAR_SHA256 = (
 R77_GRAMMAR_SHA256 = (
     "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
 )
+R99_GRAMMAR_SUCCESSOR_SHA256 = (
+    "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84"
+)
 R77_HIR_H1_BRIDGE_SHA256 = (
     "2798c85f3575503d87ba038d02d3b265fe1b26df7bd967326458905f0c422911"
 )
@@ -2615,15 +2618,6 @@ R8_PREDICATE_PROCEDURES = {
     ],
 }
 R8_MEASURE_SEED_PROCEDURES = {
-    "HasKnownUnitWitness": [
-        "validate the declared descriptor shape as design documentation only",
-        "record HasKnownUnitWitness requires and candidate diagnostic "
-        "vocabulary without executing a checker decision",
-        "emit no diagnostic and create no product execution receipt while "
-        "predicate_maturity is design_seed",
-        "promote only after a closed terminating algorithm plus "
-        "discriminating positive/negative fixtures is independently reviewed",
-    ],
     "MeasureUnitWitnessAdmitted": [
         "validate the declared descriptor shape as design documentation only",
         "record MeasureUnitWitnessAdmitted requires and candidate diagnostic "
@@ -2632,6 +2626,16 @@ R8_MEASURE_SEED_PROCEDURES = {
         "predicate_maturity is design_seed",
         "promote only after a closed terminating algorithm plus "
         "discriminating positive/negative fixtures is independently reviewed",
+    ],
+}
+R99_MEASURE_SUCCESSOR_PROCEDURES = {
+    "HasKnownUnitWitness": [
+        "validate the closed descriptor variant and fixed expected Measure<Rep, Dim>",
+        "resolve the unit symbol to exactly one UnitId in active catalogs ordered by canonical UnitCatalogId",
+        "require the resolved DimensionId and Rep constraints to match the expected Measure type",
+        "prefer the explicit unit witness carrier; otherwise require exactly one already sealed context anchor",
+        "seal KnownUnitWitnessId, UnitCatalogId, UnitId, DimensionId and RepTypeId in typed HIR",
+        "after a function boundary carrying only Measure<Rep, Dim>, require an explicit witness carrier or separately preserved context anchor instead of reconstructing display identity",
     ],
 }
 R8_OWNERSHIP_MODE_REASON_RANK = [
@@ -2944,6 +2948,15 @@ def _check_context_exact_7(
             "predicate catalog",
         )
         for predicate_id in R8_MEASURE_SEED_PROCEDURES
+    }
+    measure_successor_predicates = {
+        predicate_id: _find_unique(
+            environment.predicate_rows,
+            "predicate_id",
+            predicate_id,
+            "predicate catalog",
+        )
+        for predicate_id in R99_MEASURE_SUCCESSOR_PROCEDURES
     }
     context_feature_expectations = {
         "ampersand_polarity_decision_record": (
@@ -3345,8 +3358,17 @@ def _check_context_exact_7(
                 and row.get("execution_receipt") is None
                 and row.get("dependency_predicates") == []
                 for predicate_id, row in measure_seed_predicates.items()
+            )
+            and all(
+                row.get("predicate_maturity") == "design_algorithm"
+                and row.get("emission_eligible") is True
+                and row.get("decision_procedure")
+                == R99_MEASURE_SUCCESSOR_PROCEDURES[predicate_id]
+                and row.get("execution_receipt") is None
+                and row.get("dependency_predicates") == []
+                for predicate_id, row in measure_successor_predicates.items()
             ),
-            "Measure witness design-seed predicates were implicitly promoted",
+            "Measure witness predecessor/successor maturity fence changed",
         ),
         (
             context_effect_diagnostic.get("feature_refs")
@@ -3374,7 +3396,8 @@ def _check_context_exact_7(
         (
             grammar_path.is_file()
             and not grammar_path.is_symlink()
-            and _sha256(grammar_path.read_bytes()) == R77_GRAMMAR_SHA256,
+            and _sha256(grammar_path.read_bytes())
+            in {R77_GRAMMAR_SHA256, R99_GRAMMAR_SUCCESSOR_SHA256},
             "grammar byte fence changed",
         ),
         (

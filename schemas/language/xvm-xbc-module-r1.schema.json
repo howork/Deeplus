@@ -137,11 +137,12 @@
     "instruction": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["ordinal", "opcode", "operation_kind", "inputs", "outputs", "payload"],
+      "required": ["ordinal", "opcode", "operation_kind", "payload_contract_id", "inputs", "outputs", "payload"],
       "properties": {
         "ordinal": {"$ref": "#/$defs/u32"},
         "opcode": {"type": "integer", "minimum": 0, "maximum": 47},
         "operation_kind": {"type": "string", "minLength": 1},
+        "payload_contract_id": {"type": "string", "pattern": "^XbcPayloadContractId:operation\\.[A-Z_]+/r99$"},
         "inputs": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}},
         "outputs": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}},
         "payload": {"type": "object"}
@@ -159,10 +160,11 @@
     "terminator": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["opcode", "terminator_kind", "inputs", "successors", "payload"],
+      "required": ["opcode", "terminator_kind", "payload_contract_id", "inputs", "successors", "payload"],
       "properties": {
         "opcode": {"type": "integer", "minimum": 32768, "maximum": 32784},
         "terminator_kind": {"type": "string", "minLength": 1},
+        "payload_contract_id": {"type": "string", "pattern": "^XbcPayloadContractId:terminator\\.[A-Z_]+/r99$"},
         "inputs": {"type": "array", "items": {"$ref": "#/$defs/slotRef"}},
         "successors": {"type": "array", "items": {"$ref": "#/$defs/successor"}},
         "payload": {"type": "object"}
@@ -221,7 +223,7 @@
     "directory": "exact section order, ordinal 0..9, contiguous offsets from byte 688, no overlap/gap/trailing bytes, exact payload digests",
     "opcodes": "operation opcode equals exact machine-registry ordinal 0..47; terminator opcode equals 32768 plus exact ordinal 0..16",
     "dense_ordinals": "every namespace is contiguous from zero and follows the exact verified-MIR table order",
-    "payloads": "every instruction and terminator payload is the exact bound machine-registry payload with typed ordinal references",
+    "payloads": "every instruction and terminator binds its exact payload_contract_id from spec/contracts/xbc-typed-payload-registry-r99.json; field domains select typed ordinal namespaces or closed scalar domains and additional fields are forbidden",
     "verification": "reconstruct exact source MIR semantic digest and rerun applicable MIR verifier obligations before execution"
   }
 }

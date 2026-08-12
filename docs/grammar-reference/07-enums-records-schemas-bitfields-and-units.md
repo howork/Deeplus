@@ -63,9 +63,9 @@ product support를 이 장이 변경하지 않으며 product lane은 정확히
 EnumDecl ::= TopLevelVisibility? "enum" Identifier
              TypeParameterList? EnumBody
 
-EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody)? "}"
+EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody) "}"
 EnumCommaCaseSequence ::= EnumCaseCore ("," EnumCaseCore)+ ","?
-EnumLayoutBody ::= EnumCaseDecl* EnumMemberDecl*
+EnumLayoutBody ::= EnumCaseDecl+ EnumMemberDecl*
 
 EnumCaseDecl ::= EnumCaseCore StatementBoundary?
 EnumCaseCore ::= Identifier EnumCasePayload?
@@ -214,6 +214,19 @@ ExactRatioUnitConversionDecl ::= "unit" Identifier "equalsRatio"
 `m/s`, `m*s`, `m^2`는 unit 차원 연산이며 일반 collection indexing과
 다른 parser owner를 갖는다. 단위 symbol은 활성 unit catalog authority에서
 유일하게 resolve되어야 한다.
+
+Measure와 Index의 경계는 타입 정보를 조회하지 않고 다음처럼 정한다.
+
+| source | parser 결과 |
+|---|---|
+| `13[cm]` | 붙어 있는 `[`에서 `UnitExpr` 탐사가 성공하므로 `MeasureLiteralExpr`이다. |
+| `13 [cm]` | 공백 뒤의 완전한 `UnitExpr` 탐사가 성공하므로 `UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED`를 내고, 닫는 `]`까지 하나의 recovery CST 오류 노드로 보존한다. canonical Measure/Index AST는 만들지 않는다. |
+| `13[0]` | 붙어 있는 Measure 탐사가 실패한 뒤 토큰 소비나 진단 없이 일반 `IndexExpr`로 해석한다. |
+| `13 [0]` | 공백 뒤의 `UnitExpr` 탐사가 실패하므로 토큰 소비나 진단 없이 일반 `IndexExpr`로 해석한다. |
+
+따라서 공백만 보고 Measure와 Index를 고르지 않는다. parser는 대괄호
+내용이 완전한 `UnitExpr`인지 transactional하게 확인하고, 실패하면 입력과
+진단 상태를 원래 checkpoint로 되돌린다.
 
 core 변환은 exact ratio만 허용한다. calendar, currency 또는 관측 시점이
 필요한 동적 변환은 명시적 stdlib/provider API와 policy를 요구한다.

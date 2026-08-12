@@ -69,7 +69,7 @@ DPG_RULE_RE = re.compile(
 EXPECTED_COUNTS = {
     "grammar_productions": 656,
     "features": 723,
-    "diagnostics": 1514,
+    "diagnostics": 1525,
     "predicates": 293,
     "prelude_entries": 81,
     "examples": 769,

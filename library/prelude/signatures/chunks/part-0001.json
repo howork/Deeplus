@@ -63,23 +63,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable BinaryAdd evidence for an admitted non-intrinsic operand pair; the implicit left receiver and rhs are borrowed, evaluation is strict and left-to-right, Output is derived only after one left-owner DIRECT_GLOBAL conformance is selected, and any declared numeric overflow terminates as ArithmeticDefect before enclosing place commit",
-    "notes": "Intrinsic-reserved domains never consult this Trait. Expected result, conversion, source/import order, via/VIA/AUTO, local/case, extension/provider, specialization, fallback, and runtime relookup are forbidden; ArithmeticDefect is nonrecoverable and does not enter throws; product support NOT_RUN.",
+    "responsibility": "Stable BinaryAdd evidence; operands are borrowed and evaluated left-to-right, the Trait requirement bounds implementations by AllocationError/allocate, and the exact selected witness subset is expression responsibility",
+    "notes": "Primitive and fixed-width witnesses may seal Never/{}; BigInt/Rational value-producing rows seal AllocationError/allocate independent of small-value optimization. Selection remains unique left-owner DIRECT_GLOBAL; ArithmeticDefect is nonrecoverable and distinct; product support NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "0f022c27c66f0b63242ad396a38c2579484fb65dbe58ba9da355cbcc0765ac07"
+    "normalized_contract_sha256": "3235a5da64446f4a8b8fe28f2eb725d2f4fd69ca8d2f99dab2b1ab7bf644f35e"
   },
   {
     "entry_id": "arithmetic_defect",
@@ -1336,23 +1336,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable BinaryMultiply evidence for an admitted non-intrinsic operand pair under the borrowed, pure, synchronous, non-consuming fixed-glyph profile with only a declared precommit ArithmeticDefect terminal",
-    "notes": "Selection requires one left-owner DIRECT_GLOBAL conformance and cannot override an intrinsic-reserved domain or use conversion, alternate evidence routes, ordering, fallback, or runtime lookup; ArithmeticDefect is nonrecoverable and not a throws member; product support NOT_RUN.",
+    "responsibility": "Stable BinaryMultiply evidence under the borrowed synchronous non-consuming fixed-glyph profile; the selected witness seals an exact subset of AllocationError/allocate",
+    "notes": "Primitive and fixed-width witnesses may seal Never/{}; BigInt/Rational value-producing rows seal AllocationError/allocate. Selection remains unique left-owner DIRECT_GLOBAL; ArithmeticDefect is distinct; product support NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "c261f0a33edbf4703302ab0ba62477fa662aca05b5cb17c252bea9b659803496"
+    "normalized_contract_sha256": "7fac30c58a17d017bb46762f149d43d25de4c395616d9a87c385052653b5f8ff"
   },
   {
     "entry_id": "numeric_array",

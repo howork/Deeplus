@@ -72,23 +72,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"
+      "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws AllocationError effects allocate\n}"
     ],
-    "responsibility": "nominal total-order evidence for Self and Rhs; compare borrows its implicit Self receiver and explicit rhs, is deterministic, pure, synchronous, non-consuming, authority-free, throws Never, and makes only the result sign meaningful; one selected witness derives <, <=, > and >=",
-    "notes": "Ord<Rhs> derives Eq<Rhs>; compare zero must equal the Eq relation and trichotomy, transitivity, and antisymmetry are required. The four order glyphs share one WitnessId and no per-glyph conformance exists. Intrinsic-reserved domains take priority; Float NaN and Complex supply no implicit Ord evidence. Eligible ordered Enum derivation supplies one whole-Enum Eq/Ord pair and semantic ascending range authority.",
+    "responsibility": "nominal total-order evidence for Self and Rhs; compare borrows both operands, is deterministic, synchronous, non-consuming and authority-free, and seals an exact subset of AllocationError/allocate; one selected witness derives <, <=, > and >=",
+    "notes": "Ord<Rhs> derives pure Eq<Rhs>; compare zero must equal Eq and trichotomy, transitivity, and antisymmetry are required. Rational order seals AllocationError/allocate conservatively; fixed-width and ordered-Enum rows may seal Never/{}. The four glyphs share one WitnessId. Float NaN and Complex supply no implicit Ord evidence.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}",
+        "text": "public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws AllocationError effects allocate\n}",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "6c74cb1b7a4097fadcfab2157edf1abca28462cc6a496051751497d30dc5bb01"
+    "normalized_contract_sha256": "84eab2fb3b9f4a0976d194ca608453555ec771e4777df2e15a84f53ce769c25e"
   },
   {
     "entry_id": "owned_downcast_op",

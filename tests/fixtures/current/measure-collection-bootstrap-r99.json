@@ -1,0 +1,147 @@
+{
+  "schema": "deeplus.measure-collection-bootstrap-fixtures/r99",
+  "product_execution": "NOT_RUN",
+  "cases": [
+    {
+      "id": "R99-MEASURE-POS-001",
+      "class": "positive",
+      "operation": "EXACT_RATIO_CONVERSION",
+      "source_dimension": "Length",
+      "target_dimension": "Length",
+      "source_scale": [1, 100],
+      "target_scale": [1, 1],
+      "expected_ratio": [1, 100],
+      "rep": "Rational",
+      "scalar_plan": "ScaleByReducedRatio<Rational>",
+      "expected": "ADMIT"
+    },
+    {
+      "id": "R99-MEASURE-BOUNDARY-002",
+      "class": "boundary",
+      "operation": "EXACT_RATIO_CONVERSION",
+      "source_dimension": "Length",
+      "target_dimension": "Length",
+      "source_scale": [50, 100],
+      "target_scale": [2, 4],
+      "expected_ratio": [1, 1],
+      "rep": "Int",
+      "fully_reduced_result_denominator": 1,
+      "scalar_plan": "ScaleByReducedRatio<Int>",
+      "expected": "ADMIT"
+    },
+    {
+      "id": "R99-MEASURE-REJECT-003",
+      "class": "reject",
+      "operation": "EXACT_RATIO_CONVERSION",
+      "source_dimension": "Length",
+      "target_dimension": "Time",
+      "source_scale": [1, 1],
+      "target_scale": [1, 1],
+      "expected": "REJECT",
+      "diagnostic": "DIMENSION_MISMATCH"
+    },
+    {
+      "id": "R99-MEASURE-REJECT-004",
+      "class": "reject",
+      "operation": "EXACT_RATIO_CONVERSION",
+      "source_dimension": "Length",
+      "target_dimension": "Length",
+      "source_scale": [1, 0],
+      "target_scale": [1, 1],
+      "expected": "REJECT",
+      "diagnostic": "UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED"
+    },
+    {
+      "id": "R99-MEASURE-POS-009",
+      "class": "positive",
+      "operation": "KNOWN_UNIT_WITNESS_SELECTION",
+      "active_catalog_ids": ["std::units::si"],
+      "unit_id": "cm",
+      "dimension_id": "Length",
+      "rep": "Rational",
+      "explicit_witness_carrier": "1[cm]",
+      "expected_hir": ["KnownUnitWitnessId", "UnitCatalogId", "UnitId", "DimensionId", "RepTypeId"],
+      "expected": "ADMIT"
+    },
+    {
+      "id": "R99-MEASURE-BOUNDARY-010",
+      "class": "boundary",
+      "operation": "KNOWN_UNIT_WITNESS_REBIND_AFTER_FUNCTION_BOUNDARY",
+      "input_type": "Measure<Rational, Length>",
+      "preserved_display_unit_id": null,
+      "explicit_witness_carrier": "1[m]",
+      "expected": "ADMIT_AFTER_EXPLICIT_REBIND"
+    },
+    {
+      "id": "R99-MEASURE-REJECT-011",
+      "class": "reject",
+      "operation": "IMPLICIT_CONTEXT_ANCHOR_WITHOUT_WITNESS",
+      "input_type": "Measure<Rational, Length>",
+      "expected": "REJECT",
+      "diagnostic": "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS"
+    },
+    {
+      "id": "R99-MEASURE-REJECT-012",
+      "class": "reject",
+      "operation": "EXACT_RATIO_CONVERSION",
+      "source_dimension": "Length",
+      "target_dimension": "Length",
+      "source_scale": [1, 100],
+      "target_scale": [1, 1],
+      "rep": "Int",
+      "fully_reduced_result_denominator": 2,
+      "expected": "REJECT",
+      "diagnostic": "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED"
+    },
+    {
+      "id": "R99-MEASURE-REJECT-013",
+      "class": "reject",
+      "operation": "EXACT_RATIO_CONVERSION",
+      "source_dimension": "Length",
+      "target_dimension": "Length",
+      "source_scale": [1, 100],
+      "target_scale": [1, 1],
+      "rep": "Float64",
+      "rounding_witness_id": null,
+      "expected": "REJECT",
+      "diagnostic": "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED"
+    },
+    {
+      "id": "R99-AFFINE-REJECT-005",
+      "class": "reject",
+      "operation": "AFFINE_UNIT_LITERAL",
+      "unit": "degC",
+      "expected": "REJECT",
+      "diagnostic": "AFFINE_UNIT_NOT_IN_PHASE_A"
+    },
+    {
+      "id": "R99-GENERATOR-POS-006",
+      "class": "positive",
+      "operation": "SHAPED_GENERATOR",
+      "shape": [2, 2],
+      "generator_expression_evaluations": 1,
+      "coordinate_calls": [[1, 1], [1, 2], [2, 1], [2, 2]],
+      "provider_lookups": 0,
+      "expected": "ADMIT"
+    },
+    {
+      "id": "R99-GENERATOR-BOUNDARY-007",
+      "class": "boundary",
+      "operation": "SHAPED_GENERATOR",
+      "shape": [0, 4],
+      "generator_expression_evaluations": 0,
+      "coordinate_calls": [],
+      "provider_lookups": 0,
+      "expected": "ADMIT"
+    },
+    {
+      "id": "R99-GENERATOR-REJECT-008",
+      "class": "reject",
+      "operation": "SHAPED_GENERATOR_PROVIDER_DEPENDENCY",
+      "shape": [2],
+      "provider_lookups": 1,
+      "expected": "REJECT",
+      "diagnostic": "FILL_REPEAT_ADMISSIBILITY_FAILED"
+    }
+  ]
+}

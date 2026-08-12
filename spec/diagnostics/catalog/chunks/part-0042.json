@@ -1,0 +1,152 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPERATOR_ALLOCATION_ERROR_NOT_PROPAGATED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "fixit_hint": "declare throws AllocationError or select an exact witness whose sealed error set is Never",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never erase the selected operator error set",
+    "message": "The selected or generic fixed-operator plan can fail with AllocationError, but the enclosing callable does not propagate that error.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/exact-numeric-operator-allocation-r99.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "responsibility_type_system_retained_law"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OPERATOR_ALLOCATE_EFFECT_NOT_DECLARED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "fixit_hint": "declare effects allocate or select an exact witness whose sealed effect row is empty",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never hide allocation behind a pure operator signature",
+    "message": "The selected or generic fixed-operator plan may allocate, but the enclosing callable does not declare the allocate effect.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/exact-numeric-operator-allocation-r99.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "responsibility_type_system_retained_law"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ACCESSOR_PROPERTY_GETTER_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "property_default_accessor"
+    ],
+    "fixit_hint": "add exactly one get arm to the accessor property",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not synthesize storage or a getter",
+    "message": "An accessor property requires exactly one getter.",
+    "notes": "R100 design-static diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/accessor-property-forwarding-r100.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "accessor_property_colon_equals_surface"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ACCESSOR_PROPERTY_DUPLICATE_GETTER",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "property_default_accessor"
+    ],
+    "fixit_hint": "retain one getter and move distinct behavior to a named method",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never select a getter by source order",
+    "message": "An accessor property cannot declare more than one getter.",
+    "notes": "R100 design-static diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/accessor-property-forwarding-r100.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "accessor_visibility_surface_phase_a"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ACCESSOR_PROPERTY_DUPLICATE_SETTER",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "property_default_accessor"
+    ],
+    "fixit_hint": "retain one setter and move distinct behavior to a named method",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never select a setter by source order",
+    "message": "An accessor property cannot declare more than one setter.",
+    "notes": "R100 design-static diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/accessor-property-forwarding-r100.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "accessor_visibility_surface_phase_a"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

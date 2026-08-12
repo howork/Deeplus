@@ -291,6 +291,12 @@
       "role_commitment": "scanner_attachment_then_parser_owner"
     },
     {
+      "spelling": ";",
+      "scanner_kind": "SEMICOLON",
+      "classification": "FIXED_GLYPH",
+      "role_commitment": "scanner_attachment_then_parser_owner"
+    },
+    {
       "spelling": "<",
       "scanner_kind": "LESS",
       "classification": "FIXED_GLYPH",
@@ -1531,6 +1537,74 @@
       "admission": "byte offset zero only"
     }
   ],
+  "parser_terminal_adapter_registry": {
+    "physical_token_passthrough": [
+      "IDENTIFIER",
+      "WILDCARD",
+      "IMAGINARY_LITERAL",
+      "RATIONAL_LITERAL",
+      "CHAR_LITERAL",
+      "BYTES_LITERAL",
+      "PLAIN_STRING_LITERAL",
+      "RAW_STRING_LITERAL",
+      "MULTILINE_STRING_LITERAL",
+      "NAME_TOKEN",
+      "STRING_START",
+      "STRING_TEXT",
+      "STRING_ESCAPE",
+      "INTERPOLATION_OPEN",
+      "INTERPOLATION_CLOSE",
+      "INTERPOLATION_FORMAT_TEXT",
+      "INTERPOLATION_BOUNDARY",
+      "STRING_END"
+    ],
+    "aggregate_rows": [
+      {
+        "parser_terminal": "NUMERIC_LITERAL",
+        "physical_kinds": [
+          "INTEGER_LITERAL",
+          "FLOAT_LITERAL"
+        ],
+        "match": "TOKEN_KIND_SUPERTYPE_ONLY",
+        "emits_additional_physical_token": false
+      },
+      {
+        "parser_terminal": "DECIMAL_INTEGER",
+        "physical_kinds": [
+          "INTEGER_LITERAL"
+        ],
+        "predicate": "decimal radix, signless, integral token spelling",
+        "match": "TOKEN_KIND_PLUS_LEXICAL_PREDICATE",
+        "emits_additional_physical_token": false
+      },
+      {
+        "parser_terminal": "HARD_KEYWORD",
+        "physical_kind_selector": "all dedicated KW_* scanner kinds",
+        "match": "TOKEN_KIND_FAMILY_ONLY",
+        "emits_additional_physical_token": false
+      },
+      {
+        "parser_terminal": "EOF_TOKEN",
+        "physical_kinds": [
+          "EOF"
+        ],
+        "match": "EXACT_ALIAS",
+        "emits_additional_physical_token": false
+      },
+      {
+        "parser_terminal": "SHEBANG",
+        "physical_trivia_kinds": [
+          "SHEBANG"
+        ],
+        "predicate": "byte offset zero and active source role is script",
+        "match": "LEADING_TRIVIA_ROLE_PREDICATE",
+        "emits_additional_physical_token": false
+      }
+    ],
+    "physical_token_emission_per_source_span": 1,
+    "aggregate_match_emits_token": false,
+    "unknown_parser_terminal": "REJECT_BEFORE_PARSER_DISPATCH"
+  },
   "priority_registry": [
     {
       "rank": 1,
@@ -1728,6 +1802,8 @@
   "totality_law": {
     "every_current_parser_terminal_has_registry_row": true,
     "every_parser_visible_atomic_token_has_registry_row": true,
+    "every_dpg_scanner_outcome_has_passthrough_or_adapter": true,
+    "aggregate_terminal_matching_emits_no_duplicate_physical_token": true,
     "every_lexical_goal_has_mode_and_rational_policy": true,
     "every_overlap_family_has_unique_priority_rank": true,
     "unknown_goal": "REJECT_BEFORE_SCANNING",

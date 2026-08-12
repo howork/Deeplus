@@ -422,7 +422,7 @@
     },
     {
       "surface": "...",
-      "lexer": "ELLIPSIS",
+      "lexer": "DOT_DOT_DOT",
       "cst_roles": [
         "OneSidedRangeMarker"
       ],
@@ -1910,7 +1910,7 @@
           ],
           "rbp": 159,
           "assoc": "right",
-          "semantic_boundary": "language-reserved numeric sign; never a conformance lookup"
+          "semantic_boundary": "NumericSignExpr is syntax; intrinsic-reserved operands use the intrinsic implementation and all other admitted operands require one exact left-owner DIRECT_GLOBAL UnaryPlus or UnaryMinus witness"
         },
         {
           "id": "prefix",
@@ -2117,8 +2117,34 @@
         "NON_FUNCTION_TYPE",
         "UNIT"
       ],
-      "dispatch_key": "parse_goal + exact attached token sequence or structured lookahead signature",
-      "unknown_or_disabled": "R15_UNKNOWN_PARSELET_FOR_GOAL",
+    "dispatch_key": "parse_goal + exact attached token sequence or structured lookahead signature",
+    "unknown_or_disabled": "R15_UNKNOWN_PARSELET_FOR_GOAL",
+    "measure_literal_primary": {
+      "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL immediately followed by attached [",
+      "success": "MeasureLiteralExpr",
+      "failed_probe": "zero token consumption, zero diagnostic, ordinary literal/index dispatch resumes",
+      "separated_measure_lookahead": {
+        "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL followed by nonempty trivia and then [",
+        "probe": "transactionally parse one complete UnitExpr followed by ] without type information",
+        "success_diagnostic": "UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED",
+        "success_recovery": "consume through the matched ], retain one CST error node, and emit zero canonical MeasureLiteralExpr or IndexExpr AST nodes",
+        "failure": "zero bracket/trivia token consumption, zero diagnostic, ordinary IndexExpr dispatch resumes",
+        "non_unit_examples": [
+          "13[0]",
+          "13 [0]"
+        ]
+      },
+      "type_information_used": false
+    },
+    "range_parselet": {
+      "cores": [
+        "..",
+        "..<",
+        "..."
+      ],
+      "rhs": "required, required, absent respectively",
+      "optional_step": ": Expr owned by the committed Range parselet"
+    },
       "message_led": {
         "~": {
           "mode": "Message",
@@ -2358,9 +2384,11 @@
       "schema": "deeplus.complete-token-lexical-goal-contract/r1",
       "scanner_mode_count": 6,
       "lexical_goal_count": 10,
-      "syntax_terminal_count": 200,
+      "syntax_terminal_count": 201,
       "atomic_token_count": 22,
       "trivia_kind_count": 8,
+      "parser_terminal_adapter": "spec/contracts/complete-token-lexical-goal-contract-r1.json#/parser_terminal_adapter_registry",
+      "aggregate_match_additional_token_count": 0,
       "token_probe": "complete-checkpoint transaction; failed probe consumes zero bytes/tokens and emits zero diagnostics",
       "rational_probe": "expression prefix only in NORMAL or INTERPOLATION_CODE",
       "multiline_rebind": "MULTILINE_ATOMIC owns MultilineStringTokenPayloadV1",
@@ -3888,7 +3916,10 @@
         "trait_id": "UnaryPlus",
         "method_id": "UnaryPlus.positive",
         "output_projection": "UnaryPlus::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "UnaryMinus",
@@ -3897,7 +3928,10 @@
         "trait_id": "UnaryMinus",
         "method_id": "UnaryMinus.negate",
         "output_projection": "UnaryMinus::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryAdd",
@@ -3906,7 +3940,10 @@
         "trait_id": "Add<Rhs>",
         "method_id": "Add.add",
         "output_projection": "Add<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinarySubtract",
@@ -3915,7 +3952,10 @@
         "trait_id": "Subtract<Rhs>",
         "method_id": "Subtract.subtract",
         "output_projection": "Subtract<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryMultiply",
@@ -3924,7 +3964,10 @@
         "trait_id": "Multiply<Rhs>",
         "method_id": "Multiply.multiply",
         "output_projection": "Multiply<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryDivide",
@@ -3933,7 +3976,10 @@
         "trait_id": "Divide<Rhs>",
         "method_id": "Divide.divide",
         "output_projection": "Divide<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryRemainder",
@@ -3942,7 +3988,10 @@
         "trait_id": "Remainder<Rhs>",
         "method_id": "Remainder.remainder",
         "output_projection": "Remainder<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryEqual",
@@ -3963,40 +4012,52 @@
         "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
       },
       {
-        "operator_id": "BinaryLessThan",
+      "operator_id": "BinaryLessThan",
         "glyph": "<",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_lt_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       },
       {
-        "operator_id": "BinaryLessThanOrEqual",
+      "operator_id": "BinaryLessThanOrEqual",
         "glyph": "<=",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_le_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       },
       {
-        "operator_id": "BinaryGreaterThan",
+      "operator_id": "BinaryGreaterThan",
         "glyph": ">",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_gt_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       },
       {
-        "operator_id": "BinaryGreaterThanOrEqual",
+      "operator_id": "BinaryGreaterThanOrEqual",
         "glyph": ">=",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_ge_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       }
     ],
     "trait_roots": [
@@ -4029,6 +4090,19 @@
       "alternate_evidence_candidate_count": 0,
       "order_tie_break_count": 0,
       "runtime_lookup_or_fallback_count": 0
+    },
+    "trait_requirement_envelopes": {
+      "Eq<Rhs>": {
+        "throws": "Never",
+        "effects": []
+      },
+      "all_other_fixed_operator_roots": {
+        "throws_maximum": ["AllocationError"],
+        "effects_maximum": ["allocate"],
+        "selected_witness_may_seal_exact_subset": true
+      },
+      "responsibility_is_selection_key": false,
+      "rows_differing_only_by_responsibility": "REJECT_COHERENCE"
     },
     "strong_comparison_coherence": {
       "user_or_language_derived_rhs_policy": "NORMALIZED_RHS_MUST_EQUAL_SELF",
@@ -4066,14 +4140,18 @@
     "responsibility_profile": {
       "left": "borrow",
       "right": "borrow_or_absent_for_unary",
-      "throws": "Never",
-      "effects": [],
+      "throws": "SELECTED_EXACT_SUBSET_OF_ALLOCATIONERROR_OR_NEVER",
+      "effects": "SELECTED_EXACT_SUBSET_OF_ALLOCATE_OR_EMPTY",
+      "exact_binding": "responsibility_profile_id selects one descriptor from spec/contracts/exact-numeric-operator-allocation-r99.json",
       "suspension": "forbidden",
       "consume": false,
       "mutation": false,
       "authority": [],
       "arithmetic_terminal": "ArithmeticDefect before enclosing place commit when the selected numeric law detects overflow or a zero divisor",
-      "comparison_terminal": "none"
+      "comparison_terminal": "none",
+      "allocation_failure": "AllocationError before publication; operands retained, staged storage reverse-cleaned, and compound assignment performs zero writes",
+      "hidden_oom_defect_count": 0,
+      "contract": "spec/contracts/exact-numeric-operator-allocation-r99.json"
     },
     "derived_projection_laws": {
       "BinaryNotEqual": "negate the BinaryEqual Eq.equals result; no independent witness",
@@ -4313,6 +4391,36 @@
       "deterministic private/local source inventory and migration",
       "parser/checker/formatter/API digest evidence"
     ],
+    "product_support": "NOT_RUN"
+  },
+  "private_error_set_inference_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "contract": "spec/contracts/private-error-set-inference-v1.json",
+    "eligible_omission_owner_count": 4,
+    "preconditions": [
+      "name resolution complete",
+      "ordinary call selection complete",
+      "generic substitution complete",
+      "callable visibility normalized"
+    ],
+    "analysis": "finite SCC least fixed point over exact ErrorId rows; a recursive inferred edge is admitted only when caller and callee normalized substitution vectors are exactly equal",
+    "expansive_generic_recursion": "reject with ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH and require explicit throws before HIR",
+    "source_order_semantic": false,
+    "effect_inference": false,
+    "hir": "sealed ErrorSetId plus call_graph_digest, scc_id and inference_proof_digest",
+    "mir_reinference": false,
+    "product_support": "NOT_RUN"
+  },
+  "callable_exact_signature_facade_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "contract": "spec/contracts/callable-exact-signature-facade-v1.json",
+    "surface": "Callable<Sig>",
+    "grammar": "existing QualifiedType plus TypeArgs; no new production",
+    "type_argument_count": 1,
+    "argument_requirement": "normalizes to exact function signature",
+    "normalization": "Callable<Sig> == Sig",
+    "distinct_ast_hir_mir_runtime_identity": false,
+    "bare_or_erased_callable_admitted": false,
     "product_support": "NOT_RUN"
   },
   "nonescaping_lexical_access_frontend_contract": {

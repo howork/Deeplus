@@ -95,9 +95,14 @@ Trait roots are `UnaryPlus`, `UnaryMinus`, `Add<Rhs>`, `Subtract<Rhs>`,
 one `Ord.compare` result, and compare zero equals the `Eq` relation. Selection
 admits one left-owner `DIRECT_GLOBAL` conformance and never uses conversion,
 result context, source/import order, alternate evidence, fallback, or runtime
-lookup. Witnesses borrow operands and are pure, synchronous, non-consuming,
-`throws Never`, and `effects {}`. Numeric overflow or zero division/remainder
-may terminate only through nonrecoverable `ArithmeticDefect` before commit.
+lookup. Witnesses borrow operands and are synchronous, non-consuming, and
+non-mutating. `Eq` has the exact empty responsibility envelope. The other eight
+Trait roots admit only the maximum envelope
+`throws AllocationError effects allocate`, and every concrete witness seals an
+exact subset. Primitive, fixed-width, current Complex, and Rational equality
+rows are empty; BigInt/Rational value-producing arithmetic and Rational order
+carry the full allocation row. Numeric overflow or zero division/remainder may
+terminate only through nonrecoverable `ArithmeticDefect` before commit.
 Compound assignment derives its base binary role and owns no separate hook.
 Range, power, bitwise, logical, membership and identity hooks remain closed,
 as do arbitrary custom operators. Product execution is `NOT_RUN`, and all
@@ -205,7 +210,9 @@ borrow/view/iterator rejects before commit.
 
 `BigInt` is the public arbitrary-precision signed integer dependency of the
 exact-number profile. It is not an alias for `Int`, and its storage and foreign
-ABI are opaque.
+ABI are opaque. Its runtime value construction and value-producing arithmetic
+declare `throws AllocationError effects allocate`; a small-value optimization
+does not alter that contract.
 
 `Rational` is an always-available exact value represented semantically by a
 normalized BigInt numerator and positive denominator. Construction enforces
@@ -222,6 +229,13 @@ recoverable or explicitly alternate-law APIs. Decimal, Float and Complex
 conversions remain explicit. `display()` may return `2/3`, while
 `sourceRepr()` returns the parseable `<2/3>`. Rational `^` remains outside the
 fixed-glyph profile.
+
+Rational unary minus, value-producing binary arithmetic, and total ordering
+carry `throws AllocationError effects allocate`; unary plus and normalized
+equality remain empty. A generic operator call whose only evidence is the
+Trait requirement must expose the maximum row. Allocation failure publishes no
+partial value and performs no compound-assignment write. It is never converted
+to a new OOM Defect.
 
 `Complex<Rep>` is an immutable two-component core numeric value whose initial
 Rep set is exactly Float32 and Float64. Bare `Complex` is the closed alias

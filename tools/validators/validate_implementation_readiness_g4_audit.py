@@ -9,6 +9,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from r78_dpg_trace_successor import COUNTS as CURRENT_COUNTS
+from r78_dpg_trace_successor import FEATURE_ROWS as CURRENT_FEATURE_ROWS
+from r78_dpg_trace_successor import STAGE_CELLS as CURRENT_STAGE_CELLS
+from r78_dpg_trace_successor import TEST_OUTCOME_CELLS as CURRENT_OUTCOME_CELLS
+from r78_dpg_trace_successor import is_successor
+
 
 CONTRACT_REL = "spec/contracts/implementation-readiness-g4-audit-r1.json"
 REVALIDATION_REL = (
@@ -72,7 +78,7 @@ def validate(root: Path) -> list[str]:
     require(contract.get("external_post_commit_receipt_required") is True, "RECEIPT_FENCE")
 
     derived = metadata.get("derived_counts", {})
-    expected_trace = {
+    historical_trace = {
         "feature_rows": 469,
         "stage_cells": 3283,
         "conformance_outcome_cells": 1407,
@@ -84,26 +90,41 @@ def validate(root: Path) -> list[str]:
         "missing": 0,
         "conflicting": 0,
     }
-    require(len(rows) == 469, "ROW_COUNT")
-    require(len({row.get("feature_id") for row in rows}) == 469, "ROW_IDS_UNIQUE")
-    require(metadata.get("catalog_feature_count") == 723, "CATALOG_COUNT")
-    require(metadata.get("target_count") == 469, "TARGET_COUNT")
-    require(metadata.get("excluded_count") == 254, "EXCLUDED_COUNT")
-    require(metadata.get("base_count") == 462, "BASE_STATUS_COUNT")
-    require(metadata.get("dependency_addition_count") == 6, "DEPENDENCY_COUNT")
-    require(metadata.get("negative_compatibility_addition_count") == 1, "NEGATIVE_COMPATIBILITY_COUNT")
-    expected_trace.update({"bound_direct": 3714, "not_applicable": 503})
-    require(contract.get("traceability") == expected_trace, "CONTRACT_TRACE_COUNTS")
-    require(derived.get("feature_rows") == 469, "DERIVED_FEATURE_ROWS")
-    require(derived.get("stage_cells") == 3283, "DERIVED_STAGE_CELLS")
-    require(derived.get("test_outcome_cells") == 1407, "DERIVED_OUTCOME_CELLS")
-    require(derived.get("bound_direct_cells") == 3714, "DERIVED_DIRECT")
-    require(derived.get("bound_delegated_cells") == 4, "DERIVED_DELEGATED")
-    require(derived.get("not_applicable_cells") == 503, "DERIVED_NA")
-    require(derived.get("applicable_blocked_cells") == 0, "DERIVED_BLOCKED")
+    historical_trace.update({"bound_direct": 3714, "not_applicable": 503})
+    require(contract.get("traceability") == historical_trace, "HISTORICAL_CONTRACT_TRACE_COUNTS")
+    require(is_successor(metadata, root=root, rows=rows), "CURRENT_R101_SUCCESSOR_EXACT")
+    require(len(rows) == CURRENT_FEATURE_ROWS, "CURRENT_ROW_COUNT")
+    require(
+        len({row.get("feature_id") for row in rows}) == CURRENT_FEATURE_ROWS,
+        "CURRENT_ROW_IDS_UNIQUE",
+    )
+    require(
+        derived.get("feature_rows") == CURRENT_FEATURE_ROWS,
+        "CURRENT_DERIVED_FEATURE_ROWS",
+    )
+    require(
+        derived.get("stage_cells") == CURRENT_STAGE_CELLS,
+        "CURRENT_DERIVED_STAGE_CELLS",
+    )
+    require(
+        derived.get("test_outcome_cells") == CURRENT_OUTCOME_CELLS,
+        "CURRENT_DERIVED_OUTCOME_CELLS",
+    )
+    require(
+        (
+            derived.get("bound_direct_cells"),
+            derived.get("bound_delegated_cells"),
+            derived.get("not_applicable_cells"),
+            derived.get("applicable_blocked_cells"),
+        ) == CURRENT_COUNTS,
+        "CURRENT_DERIVED_DISPOSITIONS",
+    )
     require(derived.get("missing_cells") == 0, "DERIVED_MISSING")
     require(derived.get("conflict_cells") == 0, "DERIVED_CONFLICT")
-    require(derived.get("product_not_run_rows") == 469, "DERIVED_PRODUCT_NOT_RUN")
+    require(
+        derived.get("product_not_run_rows") == CURRENT_FEATURE_ROWS,
+        "CURRENT_DERIVED_PRODUCT_NOT_RUN",
+    )
 
     parser = contract.get("parser_authority", {})
     require(parser.get("structural_grammar") == "spec/grammar/deeplus.dpg", "DPG_AUTHORITY")
@@ -198,13 +219,18 @@ def main() -> int:
         for error in errors:
             print(f"- {error}")
         return 1
-    print("G4 HISTORICAL AUDIT + R78 DPG AUTHORITY REVALIDATION: PASS")
-    print("- readiness gates: 5/5 PASS_E2")
-    print("- target rows: 469 (including one explicit negative-compatibility obligation)")
-    print("- atomic trace cells: 4221")
+    print("G4 HISTORICAL AUDIT + R78 DPG AUTHORITY REVALIDATION: PASS_HISTORICAL_ONLY")
+    print("- current readiness interpretation: SUPERSEDED_BY_R99_AUDIT_CLOSURE")
+    print("- historical readiness gates: 5/5 PASS_E2")
+    print("- historical target rows/atomic cells: 469/4221 (immutable receipt)")
+    print(
+        "- current exact R101 successor rows/atomic cells: "
+        f"{CURRENT_FEATURE_ROWS}/{sum(CURRENT_COUNTS)}"
+    )
     print("- missing/conflicting/blocked: 0/0/0")
-    print("- target-profile unresolved P0/P1: 0/0")
-    print("- feature P1: 22 OPEN outside target profile")
+    print("- historical target-profile unresolved P0/P1 claim: 0/0 (not current readiness authority)")
+    print("- current feature P1: 22 OPEN; R101 classifies target applicability explicitly")
+    print("- current readiness blockers: see implementation-readiness-r99-audit-closure.json")
     print("- product lanes: 15/15 NOT_RUN")
     return 0
 

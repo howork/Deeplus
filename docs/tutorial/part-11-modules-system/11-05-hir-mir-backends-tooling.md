@@ -344,7 +344,7 @@ verified HIR invalid. It preserves `Verified<CanonicalHirH1>` and prevents only
 that a compiler or backend implements them.
 
 The useful audit numbers are 128 HIR identities, 102 Current lowering rows,
-111 at the explicit-Preview maximum, 29 MIR operations, 17 terminators, 12
+111 at the explicit-Preview maximum, 48 MIR operations, 17 terminators, 12
 linear token kinds, 11 responsibility axes, and 26 design capabilities.
 `ProposedMirX1` is still compatibility-only, and all 15 product lanes remain
 `NOT_RUN`.

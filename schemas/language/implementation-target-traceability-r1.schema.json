@@ -14,16 +14,16 @@
     "external_post_commit_receipt_required": {"const": true},
     "catalog_feature_count": {"const": 723},
     "base_statuses": {"const": ["STABLE_DESIGN", "STDLIB_PROFILE"]},
-    "base_count": {"const": 462},
+    "base_count": {"const": 461},
     "dependency_additions": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string"}},
     "dependency_addition_count": {"const": 6},
-    "negative_compatibility_additions": {"const": ["numeric_literal_suffix"]},
-    "negative_compatibility_addition_count": {"const": 1},
+    "negative_compatibility_additions": {"const": ["numeric_literal_suffix", "static_exact_unit_conversion_msp"]},
+    "negative_compatibility_addition_count": {"const": 2},
     "excluded_current_feature_reasons": {"type": "object"},
-    "target_count": {"const": 469},
-    "target_feature_id_list_sha256": {"const": "86414f1c8690515497a5a4c284cfcc22084b0ff2962b8c38b073ac79a6b40435"},
-    "excluded_count": {"const": 254},
-    "excluded_feature_id_list_sha256": {"const": "664bc701571a4938dfb644f1347537c0085697f796bd40cd4947d929a1299070"},
+    "target_count": {"const": 464},
+    "target_feature_id_list_sha256": {"const": "6f7bf3a7f632d452d04d3a59f222f7353568e466f64507ee2418d233a1d50182"},
+    "excluded_count": {"const": 259},
+    "excluded_feature_id_list_sha256": {"const": "df88d5ba0733d78a0c3d327236b6e26c94624ea4a6f5c3e2386560e7f44595ae"},
     "stage_order": {"const": ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]},
     "test_outcome_order": {"const": ["POSITIVE", "BOUNDARY", "REJECT"]},
     "source_grammar_authority": {
@@ -36,7 +36,7 @@
         "ebnf_only_binding_rejected": true
       }
     },
-    "chunks": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "object", "required": ["path", "row_count"], "properties": {"path": {"const": "spec/traceability/implementation-target-profile-r1/rows.json"}, "row_count": {"const": 469}}, "additionalProperties": false}},
+    "chunks": {"type": "array", "minItems": 1, "maxItems": 1, "items": {"type": "object", "required": ["path", "row_count"], "properties": {"path": {"const": "spec/traceability/implementation-target-profile-r1/rows.json"}, "row_count": {"const": 464}}, "additionalProperties": false}},
     "applied_evidence_overlays": {"const": [
       {"path": "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json", "feature_count": 14, "binding_count": 40},
       {"path": "spec/traceability/implementation-target-profile-r1/lexical-trivia-source-root-evidence-r1.json", "feature_count": 9, "binding_count": 38},
@@ -58,9 +58,10 @@
       {"path": "spec/traceability/implementation-target-profile-r1/member-extension-collision-dynamic-evidence-r1.json", "feature_count": 1, "binding_count": 1},
       {"path": "spec/traceability/implementation-target-profile-r1/member-extension-collision-conformance-evidence-r1.json", "feature_count": 1, "binding_count": 2},
       {"path": "spec/traceability/implementation-target-profile-r1/actor-cranelift-projection-dynamic-evidence-r1.json", "feature_count": 3, "binding_count": 3},
-      {"path": "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json", "feature_count": 409, "binding_count": 1242}
+      {"path": "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json", "feature_count": 409, "binding_count": 1242},
+      {"path": "spec/traceability/implementation-target-profile-r1/accessor-property-forwarding-evidence-r100.json", "feature_count": 8, "binding_count": 35}
     ]},
-    "evidence_registry": {"type": "array", "minItems": 469, "items": {"$ref": "#/$defs/evidence"}},
+    "evidence_registry": {"type": "array", "minItems": 464, "items": {"$ref": "#/$defs/evidence"}},
     "derived_counts": {"type": "object"},
     "governance": {"type": "object"}
   },

@@ -10,11 +10,11 @@
 - 부록: 8
 - SUMMARY 연결 문서: 96
 - 학습 단위: 72
-- 한국어 문자: 102180
+- 한국어 문자: 102330
 - Deeplus 코드 블록: 391
 - 연습 prompt 표식: 260
 - 로컬 링크 오류: 0
-- contract SHA-256: `5df21a0108e2753405e9105cbd2635fd4b6603673828ce8ba6698a9cd26728fb`
+- contract SHA-256: `9747a1facd1ebac60145d2cb563430372c8ab7a128cc3b0b32f331f9736458ad`
 - coverage schema SHA-256: `a65a7b3a0f686febaca2eed82a7b1732d974969381fc96d5734597e59871d8df`
 
 ## authority 울타리

@@ -135,8 +135,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1514, "predicates": 293,
-    "predicate_fixtures": 908, "no_go": 154,
+    "features": 723, "diagnostics": 1522, "predicates": 293,
+    "predicate_fixtures": 909, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -624,12 +624,36 @@ FIXED_OPERATOR_COMPARISON_IDS = {
     "BinaryLessThanOrEqual", "BinaryGreaterThan",
     "BinaryGreaterThanOrEqual",
 }
+FIXED_OPERATOR_EQ_IDS = {"BinaryEqual", "BinaryNotEqual"}
+FIXED_OPERATOR_ORD_IDS = (
+    FIXED_OPERATOR_COMPARISON_IDS - FIXED_OPERATOR_EQ_IDS
+)
 FIXED_OPERATOR_ARITHMETIC_PROFILE_ID = (
     "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_"
     "ARITHMETIC_DEFECT_PRECOMMIT"
 )
 FIXED_OPERATOR_COMPARISON_PROFILE_ID = (
     "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+)
+FIXED_OPERATOR_ALLOCATING_ARITHMETIC_PROFILE_ID = (
+    "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_"
+    "ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+)
+FIXED_OPERATOR_ALLOCATING_COMPARISON_PROFILE_ID = (
+    "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_"
+    "NONCONSUMING_ALLOCATIONERROR"
+)
+FIXED_OPERATOR_ARITHMETIC_PROFILE_DOMAIN = [
+    FIXED_OPERATOR_ARITHMETIC_PROFILE_ID,
+    FIXED_OPERATOR_ALLOCATING_ARITHMETIC_PROFILE_ID,
+]
+FIXED_OPERATOR_ORD_PROFILE_DOMAIN = [
+    FIXED_OPERATOR_COMPARISON_PROFILE_ID,
+    FIXED_OPERATOR_ALLOCATING_COMPARISON_PROFILE_ID,
+]
+FIXED_OPERATOR_RESPONSIBILITY_ENVELOPE_PROFILE_ID = (
+    "BORROWED_SELECTED_EXACT_SUBSET_OF_ALLOCATION_ENVELOPE_"
+    "SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
 )
 FIXED_OPERATOR_HIR_REQUIRED_FIELDS = [
     "operator_id",
@@ -11704,8 +11728,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
-            and len(grammar_bytes) == 70469
+            == "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84"
+            and len(grammar_bytes) == 70468
             and len(production_names) == 656
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
@@ -11838,9 +11862,24 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             "FRONTEND_R16_TOKEN_LEXICAL_TOTALITY",
             len(r16.get("scanner_modes", [])) == 6
             and len(r16.get("lexical_goals", [])) == 10
-            and len(r16.get("syntax_terminal_registry", [])) == 200
+            and len(r16.get("syntax_terminal_registry", [])) == 201
             and len(r16.get("atomic_token_registry", [])) == 22
             and len(r16.get("trivia_registry", [])) == 8
+            and any(
+                row.get("spelling") == ";"
+                and row.get("scanner_kind") == "SEMICOLON"
+                for row in r16.get("syntax_terminal_registry", [])
+            )
+            and len(
+                r16.get("parser_terminal_adapter_registry", {}).get(
+                    "aggregate_rows", []
+                )
+            )
+            == 5
+            and r16.get("parser_terminal_adapter_registry", {}).get(
+                "aggregate_match_emits_token"
+            )
+            is False
             and r16.get("token_transaction", {}).get(
                 "failed_probe_source_byte_consumption"
             )
@@ -11855,6 +11894,11 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
                 "terminals": len(r16.get("syntax_terminal_registry", [])),
                 "atomic_tokens": len(r16.get("atomic_token_registry", [])),
                 "trivia": len(r16.get("trivia_registry", [])),
+                "parser_terminal_adapters": len(
+                    r16.get("parser_terminal_adapter_registry", {}).get(
+                        "aggregate_rows", []
+                    )
+                ),
             },
         )
         emit(
@@ -11994,7 +12038,7 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             and frontend_gate_ids == active_gate_ids
             and gate_map.get("nonactivatable")
             == nonactivatable_catalog_ids
-            and len(nonactivatable_catalog_ids) == 114
+            and len(nonactivatable_catalog_ids) == 115
             and source_role_fixture.get("atomic_failure_result")
             == {
                 "activated_features": [],
@@ -12783,7 +12827,7 @@ def main() -> int:
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
                 and fixed_counts.get("predicates") == 293
-                and fixed_counts.get("predicate_fixtures") == 908
+                and fixed_counts.get("predicate_fixtures") == 909
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
                 and fixed_counts.get("contextual_words") == 105,
@@ -14538,6 +14582,244 @@ def main() -> int:
         check(
             process.returncode == 0,
             "PARSER_GRAMMAR_DIFFERENTIAL_CHECK",
+            detail[-4000:],
+        )
+
+    r99_parser_authority_validator = (
+        root
+        / "tools/validators/validate_parser_scanner_pratt_authority_r99.py"
+    )
+    if r99_parser_authority_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_parser_authority_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_PARSER_SCANNER_PRATT_AUTHORITY_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_checker_bootstrap_validator = (
+        root / "tools/validators/validate_checker_bootstrap_r99.py"
+    )
+    if r99_checker_bootstrap_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_checker_bootstrap_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_CHECKER_BOOTSTRAP_AUTHORITY_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_measure_collection_validator = (
+        root / "tools/validators/validate_measure_collection_bootstrap_r99.py"
+    )
+    if r99_measure_collection_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_measure_collection_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_MEASURE_COLLECTION_BOOTSTRAP_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_exact_numeric_operator_validator = (
+        root / "tools/validators/validate_exact_numeric_operator_allocation_r99.py"
+    )
+    if r99_exact_numeric_operator_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_exact_numeric_operator_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_EXACT_NUMERIC_OPERATOR_ALLOCATION_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_runtime_backend_projection_validator = (
+        root / "tools/validators/validate_runtime_backend_projection_r99.py"
+    )
+    if r99_runtime_backend_projection_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_runtime_backend_projection_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_RUNTIME_BACKEND_PROJECTION_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_audit_closure_validator = (
+        root
+        / "tools/validators/validate_implementation_readiness_r99_audit_closure.py"
+    )
+    if r99_audit_closure_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_audit_closure_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_IMPLEMENTATION_READINESS_AUDIT_CLOSURE",
+            detail[-4000:],
+        )
+
+    r100_accessor_property_forwarding_validator = (
+        root
+        / "tools/validators/validate_accessor_property_forwarding_r100.py"
+    )
+    if r100_accessor_property_forwarding_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r100_accessor_property_forwarding_validator),
+                "--root",
+                str(root),
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R100_ACCESSOR_PROPERTY_FORWARDING_CLOSURE",
+            detail[-4000:],
+        )
+
+    r101_feature_p1_disposition_validator = (
+        root
+        / "tools/validators/validate_implementation_target_feature_p1_disposition_r101.py"
+    )
+    if r101_feature_p1_disposition_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r101_feature_p1_disposition_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R101_IMPLEMENTATION_TARGET_FEATURE_P1_DISPOSITION",
+            detail[-4000:],
+        )
+
+    r102_feature_local_acceptance_validator = (
+        root
+        / "tools/validators/validate_implementation_target_feature_local_acceptance_r102.py"
+    )
+    if r102_feature_local_acceptance_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r102_feature_local_acceptance_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R102_IMPLEMENTATION_TARGET_FEATURE_LOCAL_ACCEPTANCE",
             detail[-4000:],
         )
 
@@ -16529,10 +16811,16 @@ def main() -> int:
             "trait_id": trait_id,
             "method_id": method_id,
             "output_projection": frontend_projection,
-            "responsibility_profile_id": (
-                FIXED_OPERATOR_COMPARISON_PROFILE_ID
-                if operator_id in FIXED_OPERATOR_COMPARISON_IDS
-                else FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+            **(
+                {"responsibility_profile_id": FIXED_OPERATOR_COMPARISON_PROFILE_ID}
+                if operator_id in FIXED_OPERATOR_EQ_IDS
+                else {
+                    "responsibility_profile_id_domain": (
+                        FIXED_OPERATOR_ORD_PROFILE_DOMAIN
+                        if operator_id in FIXED_OPERATOR_ORD_IDS
+                        else FIXED_OPERATOR_ARITHMETIC_PROFILE_DOMAIN
+                    )
+                }
             ),
         }
         for (
@@ -16643,13 +16931,17 @@ def main() -> int:
                 else {"type": "string", "minLength": 1}
             ),
             "method_id": {"const": method_id},
-            "responsibility_profile_id": {
-                "const": (
-                    FIXED_OPERATOR_COMPARISON_PROFILE_ID
-                    if is_comparison
-                    else FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
-                )
-            },
+            "responsibility_profile_id": (
+                {"const": FIXED_OPERATOR_COMPARISON_PROFILE_ID}
+                if operator_id in FIXED_OPERATOR_EQ_IDS
+                else {
+                    "enum": (
+                        FIXED_OPERATOR_ORD_PROFILE_DOMAIN
+                        if operator_id in FIXED_OPERATOR_ORD_IDS
+                        else FIXED_OPERATOR_ARITHMETIC_PROFILE_DOMAIN
+                    )
+                }
+            ),
         }
         if is_comparison:
             properties["output_type_id"] = {"const": "Bool"}
@@ -16724,7 +17016,7 @@ def main() -> int:
             "trait_roots"
         ) == FIXED_OPERATOR_TRAIT_ROOTS
         and voi_fixed_profile.get("responsibility_profile")
-        == FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+        == FIXED_OPERATOR_RESPONSIBILITY_ENVELOPE_PROFILE_ID
         and voi_by_id.get("VOI-R1-POS-022", {}).get("assertions", {}).get(
             "responsibility_profile"
         ) == FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
@@ -22006,21 +22298,21 @@ def main() -> int:
         and eq_entry.get("signatures")
         == ["public trait#operator Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"]
         and ord_entry.get("signatures")
-        == ["public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"]
+        == ["public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws AllocationError effects allocate\n}"]
         and unary_plus_entry.get("signatures")
-        == ["public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"]
+        == ["public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws AllocationError effects allocate; }"]
         and unary_minus_entry.get("signatures")
-        == ["public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"]
+        == ["public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws AllocationError effects allocate; }"]
         and add_entry.get("signatures")
-        == ["public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws AllocationError effects allocate; }"]
         and subtract_entry.get("signatures")
-        == ["public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws AllocationError effects allocate; }"]
         and multiply_entry.get("signatures")
-        == ["public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws AllocationError effects allocate; }"]
         and divide_entry.get("signatures")
-        == ["public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws AllocationError effects allocate; }"]
         and remainder_entry.get("signatures")
-        == ["public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws AllocationError effects allocate; }"]
         and all(
             entry.get("kind") == "trait"
             and entry.get("status") == "stable_design"

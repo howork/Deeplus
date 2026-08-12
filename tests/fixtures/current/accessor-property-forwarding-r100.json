@@ -1,0 +1,37 @@
+{
+  "schema": "deeplus.accessor-property-forwarding-fixture/r100",
+  "contract": "spec/contracts/accessor-property-forwarding-r100.json",
+  "execution_status": "DESIGN_STATIC_NOT_RUN",
+  "cases": [
+    {"case_id": "APMF-AC-001", "class": "POSITIVE", "source": "let title: String := +get { return self.name }", "expected": "ONE_GETTER_NO_STORAGE"},
+    {"case_id": "APMF-AC-002", "class": "BOUNDARY", "source": "var count: Int := get { return self.n }", "expected": "INLINE_SINGLE_GETTER_PRIVATE"},
+    {"case_id": "APMF-AC-003", "class": "REJECT", "source": "let title: String = +get { return self.name }", "diagnostic": "ACCESSOR_PROPERTY_SEPARATOR_REQUIRED", "hir_count": 0},
+    {"case_id": "APMF-AC-004", "class": "POSITIVE", "source": "var value: Int := { +get { return self.n } #set(next) { self.n = next } }", "expected": "GET_PUBLIC_SET_HIERARCHY_PROTECTED"},
+    {"case_id": "APMF-AC-005", "class": "BOUNDARY", "source": "var value: Int := { get { return self.n } set(next) { self.n = next } }", "expected": "BOTH_PRIVATE_BY_OMISSION_V1"},
+    {"case_id": "APMF-AC-006", "class": "REJECT", "source": "var value: Int := { #get { return self.n } +set(next) { self.n = next } }", "diagnostic": "SETTER_VISIBILITY_CANNOT_EXCEED_GETTER", "hir_count": 0},
+    {"case_id": "APMF-AC-007", "class": "REJECT", "source": "+let value: Int := get { return self.n }", "diagnostic": "ACCESSOR_PROPERTY_HEADER_VISIBILITY_FORBIDDEN", "hir_count": 0},
+    {"case_id": "APMF-AC-008", "class": "POSITIVE", "source": "public extension Labelled for User { let label: String := +get { return self.name } }", "expected": "EXTENSION_PROPERTY_NO_STORAGE"},
+    {"case_id": "APMF-AC-009", "class": "BOUNDARY", "source": "use Labelled in { let text = user.label }", "expected": "LEXICALLY_ACTIVATED_STATIC_SELECTION"},
+    {"case_id": "APMF-AC-010", "class": "REJECT", "source": "public extension Leaked for Vault { let secret: String := +get { return self.privateSecret } }", "diagnostic": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION", "hir_count": 0},
+    {"case_id": "APMF-AC-011", "class": "POSITIVE", "source": "+forward { name, age } to profile", "expected": "TWO_ORDERED_RESOLVED_FORWARD_SLOTS"},
+    {"case_id": "APMF-AC-012", "class": "BOUNDARY", "source": "+forward name to makeProfile()", "expected": "TARGET_EVALUATED_ONCE_PER_FORWARDED_OPERATION"},
+    {"case_id": "APMF-AC-013", "class": "REJECT", "source": "+forward { name, name } to profile", "diagnostic": "FORWARD_GROUP_DUPLICATE_MEMBER", "hir_count": 0},
+    {"case_id": "APMF-AC-014", "class": "REJECT", "source": "+forward * to profile", "diagnostic": "FORWARD_GROUP_WILDCARD_NOT_CURRENT", "hir_count": 0},
+    {"case_id": "APMF-AC-015", "class": "BOUNDARY", "source": "var score: Int := { get { return self.n } set(next) { self.n = next } }", "expected": "GETTER_AND_SETTER_EXACTLY_ONCE"},
+    {"case_id": "APMF-AC-016", "class": "REJECT", "source": "let score: Int := { get { return self.n } set(next) { self.n = next } }", "diagnostic": "LET_PROPERTY_CANNOT_HAVE_SETTER", "hir_count": 0},
+    {"case_id": "APMF-AC-017", "class": "REJECT", "source": "var score: Int := set(next) { self.n = next }", "diagnostic": "ACCESSOR_PROPERTY_GETTER_REQUIRED", "hir_count": 0},
+    {"case_id": "APMF-AC-018", "class": "POSITIVE", "source": "let count: Int := get { return self.n }", "expected": "REUSABLE_NODROP_VALUE"},
+    {"case_id": "APMF-AC-019", "class": "BOUNDARY", "source": "let token: Shared<Token> := get { return self.sharedToken }", "expected": "REUSABLE_SHARED_HANDLE_VALUE"},
+    {"case_id": "APMF-AC-020", "class": "REJECT", "source": "let socket: Socket := get { return self.socket }", "diagnostic": "PROPERTY_VALUE_REQUIRES_REUSABLE_NODROP", "hir_count": 0},
+    {"case_id": "APMF-AC-021", "class": "POSITIVE", "source": "public class User { let name: String = \"Ada\"; let label: String := get { return self.name }; def greet() -> String = return self.label }", "expected": "FIELD_PROPERTY_METHOD_DISTINCT"},
+    {"case_id": "APMF-AC-022", "class": "BOUNDARY", "source": "public class Counter { var n: Int = 0; var value: Int := { get { return self.n } set(next) { self.n = next } } }", "expected": "STORAGE_AND_ACCESSOR_IDENTITIES_DISTINCT"},
+    {"case_id": "APMF-AC-023", "class": "REJECT", "source": "public class Broken { let value: Int := { get { return 1 } get { return 2 } } }", "diagnostic": "ACCESSOR_PROPERTY_DUPLICATE_GETTER", "hir_count": 0}
+  ],
+  "metamorphic_invariants": [
+    "Changing declaration order cannot change a sealed accessor or forward winner.",
+    "Duplicating a getter, setter, or forwarded selector changes admission from accept to the exact primary rejection.",
+    "Replacing a sealed target member after HIR construction cannot cause runtime forwarding reselection.",
+    "A receiver or target expression is evaluated exactly once in the specified left-to-right order."
+  ],
+  "product_execution": "NOT_RUN"
+}

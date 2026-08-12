@@ -101,8 +101,8 @@ def validate(
 
     if contract.get("gap_id") != "IR-PARSE-P1-059":
         errors.append("GAP_ID_DRIFT")
-    if contract.get("status") != "LOCAL_DESIGN_CANDIDATE_NOT_CANONICAL":
-        errors.append("CANDIDATE_STATUS_DRIFT")
+    if contract.get("status") != "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT":
+        errors.append("CURRENT_STATUS_DRIFT")
     if contract.get("baseline") != {
         "repository": "howork/Deeplus",
         "branch": "main",
