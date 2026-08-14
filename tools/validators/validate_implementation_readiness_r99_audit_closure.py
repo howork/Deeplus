@@ -30,6 +30,7 @@ REPAIR_VALIDATORS = [
     "validate_implementation_target_feature_p1_disposition_r104.py",
     "validate_trait_conformance_implementation_handoff_r107.py",
     "validate_runtime_managed_projection_handoff_r108.py",
+    "validate_preimplementation_readiness_integrated_handoff_r109.py",
     "validate_implementation_target_traceability.py",
 ]
 
@@ -60,14 +61,14 @@ def model_errors(
     }:
         errors.append("BASELINE_IDENTITY")
     if contract.get("readiness_verdict") != (
-        "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_TWO_READINESS_GATES"
+        "LOCAL_IMPLEMENTATION_HANDOFF_COMPLETE_PUBLICATION_PENDING"
     ):
         errors.append("READINESS_OVERCLAIM")
 
     historical = contract.get("historical_g4_supersession", {})
     if (
         historical.get("current_interpretation")
-        != "REOPENED_NOT_AUDITABLE_FOR_IMPLEMENTATION_START"
+        != "SUPERSEDED_BY_R109_LOCAL_HANDOFF_PUBLICATION_PENDING"
         or historical.get("preservation") != "IMMUTABLE_HISTORICAL_EVIDENCE"
         or set(historical.get("prohibited_claims", []))
         != {
@@ -132,7 +133,7 @@ def model_errors(
         or [row.get("status") for row in blockers]
         != [
             "OPEN",
-            "OPEN_PARTIAL_R107_TCC_ACTION_COMPLETE",
+            "CLOSED_BY_R109_INTEGRATED_LOCAL_HANDOFF",
             "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         ]
     ):
@@ -142,7 +143,7 @@ def model_errors(
     if governance != {
         "semantic_p0": 0,
         "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
-        "bootstrap_readiness_blocker_count": 2,
+        "bootstrap_readiness_blocker_count": 1,
         "product_lanes": "15_OF_15_NOT_RUN",
         "production_implementation": "NOT_RUN",
         "github_mutation": 0,
@@ -160,6 +161,7 @@ def model_errors(
             "EXPLICITLY_DEFERRED_TARGET_EXCLUDED",
             "PARTIAL_STATIC_DISPOSITION_REQUIRES_EXACT_TARGET_TOTALITY",
             "PARTIAL_ACTION_COMPLETE_TCC_R107",
+            "CLOSED_BY_R109_INTEGRATED_LOCAL_HANDOFF",
             "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         } or not (root / row.get("contract", "")).is_file():
             errors.append(f"LOCAL_REPAIR_BINDING:{row.get('id')}")
@@ -240,7 +242,7 @@ def main() -> int:
         "readiness_verdict": contract.get("readiness_verdict"),
         "semantic_p0": 0,
         "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
-        "readiness_blockers": 2,
+        "readiness_blockers": 1,
         "repair_validator_receipts": validator_receipts,
         "mutation_count": rejected,
         "product_lanes": "15_OF_15_NOT_RUN",

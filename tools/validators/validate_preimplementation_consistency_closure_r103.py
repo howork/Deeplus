@@ -168,13 +168,13 @@ def model_errors(
         errors.append("GENERIC_EVIDENCE_OVERCLAIM_METRICS")
     if (
         readiness.get("readiness_verdict")
-        != "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_TWO_READINESS_GATES"
+        != "LOCAL_IMPLEMENTATION_HANDOFF_COMPLETE_PUBLICATION_PENDING"
         or readiness.get("governance", {}).get("bootstrap_readiness_blocker_count")
-        != 2
+        != 1
         or [row.get("status") for row in readiness.get("readiness_blockers", [])]
         != [
             "OPEN",
-            "OPEN_PARTIAL_R107_TCC_ACTION_COMPLETE",
+            "CLOSED_BY_R109_INTEGRATED_LOCAL_HANDOFF",
             "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         ]
     ):

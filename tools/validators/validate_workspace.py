@@ -14985,6 +14985,33 @@ def main() -> int:
             detail[-4000:],
         )
 
+    r109_preimplementation_handoff_validator = (
+        root
+        / "tools/validators/validate_preimplementation_readiness_integrated_handoff_r109.py"
+    )
+    if r109_preimplementation_handoff_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r109_preimplementation_handoff_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R109_PREIMPLEMENTATION_READINESS_INTEGRATED_HANDOFF",
+            detail[-4000:],
+        )
+
     grammar_reference_generator = (
         root / "tools/generators/generate_grammar_reference.py"
     )

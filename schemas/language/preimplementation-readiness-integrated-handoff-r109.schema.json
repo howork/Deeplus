@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://howork.github.io/Deeplus/schemas/language/preimplementation-readiness-integrated-handoff-r109.schema.json",
+  "title": "Deeplus R109 integrated preimplementation readiness handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "status", "baseline", "cluster_bindings", "implementation_target", "feature_p1_fence", "completion_gates", "readiness_blockers", "implementation_start_fence", "governance"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "deeplus.preimplementation-readiness-integrated-handoff/r109"},
+    "revision": {"const": "r109-local-preimplementation-readiness-integrated-handoff"},
+    "status": {"const": "LOCAL_IMPLEMENTATION_HANDOFF_COMPLETE_PUBLICATION_PENDING_PRODUCT_NOT_RUN"},
+    "baseline": {"type": "object", "required": ["repository", "branch", "commit", "tree"], "properties": {"repository": {"const": "howork/Deeplus"}, "branch": {"type": "string"}, "commit": {"$ref": "#/$defs/gitSha"}, "tree": {"$ref": "#/$defs/gitSha"}}, "additionalProperties": false},
+    "cluster_bindings": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"type": "object", "required": ["cluster", "path", "sha256", "scope"], "properties": {"cluster": {"pattern": "^R10[3-8]$"}, "path": {"type": "string"}, "sha256": {"$ref": "#/$defs/sha256"}, "scope": {"type": "string", "minLength": 1}}, "additionalProperties": false}},
+    "implementation_target": {"type": "object", "required": ["metadata_path", "metadata_sha256", "rows_path", "rows_sha256", "feature_count", "feature_id_list_sha256", "stage_order", "test_outcome_order", "stage_cells", "test_outcome_cells", "bound_direct_cells", "bound_delegated_cells", "not_applicable_cells", "applicable_blocked_cells", "missing_cells", "conflict_cells", "product_not_run_rows"], "properties": {"metadata_path": {"type": "string"}, "metadata_sha256": {"$ref": "#/$defs/sha256"}, "rows_path": {"type": "string"}, "rows_sha256": {"$ref": "#/$defs/sha256"}, "feature_count": {"const": 464}, "feature_id_list_sha256": {"$ref": "#/$defs/sha256"}, "stage_order": {"const": ["SOURCE_GRAMMAR", "AST_FRONTEND", "STATIC_SEMANTICS", "DYNAMIC_LOWERING", "DIAGNOSTICS", "TOOLING_OBLIGATIONS", "CONFORMANCE_TESTS"]}, "test_outcome_order": {"const": ["POSITIVE", "BOUNDARY", "REJECT"]}, "stage_cells": {"const": 3248}, "test_outcome_cells": {"const": 1392}, "bound_direct_cells": {"const": 3682}, "bound_delegated_cells": {"const": 4}, "not_applicable_cells": {"const": 490}, "applicable_blocked_cells": {"const": 0}, "missing_cells": {"const": 0}, "conflict_cells": {"const": 0}, "product_not_run_rows": {"const": 464}}, "additionalProperties": false},
+    "feature_p1_fence": {"type": "object", "required": ["exact_open_ids", "class_count", "enumeration_count", "trait_count", "sfd_count", "closed_by_r109", "execution_receipts"], "properties": {"exact_open_ids": {"type": "array", "minItems": 22, "maxItems": 22, "uniqueItems": true}, "class_count": {"const": 6}, "enumeration_count": {"const": 8}, "trait_count": {"const": 7}, "sfd_count": {"const": 1}, "closed_by_r109": {"const": 0}, "execution_receipts": {"const": "OPEN_NOT_RUN"}}, "additionalProperties": false},
+    "completion_gates": {"type": "array", "minItems": 5, "maxItems": 5},
+    "readiness_blockers": {"type": "array", "minItems": 3, "maxItems": 3},
+    "implementation_start_fence": {"type": "object"},
+    "governance": {"type": "object", "required": ["semantic_p0", "feature_p1", "m13_actions", "bootstrap_readiness_blocker_count", "product_lanes", "production_implementation", "current_binding", "github_mutation", "canonical_publication"], "properties": {"semantic_p0": {"const": 0}, "feature_p1": {"const": "22_OPEN_UNCHANGED"}, "m13_actions": {"const": "4_OPEN_UNCHANGED"}, "bootstrap_readiness_blocker_count": {"const": 1}, "product_lanes": {"const": "15_OF_15_NOT_RUN"}, "production_implementation": {"const": "NOT_RUN"}, "current_binding": {"const": false}, "github_mutation": {"const": 0}, "canonical_publication": {"const": "PENDING_EXPLICIT_USER_AUTHORITY"}}, "additionalProperties": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitSha": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+  }
+}

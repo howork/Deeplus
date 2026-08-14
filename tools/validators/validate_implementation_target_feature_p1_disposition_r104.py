@@ -188,8 +188,8 @@ def model_errors(root: Path, docs: dict[str, Any]) -> list[str]:
     blockers = {row.get("id"): row for row in r99.get("readiness_blockers", [])}
     if (
         r99.get("readiness_verdict")
-        != "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_TWO_READINESS_GATES"
-        or r99.get("governance", {}).get("bootstrap_readiness_blocker_count") != 2
+        != "LOCAL_IMPLEMENTATION_HANDOFF_COMPLETE_PUBLICATION_PENDING"
+        or r99.get("governance", {}).get("bootstrap_readiness_blocker_count") != 1
         or blockers.get("R99-READY-BLOCK-003", {}).get("status")
         != "CLOSED_BY_R104_EXACT_TARGET_PARTITION"
     ):

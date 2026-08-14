@@ -9,14 +9,14 @@
     "local_predecessor_commit": "9c5f25e9d1e518c75e594f46b2158c510008c379",
     "current_binding": false
   },
-  "readiness_verdict": "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_TWO_READINESS_GATES",
+  "readiness_verdict": "LOCAL_IMPLEMENTATION_HANDOFF_COMPLETE_PUBLICATION_PENDING",
   "historical_g4_supersession": {
     "artifacts": [
       "spec/contracts/implementation-readiness-g4-audit-r1.json",
       "spec/contracts/implementation-readiness-g4-dpg-revalidation-r1.json"
     ],
     "preservation": "IMMUTABLE_HISTORICAL_EVIDENCE",
-    "current_interpretation": "REOPENED_NOT_AUDITABLE_FOR_IMPLEMENTATION_START",
+    "current_interpretation": "SUPERSEDED_BY_R109_LOCAL_HANDOFF_PUBLICATION_PENDING",
     "reason": "Generic whole-contract locators and self-referential static rows do not prove feature-local parser, checker, lowering, diagnostic, or executable acceptance behavior.",
     "prohibited_claims": [
       "BOOTSTRAP_UNRESOLVED_P1_ZERO",
@@ -43,7 +43,7 @@
     {"id": "P0-IR-101-001", "status": "CLOSED_LOCAL_DESIGN_STATIC", "contract": "spec/contracts/mir-machine-registry.json", "validator": "tools/validators/validate_runtime_backend_projection_r99.py"},
     {"id": "P1-IR-101-002", "status": "CLOSED_BY_R104_EXACT_TARGET_PARTITION", "contract": "spec/contracts/implementation-target-feature-p1-disposition-r104.json"},
     {"id": "P1-IR-101-005", "status": "CLOSED_LOCAL_DESIGN_STATIC", "contract": "spec/contracts/enum-match-boundary-v1.json"},
-    {"id": "R99-READY-BLOCK-002_FEATURE_LOCAL_HANDOFF", "status": "PARTIAL_ACTION_COMPLETE_TCC_R107", "contract": "spec/contracts/trait-conformance-implementation-handoff-r107.json"}
+    {"id": "R99-READY-BLOCK-002_FEATURE_LOCAL_HANDOFF", "status": "CLOSED_BY_R109_INTEGRATED_LOCAL_HANDOFF", "contract": "spec/contracts/preimplementation-readiness-integrated-handoff-r109.json"}
     ,{"id": "IR-OWN-P1-026_FULL_TARGET_AND_MANAGED_ABI_SUBCONDITION", "status": "CLOSED_LOCAL_DESIGN_STATIC", "contract": "spec/contracts/runtime-managed-projection-handoff-r108.json"}
   ],
   "feature_p1_lanes": [
@@ -72,13 +72,13 @@
   ],
   "readiness_blockers": [
     {"id": "R99-READY-BLOCK-001", "status": "OPEN", "subject": "publish one exact local successor commit/tree and bind it by post-merge readback before implementation uses it"},
-    {"id": "R99-READY-BLOCK-002", "status": "OPEN_PARTIAL_R107_TCC_ACTION_COMPLETE", "subject": "bind feature-local source, AST/HIR/MIR, diagnostic, tooling, and positive/boundary/reject acceptance oracles for every remaining retained first-target feature without claiming execution"},
+    {"id": "R99-READY-BLOCK-002", "status": "CLOSED_BY_R109_INTEGRATED_LOCAL_HANDOFF", "subject": "bind feature-local source, AST/HIR/MIR, diagnostic, tooling, and positive/boundary/reject acceptance oracles for every remaining retained first-target feature without claiming execution"},
     {"id": "R99-READY-BLOCK-003", "status": "CLOSED_BY_R104_EXACT_TARGET_PARTITION", "subject": "all 22 feature P1 actions are mapped to exact typed ImplementationObligationIds and first-target include/exclude partitions without closing execution"}
   ],
   "governance": {
     "semantic_p0": 0,
     "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
-    "bootstrap_readiness_blocker_count": 2,
+    "bootstrap_readiness_blocker_count": 1,
     "product_lanes": "15_OF_15_NOT_RUN",
     "production_implementation": "NOT_RUN",
     "github_mutation": 0,

@@ -237,7 +237,7 @@ def model_errors(root: Path, docs: dict[str, Any]) -> list[str]:
         ):
             errors.append(f"READINESS_ACTION:{action}")
     blocker = next((row for row in readiness.get("readiness_blockers", []) if row.get("id") == "R99-READY-BLOCK-002"), {})
-    if blocker.get("status") != "OPEN_PARTIAL_R107_TCC_ACTION_COMPLETE" or readiness.get("governance", {}).get("bootstrap_readiness_blocker_count") != 2:
+    if blocker.get("status") != "CLOSED_BY_R109_INTEGRATED_LOCAL_HANDOFF" or readiness.get("governance", {}).get("bootstrap_readiness_blocker_count") != 1:
         errors.append("READINESS_BLOCKER_FENCE")
 
     for predicate_id in PREDICATES:
