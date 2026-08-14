@@ -260,9 +260,9 @@ def model_errors(
             errors.append(f"R99_PREDECESSOR_LANE:{row.get('id')}")
     for row in r99_lanes[14:21]:
         if (
-            row.get("design_contract_gate") != "PARTIAL_STATIC_ACCEPTANCE_R102_NOT_ACTION_COMPLETE"
+            row.get("design_contract_gate") != "CLOSED_BY_R107_ACTION_COMPLETE_IMPLEMENTATION_HANDOFF"
             or row.get("execution_receipt_gate") != "OPEN_NOT_RUN"
-            or row.get("readiness_effect") != "BLOCKS_FIRST_TARGET_HANDOFF"
+            or row.get("readiness_effect") != "IMPLEMENTATION_HANDOFF_READY_EXECUTION_REMAINS_OPEN"
         ):
             errors.append(f"R99_PREDECESSOR_LANE:{row.get('id')}")
     if not r99_lanes or (

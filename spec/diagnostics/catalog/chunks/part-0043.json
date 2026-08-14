@@ -87,5 +87,67 @@
     "stage": "checker",
     "diagnostic_class": "current_source",
     "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "TRAIT_CONDITIONAL_PROOF_NOT_WELL_FOUNDED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "trait_witness_coherence_phase_a"
+    ],
+    "fixit_hint": "make every recursive evidence edge use a registered strict-decrease measure or write a finite nonrecursive conformance",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not bound search by source order, recursion depth or runtime fallback",
+    "message": "Conditional Trait evidence contains a cycle without a registered machine-checkable strict decrease.",
+    "notes": "TC-R016 rank 5 current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/trait-conformance-implementation-handoff-r107.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "trait_witness_resolution_phase_a"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / HIR / MIR / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "HIR",
+      "MIR",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "TRAIT_MIR_EVIDENCE_INCOMPLETE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "trait_source_internal_descriptor_split_law",
+      "trait_witness_resolution_phase_a"
+    ],
+    "fixit_hint": "repair the unresolved requirement, associated binding, parent evidence or conformance identity before lowering",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not emit partial HIR or reconstruct Trait evidence during MIR or runtime lowering",
+    "message": "Trait evidence is not complete and verifier-recomputable at the typed-HIR to MIR boundary.",
+    "notes": "TC-R016 rank 10 current source diagnostic contract; product checker and MIR emission remain NOT_RUN.",
+    "primary_source": "spec/contracts/trait-conformance-implementation-handoff-r107.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   }
 ]

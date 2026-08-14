@@ -28,6 +28,7 @@ REPAIR_VALIDATORS = [
     "validate_implementation_target_feature_p1_disposition_r101.py",
     "validate_implementation_target_feature_local_acceptance_r102.py",
     "validate_implementation_target_feature_p1_disposition_r104.py",
+    "validate_trait_conformance_implementation_handoff_r107.py",
     "validate_implementation_target_traceability.py",
 ]
 
@@ -110,9 +111,9 @@ def model_errors(
     for row in lanes[14:21]:
         if row != {
             "id": row.get("id"),
-            "design_contract_gate": "PARTIAL_STATIC_ACCEPTANCE_R102_NOT_ACTION_COMPLETE",
+            "design_contract_gate": "CLOSED_BY_R107_ACTION_COMPLETE_IMPLEMENTATION_HANDOFF",
             "execution_receipt_gate": "OPEN_NOT_RUN",
-            "readiness_effect": "BLOCKS_FIRST_TARGET_HANDOFF",
+            "readiness_effect": "IMPLEMENTATION_HANDOFF_READY_EXECUTION_REMAINS_OPEN",
         }:
             errors.append(f"FEATURE_P1_LANE:{row.get('id')}")
     if not lanes or lanes[-1] != {
@@ -130,7 +131,7 @@ def model_errors(
         or [row.get("status") for row in blockers]
         != [
             "OPEN",
-            "OPEN_PARTIAL_R102_EIGHT_ACTIONS_ONLY",
+            "OPEN_PARTIAL_R107_TCC_ACTION_COMPLETE",
             "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         ]
     ):
@@ -157,7 +158,7 @@ def model_errors(
             "CLOSED_LOCAL_DESIGN_STATIC",
             "EXPLICITLY_DEFERRED_TARGET_EXCLUDED",
             "PARTIAL_STATIC_DISPOSITION_REQUIRES_EXACT_TARGET_TOTALITY",
-            "PARTIAL_STATIC_ACCEPTANCE_EIGHT_ACTIONS_ONLY",
+            "PARTIAL_ACTION_COMPLETE_TCC_R107",
             "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         } or not (root / row.get("contract", "")).is_file():
             errors.append(f"LOCAL_REPAIR_BINDING:{row.get('id')}")

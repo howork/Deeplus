@@ -96,6 +96,18 @@ and public conformance residue. MIR adds no auto-policy operation and performs
 zero extension, provider, registry, source-order or runtime relookup; later
 uses consume the already selected witness and existing responsibility residue.
 
+The R107 Trait Conformance handoff applies the same closure fence to every
+current conformance route. Typed HIR reaches MIR only with complete,
+verifier-recomputable `ConformanceId`, `TraitWitnessId`, `RequirementId`,
+`ImplementationId`, `SubstitutionId`, `ResponsibilityId`, `AuthorityId`, parent
+link and associated-binding residue. A registered automatic row additionally
+retains its policy and derivation digests. Any missing or mismatched field is
+`TRAIT_MIR_EVIDENCE_INCOMPLETE` and emits no MIR. MIR, xVM, runtime and
+Cranelift never reconstruct a witness, rerun coherence, consult a provider or
+registry, rank source/import order, specialize, fall back, or replace parent
+evidence. The static contract is implementation-ready; production lowering and
+product execution remain NOT_RUN.
+
 Both operands evaluate once, left-to-right, before the borrowed, pure, total,
 synchronous witness call. The node has no implicit conversion, expected-result
 selection, provider/extension/local/case/`via`/`VIA`/`AUTO`/specialization

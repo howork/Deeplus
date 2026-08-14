@@ -174,7 +174,7 @@ def model_errors(
         or [row.get("status") for row in readiness.get("readiness_blockers", [])]
         != [
             "OPEN",
-            "OPEN_PARTIAL_R102_EIGHT_ACTIONS_ONLY",
+            "OPEN_PARTIAL_R107_TCC_ACTION_COMPLETE",
             "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         ]
     ):

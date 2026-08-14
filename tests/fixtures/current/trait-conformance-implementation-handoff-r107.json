@@ -1,0 +1,35 @@
+{
+  "$schema": "../../../schemas/language/trait-conformance-implementation-handoff-fixtures-r107.schema.json",
+  "schema": "deeplus.trait-conformance-implementation-handoff-fixtures/r107",
+  "contract": "spec/contracts/trait-conformance-implementation-handoff-r107.json",
+  "cases": [
+    {"id":"R107-TCC002-P","action_id":"TCC-P1-002","class":"positive","expected":"ADMIT_STATIC","oracle":"external type Target conforms Trait and owner-attached conform Trait group produce one normalized surface owner"},
+    {"id":"R107-TCC002-B","action_id":"TCC-P1-002","class":"boundary","expected":"ADMIT_STATIC","oracle":"type A = B commits as alias while type A conforms T commits as conformance without backtracking"},
+    {"id":"R107-TCC002-N","action_id":"TCC-P1-002","class":"reject","expected":"CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD","oracle":"removed conformance introducer yields recovery CST and zero AST/HIR conformance"},
+    {"id":"R107-TCC003-P","action_id":"TCC-P1-003","class":"positive","expected":"ADMIT_STATIC","oracle":"one owned direct-global ground declaration interns one ConformanceId and one binding per RequirementId"},
+    {"id":"R107-TCC003-B","action_id":"TCC-P1-003","class":"boundary","expected":"ADMIT_STATIC","oracle":"alpha renaming, transparent aliases and declaration/import order preserve all semantic identities and summary digest"},
+    {"id":"R107-TCC003-N","action_id":"TCC-P1-003","class":"reject","expected":"TRAIT_OVERLAPPING_WITNESS","oracle":"jointly unifiable heads reject without priority, fallback or partial HIR"},
+    {"id":"R107-TCC004-P","action_id":"TCC-P1-004","class":"positive","expected":"ADMIT_STATIC","oracle":"well-formed conformance emits no diagnostic and preserves marker family identity"},
+    {"id":"R107-TCC004-B","action_id":"TCC-P1-004","class":"boundary","expected":"ADMIT_STATIC","oracle":"file/import/link permutations retain diagnostic family, rank, primary span and canonical note order"},
+    {"id":"R107-TCC004-N","action_id":"TCC-P1-004","class":"reject","expected":"TRAIT_METHOD_DUPLICATE_SLOT","oracle":"duplicate slot wins exact TC-R016 rank 2 even when a lower-priority failure is also present"},
+    {"id":"R107-TCC005-P","action_id":"TCC-P1-005","class":"positive","expected":"ADMIT_STATIC","oracle":"direct, lowercase via and registered Shareable by auto each normalize to one ground identity without route discriminator"},
+    {"id":"R107-TCC005-B","action_id":"TCC-P1-005","class":"boundary","expected":"ADMIT_STATIC","oracle":"bodyless direct requires complete defaults and bodyless by auto seals exact registry policy digest"},
+    {"id":"R107-TCC005-N","action_id":"TCC-P1-005","class":"reject","expected":"CONFORMANCE_AUTO_POLICY_NOT_REGISTERED","oracle":"user policy, uppercase route, local route and runtime/provider search have zero candidates"},
+    {"id":"R107-TCC006-P","action_id":"TCC-P1-006","class":"positive","expected":"ADMIT_STATIC","oracle":"complete identity vector is verifier-recomputable and projects unchanged from checker through HIR to MIR"},
+    {"id":"R107-TCC006-B","action_id":"TCC-P1-006","class":"boundary","expected":"ADMIT_STATIC","oracle":"associated type emits no runtime operation while associated value/function reuses the sealed selection descriptor"},
+    {"id":"R107-TCC006-N","action_id":"TCC-P1-006","class":"reject","expected":"TRAIT_MIR_EVIDENCE_INCOMPLETE","oracle":"missing or mismatched identity field rejects before MIR; runtime relookup and fallback remain zero"},
+    {"id":"R107-TCC007-P","action_id":"TCC-P1-007","class":"positive","expected":"SPECIFIED_NOT_RUN","oracle":"manifest binds exact target, corpus and required mutants without asserting a production execution receipt"},
+    {"id":"R107-TCC007-B","action_id":"TCC-P1-007","class":"boundary","expected":"SPECIFIED_NOT_RUN","oracle":"two-run determinism and unevaluated product lanes remain explicit acceptance obligations"},
+    {"id":"R107-TCC007-N","action_id":"TCC-P1-007","class":"reject","expected":"TRAIT_LAW_PROPERTY_TEST_RECEIPT_MISSING","oracle":"missing target, digest, oracle, mutant result or second run cannot close the action"},
+    {"id":"R107-TCC008-P","action_id":"TCC-P1-008","class":"positive","expected":"SPECIFIED_NOT_RUN","oracle":"formatter, diagnostic, navigation and package API obligations bind exact semantic identities"},
+    {"id":"R107-TCC008-B","action_id":"TCC-P1-008","class":"boundary","expected":"SPECIFIED_NOT_RUN","oracle":"tooling contract can be implementation-ready while formatter and LSP product execution remain NOT_RUN"},
+    {"id":"R107-TCC008-N","action_id":"TCC-P1-008","class":"reject","expected":"CONFORMANCE_EVIDENCE_ORIGIN_NOT_UNIQUE","oracle":"tooling may not navigate or rewrite by spelling, import order, provider order or an ambiguous evidence origin"}
+  ],
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "trait_feature_p1": "7_OPEN_EXECUTION_NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_execution": "NOT_RUN"
+  }
+}

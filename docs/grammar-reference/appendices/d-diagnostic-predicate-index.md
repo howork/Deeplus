@@ -1190,6 +1190,7 @@
 | `TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN` | `verifier` | `error` | `active` | Trait-associated static selection is resolved before execution and cannot perform runtime lookup or fallback. |
 | `TRAIT_ASSOCIATED_TYPE_CONSTRAINT_UNSATISFIED` | `checker` | `error` | `active` | Associated type equality constraint is not satisfied by the selected witness. |
 | `TRAIT_ASSOCIATED_TYPE_CYCLE` | `checker` | `error` | `active` | Associated type binding forms a cycle. |
+| `TRAIT_CONDITIONAL_PROOF_NOT_WELL_FOUNDED` | `checker` | `error` | `active` | Conditional Trait evidence contains a cycle without a registered machine-checkable strict decrease. |
 | `TRAIT_FINAL_SLOT_CANNOT_BE_OVERRIDDEN` | `checker` | `error` | `active` | A final trait witness slot cannot be overridden by a child trait or conformance. |
 | `TRAIT_FINAL_SLOT_CONFLICT` | `checker` | `error` | `active` | Distinct inherited final trait witness slots conflict in the same conformance surface. |
 | `TRAIT_FINAL_WITNESS_NOT_EFFECTIVELY_FINAL` | `checker` | `error` | `active` | A final trait witness requirement must be satisfied by an effectively final concrete witness. |
@@ -1206,6 +1207,7 @@
 | `TRAIT_METHOD_RECEIVER_MODE_MISMATCH` | `checker` | `error` | `active` | Witness method receiver mode is incompatible with the trait requirement. |
 | `TRAIT_METHOD_SUSPENSION_MISMATCH` | `checker` | `error` | `active` | Witness method suspension responsibility does not match the trait requirement. |
 | `TRAIT_METHOD_VIEW_ESCAPES_OWNER` | `checker` | `error` | `active` | Witness method returns a view that can escape the owner region without the required region exposure. |
+| `TRAIT_MIR_EVIDENCE_INCOMPLETE` | `checker` | `error` | `active` | Trait evidence is not complete and verifier-recomputable at the typed-HIR to MIR boundary. |
 | `TRAIT_MISSING_WITNESS` | `checker` | `error` | `active` | cannot prove \`{type} conforms {trait}\`. |
 | `TRAIT_NOT_EXISTENTIAL_SAFE` | `checker` | `error` | `active` | Trait is not safe for any Trait existential packaging under the current bindings. |
 | `TRAIT_OPEN_DEFAULT_CONFLICT_REQUIRES_EXPLICIT_OVERRIDE` | `checker` | `error` | `active` | Inherited open default trait witness slots conflict; add an explicit \`*+\` or \`*.\` override. |

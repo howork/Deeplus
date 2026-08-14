@@ -14931,6 +14931,33 @@ def main() -> int:
             detail[-4000:],
         )
 
+    r107_trait_conformance_handoff_validator = (
+        root
+        / "tools/validators/validate_trait_conformance_implementation_handoff_r107.py"
+    )
+    if r107_trait_conformance_handoff_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r107_trait_conformance_handoff_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R107_TRAIT_CONFORMANCE_IMPLEMENTATION_HANDOFF",
+            detail[-4000:],
+        )
+
     grammar_reference_generator = (
         root / "tools/generators/generate_grammar_reference.py"
     )

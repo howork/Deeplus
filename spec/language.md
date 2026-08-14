@@ -4066,6 +4066,19 @@ Primary failures use this exact rank, then full canonical semantic identity:
 10. unresolved MIR evidence closure.
 
 The primary span identifies the rejecting declaration or binding. Notes use canonical conflicting identities, normalized keys/heads, and authorities in stable order. File/import/link permutations do not change family or semantic note order. The exact one-to-one Test_ binding is in `proposed-deltas/diagnostic-binding-ledger.json`.
+
+R107 binds TC-R001..R016 to the action-complete static implementation handoff
+`TraitConformanceSealV1`. The frontend commits one admitted source owner,
+normalizes and checks coherence, binds requirements and parents, admits one
+current evidence route, then seals the complete identity vector in typed HIR
+before MIR emission. MIR and runtime perform zero conformance, provider,
+registry, specialization, fallback, source-order, or witness relookup. The
+exact seven-action dependency graph, ten-rank diagnostic table, canonical HIR
+residue, and positive/boundary/reject oracles are normative in
+`spec/contracts/trait-conformance-implementation-handoff-r107.json`. This
+closes the implementation specification only: `TCC-P1-002..008` remain OPEN
+until target-bound execution receipts exist, and product support remains
+NOT_RUN.
 <!-- POST_PR16_UNIT_END:TC-R016 -->
 
 <!-- POST_PR16_UNIT_BEGIN:TCC-DG-001 -->
