@@ -252,16 +252,16 @@ def model_errors(
         errors.append("R99_ACTION_EXACT_PARITY")
     for row in r99_lanes[:14]:
         if (
-            row.get("design_contract_gate") != "EXPLICITLY_DEFERRED_OUTSIDE_FIRST_TARGET"
+            row.get("design_contract_gate") != "OPEN_EXCLUSION_TOTALITY_NOT_PROVEN"
             or row.get("execution_receipt_gate") != "OPEN_NOT_RUN"
-            or row.get("readiness_effect") != "NONBLOCKING_EXCLUDED_SUCCESSOR_SCOPE"
+            or row.get("readiness_effect") != "BLOCKS_FIRST_TARGET_UNTIL_EXACT_EXCLUSION_TOTALITY"
         ):
             errors.append(f"R99_PREDECESSOR_LANE:{row.get('id')}")
     for row in r99_lanes[14:21]:
         if (
-            row.get("design_contract_gate") != "CLOSED_STATIC_IMPLEMENTATION_HANDOFF"
+            row.get("design_contract_gate") != "PARTIAL_STATIC_ACCEPTANCE_R102_NOT_ACTION_COMPLETE"
             or row.get("execution_receipt_gate") != "OPEN_NOT_RUN"
-            or row.get("readiness_effect") != "RETAINED_IMPLEMENTATION_ACCEPTANCE"
+            or row.get("readiness_effect") != "BLOCKS_FIRST_TARGET_HANDOFF"
         ):
             errors.append(f"R99_PREDECESSOR_LANE:{row.get('id')}")
     if not r99_lanes or (

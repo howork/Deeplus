@@ -337,9 +337,14 @@ List를 publish하지 않고 이미 만든 temporary를 역순 cleanup한다. �
 ```deeplus
 let ordinary = [10, 20, 30]
 let first = ordinary[1]
-let bounded = [3..5: 10, 20, 30]
+let bounded = #list[3..5: 10, 20, 30]
 let declaredFirst = bounded[3]
 ```
+
+`#list[L..U: elements]`에서 `#list`는 bounded logical-domain List의
+명시적 parser owner다. `list`는 이 attached sigil 위치를 벗어나면 일반
+식별자다. `[(1..10:2)]`는 stepped Range 하나를 담는 ordinary List이고,
+제거된 `[L..U: elements]` 표면과 혼동하지 않는다.
 
 `ordinary`는 coordinate `1..3`을 가지므로 `first`의 타입은 `Int`, 값은
 `10`이다. bounded List는 저장 offset과 별개로 선언 coordinate `3..5`를

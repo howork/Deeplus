@@ -1,0 +1,16 @@
+{
+  "schema": "deeplus.preimplementation-consistency-closure-r103-fixture/r1",
+  "product_execution": "NOT_RUN",
+  "cases": [
+    {"id": "R103-BRACKET-P-001", "kind": "POSITIVE", "source": "[let seed = 1] { seed }", "owner": "ClosureExpr", "diagnostic": null, "canonical_ast_count": 1},
+    {"id": "R103-BRACKET-P-002", "kind": "POSITIVE", "source": "[state] @for item in items { yield item }", "owner": "GeneratorExpr", "diagnostic": null, "canonical_ast_count": 1},
+    {"id": "R103-BRACKET-P-003", "kind": "POSITIVE", "source": "[value]", "owner": "ListExpr", "diagnostic": null, "canonical_ast_count": 1},
+    {"id": "R103-BRACKET-B-001", "kind": "BOUNDARY", "source": "[value for value in values]", "owner": "ComprehensionExpr", "diagnostic": null, "canonical_ast_count": 1},
+    {"id": "R103-BRACKET-R-001", "kind": "REJECT", "source": "[value] #async { => }", "owner": "ClosureExpr", "diagnostic": "CLOSURE_LAMBDA_BODY_REQUIRED", "canonical_ast_count": 0},
+    {"id": "R103-BRACKET-R-002", "kind": "REJECT", "source": "[state] @for item in { }", "owner": "GeneratorExpr", "diagnostic": "GENERATOR_SOURCE_EXPRESSION_REQUIRED", "canonical_ast_count": 0},
+    {"id": "R103-BOUNDED-P-001", "kind": "POSITIVE", "source": "#list[3..5: 10, 20, 30]", "owner": "BoundedListExpr", "diagnostic": null, "canonical_ast_count": 1},
+    {"id": "R103-BOUNDED-B-001", "kind": "BOUNDARY", "source": "[(1..5:2)]", "owner": "ListExpr", "diagnostic": null, "canonical_ast_count": 1},
+    {"id": "R103-BOUNDED-R-001", "kind": "REJECT", "source": "[3..5: 10, 20, 30]", "owner": "RemovedBoundedListSurface", "diagnostic": "BOUNDED_LIST_EXPLICIT_SIGIL_REQUIRED", "canonical_ast_count": 0},
+    {"id": "R103-BOUNDED-R-002", "kind": "REJECT", "source": "#list[3..5: 10, 20]", "owner": "BoundedListExpr", "diagnostic": "BOUND_LITERAL_LENGTH_MISMATCH", "canonical_ast_count": 0}
+  ]
+}

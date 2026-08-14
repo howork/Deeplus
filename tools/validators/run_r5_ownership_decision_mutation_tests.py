@@ -2404,7 +2404,7 @@ R77_GRAMMAR_SHA256 = (
     "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
 )
 R99_GRAMMAR_SUCCESSOR_SHA256 = (
-    "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84"
+    "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda"
 )
 R77_HIR_H1_BRIDGE_SHA256 = (
     "2798c85f3575503d87ba038d02d3b265fe1b26df7bd967326458905f0c422911"
@@ -2418,8 +2418,8 @@ R8_014_BYTE_FENCE = {
         "f4a807b42e492e9a6bf1229b70ad293fb66b62f3aa0de6987687f2301c3c40e0",
     ),
     "spec/diagnostics/catalog/chunks/part-0002.json": (
-        60219,
-        "c3142bd09a936a0d1f65015e6632789043a2ed30a38b2767d85cadb7a89907b9",
+        61336,
+        "c337cf06b4f698a92c249d8daea01412d033705b4c2279efb23a290c27fbf149",
     ),
     "tests/conformance/checker-predicates/chunks/part-0003.json": (
         58919,

@@ -13,8 +13,8 @@
     "authority_role": "LEGACY_SURFACE_EQUIVALENCE_CENSUS_NOT_EXACT_GRAMMAR",
     "canonical_parser_grammar": "spec/grammar/deeplus.dpg",
     "canonical_parser_contexts": "spec/grammar/deeplus.parser-contexts.json",
-    "bytes": 70468,
-    "sha256": "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84",
+    "bytes": 70615,
+    "sha256": "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda",
     "production_count": 656,
     "external_symbol_count": 41
   },
@@ -12822,7 +12822,7 @@
       "ordinal": 607,
       "production_id": "ListLiteral",
       "profile": "STABLE",
-      "source_line": 1293,
+      "source_line": 1295,
       "normalized_rhs": "\"[\" ListEntryList? \"]\"",
       "rhs_sha256": "fb6eab454ffae516caac0736e0ffb1033fbb50e314f2b9c26908c19b3d8ff5b6",
       "referenced_productions": [
@@ -12841,7 +12841,7 @@
       "ordinal": 608,
       "production_id": "ListEntryList",
       "profile": "STABLE",
-      "source_line": 1294,
+      "source_line": 1296,
       "normalized_rhs": "ListEntry (\",\" ListEntry)* \",\"?",
       "rhs_sha256": "c2c4952690ee6994488bb5d0763bd756d931556d12ac757cd46fd80ae64e4410",
       "referenced_productions": [
@@ -12860,7 +12860,7 @@
       "ordinal": 609,
       "production_id": "ListEntry",
       "profile": "STABLE",
-      "source_line": 1295,
+      "source_line": 1297,
       "normalized_rhs": "Expr | PositionalUnfoldArgument",
       "rhs_sha256": "49c260af74530b1ffccae20e0c44c517f46e42d9448d35fcd1d66cd4a48dfab8",
       "referenced_productions": [
@@ -12880,9 +12880,9 @@
       "ordinal": 610,
       "production_id": "BoundedListLiteral",
       "profile": "STABLE",
-      "source_line": 1296,
-      "normalized_rhs": "\"[\" StaticIntLiteral \"..\" StaticIntLiteral \":\" ListEntryList? \"]\"",
-      "rhs_sha256": "63f4d4864aa717eb0ae58f1d8ea98216b8715b2d79778288b5b9af764b05910f",
+      "source_line": 1298,
+      "normalized_rhs": "\"#\" \"list\" \"[\" StaticIntLiteral \"..\" StaticIntLiteral \":\" ListEntryList? \"]\"",
+      "rhs_sha256": "4aeb55a74c793a41fbabec474663941c4142abc4b149bc7493d1e6366dd9a4d0",
       "referenced_productions": [
         "ListEntryList",
         "StaticIntLiteral"
@@ -12900,7 +12900,7 @@
       "ordinal": 611,
       "production_id": "ComprehensionExpr",
       "profile": "STABLE",
-      "source_line": 1298,
+      "source_line": 1300,
       "normalized_rhs": "\"[\" Expr ComprehensionClause+ \"]\"",
       "rhs_sha256": "ec1baa688e82c75dcb224a7ccc9df01818ff4dc6e6caabaf389441289cf40465",
       "referenced_productions": [
@@ -12920,7 +12920,7 @@
       "ordinal": 612,
       "production_id": "TypedMaterializationExpr",
       "profile": "STABLE",
-      "source_line": 1301,
+      "source_line": 1303,
       "normalized_rhs": "TypeRef MaterializationBody",
       "rhs_sha256": "341418a12959c9a6557f67d98a4304ebb4a1598c16572c0375044bbf17f1cbdf",
       "referenced_productions": [
@@ -12940,7 +12940,7 @@
       "ordinal": 613,
       "production_id": "MaterializationBody",
       "profile": "STABLE",
-      "source_line": 1302,
+      "source_line": 1304,
       "normalized_rhs": "\"${\" MaterializationEntryList? \"}\"",
       "rhs_sha256": "2fb1535d408da822246a1f18b90e80c207520393e8f4eab73dbd056d0bc786f7",
       "referenced_productions": [
@@ -12959,7 +12959,7 @@
       "ordinal": 614,
       "production_id": "MaterializationEntryList",
       "profile": "STABLE",
-      "source_line": 1303,
+      "source_line": 1305,
       "normalized_rhs": "MaterializationEntry (MaterializationSeparator MaterializationEntry)* MaterializationSeparator?",
       "rhs_sha256": "ee217c4e668e3e86259fbddfbcdfe1e384b21c9db0c963557306ccc6a2558aa0",
       "referenced_productions": [
@@ -12979,7 +12979,7 @@
       "ordinal": 615,
       "production_id": "MaterializationEntry",
       "profile": "STABLE",
-      "source_line": 1304,
+      "source_line": 1306,
       "normalized_rhs": "Identifier | Identifier \":\" Expr | StringLiteralExpr \":\" Expr | NamedUnfoldArgument",
       "rhs_sha256": "61d0ccd0f08c80b67205ac3777ac620623d8103c343a47bcc8b80ea9076ba3e0",
       "referenced_productions": [
@@ -13001,7 +13001,7 @@
       "ordinal": 616,
       "production_id": "MaterializationSeparator",
       "profile": "STABLE",
-      "source_line": 1308,
+      "source_line": 1310,
       "normalized_rhs": "\",\" LineBreakBoundary? | LineBreakBoundary",
       "rhs_sha256": "a2ae6f682586d290cfc684fe00d98c60fec8b2563beff329f23e2edf0463c4f6",
       "referenced_productions": [
@@ -13020,7 +13020,7 @@
       "ordinal": 617,
       "production_id": "MapLiteral",
       "profile": "STABLE",
-      "source_line": 1311,
+      "source_line": 1313,
       "normalized_rhs": "\"#\" \"map\" \"{\" MapEntryList? \"}\"",
       "rhs_sha256": "5a2ccb25bd8bf5ea8478e16f172809861e33f902aff1b0458ccc8dfa39b44596",
       "referenced_productions": [
@@ -13039,7 +13039,7 @@
       "ordinal": 618,
       "production_id": "MapEntryList",
       "profile": "STABLE",
-      "source_line": 1312,
+      "source_line": 1314,
       "normalized_rhs": "MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator?",
       "rhs_sha256": "0c380f6c8d1807072c912f7eab2cb5c947def41efe1e8979abf8c665ca248909",
       "referenced_productions": [
@@ -13059,7 +13059,7 @@
       "ordinal": 619,
       "production_id": "MapEntry",
       "profile": "STABLE",
-      "source_line": 1313,
+      "source_line": 1315,
       "normalized_rhs": "Expr \":\" Expr | \"*\" Expr",
       "rhs_sha256": "5fe707ea6353a1d0e1f08822c11a8dafaec12381b94a738efb7e6c7a847499ca",
       "referenced_productions": [
@@ -13078,7 +13078,7 @@
       "ordinal": 620,
       "production_id": "SetLiteral",
       "profile": "STABLE",
-      "source_line": 1314,
+      "source_line": 1316,
       "normalized_rhs": "\"#\" \"set\" \"{\" ExpressionList? \"}\"",
       "rhs_sha256": "09bf61a42cf297c241071bf49816daec39a4416eafba64e611690a78d1af143c",
       "referenced_productions": [
@@ -13097,7 +13097,7 @@
       "ordinal": 621,
       "production_id": "MutListLiteral",
       "profile": "STABLE",
-      "source_line": 1315,
+      "source_line": 1317,
       "normalized_rhs": "\"#\" \"mut\" \"[\" ExpressionList? \"]\"",
       "rhs_sha256": "05b9d5102c92882096ef455a41816242448ef2eccdea4aab6776bf341d4944e5",
       "referenced_productions": [
@@ -13116,7 +13116,7 @@
       "ordinal": 622,
       "production_id": "MapComprehensionExpr",
       "profile": "STABLE",
-      "source_line": 1316,
+      "source_line": 1318,
       "normalized_rhs": "\"#\" \"map\" \"{\" Expr \":\" Expr ComprehensionClause+ \"}\"",
       "rhs_sha256": "c4675f89f8ff59d657891236e2de1ba707ac6e6b35894e4917b61d95b02d3c91",
       "referenced_productions": [
@@ -13136,7 +13136,7 @@
       "ordinal": 623,
       "production_id": "SetComprehensionExpr",
       "profile": "STABLE",
-      "source_line": 1317,
+      "source_line": 1319,
       "normalized_rhs": "\"#\" \"set\" \"{\" Expr ComprehensionClause+ \"}\"",
       "rhs_sha256": "e1362bfee4328a12ef5ca6768fb37bb513b5c3110092860392b805d4000f1eef",
       "referenced_productions": [
@@ -13156,7 +13156,7 @@
       "ordinal": 624,
       "production_id": "ComprehensionClause",
       "profile": "STABLE",
-      "source_line": 1319,
+      "source_line": 1321,
       "normalized_rhs": "ForClause | PositiveGuard | IfLetClause | UnfoldClause",
       "rhs_sha256": "d789ff7e65441458e7208c22686ff1277cec8e6e79f3e930f1a44169a1fdea6e",
       "referenced_productions": [
@@ -13178,7 +13178,7 @@
       "ordinal": 625,
       "production_id": "ForClause",
       "profile": "STABLE",
-      "source_line": 1320,
+      "source_line": 1322,
       "normalized_rhs": "\"for\" Pattern \"in\" Expr",
       "rhs_sha256": "bc9f2b57819bc9fa0d10d671ae0d66de5c6b3fba5eded4586a5eff39cfa6ada0",
       "referenced_productions": [
@@ -13198,7 +13198,7 @@
       "ordinal": 626,
       "production_id": "IfLetClause",
       "profile": "STABLE",
-      "source_line": 1321,
+      "source_line": 1323,
       "normalized_rhs": "\"if\" \"let\" Pattern \"=\" Expr",
       "rhs_sha256": "be385dc32b40963061aeff303517c7149d7c52e07d36f49755e4457b8814da03",
       "referenced_productions": [
@@ -13218,7 +13218,7 @@
       "ordinal": 627,
       "production_id": "UnfoldClause",
       "profile": "STABLE",
-      "source_line": 1322,
+      "source_line": 1324,
       "normalized_rhs": "\"for\" Pattern \"in\" \"*\" Expr",
       "rhs_sha256": "bdb39fecfcccfb9ad59e579b011eb23e8796d7e2df5f499a71b107b16085cb9f",
       "referenced_productions": [
@@ -13238,7 +13238,7 @@
       "ordinal": 628,
       "production_id": "NumericArrayLiteral",
       "profile": "STABLE",
-      "source_line": 1325,
+      "source_line": 1327,
       "normalized_rhs": "ShapeInferredArrayLiteral | ShapeInferredColumnVectorLiteral | ExactShapeArrayLiteral",
       "rhs_sha256": "110dada34cccc950594c16f908f947dd84853d67f340244bc6011d2b50c2c0cf",
       "referenced_productions": [
@@ -13259,7 +13259,7 @@
       "ordinal": 629,
       "production_id": "ShapeInferredArrayLiteral",
       "profile": "STABLE",
-      "source_line": 1328,
+      "source_line": 1330,
       "normalized_rhs": "\"#\" \"[\" Expr (\",\" Expr)* \",\"? \"]\"",
       "rhs_sha256": "44aa300875818bfa59d9624ed518ada6e6cda07fd45ca4aab2386f112b55684c",
       "referenced_productions": [
@@ -13278,7 +13278,7 @@
       "ordinal": 630,
       "production_id": "ShapeInferredColumnVectorLiteral",
       "profile": "STABLE",
-      "source_line": 1329,
+      "source_line": 1331,
       "normalized_rhs": "\"#\" \"[\" Expr (\";\" Expr)+ \"]\"",
       "rhs_sha256": "b0c472a7247ba5e4c0c2254fb82af06590b7c17cb102b571bebc4be9c2ba7fbe",
       "referenced_productions": [
@@ -13297,7 +13297,7 @@
       "ordinal": 631,
       "production_id": "ExactShapeArrayLiteral",
       "profile": "STABLE",
-      "source_line": 1330,
+      "source_line": 1332,
       "normalized_rhs": "\"#\" StaticDimensionList \"[\" ArrayInitializer? \"]\"",
       "rhs_sha256": "2e5b1c5c39d72122ec65bd8c58461c9f119c2c6261e664eea858e7d408b6e030",
       "referenced_productions": [
@@ -13317,7 +13317,7 @@
       "ordinal": 632,
       "production_id": "ArrayInitializer",
       "profile": "STABLE",
-      "source_line": 1331,
+      "source_line": 1333,
       "normalized_rhs": "ShapedRepeatInitializer | ShapedGeneratorInitializer | ShapedElementSequence",
       "rhs_sha256": "ca94869fb0c23f59e1a6fe560ce16221c44ebd2ff9f32c57cc0a24ebed3a03ba",
       "referenced_productions": [
@@ -13338,7 +13338,7 @@
       "ordinal": 633,
       "production_id": "ShapedRepeatInitializer",
       "profile": "STABLE",
-      "source_line": 1334,
+      "source_line": 1336,
       "normalized_rhs": "\"repeat\" \":\" Expr",
       "rhs_sha256": "4dec9e94b83bdcfb553400d2f1b464d7904aa6f51c1c1fb616242a6be381f3d4",
       "referenced_productions": [
@@ -13357,7 +13357,7 @@
       "ordinal": 634,
       "production_id": "ShapedGeneratorInitializer",
       "profile": "STABLE",
-      "source_line": 1335,
+      "source_line": 1337,
       "normalized_rhs": "\"generate\" \":\" Expr",
       "rhs_sha256": "c8ddfc2fc386898d689053d65ce05acc67fe09949f23de7569f3a3785cf663cf",
       "referenced_productions": [
@@ -13376,7 +13376,7 @@
       "ordinal": 635,
       "production_id": "ShapedElementSequence",
       "profile": "STABLE",
-      "source_line": 1336,
+      "source_line": 1338,
       "normalized_rhs": "Expr (ShapedElementSeparator Expr)* ShapedElementSeparator?",
       "rhs_sha256": "ed53bdd5392d9431a6ec18ca02139045c92ae4df8a4bab5f45e58b9f8fd5ac36",
       "referenced_productions": [
@@ -13396,7 +13396,7 @@
       "ordinal": 636,
       "production_id": "ShapedElementSeparator",
       "profile": "STABLE",
-      "source_line": 1337,
+      "source_line": 1339,
       "normalized_rhs": "\",\" | ShapedAxisBoundary",
       "rhs_sha256": "7989945c027f18ac129d43bcc14ab8d753c3553dcc4dc3dae98eef4985aaec1b",
       "referenced_productions": [
@@ -13415,7 +13415,7 @@
       "ordinal": 637,
       "production_id": "ShapedAxisBoundary",
       "profile": "STABLE",
-      "source_line": 1338,
+      "source_line": 1340,
       "normalized_rhs": "\";\" \";\"*",
       "rhs_sha256": "5be88766d3f6e1d28c2699747143d919687071c6bd68f7ef07d06cc214b01a89",
       "referenced_productions": [],
@@ -13432,7 +13432,7 @@
       "ordinal": 638,
       "production_id": "MeasureLiteralExpr",
       "profile": "STABLE",
-      "source_line": 1341,
+      "source_line": 1343,
       "normalized_rhs": "NumericLiteral \"[\" UnitExpr \"]\"",
       "rhs_sha256": "c186b96bc6594b528801f6f85e34772add87b742a64539dd44ec218e63cbc876",
       "referenced_productions": [
@@ -13452,7 +13452,7 @@
       "ordinal": 639,
       "production_id": "UnitExpr",
       "profile": "STABLE",
-      "source_line": 1342,
+      "source_line": 1344,
       "normalized_rhs": "PrattUnitExpr",
       "rhs_sha256": "188194b5a02b5f6c7c95e76fb359e29446596563190d4c7df367b861ccdca9b0",
       "referenced_productions": [
@@ -13471,7 +13471,7 @@
       "ordinal": 640,
       "production_id": "UnitPrimary",
       "profile": "STABLE",
-      "source_line": 1343,
+      "source_line": 1345,
       "normalized_rhs": "Identifier | QualifiedPath | \"(\" UnitExpr \")\"",
       "rhs_sha256": "975e662bdb8baebf37ff3458a27b91245209456e6f92c4979bad7e0d8c65e158",
       "referenced_productions": [
@@ -13492,7 +13492,7 @@
       "ordinal": 641,
       "production_id": "UnitPostfixParselet",
       "profile": "STABLE",
-      "source_line": 1344,
+      "source_line": 1346,
       "normalized_rhs": "\"^\" SignedStaticInt",
       "rhs_sha256": "c032ba2a80f0b3b476f4a20202b4682a415e7e190df2df4e8456e0a28d3ee7f2",
       "referenced_productions": [
@@ -13511,7 +13511,7 @@
       "ordinal": 642,
       "production_id": "UnitInfixOperator",
       "profile": "STABLE",
-      "source_line": 1345,
+      "source_line": 1347,
       "normalized_rhs": "\"*\" | \"/\"",
       "rhs_sha256": "6acb9b2b39846e61861eecd91f8fde80796458ad49f270e6298d5aef6bcb976d",
       "referenced_productions": [],
@@ -13528,7 +13528,7 @@
       "ordinal": 643,
       "production_id": "PrattUnitExpr",
       "profile": "STABLE",
-      "source_line": 1346,
+      "source_line": 1348,
       "normalized_rhs": "UNIT_PRATT_ENTRY",
       "rhs_sha256": "4ace237e64081ac393a361bb12fbabd84c8c53538124ba791fe8e00f35877e58",
       "referenced_productions": [],
@@ -13545,7 +13545,7 @@
       "ordinal": 644,
       "production_id": "DeeplusPreview",
       "profile": "PREVIEW",
-      "source_line": 1355,
+      "source_line": 1357,
       "normalized_rhs": "PreviewLibrarySourceFile | PreviewExecutableSourceFile | PreviewScriptSourceFile",
       "rhs_sha256": "7beb92fed5fd0cc79a7e22f9d7a9d1fc435d5308c562b8e70a7cc62c9a304ecc",
       "referenced_productions": [
@@ -13566,7 +13566,7 @@
       "ordinal": 645,
       "production_id": "PreviewLibrarySourceFile",
       "profile": "PREVIEW",
-      "source_line": 1356,
+      "source_line": 1358,
       "normalized_rhs": "PreviewGate ModuleDecl? PreviewLibraryItem* EOF_TOKEN",
       "rhs_sha256": "6bdadb0c2003a946094a52ab5c48ddbda2a99d7dd8d87c46bce98122208a6981",
       "referenced_productions": [
@@ -13588,7 +13588,7 @@
       "ordinal": 646,
       "production_id": "PreviewExecutableSourceFile",
       "profile": "PREVIEW",
-      "source_line": 1357,
+      "source_line": 1359,
       "normalized_rhs": "PreviewGate ModuleDecl? PreviewExecutableItem* EOF_TOKEN",
       "rhs_sha256": "f9507708d70d3c3f2d25025efcd6dfe7447e2e9ba29759d77a7ea72ec7a54b01",
       "referenced_productions": [
@@ -13610,7 +13610,7 @@
       "ordinal": 647,
       "production_id": "PreviewScriptSourceFile",
       "profile": "PREVIEW",
-      "source_line": 1358,
+      "source_line": 1360,
       "normalized_rhs": "Shebang? PreviewGate ModuleDecl? PreviewScriptItem* EOF_TOKEN",
       "rhs_sha256": "b0e3491c7cca5f91270c6434bc0197d4fbf328ff129356e788564d4191bade19",
       "referenced_productions": [
@@ -13633,7 +13633,7 @@
       "ordinal": 648,
       "production_id": "PreviewLibraryItem",
       "profile": "PREVIEW",
-      "source_line": 1360,
+      "source_line": 1362,
       "normalized_rhs": "LibrarySourceItem | PreviewFfiDecl",
       "rhs_sha256": "27e7e632509911d2823da21d0448278589dc401bbffc44709db5db34b92348db",
       "referenced_productions": [
@@ -13653,7 +13653,7 @@
       "ordinal": 649,
       "production_id": "PreviewExecutableItem",
       "profile": "PREVIEW",
-      "source_line": 1361,
+      "source_line": 1363,
       "normalized_rhs": "ExecutableSourceItem | PreviewFfiDecl",
       "rhs_sha256": "63f188f006cbacf0927fc9767bc8ebacdbd14b4108944f0b20354fffe9f5f209",
       "referenced_productions": [
@@ -13673,7 +13673,7 @@
       "ordinal": 650,
       "production_id": "PreviewScriptItem",
       "profile": "PREVIEW",
-      "source_line": 1362,
+      "source_line": 1364,
       "normalized_rhs": "ScriptSourceItem | PreviewFfiDecl",
       "rhs_sha256": "605f5a15c7dbe8948928f9b1a85240015ca741a27e64fe26f6193c808e411f6e",
       "referenced_productions": [
@@ -13693,7 +13693,7 @@
       "ordinal": 651,
       "production_id": "PreviewGate",
       "profile": "PREVIEW",
-      "source_line": 1364,
+      "source_line": 1366,
       "normalized_rhs": "\"#\" \"preview\" \"(\" PreviewFeatureList \")\" LineBreakBoundary",
       "rhs_sha256": "a20a42077a9031cca72aa220391495beaac4882723a1b9dac3f20ea9d4d8af79",
       "referenced_productions": [
@@ -13713,7 +13713,7 @@
       "ordinal": 652,
       "production_id": "PreviewFeatureList",
       "profile": "PREVIEW",
-      "source_line": 1365,
+      "source_line": 1367,
       "normalized_rhs": "Identifier (\",\" Identifier)*",
       "rhs_sha256": "83d1ce174d1dc5c52d7050fdf0efbe56519b444235e82307a975596c61fe5063",
       "referenced_productions": [
@@ -13732,7 +13732,7 @@
       "ordinal": 653,
       "production_id": "PreviewFfiDecl",
       "profile": "PREVIEW",
-      "source_line": 1368,
+      "source_line": 1370,
       "normalized_rhs": "PreviewFfiFunctionDecl | PreviewFfiBlockDecl",
       "rhs_sha256": "0056dda9b2fc820cd8269577a12804d5e04f7e737025f28d99cb2100f40cfb1e",
       "referenced_productions": [
@@ -13752,7 +13752,7 @@
       "ordinal": 654,
       "production_id": "PreviewFfiFunctionDecl",
       "profile": "PREVIEW",
-      "source_line": 1369,
+      "source_line": 1371,
       "normalized_rhs": "\"extern\" \"#\" \"C\" \"def\" \"#\" \"unsafe\" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary",
       "rhs_sha256": "6d142b5d6ecf80b5c32c9d39342ed60aec086c940bad790fd04ed9a0b7a87785",
       "referenced_productions": [
@@ -13776,7 +13776,7 @@
       "ordinal": 655,
       "production_id": "PreviewFfiBlockDecl",
       "profile": "PREVIEW",
-      "source_line": 1371,
+      "source_line": 1373,
       "normalized_rhs": "\"extern\" \"c\" \"(\" PLAIN_STRING_LITERAL \")\" \"{\" PreviewFfiBlockMember* \"}\"",
       "rhs_sha256": "2292aae08835c187ef6a63a5431e56c4b3f87a539bd7f4fdb4ff2668df37cdef",
       "referenced_productions": [
@@ -13796,7 +13796,7 @@
       "ordinal": 656,
       "production_id": "PreviewFfiBlockMember",
       "profile": "PREVIEW",
-      "source_line": 1373,
+      "source_line": 1375,
       "normalized_rhs": "\"unsafe\" \"def\" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary",
       "rhs_sha256": "51e9202fe1a9cd3bd27f82a7e3ab2d960e140236af38fe947389b40e56eb3f4a",
       "referenced_productions": [

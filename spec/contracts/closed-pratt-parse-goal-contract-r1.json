@@ -394,10 +394,21 @@
       "profile": "STABLE"
     },
     {
-      "id": "list_bounded_or_comprehension",
+      "id": "list_or_comprehension",
       "trigger": "[",
-      "grammar_owner": "ListLiteral | BoundedListLiteral | ComprehensionExpr",
-      "ast_target": "ListExpr | BoundedListExpr | ComprehensionExpr",
+      "grammar_owner": "ListLiteral | ComprehensionExpr",
+      "ast_target": "ListExpr | ComprehensionExpr",
+      "kind": "NUD_PRIMARY",
+      "lbp": null,
+      "rbp": null,
+      "associativity": "not_applicable",
+      "profile": "STABLE"
+    },
+    {
+      "id": "bounded_list",
+      "trigger": "# list [",
+      "grammar_owner": "BoundedListLiteral",
+      "ast_target": "BoundedListExpr",
       "kind": "NUD_PRIMARY",
       "lbp": null,
       "rbp": null,

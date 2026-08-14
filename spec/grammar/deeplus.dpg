@@ -755,7 +755,7 @@ InterpSelector
 
 ListLiteral := '[' [list<ListEntry,1,yes>] ']' ;
 ListEntry   := Expr | '*' Expr ;
-BoundedList := '[' StaticInt '..' StaticInt ':' [list<ListEntry,1,yes>] ']' ;
+BoundedList := '#' ~list '[' StaticInt '..' StaticInt ':' [list<ListEntry,1,yes>] ']' ;
 Comprehension
             := '[' Expr CompClause+ ']' ;
 CompClause  := 'for' Pattern 'in' Expr

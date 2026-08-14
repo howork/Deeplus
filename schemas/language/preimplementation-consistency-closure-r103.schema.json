@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/preimplementation-consistency-closure-r103.schema.json",
+  "title": "Deeplus R103 preimplementation consistency closure",
+  "type": "object",
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "candidate_status",
+    "baseline",
+    "closure_items",
+    "fixture",
+    "validator",
+    "governance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/preimplementation-consistency-closure-r103.schema.json"},
+    "schema": {"const": "deeplus.preimplementation-consistency-closure/r103"},
+    "revision": {"const": "r103-readiness-evidence-and-parser-authority-closure-r1"},
+    "candidate_status": {"const": "LOCAL_DESIGN_STATIC_CANDIDATE_NOT_CANONICAL_NOT_PRODUCT_EXECUTION"},
+    "baseline": {
+      "type": "object",
+      "required": ["repository", "branch", "commit", "tree", "current_binding"],
+      "properties": {
+        "repository": {"const": "howork/Deeplus"},
+        "branch": {"type": "string", "minLength": 1},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "tree": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "current_binding": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "closure_items": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "status", "decision", "acceptance"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^R103-(READY|PARSER)-P0-00[1-4]$"},
+          "title": {"type": "string", "minLength": 1},
+          "status": {"const": "CLOSED_LOCAL_DESIGN_STATIC"},
+          "decision": {"type": "string", "minLength": 1},
+          "acceptance": {"type": "object", "minProperties": 2}
+        },
+        "additionalProperties": false
+      }
+    },
+    "fixture": {"const": "tests/fixtures/current/preimplementation-consistency-closure-r103.json"},
+    "validator": {"const": "tools/validators/validate_preimplementation_consistency_closure_r103.py"},
+    "governance": {
+      "const": {
+        "semantic_p0": 0,
+        "artifact_parser_p0_after_closure": 0,
+        "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
+        "product_lanes": "15_OF_15_NOT_RUN",
+        "production_implementation": "NOT_RUN",
+        "github_mutation": 0,
+        "canonical_publication": "NOT_PERFORMED"
+      }
+    }
+  },
+  "additionalProperties": false
+}

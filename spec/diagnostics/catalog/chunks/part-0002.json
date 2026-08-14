@@ -1061,6 +1061,33 @@
     "notes": "Non-current diagnostic identity retained for reference integrity."
   },
   {
+    "diagnostic_id": "BOUNDED_LIST_EXPLICIT_SIGIL_REQUIRED",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "diagnostic_status": "active",
+    "diagnostic_maturity": "active",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source",
+    "stage": "parser",
+    "severity": "error",
+    "message": "A bounded logical-domain List uses #list[L..U: elements]; parenthesize a leading stepped Range in an ordinary List.",
+    "feature_refs": [
+      "bounded_contiguous_index_domain_msp"
+    ],
+    "related_feature_refs": [],
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER"
+    ],
+    "authority": "LANGUAGE / PARSER",
+    "fixit_kind": "manual_review",
+    "fixit_hint": "use #list[L..U: elements] for a bounded List or [(L..U:step)] for one Range element",
+    "fixit_policy": "offer a fix only after the parser has identified the exact removed bounded-list shape",
+    "primary_source": "spec/language.md",
+    "notes": "Current parser commitment diagnostic; no compatibility alias is retained.",
+    "product_support": "NOT_RUN"
+  },
+  {
     "diagnostic_id": "BOUNDED_LIST_CALL_ARGUMENT_FORBIDDEN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",

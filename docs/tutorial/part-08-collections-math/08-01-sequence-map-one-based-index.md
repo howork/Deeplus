@@ -101,10 +101,15 @@ let last = names[names.length]
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-let bounded = [3..5: 10, 20, 30]
+let bounded = #list[3..5: 10, 20, 30]
 let declaredFirst = bounded[3]
 let declaredLast = bounded[5]
 ```
+
+`#list`는 선언된 논리 좌표를 갖는 bounded List만의 명시적 소유자다.
+`list`는 그 밖의 위치에서는 일반 식별자다. 한 개의 stepped Range를
+일반 List 원소로 넣으려면 `[(1..10:2)]`처럼 괄호로 감싸며,
+옛 `[L..U: elements]` 표기는 사용하지 않는다.
 
 storage에 세 element가 있어도 logical domain은 `3..5`다. `bounded[1]`로
 자동 rebase하지 않는다.
@@ -220,7 +225,7 @@ items[2] = replacement
 ## 10. 연습 문제
 
 1. **복사:** 네 도시 List에서 `cities[1]`과 마지막 값을 읽어라.
-2. **빈칸 완성:** `[10..12: a, b, c]`에서 유효 domain `___..___`와
+2. **빈칸 완성:** `#list[10..12: a, b, c]`에서 유효 domain `___..___`와
    `values[___] == b`의 세 빈칸을 채워라.
 3. **설계:** sparse sensor ID를 List와 Map 중 어디에 둘지 logical
    coordinate, missing key, ordering을 기준으로 결정하라.

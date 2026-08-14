@@ -109,6 +109,7 @@
 | `BORROW_ESCAPE_OWNER_REGION` | `checker` | `error` | `active` | Borrowed view escapes the owner region. |
 | `BOUNDED_INDEX_LENGTH_MISMATCH` | `checker` | `error` | `active` | The bounded list element count must equal the asserted closed logical-domain cardinality. |
 | `BOUNDED_LIST_CALL_ARGUMENT_FORBIDDEN` | `parser` | `error` | `active` | A bounded list contains expressions only; call labels, evidence arguments and unfolding are forbidden. |
+| `BOUNDED_LIST_EXPLICIT_SIGIL_REQUIRED` | `parser` | `error` | `active` | A bounded logical-domain List uses #list[L..U: elements]; parenthesize a leading stepped Range in an ordinary List. |
 | `BOUND_LITERAL_LENGTH_MISMATCH` | `checker` | `error` | `active` | The number of elements does not equal the declared closed logical-domain cardinality. |
 | `BOX_OWNERSHIP_VIOLATION` | `checker` | `error` | `active` | Box is a unique owner; use-after-move, duplicate ownership, escaping borrow, or missing cleanup is forbidden. |
 | `BREAK_TARGET_NOT_IN_SCOPE` | `checker` | `error` | `active` | Break/continue target does not refer to an enclosing loop scope. |

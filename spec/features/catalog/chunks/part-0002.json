@@ -355,7 +355,7 @@
     "depends_on": [
       "one_based_sequence_logical_indexing"
     ],
-    "notes": "Stable bounded logical-domain literal uses exactly [L..U: elements] with StaticInt bounds, an expression-only element list, the inclusive domain L..U, and exact cardinality U-L+1. The removed [L...: elements] form is not inferred. Product implementation NOT_RUN.",
+    "notes": "Stable bounded logical-domain literal uses exactly #list[L..U: elements] with StaticInt bounds, an expression-only element list, the inclusive domain L..U, and exact cardinality U-L+1. The list word is contextual only after attached #. The removed unprefixed forms are not inferred. Product implementation NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_lexer": "NOT_RUN",
@@ -372,6 +372,7 @@
     "trace_class": "syntax",
     "normative_trace_refs": {
       "diagnostics": [
+        "BOUNDED_LIST_EXPLICIT_SIGIL_REQUIRED",
         "BOUND_LITERAL_LENGTH_MISMATCH"
       ],
       "predicates": [

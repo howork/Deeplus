@@ -122,6 +122,7 @@
       "isolated",
       "law",
       "lazy",
+      "list",
       "lsb0",
       "mailbox",
       "map",
@@ -183,6 +184,7 @@
       "flags",
       "guard",
       "lazy",
+      "list",
       "mailbox",
       "map",
       "mut",
@@ -2145,6 +2147,21 @@
       "rhs": "required, required, absent respectively",
       "optional_step": ": Expr owned by the committed Range parselet"
     },
+    "bracket_primary_commitment": {
+      "initial_token": "[",
+      "probe": "transactionally scan one balanced CaptureList candidate without consuming tokens or emitting diagnostics",
+      "closure_commit_markers": ["attached HashTag cluster followed by {", "attached {"],
+      "generator_commit_markers": ["attached @ for", "attached @ while", "attached @ repeat"],
+      "collection_fallback": "if no exact post-] owner marker follows, consume zero tokens from the probe and parse ListLiteral or ComprehensionExpr",
+      "post_marker_failure": "after an exact owner marker is seen, commit to that owner and emit one owner-specific recovery diagnostic without collection fallback",
+      "semantic_lookup_count": 0
+    },
+    "bounded_list_primary": {
+      "trigger": "attached # list [",
+      "surface": "#list[StaticInt..StaticInt: ListEntry*]",
+      "contextual_word_outside_sigil_role": "ordinary identifier",
+      "ordinary_list_range_boundary": "a stepped Range in first list position is parenthesized; the removed unprefixed bounded spelling is rejected before AST"
+    },
       "message_led": {
         "~": {
           "mode": "Message",
@@ -2168,8 +2185,8 @@
     "differential_contract": "spec/contracts/parser-grammar-differential-r1.json",
     "legacy_surface_census": "spec/grammar/deeplus.ebnf",
     "legacy_surface_census_is_exact_grammar": false,
-    "rule_family_count": 280,
-    "context_specialized_clause_count": 301,
+    "rule_family_count": 282,
+    "context_specialized_clause_count": 303,
     "architecture": "scanner + DPG + ParserContext/Pratt + lossless CST/recovery + AST/checker",
     "handwritten_parser": true,
     "standard_ebnf_required": false,

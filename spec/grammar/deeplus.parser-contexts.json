@@ -2,10 +2,10 @@
   "schema": "deeplus.parser-contexts/dpg1",
   "purpose": "Closed parser-facing surface sets and owner admission tables extracted from the attached CURRENT grammar. These values are not lexer keyword reclassifications.",
   "source": {
-    "deeplus_ebnf_git_blob_sha1": "68aff7842f28824f0b0e7b24f9af4c3b14d032f9",
-    "deeplus_ebnf_sha256": "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84",
-    "keyword_vocabulary_git_blob_sha1": "51dd7b44b588757f91535a61f33d182103f3f958",
-    "keyword_vocabulary_sha256": "dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4"
+    "deeplus_ebnf_git_blob_sha1": "f6187e497b639e8bf272ff5a82531adbc6cf8b65",
+    "deeplus_ebnf_sha256": "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda",
+    "keyword_vocabulary_git_blob_sha1": "d5d847d1b4cab28649ac0adcaa46789d8bab53ae",
+    "keyword_vocabulary_sha256": "feeb593046823ac2c9e7326cbc7789058ea4c99cc28449437cdd53c699b2c2c8"
   },
   "dpg_metamodel": {
     "version": "DPG/1",
@@ -602,6 +602,23 @@
       "layout_mode_markers": ["END_AFTER_CASE", "CLOSE_AFTER_SINGLE_CASE"],
       "mixed_separator_count": 0,
       "empty_enum_profile": "NOT_CURRENT"
+    },
+    "bracket_primary": {
+      "registry": "BracketPrimaryCommitmentV1",
+      "contract": "spec/contracts/preimplementation-consistency-closure-r103.json",
+      "probe": "BALANCED_CAPTURE_LIST_ZERO_CONSUMPTION",
+      "closure_post_markers": ["ATTACHED_HASH_TAG_CLUSTER_THEN_LBRACE", "ATTACHED_LBRACE"],
+      "generator_post_markers": ["ATTACHED_AT_FOR", "ATTACHED_AT_WHILE", "ATTACHED_AT_REPEAT"],
+      "fallback": "LIST_OR_COMPREHENSION_FROM_ORIGINAL_CURSOR",
+      "post_marker_failure": "ONE_OWNER_DIAGNOSTIC_NO_COLLECTION_FALLBACK",
+      "semantic_lookup_count": 0
+    },
+    "bounded_list": {
+      "surface": "#list[L..U: elements]",
+      "sigil_role": "list",
+      "ordinary_identifier_elsewhere": true,
+      "legacy_unprefixed_surface": "REJECT_BEFORE_AST",
+      "first_item_stepped_range": "REQUIRES_PARENS"
     }
   },
   "combinator_contracts": {

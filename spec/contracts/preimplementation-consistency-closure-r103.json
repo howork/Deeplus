@@ -1,0 +1,95 @@
+{
+  "$schema": "../../schemas/language/preimplementation-consistency-closure-r103.schema.json",
+  "schema": "deeplus.preimplementation-consistency-closure/r103",
+  "revision": "r103-readiness-evidence-and-parser-authority-closure-r1",
+  "candidate_status": "LOCAL_DESIGN_STATIC_CANDIDATE_NOT_CANONICAL_NOT_PRODUCT_EXECUTION",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "codex/preimpl-p0-r80-authority-projection-parity",
+    "commit": "1eeef11528149179d469294981fb91a07bb1b29d",
+    "tree": "c168eb7baba04084c5500d4a20d3ae6085c387d5",
+    "current_binding": false
+  },
+  "closure_items": [
+    {
+      "id": "R103-READY-P0-001",
+      "title": "implementation-readiness evidence honesty",
+      "status": "CLOSED_LOCAL_DESIGN_STATIC",
+      "decision": "Generic whole-contract E2 locators remain useful trace links but cannot close feature-local implementation handoff. R99 is blocked until exact publication, complete feature-local oracles, and exact 22-action target disposition are all closed.",
+      "acceptance": {
+        "target_rows": 464,
+        "rows_using_generic_global_evidence": 396,
+        "generic_global_evidence_refs": 1186,
+        "generic_global_registry_ids": 1192,
+        "reference_stage_counts": {
+          "AST_FRONTEND": 5,
+          "STATIC_SEMANTICS": 61,
+          "DYNAMIC_LOWERING": 198,
+          "CONFORMANCE_TESTS_POSITIVE": 132,
+          "CONFORMANCE_TESTS_BOUNDARY": 395,
+          "CONFORMANCE_TESTS_REJECT": 395
+        },
+        "readiness_blockers": 3,
+        "readiness_verdict": "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_THREE_READINESS_GATES"
+      }
+    },
+    {
+      "id": "R103-PARSER-P0-002",
+      "title": "DPG authority count parity",
+      "status": "CLOSED_LOCAL_DESIGN_STATIC",
+      "decision": "The canonical DPG, parser differential contract, frontend projection, and implementation guide use one exact count authority.",
+      "acceptance": {
+        "dpg_rule_clause_count": 303,
+        "dpg_rule_family_count": 282,
+        "product_parser": "NOT_RUN"
+      }
+    },
+    {
+      "id": "R103-PARSER-P0-003",
+      "title": "left-bracket primary commitment",
+      "status": "CLOSED_LOCAL_DESIGN_STATIC",
+      "decision": "The parser transactionally probes a balanced CaptureList and commits to Closure or Generator only after an exact attached post-marker. Without such a marker it rolls back with zero consumption and parses List or Comprehension; after commitment failure never falls back.",
+      "acceptance": {
+        "probe": "BALANCED_CAPTURE_LIST_ZERO_CONSUMPTION",
+        "closure_markers": [
+          "ATTACHED_HASH_TAG_CLUSTER_THEN_LBRACE",
+          "ATTACHED_LBRACE"
+        ],
+        "generator_markers": [
+          "ATTACHED_AT_FOR",
+          "ATTACHED_AT_WHILE",
+          "ATTACHED_AT_REPEAT"
+        ],
+        "fallback": "LIST_OR_COMPREHENSION_FROM_ORIGINAL_CURSOR",
+        "post_commit_fallback_count": 0,
+        "semantic_lookup_count": 0
+      }
+    },
+    {
+      "id": "R103-PARSER-P0-004",
+      "title": "bounded List and stepped Range surface separation",
+      "status": "CLOSED_LOCAL_DESIGN_STATIC",
+      "decision": "Bounded logical-domain Lists use #list[L..U: elements]. The list word is contextual only in the attached sigil role. A stepped Range in first ordinary-List position is parenthesized; the removed unprefixed bounded spelling is rejected before AST.",
+      "acceptance": {
+        "bounded_list_surface": "#list[L..U: elements]",
+        "ordinary_list_range_surface": "[(L..U:step)]",
+        "removed_surface": "[L..U: elements]",
+        "removed_surface_disposition": "REJECT_BEFORE_AST",
+        "primary_diagnostic": "BOUNDED_LIST_EXPLICIT_SIGIL_REQUIRED",
+        "compatibility_alias_count": 0,
+        "numeric_array_surface_unchanged": "#[elements]"
+      }
+    }
+  ],
+  "fixture": "tests/fixtures/current/preimplementation-consistency-closure-r103.json",
+  "validator": "tools/validators/validate_preimplementation_consistency_closure_r103.py",
+  "governance": {
+    "semantic_p0": 0,
+    "artifact_parser_p0_after_closure": 0,
+    "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_mutation": 0,
+    "canonical_publication": "NOT_PERFORMED"
+  }
+}

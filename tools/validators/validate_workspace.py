@@ -11728,8 +11728,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "797c846e71c9f784b214dee1e9c88d3752920b4115302ba6a86d072f00256d84"
-            and len(grammar_bytes) == 70468
+            == "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda"
+            and len(grammar_bytes) == 70615
             and len(production_names) == 656
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
@@ -12830,7 +12830,7 @@ def main() -> int:
                 and fixed_counts.get("predicate_fixtures") == 909
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
-                and fixed_counts.get("contextual_words") == 105,
+                and fixed_counts.get("contextual_words") == 106,
                 "LANGUAGE_COHERENCE_CONTRACT",
                 str(fixed_counts),
             )
@@ -14820,6 +14820,33 @@ def main() -> int:
         check(
             process.returncode == 0,
             "R102_IMPLEMENTATION_TARGET_FEATURE_LOCAL_ACCEPTANCE",
+            detail[-4000:],
+        )
+
+    r103_preimplementation_consistency_validator = (
+        root
+        / "tools/validators/validate_preimplementation_consistency_closure_r103.py"
+    )
+    if r103_preimplementation_consistency_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r103_preimplementation_consistency_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R103_PREIMPLEMENTATION_CONSISTENCY_CLOSURE",
             detail[-4000:],
         )
 
@@ -22190,7 +22217,7 @@ def main() -> int:
         and "RecoveryNullLiteral" not in grammar
         and 'UnfoldClause ::= "for" Pattern "in" "*" Expr ;' in grammar
         and 'IndexSuffix ::= "[" SliceAxisList "]" ;' in grammar
-        and 'BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral'
+        and 'BoundedListLiteral ::= "#" "list" "[" StaticIntLiteral ".." StaticIntLiteral'
         in grammar
         and range_operator.get("tokens") == [[".."], ["..<"], ["..."]]
         and "rejected_reserved_spellings" not in range_operator

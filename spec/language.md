@@ -1109,9 +1109,12 @@ present end reject. A bounded range terminates before overflow and includes an
 exactly reached inclusive end. A finite ordered Enum cannot form a one-sided
 Range. `..>` is not current. Positional parameter/type collection instead uses
 owner-attached `name..: T` / `T..`; comprehension unfold is
-`for Pattern in *Expr`. A bounded List literal remains exactly
-`[L..U: elements]`, preserves its inclusive domain, and requires element count
-`U - L + 1`.
+`for Pattern in *Expr`. A bounded List literal is explicitly owned by
+`#list[L..U: elements]`, preserves its inclusive domain, and requires element
+count `U - L + 1`. The `list` word has this role only when attached to `#` and
+remains an ordinary identifier elsewhere. A stepped Range that is the first
+item of an ordinary List is parenthesized, as in `[(1..10:2)]`; the removed
+unprefixed bounded spelling is not silently reinterpreted.
 
 A payload-free, nongeneric `enum#increasing` or `enum#decreasing` is also an
 intrinsic range carrier. It receives one whole-Enum `Eq<Self>` and
@@ -1252,7 +1255,7 @@ semantics.
 
 The built-in default logical index domain of `List`, `String`, and `Bytes` is exactly `1..length`, and its storage projection is `index - 1`. Every `ReadonlyView` preserves its source owner's declared logical coordinates and provenance: a view of one of those ordinary owners is therefore one-based, while a view of a bounded or sliced owner retains that source domain and mapping. Index zero in a default one-based domain, a negative-from-end spelling, and an index greater than the applicable domain are never rewritten. Current bracket access yields a read-only value or borrow and never an assignable place; compound assignment applies only to independently admitted mutable places. `String[index]` selects one Unicode scalar and returns `Char`; it never selects a byte, UTF-16 code unit, or grapheme. `Bytes[index]` returns `UInt8`. A failed type-correct dynamic lookup raises `IndexError::outOfLogicalDomain`; a statically known invalid index is rejected by the corresponding exact diagnostic.
 
-An explicitly bounded List `[L..U: elements]` preserves the declared `L..U` logical domain rather than rebasing to one. `Map<K,V>[key]` requires the exact normalized key type `K` and raises `IndexError::keyNotFound` for an absent key. Tuple elements use compile-time one-based `.1` ordinals, and Record fields use static labels; neither tuple nor Record admits runtime bracket indexing. A List literal without an expected element type infers one homogeneous normalized type and never synthesizes a Union. Under a fixed exact integer `List<T>` context, the sole prefix-sign exception is the direct `-` plus unsuffixed-integer-literal adapter from §4; all other element expressions use ordinary typing without hidden folding or conversion. Heterogeneous elements require an explicit expected type such as `List<Int | String>`.
+An explicitly bounded List `#list[L..U: elements]` preserves the declared `L..U` logical domain rather than rebasing to one. `Map<K,V>[key]` requires the exact normalized key type `K` and raises `IndexError::keyNotFound` for an absent key. Tuple elements use compile-time one-based `.1` ordinals, and Record fields use static labels; neither tuple nor Record admits runtime bracket indexing. A List literal without an expected element type infers one homogeneous normalized type and never synthesizes a Union. Under a fixed exact integer `List<T>` context, the sole prefix-sign exception is the direct `-` plus unsuffixed-integer-literal adapter from §4; all other element expressions use ordinary typing without hidden folding or conversion. Heterogeneous elements require an explicit expected type such as `List<Int | String>`.
 
 Prefix/postfix `++` and `--` expressions do not exist. Mutation is written as an explicit assignment under the single-place transaction law in §17. NumericArray axes, suffix coordinates, and shape coordinates are separate typed domains. Each built-in default source-visible NumericArray axis nevertheless has the explicit domain `1..dimension`; its axis type is not supplied by an ordinary sequence witness. A complete rank-matching coordinate list selects one element. Wrong axis type/count is rejected statically, and a dynamic coordinate outside its axis domain raises `IndexError::outOfLogicalDomain`.
 
@@ -3759,6 +3762,7 @@ This is the sole human diagnostic atlas. Only active rows are reproduced; non-ac
 - `BARE_CALL_ARGUMENT_MUST_BE_ATOMIC_OR_PARENTHESIZED` [error]: The bare argument before a trailing closure must be atomic or parenthesized.
 - `BARE_PARENLESS_ORDINARY_CALL_NOT_CURRENT` [error]: The surface `bare parenless ordinary call` is recognized but is not current Deeplus.
 - `BODYLESS_ORDINARY_FUNCTION_NOT_CURRENT` [error]: Only a trait requirement or declared signature context may omit a function body.
+- `BOUNDED_LIST_EXPLICIT_SIGIL_REQUIRED` [error]: A bounded logical-domain List uses `#list[L..U: elements]`; parenthesize a leading stepped Range in an ordinary List.
 - `BOUNDED_LIST_CALL_ARGUMENT_FORBIDDEN` [error]: A bounded list contains expressions only; call labels, evidence arguments and unfolding are forbidden.
 - `CALLABLE_PROFILE_COMBINATION_NOT_ADMITTED` [error]: The callable profile combination is outside the closed Phase-A compatibility table.
 - `CALLABLE_PROFILE_DUPLICATE` [error]: A callable profile may occur at most once in a cluster.

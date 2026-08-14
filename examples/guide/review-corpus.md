@@ -7186,7 +7186,7 @@ else ::err(error) => throw error
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let bad = [1..2: name: "A", name: "B"]
+let bad = #list[1..2: name: "A", name: "B"]
 // BOUNDED_LIST_CALL_ARGUMENT_FORBIDDEN
 ```
 ## EX-R51a1-BOUND-P-001 — Stable bounded one-based logical domain
@@ -7201,7 +7201,7 @@ let bad = [1..2: name: "A", name: "B"]
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let days = [1..3: "Mon", "Tue", "Wed"]
+let days = #list[1..3: "Mon", "Tue", "Wed"]
 assert(days[1] == "Mon")
 assert(days[3] == "Wed")
 ```
@@ -11646,7 +11646,7 @@ let present: Option<Int> = ::some(42)
 ```deeplus
 let ordinary = [10, 20, 30]
 let first = ordinary[1]
-let bounded = [3..5: 10, 20, 30]
+let bounded = #list[3..5: 10, 20, 30]
 let declaredFirst = bounded[3]
 ```
 

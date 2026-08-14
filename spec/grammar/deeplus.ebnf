@@ -1289,11 +1289,13 @@ InterpolationIndex ::= StaticIntLiteral | Identifier ;
 (* A call-like `(` immediately following a shorthand path is a forbidden continuation and
    diagnoses use of `${...}`. A terminal unescaped backtick explicitly ends shorthand output. *)
 
-(* Ordinary list, bounded list and comprehension share the '[' commitment point. *)
+(* Ordinary list and comprehension share the '[' commitment point. A bounded
+   logical-domain list has the explicit #list owner so a leading stepped Range
+   remains an ordinary list element only when parenthesized. *)
 ListLiteral ::= "[" ListEntryList? "]" ;
 ListEntryList ::= ListEntry ("," ListEntry)* ","? ;
 ListEntry ::= Expr | PositionalUnfoldArgument ;
-BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral
+BoundedListLiteral ::= "#" "list" "[" StaticIntLiteral ".." StaticIntLiteral
                        ":" ListEntryList? "]" ;
 ComprehensionExpr ::= "[" Expr ComprehensionClause+ "]" ;
 

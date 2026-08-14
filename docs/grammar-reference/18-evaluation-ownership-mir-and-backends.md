@@ -1792,7 +1792,7 @@ private let chosen = cached ?: loadFromDisk()
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/mir/semantics.md -->
 ```deeplus
-private let bounded = [3..5: 10, 20, 30]
+private let bounded = #list[3..5: 10, 20, 30]
 private let view = bounded[4..5]
 private let item = view[4]
 ```

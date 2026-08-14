@@ -57,7 +57,7 @@ def model_errors(
     }:
         errors.append("BASELINE_IDENTITY")
     if contract.get("readiness_verdict") != (
-        "LOCAL_IMPLEMENTATION_HANDOFF_READY_PENDING_CANONICAL_PUBLICATION"
+        "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_THREE_READINESS_GATES"
     ):
         errors.append("READINESS_OVERCLAIM")
 
@@ -101,17 +101,17 @@ def model_errors(
     for row in lanes[:14]:
         if row != {
             "id": row.get("id"),
-            "design_contract_gate": "EXPLICITLY_DEFERRED_OUTSIDE_FIRST_TARGET",
+            "design_contract_gate": "OPEN_EXCLUSION_TOTALITY_NOT_PROVEN",
             "execution_receipt_gate": "OPEN_NOT_RUN",
-            "readiness_effect": "NONBLOCKING_EXCLUDED_SUCCESSOR_SCOPE",
+            "readiness_effect": "BLOCKS_FIRST_TARGET_UNTIL_EXACT_EXCLUSION_TOTALITY",
         }:
             errors.append(f"FEATURE_P1_LANE:{row.get('id')}")
     for row in lanes[14:21]:
         if row != {
             "id": row.get("id"),
-            "design_contract_gate": "CLOSED_STATIC_IMPLEMENTATION_HANDOFF",
+            "design_contract_gate": "PARTIAL_STATIC_ACCEPTANCE_R102_NOT_ACTION_COMPLETE",
             "execution_receipt_gate": "OPEN_NOT_RUN",
-            "readiness_effect": "RETAINED_IMPLEMENTATION_ACCEPTANCE",
+            "readiness_effect": "BLOCKS_FIRST_TARGET_HANDOFF",
         }:
             errors.append(f"FEATURE_P1_LANE:{row.get('id')}")
     if not lanes or lanes[-1] != {
@@ -129,8 +129,8 @@ def model_errors(
         or [row.get("status") for row in blockers]
         != [
             "OPEN",
-            "RESOLVED_BY_R102_FEATURE_LOCAL_ACCEPTANCE_SPECIFICATION",
-            "RESOLVED_BY_R101_EXACT_DISPOSITION",
+            "OPEN_PARTIAL_R102_EIGHT_ACTIONS_ONLY",
+            "OPEN_PARTIAL_R101_REQUIRES_EXACT_TARGET_TOTALITY",
         ]
     ):
         errors.append("READINESS_BLOCKER_SET")
@@ -139,7 +139,7 @@ def model_errors(
     if governance != {
         "semantic_p0": 0,
         "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
-        "bootstrap_readiness_blocker_count": 1,
+        "bootstrap_readiness_blocker_count": 3,
         "product_lanes": "15_OF_15_NOT_RUN",
         "production_implementation": "NOT_RUN",
         "github_mutation": 0,
@@ -155,6 +155,8 @@ def model_errors(
         if row.get("status") not in {
             "CLOSED_LOCAL_DESIGN_STATIC",
             "EXPLICITLY_DEFERRED_TARGET_EXCLUDED",
+            "PARTIAL_STATIC_DISPOSITION_REQUIRES_EXACT_TARGET_TOTALITY",
+            "PARTIAL_STATIC_ACCEPTANCE_EIGHT_ACTIONS_ONLY",
         } or not (root / row.get("contract", "")).is_file():
             errors.append(f"LOCAL_REPAIR_BINDING:{row.get('id')}")
 
@@ -234,7 +236,7 @@ def main() -> int:
         "readiness_verdict": contract.get("readiness_verdict"),
         "semantic_p0": 0,
         "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
-        "readiness_blockers": 1,
+        "readiness_blockers": 3,
         "repair_validator_receipts": validator_receipts,
         "mutation_count": rejected,
         "product_lanes": "15_OF_15_NOT_RUN",
