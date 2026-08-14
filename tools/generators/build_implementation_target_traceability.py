@@ -19,6 +19,8 @@ OUT = ROOT / "spec/traceability/implementation-target-profile-r1"
 CHUNKS = OUT / "chunks"
 PARSER_AUTHORITY_CONTRACT = ROOT / "spec/contracts/parser-authority-traceability-r1.json"
 R101_FEATURE_P1_CONTRACT = ROOT / "spec/contracts/implementation-target-feature-p1-disposition-r101.json"
+R102_FEATURE_LOCAL_ACCEPTANCE = ROOT / "spec/contracts/implementation-target-feature-local-acceptance-r102.json"
+R104_FEATURE_P1_CONTRACT = ROOT / "spec/contracts/implementation-target-feature-p1-disposition-r104.json"
 OVERLAYS = [
     OUT / "scalar-numeric-fixed-operator-evidence-r1.json",
     OUT / "lexical-trivia-source-root-evidence-r1.json",
@@ -235,6 +237,93 @@ def r101_feature_p1_projection(
     }
 
 
+def r104_feature_p1_projection(
+    contract: dict[str, Any],
+    r101: dict[str, Any],
+    r102: dict[str, Any],
+    target_ids: list[str],
+) -> dict[str, Any]:
+    expected_action_ids = [
+        *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+        *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+        *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
+        "SFD-P1-009",
+    ]
+    if contract.get("schema") != "deeplus.implementation-target-feature-p1-disposition/r104":
+        raise ValueError("R104_CONTRACT_IDENTITY")
+    predecessors = contract.get("predecessors", {})
+    for key, path in (
+        ("r101", R101_FEATURE_P1_CONTRACT),
+        ("r102", R102_FEATURE_LOCAL_ACCEPTANCE),
+    ):
+        row = predecessors.get(key, {})
+        if row.get("path") != path.relative_to(ROOT).as_posix() or row.get("sha256") != file_sha256(path):
+            raise ValueError(f"R104_PREDECESSOR_BINDING:{key}")
+    obligations = contract.get("obligations", [])
+    if [row.get("action_id") for row in obligations] != expected_action_ids:
+        raise ValueError("R104_ACTION_ORDER_OR_COVERAGE")
+    if len({row.get("obligation_id") for row in obligations}) != 22:
+        raise ValueError("R104_OBLIGATION_ID_UNIQUE")
+    r101_actions = r101.get("actions", [])
+    r102_by_id = {row.get("action_id"): row for row in r102.get("actions", [])}
+    target_set = set(target_ids)
+    excluded_ids: set[str] = set()
+    retained_ids: set[str] = set()
+    for index, (row, predecessor) in enumerate(zip(obligations, r101_actions)):
+        action_id = expected_action_ids[index]
+        excluded = action_id.startswith("CE-")
+        if (
+            predecessor.get("id") != action_id
+            or row.get("obligation_id") != f"ImplementationObligationId:{action_id}/r104"
+            or row.get("predecessor_pointer") != f"/actions/{index}"
+            or row.get("closure_source_pointer") != f"current/current-pointer.json#/open_actions/{index + 5}"
+            or row.get("execution_receipt_gate") != "OPEN_NOT_RUN"
+            or row.get("first_target_disposition")
+            != (
+                "EXCLUDE_SUCCESSOR_OBLIGATION_RETAIN_CURRENT_BASE"
+                if excluded
+                else "INCLUDE_FEATURE_LOCAL_ACCEPTANCE"
+            )
+        ):
+            raise ValueError(f"R104_OBLIGATION_ROW:{action_id}")
+        retained = set(predecessor.get("retained_feature_ids", []))
+        excluded_features = set(predecessor.get("excluded_target_feature_ids", []))
+        if not retained or retained - target_set or excluded_features & target_set:
+            raise ValueError(f"R104_TARGET_PARTITION:{action_id}")
+        retained_ids.update(retained)
+        excluded_ids.update(excluded_features)
+        if excluded:
+            if row.get("acceptance_pointer_or_null") is not None:
+                raise ValueError(f"R104_EXCLUDED_ACCEPTANCE_POINTER:{action_id}")
+        else:
+            expected_pointer = (
+                "spec/contracts/implementation-target-feature-local-acceptance-r102.json"
+                f"#/actions/{index - 14}"
+            )
+            acceptance = r102_by_id.get(action_id, {})
+            if (
+                row.get("acceptance_pointer_or_null") != expected_pointer
+                or set(acceptance.get("retained_target_feature_ids", [])) != retained
+                or acceptance.get("execution_receipt_gate") != "OPEN_NOT_RUN"
+            ):
+                raise ValueError(f"R104_INCLUDED_ACCEPTANCE:{action_id}")
+    return {
+        "contract_path": R104_FEATURE_P1_CONTRACT.relative_to(ROOT).as_posix(),
+        "contract_sha256": file_sha256(R104_FEATURE_P1_CONTRACT),
+        "exact_action_ids": expected_action_ids,
+        "implementation_obligation_ids": [row["obligation_id"] for row in obligations],
+        "action_count": 22,
+        "excluded_successor_obligation_count": 14,
+        "included_acceptance_obligation_count": 8,
+        "design_partition_open_count": 0,
+        "execution_open_action_count": 22,
+        "retained_target_feature_ids": sorted(retained_ids),
+        "retained_target_feature_id_list_sha256": digest_ids(sorted(retained_ids)),
+        "excluded_catalog_feature_ids": sorted(excluded_ids),
+        "excluded_catalog_feature_id_list_sha256": digest_ids(sorted(excluded_ids)),
+    }
+
+
 def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as stream:
@@ -330,6 +419,14 @@ def main() -> None:
         )
     r101_projection = r101_feature_p1_projection(
         read_json(R101_FEATURE_P1_CONTRACT), set(by_id), target_ids
+    )
+    if not R104_FEATURE_P1_CONTRACT.is_file() or not R102_FEATURE_LOCAL_ACCEPTANCE.is_file():
+        raise FileNotFoundError("R104_FEATURE_P1_PREDECESSOR_OR_CONTRACT_MISSING")
+    r104_projection = r104_feature_p1_projection(
+        read_json(R104_FEATURE_P1_CONTRACT),
+        read_json(R101_FEATURE_P1_CONTRACT),
+        read_json(R102_FEATURE_LOCAL_ACCEPTANCE),
+        target_ids,
     )
 
     evidence: dict[str, dict[str, Any]] = {}
@@ -738,6 +835,7 @@ def main() -> None:
             "github_publication": "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR",
             "e4_e5_evidence_count": 0,
             "r101_feature_p1_disposition": r101_projection,
+            "r104_feature_p1_disposition": r104_projection,
         },
     }
     write_json(OUT / "catalog-metadata.json", metadata)

@@ -14850,6 +14850,33 @@ def main() -> int:
             detail[-4000:],
         )
 
+    r104_feature_p1_disposition_validator = (
+        root
+        / "tools/validators/validate_implementation_target_feature_p1_disposition_r104.py"
+    )
+    if r104_feature_p1_disposition_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r104_feature_p1_disposition_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R104_IMPLEMENTATION_TARGET_FEATURE_P1_DISPOSITION",
+            detail[-4000:],
+        )
+
     grammar_reference_generator = (
         root / "tools/generators/generate_grammar_reference.py"
     )

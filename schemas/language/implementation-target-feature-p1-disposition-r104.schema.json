@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://howork.github.io/Deeplus/schemas/language/implementation-target-feature-p1-disposition-r104.schema.json",
+  "title": "Deeplus R104 exact first-target feature-P1 obligation partition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "status", "baseline", "predecessors", "identity_domains", "summary", "obligations", "acceptance", "governance"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/implementation-target-feature-p1-disposition-r104.schema.json"},
+    "schema": {"const": "deeplus.implementation-target-feature-p1-disposition/r104"},
+    "revision": {"const": "r104-exact-first-target-obligation-partition"},
+    "status": {"const": "LOCAL_DESIGN_STATIC_EXACT_TARGET_PARTITION"},
+    "baseline": {"type":"object"},
+    "predecessors": {"type":"object"},
+    "identity_domains": {"type":"object"},
+    "summary": {"type":"object"},
+    "obligations": {"type":"array","minItems":22,"maxItems":22,"items":{"$ref":"#/$defs/obligation"}},
+    "acceptance": {"type":"object"},
+    "governance": {"type":"object"}
+  },
+  "$defs": {
+    "obligation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_id", "obligation_id", "predecessor_pointer", "first_target_disposition", "acceptance_pointer_or_null", "closure_source_pointer", "execution_receipt_gate"],
+      "properties": {
+        "action_id": {"type":"string","pattern":"^(CE-C-P1-00[1-6]|CE-E-P1-00[1-8]|TCC-P1-00[2-8]|SFD-P1-009)$"},
+        "obligation_id": {"type":"string","pattern":"^ImplementationObligationId:(CE-C-P1-00[1-6]|CE-E-P1-00[1-8]|TCC-P1-00[2-8]|SFD-P1-009)/r104$"},
+        "predecessor_pointer": {"type":"string","pattern":"^/actions/(?:[0-9]|1[0-9]|2[01])$"},
+        "first_target_disposition": {"enum":["EXCLUDE_SUCCESSOR_OBLIGATION_RETAIN_CURRENT_BASE","INCLUDE_FEATURE_LOCAL_ACCEPTANCE"]},
+        "acceptance_pointer_or_null": {"type":["string","null"]},
+        "closure_source_pointer": {"type":"string","minLength":1},
+        "execution_receipt_gate": {"const":"OPEN_NOT_RUN"}
+      }
+    }
+  }
+}

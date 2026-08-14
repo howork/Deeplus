@@ -252,9 +252,10 @@ def model_errors(
         errors.append("R99_ACTION_EXACT_PARITY")
     for row in r99_lanes[:14]:
         if (
-            row.get("design_contract_gate") != "OPEN_EXCLUSION_TOTALITY_NOT_PROVEN"
+            row.get("design_contract_gate") != "CLOSED_BY_R104_EXACT_FIRST_TARGET_EXCLUSION"
             or row.get("execution_receipt_gate") != "OPEN_NOT_RUN"
-            or row.get("readiness_effect") != "BLOCKS_FIRST_TARGET_UNTIL_EXACT_EXCLUSION_TOTALITY"
+            or row.get("readiness_effect")
+            != "EXCLUDED_SUCCESSOR_OBLIGATION_DOES_NOT_BLOCK_RETAINED_FIRST_TARGET_BASE"
         ):
             errors.append(f"R99_PREDECESSOR_LANE:{row.get('id')}")
     for row in r99_lanes[14:21]:

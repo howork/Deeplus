@@ -27,6 +27,7 @@ REPAIR_VALIDATORS = [
     "validate_runtime_backend_projection_r99.py",
     "validate_implementation_target_feature_p1_disposition_r101.py",
     "validate_implementation_target_feature_local_acceptance_r102.py",
+    "validate_implementation_target_feature_p1_disposition_r104.py",
     "validate_implementation_target_traceability.py",
 ]
 
@@ -57,7 +58,7 @@ def model_errors(
     }:
         errors.append("BASELINE_IDENTITY")
     if contract.get("readiness_verdict") != (
-        "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_THREE_READINESS_GATES"
+        "LOCAL_IMPLEMENTATION_HANDOFF_BLOCKED_BY_TWO_READINESS_GATES"
     ):
         errors.append("READINESS_OVERCLAIM")
 
@@ -101,9 +102,9 @@ def model_errors(
     for row in lanes[:14]:
         if row != {
             "id": row.get("id"),
-            "design_contract_gate": "OPEN_EXCLUSION_TOTALITY_NOT_PROVEN",
+            "design_contract_gate": "CLOSED_BY_R104_EXACT_FIRST_TARGET_EXCLUSION",
             "execution_receipt_gate": "OPEN_NOT_RUN",
-            "readiness_effect": "BLOCKS_FIRST_TARGET_UNTIL_EXACT_EXCLUSION_TOTALITY",
+            "readiness_effect": "EXCLUDED_SUCCESSOR_OBLIGATION_DOES_NOT_BLOCK_RETAINED_FIRST_TARGET_BASE",
         }:
             errors.append(f"FEATURE_P1_LANE:{row.get('id')}")
     for row in lanes[14:21]:
@@ -130,7 +131,7 @@ def model_errors(
         != [
             "OPEN",
             "OPEN_PARTIAL_R102_EIGHT_ACTIONS_ONLY",
-            "OPEN_PARTIAL_R101_REQUIRES_EXACT_TARGET_TOTALITY",
+            "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         ]
     ):
         errors.append("READINESS_BLOCKER_SET")
@@ -139,7 +140,7 @@ def model_errors(
     if governance != {
         "semantic_p0": 0,
         "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
-        "bootstrap_readiness_blocker_count": 3,
+        "bootstrap_readiness_blocker_count": 2,
         "product_lanes": "15_OF_15_NOT_RUN",
         "production_implementation": "NOT_RUN",
         "github_mutation": 0,
@@ -157,6 +158,7 @@ def model_errors(
             "EXPLICITLY_DEFERRED_TARGET_EXCLUDED",
             "PARTIAL_STATIC_DISPOSITION_REQUIRES_EXACT_TARGET_TOTALITY",
             "PARTIAL_STATIC_ACCEPTANCE_EIGHT_ACTIONS_ONLY",
+            "CLOSED_BY_R104_EXACT_TARGET_PARTITION",
         } or not (root / row.get("contract", "")).is_file():
             errors.append(f"LOCAL_REPAIR_BINDING:{row.get('id')}")
 
@@ -236,7 +238,7 @@ def main() -> int:
         "readiness_verdict": contract.get("readiness_verdict"),
         "semantic_p0": 0,
         "feature_p1": "22_OPEN_EXACT_TYPED_LANES",
-        "readiness_blockers": 3,
+        "readiness_blockers": 2,
         "repair_validator_receipts": validator_receipts,
         "mutation_count": rejected,
         "product_lanes": "15_OF_15_NOT_RUN",

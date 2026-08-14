@@ -45,10 +45,12 @@ R101_EXCLUDED_TARGET_FEATURE_IDS = {
 # the exact 22 still-open feature actions onto the first implementation target:
 # three unexecuted Enum successor slices are excluded while every retained
 # TCC/SFD implementation-acceptance feature remains present.
+# Rebuilding the global trace after R103 registers the bounded-list diagnostic
+# evidence while preserving the R101/R104 row and cell cardinalities.
 # Historical validators
 # import this successor count only after first validating the complete current
 # trace through is_successor().
-EVIDENCE_COUNT = 4623
+EVIDENCE_COUNT = 4624
 GITHUB_PUBLICATION = "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR"
 
 
