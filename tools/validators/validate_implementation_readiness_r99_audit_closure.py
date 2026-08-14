@@ -29,6 +29,7 @@ REPAIR_VALIDATORS = [
     "validate_implementation_target_feature_local_acceptance_r102.py",
     "validate_implementation_target_feature_p1_disposition_r104.py",
     "validate_trait_conformance_implementation_handoff_r107.py",
+    "validate_runtime_managed_projection_handoff_r108.py",
     "validate_implementation_target_traceability.py",
 ]
 
@@ -151,7 +152,7 @@ def model_errors(
 
     local_repairs = contract.get("local_semantic_repairs", [])
     repair_ids = [row.get("id") for row in local_repairs]
-    if len(repair_ids) != 19 or len(set(repair_ids)) != 19:
+    if len(repair_ids) != 20 or len(set(repair_ids)) != 20:
         errors.append("LOCAL_REPAIR_IDENTITY_SET")
     for row in local_repairs:
         if row.get("status") not in {

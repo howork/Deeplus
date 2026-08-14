@@ -14958,6 +14958,33 @@ def main() -> int:
             detail[-4000:],
         )
 
+    r108_runtime_managed_projection_validator = (
+        root
+        / "tools/validators/validate_runtime_managed_projection_handoff_r108.py"
+    )
+    if r108_runtime_managed_projection_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r108_runtime_managed_projection_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R108_RUNTIME_MANAGED_PROJECTION_HANDOFF",
+            detail[-4000:],
+        )
+
     grammar_reference_generator = (
         root / "tools/generators/generate_grammar_reference.py"
     )

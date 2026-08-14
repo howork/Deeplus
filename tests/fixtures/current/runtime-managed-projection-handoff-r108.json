@@ -1,0 +1,120 @@
+{
+  "schema": "deeplus.runtime-managed-projection-handoff-fixtures/r108",
+  "revision": "r108-runtime-managed-projection-implementation-handoff",
+  "contract_path": "spec/contracts/runtime-managed-projection-handoff-r108.json",
+  "cases": [
+    {
+      "case_id": "R108-P-001",
+      "class": "positive",
+      "scenario": "all three target projections bind exact local preimages",
+      "expected": "ADMIT_STATIC",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-P-002",
+      "class": "positive",
+      "scenario": "managed handle generation advances before reuse",
+      "expected": "ADMIT_STATIC",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-P-003",
+      "class": "positive",
+      "scenario": "shadow-root frame push and pop are balanced",
+      "expected": "ADMIT_STATIC",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-P-004",
+      "class": "positive",
+      "scenario": "suspended continuation retains its finalized JIT image",
+      "expected": "ADMIT_STATIC",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-B-005",
+      "class": "boundary",
+      "scenario": "generation overflow retires rather than reuses a handle slot",
+      "expected": "ADMIT_WITH_PERMANENT_RETIREMENT",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-B-006",
+      "class": "boundary",
+      "scenario": "empty shadow-root frame is represented with slot_count zero",
+      "expected": "ADMIT_STATIC",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-B-007",
+      "class": "boundary",
+      "scenario": "cancellation pops an active root frame exactly once",
+      "expected": "ADMIT_STATIC",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-B-008",
+      "class": "boundary",
+      "scenario": "Xvm uses logical slots while native targets use shadow roots",
+      "expected": "ADMIT_STATIC",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-009",
+      "class": "reject",
+      "scenario": "one helper signature digest is stale",
+      "expected": "REJECT_TARGET_PROJECTION",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-010",
+      "class": "reject",
+      "scenario": "stack alignment is inherited from the host",
+      "expected": "REJECT_TARGET_PROJECTION",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-011",
+      "class": "reject",
+      "scenario": "AOT and JIT mapping preimages diverge",
+      "expected": "REJECT_TARGET_PROJECTION",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-012",
+      "class": "reject",
+      "scenario": "managed handle generation mismatches a root receipt",
+      "expected": "REJECT_ROOT_PROJECTION",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-013",
+      "class": "reject",
+      "scenario": "a root frame is missing or popped twice",
+      "expected": "REJECT_ROOT_PROJECTION",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-014",
+      "class": "reject",
+      "scenario": "an implicit Cranelift safepoint is inserted",
+      "expected": "REJECT_TARGET_PROJECTION",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-015",
+      "class": "reject",
+      "scenario": "a finalized JIT image is retired with an active lease",
+      "expected": "REJECT_JIT_RETIREMENT",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    },
+    {
+      "case_id": "R108-R-016",
+      "class": "reject",
+      "scenario": "a runtime address is used as semantic identity",
+      "expected": "REJECT_IDENTITY_CONFLATION",
+      "execution_state": "DESIGN_STATIC_NOT_RUN"
+    }
+  ],
+  "product_execution": "NOT_RUN"
+}
