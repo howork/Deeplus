@@ -115,6 +115,19 @@ thirteen-glyph matrix. `Sequence` and `Iterator` similarly carry
 language may declare a role-bearing Trait root. A user type may still provide
 one admitted direct global conformance to such a root.
 
+The synchronous R106 iteration handoff treats `Iterator` and `Sequence` as two
+ordered static routes, not an `Iterable` facade. A `for` source is evaluated
+once; one direct Iterator witness wins, otherwise one Sequence witness may
+acquire an Iterator once. The exact associated `Item` and all acquisition,
+`next`, cleanup, error, effect and ownership responsibilities are sealed before
+loop entry. Current `Iterator.next()` returns `Option<Item>`, `throws Never`,
+and has `effects state`; product execution remains `NOT_RUN`.
+
+Keyability likewise selects one coherent direct-global family containing
+strong `Eq<Self>`, stable `Hash<Self>`, `Keyable` and one `HashPolicyId`.
+Float/Complex partial equality, mutable or lifecycle identity and hidden
+provider/policy lookup never create Keyable evidence.
+
 ## 4A. Current numeric and indexing boundary
 
 `Int` has the signed 64-bit mathematical domain. `UInt` is the distinct Stable
@@ -457,7 +470,7 @@ provider, serialization, parsing, or redaction operation. String interpolation
 must select every nested `Display` witness before evaluation. The accepted Enum
 case-mapping proposal may synthesize one whole-Enum witness only after its
 nonactivatable feature gates close; it creates no case- or alias-local witness.
-| `Iterator` | trait_profile | `stable_design` | core `trait#iteration` synchronous iterator with associated Item; product support NOT_RUN |
+| `Iterator` | trait_profile | `stable_design` | R106 core `trait#iteration` synchronous iterator with exact associated Item and sealed acquisition/next/cleanup responsibility; product support NOT_RUN |
 
 ## 11. Nonactivatable collection ownership design note
 

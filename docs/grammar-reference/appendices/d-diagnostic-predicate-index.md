@@ -445,7 +445,7 @@
 | `FORWARD_GROUP_DUPLICATE_MEMBER` | `checker` | `error` | `active` | A grouped forwarding list names the same member more than once. |
 | `FORWARD_GROUP_WILDCARD_NOT_CURRENT` | `parser` | `error` | `active` | Grouped forwarding requires an explicit finite member list; wildcard forwarding is not current. |
 | `FOR_LET_FILTER_GUARD_NOT_BOOL` | `checker` | `error` | `active` | The optional \`for let\` GuardClause must have type Bool. |
-| `FOR_SOURCE_NOT_ITERABLE` | `checker` | `error` | `seed` | for-source expression does not satisfy the Iterator/Iterable protocol profile. |
+| `FOR_SOURCE_NOT_ITERABLE` | `checker` | `error` | `active` | for-source expression provides neither one admitted Iterator witness nor one admitted Sequence-to-Iterator acquisition route. |
 | `FULL_ENUM_CASE_USES_COLON_COLON` | `checker` | `error` | `active` | Fully qualified enum cases use \`::\`. Expected-type shorthand also uses leading \`::case\`; dot-prefixed \`.case\` is not current Deeplus. |
 | `FUNCTION_BODY_REQUIRES_BLOCK_RETURN_OR_CLAUSE` | `parser` | `error` | `active` | A named function body must be a block, explicit \`= return Expr\` shorthand, or declarative clause body; bare \`= Expr\` is not current. |
 | `FUNCTION_EXPRESSION_BODY_REQUIRES_RETURN` | `parser` | `error` | `active` | One-line named function body must use = return expr, not = expr. |
@@ -568,7 +568,7 @@
 | `INVALID_DIGIT_FOR_NUMERIC_RADIX` | `lexer` | `error` | `active` | A digit is not valid for this numeric radix. |
 | `ITERABLE_REMOVED_CHOOSE_TRAVERSAL_ROLE` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `ITERABLE_REMOVED_USE_TRAVERSAL_PROFILE` | `checker` | `error` | `active` | Iterable catch-all vocabulary is removed; use Iterator, Sequence, View, Stream, or Collection. |
-| `ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED` | `checker` | `error` | `seed` | Iterator cleanup effects are not accounted for on loop exit. |
+| `ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED` | `checker` | `error` | `active` | Iterator cleanup effects are not accounted for on loop exit. |
 | `KEYABLE_REQUIRES_PLAIN_STABLE_HASH` | `checker` | `error` | `active` | Map/Set key must be Plain/stable-hash admissible or an explicitly approved key wrapper. |
 | `LAMBDA_BLOCK_REQUIRES_RET` | `checker` | `error` | `active` | Block lambda requires explicit ret on value paths. |
 | `LAMBDA_PARAM_LIST_PARENS_NOT_CURRENT` | `parser` | `error` | `active` | Lambda parameters are written directly before \`=>\`; write \`{ x: T => ... }\`. |
@@ -822,11 +822,11 @@
 | `PACKAGE_MODULE_SOURCE_GRAPH_INVALID` | `checker` | `error` | `active` | The package, target, module, or source-contribution graph is not one closed deterministic graph. |
 | `PARALLEL_ASSIGNMENT_ARITY_MISMATCH` | `checker` | `error` | `active` | A local group assignment requires the exact same Tuple arity on its target and value sides. |
 | `PATTERN_ANALYSIS_RESOURCE_LIMIT` | `checker` | `error` | `active` | Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness. |
-| `PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL` | `checker` | `error` | `active` | A group assignment is rejected when all target replacements cannot be reserved for one infallible logical commit. |
-| `PATTERN_ASSIGNMENT_REFUTABLE` | `checker` | `error` | `active` | Stable local group assignment admits only an exact irrefutable Tuple of direct local places. |
-| `PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR` | `checker` | `error` | `active` | Every Stable group-assignment target must resolve to an existing direct mutable local. |
+| `PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL` | `checker` | `error` | `active` | Pattern assignment is rejected when all target replacements cannot be reserved for one infallible logical commit. |
+| `PATTERN_ASSIGNMENT_REFUTABLE` | `checker` | `error` | `active` | Stable local pattern assignment requires an assignee proven irrefutable for the exact right-hand type. |
+| `PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR` | `checker` | `error` | `active` | Every Stable pattern-assignment target must resolve to an existing direct mutable local. |
 | `PATTERN_ASSIGNMENT_SHARED_TARGET` | `checker` | `error` | `active` | Shared, actor, FFI, property, member, and index targets are outside Stable local group assignment. |
-| `PATTERN_ASSIGNMENT_TARGET_OVERLAP` | `checker` | `error` | `active` | Group-assignment targets must have pairwise distinct direct LocalPlaceIds. |
+| `PATTERN_ASSIGNMENT_TARGET_OVERLAP` | `checker` | `error` | `active` | Pattern-assignment targets must have pairwise distinct direct LocalPlaceIds. |
 | `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` | `checker` | `error` | `active` | Borrowed match arm cannot move a payload out of the borrowed subject. |
 | `PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL` | `checker` | `error` | `active` | Every nonbinding term in a Pattern condition chain must have exact type Bool. |
 | `PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN` | `checker` | `error` | `active` | Pattern-control failure must commit no partial binding or move. |
@@ -1445,7 +1445,7 @@
 | `FlagsOperationAdmitted` | FlagsOperationAdmitted | Admit same-type finite-universe flags bitwise operations and mask the result. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `FlowBindingLocalAdmitted` | FlowBindingLocalAdmitted | Compatibility identity absorbed by RightwardLocalBindingNormalizesToOrdinaryBinding and OrdinaryLocalBindingAdmitted. | `DESIGN_STATIC_NOT_RUN` |
 | `FlowDollarBindingAdmitted` | FlowDollarBindingAdmitted | Non-emitting predecessor predicate identity for statement-only \`$\`/\`$$\` fresh local flow binding; the current executable contract is FlowBindingLocalAdmitted. | `DESIGN_STATIC_NOT_RUN` |
-| `ForSourceIterableAdmitted` | for source iterable profile | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ForSourceIterableAdmitted` | for source iterable profile | R106 closes synchronous for-source route selection, associated Item identity, responsibility accounting and deterministic cleanup; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionCompatibility` | FunctionCompatibility | Compare call shape, parameter variance, result, failure, effect, authority, suspension and ownership residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `FunctionProfileIntroducerAdmitted` | FunctionProfileIntroducerAdmitted | Admits exactly the owner-specific closed declaration-profile table; the removed tail-recursion kind is never admitted. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionRestResiduePreserved` | FunctionRestResiduePreserved | Function types and public API digests preserve each positional \`T..\` and static-named \`NamedPack**\` residue exactly; Sequence, Record, Map, count, and omission erasure are rejected. | `DESIGN_STATIC_NOT_RUN` |
@@ -1470,7 +1470,7 @@
 | `ImplicitLambdaOverloadStagingAdmitted` | ImplicitLambdaOverloadStagingAdmitted | filter overloads by call shape and non-lambda arguments; require exactly one expected callable; check the implicit @ body once only after selection | `DESIGN_STATIC_NOT_RUN` |
 | `InterpolationPathAdmitted` | InterpolationPathAdmitted | Resolve a gated read-only interpolation path and erase only its terminal boundary from semantic output. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `IrrefutableParameterEntryAdmitted` | Irrefutable parameter-entry Pattern admission | Admit an identifier channel followed by irrefutable structural entry decomposition without changing callable identity. | `` |
-| `KeyableAdmissible` | Keyable | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `KeyableAdmissible` | Keyable | R106 closes one coherent strong-Eq/stable-Hash Keyable family with responsibility-free borrowed operations; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `KindSeparationAdmitted` | KindSeparationAdmitted | require exactly one responsibility_kind_candidates entry; require that candidate to equal responsibility_kind; reject every nonempty kind_axis_conflicts list while preserving independent identity, ownership, copy, sharing, effect, and representation axes | `DESIGN_STATIC_NOT_RUN` |
 | `LayoutEntrySepAdmitted` | LayoutEntrySepAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `LazyForceAdmitted` | LazyForceAdmitted | Admit pure synchronous call-by-need forcing with deterministic cycle rejection and exactly one published commit. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1479,7 +1479,7 @@
 | `LinearAlgebraOperatorAdmitted` | LinearAlgebraOperatorAdmitted | LinearProductExpr folds \`**\` and \`*+\` strictly left-to-right in source order and validates each intermediate result before the next step; for \`**\`, both operands are rank-2; a rank failure emits MATRIX_PRODUCT_REQUIRES_RANK2_MATRICES and an inner-dimension mismatch emits MATRIX_PRODUCT_DIMENSION_MISMATCH; for \`*+\`, both operands are rank-1 vectors of equal static or checker-proven length; any rank/length failure emits DOT_PRODUCT_REQUIRES_RANK1_VECTORS; mixed operator chains are not rejected for associativity alone; the first fold step whose current lhs/rhs ranks or shapes violate its operator emits that operator's exact diagnostic | `DESIGN_STATIC_NOT_RUN` |
 | `LinearProductLeftFoldAdmitted` | LinearProductLeftFoldAdmitted | R51c current design predicate for LinearProductLeftFoldAdmitted; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ListLiteralElementJoinAdmitted` | ListLiteralElementJoinAdmitted | Checks ordinary List elements against one homogeneous defaulted type or one exact declared target, including an explicit closed union; direct suffix-free atomic numeric literals may adopt an exact numeric target, and the predicate never synthesizes a Union. | `DESIGN_STATIC_NOT_RUN` |
-| `LocalGroupAssignmentAdmitted` | Local group Tuple assignment admission | Admit exact-arity assignment to distinct direct mutable Plain locals with staged right-hand values and one infallible logical commit. | `` |
+| `LocalGroupAssignmentAdmitted` | Local group Tuple assignment admission | R106 admits irrefutable structural assignment and bare Tuple sugar to distinct existing direct mutable locals through one staged failure-atomic commit. | `` |
 | `LocalValueBodyAdmitted` | LocalValueBodyAdmitted | a value-producing @if has an else branch; exactly one expression is admitted directly; otherwise every reachable normal path ends in local ret; return is an enclosing-function transfer and finally never creates the local value | `DESIGN_STATIC_NOT_RUN` |
 | `LogicalIndexDomainAdmitted` | LogicalIndexDomainAdmitted | one closed intrinsic logical domain: List/String/Bytes and default NumericArray axes are one-based, bounded owners retain L..U, Map uses exact K, and ReadonlyView preserves its source owner's domain | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `LoopOutcomeExhaustive` | LoopOutcomeExhaustive | ordered branch 1: a value-carrying break without an immediately following outcome match emits BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH; ordered branch 2: a present outcome match using a pattern other than the admitted outcome cases emits LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE; ordered branch 3: a present correctly spelled match that omits any reachable outcome emits LOOP_OUTCOME_MATCH_NON_EXHAUSTIVE; only a present, correctly spelled, exhaustive outcome match admits the value-carrying loop result | `DESIGN_STATIC_NOT_RUN` |

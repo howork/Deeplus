@@ -254,10 +254,16 @@ opening and temporary-owner retention remain Preview.
 Bare comma return types/values/bindings and direct-local parallel assignment
 normalize to existing Tuple identities. They have arity at least two and one
 semantic result channel; Expr has no comma operator. Parallel assignment
-requires distinct mutable direct LocalPlaceIds, stages the complete RHS
-left-to-right exactly once, performs one failure-atomic logical group commit,
-and has result Unit. It promises no hardware/cross-thread atomicity. Resource,
-field/index/property/shared/actor/FFI targets remain Preview.
+and structural Pattern assignment use one `LocalPatternAssignmentV1` judgment.
+The complete assignee must be irrefutable for the exact RHS type; every
+non-wildcard leaf and rest capture must be a distinct existing mutable direct
+`LocalPlaceId`. Tuple, statically irrefutable List, Record,
+pattern-transparent nominal Record shape and bare-comma Tuple sugar are
+admitted. The RHS evaluates once, all projections stage left to right, and one
+infallible callback-free commit publishes the replacements before displaced
+owners clean in reverse target order. The result is Unit. No assignment target
+is declared, and member/index/property/shared/actor/FFI or overlapping targets
+are rejected. Resource/affine permutation remains Preview.
 
 ## 9. NumericArray, bitfield, and measures
 
@@ -313,6 +319,25 @@ nonconsuming, synchronous, `throws Never effects {}`, cancellation-forbidden,
 and authority-free. Entry expressions retain their own visible responsibility
 channels, and the plan's failure-atomic cleanup handles those channels without
 publishing a partial Map.
+
+`KeyableAdmissible` executes `KeyableSelectionV1`: after alias normalization it
+must select one direct-global strong `Eq<Self>` witness and one direct-global
+`Hash<Self>` witness belonging to the same registered Keyable family. It proves
+Eq equivalence and hash congruence under one `HashPolicyId`, then seals the
+Keyable/Eq/Hash/policy identities before any Map or Set plan exists. The
+operations borrow, do not consume or mutate, are synchronous and
+authority-free, and have `throws Never effects {}`. Float/Complex partial
+equality, mutable or lifecycle identity, provider lookup, reflection and
+per-instance hash policy are rejection cases.
+
+`ForSourceIterableAdmitted` executes `ForIteratorPlanV1`. It evaluates the
+source once and chooses `DIRECT_ITERATOR` before `SEQUENCE_ACQUIRE`, with no
+fallback based on source order or runtime values. The selected route seals the
+exact Sequence conformance when present, Iterator conformance and witness,
+associated `Item` type, Pattern policy and cleanup plan. Bare `for` requires an
+irrefutable Pattern; `for let` mismatch or a false pure Bool guard skips only
+the current candidate. Acquisition, `next` and cleanup responsibilities are
+checked before entry, and all exits reverse-clean item, iterator and source.
 
 ## 10. RCTS-V5 and MIR handoff
 

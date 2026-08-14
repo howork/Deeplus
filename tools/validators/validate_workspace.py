@@ -14904,6 +14904,33 @@ def main() -> int:
             detail[-4000:],
         )
 
+    r106_keyable_iteration_assignment_validator = (
+        root
+        / "tools/validators/validate_keyable_iteration_pattern_assignment_r106.py"
+    )
+    if r106_keyable_iteration_assignment_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r106_keyable_iteration_assignment_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R106_KEYABLE_ITERATION_PATTERN_ASSIGNMENT",
+            detail[-4000:],
+        )
+
     grammar_reference_generator = (
         root / "tools/generators/generate_grammar_reference.py"
     )

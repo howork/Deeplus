@@ -679,7 +679,7 @@
     "depends_on": [
       "tuple_bare_product_surface"
     ],
-    "notes": "A bare comma LHS denotes at least two distinct direct mutable local Plain places. The exact-arity Tuple RHS evaluates and stages left-to-right before one failure-atomic logical group commit; Unit is returned. Member, index, property, shared, actor, FFI, affine, and potentially aliasing targets are outside this Stable lane.",
+    "notes": "R106 normalizes structural PatternAssignmentStmt and bare-comma ParallelAssignmentStmt to one direct-local PatternAssignmentPlan. Every non-wildcard leaf is an existing mutable local, the whole assignee is statically irrefutable for the exact RHS, evaluation/staging occurs once before one infallible commit, and displaced owners clean in reverse order. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "normative_trace_refs": {
       "diagnostics": [
@@ -695,6 +695,7 @@
       ],
       "examples": [],
       "productions": [
+        "PatternAssignmentStmt",
         "ParallelAssignmentStmt"
       ],
       "semantic_reference_productions": []

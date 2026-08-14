@@ -31,8 +31,14 @@ def main() -> int:
     direct["evidence_refs"] = []
     mutants.append(("DIRECT_EVIDENCE_EMPTY", metadata, value))
     value = copy.deepcopy(rows)
-    na = next(cell for row in value for stage in row["stages"] for cell in stage.get("outcomes", [stage]) if cell.get("disposition") == "NOT_APPLICABLE")
-    na["not_applicable"]["reason_code"] = "UNREGISTERED_REASON"
+    for cell in (
+        cell
+        for row in value
+        for stage in row["stages"]
+        for cell in stage.get("outcomes", [stage])
+        if cell.get("disposition") == "NOT_APPLICABLE"
+    ):
+        cell["not_applicable"]["reason_code"] = "UNREGISTERED_REASON"
     mutants.append(("NA_REASON", metadata, value))
     value = copy.deepcopy(rows)
     rebound = next(cell for row in value for stage in row["stages"] for cell in stage.get("outcomes", [stage]) if cell.get("disposition") == "BOUND_DIRECT")

@@ -1176,6 +1176,17 @@ component move. Structured break depth is expressed by repeated `break` words
 and the admitted continue form; label/depth aliases are not current unless
 explicitly listed.
 
+For-source admission uses `ForIteratorPlanV1`. The source evaluates exactly
+once. The checker first selects one direct `Iterator` conformance; only when
+that route is absent may it select one `Sequence` conformance and call its
+`iterator` requirement once. It then seals the exact associated `Item` type and
+accounts for acquisition, `next`, cleanup, errors, effects and ownership before
+entering the loop. Source order, provider order and runtime lookup never choose
+a route. Current synchronous `next` returns `Option<Item>`, `throws Never`, and
+has `effects state`; `for#await` remains a separate async profile. Every exit
+cleans the current item, iterator and source exactly once in reverse ownership
+order.
+
 The checker owns target depth, payload type, and cleanup order. A control transfer cannot skip required cleanup. Loop-outcome match receives its subject through InputSupply rather than an optional global grammar slot.
 
 ## 20. Declarative clause functions
@@ -1246,6 +1257,16 @@ responsibility declared by that expression—publishes no partial Map and cleans
 acquired temporaries in reverse order. `*base` in a Map literal is therefore
 a runtime immutable-map unfold and remains distinct from call-site `**record`,
 which expands static labels.
+
+`KeyableSelectionV1` requires exactly one coherent direct-global family
+containing strong `Eq<Self>`, stable `Hash<Self>`, `Keyable`, and one
+`HashPolicyId`. Equality is reflexive, symmetric and transitive, and equal
+values must hash equally under that policy. The operations borrow without
+consumption, mutation, allocation, suspension, cancellation or authority.
+`Float32`, `Float64`/`Float`, floating-profile `Complex`, mutable identity and
+lifecycle-bearing values do not receive this evidence. Collection planning
+seals the Keyable, Eq, Hash and policy identities; it never performs provider
+or per-instance hash-policy selection.
 
 The `*` token does not create a general prefix expression. The owning parser
 context seals it as `MapUnfold` only in a Map literal entry. A Map
@@ -1916,10 +1937,17 @@ Bare comma surfaces are fixed Tuple sugar in their closed owners only:
 one semantic result channel. Deeplus has no general comma operator, ValuePack,
 Sequence multi-return carrier, ABI multi-return identity, or type-dependent
 dual lowering. Direct-local parallel and structural assignment requires
-distinct mutable LocalPlaceIds, stages the complete RHS once, and publishes one
-failure-atomic logical group commit returning Unit. It promises neither
-hardware nor cross-thread atomicity. Resource/affine permutation and
-field/index/property/shared/actor/FFI targets remain Preview.
+one complete assignee proven irrefutable for the exact RHS type. Every
+non-wildcard leaf and rest capture must resolve to a distinct existing mutable
+direct `LocalPlaceId`; assignment never declares a binder. Tuple, statically
+irrefutable List, Record, pattern-transparent nominal Record shape and the bare
+comma Tuple sugar normalize to `LocalPatternAssignmentV1`. The RHS evaluates
+once, projected replacements stage left to right, and no target write occurs
+before all replacements are reserved as infallible and callback-free. One
+`PatternAssignmentCommitId` publishes the writes logically together, then old
+owners clean in reverse target order. It promises neither hardware nor
+cross-thread atomicity. Member/index/property/shared/actor/FFI or overlapping
+targets are rejected; resource/affine permutation remains Preview.
 
 Ordinary `match` chooses the first admitted arm in source order after structural
 admission and its optional guard; source order never repairs overlap in a

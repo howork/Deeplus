@@ -34,6 +34,36 @@
     "cranelift_object_aot": "NOT_RUN",
     "cranelift_jit": "NOT_RUN"
   },
+  "keyable_iteration_pattern_assignment_r106": {
+    "contract": "spec/contracts/keyable-iteration-pattern-assignment-r106.json",
+    "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF",
+    "algorithms": [
+      "KeyableSelectionV1",
+      "ForIteratorPlanV1",
+      "LocalPatternAssignmentV1"
+    ],
+    "canonical_hir_residue": {
+      "keyable": [
+        "KeyableWitnessId",
+        "EqWitnessId",
+        "HashWitnessId",
+        "HashPolicyId"
+      ],
+      "iteration": [
+        "ForIteratorPlanId",
+        "IteratorWitnessId",
+        "ItemTypeId",
+        "CleanupPlanId"
+      ],
+      "assignment": [
+        "PatternAssignmentPlanId",
+        "PatternAssignmentCommitId",
+        "CleanupPlanId"
+      ]
+    },
+    "unresolved_runtime_or_provider_lookup_count": 0,
+    "product_support": "NOT_RUN"
+  },
   "keyword_model": {
     "hard_reserved": [
       "and",

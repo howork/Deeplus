@@ -11,7 +11,7 @@ from typing import Any
 REVISION = "r78-dpg-implementation-target-traceability-closure-r1"
 CANONICAL_BASELINE = "10e64f492f0529610673846139afcf0d95175663"
 LOCAL_PREDECESSOR = "7d4e6c48b9374bec34a60b970530174dd9b4e145"
-COUNTS = (3679, 4, 493, 0)
+COUNTS = (3682, 4, 490, 0)
 FEATURE_ROWS = 464
 STAGE_CELLS = 3248
 TEST_OUTCOME_CELLS = 1392
@@ -46,11 +46,12 @@ R101_EXCLUDED_TARGET_FEATURE_IDS = {
 # three unexecuted Enum successor slices are excluded while every retained
 # TCC/SFD implementation-acceptance feature remains present.
 # Rebuilding the global trace after R103 registers the bounded-list diagnostic
-# evidence while preserving the R101/R104 row and cell cardinalities.
+# evidence, and R106 registers the exact Keyable/Iterator diagnostic relations,
+# while preserving the R101/R104 row and cell cardinalities.
 # Historical validators
 # import this successor count only after first validating the complete current
 # trace through is_successor().
-EVIDENCE_COUNT = 4627
+EVIDENCE_COUNT = 4631
 GITHUB_PUBLICATION = "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR"
 
 

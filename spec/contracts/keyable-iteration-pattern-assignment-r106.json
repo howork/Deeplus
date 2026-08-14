@@ -1,0 +1,161 @@
+{
+  "$schema": "../../schemas/language/keyable-iteration-pattern-assignment-r106.schema.json",
+  "schema": "deeplus.keyable-iteration-pattern-assignment/r106",
+  "revision": "r106-closed-keyable-iteration-pattern-assignment",
+  "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF",
+  "decision_report": "decisions/language/Design_Deeplus_Keyable_Iteration_Pattern_Assignment_R106.md",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "codex/preimpl-p0-r80-authority-projection-parity",
+    "predecessor_commit": "cc16fdd33112394861adea38846b40ae3373fb4b",
+    "current_binding": false
+  },
+  "scope": {
+    "new_syntax_count": 0,
+    "algorithms": [
+      "KeyableSelectionV1",
+      "ForIteratorPlanV1",
+      "LocalPatternAssignmentV1"
+    ],
+    "predicate_ids": [
+      "KeyableAdmissible",
+      "ForSourceIterableAdmitted",
+      "LocalGroupAssignmentAdmitted"
+    ],
+    "feature_ids": [
+      "keyable_key_admissibility_v2",
+      "iterator_protocol_core",
+      "local_group_tuple_assignment"
+    ]
+  },
+  "keyable": {
+    "algorithm_id": "KeyableSelectionV1",
+    "input": "one normalized key TypeId and finite visible conformance environment",
+    "ordered_steps": [
+      "normalize transparent aliases and require one stable semantic value identity",
+      "select exactly one direct-global strong Eq<Self> witness and one direct-global Hash<Self> witness owned by the same Keyable family",
+      "require Eq to be reflexive symmetric and transitive over all admitted values",
+      "require hash congruence: Eq(a,b) implies Hash(a) equals Hash(b) for the same HashPolicyId",
+      "require equality and hashing to borrow without consume, mutation, allocation, suspension, cancellation, authority, Error or Effect residue",
+      "seal KeyableWitnessId, EqWitnessId, HashWitnessId and HashPolicyId before Map or Set planning"
+    ],
+    "admitted_domains": [
+      "closed Prelude scalar and immutable value rows with registered strong Eq and Hash",
+      "Rational through its sealed canonical-normal-form row",
+      "user nominal values only through one coherent direct-global registered family"
+    ],
+    "rejected_domains": [
+      "Float32, Float64 and Float alias because NaN defeats strong Eq",
+      "Complex<Float32> and Complex<Float64>",
+      "mutable, identity-address, lifecycle-bearing or authority-bearing values",
+      "partial equality, provider lookup, runtime reflection or per-instance hash policy"
+    ],
+    "diagnostic_precedence": [
+      "TYPE_KEY_REQUIRES_KEYABLE",
+      "KEYABLE_REQUIRES_PLAIN_STABLE_HASH"
+    ],
+    "failure_atomicity": "failure emits no witness, MapLiteralPlan, Set plan, allocation or partial collection"
+  },
+  "iteration": {
+    "algorithm_id": "ForIteratorPlanV1",
+    "input": "one evaluated for-source TypeId, loop Pattern policy and static responsibility context",
+    "route_order": [
+      "DIRECT_ITERATOR when the source has one exact Iterator conformance",
+      "SEQUENCE_ACQUIRE otherwise when the source has one exact Sequence conformance whose iterator result has one exact Iterator conformance",
+      "REJECT otherwise"
+    ],
+    "ordered_steps": [
+      "evaluate the source exactly once into a loop-owned temporary",
+      "select one route without provider, source-order or runtime fallback",
+      "seal Sequence ConformanceId if used, Iterator ConformanceId, IteratorWitnessId and exact associated Item TypeId",
+      "acquire the iterator exactly once and account for its declared ErrorSet, EffectRow and cleanup before loop entry",
+      "call next in source order; none exits and some(item) enters one PatternAttempt",
+      "bare for requires an irrefutable Pattern; for let may reject a candidate or its pure Bool guard and continue",
+      "on continue, break, return, Error, Defect or cancellation clean the current item, iterator and source exactly once in reverse ownership order"
+    ],
+    "current_profile": {
+      "synchronous": true,
+      "next_result": "Option<Item>",
+      "next_errors": "Never",
+      "next_effects": ["state"],
+      "suspension": false,
+      "async_surface": "for#await belongs to the separate AsyncSequence profile"
+    },
+    "diagnostic_precedence": [
+      "FOR_SOURCE_NOT_ITERABLE",
+      "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED",
+      "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+      "FOR_LET_FILTER_GUARD_NOT_BOOL"
+    ],
+    "hir_residue": [
+      "ForIteratorPlanId",
+      "route",
+      "SequenceConformanceId-or-null",
+      "IteratorConformanceId",
+      "IteratorWitnessId",
+      "ItemTypeId",
+      "PatternPolicyId",
+      "CleanupPlanId"
+    ]
+  },
+  "pattern_assignment": {
+    "algorithm_id": "LocalPatternAssignmentV1",
+    "surface_owners": ["PatternAssignmentStmt", "ParallelAssignmentStmt"],
+    "normalization": "both surfaces become one PatternAssignmentPlan with an ordered structural assignee and one RHS expression",
+    "admitted_shapes": [
+      "Tuple",
+      "List when irrefutability is statically proven for the exact RHS type",
+      "Record",
+      "pattern-transparent nominal Record shape",
+      "bare comma as Tuple sugar"
+    ],
+    "leaf_policy": "every non-wildcard leaf and rest capture resolves to an existing direct mutable local LocalPlaceId; no declaration occurs",
+    "ordered_steps": [
+      "resolve every target before evaluating the RHS",
+      "prove the complete assignee irrefutable for the exact RHS type and require exact field, element and rest types",
+      "reject duplicate or overlapping LocalPlaceIds and every member, index, property, shared, actor, FFI or potentially aliasing target",
+      "evaluate the RHS exactly once and stage all projected replacement values left to right without target writes",
+      "reserve every old-owner replacement and prove the commit path infallible and callback-free",
+      "cross one PatternAssignmentCommitId barrier and publish all writes logically together",
+      "clean displaced old owners in reverse target order after commit"
+    ],
+    "failure_atomicity": "before the barrier target_write_count is zero and every old value remains live; failure reverse-cleans only new temporaries",
+    "diagnostic_precedence": [
+      "PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR",
+      "PATTERN_ASSIGNMENT_REFUTABLE",
+      "PARALLEL_ASSIGNMENT_ARITY_MISMATCH",
+      "PATTERN_ASSIGNMENT_TARGET_OVERLAP",
+      "PATTERN_ASSIGNMENT_SHARED_TARGET",
+      "PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL"
+    ],
+    "hir_residue": [
+      "PatternAssignmentPlanId",
+      "ordered LocalPlaceId vector",
+      "RhsValueId",
+      "ProjectionPlanIds",
+      "ReplacementReservationIds",
+      "PatternAssignmentCommitId",
+      "CleanupPlanId"
+    ]
+  },
+  "surface_migration": {
+    "map_literal_unfold": "*expr",
+    "map_pattern_open_ignore": "*_",
+    "map_pattern_open_capture": "*name",
+    "record_static_named_rest": "_** or name**",
+    "removed_map_pattern_rest_spellings": [".._", "..name"]
+  },
+  "acceptance": {
+    "fixture_path": "tests/fixtures/current/keyable-iteration-pattern-assignment-r106.json",
+    "case_count": 24,
+    "positive_count": 8,
+    "boundary_count": 7,
+    "reject_count": 9,
+    "required_mutation_count": 12,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_checker_runtime": "NOT_RUN",
+    "github_mutation": 0
+  }
+}

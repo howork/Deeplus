@@ -978,11 +978,29 @@ Bare comma return type/value/binding surfaces disappear before MIR as the
 existing TupleType/TupleExpr/TuplePattern identity. They do not create a comma
 operator, ValuePack, Sequence return carrier or multiple-result ABI. A
 direct-local parallel or structural assignment resolves only static distinct
-mutable `LocalPlaceId`s, evaluates and stages the complete RHS left-to-right
-once, validates arity/ownership/overlap before any write, then emits exactly one
-`replace_group_commit` and returns Unit. A precommit failure emits zero target
-writes; this is failure-atomic logical publication, not hardware or
-cross-thread atomicity.
+mutable `LocalPlaceId`s and receives one sealed `PatternAssignmentPlanId`. It
+evaluates the complete RHS once, stages the ordered projections and replacement
+reservations with zero target writes, then crosses one infallible
+`PatternAssignmentCommitId` barrier and reverse-cleans displaced owners. A
+precommit failure cleans only new temporaries and preserves every old value;
+this is failure-atomic logical publication, not hardware or cross-thread
+atomicity.
+
+For lowering receives one sealed `ForIteratorPlanId`, never an unresolved
+overload set. MIR evaluates the source once, performs either the selected direct
+Iterator route or one selected Sequence acquisition, and records the exact
+Iterator witness, associated `Item` type and cleanup plan. Each `next` outcome
+is tested as `Option<Item>`; `none` exits and `some(item)` enters one admitted
+Pattern attempt. All `continue`, `break`, `return`, Error, Defect and
+cancellation edges close the current item, iterator and source exactly once in
+reverse ownership order. No runtime protocol search or provider fallback
+exists.
+
+Map and Set lowering receives sealed `KeyableWitnessId`, `EqWitnessId`,
+`HashWitnessId` and `HashPolicyId`. It may call only the responsibility-free
+borrowed Eq/Hash rows selected by `KeyableSelectionV1`; it cannot construct a
+witness, choose a policy per instance, or recover from a rejected partial-
+equality key domain.
 
 
 ## 12. Removed-surface MIR boundary

@@ -253,7 +253,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Core Prelude `trait#iteration Sequence` and `trait#iteration Iterator` carry one closed TraitLanguageRoleId in Trait/API/HIR identity. The role tag does not activate indexing, pattern opening, collection conversion, or a new evidence route; user code may conform but cannot declare role-bearing Trait roots.",
+    "notes": "R106 closes synchronous for-source selection: evaluate once, prefer one direct Iterator witness, otherwise acquire once through one Sequence witness, seal exact Item and responsibility identities, and reverse-clean on every exit. Role tags remain core-owned and activate neither indexing nor pattern opening; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -265,13 +265,19 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
-        "ITERABLE_REMOVED_USE_TRAVERSAL_PROFILE"
+        "ITERABLE_REMOVED_USE_TRAVERSAL_PROFILE",
+        "FOR_SOURCE_NOT_ITERABLE",
+        "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED",
+        "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+        "FOR_LET_FILTER_GUARD_NOT_BOOL"
       ],
       "predicates": [
         "ForSourceIterableAdmitted"
       ],
       "examples": [],
-      "productions": [],
+      "productions": [
+        "ForLoop"
+      ],
       "semantic_reference_productions": []
     },
     "trace_class": "library",
@@ -294,7 +300,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Keyable key admissibility v2. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R106 requires one coherent direct-global strong Eq<Self>/Hash<Self>/Keyable family and one HashPolicyId. Equality and hashing are borrowed, nonconsuming, synchronous, authority-free, throws Never and effects {}; Float/Complex, lifecycle and mutable identities reject. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -306,6 +312,7 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
       "diagnostics": [
+        "KEYABLE_REQUIRES_PLAIN_STABLE_HASH",
         "TYPE_KEY_REQUIRES_COPYABLE_HASHABLE",
         "TYPE_KEY_REQUIRES_KEYABLE"
       ],

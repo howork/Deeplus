@@ -128,6 +128,14 @@ let secure = ports["https"]
 Map lookup은 `String` key identity를 사용한다. 없는 key를 `Option`이나
 0-based index로 바꾸지 않는다.
 
+Map/Set의 key에는 하나의 coherent Keyable family가 필요하다. 이 family는
+strong `Eq<Self>`, stable `Hash<Self>`, `Keyable`, `HashPolicyId`를 함께
+고정한다. 같은 key라면 같은 policy에서 같은 hash를 내야 하며, equality와
+hash는 borrow-only, nonconsuming, synchronous, `throws Never effects {}`다.
+그래서 NaN을 포함하는 `Float64`나 floating `Complex`, mutable/lifecycle
+identity는 암시적으로 key가 되지 않는다. compiler는 runtime에 가서 hash
+policy나 provider를 다시 고르지 않는다.
+
 ### 6.4 Pattern rest도 coordinate를 보존한다
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->

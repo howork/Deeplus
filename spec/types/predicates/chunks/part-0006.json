@@ -315,7 +315,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ForSourceIterableAdmitted",
     "source_name": "for source iterable profile",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "R106 closes synchronous for-source route selection, associated Item identity, responsibility accounting and deterministic cleanup; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -329,12 +329,12 @@
       "iterator_protocol_core"
     ],
     "diagnostic_refs": [
-      "RCTS_V5_VARIANT_MISMATCH"
-    ],
-    "design_seed_diagnostic_refs": [
       "FOR_SOURCE_NOT_ITERABLE",
-      "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED"
+      "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED",
+      "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+      "FOR_LET_FILTER_GUARD_NOT_BOOL"
     ],
+    "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
       "iterator acquisition",
@@ -343,7 +343,7 @@
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/keyable-iteration-pattern-assignment-r106.json",
     "rule_facets": [
       "source_kind",
       "normalized_type",
@@ -360,29 +360,37 @@
       "next signature",
       "cleanup law"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize aliases and select DIRECT_ITERATOR before SEQUENCE_ACQUIRE, sealing exact role, conformance, Item and cleanup identities",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ForSourceIterableAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "evaluate the source exactly once and select the direct Iterator route before the Sequence acquisition route",
+      "require one static conformance chain and one exact associated Item TypeId with no provider or runtime fallback",
+      "account for acquisition, next and cleanup responsibility before loop entry",
+      "require a bare-for Pattern to be irrefutable and let for-let mismatch or false pure guard skip only the current candidate",
+      "seal one ForIteratorPlanId and reverse-clean the current item, iterator and source on every exit"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "FOR_SOURCE_NOT_ITERABLE",
+    "secondary_diagnostics": [
+      "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED",
+      "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+      "FOR_LET_FILTER_GUARD_NOT_BOOL"
+    ],
     "positive_fixture_ids": [
       "PF-ForSourceIterableAdmitted-POS"
     ],
     "negative_fixture_ids": [
       "PF-ForSourceIterableAdmitted-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
+    "evaluation_order": "source -> route -> witness and Item -> responsibility -> Pattern policy -> cleanup plan",
+    "dependency_predicates": [
+      "TraitWitnessResolutionAdmitted",
+      "PatternBindingControlAdmitted"
+    ],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "bcdb7a516b28558c1ba489a5f16076b8ef5ba8abd3ed69fbc12a9b1ea40deb6d",
@@ -1288,117 +1296,6 @@
     "diagnostic_dispatch": {
       "1_result_type_not_Bool": "GUARD_CALLABLE_RESULT_MUST_BE_BOOL",
       "2_consumes_parameter_or_capture": "GUARD_CALLABLE_CONSUME_FORBIDDEN"
-    }
-  },
-  {
-    "baseline": "0.1.2-baseline.r51f3",
-    "row_schema_version": "deeplus.checker-predicate/r51f3",
-    "predicate_id": "GuardPredicateAdmitted",
-    "source_name": "GuardPredicateAdmitted",
-    "summary": "A guard is exact Bool, pure, no-throw, nonsuspending, authority-free and cannot transfer control.",
-    "input_descriptor": "TRNCoherenceDescriptor",
-    "descriptor_axes": [
-      "source_kind",
-      "normalized_type",
-      "error_set",
-      "effect_row",
-      "suspension",
-      "isolation",
-      "authority",
-      "call_shape",
-      "witness_id",
-      "implementation_id",
-      "source_role",
-      "shape",
-      "rank",
-      "orientation",
-      "element_types"
-    ],
-    "feature_refs": [
-      "control_transfer_guard_clause_msp",
-      "guard_condition_pure_predicate_law"
-    ],
-    "diagnostic_refs": [
-      "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
-      "GUARD_CONDITION_NOT_BOOL",
-      "GUARD_CONDITION_THROWS_NOT_ALLOWED",
-      "GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
-      "GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED"
-    ],
-    "design_seed_diagnostic_refs": [],
-    "output": "admit | reject(diagnostic_id)",
-    "requires": [
-      "normalize the guard expression result and responsibility summary",
-      "require exact Bool before control-flow use",
-      "require empty ErrorSet and EffectRow, no suspension, no authority, and no external control transfer"
-    ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
-    "product_support": "NOT_RUN",
-    "predecessor_contract": null,
-    "rule_facets": [
-      "source_kind",
-      "normalized_type",
-      "error_set",
-      "effect_row",
-      "suspension",
-      "isolation",
-      "authority",
-      "call_shape",
-      "witness_id",
-      "implementation_id",
-      "source_role",
-      "element_types"
-    ],
-    "formal_judgment_id": "J-GuardPredicateAdmitted",
-    "algorithm_owner": "integrated_checker",
-    "input_descriptor_schema": "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json",
-    "preconditions": [
-      "normalize the guard expression result and responsibility summary",
-      "require exact Bool before control-flow use",
-      "require empty ErrorSet and EffectRow, no suspension, no authority, and no external control transfer"
-    ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
-    "decision_procedure": [
-      "validate and normalize the guard descriptor",
-      "if result type is not exact Bool emit GUARD_CONDITION_NOT_BOOL",
-      "else if ErrorSet is nonempty emit GUARD_CONDITION_THROWS_NOT_ALLOWED",
-      "else if EffectRow, authority, or mutation is present emit GUARD_CONDITION_EFFECT_NOT_ALLOWED",
-      "else if suspension is present emit GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
-      "else if external control transfer is present emit GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED",
-      "otherwise admit without creating a narrowing fact for an opaque callable"
-    ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
-    "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
-    "secondary_diagnostics": [
-      "GUARD_CONDITION_NOT_BOOL",
-      "GUARD_CONDITION_THROWS_NOT_ALLOWED",
-      "GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
-      "GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED"
-    ],
-    "positive_fixture_ids": [
-      "PF-GuardPredicateAdmitted-POS"
-    ],
-    "negative_fixture_ids": [
-      "PF-GuardPredicateAdmitted-NEG"
-    ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
-    "dependency_predicates": [],
-    "execution_receipt": null,
-    "diagnostic_disposition": "active_ordered_dispatch",
-    "predicate_maturity": "design_algorithm",
-    "emission_eligible": true,
-    "diagnostic_dispatch": {
-      "1_result_not_exact_Bool": "GUARD_CONDITION_NOT_BOOL",
-      "2_nonempty_ErrorSet": "GUARD_CONDITION_THROWS_NOT_ALLOWED",
-      "3_effect_authority_or_mutation": "GUARD_CONDITION_EFFECT_NOT_ALLOWED",
-      "4_suspension": "GUARD_CONDITION_SUSPEND_NOT_ALLOWED",
-      "5_external_control_transfer": "GUARD_CONDITION_CONTROL_TRANSFER_NOT_ALLOWED"
-    },
-    "predecessor_identity": {
-      "baseline": "0.1.2-baseline.r50",
-      "sha256": "8a07fe3a947a5e10e208278946c9874ea56f9aa7c137d400bcc4b4ef6673b769",
-      "disposition": "superseded_by_current_r51a1_row"
     }
   }
 ]

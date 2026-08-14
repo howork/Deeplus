@@ -299,12 +299,19 @@ pure·nonthrowing·nonsuspending이어야 한다.
 var left = acquireLeft()
 var right = acquireRight()
 left, right = right, left
+
+var name = ""
+var age = 0
+${name: name, age: age} = profile
 ```
 
-target place를 왼쪽부터 한 번 resolve하고 RHS를 한 번 평가한다. 모든
-type, ownership, overlap 검사가 성공한 뒤에만 하나의 logical commit을
-수행한다. `(left, left) = pair`처럼 target이 겹치거나 member/index/shared
-target을 사용하는 형식은 Stable local assignment가 아니다.
+target place를 먼저 모두 resolve하고 RHS를 한 번 평가한다. 전체 Pattern은
+exact RHS type에 대해 irrefutable해야 하고, 각 leaf는 이미 선언된 서로
+다른 mutable local이어야 한다. projected value는 왼쪽부터 private
+staging에 놓이며 모든 replacement가 실패하지 않음을 증명한 뒤에만 한
+번 commit한다. 그 전까지 target write는 0이다. `(left, left) = pair`처럼
+target이 겹치거나 member/index/property/shared/actor/FFI target을 쓰는
+형식은 Stable local assignment가 아니다.
 
 ## 12. transaction trace
 

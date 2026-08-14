@@ -139,6 +139,16 @@ let servesTls = 443 in ports
 암시적 `Keyable` evidence가 없으므로 별도 key policy 없이
 `Set<Float64>`의 literal 원소 domain이 될 수 없다.
 
+R106의 `KeyableSelectionV1`은 “hash 함수를 하나 찾았다”는 뜻보다
+강하다. 같은 direct-global family에 속한 strong `Eq<Self>`, stable
+`Hash<Self>`, `Keyable`과 하나의 `HashPolicyId`를 함께 선택한다. Eq는
+동치관계여야 하고 `a == b`이면 같은 policy에서 hash도 같아야 한다.
+두 연산은 borrow-only, nonconsuming, synchronous, `throws Never effects {}`
+이며 authority와 allocation을 만들지 않는다. 따라서 Float/Complex의
+partial equality, mutable identity, lifecycle identity와 runtime/provider
+lookup은 Map/Set key evidence가 되지 않는다. 제품 checker 실행은 아직
+`NOT_RUN`이다.
+
 ### 닫힌 대괄호 carrier 행렬
 
 | carrier | index domain | 결과 |
