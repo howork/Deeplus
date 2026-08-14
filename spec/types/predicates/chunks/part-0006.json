@@ -827,7 +827,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "GenericConstraintSatisfied",
     "source_name": "generic/where clause",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "R105 closes kind-safe candidate-local substitution and exact where-clause evaluation; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -856,7 +856,7 @@
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
     "rule_facets": [
       "source_kind",
       "normalized_type",
@@ -873,10 +873,11 @@
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record GenericConstraintSatisfied requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "apply GenericApplicabilityV1 to one candidate-owned fresh generic environment",
+      "require exact parameter/argument kind agreement and one complete normalized substitution",
+      "evaluate normalized equality, conformance, effect-row and visibility constraints without runtime lookup",
+      "emit the first diagnostic in the R105 precedence and create no failed-candidate residue",
+      "seal GenericSubstitutionId and GenericApplicabilityProofId only on success"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -893,9 +894,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "ed4507967b585ca4f41c4af1b688433877af0e2bfbbf0a54a98428ece8ba1ef2",
@@ -907,7 +908,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "GenericConstructorVariance",
     "source_name": "GenericConstructorVariance",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "R105 closes the owner/kind/position matrix for generic constructor variance; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -933,7 +934,7 @@
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
     "rule_facets": [
       "source_kind",
       "normalized_type",
@@ -950,10 +951,11 @@
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record GenericConstructorVariance requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "apply GenericVarianceV1 after alias and ownership-qualifier normalization",
+      "require the same GenericConstructorId and arity",
+      "evaluate every argument by its exact invariant, covariant, contravariant or row-relation descriptor",
+      "reject Class, Enum, use-site, qualifier or row-kind variance widening",
+      "seal one pointwise relation proof only when every argument relation succeeds"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -968,9 +970,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "219870fbd4ab8a9499459a1b6d9c4751a511213d2ac4b4b491780b1b92738900",
@@ -982,7 +984,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "GenericInvarianceAdmitted",
     "source_name": "GenericInvarianceAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "R105 makes invariant generic argument equality the default and forbids hidden widening; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1005,7 +1007,7 @@
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
     "rule_facets": [
       "source_kind",
       "normalized_type",
@@ -1020,10 +1022,11 @@
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record GenericInvarianceAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "apply GenericVarianceV1 after transparent alias expansion",
+      "select INVARIANT for every unmarked type parameter and every ownership-qualified argument",
+      "require exact normalized argument identity in each invariant position",
+      "reject implicit covariance, contravariance, erasure or source-order preference",
+      "return one invariant relation proof or the active primary diagnostic"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -1038,9 +1041,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "20f8743e039563d1ad126cc9cc653192ec17ec8205113d65a32e5577b3c500a4",
@@ -1052,7 +1055,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "GenericVarianceDescriptorAdmitted",
     "source_name": "GenericVarianceDescriptorAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "R105 closes finite variance descriptor construction for Trait type parameters and invariant non-Trait owners; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -1073,7 +1076,7 @@
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
     "rule_facets": [
       "source_kind",
       "normalized_type",
@@ -1088,10 +1091,11 @@
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record GenericVarianceDescriptorAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "apply GenericVarianceV1 to the normalized declaration owner and parameter kinds",
+      "admit in or out only for Trait TYPE parameters and select invariant for unmarked parameters",
+      "reject variance markers on Class, Enum, StaticInt, EffectRow and ErrorSet parameters",
+      "compute the finite position walk after alias expansion",
+      "seal GenericVarianceDescriptorId only when every occurrence satisfies its declared polarity"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -1106,9 +1110,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "b30b9978bd727e2fbdee6f1d3eca7d52d5a55e04223c0a5b2ea5a257c2169444",

@@ -14877,6 +14877,33 @@ def main() -> int:
             detail[-4000:],
         )
 
+    r105_generic_responsibility_validator = (
+        root
+        / "tools/validators/validate_generic_applicability_variance_responsibility_r105.py"
+    )
+    if r105_generic_responsibility_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r105_generic_responsibility_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R105_GENERIC_APPLICABILITY_VARIANCE_RESPONSIBILITY",
+            detail[-4000:],
+        )
+
     grammar_reference_generator = (
         root / "tools/generators/generate_grammar_reference.py"
     )

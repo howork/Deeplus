@@ -31,7 +31,7 @@
 
 | 도메인 | 경로 | SHA-256 |
 |---|---|---|
-| `human_language` | `spec/language.md` | `a07ce03d5ee6531f16e35f69cd7b8fc7e9c0034811131e3714eabcfd8a812975` |
+| `human_language` | `spec/language.md` | `5ac6541d53617277d1f574c744d9ef26b50a879be7c02fe710e6963b8c4a7975` |
 | `exact_grammar` | `spec/grammar/deeplus.dpg` | `b2082354f28bccabe919867e9413cc99ecf664ae4f045c5abba79f24fa92d8c7` |
 | `parser_contexts` | `spec/grammar/deeplus.parser-contexts.json` | `c6dc864277f5b02b7a89cc508f55bac23d27f14ee3ed1259052dd2e74b5144a7` |
 | `legacy_surface_census` | `spec/grammar/deeplus.ebnf` | `42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda` |
@@ -39,8 +39,8 @@
 | `grammar_topology_closure` | `spec/contracts/grammar-topology-closure-r1.json` | `40d9b6196003608c8b2bcba5bdd4e4603d2c542858255d00b4fc5ad20fff1654` |
 | `grammar_production_disposition` | `spec/contracts/grammar-production-disposition-registry-r1.json` | `3a9d38ad9eae55562a89ffafe36958ad80eca75c7997ff48fbdf02d47b71bfbb` |
 | `keyword_vocabulary` | `spec/grammar/keyword-vocabulary.json` | `feeb593046823ac2c9e7326cbc7789058ea4c99cc28449437cdd53c699b2c2c8` |
-| `frontend_admission` | `spec/frontend/frontend-model.json` | `d784cd4553d306307e256566af95872693e4f26b5981a98e0ad0a3ba903bbd53` |
-| `type_system` | `spec/types/type-system.md` | `1c7428a3d6cd98c3a8021ee32f9149964b86ae6a7ee01138e3d8f8d935c14e75` |
+| `frontend_admission` | `spec/frontend/frontend-model.json` | `9a3255747e6c219cf7e9d7ea05d28a981329848bc51ee544dc81b9bb1f38d356` |
+| `type_system` | `spec/types/type-system.md` | `fdf812422bb25068f84db577647face9837265d16ff4340fce89ff8c491c14ff` |
 | `mir_observable_semantics` | `spec/mir/semantics.md` | `3dfb2d399d6432b6ccec06c6b7992505fe08a317c4b6388b820ff261380f131c` |
 | `type_flow_callable_coherence` | `spec/contracts/type-flow-callable-coherence.json` | `f8f6e8e0eb9acdce4a905ac043b8e86ebc6c3f99f379f9e7a166d04e7f83f185` |
 | `value_operator_indexing_coherence` | `spec/contracts/value-operator-indexing-coherence.json` | `d2dda762d32a007037792a1ab7e68d00baf05244169d0aea24d7faf4db47be46` |

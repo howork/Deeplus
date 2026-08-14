@@ -1469,6 +1469,25 @@ The core judgments cover well-formedness, expression typing, subtyping, conforma
 
 Nominal class identity is distinct from structural Record identity and Trait evidence. Generic parameters range over the closed current kind family: type, `StaticInt`, `EffectRow`, and `ErrorSet`; rows and labels remain checker identities rather than additional user generic kinds. Generic constructors are invariant by default. Declared variance is restricted to the currently admitted Trait/type parameter positions and cannot invalidate ownership or mutation safety.
 
+The exact implementation contract is
+`spec/contracts/generic-applicability-variance-responsibility-r105.json`.
+Every overload candidate receives a fresh generic environment. Explicit type
+arguments bind by parameter position and exact kind; value arguments may add
+candidate-local constraints. After occurs and kind checks, the solution must be
+unique and complete. Defaults fill only still-unconstrained parameters. The
+expected result, runtime values and every enumeration order contribute zero
+constraints. Equality, Trait-conformance, effect-row and visibility predicates
+are then checked as a normalized set. Only success creates a
+`GenericSubstitutionId` and `GenericApplicabilityProofId`.
+
+Variance follows a closed owner matrix. Class, Enum and other nominal generic
+constructors are invariant. A Trait `type` parameter alone may declare `out` or
+`in`; `StaticInt`, `EffectRow` and `ErrorSet` parameters cannot. `out` must occur
+only in covariant positions and `in` only in contravariant positions after
+alias expansion. Ordinary function inputs flip polarity, results preserve it,
+and invariant constructors, mutable/inout storage and ownership-qualified types
+stop propagation. Use-site and inferred variance do not exist.
+
 Inference must not use hidden runtime values, result type alone, or source-order tie-breaking. Unsatisfied or ambiguous constraints produce deterministic diagnostics.
 
 Phase-A generic inference creates fresh variables independently for the
@@ -1485,6 +1504,14 @@ constraints and selects explicit conformance evidence candidate-locally.
 unless the preceding explicit argument constraints determine one exact
 normalized value. No unresolved variable is generalized, replaced by an
 anonymous Union, or guessed from source order.
+
+Generic body checking is parametric: only declared kinds, where constraints
+and explicitly selected responsibility evidence are available. A body may not
+borrow a stronger fact from a particular call-site substitution. Equalities,
+Trait conformances and row relations are normalized before semantic identity
+is computed, so source permutation changes diagnostics only. A public generic
+signature is rejected before HIR/API sealing if any bound or inferred row
+contains an identity outside the signature's visibility domain.
 
 A refinement suffix keeps an explicit parse boundary. `T where > bound` is
 the shorthand for `T where this > bound`, but the implicit-`this` branch parses
@@ -1523,6 +1550,17 @@ Union injection must select a unique admissible alternative after normalization.
 Function types include parameter channels, callable profile, ownership, effect/error rows, isolation, and return type. Repeated positional residue is written `T..`. Named-rest residue is written `NamedPack**`. Public module API digests preserve those residues; the named residue additionally binds the versioned normalized static row/witness digest. Erasing them to `Sequence<T>`, plain `Record`, `Map`, a count, or omission is invalid.
 
 Call compatibility checks each channel independently and then checks the combined responsibility profile. A function accepting named rest is not equivalent to a function accepting a Map.
+
+For function-value and higher-order compatibility, channel shape, external
+labels, fixed/rest residue, parameter modes and ownership qualifiers are exact.
+Input value types are contravariant and the result is covariant under the
+admitted static subtype relation. The source function may throw or perform only
+a subset of what the target function type permits. Cancellation, suspension,
+isolation, authority, call-right, capture and cleanup remain exact. A callback
+invocation must handle or propagate every callback ErrorId and EffectId; an
+unbound row variable or responsibility-dropping adaptation rejects before HIR.
+No hidden wrapper, allocation, error swallowing, effect masking, mode conversion
+or runtime type test is part of this judgment.
 
 Call admission first resolves one declaration identity without consulting the
 return type. It then partitions actual arguments into positional, labeled,

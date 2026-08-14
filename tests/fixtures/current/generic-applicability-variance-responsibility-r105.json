@@ -1,0 +1,29 @@
+{
+  "$schema": "../../../schemas/language/generic-applicability-variance-responsibility-fixtures-r105.schema.json",
+  "schema": "deeplus.generic-applicability-variance-responsibility-fixtures/r105",
+  "contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
+  "cases": [
+    {"id":"R105-GEN-P-001","class":"positive","axis":"generic","scenario":"explicit TYPE argument has exact kind and satisfies its Trait bound","expected":"ADMIT_SEALED_SUBSTITUTION"},
+    {"id":"R105-GEN-P-002","class":"positive","axis":"generic","scenario":"value arguments determine one complete candidate-local TYPE substitution","expected":"ADMIT_SEALED_SUBSTITUTION"},
+    {"id":"R105-GEN-B-003","class":"boundary","axis":"generic","scenario":"an unused parameter receives its declared default only after explicit constraints are solved","expected":"ADMIT_DEFAULTED_UNCONSTRAINED_PARAMETER"},
+    {"id":"R105-GEN-B-004","class":"boundary","axis":"generic","scenario":"where predicates permuted after normalization preserve GenericApplicabilityProofId","expected":"ADMIT_ORDER_INVARIANT_PROOF"},
+    {"id":"R105-GEN-N-005","class":"reject","axis":"generic","scenario":"a StaticInt argument is supplied to a TYPE parameter","expected":"GENERIC_PARAM_KIND_MISMATCH"},
+    {"id":"R105-GEN-N-006","class":"reject","axis":"generic","scenario":"one parameter remains unconstrained and has no default","expected":"ORDINARY_CALL_NO_APPLICABLE_CANDIDATE"},
+    {"id":"R105-GEN-N-007","class":"reject","axis":"generic","scenario":"expected result is the only possible inference source","expected":"ORDINARY_CALL_NO_APPLICABLE_CANDIDATE"},
+    {"id":"R105-GEN-N-008","class":"reject","axis":"generic","scenario":"normalized where conformance has no unique static witness","expected":"GENERIC_CONSTRAINT_UNSATISFIED"},
+    {"id":"R105-VAR-P-009","class":"positive","axis":"variance","scenario":"an invariant constructor is compared with exactly equal normalized arguments","expected":"ADMIT_INVARIANT"},
+    {"id":"R105-VAR-P-010","class":"positive","axis":"variance","scenario":"Trait Producer<out T> projects a proven subtype covariantly","expected":"ADMIT_COVARIANT"},
+    {"id":"R105-VAR-P-011","class":"positive","axis":"variance","scenario":"Trait Consumer<in T> projects a proven subtype contravariantly","expected":"ADMIT_CONTRAVARIANT"},
+    {"id":"R105-VAR-B-012","class":"boundary","axis":"variance","scenario":"a type parameter below an invariant constructor is invariant despite an outer out position","expected":"REQUIRE_EXACT_ARGUMENT"},
+    {"id":"R105-VAR-B-013","class":"boundary","axis":"variance","scenario":"ErrorSet and EffectRow parameters use row inclusion without variance markers","expected":"ADMIT_ROW_RELATION_ONLY"},
+    {"id":"R105-VAR-N-014","class":"reject","axis":"variance","scenario":"a Class declares an out parameter","expected":"VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER"},
+    {"id":"R105-VAR-N-015","class":"reject","axis":"variance","scenario":"an out Trait parameter occurs in an ordinary input position","expected":"TRAIT_VARIANCE_POSITION_VIOLATION"},
+    {"id":"R105-VAR-N-016","class":"reject","axis":"variance","scenario":"borrowed T attempts implicit covariance through a qualifier","expected":"GENERIC_TYPE_CONSTRUCTOR_INVARIANT_BY_DEFAULT"},
+    {"id":"R105-FUN-P-017","class":"positive","axis":"function","scenario":"exact function identities are compatible","expected":"ADMIT_EXACT"},
+    {"id":"R105-FUN-P-018","class":"positive","axis":"function","scenario":"source accepts a supertype input, returns a subtype, and has smaller error/effect rows","expected":"ADMIT_STATIC_SUBSUMPTION"},
+    {"id":"R105-FUN-P-019","class":"positive","axis":"function","scenario":"callback errors and effects are fully propagated in the invocation owner rows","expected":"ADMIT_FORWARDING"},
+    {"id":"R105-FUN-B-020","class":"boundary","axis":"function","scenario":"empty ErrorSet and EffectRow are subsets while call-right, isolation and capture remain exact","expected":"ADMIT_EMPTY_ROWS_EXACT_PROFILE"},
+    {"id":"R105-FUN-N-021","class":"reject","axis":"function","scenario":"callback ErrorSet is neither handled nor propagated","expected":"CALLBACK_THROWS_NOT_PROPAGATED"},
+    {"id":"R105-FUN-N-022","class":"reject","axis":"function","scenario":"callback authority or ownership responsibility would be dropped","expected":"RCTS_RESPONSIBILITY_AXIS_DROPPED"}
+  ]
+}

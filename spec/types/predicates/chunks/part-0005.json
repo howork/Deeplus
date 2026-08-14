@@ -78,7 +78,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "ErrorRowForwardingAdmitted",
     "source_name": "higher-order error forwarding",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "R105 closes higher-order ErrorSet propagation and handling under exact callable responsibility compatibility; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -106,7 +106,7 @@
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
     "rule_facets": [
       "source_kind",
       "normalized_type",
@@ -124,10 +124,11 @@
     ],
     "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record ErrorRowForwardingAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "apply FunctionResponsibilityCompatibilityV1 to the exact callback and invocation-owner function identities",
+      "require every callback ErrorId to be handled or included in the owner ErrorSet",
+      "require every ErrorSet variable to be bound by the complete generic substitution",
+      "reject private identity leakage, swallowing or wrapper adaptation",
+      "seal the normalized forwarding proof only on success"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
@@ -142,9 +143,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "2ade7808922f9ec611c444488b1fdede279fc4bea1b1394b9da5a89b6ff04210",

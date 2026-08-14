@@ -4342,6 +4342,35 @@
     },
     "product_lanes": "15/15_NOT_RUN"
   },
+  "generic_applicability_variance_responsibility_r105": {
+    "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF",
+    "current_binding": false,
+    "contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
+    "generic_applicability": {
+      "algorithm": "GenericApplicabilityV1",
+      "fresh_environment_per_candidate": true,
+      "complete_unique_substitution_required": true,
+      "expected_result_constraint_count": 0,
+      "failed_candidate_residue_count": 0,
+      "hir_identity": ["GenericSubstitutionId", "GenericApplicabilityProofId"]
+    },
+    "variance": {
+      "algorithm": "GenericVarianceV1",
+      "class_enum_declared_variance": "FORBIDDEN",
+      "trait_type_parameter_variance": ["INVARIANT", "IN", "OUT"],
+      "use_site_variance": false,
+      "ownership_qualified_type_variance": "INVARIANT"
+    },
+    "higher_order": {
+      "algorithm": "FunctionResponsibilityCompatibilityV1",
+      "channel_and_responsibility_axes": "EXACT_EXCEPT_INPUT_RESULT_AND_ERROR_EFFECT_SUBSUMPTION",
+      "input_relation": "CONTRAVARIANT_STATIC_SUBTYPE",
+      "result_relation": "COVARIANT_STATIC_SUBTYPE",
+      "error_effect_relation": "SOURCE_SUBSET_OF_TARGET",
+      "runtime_adaptation_count": 0
+    },
+    "product_support": "NOT_RUN"
+  },
   "callable_responsibility_clause_contract": {
     "status": "STABLE_DESIGN",
     "current_binding": false,

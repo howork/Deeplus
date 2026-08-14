@@ -1,0 +1,96 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "EnumCaseDoubleColonAdmitted",
+    "source_name": "Enum case double-colon injection",
+    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "descriptor_axes": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "error_set",
+      "effect_row",
+      "label_row",
+      "source_role",
+      "projection_row",
+      "projection_scope",
+      "element_types"
+    ],
+    "feature_refs": [
+      "enum_case_double_colon_expected_shorthand",
+      "full_enum_case_colon_colon_surface"
+    ],
+    "diagnostic_refs": [
+      "DOT_ENUM_CASE_SHORTHAND_NOT_CURRENT",
+      "EXPECTED_ENUM_TYPE_REQUIRED_FOR_CASE_SHORTHAND"
+    ],
+    "design_seed_diagnostic_refs": [
+      "DOT_ENUM_CASE_SHORTHAND_NOT_CURRENT",
+      "EXPECTED_ENUM_TYPE_REQUIRED_FOR_CASE_SHORTHAND"
+    ],
+    "output": "admit | reject(diagnostic_id)",
+    "requires": [
+      "expected type must provide enum owner for ::case",
+      "payload responsibility is preserved",
+      "dot-case shorthand is not current"
+    ],
+    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": null,
+    "rule_facets": [
+      "source_kind",
+      "normalized_type",
+      "ownership",
+      "borrow_region",
+      "error_set",
+      "effect_row",
+      "label_row",
+      "source_role",
+      "projection_row",
+      "projection_scope",
+      "element_types"
+    ],
+    "input_adapter": "EnumCaseInjectionDescriptor->RCTSDescriptorV5",
+    "formal_judgment_id": "J-EnumCaseDoubleColonAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "preconditions": [
+      "expected type must provide enum owner for ::case",
+      "payload responsibility is preserved",
+      "dot-case shorthand is not current"
+    ],
+    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "decision_procedure": [
+      "validate the declared descriptor shape as design documentation only",
+      "record EnumCaseDoubleColonAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
+      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
+      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+    ],
+    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "success_result": "admit | reject(diagnostic_id)",
+    "active_primary_diagnostic": "DOT_ENUM_CASE_SHORTHAND_NOT_CURRENT",
+    "secondary_diagnostics": [
+      "EXPECTED_ENUM_TYPE_REQUIRED_FOR_CASE_SHORTHAND"
+    ],
+    "positive_fixture_ids": [
+      "PF-EnumCaseDoubleColonAdmitted-POS"
+    ],
+    "negative_fixture_ids": [
+      "PF-EnumCaseDoubleColonAdmitted-NEG"
+    ],
+    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
+    "predicate_maturity": "design_seed",
+    "emission_eligible": false,
+    "predecessor_identity": {
+      "baseline": "0.1.2-baseline.r50",
+      "sha256": "cbe9ab92f634fd861b779cf52a60bef7d4560723e99e4ee3da423187e58183a8",
+      "disposition": "superseded_by_current_r51a1_row"
+    }
+  }
+]

@@ -828,7 +828,7 @@ def validate(root: Path, metadata: dict[str, Any], rows: list[dict[str, Any]]) -
     require(counts.get("missing_cells") == 0 and counts.get("conflict_cells") == 0, "DERIVED_NO_MISSING_CONFLICT")
     require(counts.get("product_not_run_rows") == 464, "DERIVED_PRODUCT")
     require(
-        (direct, delegated, na, blocked) == (3676, 4, 496, 0),
+        (direct, delegated, na, blocked) == (3679, 4, 493, 0),
         "R101_CURRENT_TARGET_REBIND_COUNTS",
     )
     governance = metadata.get("governance", {})

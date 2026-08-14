@@ -221,7 +221,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Function parameter/result variance plus throws/effects subsumption and call-mode exactness.",
+    "notes": "R105 closes function compatibility: channel shape, modes, ownership, cancellation, suspension, isolation, authority, call-right, capture and cleanup are exact; input types are contravariant, result types covariant, and source throws/effects rows must be subsets. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -233,8 +233,17 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "semantic",
     "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "CONTEXT_FUNCTION_TYPE_MISMATCH",
+        "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+        "CALLBACK_THROWS_NOT_PROPAGATED",
+        "CALLBACK_EFFECT_NOT_PROPAGATED"
+      ],
+      "predicates": [
+        "ResponsibilitySubsumes",
+        "EffectRowForwardingAdmitted",
+        "ErrorRowForwardingAdmitted"
+      ],
       "examples": [
         "EX-R48F-030"
       ],
@@ -368,7 +377,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Generic invariance default law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R105 makes exact normalized argument identity the default for every unmarked generic parameter and forbids implicit qualifier or constructor variance. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -462,7 +471,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Minimum generic parameter and type argument model required by current Deeplus responsibility types. During overload selection each candidate owns isolated fresh variables and must derive one complete substitution from explicit generic/value arguments; defaults and expected result contribute zero constraints.",
+    "notes": "R105 closes the minimum generic parameter model: each overload candidate owns isolated fresh variables, derives one complete kind-correct substitution from explicit generic/value arguments, uses defaults only after constraint solving, and never uses expected result or order as a constraint. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -519,7 +528,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Generic abstraction as responsibility-preserving quantification. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R105 defines generic abstraction as responsibility-preserving quantification: a generic body is checked only from declared bounds and sealed evidence, never from a call-site specialization, and no ownership/effect/error/authority obligation is invented or dropped. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -530,8 +539,14 @@
     "status_enum": "STABLE_DESIGN",
     "uml_exporter_provider_runner": "NOT_RUN",
     "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "GENERIC_CONSTRAINT_UNSATISFIED",
+        "RCTS_RESPONSIBILITY_AXIS_DROPPED"
+      ],
+      "predicates": [
+        "GenericConstraintSatisfied",
+        "ResponsibilitySubsumes"
+      ],
       "examples": [],
       "productions": [
         "TypeParameterList"
@@ -562,7 +577,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Defines when C<A> to C<B> is admissible under variance, ownership, mutation, cleanup, and region laws.",
+    "notes": "R105 admits C<A> to C<B> only for the same constructor and arity when every pointwise relation satisfies its finite variance descriptor plus ownership, mutation, cleanup and region gates. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -574,8 +589,16 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "syntax",
     "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "GENERIC_TYPE_CONSTRUCTOR_INVARIANT",
+        "GENERIC_TYPE_CONSTRUCTOR_INVARIANT_BY_DEFAULT",
+        "VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER"
+      ],
+      "predicates": [
+        "GenericConstructorVariance",
+        "GenericInvarianceAdmitted",
+        "GenericVarianceDescriptorAdmitted"
+      ],
       "examples": [
         "EX-R48F-030"
       ],
@@ -609,7 +632,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Generic variance descriptor Phase A. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R105 closes the finite owner/kind/position variance descriptor: Class and Enum parameters are invariant, Trait TYPE parameters alone may declare in/out, and StaticInt/EffectRow/ErrorSet markers are forbidden. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -655,7 +678,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Generic variance Phase B trait-only surface. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R105 closes Trait-only variance occurrence checking after alias expansion; out is producer-only, in is consumer-only, invariant constructors and qualified mutable/borrow views stop propagation, and product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",

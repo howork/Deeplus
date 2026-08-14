@@ -116,6 +116,35 @@ local, overload identity and public API/ABI identity. An optional following
 structural Pattern is checker-proven irrefutable and lowers only as body-entry
 decomposition; its child binders do not alter the call channel.
 
+The normative checker handoff for this domain is
+`spec/contracts/generic-applicability-variance-responsibility-r105.json`.
+`GenericApplicabilityV1` allocates fresh variables independently for each
+candidate, checks the closed kind family, solves only from explicit generic and
+value arguments, then evaluates normalized equality, conformance, effect-row
+and visibility constraints. Defaults fill only otherwise unconstrained
+variables after that solve. Expected results, runtime values, enumeration order
+and failed sibling probes contribute no constraints. Success seals one
+`GenericSubstitutionId` and `GenericApplicabilityProofId`; failure commits no
+binding, witness, loan, capture or HIR residue.
+
+`GenericVarianceV1` keeps Class, Enum and other nominal constructors invariant.
+Only Trait `type` parameters may declare `out` or `in`; `StaticInt`, `EffectRow`
+and `ErrorSet` use exact or row relations rather than variance markers. The
+position walk preserves polarity through results and `out`, flips it through
+ordinary inputs and `in`, and stops at invariant constructors, mutable/inout
+storage and every ownership-qualified type. Constructor subtyping requires the
+same constructor and arity plus a proof for every pointwise relation. There is
+no use-site variance or inferred variance.
+
+`FunctionResponsibilityCompatibilityV1` is the only higher-order compatibility
+judgment. Channel shape, labels, modes, ownership qualifiers, cancellation,
+suspension, isolation, authority, call-right, capture and cleanup are exact.
+Input types are contravariant and result types covariant under the admitted
+static subtype relation. The source callable's `ErrorSet` and `EffectRow` must
+be subsets of the target's permitted rows. A callback invocation must handle
+or propagate each error/effect before HIR sealing; it never receives a hidden
+wrapper, allocation, effect mask, error swallow or runtime compatibility test.
+
 Ordinary and message calls share one trailing-closure binding judgment. One
 trailing closure may be unlabeled or labeled; two or more are well formed only
 when every item has a unique label. Labeled items bind by the visible

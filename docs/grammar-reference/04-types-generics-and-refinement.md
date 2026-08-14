@@ -80,6 +80,22 @@ Trait 타입 매개변수 위치에서만 사용할 수 있으며, 생산/소비
 검사를 통과해야 한다. Class 소유자가 variance를 선언하는 표면은
 현행에 들어오지 않는다.
 
+generic 호출의 적용 가능성은 후보마다 독립적으로 판정한다. 명시한
+generic 인수와 값 인수에서만 후보 전용 제약을 만들고, kind 검사와
+occurs check를 거쳐 완전하고 유일한 substitution을 얻은 뒤 `where`
+의무를 확인한다. 기본 인수는 값 인수로 정해지지 않은 변수에만 채운다.
+반환 타입의 선호, 선언·import 순서, 런타임 값 또는 다른 후보에서 실패한
+binding은 substitution을 정하는 근거가 아니다. 실패한 후보는 witness,
+loan, capture 또는 HIR residue를 남기지 않는다.
+
+variance는 이름의 상속 관계가 아니라 owner와 모든 사용 위치가 함께
+증명하는 계약이다. Class, Enum과 그 밖의 nominal constructor는
+invariant이고, `out`/`in`은 Trait의 `type` kind 매개변수에만 허용된다.
+`StaticInt`는 exact equality, `EffectRow`와 `ErrorSet`은 각 row 관계를
+사용한다. mutable storage, `inout`과 ownership qualifier를 통과하는
+위치는 invariant로 닫는다. use-site variance와 variance inference는
+현행에 없다.
+
 ### tuple, parenthesized type와 함수 타입
 
 ```ebnf
@@ -95,6 +111,14 @@ FunctionTypeTail  ::= "->" NonFunctionTypeRef ThrowsClause* EffectsClause*
 - `T..`는 반복 positional residue이고 `NamedPack**`는 static named-rest
   residue이다. 둘은 public API identity에 남는다.
 - `NamedPack**`와 `Record` 또는 `Map`은 같은 호출 채널이 아니다.
+
+함수 타입 호환성은 channel shape, label, rest shape, parameter mode와
+ownership을 정확히 보존한다. 그 경계 안에서 parameter type은 반공변,
+result type은 공변이며, 실제 함수의 ErrorSet과 EffectRow는 대상 타입이
+허용한 집합의 부분집합이어야 한다. cancellation, suspension, isolation,
+authority, call-right, capture와 cleanup 책임은 정확히 같아야 하며 숨은
+wrapper, error swallowing, effect masking 또는 runtime compatibility test로
+차이를 메우지 않는다.
 
 ### 특수 타입 표면
 
