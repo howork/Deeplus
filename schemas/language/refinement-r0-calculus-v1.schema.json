@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/refinement-r0-calculus-v1.schema.json",
+  "title": "Deeplus RefinementR0V1 calculus contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "revision", "status", "gap_id", "formula_schema", "query_schema", "baseline",
+    "source_profile", "value_domains", "closed_term_vocabulary",
+    "formula_normal_form", "totality", "relation_procedure", "resource_limits",
+    "canonical_bytes", "flow_integration", "diagnostic_precedence",
+    "acceptance", "governance"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.refinement-r0-calculus/v1"},
+    "revision": {"const": "preimpl-p1-refinement-r0-r1"},
+    "status": {"const": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED"},
+    "gap_id": {"const": "IR-REF-P1-056"},
+    "formula_schema": {"const": "schemas/language/refinement-r0-formula-v1.schema.json"},
+    "query_schema": {"const": "schemas/language/refinement-r0-query-v1.schema.json"},
+    "baseline": {"type": "object"},
+    "source_profile": {"type": "object"},
+    "value_domains": {"type": "array", "minItems": 9, "maxItems": 9, "uniqueItems": true, "items": {"type": "string"}},
+    "closed_term_vocabulary": {"type": "object"},
+    "formula_normal_form": {"type": "object"},
+    "totality": {"type": "object"},
+    "relation_procedure": {"type": "object"},
+    "resource_limits": {"type": "object"},
+    "canonical_bytes": {"type": "object"},
+    "flow_integration": {"type": "object"},
+    "diagnostic_precedence": {
+      "type": "array", "minItems": 7, "maxItems": 7,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["rank", "condition", "diagnostic"],
+        "properties": {
+          "rank": {"type": "integer", "minimum": 1, "maximum": 7},
+          "condition": {"type": "string", "minLength": 1},
+          "diagnostic": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}
+        }
+      }
+    },
+    "acceptance": {"type": "object"},
+    "governance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes", "production_implementation", "github_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "production_implementation": {"const": "NOT_RUN"},
+        "github_publication": {"const": "NOT_PERFORMED"}
+      }
+    }
+  }
+}

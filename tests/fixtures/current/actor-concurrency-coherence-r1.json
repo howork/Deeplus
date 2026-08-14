@@ -177,6 +177,7 @@
         "states": [
           "requested",
           "observed",
+          "acknowledged",
           "cleanup_complete",
           "terminal_cancelled"
         ],
@@ -934,6 +935,9 @@
       "descriptor": {
         "scope_modifier": "shielded",
         "incoming_cancellation": true,
+        "observation_deferred_until_outermost_exit": true,
+        "scope_cleanup_precedes_observation": true,
+        "acknowledgement_after_observation": true,
         "converted_to_error": false,
         "discarded": false,
         "cleanup_execution_count": 1

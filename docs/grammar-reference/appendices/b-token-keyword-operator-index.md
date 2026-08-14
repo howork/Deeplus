@@ -153,6 +153,7 @@
 | `isolated` |
 | `law` |
 | `lazy` |
+| `list` |
 | `lsb0` |
 | `mailbox` |
 | `map` |

@@ -1,0 +1,596 @@
+{
+  "$schema": "../../schemas/language/implementation-target-feature-local-acceptance-r102.schema.json",
+  "schema": "deeplus.implementation-target-feature-local-acceptance/r102",
+  "revision": "r102-feature-local-implementation-acceptance-handoff",
+  "status": "LOCAL_DESIGN_STATIC_HANDOFF_SPECIFICATION",
+  "controlling_r101": {
+    "path": "spec/contracts/implementation-target-feature-p1-disposition-r101.json",
+    "sha256": "19ae259003dbc8ca8307ad746d0587c9c781f25788c78ff03b9dc010c8106307",
+    "included_action_count": 8
+  },
+  "summary": {
+    "exact_action_count": 8,
+    "trait_action_count": 7,
+    "sfd_action_count": 1,
+    "exact_stage_count_per_action": 6,
+    "exact_outcome_count_per_action": 3,
+    "handoff_specification_closed_count": 8,
+    "execution_open_not_run_count": 8,
+    "product_lanes": "15_OF_15_NOT_RUN"
+  },
+  "evidence_profiles": [
+    {
+      "profile_id": "R102-TCC-SOURCE-SURFACE",
+      "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/surface"
+        },
+        {
+          "path": "spec/grammar/deeplus.dpg",
+          "locator_kind": "DPG_RULE",
+          "locator": "Conformance"
+        },
+        {
+          "path": "spec/grammar/deeplus.parser-contexts.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/closed_external_bindings/admission_predicates/ConformanceRoutePolicy"
+        },
+        {
+          "path": "spec/grammar/deeplus.ebnf",
+          "locator_kind": "GRAMMAR_RULE",
+          "locator": "ConformanceDecl"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-SOURCE-COHERENCE",
+      "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/coherence"
+        },
+        {
+          "path": "spec/types/type-system.md",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "Conformance selection must produce a unique `WitnessId`."
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-SOURCE-ROUTES",
+      "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/routes"
+        },
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/witness"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-SOURCE-IDENTITY",
+      "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/preserved_identity_fields"
+        },
+        {
+          "path": "spec/contracts/hir-h1-current-mir-bridge.json",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "Selected callable, conformance, witness, requirement, extension, activation, formal, provider, actor, and authority identities remain typed fields"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-AST",
+      "stage": "AST_FRONTEND",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/frontend/frontend-model.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/trait_conformance_surface_contract/normalized_ast_nodes"
+        },
+        {
+          "path": "spec/frontend/frontend-model.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/trait_conformance_surface_contract/preserved_identity_fields"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-STATIC-SURFACE",
+      "stage": "STATIC_SEMANTICS",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/parser"
+        },
+        {
+          "path": "spec/types/predicates",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "ConformanceDeclProducesWitness"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-STATIC-COHERENCE",
+      "stage": "STATIC_SEMANTICS",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/coherence"
+        },
+        {
+          "path": "spec/types/predicates",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "WitnessCoherent"
+        },
+        {
+          "path": "spec/types/predicates",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "WitnessResolution"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-STATIC-ROUTES",
+      "stage": "STATIC_SEMANTICS",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/routes"
+        },
+        {
+          "path": "spec/types/predicates",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "ConformanceEvidenceOriginAdmitted"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-STATIC-IDENTITY",
+      "stage": "STATIC_SEMANTICS",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/preserved_identity_fields"
+        },
+        {
+          "path": "spec/types/type-system.md",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "Conformance selection must produce a unique `WitnessId`."
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-DYNAMIC-STATIC-ONLY",
+      "stage": "DYNAMIC_MIR",
+      "disposition": "EXACT_NOT_APPLICABLE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/coherence/structural_or_runtime_conformance"
+        },
+        {
+          "path": "spec/mir/semantics.md",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "Labels, witness ids, extension ids and providers are fixed before MIR execution."
+        }
+      ],
+      "not_applicable": {
+        "reason_code": "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
+        "authority_boundary": "MIR_RUNTIME_AUTHORITY",
+        "rationale": "The action closes a compile-time declaration, selection, coherence, or diagnostic predicate and introduces no runtime search or new MIR operation."
+      }
+    },
+    {
+      "profile_id": "R102-TCC-DYNAMIC-ZERO-RELOOK",
+      "stage": "DYNAMIC_MIR",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/mir/semantics.md",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "MIR adds no auto-policy operation and performs"
+        },
+        {
+          "path": "spec/contracts/hir-h1-current-mir-bridge.json",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "are never recovered from strings or runtime lookup"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-DIAGNOSTIC-SURFACE",
+      "stage": "PRIMARY_DIAGNOSTIC",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/trait-conformance-surface.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/diagnostics"
+        },
+        {
+          "path": "spec/diagnostics/catalog",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-DIAGNOSTIC-COHERENCE",
+      "stage": "PRIMARY_DIAGNOSTIC",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/diagnostics/catalog",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "TRAIT_OVERLAPPING_WITNESS"
+        },
+        {
+          "path": "spec/diagnostics/catalog",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "CONFORMANCE_EVIDENCE_ORIGIN_NOT_UNIQUE"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-DIAGNOSTIC-IDENTITY",
+      "stage": "PRIMARY_DIAGNOSTIC",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/diagnostics/catalog",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "WITNESS_IMPLEMENTATION_SELECTION_MISMATCH"
+        },
+        {
+          "path": "spec/diagnostics/catalog",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "PUBLIC_API_HIDDEN_WITNESS"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-TCC-TOOLING",
+      "stage": "TOOLING_OBLIGATION",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/formatter-lsp-incremental-parsing-contract-r1.json",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "conforms"
+        },
+        {
+          "path": "tests/fixtures/current/trait-conformance-surface-r1.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/cases/3"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-SFD-SOURCE",
+      "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/function-static-activation.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/surface_contract"
+        },
+        {
+          "path": "spec/grammar/deeplus.dpg",
+          "locator_kind": "DPG_RULE",
+          "locator": "CallableBlock"
+        },
+        {
+          "path": "spec/grammar/deeplus.parser-contexts.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/dpg_metamodel"
+        },
+        {
+          "path": "spec/grammar/deeplus.ebnf",
+          "locator_kind": "GRAMMAR_RULE",
+          "locator": "FunctionStaticActivation"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-SFD-AST",
+      "stage": "AST_FRONTEND",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/frontend/frontend-model.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/function_static_activation_frontend_contract"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-SFD-STATIC",
+      "stage": "STATIC_SEMANTICS",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/function-static-activation.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/body_admission"
+        },
+        {
+          "path": "spec/contracts/static-runtime-member-boundary-trace-closure-r1.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/terminal_selection_handoff"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-SFD-DYNAMIC",
+      "stage": "DYNAMIC_MIR",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/function-static-activation.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/state_machine"
+        },
+        {
+          "path": "spec/contracts/sfd-p1-009-execution-identity-r1.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/execution_gate"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-SFD-DIAGNOSTIC",
+      "stage": "PRIMARY_DIAGNOSTIC",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/function-static-activation.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/diagnostic_families"
+        },
+        {
+          "path": "spec/diagnostics/catalog",
+          "locator_kind": "REGISTRY_ID",
+          "locator": "FUNCTION_STATIC_ACTIVATION_FAILED"
+        }
+      ],
+      "not_applicable": null
+    },
+    {
+      "profile_id": "R102-SFD-TOOLING",
+      "stage": "TOOLING_OBLIGATION",
+      "disposition": "CONCRETE_FEATURE_LOCAL_EVIDENCE",
+      "locators": [
+        {
+          "path": "spec/contracts/function-static-activation.json",
+          "locator_kind": "JSON_POINTER",
+          "locator": "/publication_contract"
+        },
+        {
+          "path": "spec/contracts/formatter-lsp-incremental-parsing-contract-r1.json",
+          "locator_kind": "TEXT_ANCHOR",
+          "locator": "static"
+        }
+      ],
+      "not_applicable": null
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "TCC-P1-002",
+      "retained_target_feature_ids": ["conformance_declaration_surface", "explicit_conformance"],
+      "dependencies": [],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-TCC-SOURCE-SURFACE" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-TCC-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-TCC-STATIC-SURFACE" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-TCC-DYNAMIC-STATIC-ONLY" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-TCC-DIAGNOSTIC-SURFACE" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-TCC-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-TCC-P1-002",
+      "validator_commands": ["py -3 tools/validators/validate_workspace.py --root . --candidate"],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "action_id": "TCC-P1-003",
+      "retained_target_feature_ids": ["trait_witness_coherence_phase_a", "trait_witness_resolution_phase_a"],
+      "dependencies": ["TCC-P1-002"],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-TCC-SOURCE-COHERENCE" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-TCC-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-TCC-STATIC-COHERENCE" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-TCC-DYNAMIC-STATIC-ONLY" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-TCC-DIAGNOSTIC-COHERENCE" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-TCC-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-TCC-P1-003",
+      "validator_commands": [
+        "py -3 tools/validators/validate_trait_auto_policy_registry_v1.py --root .",
+        "py -3 tools/validators/run_trait_auto_policy_registry_v1_mutation_tests.py --root ."
+      ],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "action_id": "TCC-P1-004",
+      "retained_target_feature_ids": ["trait_witness_coherence_phase_a", "trait_witness_formal_judgment_core"],
+      "dependencies": ["TCC-P1-002", "TCC-P1-003"],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-TCC-SOURCE-COHERENCE" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-TCC-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-TCC-STATIC-COHERENCE" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-TCC-DYNAMIC-STATIC-ONLY" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-TCC-DIAGNOSTIC-COHERENCE" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-TCC-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-TCC-P1-004",
+      "validator_commands": ["py -3 tools/validators/validate_workspace.py --root . --candidate"],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "action_id": "TCC-P1-005",
+      "retained_target_feature_ids": ["conformance_evidence_origin_bridge_msp", "named_conformance_selector_msp"],
+      "dependencies": ["TCC-P1-002"],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-TCC-SOURCE-ROUTES" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-TCC-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-TCC-STATIC-ROUTES" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-TCC-DYNAMIC-STATIC-ONLY" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-TCC-DIAGNOSTIC-SURFACE" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-TCC-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-TCC-P1-005",
+      "validator_commands": ["py -3 tools/validators/validate_workspace.py --root . --candidate"],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "action_id": "TCC-P1-006",
+      "retained_target_feature_ids": ["trait_source_internal_descriptor_split_law", "trait_witness_resolution_phase_a"],
+      "dependencies": ["TCC-P1-003", "TCC-P1-004", "TCC-P1-005"],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-TCC-SOURCE-IDENTITY" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-TCC-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-TCC-STATIC-IDENTITY" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-TCC-DYNAMIC-ZERO-RELOOK" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-TCC-DIAGNOSTIC-IDENTITY" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-TCC-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-TCC-P1-006",
+      "validator_commands": [
+        "py -3 tools/validators/validate_trait_auto_policy_registry_v1.py --root .",
+        "py -3 tools/validators/run_trait_auto_policy_registry_v1_mutation_tests.py --root ."
+      ],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "action_id": "TCC-P1-007",
+      "retained_target_feature_ids": ["trait_witness_formal_judgment_core", "trait_witness_resolution_phase_a"],
+      "dependencies": ["TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006"],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-TCC-SOURCE-COHERENCE" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-TCC-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-TCC-STATIC-COHERENCE" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-TCC-DYNAMIC-STATIC-ONLY" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-TCC-DIAGNOSTIC-COHERENCE" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-TCC-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-TCC-P1-007",
+      "validator_commands": ["py -3 tools/validators/validate_workspace.py --root . --candidate"],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "action_id": "TCC-P1-008",
+      "retained_target_feature_ids": ["conformance_law_documentation_contract", "trait_witness_visibility_export_law"],
+      "dependencies": ["TCC-P1-002", "TCC-P1-004", "TCC-P1-006", "TCC-P1-007"],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-TCC-SOURCE-IDENTITY" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-TCC-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-TCC-STATIC-IDENTITY" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-TCC-DYNAMIC-ZERO-RELOOK" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-TCC-DIAGNOSTIC-IDENTITY" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-TCC-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-TCC-P1-008",
+      "validator_commands": ["py -3 tools/validators/validate_workspace.py --root . --candidate"],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "action_id": "SFD-P1-009",
+      "retained_target_feature_ids": ["function_static_activation", "static_runtime_member_boundary_law"],
+      "dependencies": [],
+      "stage_bindings": [
+        { "stage": "SOURCE_OR_NON_GRAMMAR_AUTHORITY", "evidence_profile_id": "R102-SFD-SOURCE" },
+        { "stage": "AST_FRONTEND", "evidence_profile_id": "R102-SFD-AST" },
+        { "stage": "STATIC_SEMANTICS", "evidence_profile_id": "R102-SFD-STATIC" },
+        { "stage": "DYNAMIC_MIR", "evidence_profile_id": "R102-SFD-DYNAMIC" },
+        { "stage": "PRIMARY_DIAGNOSTIC", "evidence_profile_id": "R102-SFD-DIAGNOSTIC" },
+        { "stage": "TOOLING_OBLIGATION", "evidence_profile_id": "R102-SFD-TOOLING" }
+      ],
+      "acceptance_profile_id": "R102-SFD-P1-009",
+      "validator_commands": [
+        "py -3 tools/validators/validate_static_runtime_member_boundary_trace.py --root .",
+        "py -3 tools/validators/run_static_runtime_member_boundary_trace_mutation_tests.py --root .",
+        "py -3 tools/validators/validate_sfd_p1_009_execution_identity.py --root .",
+        "py -3 tools/validators/run_sfd_p1_009_execution_identity_mutation_tests.py --root ."
+      ],
+      "handoff_specification_gate": "CLOSED_FEATURE_LOCAL_SPECIFICATION",
+      "execution_receipt_gate": "OPEN_NOT_RUN",
+      "product_execution": "NOT_RUN"
+    }
+  ],
+  "acceptance_locator_index": {
+    "path": "tests/fixtures/current/implementation-target-feature-local-acceptance-r102.json",
+    "schema": "deeplus.implementation-target-feature-local-acceptance-index/r102",
+    "exact_action_count": 8
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "tcc_execution": "OPEN_NOT_RUN",
+    "sfd_execution": "OPEN_NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "closure_scope": "HANDOFF_SPECIFICATION_ONLY_NOT_EXECUTION_OR_PRODUCT"
+  }
+}

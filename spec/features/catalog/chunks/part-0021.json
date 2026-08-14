@@ -289,7 +289,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The current Stable-design bridge is bound to deeplus.canonical-hir-h1/r1, deeplus.mir/r1, the exact 130-identity catalog, 102 Current/111 explicit-Preview lowering rows, 48 closed MIR operations, and MirCapabilityReceiptR1. The R38 continuation interface separates non-live place dispositions from physical slots, closes owner/loan/cleanup/authority partitions, defines storage-location RootId rebinding, binds one resume-or-cancel winner and projects the same typed receipt to Xvm, ObjectAot and InMemoryJit without adding source spelling. Capability failure preserves verified HIR and blocks only ExecutableHirH1. ProposedMirX1 remains a noncanonical compatibility target; no source activation, production implementation, or product execution is claimed.",
+    "notes": "The current Stable-design bridge is bound to deeplus.canonical-hir-h1/r1, deeplus.mir/r1, the exact 130-identity catalog, 102 Current/111 explicit-Preview lowering rows, 48 closed MIR operations, and MirCapabilityReceiptR1. The R38 continuation interface separates non-live place dispositions from physical slots, closes owner/loan/cleanup/authority partitions, defines storage-location RootId rebinding, binds one resume-or-cancel winner and projects the same typed receipt to Xvm, ObjectAot and InMemoryJit without adding source spelling. R92 closes the Xvm target projection as canonical XBC R1: a fixed sectioned deterministic-CBOR container, closed operation/terminator opcode map, typed dense slots, independent pre-execution verifier, exact managed-root and continuation binding, and artifact receipt. Capability failure preserves verified MIR and prevents execution. ProposedMirX1 remains a noncanonical compatibility target; no source activation, production implementation, or product execution is claimed.",
     "primary_source": "spec/contracts/hir-h1-current-mir-bridge.json",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -314,7 +314,13 @@
         "CONTINUATION_FRAME_TRANSITION_INVALID",
         "CONTINUATION_FRAME_CLEANUP_BALANCE_INVALID",
         "CONTINUATION_FRAME_ROOT_SET_INVALID",
-        "MIR_LOAN_UNBALANCED"
+        "MIR_LOAN_UNBALANCED",
+        "XBC_CONTAINER_INVALID",
+        "XBC_VERSION_OR_BINDING_UNSUPPORTED",
+        "XBC_SECTION_CANONICALITY_INVALID",
+        "XBC_INSTRUCTION_OR_CFG_INVALID",
+        "XBC_RESPONSIBILITY_OR_ROOT_INVALID",
+        "XBC_ARTIFACT_DIGEST_MISMATCH"
       ],
       "predicates": [
         "BorrowAcrossSuspensionAdmitted"
@@ -345,7 +351,18 @@
       "spec/contracts/mir-machine-registry.json",
       "tests/fixtures/current/hir-mir-machine-contract-r1.json",
       "spec/contracts/loan-close-operation-r1.json",
-      "tests/fixtures/current/loan-close-operation-r1.json"
+      "tests/fixtures/current/loan-close-operation-r1.json",
+      "decisions/language/Design_Deeplus_XVM_XBC_Projection_Closure_R1.md",
+      "spec/contracts/xvm-xbc-projection-r1.json",
+      "schemas/language/xvm-xbc-projection-contract-r1.schema.json",
+      "schemas/language/xvm-xbc-module-r1.schema.json",
+      "schemas/language/xvm-xbc-projection-receipt-r1.schema.json",
+      "schemas/language/xvm-xbc-projection-fixtures-r1.schema.json",
+      "tests/fixtures/current/xvm-xbc-projection-r1.json",
+      "spec/contracts/xbc-typed-payload-registry-r99.json",
+      "tests/fixtures/current/xbc-decoded-module-r99.json",
+      "spec/contracts/mir-clif-projection-registry-r99.json",
+      "tools/validators/validate_runtime_backend_projection_r99.py"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",

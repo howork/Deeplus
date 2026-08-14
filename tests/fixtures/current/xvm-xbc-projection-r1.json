@@ -1,0 +1,26 @@
+{
+  "schema": "deeplus.xvm-xbc-projection-fixtures/r1",
+  "contract": "spec/contracts/xvm-xbc-projection-r1.json",
+  "cases": [
+    {"case_id": "R92-XBC-POS-001", "class": "positive", "scenario": "minimal verified pure body projects to one XBC body", "condition": "EXACT_BINDINGS_AND_SINGLE_COMPLETE_BLOCK", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-POS-002", "class": "positive", "scenario": "branch targets use dense block ordinals", "condition": "VALID_CFG_AND_TYPED_EDGE_ARGUMENTS", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-POS-003", "class": "positive", "scenario": "managed allocation binds exact root plan", "condition": "BIJECTIVE_ROOT_LOCATION_AND_RUNTIME_RECEIPT", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-POS-004", "class": "positive", "scenario": "suspending body binds continuation interface and slots", "condition": "EXACT_CONTINUATION_DIGEST_AND_PARTITION", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-POS-005", "class": "positive", "scenario": "actor transport preserves sealed sender and channel identities", "condition": "NO_RUNTIME_RESELECTION_OR_IDENTITY_INVENTION", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-BND-001", "class": "boundary", "scenario": "optional managed plan is absent through a present false section", "condition": "PRESENT_SECTION_WITH_CLOSED_ABSENT_RECORD", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-BND-002", "class": "boundary", "scenario": "empty non-body tables retain exact sections", "condition": "ZERO_ROWS_WITH_SECTION_PRESENT", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-BND-003", "class": "boundary", "scenario": "largest current operation and terminator opcodes are admitted", "condition": "OPCODE_47_AND_32784", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-BND-004", "class": "boundary", "scenario": "debug provenance excludes source path from semantic identity", "condition": "SOURCE_ORIGIN_PRESERVED_PATH_NONIDENTITY", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-BND-005", "class": "boundary", "scenario": "verified artifact is decoded but never executed in design validation", "condition": "STATIC_RECEIPT_PRODUCT_NOT_RUN", "expected": "ADMIT_STATIC_PROJECTION", "diagnostic_or_null": null},
+    {"case_id": "R92-XBC-NEG-001", "class": "reject", "scenario": "magic header or bounds are malformed", "condition": "INVALID_MAGIC_OR_BOUNDS", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_CONTAINER_INVALID"},
+    {"case_id": "R92-XBC-NEG-002", "class": "reject", "scenario": "version or exact machine binding is unsupported", "condition": "UNSUPPORTED_VERSION_OR_REGISTRY_DIGEST", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_VERSION_OR_BINDING_UNSUPPORTED"},
+    {"case_id": "R92-XBC-NEG-003", "class": "reject", "scenario": "section is missing duplicated reordered or noncanonical", "condition": "INVALID_SECTION_UNIVERSE_OR_CBOR", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_SECTION_CANONICALITY_INVALID"},
+    {"case_id": "R92-XBC-NEG-004", "class": "reject", "scenario": "unknown opcode or invalid branch target appears", "condition": "UNKNOWN_OPCODE_OR_CFG_TARGET", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_INSTRUCTION_OR_CFG_INVALID"},
+    {"case_id": "R92-XBC-NEG-005", "class": "reject", "scenario": "typed slot use is missing mismatched or non-dominating", "condition": "INVALID_TYPED_SLOT_FLOW", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_INSTRUCTION_OR_CFG_INVALID"},
+    {"case_id": "R92-XBC-NEG-006", "class": "reject", "scenario": "cleanup token root or continuation partition is invalid", "condition": "INVALID_RESPONSIBILITY_OR_ROOT_BALANCE", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_RESPONSIBILITY_OR_ROOT_INVALID"},
+    {"case_id": "R92-XBC-NEG-007", "class": "reject", "scenario": "encoded artifact digest does not match its receipt", "condition": "ENCODED_BYTES_DIGEST_MISMATCH", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_ARTIFACT_DIGEST_MISMATCH"},
+    {"case_id": "R92-XBC-NEG-008", "class": "reject", "scenario": "decoder tries to repair malformed input or execute before verification", "condition": "BEST_EFFORT_REPAIR_OR_PARTIAL_EXECUTION", "expected": "REJECT_BEFORE_EXECUTION", "diagnostic_or_null": "XBC_CONTAINER_INVALID"}
+  ],
+  "expected_counts": {"positive": 5, "boundary": 5, "reject": 8},
+  "governance": {"semantic_p0": 0, "feature_p1": "22_OPEN_UNCHANGED", "product_lanes": "15_OF_15_NOT_RUN"}
+}

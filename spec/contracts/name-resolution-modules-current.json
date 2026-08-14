@@ -591,8 +591,8 @@
     {
       "test_id": "IR-R4-GAP-02-P",
       "test_class": "positive",
-      "scenario": "Only the nominal member domain is nonempty. R4 records no member/extension collision and leaves any within-domain overload winner to the next cluster.",
-      "expected_outcome": "ACCEPT_NO_CROSS_DOMAIN_COLLISION_SELECTION_DEFERRED",
+      "scenario": "Only the nominal member domain is applicable; the collision fence passes and OrdinaryCallSelectionV1 closes one within-domain winner.",
+      "expected_outcome": "ACCEPT_ORDINARY_CALL_SELECTION_V1",
       "gap_ids": [
         "IR-RES-P0-041"
       ],
@@ -612,8 +612,8 @@
     {
       "test_id": "IR-R4-GAP-02-B",
       "test_class": "boundary",
-      "scenario": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; R4 bypasses only the cross-domain collision rule.",
-      "expected_outcome": "ACCEPT_EXACT_EXTENSION_DOMAIN_SELECTION_DEFERRED",
+      "scenario": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; OrdinaryCallSelectionV1 closes one winner only inside that domain.",
+      "expected_outcome": "ACCEPT_EXACT_EXTENSION_DOMAIN_ORDINARY_CALL_SELECTION_V1",
       "gap_ids": [
         "IR-RES-P0-041"
       ],

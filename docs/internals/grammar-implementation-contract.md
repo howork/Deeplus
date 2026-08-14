@@ -21,7 +21,7 @@ CST/AST 계약은 `spec/frontend/frontend-model.json`이 소유한다. 이 문�
 
 ## 2. Grammar와 lossless CST
 
-DPG는 280개 rule family와 301개 context-specialized clause로 구조를
+DPG는 282개 rule family와 303개 context-specialized clause로 구조를
 기술한다. 기존 EBNF의 656개 surface-census production은
 `spec/contracts/grammar-production-disposition-registry-r1.json`에 정확히 한
 번씩 남아 CST/AST 책임 crosswalk로 쓰인다. 이 656이라는 수는 새 DPG를

@@ -1,0 +1,182 @@
+{
+  "schema": "deeplus.exact-numeric-operator-allocation/r99",
+  "revision": "r99-exact-numeric-operator-allocation-effect-closure-r1",
+  "status": "STABLE_DESIGN_LOCAL_CANDIDATE",
+  "gap_id": "IR-NUM-P1-072",
+  "repository": "howork/Deeplus",
+  "baseline_commit": "10e64f492f0529610673846139afcf0d95175663",
+  "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / MIR / RUNTIME",
+  "semantic_p0": 0,
+  "feature_p1": "22_OPEN_UNCHANGED",
+  "product_lanes": "15_OF_15_NOT_RUN",
+  "decision": {
+    "verdict": "ACCEPT_SEALED_OPERATOR_RESPONSIBILITY_ENVELOPE",
+    "hidden_oom_defect_count": 0,
+    "implementation_dependent_failure_count": 0,
+    "fixed_glyph_count": 13,
+    "trait_root_count": 9,
+    "custom_operator_count": 0,
+    "new_source_glyph_count": 0
+  },
+  "trait_requirement_envelopes": {
+    "allocating_capable_roots": [
+      "UnaryPlus",
+      "UnaryMinus",
+      "Add<Rhs>",
+      "Subtract<Rhs>",
+      "Multiply<Rhs>",
+      "Divide<Rhs>",
+      "Remainder<Rhs>",
+      "Ord<Rhs>"
+    ],
+    "exact_requirement_error_set": ["AllocationError"],
+    "exact_requirement_effect_row": ["allocate"],
+    "pure_root": "Eq<Rhs>",
+    "pure_root_error_set": [],
+    "pure_root_effect_row": [],
+    "implementation_rule": "A conformance method may declare only an exact normalized subset of its Trait requirement envelope. The selected implementation's exact normalized rows, not the maximum envelope, are the concrete expression responsibility.",
+    "generic_rule": "When only an allocating-capable Trait bound is known, its full AllocationError/allocate envelope is the generic call responsibility. A narrower responsibility requires an exact statically selected witness whose rows are sealed in the generic environment.",
+    "forbidden_rows": [
+      "any recoverable error other than AllocationError",
+      "any effect other than allocate",
+      "cancellation",
+      "suspension",
+      "mutation",
+      "consume",
+      "authority acquisition"
+    ]
+  },
+  "responsibility_descriptor_registry": [
+    {
+      "profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+      "error_set": [],
+      "effect_row": [],
+      "operator_domain": "allocating-capable arithmetic roots when the selected witness is exact-pure"
+    },
+    {
+      "profile_id": "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT",
+      "error_set": ["AllocationError"],
+      "effect_row": ["allocate"],
+      "operator_domain": "allocating-capable arithmetic roots when the selected witness may allocate"
+    },
+    {
+      "profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+      "error_set": [],
+      "effect_row": [],
+      "operator_domain": "Eq and exact-pure Ord witnesses"
+    },
+    {
+      "profile_id": "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR",
+      "error_set": ["AllocationError"],
+      "effect_row": ["allocate"],
+      "operator_domain": "Ord witnesses whose total comparison plan may allocate"
+    }
+  ],
+  "sealed_prelude_rows": [
+    {
+      "family": "fixed_width_intrinsic_and_complex",
+      "operand_domains": ["Int/UInt/fixed-width integer", "Float32/Float64", "Complex<Float32>", "Complex<Float64>"],
+      "error_set": [],
+      "effect_row": [],
+      "allocation_required": false
+    },
+    {
+      "family": "BigInt_and_Rational_value_producing",
+      "operator_ids": ["UnaryMinus", "BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide", "BinaryRemainder"],
+      "operand_domains": ["BigInt", "Rational", "Rational/ExactBuiltinInteger", "ExactBuiltinInteger/Rational"],
+      "error_set": ["AllocationError"],
+      "effect_row": ["allocate"],
+      "allocation_required": "SEMANTICALLY_VISIBLE_INDEPENDENT_OF_SMALL_VALUE_OPTIMIZATION"
+    },
+    {
+      "family": "BigInt_and_Rational_identity",
+      "operator_ids": ["UnaryPlus", "BinaryEqual", "BinaryNotEqual"],
+      "error_set": [],
+      "effect_row": [],
+      "allocation_required": false,
+      "reason": "Unary plus reuses the immutable value identity; normalized equality compares existing representation without constructing a numeric value."
+    },
+    {
+      "family": "Rational_total_order",
+      "operator_ids": ["BinaryLessThan", "BinaryLessThanOrEqual", "BinaryGreaterThan", "BinaryGreaterThanOrEqual"],
+      "error_set": ["AllocationError"],
+      "effect_row": ["allocate"],
+      "allocation_required": "CONSERVATIVE_REPRESENTATION_INDEPENDENT_ENVELOPE",
+      "reason": "The exact compare plan may require arbitrary-precision intermediates; a backend may avoid allocation but may not erase the declared responsibility."
+    }
+  ],
+  "literal_and_conversion_boundary": {
+    "runtime_BigInt_or_Rational_materialization": {
+      "error_set": ["AllocationError"],
+      "effect_row": ["allocate"],
+      "preallocated_module_constant_exception": "Only a verifier-bound immutable module constant whose complete storage is installed before callable entry has empty invocation responsibility.",
+      "small_value_optimization_changes_responsibility": false
+    },
+    "compile_time_normalization_failure": "COMPILE_TIME_DIAGNOSTIC_NOT_ALLOCATIONERROR",
+    "ArithmeticDefect_membership_in_error_set": false
+  },
+  "selection_and_hir": {
+    "selection_key": ["OperatorId", "normalized_left_type", "normalized_right_type_or_null"],
+    "responsibility_is_selection_key": false,
+    "multiple_rows_differing_only_by_responsibility": "REJECT_COHERENCE",
+    "required_hir_fields": [
+      "operator_id",
+      "operand_arity",
+      "normalized_left_type_id",
+      "normalized_right_type_id_or_null",
+      "conformance_id",
+      "witness_id",
+      "method_id",
+      "substitution",
+      "output_type_id",
+      "responsibility_profile_id",
+      "strong_comparison_family_id_or_null",
+      "reverse_witness_id_or_null",
+      "normalization_domain_id_or_null"
+    ],
+    "responsibility_binding": "responsibility_profile_id resolves to exactly one registry descriptor; separate error/effect/allocation fields are not added to HIR",
+    "generic_hir_rule": "Seal the full requirement envelope unless an exact narrower witness is already selected; later monomorphization may optimize but may not rewrite public responsibility identity."
+  },
+  "dynamic_and_lowering": {
+    "evaluation_order": "unary operand once; binary left then right once",
+    "allocation_order": [
+      "evaluate and retain operands",
+      "reserve all result/intermediate storage required by the selected plan",
+      "compute into unpublished storage",
+      "normalize and validate the result",
+      "publish the result once"
+    ],
+    "allocation_failure": {
+      "outcome": "throw AllocationError",
+      "effect": "allocate",
+      "restore_or_retain_operands": true,
+      "reverse_clean_staged_resources": true,
+      "published_result_count": 0,
+      "compound_assignment_place_write_count": 0
+    },
+    "arithmetic_defect": "Division by zero and admitted overflow remain nonrecoverable ArithmeticDefect terminals and are never converted to AllocationError.",
+    "xvm_cranelift_parity": [
+      "exact normalized result or exact AllocationError",
+      "operand evaluation count/order",
+      "publication count",
+      "cleanup order",
+      "compound assignment place commit count"
+    ]
+  },
+  "diagnostic_order": [
+    "OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED",
+    "OPERATOR_CONFORMANCE_MISSING_OR_AMBIGUOUS",
+    "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+    "OPERATOR_ALLOCATION_ERROR_NOT_PROPAGATED",
+    "OPERATOR_ALLOCATE_EFFECT_NOT_DECLARED",
+    "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH"
+  ],
+  "acceptance": {
+    "fixture": "tests/fixtures/current/exact-numeric-operator-allocation-r99.json",
+    "positive": 3,
+    "boundary": 3,
+    "reject": 4,
+    "mutation_count": 7,
+    "product_execution": "NOT_RUN"
+  }
+}

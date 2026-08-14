@@ -24,15 +24,15 @@
     },
     {
       "fixture_id": "TCS-R1-POS-003",
-      "source": "public trait#interpolation Display\nsupports auto {\n    +def display.() -> String throws Never effects {}\n}\npublic type Receipt conforms Display by auto",
-      "expected": "ACCEPT_STATIC_IF_POLICY_REGISTERED",
-      "assertions": ["physical_line_auto_support", "auto_bodyless", "closed_policy_required"]
+      "source": "public data class Receipt(id: UInt, title: String)\nconforms Shareable by auto",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["auto_bodyless", "policy_id=TraitAutoPolicyId:core::Shareable::structural/v1", "finite_input_evidence_required"]
     },
     {
       "fixture_id": "TCS-R1-POS-004",
-      "source": "public trait AutoUserIdentity\nsupports auto {\n    +def identity.() -> String throws Never effects {}\n}\npublic class User\nconforms Display\nconforms AutoUserIdentity by auto {\n    +let name: String\n    conform Display {\n        def display.() -> String = { return self.name }\n    }\n}",
+      "source": "public class User\nconforms Display\nconforms Shareable by auto {\n    +let name: String\n    conform Display {\n        def display.() -> String = { return self.name }\n    }\n}",
       "expected": "ACCEPT_STATIC",
-      "assertions": ["physical_line_relations", "repeated_nominal_conformance", "nominal_conformance_group", "lexical_nominal_owner", "for_clause_count_zero", "closed_test_auto_policy"]
+      "assertions": ["physical_line_relations", "repeated_nominal_conformance", "nominal_conformance_group", "lexical_nominal_owner", "for_clause_count_zero", "policy_id=TraitAutoPolicyId:core::Shareable::structural/v1"]
     },
     {
       "fixture_id": "TCS-R1-POS-005",
@@ -60,15 +60,15 @@
     },
     {
       "fixture_id": "TCS-R1-POS-009",
-      "source": "public data class Point(x: Int, y: Int)\nconforms Eq<Point> by auto",
-      "expected": "ACCEPT_STATIC_IF_POLICY_REGISTERED",
-      "assertions": ["data_class_admitted", "physical_line_conformance"]
+      "source": "public data class Point(x: Int, y: Int)\nconforms Shareable by auto",
+      "expected": "ACCEPT_STATIC",
+      "assertions": ["data_class_admitted", "physical_line_conformance", "policy_id=TraitAutoPolicyId:core::Shareable::structural/v1"]
     },
     {
       "fixture_id": "TCS-R1-POS-010",
-      "source": "public trait AutoEnumIdentity\nsupports auto {\n    +def identity.() -> String throws Never effects {}\n}\npublic enum Priority\nconforms Display\nconforms AutoEnumIdentity by auto {\n    low\n    high\n    conform Display { +def display.() -> String = { return self.name } }\n}",
+      "source": "public enum Priority\nconforms Display\nconforms Transferable by auto {\n    low\n    high\n    conform Display { +def display.() -> String = { return self.name } }\n}",
       "expected": "ACCEPT_STATIC",
-      "assertions": ["enum_admitted", "enum_conformance_group", "repeated_nominal_conformance", "closed_test_auto_policy"]
+      "assertions": ["enum_admitted", "enum_conformance_group", "repeated_nominal_conformance", "policy_id=TraitAutoPolicyId:core::Transferable::structural/v1"]
     },
     {
       "fixture_id": "TCS-R1-POS-011",
@@ -160,12 +160,26 @@
       "expected": "REJECT_STATIC",
       "diagnostic": "CONFORM_BLOCK_OWNER_CONTEXT_REQUIRED",
       "assertions": ["top_level_group_forbidden", "for_clause_count_zero", "nominal_owner_must_be_lexical"]
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-012",
+      "source": "public trait AutoUserIdentity\nsupports auto {\n    +def identity.() -> String throws Never effects {}\n}",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+      "assertions": ["source_trait_does_not_create_policy", "registry_owner_core_or_prelude_only"]
+    },
+    {
+      "fixture_id": "TCS-R1-NEG-013",
+      "source": "public data class Point(x: Int, y: Int)\nconforms Eq<Point> by auto",
+      "expected": "REJECT_STATIC",
+      "diagnostic": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "assertions": ["Eq_has_no_current_auto_policy_row", "unregistered_candidate_count_zero"]
     }
   ],
   "counts": {
     "positive": 14,
-    "negative": 11,
-    "total": 25,
+    "negative": 13,
+    "total": 27,
     "executed": 0
   }
 }

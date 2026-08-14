@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/generic-applicability-variance-responsibility-fixtures-r105.schema.json",
+  "title": "Deeplus R105 generic and higher-order responsibility fixtures",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "contract", "cases"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "deeplus.generic-applicability-variance-responsibility-fixtures/r105"},
+    "contract": {"const": "spec/contracts/generic-applicability-variance-responsibility-r105.json"},
+    "cases": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "class", "axis", "scenario", "expected"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^R105-(GEN|VAR|FUN)-(P|B|N)-[0-9]{3}$"},
+          "class": {"enum": ["positive", "boundary", "reject"]},
+          "axis": {"enum": ["generic", "variance", "function"]},
+          "scenario": {"type": "string", "minLength": 1},
+          "expected": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

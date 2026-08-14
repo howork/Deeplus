@@ -20,6 +20,9 @@ FRONTEND_REL = "spec/frontend/frontend-model.json"
 RECOVERY_REL = "spec/contracts/frontend-recovery-invalid-tree-contract-r1.json"
 FORMATTER_FEATURE_REL = "spec/features/catalog/chunks/part-0006.json"
 LSP_FEATURE_REL = "spec/features/catalog/chunks/part-0008.json"
+R93_DECISION_REL = "decisions/language/Design_Deeplus_Formatter_LSP_DPG_Authority_Rebase_R1.md"
+R93_VALIDATOR_REL = "tools/validators/validate_formatter_lsp_dpg_authority_rebase.py"
+R93_MUTATION_REL = "tools/validators/run_formatter_lsp_dpg_authority_rebase_mutation_tests.py"
 BASELINE_COMMIT = "39a5d50cc770341c4b9776d00d84520b780d0c62"
 BASELINE_TREE = "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
 CHECK_IDS = (
@@ -273,6 +276,11 @@ def contract_errors(
         != 34
         or schema_properties.get("reason_codes", {}).get("minItems") != 14
         or schema_properties.get("reason_codes", {}).get("maxItems") != 14
+        or schema_properties.get("parser_authority_rebase", {})
+        .get("properties", {})
+        .get("snapshot_component", {})
+        .get("const")
+        != "ParserAuthorityDigestSetR1"
     ):
         errors.append("schema successor binding drift")
 
@@ -366,6 +374,14 @@ def contract_errors(
             "parse_format_parse_equality_authority"
         )
         is not True
+        or "parser_authority_digest_set"
+        not in identities.get("ParseSnapshotId", {}).get("recipe", [])
+        or "structural_cst_owner_id"
+        not in identities.get("CstContentId", {}).get("recipe", [])
+        or "parser_authority_digest_set"
+        not in identities.get("NodeReuseReceipt", {}).get("required_equalities", [])
+        or "structural_cst_owner_id"
+        not in identities.get("NodeReuseReceipt", {}).get("required_equalities", [])
         or any(
             identities.get(key, {}).get("canonical_residue") is not False
             for key in (
@@ -448,6 +464,24 @@ def contract_errors(
             "commit": BASELINE_COMMIT,
             "tree": BASELINE_TREE,
         },
+        "parser_authority_rebase": {
+            "gap_id": "IR-FE-P1-063",
+            "baseline_main": "10e64f492f0529610673846139afcf0d95175663",
+            "authority_contract": "spec/contracts/parser-authority-traceability-r1.json",
+            "authority_axes": [
+                "STRUCTURAL_DPG",
+                "PARSER_CONTEXT",
+                "PRATT",
+                "SCANNER",
+            ],
+            "snapshot_component": "ParserAuthorityDigestSetR1",
+            "surface_census_semantic_authority": False,
+            "structural_cst_owner_identity": "CstStructuralOwnerId",
+            "source_root_reparse_on_authority_change": True,
+            "old_handle_reuse_on_authority_change": 0,
+            "ebnf_only_admission_count": 0,
+            "tooling_parser_semantic_reselection_count": 0,
+        },
         "grammar_production_count": 656,
         "grammar_production_count_role": "LEGACY_SURFACE_CENSUS_FORMATTING_DISPOSITION",
         "formatting_rule_count": 6,
@@ -518,7 +552,14 @@ def contract_errors(
     }:
         errors.append("frontend R28 contract binding drift")
 
-    expected_artifacts = [CONTRACT_REL, SCHEMA_REL, FIXTURE_REL]
+    expected_artifacts = [
+        CONTRACT_REL,
+        SCHEMA_REL,
+        FIXTURE_REL,
+        R93_DECISION_REL,
+        R93_VALIDATOR_REL,
+        R93_MUTATION_REL,
+    ]
     expected_formatter_artifacts = [
         *expected_artifacts,
         "spec/contracts/ownership-tooling-obligations-r1.json",
@@ -530,7 +571,7 @@ def contract_errors(
     feature_rows = {
         row.get("feature_id"): row
         for row in [*formatter_features, *lsp_features]
-        if isinstance(row, dict)
+        if isinstance(row.get("feature_id"), str)
     }
     for feature_id in (
         "formatter_lsp_responsibility_card",
@@ -726,8 +767,18 @@ def main() -> int:
         registry = strict_load(root / REGISTRY_REL)
         frontend = strict_load(root / FRONTEND_REL)
         recovery = strict_load(root / RECOVERY_REL)
-        formatter_features = strict_load(root / FORMATTER_FEATURE_REL)
-        lsp_features = strict_load(root / LSP_FEATURE_REL)
+        # Chunk placement is generator-owned. Load the full catalog so feature
+        # identity survives a valid reassembly.
+        all_feature_rows = [
+            row
+            for path in sorted(
+                (root / "spec/features/catalog/chunks").glob("part-*.json")
+            )
+            for row in strict_load(path)
+            if isinstance(row, dict)
+        ]
+        formatter_features = all_feature_rows
+        lsp_features = all_feature_rows
         errors = contract_errors(
             contract,
             schema,

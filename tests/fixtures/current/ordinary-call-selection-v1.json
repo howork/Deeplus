@@ -1,0 +1,38 @@
+{
+  "schema": "deeplus.ordinary-call-selection-fixtures/v1",
+  "contract": "spec/contracts/ordinary-call-selection-v1.json",
+  "cases": [
+    {"id": "OCS-P-001", "class": "positive", "scenario": "exact Int formal and bare generic T are both applicable", "expected": "SELECT_EXACT_INT_DOMAIN", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-P-002", "class": "positive", "scenario": "fixed and repeated candidates accept the same two positional arguments", "expected": "SELECT_FIXED", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-P-003", "class": "positive", "scenario": "repeated and named-rest candidates are applicable", "expected": "SELECT_REPEATED", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-P-004", "class": "positive", "scenario": "one candidate fails its local kind check and a sibling independently closes", "expected": "SELECT_ONLY_APPLICABLE_SIBLING", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-P-005", "class": "positive", "scenario": "a strict exact Trait-bound superset and an unconstrained generic candidate are applicable", "expected": "SELECT_STRICT_BOUND_DOMAIN", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-B-001", "class": "boundary", "scenario": "a single generic candidate obtains one complete substitution from explicit arguments", "expected": "SELECT_UNIQUE_SUBSTITUTION", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-B-002", "class": "boundary", "scenario": "an explicitly qualified extension domain contains one applicable candidate", "expected": "SELECT_QUALIFIED_EXTENSION", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-B-003", "class": "boundary", "scenario": "only the selected callable has omitted defaults", "expected": "SELECT_THEN_EVALUATE_SELECTED_DEFAULTS_ONLY", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-B-004", "class": "boundary", "scenario": "the fixed expected result verifies the already selected winner", "expected": "WINNER_ID_UNCHANGED_THEN_RESULT_ACCEPTED", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-B-005", "class": "boundary", "scenario": "a named unfold expands one finite static row before candidate-local binding", "expected": "SELECT_EXACT_STATIC_NAMED_ROW", "selected_count": 1, "diagnostic": null},
+    {"id": "OCS-N-001", "class": "reject", "scenario": "every candidate fails applicability", "expected": "REJECT_ZERO_APPLICABLE", "selected_count": 0, "diagnostic": "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE"},
+    {"id": "OCS-N-002", "class": "reject", "scenario": "two applicable candidates are equal maximal elements", "expected": "REJECT_MULTIPLE_MAXIMA", "selected_count": 0, "diagnostic": "ORDINARY_CALL_OVERLOAD_AMBIGUOUS"},
+    {"id": "OCS-N-003", "class": "reject", "scenario": "two candidates differ only by result type", "expected": "REJECT_RESULT_ONLY_WINNER", "selected_count": 0, "diagnostic": "ORDINARY_CALL_OVERLOAD_AMBIGUOUS"},
+    {"id": "OCS-N-004", "class": "reject", "scenario": "a solution exists only by sharing constraints between sibling generic candidates", "expected": "REJECT_CROSS_CANDIDATE_CONSTRAINT_FLOW", "selected_count": 0, "diagnostic": "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE"},
+    {"id": "OCS-N-005", "class": "reject", "scenario": "nominal and active extension domains each contain an applicable candidate", "expected": "REJECT_BEFORE_CROSS_DOMAIN_RANKING", "selected_count": 0, "diagnostic": "MEMBER_EXTENSION_COLLISION"}
+  ],
+  "metamorphic_cases": [
+    {"id": "OCS-M-001", "mutation": "permute declaration, import, and source enumeration order", "expected": "IDENTICAL_WINNER_OR_DIAGNOSTIC"},
+    {"id": "OCS-M-002", "mutation": "add one independently inapplicable candidate", "expected": "IDENTICAL_WINNER"},
+    {"id": "OCS-M-003", "mutation": "change only the fixed expected result type", "expected": "IDENTICAL_WINNER_THEN_POST_WINNER_ACCEPT_OR_REJECT"},
+    {"id": "OCS-M-004", "mutation": "duplicate an equal maximal input domain under a distinct callable identity", "expected": "ORDINARY_CALL_OVERLOAD_AMBIGUOUS"}
+  ],
+  "expected_counts": {
+    "cases": 15,
+    "positive": 5,
+    "boundary": 5,
+    "reject": 5,
+    "metamorphic": 4,
+    "semantic_p0": 0,
+    "feature_p1": 22,
+    "product_lanes": 15,
+    "product_executed": 0
+  }
+}

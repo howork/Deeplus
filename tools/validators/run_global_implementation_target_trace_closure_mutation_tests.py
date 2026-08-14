@@ -23,6 +23,12 @@ def main() -> int:
     base_contract = load(ROOT / CONTRACT_REL)
     base_overlay = load(ROOT / OVERLAY_REL)
     base_rows = load(ROOT / ROWS_REL)
+    r100_path = ROOT / "spec/traceability/implementation-target-profile-r1/accessor-property-forwarding-evidence-r100.json"
+    r100 = load(r100_path) if r100_path.is_file() else {}
+    superseded = {
+        (item.get("feature_id"), item.get("stage"), item.get("outcome"))
+        for item in r100.get("supersedes_binding_cells", {}).get("cells", [])
+    }
     cases = []
 
     def add(case_id: str, mutate, expected_fragment: str) -> None:
@@ -37,7 +43,16 @@ def main() -> int:
     add("R76-MUT-003", lambda c, o, r: c["authority_fence"].__setitem__("product_lanes", "1_OF_15_PASS"), "PRODUCT_LANES")
     add("R76-MUT-004", lambda c, o, r: c.__setitem__("canonical_baseline_commit", "0" * 40), "CONTRACT_BASELINE")
     add("R76-MUT-005", lambda c, o, r: o["evidence_entries"][0].__setitem__("locator", "/cells/1"), "CELL_0000_LOCATOR")
-    add("R76-MUT-006", lambda c, o, r: c["cells"][0]["feature_contract"].__setitem__("notes", "widened"), "CELL_0000_NOTES")
+    notes_index = next(
+        i for i, cell in enumerate(base_contract["cells"])
+        if (cell.get("feature_id"), cell.get("stage"), cell.get("outcome"))
+        not in superseded
+    )
+    add(
+        "R76-MUT-006",
+        lambda c, o, r: c["cells"][notes_index]["feature_contract"].__setitem__("notes", "widened"),
+        f"CELL_{notes_index:04d}_NOTES",
+    )
     test_index = next(i for i, cell in enumerate(base_contract["cells"]) if cell["stage"] == "CONFORMANCE_TESTS")
     add("R76-MUT-007", lambda c, o, r: c["cells"][test_index]["obligation"].__setitem__("example_ids", ["EX-NOT-REGISTERED"]), f"CELL_{test_index:04d}_EXAMPLE_ID")
     add("R76-MUT-008", lambda c, o, r: r[0]["stages"][2].__setitem__("disposition", "APPLICABLE_BLOCKED_BY_GAP"), "TRACE_COUNTS")

@@ -873,7 +873,7 @@ named-rest channel이며 body에서는 `NamedPack<rho>`다.
 suffix `name**` collect와 prefix `**record` unfold는 교환할 수 없다.
 Map key는 runtime value이므로
 call named label을 만들지 못한다.
-`#map{ **base }`의 Map literal unfold는
+`#map{ *base }`의 Map literal unfold는
 호출 named unfold와 같은 의미 owner가 아니다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/types/type-system.md -->
@@ -949,13 +949,28 @@ shape failure를 고치지 못한다.
 
 ### 9.3 후보 우선 경계
 
-정본은 fixed arity,
-repeated positional,
-named rest를 구별한다.
-그러나 같은 admissibility tier에서 둘 이상이 남으면
-source order로 고르지 않는다.
-특히 서로 다른 rest overload가 모두 같은 호출을 받을 수 있으면
-ambiguity다.
+`OrdinaryCallSelectionV1`은 각 후보의 generic variable과 constraint를
+완전히 분리한다. 명시적 generic/value argument만 후보의 Phase-A
+substitution을 만들며 default와 expected result는 constraint를 추가하지
+않는다. 후보는 call shape, `where`/conformance, ownership/place,
+effect/error context, isolation/suspension, context/evidence를 모두
+비커밋 방식으로 통과해야 applicable하다.
+
+후보 우선순위는 닫힌 strict partial order다.
+
+1. channel generality는 `FIXED < REPEATED < NAMED_REST <
+   REPEATED_AND_NAMED`다.
+2. 같은 rank에서는 exact nominal subtype, concrete/constructed formal이
+   bare type parameter보다 좁다는 증명, exact Trait-bound strict superset만
+   input domain을 더 좁게 만든다.
+3. 모든 비교 slot이 같거나 더 좁고 최소 하나가 엄격히 좁아야 한다.
+4. 증명할 수 없는 관계는 `INCOMPARABLE`이다.
+
+유일한 maximal candidate가 있을 때만 선택한다. result/expected type,
+ownership mode, effect/error row, default 개수, refinement/`where` spelling,
+source/declaration/import/provider/runtime order는 우선순위를 만들지 않는다.
+nominal member와 active extension domain이 모두 applicable하면 서로
+비교하지 않고 기존 `MEMBER_EXTENSION_COLLISION`으로 거부한다.
 
 ### 9.4 인수 평가와 결합의 분리
 
@@ -1584,13 +1599,15 @@ primary로 삼는다. 예를 들어 `T::cache`가 mutable associated value를
 lambda body type error를 primary로 내는 방식은
 불안정한 후보 선택을 노출할 수 있다.
 
-R4는 noncall reference, name/import trace, visibility proof까지만 닫는다.
-callable candidate는 `ResolvedOverloadSetRef`로 analysis HIR에만 남을 수
-있으며 canonical HIR-H1에는 들어가지 않는다. exact overload winner,
-complete generic substitution, expected-type choice, applicability/specificity
-rank, row inference와 result-type-only choice는 다음
-generic/ordinary-overload cluster가 닫는다. 이 장의 R4 보충은 22 OPEN P1과
-15/15 `NOT_RUN`을 바꾸지 않는다.
+R4 resolver는 callable candidate를 `ResolvedOverloadSetRef`로 analysis
+HIR에 넘긴다. 그 residue는 `OrdinaryCallSelectionV1`이 candidate-local
+substitution, applicability, domain collision fence, specificity와 unique
+winner를 닫은 뒤에만 canonical HIR-H1의 sealed call plan이 된다. sealed
+plan은 selected callable declaration/implementation, complete substitution,
+canonical call shape와 specificity proof를 보존한다. expected result는
+winner를 바꾸지 않는 post-winner 검사이며 MIR/xVM/backend는 선택을
+반복하지 않는다. 이 closure는 22 OPEN feature P1과 15/15 `NOT_RUN`을
+바꾸지 않는다.
 
 ## 18. 상호작용
 

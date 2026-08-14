@@ -9,6 +9,7 @@
     "callable_implementation_id",
     "normalized_parameter_type_ids",
     "normalized_formula",
+    "formula_digest",
     "body_digest",
     "summary_digest",
     "profile_version"
@@ -29,8 +30,11 @@
       }
     },
     "normalized_formula": {
-      "type": "object",
-      "description": "A canonical finite-R0 Boolean formula; its concrete node vocabulary is versioned by profile_version."
+      "$ref": "./refinement-r0-formula-v1.schema.json#/$defs/formula"
+    },
+    "formula_digest": {
+      "$ref": "#/$defs/sha256",
+      "description": "SHA-256 of the canonical normalized_formula bytes under RefinementR0V1."
     },
     "body_digest": {
       "$ref": "#/$defs/sha256"

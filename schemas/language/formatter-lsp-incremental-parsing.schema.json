@@ -11,6 +11,7 @@
     "gap_id",
     "dependencies",
     "inputs",
+    "parser_authority_rebase",
     "responsibility_separation",
     "formatting_disposition_function",
     "explicit_owner_rule_gate",
@@ -69,7 +70,70 @@
     },
     "inputs": {
       "type": "object",
-      "minProperties": 7
+      "minProperties": 11
+    },
+    "parser_authority_rebase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "gap_id",
+        "baseline_main",
+        "decision",
+        "authority_contract",
+        "authority_digest_set",
+        "snapshot_component",
+        "surface_census",
+        "full_parse_reference",
+        "ebnf_only_admission_count",
+        "incremental_source_language_widening_count",
+        "tooling_parser_semantic_reselection_count"
+      ],
+      "properties": {
+        "gap_id": {"const": "IR-FE-P1-063"},
+        "baseline_main": {"const": "10e64f492f0529610673846139afcf0d95175663"},
+        "decision": {"const": "decisions/language/Design_Deeplus_Formatter_LSP_DPG_Authority_Rebase_R1.md"},
+        "authority_contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256"],
+          "properties": {
+            "path": {"const": "spec/contracts/parser-authority-traceability-r1.json"},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        },
+        "authority_digest_set": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["axis", "path", "sha256"],
+            "properties": {
+              "axis": {"enum": ["STRUCTURAL_DPG", "PARSER_CONTEXT", "PRATT", "SCANNER"]},
+              "path": {"type": "string", "minLength": 1},
+              "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            }
+          }
+        },
+        "snapshot_component": {"const": "ParserAuthorityDigestSetR1"},
+        "surface_census": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["path", "sha256", "semantic_authority", "role"],
+          "properties": {
+            "path": {"const": "spec/grammar/deeplus.ebnf"},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "semantic_authority": {"const": false},
+            "role": {"const": "FORMATTER_CST_AST_DISPOSITION_CROSSWALK_ONLY"}
+          }
+        },
+        "full_parse_reference": {"type": "string", "minLength": 1},
+        "ebnf_only_admission_count": {"const": 0},
+        "incremental_source_language_widening_count": {"const": 0},
+        "tooling_parser_semantic_reselection_count": {"const": 0}
+      }
     },
     "responsibility_separation": {
       "type": "object",

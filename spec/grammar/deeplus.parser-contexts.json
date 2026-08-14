@@ -2,10 +2,10 @@
   "schema": "deeplus.parser-contexts/dpg1",
   "purpose": "Closed parser-facing surface sets and owner admission tables extracted from the attached CURRENT grammar. These values are not lexer keyword reclassifications.",
   "source": {
-    "deeplus_ebnf_git_blob_sha1": "d901cf6acb672cf77051e53d09020f3f43d4a01c",
-    "deeplus_ebnf_sha256": "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9",
-    "keyword_vocabulary_git_blob_sha1": "51dd7b44b588757f91535a61f33d182103f3f958",
-    "keyword_vocabulary_sha256": "dfed1c57701a47f002fcdd151cebdc7a079a0bd0d69e6b64ed9f13e3d9818bd4"
+    "deeplus_ebnf_git_blob_sha1": "f6187e497b639e8bf272ff5a82531adbc6cf8b65",
+    "deeplus_ebnf_sha256": "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda",
+    "keyword_vocabulary_git_blob_sha1": "d5d847d1b4cab28649ac0adcaa46789d8bab53ae",
+    "keyword_vocabulary_sha256": "feeb593046823ac2c9e7326cbc7789058ea4c99cc28449437cdd53c699b2c2c8"
   },
   "dpg_metamodel": {
     "version": "DPG/1",
@@ -344,7 +344,7 @@
     ]
   },
   "externalized_registries": {
-    "hard_and_contextual_words": "inputs/keyword-vocabulary.json",
+    "hard_and_contextual_words": "spec/grammar/keyword-vocabulary.json",
     "pratt_binding_and_parselet_registration": "spec/frontend/frontend-model.json (existing canonical owner; not duplicated here)",
     "boundary_and_attachment": "existing BoundaryContext / owner policies",
     "recovery": "handwritten parser recovery table/algorithm",
@@ -486,7 +486,34 @@
       "attachment_owner": "ParserContext"
     }
   },
+  "map_structural_owner_policy": {
+    "map_literal_entry": {
+      "surface": "*Expr",
+      "cst_kind": "MapUnfoldEntry",
+      "ast_kind": "MapUnfold",
+      "source_domain": "EXACT_IMMUTABLE_MAP_K_V"
+    },
+    "map_pattern_remainder": {
+      "surface": "*RestBinder",
+      "cst_kind": "MapRestPattern",
+      "ast_kind": "MapRestPattern",
+      "source_domain": "EXACT_DYNAMIC_KEYED_RESIDUAL_MAP_K_V"
+    },
+    "map_comprehension_head": {
+      "surface": "Expr ':' Expr",
+      "unfold_head_allowed": false
+    },
+    "legacy_alias_count": 0,
+    "general_star_prefix_parselet": false,
+    "commit_before_type_or_overload_selection": true
+  },
   "closed_external_bindings": {
+    "scanner_outcome_adapter": {
+      "path": "spec/contracts/complete-token-lexical-goal-contract-r1.json",
+      "pointer": "/parser_terminal_adapter_registry",
+      "physical_token_duplication_count": 0,
+      "aggregate_parser_terminal_emission": false
+    },
     "scanner_outcomes": [
       "IDENTIFIER",
       "WILDCARD",
@@ -527,7 +554,7 @@
       "ParameterPolicy": "spec/frontend/frontend-model.json#/admission_policies/parameter",
       "WhereAllowed": "#/callable_context_policy/where_allowed",
       "NonEmpty": "#/combinator_contracts",
-      "EnumBodyCommit": "#/commitment_policy",
+      "EnumBodyCommit": "#/commitment_policy/enum_body",
       "ConformanceRoutePolicy": "spec/frontend/frontend-model.json#/trait_conformance_surface_contract",
       "ForAwaitAttached": "#/commitment_policy/for_await",
       "TupleIdentity": "spec/frontend/frontend-model.json#/pattern_frontend_contract",
@@ -558,7 +585,41 @@
     "deferred_message": "defer message form accepts `~` only; `:~` remains excluded",
     "tilde_call": "ordinary message call accepts `~` or `:~`; tilde argument sequence has no trailing comma",
     "preview_gate": "required exactly once at the front of Preview source role",
-    "closure_arrow": "if `=>` is selected, LambdaBody is mandatory; otherwise empty/body closure remains available"
+    "closure_arrow": "if `=>` is selected, LambdaBody is mandatory; otherwise empty/body closure remains available",
+    "source_item": {
+      "registry": "SourceItemCommitmentV1",
+      "contract": "spec/contracts/source-item-commitment-v1.json",
+      "row_count": 13,
+      "pre_marker_failure": "ROLLBACK_ZERO_TOKENS",
+      "post_marker_failure": "COMMITTED_DECLARATION_DIAGNOSTIC_NO_FALLBACK",
+      "semantic_lookup_count": 0
+    },
+    "enum_body": {
+      "registry": "EnumBodyCommitmentV1",
+      "contract": "spec/contracts/enum-match-boundary-v1.json",
+      "minimum_case_count": 1,
+      "comma_mode_marker": "COMMA_AFTER_FIRST_CASE",
+      "layout_mode_markers": ["END_AFTER_CASE", "CLOSE_AFTER_SINGLE_CASE"],
+      "mixed_separator_count": 0,
+      "empty_enum_profile": "NOT_CURRENT"
+    },
+    "bracket_primary": {
+      "registry": "BracketPrimaryCommitmentV1",
+      "contract": "spec/contracts/preimplementation-consistency-closure-r103.json",
+      "probe": "BALANCED_CAPTURE_LIST_ZERO_CONSUMPTION",
+      "closure_post_markers": ["ATTACHED_HASH_TAG_CLUSTER_THEN_LBRACE", "ATTACHED_LBRACE"],
+      "generator_post_markers": ["ATTACHED_AT_FOR", "ATTACHED_AT_WHILE", "ATTACHED_AT_REPEAT"],
+      "fallback": "LIST_OR_COMPREHENSION_FROM_ORIGINAL_CURSOR",
+      "post_marker_failure": "ONE_OWNER_DIAGNOSTIC_NO_COLLECTION_FALLBACK",
+      "semantic_lookup_count": 0
+    },
+    "bounded_list": {
+      "surface": "#list[L..U: elements]",
+      "sigil_role": "list",
+      "ordinary_identifier_elsewhere": true,
+      "legacy_unprefixed_surface": "REJECT_BEFORE_AST",
+      "first_item_stepped_range": "REQUIRES_PARENS"
+    }
   },
   "combinator_contracts": {
     "list<X,min,trail>": {

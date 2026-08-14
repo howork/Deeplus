@@ -2,7 +2,7 @@
 
 이 저장소는 Deeplus 언어 설계와 그 검증 자료의 일상 작업 정본이다.
 현행 언어 버전은 `0.1.2-internal`, 명세 리비전은
-`r51f3-current-numeric-guard-call-enum-coherence-r1`이다. 정확한 값은
+`r51f3-current-r77-publication-policy-closure-r1`이다. 정확한 값은
 [`current/language-version.toml`](current/language-version.toml)에서
 기계적으로 확인한다.
 
@@ -39,15 +39,15 @@ Deeplus는 프로그래머의 의도를 쉽고 일관되며 책임 있게 소스
 
 <!-- grammar-count-authority: docs/grammar-reference/coverage-manifest.json#/grammar -->
 
-- DPG 구조 rule family: `280` (`301` context-specialized clause)
+- DPG 구조 rule family: `282` (`303` context-specialized clause)
 - legacy EBNF surface census: `656` production
   - 차등 검증 입력이며 exact grammar authority가 아니다.
   - recovery는 DPG rule이 아니라 별도의 CST/parser 복구 정책이다.
-- 기능 레지스트리: `723` (전체 catalog; Implementation Target Profile은 그중 `469`개)
-- 진단 레지스트리: `1,486`
-- 타입 predicate: `283`
+- 기능 레지스트리: `723` (전체 catalog; Implementation Target Profile은 그중 `464`개)
+- 진단 레지스트리: `1,528`
+- 타입 predicate: `293`
 - Prelude 서명: `81`
-- 예제 결과: `763`
+- 예제 결과: `769`
 - semantic P0: `0`
 - 기능 P1: `22 OPEN`
 - 별도 action: `M13-A002..005` 네 건 `OPEN`

@@ -15,6 +15,13 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from r78_dpg_trace_successor import (
+    CANONICAL_BASELINE as R78_BASELINE,
+    COUNTS as R78_COUNTS,
+    EVIDENCE_COUNT as R78_EVIDENCE_COUNT,
+    is_successor as is_r78_successor,
+)
+
 
 CANONICAL = "39a5d50cc770341c4b9776d00d84520b780d0c62"
 PREDECESSOR = "d54633b10c1b92bcd2445afc9906ecf9bafec5c9"
@@ -409,13 +416,18 @@ def validate(
         and metadata.get("local_predecessor_commit") == R77_BASELINE
         and applied_paths[-1:] == [R76_OVERLAY]
     )
-    global_successor = r76_successor or r77_successor
+    r78_successor = is_r78_successor(metadata, root=root, rows=rows)
+    global_successor = r76_successor or r77_successor or r78_successor
     require(
         (
             global_successor
-            and current_count == NON_TARGET_COUNT
-            and current_digest
-            == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+            and (
+                r78_successor
+                or (
+                    current_count == NON_TARGET_COUNT
+                    and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                )
+            )
         )
         or (
             r75_successor
@@ -442,7 +454,7 @@ def validate(
     )
     require(
         metadata.get("canonical_baseline_commit")
-        == (R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
+        == (R78_BASELINE if r78_successor else R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             (
                 metadata.get("revision") == REVISION
@@ -468,9 +480,9 @@ def validate(
             )
             or (
                 global_successor
-                and len(applied) == 21
-                and sum(row.get("binding_count", 0) for row in applied) == 1381
-                and len(registry) == (4392 if r77_successor else 4393)
+                and len(applied) == 22
+                and sum(row.get("binding_count", 0) for row in applied) == 1416
+                and len(registry) == (R78_EVIDENCE_COUNT if r78_successor else 4392 if r77_successor else 4393)
             )
         )
         and len(registered) == 1,
@@ -511,9 +523,13 @@ def validate(
         require(
             (
                 global_successor
-                and current_count == NON_TARGET_COUNT
-                and current_digest
-                == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                and (
+                    r78_successor
+                    or (
+                        current_count == NON_TARGET_COUNT
+                        and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                    )
+                )
             )
             or (
                 r75_successor
@@ -541,7 +557,9 @@ def validate(
             derived.get("applicable_blocked_cells"),
         )
         == (
-            R77_COUNTS
+            R78_COUNTS
+            if r78_successor
+            else R77_COUNTS
             if r77_successor
             else R76_COUNTS
             if r76_successor
@@ -797,9 +815,13 @@ def validate(
         and (
             (
                 global_successor
-                and current_count == NON_TARGET_COUNT
-                and current_digest
-                == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                and (
+                    r78_successor
+                    or (
+                        current_count == NON_TARGET_COUNT
+                        and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                    )
+                )
             )
             or (
                 r75_successor
@@ -838,6 +860,9 @@ def main() -> int:
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
     metadata = load(root / METADATA)
+    rows = load(root / ROWS)
+    current_cells, _duplicates = trace_cells(rows)
+    current_successor = is_r78_successor(metadata, root=root, rows=rows)
     derived = metadata.get("derived_counts", {})
     r73_successor = metadata.get("revision") == R73_REVISION
     r74_successor = metadata.get("revision") == R74_REVISION
@@ -856,7 +881,9 @@ def main() -> int:
             "applicable_blocked": derived.get("applicable_blocked_cells"),
         },
         "non_target_cell_count": (
-            R75_NON_TARGET_COUNT
+            sum(1 for key in current_cells if key != TARGET)
+            if current_successor
+            else R75_NON_TARGET_COUNT
             if metadata.get("revision") == R75_REVISION
             else R74_QUAD_EXCLUSION_COUNT
             if r74_successor

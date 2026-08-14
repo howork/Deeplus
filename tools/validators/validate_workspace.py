@@ -135,8 +135,8 @@ EXCLUDED_TREE_PARTS = {
     "__pycache__",
 }
 EXPECTED = {
-    "features": 723, "diagnostics": 1486, "predicates": 283,
-    "predicate_fixtures": 877, "no_go": 154,
+    "features": 723, "diagnostics": 1522, "predicates": 293,
+    "predicate_fixtures": 909, "no_go": 154,
     "hard_keywords": 29, "contextual_words": 105,
 }
 REQUIRED_FEATURE_IDS = (
@@ -179,7 +179,7 @@ MIR_DISPOSITIONS = {
     "match_arm_guard_msp": "GENERIC_LAW_PRESENT",
     "bytes_literal_hash_bytes_msp": "LAW_PRESENT",
     "string_interpolation_braced_expr_core": "LAW_PRESENT",
-    "string_interpolation_format_spec_core": "DEFERRED_PRODUCT_HANDOFF",
+    "string_interpolation_format_spec_core": "LAW_PRESENT",
     "string_interpolation_shorthand_factor_msp": "LAW_PRESENT",
     "numeric_array_postfix_transpose_caret_msp": "LAW_PRESENT",
 }
@@ -212,6 +212,7 @@ R77_EXPECTED_NEXT_REVIEWS = EXPECTED_NEXT_REVIEWS + [
 ]
 CURRENT_DECISION_INDEX_PATHS = [
     "decisions/language/current-decisions.json",
+    "decisions/language/Design_Deeplus_Integrated_Surface_Atomic_Cutover_R77_R1.md",
     "decisions/language/Design_Deeplus_Parser_Oriented_DPG_Cutover_R1.md",
     "decisions/language/Design_Deeplus_Pattern_Sequence_MultiValue_Adoption_R1.md",
     "decisions/language/Design_Deeplus_Trait_Operator_Refinement_Adoption_R1.md",
@@ -274,6 +275,10 @@ R76_DECISION_PATH = (
 G4_DECISION_PATH = (
     "decisions/language/"
     "Design_Deeplus_G4_Independent_Implementation_Readiness_Audit_R1.md"
+)
+R77_PUBLICATION_CLOSURE_REPORT = (
+    "governance/reports/"
+    "Design_Deeplus_R77_Integrated_Surface_Publication_Closure_R1.md"
 )
 R10_DECISION_ID = "DSGN-CURRENT-HIR-MIR-MACHINE-CONTRACT"
 AUTHORITY_TRANSITION_REPORT = (
@@ -619,12 +624,36 @@ FIXED_OPERATOR_COMPARISON_IDS = {
     "BinaryLessThanOrEqual", "BinaryGreaterThan",
     "BinaryGreaterThanOrEqual",
 }
+FIXED_OPERATOR_EQ_IDS = {"BinaryEqual", "BinaryNotEqual"}
+FIXED_OPERATOR_ORD_IDS = (
+    FIXED_OPERATOR_COMPARISON_IDS - FIXED_OPERATOR_EQ_IDS
+)
 FIXED_OPERATOR_ARITHMETIC_PROFILE_ID = (
     "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_"
     "ARITHMETIC_DEFECT_PRECOMMIT"
 )
 FIXED_OPERATOR_COMPARISON_PROFILE_ID = (
     "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+)
+FIXED_OPERATOR_ALLOCATING_ARITHMETIC_PROFILE_ID = (
+    "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_"
+    "ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+)
+FIXED_OPERATOR_ALLOCATING_COMPARISON_PROFILE_ID = (
+    "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_"
+    "NONCONSUMING_ALLOCATIONERROR"
+)
+FIXED_OPERATOR_ARITHMETIC_PROFILE_DOMAIN = [
+    FIXED_OPERATOR_ARITHMETIC_PROFILE_ID,
+    FIXED_OPERATOR_ALLOCATING_ARITHMETIC_PROFILE_ID,
+]
+FIXED_OPERATOR_ORD_PROFILE_DOMAIN = [
+    FIXED_OPERATOR_COMPARISON_PROFILE_ID,
+    FIXED_OPERATOR_ALLOCATING_COMPARISON_PROFILE_ID,
+]
+FIXED_OPERATOR_RESPONSIBILITY_ENVELOPE_PROFILE_ID = (
+    "BORROWED_SELECTED_EXACT_SUBSET_OF_ALLOCATION_ENVELOPE_"
+    "SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
 )
 FIXED_OPERATOR_HIR_REQUIRED_FIELDS = [
     "operator_id",
@@ -637,6 +666,9 @@ FIXED_OPERATOR_HIR_REQUIRED_FIELDS = [
     "substitution",
     "output_type_id",
     "responsibility_profile_id",
+    "strong_comparison_family_id_or_null",
+    "reverse_witness_id_or_null",
+    "normalization_domain_id_or_null",
 ]
 FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS = [
     "operator_id",
@@ -649,6 +681,9 @@ FIXED_OPERATOR_SCHEMA_REQUIRED_FIELDS = [
     "substitution_id",
     "output_type_id",
     "responsibility_profile_id",
+    "strong_comparison_family_id",
+    "reverse_witness_id",
+    "normalization_domain_id",
     "dispatch_route",
     "runtime_relookup_count",
     "fallback_count",
@@ -664,6 +699,9 @@ FIXED_OPERATOR_HIR_TO_SCHEMA_FIELD_MAP = {
     "substitution": "substitution_id",
     "output_type_id": "output_type_id",
     "responsibility_profile_id": "responsibility_profile_id",
+    "strong_comparison_family_id_or_null": "strong_comparison_family_id",
+    "reverse_witness_id_or_null": "reverse_witness_id",
+    "normalization_domain_id_or_null": "normalization_domain_id",
 }
 FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS = {
     "dispatch_route": "DIRECT_GLOBAL",
@@ -673,14 +711,14 @@ FIXED_OPERATOR_SCHEMA_STAGE_CONSTANT_FIELDS = {
 TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-POS-001": "200a65fcdb4f4048e8ca3a9c47ee9a6a3b064d0e1a4c3cb213cee813eaa93964",
     "TCS-R1-POS-002": "bcf8175f86f6beeb7a2f408fb2c6caf0b01b3d7f22a330359a28c9de9a6bc987",
-    "TCS-R1-POS-003": "9c590a40ab916786032584ffa2fd94b900a9d97194293710f15c8a63fb892635",
-    "TCS-R1-POS-004": "75e53f203bfc6f8644e443b95bd8093627a69c7bbfdab057185dd3963e7529c3",
+    "TCS-R1-POS-003": "8cccb967ca4f8b0c70d9c309969cf6c64bb7049b089236e263d7195a65a739a8",
+    "TCS-R1-POS-004": "7520211232d387d913f88b21be1976f7a5518551efe9d7ab05ed0db5dd4a767a",
     "TCS-R1-POS-005": "a3d5f4ac2214934e98d4c46becf91e46c5c0a5ce85a7ffb4627fe0104c8d8677",
     "TCS-R1-POS-006": "6c9343d277a11511992a25c3d57f2bc442332529ef21e739aa2da664f208becb",
     "TCS-R1-POS-007": "7efc43d30b3ed5d4914c0fc06de63c57efcdf761d705d8ac5140af1ce6b20d60",
     "TCS-R1-POS-008": "720eb7a5e2c34957aed727753021715c349265dbb2fca89e73ae35a0b8531065",
-    "TCS-R1-POS-009": "a517e10df764ba6e632ed864e19da000ea1de90591e59f62fcc6d86ae1248cc9",
-    "TCS-R1-POS-010": "c16cab0427163c5821fb444476cfa070043d26fb4893e42e0482ce0d03bdd056",
+    "TCS-R1-POS-009": "78d78f3b81dadcb580ae24308067188d7b2bc193b413f7596b8db6eb6666fbaf",
+    "TCS-R1-POS-010": "c7645c83cac2d83e7d2348d7707a7ac03fa3ca77c978d00245bbe69a1b581b81",
     "TCS-R1-POS-011": "770707cc84b0399689e885e0be7132d03ef76b404bbf17bd0ae65bd63a5f31da",
     "TCS-R1-POS-012": "4dcf319599787633d85666851aea9503495e5fba4825c20c6f8f67f4045ae8ab",
     "TCS-R1-POS-013": "02e69912455fe5f6e5f9ddbcb49efc25021e7d9bd017ea1c32e19f9b2416146d",
@@ -696,6 +734,8 @@ TRAIT_SURFACE_CASE_PROJECTION_SHA256 = {
     "TCS-R1-NEG-009": "398a9621caf006a6f21d74388e95865ed43034101acc50ad3a6dfe769d09f9a0",
     "TCS-R1-NEG-010": "a2c6c0761757bb0d2fc74330ddb9af587798a29f5c5d3f15b96df8e4d69f8dde",
     "TCS-R1-NEG-011": "d1bf0fe69fa1dc6a3160db99d90c0b9ce0d641a904515fd3bc54f4868ed48c91",
+    "TCS-R1-NEG-012": "5f85b0cc98d6afd580e828446409aea0f2904bbd6586d1142578af7cc87a6363",
+    "TCS-R1-NEG-013": "ffb0ed1012735e10d0ca7a7da093a62def798823931089e09f746a016e40b95e",
 }
 REFINEMENT_SURFACE_CASE_SHA256 = {
     "TRN-R1-POS-046": "a1847aaebbdd743d8aacc74eb99bc85fdcddf047a15cc39676e82190ae04ecca",
@@ -998,10 +1038,10 @@ R4_NRM_ACCEPTANCE_TEST_IDS = tuple(
     for suffix in ("P", "B", "N")
 )
 R4_NRM_ACCEPTANCE_ORACLE_SHA256 = (
-    "454cbbdfaa62cd8892c93c7eb812e9ad1b21dd4eceb3fb3711bee48728b32be3"
+    "26a6b88d49c67a69c083f57b97e362686c3e01c01dc09a90dbc760b49257438b"
 )
 R4_NRM_PREDICATE_FIXTURE_TUPLE_SHA256 = (
-    "508990469db894889f6952f84836c11744e13a44f0d7cb0a624c4766b9258d19"
+    "2a02fe026d63ef2c8ed69db5357d48b4f62d311d91683e1bf705c3cbb862ce82"
 )
 R4_NRM_ACCEPTANCE_ARTIFACT_REFS = {
     ("IR-RES-P0-040", "positive"): (
@@ -1495,8 +1535,13 @@ def r4_nrm_contract_results(
         ),
     )
 
-    new_predicates = documents[
+    r4_predicate_shard = documents[
         "spec/types/predicates/chunks/part-0018.json"
+    ]
+    new_predicates = [
+        row
+        for row in r4_predicate_shard
+        if row.get("predicate_id") in precedence_ids
     ]
     observed_predicate_ids = [
         row.get("predicate_id") for row in new_predicates
@@ -1506,6 +1551,11 @@ def r4_nrm_contract_results(
         + (
             ["MemberVisibilityAdmitted"]
             if predicate_id == "ReferenceVisibilityActivationAdmitted"
+            else []
+        )
+        + (
+            ["OrdinaryCallSelectionClosed"]
+            if predicate_id == "ResolverHirSealAdmitted"
             else []
         )
         for index, predicate_id in enumerate(precedence_ids)
@@ -1772,9 +1822,13 @@ def r4_nrm_contract_results(
         == "design_algorithm"
         and collision_predicate.get("emission_eligible") is True
         and method_predicate.get("dependency_predicates")
-        == ["MemberExtensionCollisionRejected"]
-        and method_predicate.get("predicate_maturity") == "design_seed"
-        and method_predicate.get("emission_eligible") is False
+        == [
+            "MemberExtensionCollisionRejected",
+            "OrdinaryCallSelectionClosed",
+        ]
+        and method_predicate.get("predicate_maturity")
+        == "design_algorithm"
+        and method_predicate.get("emission_eligible") is True
         and method_predicate.get("evidence_status")
         == "DESIGN_STATIC_NOT_RUN"
         and method_predicate.get("execution_receipt") is None,
@@ -1808,7 +1862,7 @@ def r4_nrm_contract_results(
         "ROW_INFERENCE_RESULT",
         "RETURN_TYPE_ONLY_WINNER",
     )
-    deferred_collision_cases = {
+    closed_collision_cases = {
         case.get("id"): case.get("expected", {}).get(
             "selected_count_or_null"
         )
@@ -1818,22 +1872,24 @@ def r4_nrm_contract_results(
     }
     record(
         "ResolvedOverloadSetRef" in method_fence_text
-        and "next cluster" in method_fence_text
-        and "selection_deferred" in method_fence_text
-        and "selected_count = unspecified_in_R4" in method_fence_text
+        and "OrdinaryCallSelectionClosed" in method_fence_text
+        and "OrdinaryCallSelectionV1" in method_fence_text
+        and "selected_count = 1" in method_fence_text
+        and "next cluster" not in method_fence_text
+        and "selection_deferred" not in method_fence_text
         and all(
             phrase not in method_fence_text
             for phrase in forbidden_method_fence_phrases
         )
-        and deferred_collision_cases
+        and closed_collision_cases
         == {
-            "IR-R4-RES041-POS": None,
-            "IR-R4-RES041-BOUND": None,
+            "IR-R4-RES041-POS": 1,
+            "IR-R4-RES041-BOUND": 1,
         },
-        "R4_NRM_COLLISION_SELECTION_DEFERRED",
+        "R4_NRM_COLLISION_SELECTION_CLOSED",
         (
             f"method={method_predicate.get('predicate_maturity')} "
-            f"selected={deferred_collision_cases}"
+            f"selected={closed_collision_cases}"
         ),
     )
 
@@ -1994,14 +2050,14 @@ def r4_nrm_contract_results(
     noncall_text = json.dumps(noncall_predicate, ensure_ascii=False)
     record(
         "ResolvedOverloadSetRef" in noncall_text
-        and "next cluster" in noncall_text
-        and "generic substitution" in noncall_text
+        and "OrdinaryCallSelectionClosed" in noncall_text
+        and "next cluster" not in noncall_text
         and hir_boundary_fixture.get("descriptor", {}).get(
             "expected_outcome"
         )
-        == "BYPASS_CALLABLE_OVERLOAD_SET_TO_NEXT_CLUSTER",
-        "R4_NRM_NEXT_CLUSTER_FENCE",
-        "callable overload winner remains outside R4",
+        == "ROUTE_CALLABLE_OVERLOAD_SET_TO_ORDINARY_CALL_SELECTION_V1",
+        "R4_NRM_ORDINARY_CALL_SELECTION_BINDING",
+        "analysis-HIR overload sets route to the closed ordinary-call selector",
     )
     record(
         all(
@@ -11672,8 +11728,8 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
         emit(
             "FRONTEND_R12_GRAMMAR_IDENTITY",
             grammar_sha
-            == "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
-            and len(grammar_bytes) == 70409
+            == "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda"
+            and len(grammar_bytes) == 70615
             and len(production_names) == 656
             and registry.get("grammar", {}).get("sha256") == grammar_sha,
             {
@@ -11806,9 +11862,24 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             "FRONTEND_R16_TOKEN_LEXICAL_TOTALITY",
             len(r16.get("scanner_modes", [])) == 6
             and len(r16.get("lexical_goals", [])) == 10
-            and len(r16.get("syntax_terminal_registry", [])) == 200
+            and len(r16.get("syntax_terminal_registry", [])) == 201
             and len(r16.get("atomic_token_registry", [])) == 22
             and len(r16.get("trivia_registry", [])) == 8
+            and any(
+                row.get("spelling") == ";"
+                and row.get("scanner_kind") == "SEMICOLON"
+                for row in r16.get("syntax_terminal_registry", [])
+            )
+            and len(
+                r16.get("parser_terminal_adapter_registry", {}).get(
+                    "aggregate_rows", []
+                )
+            )
+            == 5
+            and r16.get("parser_terminal_adapter_registry", {}).get(
+                "aggregate_match_emits_token"
+            )
+            is False
             and r16.get("token_transaction", {}).get(
                 "failed_probe_source_byte_consumption"
             )
@@ -11823,6 +11894,11 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
                 "terminals": len(r16.get("syntax_terminal_registry", [])),
                 "atomic_tokens": len(r16.get("atomic_token_registry", [])),
                 "trivia": len(r16.get("trivia_registry", [])),
+                "parser_terminal_adapters": len(
+                    r16.get("parser_terminal_adapter_registry", {}).get(
+                        "aggregate_rows", []
+                    )
+                ),
             },
         )
         emit(
@@ -11962,7 +12038,7 @@ def frontend_readiness_workspace_checks(root: Path) -> list[dict[str, Any]]:
             and frontend_gate_ids == active_gate_ids
             and gate_map.get("nonactivatable")
             == nonactivatable_catalog_ids
-            and len(nonactivatable_catalog_ids) == 114
+            and len(nonactivatable_catalog_ids) == 115
             and source_role_fixture.get("atomic_failure_result")
             == {
                 "activated_features": [],
@@ -12494,7 +12570,7 @@ def r22_actor_lifecycle_workspace_check(root: Path) -> dict[str, Any]:
 
     runner = root / "tools/validators/validate_actor_minimum_lifecycle.py"
     expected = (
-        "ACTOR_MINIMUM_LIFECYCLE_PASS: rules=20 fixtures=10 admit=5 "
+        "ACTOR_MINIMUM_LIFECYCLE_PASS: rules=22 fixtures=10 admit=5 "
         "reject=5 guards=12 trace=complete restart=0 interleaving=0 "
         "product=NOT_RUN"
     )
@@ -12750,11 +12826,11 @@ def main() -> int:
                 == "deeplus.language-coherence-current-integrity-contract/r1"
                 and language_coherence_contract.get("revision") == revision
                 and fixed_counts.get("features") == 723
-                and fixed_counts.get("predicates") == 283
-                and fixed_counts.get("predicate_fixtures") == 877
+                and fixed_counts.get("predicates") == 293
+                and fixed_counts.get("predicate_fixtures") == 909
                 and fixed_counts.get("no_go") == 154
                 and fixed_counts.get("hard_keywords") == 29
-                and fixed_counts.get("contextual_words") == 105,
+                and fixed_counts.get("contextual_words") == 106,
                 "LANGUAGE_COHERENCE_CONTRACT",
                 str(fixed_counts),
             )
@@ -12872,6 +12948,29 @@ def main() -> int:
         "spec/contracts/implementation-readiness-g4-audit-r1.json",
         "schemas/language/implementation-readiness-g4-audit-r1.schema.json",
         "tools/validators/validate_implementation_readiness_g4_audit.py",
+        "spec/contracts/sfd-p1-009-execution-identity-r1.json",
+        "schemas/language/sfd-p1-009-execution-identity-r1.schema.json",
+        "governance/reports/Design_Deeplus_R79_SFD_P1_009_Execution_Identity_Route_Repair_R1.md",
+        "tools/validators/validate_sfd_p1_009_execution_identity.py",
+        "tools/validators/run_sfd_p1_009_execution_identity_mutation_tests.py",
+        "spec/contracts/string-interpolation-format-spec-core-r1.json",
+        "schemas/language/string-interpolation-format-spec-core-r1.schema.json",
+        "tests/fixtures/current/string-interpolation-format-spec-core-r1.json",
+        "decisions/language/Design_Deeplus_String_Interpolation_Format_Spec_Core_R1.md",
+        "tools/validators/validate_string_interpolation_format_spec_core.py",
+        "tools/validators/run_string_interpolation_format_spec_core_mutation_tests.py",
+        "spec/contracts/scope-shielded-cancellation-semantics-r1.json",
+        "schemas/language/scope-shielded-cancellation-semantics-r1.schema.json",
+        "tests/fixtures/current/scope-shielded-cancellation-semantics-r1.json",
+        "decisions/language/Design_Deeplus_Scope_Shielded_Cancellation_Semantics_R1.md",
+        "tools/validators/validate_scope_shielded_cancellation_semantics.py",
+        "tools/validators/run_scope_shielded_cancellation_semantics_mutation_tests.py",
+        "spec/contracts/map-unfold-rest-owner-closure-r1.json",
+        "schemas/language/map-unfold-rest-owner-closure-r1.schema.json",
+        "tests/fixtures/current/map-unfold-rest-owner-closure-r1.json",
+        "decisions/language/Design_Deeplus_Map_Unfold_Rest_Owner_Closure_R1.md",
+        "tools/validators/validate_map_unfold_rest_owner_closure.py",
+        "tools/validators/run_map_unfold_rest_owner_closure_mutation_tests.py",
         "spec/traceability/implementation-target-profile-r1/scalar-numeric-fixed-operator-evidence-r1.json",
         "schemas/language/scalar-numeric-fixed-operator-evidence-r1.schema.json",
         "tools/validators/validate_scalar_numeric_fixed_operator_trace.py",
@@ -13019,6 +13118,87 @@ def main() -> int:
         "schemas/language/actor-cranelift-projection-dynamic-evidence-r1.schema.json",
         "tools/validators/validate_trait_associated_static_stale_diagnostic_removal.py",
         "tools/validators/run_trait_associated_static_stale_diagnostic_removal_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Member_Visibility_Omission_Closure_R1.md",
+        "schemas/language/member-visibility-omission-v1.schema.json",
+        "schemas/language/member-visibility-resolution-v1.schema.json",
+        "spec/contracts/member-visibility-omission-v1.json",
+        "tests/fixtures/current/member-visibility-omission-v1.json",
+        "tools/validators/validate_member_visibility_omission_v1.py",
+        "tools/validators/run_member_visibility_omission_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Strong_Comparison_Coherence_Closure_R1.md",
+        "schemas/language/strong-comparison-coherence-v1.schema.json",
+        "schemas/language/strong-comparison-decision-v1.schema.json",
+        "spec/contracts/strong-comparison-coherence-v1.json",
+        "tests/fixtures/current/strong-comparison-coherence-v1.json",
+        "tools/validators/validate_strong_comparison_coherence_v1.py",
+        "tools/validators/run_strong_comparison_coherence_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Trait_Auto_Policy_Registry_Closure_R1.md",
+        "schemas/language/trait-auto-policy-decision-v1.schema.json",
+        "schemas/language/trait-auto-policy-registry-v1.schema.json",
+        "schemas/language/trait-auto-policy-fixtures-v1.schema.json",
+        "spec/contracts/trait-auto-policy-registry-v1.json",
+        "tests/fixtures/current/trait-auto-policy-registry-v1.json",
+        "tools/validators/validate_trait_auto_policy_registry_v1.py",
+        "tools/validators/run_trait_auto_policy_registry_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Source_Item_Commitment_Closure_R1.md",
+        "schemas/language/source-item-commitment-decision-v1.schema.json",
+        "schemas/language/source-item-commitment-v1.schema.json",
+        "schemas/language/source-item-commitment-fixtures-v1.schema.json",
+        "spec/contracts/source-item-commitment-v1.json",
+        "tests/fixtures/current/source-item-commitment-v1.json",
+        "tools/validators/validate_source_item_commitment_v1.py",
+        "tools/validators/run_source_item_commitment_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Enum_Match_Boundary_Closure_R1.md",
+        "schemas/language/enum-match-boundary-decision-v1.schema.json",
+        "schemas/language/enum-match-boundary-v1.schema.json",
+        "schemas/language/enum-match-boundary-fixtures-v1.schema.json",
+        "spec/contracts/enum-match-boundary-v1.json",
+        "tests/fixtures/current/enum-match-boundary-v1.json",
+        "tools/validators/validate_enum_match_boundary_v1.py",
+        "tools/validators/run_enum_match_boundary_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Actor_Transport_Allocation_Closure_R1.md",
+        "schemas/language/actor-transport-allocation-decision-v1.schema.json",
+        "schemas/language/actor-transport-allocation-fixtures-v1.schema.json",
+        "schemas/language/actor-transport-allocation-v1.schema.json",
+        "spec/contracts/actor-transport-allocation-v1.json",
+        "spec/diagnostics/catalog/chunks/part-0038.json",
+        "spec/diagnostics/relations/chunks/part-0019.json",
+        "spec/types/predicates/chunks/part-0029.json",
+        "tests/conformance/checker-predicates/chunks/part-0041.json",
+        "tests/fixtures/current/actor-transport-allocation-v1.json",
+        "tools/validators/validate_actor_transport_allocation_v1.py",
+        "tools/validators/run_actor_transport_allocation_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Actor_Sender_Identity_Closure_R1.md",
+        "schemas/language/actor-sender-identity-decision-v1.schema.json",
+        "schemas/language/actor-sender-identity-fixtures-v1.schema.json",
+        "schemas/language/actor-sender-identity-v1.schema.json",
+        "spec/contracts/actor-sender-identity-v1.json",
+        "spec/diagnostics/catalog/chunks/part-0039.json",
+        "spec/diagnostics/relations/chunks/part-0020.json",
+        "spec/types/predicates/chunks/part-0030.json",
+        "tests/conformance/checker-predicates/chunks/part-0042.json",
+        "tests/fixtures/current/actor-sender-identity-v1.json",
+        "tools/validators/validate_actor_sender_identity_v1.py",
+        "tools/validators/run_actor_sender_identity_v1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_XVM_XBC_Projection_Closure_R1.md",
+        "schemas/language/xvm-xbc-module-r1.schema.json",
+        "schemas/language/xvm-xbc-projection-contract-r1.schema.json",
+        "schemas/language/xvm-xbc-projection-fixtures-r1.schema.json",
+        "schemas/language/xvm-xbc-projection-receipt-r1.schema.json",
+        "spec/contracts/xvm-xbc-projection-r1.json",
+        "spec/diagnostics/catalog/chunks/part-0040.json",
+        "tests/fixtures/current/xvm-xbc-projection-r1.json",
+        "tools/validators/validate_xvm_xbc_projection_r1.py",
+        "tools/validators/run_xvm_xbc_projection_r1_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Formatter_LSP_DPG_Authority_Rebase_R1.md",
+        "tools/validators/validate_formatter_lsp_dpg_authority_rebase.py",
+        "tools/validators/run_formatter_lsp_dpg_authority_rebase_mutation_tests.py",
+        "decisions/language/Design_Deeplus_Publication_Current_Pointer_Binding_Closure_R1.md",
+        "schemas/language/publication-current-pointer-binding-r1.schema.json",
+        "spec/contracts/publication-current-pointer-binding-r1.json",
+        "tests/fixtures/current/publication-current-pointer-binding-r1.json",
+        "tools/validators/validate_publication_current_pointer_binding_r1.py",
+        "tools/validators/run_publication_current_pointer_binding_r1_mutation_tests.py",
     ]
     if revision == POST_PR16_REVISION:
         required.extend([
@@ -13438,6 +13618,731 @@ def main() -> int:
         g4_detail[-4000:],
     )
 
+    r79_validator = root / "tools/validators/validate_sfd_p1_009_execution_identity.py"
+    r79_process = subprocess.run(
+        [sys.executable, str(r79_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r79_detail = (
+        r79_process.stdout.strip()
+        if r79_process.returncode == 0
+        else r79_process.stderr.strip() or r79_process.stdout.strip()
+    )
+    check(
+        r79_process.returncode == 0,
+        "R79_SFD_P1_009_EXECUTION_IDENTITY_ROUTE",
+        r79_detail[-4000:],
+    )
+
+    r79_mutation_runner = (
+        root
+        / "tools/validators/run_sfd_p1_009_execution_identity_mutation_tests.py"
+    )
+    r79_mutation_process = subprocess.run(
+        [sys.executable, str(r79_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r79_mutation_detail = (
+        r79_mutation_process.stdout.strip()
+        if r79_mutation_process.returncode == 0
+        else r79_mutation_process.stderr.strip()
+        or r79_mutation_process.stdout.strip()
+    )
+    check(
+        r79_mutation_process.returncode == 0,
+        "R79_SFD_P1_009_EXECUTION_IDENTITY_MUTATIONS",
+        r79_mutation_detail[-4000:],
+    )
+
+    r80_validator = (
+        root / "tools/validators/validate_string_interpolation_format_spec_core.py"
+    )
+    r80_process = subprocess.run(
+        [sys.executable, str(r80_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r80_detail = (
+        r80_process.stdout.strip()
+        if r80_process.returncode == 0
+        else r80_process.stderr.strip() or r80_process.stdout.strip()
+    )
+    check(
+        r80_process.returncode == 0,
+        "R80_STRING_INTERPOLATION_FORMAT_SPEC_CORE",
+        r80_detail[-4000:],
+    )
+
+    r80_mutation_runner = (
+        root
+        / "tools/validators/run_string_interpolation_format_spec_core_mutation_tests.py"
+    )
+    r80_mutation_process = subprocess.run(
+        [sys.executable, str(r80_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r80_mutation_detail = (
+        r80_mutation_process.stdout.strip()
+        if r80_mutation_process.returncode == 0
+        else r80_mutation_process.stderr.strip()
+        or r80_mutation_process.stdout.strip()
+    )
+    check(
+        r80_mutation_process.returncode == 0,
+        "R80_STRING_INTERPOLATION_FORMAT_SPEC_CORE_MUTATIONS",
+        r80_mutation_detail[-4000:],
+    )
+
+    r81_validator = (
+        root / "tools/validators/validate_scope_shielded_cancellation_semantics.py"
+    )
+    r81_process = subprocess.run(
+        [sys.executable, str(r81_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r81_detail = (
+        r81_process.stdout.strip()
+        if r81_process.returncode == 0
+        else r81_process.stderr.strip() or r81_process.stdout.strip()
+    )
+    check(
+        r81_process.returncode == 0,
+        "R81_SCOPE_SHIELDED_CANCELLATION_SEMANTICS",
+        r81_detail[-4000:],
+    )
+
+    r81_mutation_runner = (
+        root
+        / "tools/validators/run_scope_shielded_cancellation_semantics_mutation_tests.py"
+    )
+    r81_mutation_process = subprocess.run(
+        [sys.executable, str(r81_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r81_mutation_detail = (
+        r81_mutation_process.stdout.strip()
+        if r81_mutation_process.returncode == 0
+        else r81_mutation_process.stderr.strip()
+        or r81_mutation_process.stdout.strip()
+    )
+    check(
+        r81_mutation_process.returncode == 0,
+        "R81_SCOPE_SHIELDED_CANCELLATION_SEMANTICS_MUTATIONS",
+        r81_mutation_detail[-4000:],
+    )
+
+    r82_validator = (
+        root / "tools/validators/validate_map_unfold_rest_owner_closure.py"
+    )
+    r82_process = subprocess.run(
+        [sys.executable, str(r82_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r82_detail = (
+        r82_process.stdout.strip()
+        if r82_process.returncode == 0
+        else r82_process.stderr.strip() or r82_process.stdout.strip()
+    )
+    check(
+        r82_process.returncode == 0,
+        "R82_MAP_UNFOLD_REST_OWNER_CLOSURE",
+        r82_detail[-4000:],
+    )
+
+    r82_mutation_runner = (
+        root
+        / "tools/validators/run_map_unfold_rest_owner_closure_mutation_tests.py"
+    )
+    r82_mutation_process = subprocess.run(
+        [sys.executable, str(r82_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r82_mutation_detail = (
+        r82_mutation_process.stdout.strip()
+        if r82_mutation_process.returncode == 0
+        else r82_mutation_process.stderr.strip()
+        or r82_mutation_process.stdout.strip()
+    )
+    check(
+        r82_mutation_process.returncode == 0,
+        "R82_MAP_UNFOLD_REST_OWNER_CLOSURE_MUTATIONS",
+        r82_mutation_detail[-4000:],
+    )
+
+    r83_validator = (
+        root / "tools/validators/validate_ordinary_call_selection_v1.py"
+    )
+    r83_process = subprocess.run(
+        [sys.executable, str(r83_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r83_detail = (
+        r83_process.stdout.strip()
+        if r83_process.returncode == 0
+        else r83_process.stderr.strip() or r83_process.stdout.strip()
+    )
+    check(
+        r83_process.returncode == 0,
+        "R83_ORDINARY_CALL_SELECTION_V1",
+        r83_detail[-4000:],
+    )
+
+    r83_mutation_runner = (
+        root
+        / "tools/validators/run_ordinary_call_selection_v1_mutation_tests.py"
+    )
+    r83_mutation_process = subprocess.run(
+        [sys.executable, str(r83_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r83_mutation_detail = (
+        r83_mutation_process.stdout.strip()
+        if r83_mutation_process.returncode == 0
+        else r83_mutation_process.stderr.strip()
+        or r83_mutation_process.stdout.strip()
+    )
+    check(
+        r83_mutation_process.returncode == 0,
+        "R83_ORDINARY_CALL_SELECTION_V1_MUTATIONS",
+        r83_mutation_detail[-4000:],
+    )
+
+    r84_validator = root / "tools/validators/validate_refinement_r0_v1.py"
+    r84_process = subprocess.run(
+        [sys.executable, str(r84_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r84_detail = (
+        r84_process.stdout.strip()
+        if r84_process.returncode == 0
+        else r84_process.stderr.strip() or r84_process.stdout.strip()
+    )
+    check(
+        r84_process.returncode == 0,
+        "R84_REFINEMENT_R0_V1",
+        r84_detail[-4000:],
+    )
+
+    r84_mutation_runner = (
+        root / "tools/validators/run_refinement_r0_v1_mutation_tests.py"
+    )
+    r84_mutation_process = subprocess.run(
+        [sys.executable, str(r84_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r84_mutation_detail = (
+        r84_mutation_process.stdout.strip()
+        if r84_mutation_process.returncode == 0
+        else r84_mutation_process.stderr.strip()
+        or r84_mutation_process.stdout.strip()
+    )
+    check(
+        r84_mutation_process.returncode == 0,
+        "R84_REFINEMENT_R0_V1_MUTATIONS",
+        r84_mutation_detail[-4000:],
+    )
+
+    r85_validator = (
+        root / "tools/validators/validate_member_visibility_omission_v1.py"
+    )
+    r85_process = subprocess.run(
+        [sys.executable, str(r85_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r85_detail = (
+        r85_process.stdout.strip()
+        if r85_process.returncode == 0
+        else r85_process.stderr.strip() or r85_process.stdout.strip()
+    )
+    check(
+        r85_process.returncode == 0,
+        "R85_MEMBER_VISIBILITY_OMISSION_V1",
+        r85_detail[-4000:],
+    )
+
+    r85_mutation_runner = (
+        root
+        / "tools/validators/run_member_visibility_omission_v1_mutation_tests.py"
+    )
+    r85_mutation_process = subprocess.run(
+        [sys.executable, str(r85_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r85_mutation_detail = (
+        r85_mutation_process.stdout.strip()
+        if r85_mutation_process.returncode == 0
+        else r85_mutation_process.stderr.strip()
+        or r85_mutation_process.stdout.strip()
+    )
+    check(
+        r85_mutation_process.returncode == 0,
+        "R85_MEMBER_VISIBILITY_OMISSION_V1_MUTATIONS",
+        r85_mutation_detail[-4000:],
+    )
+
+    r86_validator = (
+        root / "tools/validators/validate_strong_comparison_coherence_v1.py"
+    )
+    r86_process = subprocess.run(
+        [sys.executable, str(r86_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r86_detail = (
+        r86_process.stdout.strip()
+        if r86_process.returncode == 0
+        else r86_process.stderr.strip() or r86_process.stdout.strip()
+    )
+    check(
+        r86_process.returncode == 0,
+        "R86_STRONG_COMPARISON_COHERENCE_V1",
+        r86_detail[-4000:],
+    )
+
+    r86_mutation_runner = (
+        root
+        / "tools/validators/run_strong_comparison_coherence_v1_mutation_tests.py"
+    )
+    r86_mutation_process = subprocess.run(
+        [sys.executable, str(r86_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r86_mutation_detail = (
+        r86_mutation_process.stdout.strip()
+        if r86_mutation_process.returncode == 0
+        else r86_mutation_process.stderr.strip()
+        or r86_mutation_process.stdout.strip()
+    )
+    check(
+        r86_mutation_process.returncode == 0,
+        "R86_STRONG_COMPARISON_COHERENCE_V1_MUTATIONS",
+        r86_mutation_detail[-4000:],
+    )
+
+    r87_validator = (
+        root / "tools/validators/validate_trait_auto_policy_registry_v1.py"
+    )
+    r87_process = subprocess.run(
+        [sys.executable, str(r87_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r87_detail = (
+        r87_process.stdout.strip()
+        if r87_process.returncode == 0
+        else r87_process.stderr.strip() or r87_process.stdout.strip()
+    )
+    check(
+        r87_process.returncode == 0,
+        "R87_TRAIT_AUTO_POLICY_REGISTRY_V1",
+        r87_detail[-4000:],
+    )
+
+    r87_mutation_runner = (
+        root
+        / "tools/validators/run_trait_auto_policy_registry_v1_mutation_tests.py"
+    )
+    r87_mutation_process = subprocess.run(
+        [sys.executable, str(r87_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r87_mutation_detail = (
+        r87_mutation_process.stdout.strip()
+        if r87_mutation_process.returncode == 0
+        else r87_mutation_process.stderr.strip()
+        or r87_mutation_process.stdout.strip()
+    )
+    check(
+        r87_mutation_process.returncode == 0,
+        "R87_TRAIT_AUTO_POLICY_REGISTRY_V1_MUTATIONS",
+        r87_mutation_detail[-4000:],
+    )
+
+    r88_validator = (
+        root / "tools/validators/validate_source_item_commitment_v1.py"
+    )
+    r88_process = subprocess.run(
+        [sys.executable, str(r88_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r88_detail = (
+        r88_process.stdout.strip()
+        if r88_process.returncode == 0
+        else r88_process.stderr.strip() or r88_process.stdout.strip()
+    )
+    check(
+        r88_process.returncode == 0,
+        "R88_SOURCE_ITEM_COMMITMENT_V1",
+        r88_detail[-4000:],
+    )
+
+    r88_mutation_runner = (
+        root
+        / "tools/validators/run_source_item_commitment_v1_mutation_tests.py"
+    )
+    r88_mutation_process = subprocess.run(
+        [sys.executable, str(r88_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r88_mutation_detail = (
+        r88_mutation_process.stdout.strip()
+        if r88_mutation_process.returncode == 0
+        else r88_mutation_process.stderr.strip()
+        or r88_mutation_process.stdout.strip()
+    )
+    check(
+        r88_mutation_process.returncode == 0,
+        "R88_SOURCE_ITEM_COMMITMENT_V1_MUTATIONS",
+        r88_mutation_detail[-4000:],
+    )
+
+    r89_validator = (
+        root / "tools/validators/validate_enum_match_boundary_v1.py"
+    )
+    r89_process = subprocess.run(
+        [sys.executable, str(r89_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r89_detail = (
+        r89_process.stdout.strip()
+        if r89_process.returncode == 0
+        else r89_process.stderr.strip() or r89_process.stdout.strip()
+    )
+    check(
+        r89_process.returncode == 0,
+        "R89_ENUM_MATCH_BOUNDARY_V1",
+        r89_detail[-4000:],
+    )
+
+    r89_mutation_runner = (
+        root
+        / "tools/validators/run_enum_match_boundary_v1_mutation_tests.py"
+    )
+    r89_mutation_process = subprocess.run(
+        [sys.executable, str(r89_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r89_mutation_detail = (
+        r89_mutation_process.stdout.strip()
+        if r89_mutation_process.returncode == 0
+        else r89_mutation_process.stderr.strip()
+        or r89_mutation_process.stdout.strip()
+    )
+    check(
+        r89_mutation_process.returncode == 0,
+        "R89_ENUM_MATCH_BOUNDARY_V1_MUTATIONS",
+        r89_mutation_detail[-4000:],
+    )
+
+    r90_validator = (
+        root / "tools/validators/validate_actor_transport_allocation_v1.py"
+    )
+    r90_process = subprocess.run(
+        [sys.executable, str(r90_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r90_detail = (
+        r90_process.stdout.strip()
+        if r90_process.returncode == 0
+        else r90_process.stderr.strip() or r90_process.stdout.strip()
+    )
+    check(
+        r90_process.returncode == 0,
+        "R90_ACTOR_TRANSPORT_ALLOCATION_V1",
+        r90_detail[-4000:],
+    )
+
+    r90_mutation_runner = (
+        root
+        / "tools/validators/run_actor_transport_allocation_v1_mutation_tests.py"
+    )
+    r90_mutation_process = subprocess.run(
+        [sys.executable, str(r90_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r90_mutation_detail = (
+        r90_mutation_process.stdout.strip()
+        if r90_mutation_process.returncode == 0
+        else r90_mutation_process.stderr.strip()
+        or r90_mutation_process.stdout.strip()
+    )
+    check(
+        r90_mutation_process.returncode == 0,
+        "R90_ACTOR_TRANSPORT_ALLOCATION_V1_MUTATIONS",
+        r90_mutation_detail[-4000:],
+    )
+
+    r91_validator = root / "tools/validators/validate_actor_sender_identity_v1.py"
+    r91_process = subprocess.run(
+        [sys.executable, str(r91_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r91_detail = (
+        r91_process.stdout.strip()
+        if r91_process.returncode == 0
+        else r91_process.stderr.strip() or r91_process.stdout.strip()
+    )
+    check(
+        r91_process.returncode == 0,
+        "R91_ACTOR_SENDER_IDENTITY_V1",
+        r91_detail[-4000:],
+    )
+
+    r91_mutation_runner = (
+        root / "tools/validators/run_actor_sender_identity_v1_mutation_tests.py"
+    )
+    r91_mutation_process = subprocess.run(
+        [sys.executable, str(r91_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r91_mutation_detail = (
+        r91_mutation_process.stdout.strip()
+        if r91_mutation_process.returncode == 0
+        else r91_mutation_process.stderr.strip()
+        or r91_mutation_process.stdout.strip()
+    )
+    check(
+        r91_mutation_process.returncode == 0,
+        "R91_ACTOR_SENDER_IDENTITY_V1_MUTATIONS",
+        r91_mutation_detail[-4000:],
+    )
+
+    r92_validator = root / "tools/validators/validate_xvm_xbc_projection_r1.py"
+    r92_process = subprocess.run(
+        [sys.executable, str(r92_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r92_detail = (
+        r92_process.stdout.strip()
+        if r92_process.returncode == 0
+        else r92_process.stderr.strip() or r92_process.stdout.strip()
+    )
+    check(
+        r92_process.returncode == 0,
+        "R92_XVM_XBC_PROJECTION_R1",
+        r92_detail[-4000:],
+    )
+
+    r92_mutation_runner = (
+        root / "tools/validators/run_xvm_xbc_projection_r1_mutation_tests.py"
+    )
+    r92_mutation_process = subprocess.run(
+        [sys.executable, str(r92_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r92_mutation_detail = (
+        r92_mutation_process.stdout.strip()
+        if r92_mutation_process.returncode == 0
+        else r92_mutation_process.stderr.strip()
+        or r92_mutation_process.stdout.strip()
+    )
+    check(
+        r92_mutation_process.returncode == 0,
+        "R92_XVM_XBC_PROJECTION_R1_MUTATIONS",
+        r92_mutation_detail[-4000:],
+    )
+
+    r93_validator = (
+        root / "tools/validators/validate_formatter_lsp_dpg_authority_rebase.py"
+    )
+    r93_process = subprocess.run(
+        [sys.executable, str(r93_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r93_detail = (
+        r93_process.stdout.strip()
+        if r93_process.returncode == 0
+        else r93_process.stderr.strip() or r93_process.stdout.strip()
+    )
+    check(
+        r93_process.returncode == 0,
+        "R93_FORMATTER_LSP_DPG_AUTHORITY_REBASE_R1",
+        r93_detail[-4000:],
+    )
+
+    r93_mutation_runner = (
+        root
+        / "tools/validators/run_formatter_lsp_dpg_authority_rebase_mutation_tests.py"
+    )
+    r93_mutation_process = subprocess.run(
+        [sys.executable, str(r93_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r93_mutation_detail = (
+        r93_mutation_process.stdout.strip()
+        if r93_mutation_process.returncode == 0
+        else r93_mutation_process.stderr.strip()
+        or r93_mutation_process.stdout.strip()
+    )
+    check(
+        r93_mutation_process.returncode == 0,
+        "R93_FORMATTER_LSP_DPG_AUTHORITY_REBASE_R1_MUTATIONS",
+        r93_mutation_detail[-4000:],
+    )
+
+    r94_validator = (
+        root / "tools/validators/validate_publication_current_pointer_binding_r1.py"
+    )
+    r94_process = subprocess.run(
+        [sys.executable, str(r94_validator), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r94_detail = (
+        r94_process.stdout.strip()
+        if r94_process.returncode == 0
+        else r94_process.stderr.strip() or r94_process.stdout.strip()
+    )
+    check(
+        r94_process.returncode == 0,
+        "R94_PUBLICATION_CURRENT_POINTER_BINDING_R1",
+        r94_detail[-4000:],
+    )
+
+    r94_mutation_runner = (
+        root
+        / "tools/validators/run_publication_current_pointer_binding_r1_mutation_tests.py"
+    )
+    r94_mutation_process = subprocess.run(
+        [sys.executable, str(r94_mutation_runner), "--root", str(root)],
+        cwd=root,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    r94_mutation_detail = (
+        r94_mutation_process.stdout.strip()
+        if r94_mutation_process.returncode == 0
+        else r94_mutation_process.stderr.strip()
+        or r94_mutation_process.stdout.strip()
+    )
+    check(
+        r94_mutation_process.returncode == 0,
+        "R94_PUBLICATION_CURRENT_POINTER_BINDING_R1_MUTATIONS",
+        r94_mutation_detail[-4000:],
+    )
+
     r76_mutation_runner = (
         root
         / "tools/validators/run_global_implementation_target_trace_closure_mutation_tests.py"
@@ -13677,6 +14582,433 @@ def main() -> int:
         check(
             process.returncode == 0,
             "PARSER_GRAMMAR_DIFFERENTIAL_CHECK",
+            detail[-4000:],
+        )
+
+    r99_parser_authority_validator = (
+        root
+        / "tools/validators/validate_parser_scanner_pratt_authority_r99.py"
+    )
+    if r99_parser_authority_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_parser_authority_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_PARSER_SCANNER_PRATT_AUTHORITY_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_checker_bootstrap_validator = (
+        root / "tools/validators/validate_checker_bootstrap_r99.py"
+    )
+    if r99_checker_bootstrap_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_checker_bootstrap_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_CHECKER_BOOTSTRAP_AUTHORITY_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_measure_collection_validator = (
+        root / "tools/validators/validate_measure_collection_bootstrap_r99.py"
+    )
+    if r99_measure_collection_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_measure_collection_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_MEASURE_COLLECTION_BOOTSTRAP_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_exact_numeric_operator_validator = (
+        root / "tools/validators/validate_exact_numeric_operator_allocation_r99.py"
+    )
+    if r99_exact_numeric_operator_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_exact_numeric_operator_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_EXACT_NUMERIC_OPERATOR_ALLOCATION_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_runtime_backend_projection_validator = (
+        root / "tools/validators/validate_runtime_backend_projection_r99.py"
+    )
+    if r99_runtime_backend_projection_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_runtime_backend_projection_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_RUNTIME_BACKEND_PROJECTION_REPAIR",
+            detail[-4000:],
+        )
+
+    r99_audit_closure_validator = (
+        root
+        / "tools/validators/validate_implementation_readiness_r99_audit_closure.py"
+    )
+    if r99_audit_closure_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r99_audit_closure_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R99_IMPLEMENTATION_READINESS_AUDIT_CLOSURE",
+            detail[-4000:],
+        )
+
+    r100_accessor_property_forwarding_validator = (
+        root
+        / "tools/validators/validate_accessor_property_forwarding_r100.py"
+    )
+    if r100_accessor_property_forwarding_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r100_accessor_property_forwarding_validator),
+                "--root",
+                str(root),
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R100_ACCESSOR_PROPERTY_FORWARDING_CLOSURE",
+            detail[-4000:],
+        )
+
+    r101_feature_p1_disposition_validator = (
+        root
+        / "tools/validators/validate_implementation_target_feature_p1_disposition_r101.py"
+    )
+    if r101_feature_p1_disposition_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r101_feature_p1_disposition_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R101_IMPLEMENTATION_TARGET_FEATURE_P1_DISPOSITION",
+            detail[-4000:],
+        )
+
+    r102_feature_local_acceptance_validator = (
+        root
+        / "tools/validators/validate_implementation_target_feature_local_acceptance_r102.py"
+    )
+    if r102_feature_local_acceptance_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r102_feature_local_acceptance_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R102_IMPLEMENTATION_TARGET_FEATURE_LOCAL_ACCEPTANCE",
+            detail[-4000:],
+        )
+
+    r103_preimplementation_consistency_validator = (
+        root
+        / "tools/validators/validate_preimplementation_consistency_closure_r103.py"
+    )
+    if r103_preimplementation_consistency_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r103_preimplementation_consistency_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R103_PREIMPLEMENTATION_CONSISTENCY_CLOSURE",
+            detail[-4000:],
+        )
+
+    r104_feature_p1_disposition_validator = (
+        root
+        / "tools/validators/validate_implementation_target_feature_p1_disposition_r104.py"
+    )
+    if r104_feature_p1_disposition_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r104_feature_p1_disposition_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R104_IMPLEMENTATION_TARGET_FEATURE_P1_DISPOSITION",
+            detail[-4000:],
+        )
+
+    r105_generic_responsibility_validator = (
+        root
+        / "tools/validators/validate_generic_applicability_variance_responsibility_r105.py"
+    )
+    if r105_generic_responsibility_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r105_generic_responsibility_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R105_GENERIC_APPLICABILITY_VARIANCE_RESPONSIBILITY",
+            detail[-4000:],
+        )
+
+    r106_keyable_iteration_assignment_validator = (
+        root
+        / "tools/validators/validate_keyable_iteration_pattern_assignment_r106.py"
+    )
+    if r106_keyable_iteration_assignment_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r106_keyable_iteration_assignment_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R106_KEYABLE_ITERATION_PATTERN_ASSIGNMENT",
+            detail[-4000:],
+        )
+
+    r107_trait_conformance_handoff_validator = (
+        root
+        / "tools/validators/validate_trait_conformance_implementation_handoff_r107.py"
+    )
+    if r107_trait_conformance_handoff_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r107_trait_conformance_handoff_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R107_TRAIT_CONFORMANCE_IMPLEMENTATION_HANDOFF",
+            detail[-4000:],
+        )
+
+    r108_runtime_managed_projection_validator = (
+        root
+        / "tools/validators/validate_runtime_managed_projection_handoff_r108.py"
+    )
+    if r108_runtime_managed_projection_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r108_runtime_managed_projection_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R108_RUNTIME_MANAGED_PROJECTION_HANDOFF",
+            detail[-4000:],
+        )
+
+    r109_preimplementation_handoff_validator = (
+        root
+        / "tools/validators/validate_preimplementation_readiness_integrated_handoff_r109.py"
+    )
+    if r109_preimplementation_handoff_validator.is_file():
+        process = subprocess.run(
+            [
+                sys.executable,
+                str(r109_preimplementation_handoff_validator),
+                "--root",
+                str(root),
+                "--mutations",
+            ],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        detail = process.stdout.strip() if process.returncode == 0 else (
+            process.stderr.strip() or process.stdout.strip()
+        )
+        check(
+            process.returncode == 0,
+            "R109_PREIMPLEMENTATION_READINESS_INTEGRATED_HANDOFF",
             detail[-4000:],
         )
 
@@ -14442,13 +15774,13 @@ def main() -> int:
         if disposition == "DEFERRED_PRODUCT_HANDOFF"
     }
     check(
-        deferred_required == {"string_interpolation_format_spec_core"}
+        deferred_required == set()
         and all(
             f"`{feature_id}`" in mir_section[-1]
             for feature_id in SUPPLEMENTAL_MIR_FEATURE_IDS
         )
         and mir_section[-1].count("are `LAW_PRESENT`") == 1
-        and "Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF`"
+        and "No required row remains `DEFERRED_PRODUCT_HANDOFF`"
         in mir_section[-1]
         and "All product lanes remain `NOT_RUN`" in mir_section[-1]
         and "not a product execution receipt" in mir_section[-1],
@@ -15668,10 +17000,16 @@ def main() -> int:
             "trait_id": trait_id,
             "method_id": method_id,
             "output_projection": frontend_projection,
-            "responsibility_profile_id": (
-                FIXED_OPERATOR_COMPARISON_PROFILE_ID
-                if operator_id in FIXED_OPERATOR_COMPARISON_IDS
-                else FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+            **(
+                {"responsibility_profile_id": FIXED_OPERATOR_COMPARISON_PROFILE_ID}
+                if operator_id in FIXED_OPERATOR_EQ_IDS
+                else {
+                    "responsibility_profile_id_domain": (
+                        FIXED_OPERATOR_ORD_PROFILE_DOMAIN
+                        if operator_id in FIXED_OPERATOR_ORD_IDS
+                        else FIXED_OPERATOR_ARITHMETIC_PROFILE_DOMAIN
+                    )
+                }
             ),
         }
         for (
@@ -15782,13 +17120,17 @@ def main() -> int:
                 else {"type": "string", "minLength": 1}
             ),
             "method_id": {"const": method_id},
-            "responsibility_profile_id": {
-                "const": (
-                    FIXED_OPERATOR_COMPARISON_PROFILE_ID
-                    if is_comparison
-                    else FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
-                )
-            },
+            "responsibility_profile_id": (
+                {"const": FIXED_OPERATOR_COMPARISON_PROFILE_ID}
+                if operator_id in FIXED_OPERATOR_EQ_IDS
+                else {
+                    "enum": (
+                        FIXED_OPERATOR_ORD_PROFILE_DOMAIN
+                        if operator_id in FIXED_OPERATOR_ORD_IDS
+                        else FIXED_OPERATOR_ARITHMETIC_PROFILE_DOMAIN
+                    )
+                }
+            ),
         }
         if is_comparison:
             properties["output_type_id"] = {"const": "Bool"}
@@ -15863,7 +17205,7 @@ def main() -> int:
             "trait_roots"
         ) == FIXED_OPERATOR_TRAIT_ROOTS
         and voi_fixed_profile.get("responsibility_profile")
-        == FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
+        == FIXED_OPERATOR_RESPONSIBILITY_ENVELOPE_PROFILE_ID
         and voi_by_id.get("VOI-R1-POS-022", {}).get("assertions", {}).get(
             "responsibility_profile"
         ) == FIXED_OPERATOR_ARITHMETIC_PROFILE_ID
@@ -16497,6 +17839,15 @@ def main() -> int:
         if row.get("predicate_id") in trn_predicate_ids
     }
     trn_schema_rel = "schemas/language/type-refinement-narrowing-coherence-descriptor.schema.json"
+    r0_query_schema_rel = "schemas/language/refinement-r0-query-v1.schema.json"
+    expected_trn_predicate_schemas = {
+        "GuardPredicateAdmitted": trn_schema_rel,
+        "MatchExhaustive": trn_schema_rel,
+        "NarrowUnionByPattern": trn_schema_rel,
+        "NormalizeUnion": trn_schema_rel,
+        "R0GuardSafe": r0_query_schema_rel,
+        "RefinementCheckBoundaryAdmitted": r0_query_schema_rel,
+    }
     descriptor_binding_ok = (
         len(trn_inputs) == len(trn_input_ids) == len(set(trn_input_ids)) == 12
         and all(
@@ -16505,10 +17856,22 @@ def main() -> int:
             for rows in trn_input_groups.values()
         )
         and set(trn_predicate_rows) == trn_predicate_ids
+        and trn_contract.get("predicate_inputs_role")
+        == "CROSS_PREDICATE_INTEGRATION_ENVELOPE_NOT_CHECKER_INPUT"
+        and trn_contract.get("predicate_integration_descriptor_schema")
+        == trn_schema_rel
+        and trn_contract.get("predicate_input_schema_by_predicate")
+        == expected_trn_predicate_schemas
         and all(
-            row.get("input_descriptor") == "TRNCoherenceDescriptor"
-            and row.get("input_descriptor_schema") == trn_schema_rel
-            for row in trn_predicate_rows.values()
+            row.get("input_descriptor_schema")
+            == expected_trn_predicate_schemas[predicate_id]
+            and (
+                row.get("input_descriptor") == "RefinementR0QueryV1"
+                if expected_trn_predicate_schemas[predicate_id]
+                == r0_query_schema_rel
+                else row.get("input_descriptor") == "TRNCoherenceDescriptor"
+            )
+            for predicate_id, row in trn_predicate_rows.items()
         )
     )
     match_descriptors = [
@@ -17425,6 +18788,10 @@ def main() -> int:
     ) + (
         [G4_PUBLICATION_CLOSURE_REPORT]
         if revision in {G4_INDEPENDENT_READINESS_REVISION, R77_PUBLICATION_POLICY_CLOSURE_REVISION}
+        else []
+    ) + (
+        [R77_PUBLICATION_CLOSURE_REPORT]
+        if revision == R77_PUBLICATION_POLICY_CLOSURE_REVISION
         else []
     )
     check(
@@ -20566,10 +21933,10 @@ def main() -> int:
         check(
             audited_baseline == ({
                 "kind": "git-commit",
-                "commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+                "commit": "10e64f492f0529610673846139afcf0d95175663",
                 "repository": "https://github.com/howork/Deeplus.git",
                 "branch": "main",
-                "role": "r77_publication_policy_repair_base",
+                "role": "r77_publication_closure_readback_base",
             } if r77_publication_closure else {
                 "kind": "git-commit",
                 "commit": HISTORICAL_DOCUMENT_CONSISTENCY_BASE_COMMIT,
@@ -20582,9 +21949,9 @@ def main() -> int:
         )
         check(
             candidate_binding == ({
-                "mode": "semantic_publication_target_bound_pending_closure_receipt",
-                "receipt_location": "PENDING_POST_MERGE_READBACK_RECEIPT",
-                "current_binding": True,
+                "mode": "semantic_publication_target_bound_by_external_post_merge_receipt",
+                "receipt_location": "release/evidence/r77-integrated-surface-publication-closure-readback.json",
+                "current_binding": False,
                 "self_binding_forbidden": True,
             } if r77_publication_closure else {
                 "mode": "external_post_commit_receipt_required",
@@ -20866,6 +22233,8 @@ def main() -> int:
         "CLASS_COLON_INHERITANCE_REMOVED",
         "TRAIT_REQUIRES_INHERITANCE_REMOVED",
         "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+        "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+        "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED",
         "CONFORMANCE_AUTO_BODY_FORBIDDEN",
         "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
         "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",
@@ -20922,9 +22291,9 @@ def main() -> int:
         and len(trait_cases) == len(
             {row.get("fixture_id") for row in trait_cases if isinstance(row, dict)}
         )
-        == 25
+        == 27
         and trait_surface_fixtures.get("counts")
-        == {"positive": 14, "negative": 11, "total": 25, "executed": 0},
+        == {"positive": 14, "negative": 13, "total": 27, "executed": 0},
         "TRAIT_CONFORMANCE_SUCCESSOR_SURFACE",
         f"revision={frontend.get('revision')} p1={len(global_open_p1)} fixtures={len(trait_cases)}",
     )
@@ -20952,19 +22321,22 @@ def main() -> int:
         and trait_case_projection_sha256
         == TRAIT_SURFACE_CASE_PROJECTION_SHA256
         and trait_auto_receipt_case.get("expected") == "ACCEPT_STATIC"
-        and "public trait AutoUserIdentity\nsupports auto {"
+        and "conforms Shareable by auto"
         in trait_auto_receipt_case.get("source", "")
-        and "closed_test_auto_policy"
+        and "policy_id=TraitAutoPolicyId:core::Shareable::structural/v1"
         in trait_auto_receipt_case.get("assertions", [])
         and trait_auto_enum_case.get("expected") == "ACCEPT_STATIC"
-        and "public trait AutoEnumIdentity\nsupports auto {"
+        and "conforms Transferable by auto"
         in trait_auto_enum_case.get("source", "")
-        and "closed_test_auto_policy"
+        and "policy_id=TraitAutoPolicyId:core::Transferable::structural/v1"
         in trait_auto_enum_case.get("assertions", [])
-        and trait_auto_boundary_case.get("expected")
-        == "ACCEPT_STATIC_IF_POLICY_REGISTERED"
-        and "closed_test_auto_policy"
-        not in trait_auto_boundary_case.get("assertions", []),
+        and trait_auto_boundary_case.get("expected") == "ACCEPT_STATIC"
+        and "policy_id=TraitAutoPolicyId:core::Shareable::structural/v1"
+        in trait_auto_boundary_case.get("assertions", [])
+        and trait_case_by_id.get("TCS-R1-NEG-012", {}).get("diagnostic")
+        == "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN"
+        and trait_case_by_id.get("TCS-R1-NEG-013", {}).get("diagnostic")
+        == "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
         "TRAIT_CONFORMANCE_CASE_SOURCE_OUTCOME_POLICY_EXACT_BINDING",
         (
             f"cases={len(trait_case_projection_sha256)} "
@@ -21007,7 +22379,7 @@ def main() -> int:
         and "RecoveryNullLiteral" not in grammar
         and 'UnfoldClause ::= "for" Pattern "in" "*" Expr ;' in grammar
         and 'IndexSuffix ::= "[" SliceAxisList "]" ;' in grammar
-        and 'BoundedListLiteral ::= "[" StaticIntLiteral ".." StaticIntLiteral'
+        and 'BoundedListLiteral ::= "#" "list" "[" StaticIntLiteral ".." StaticIntLiteral'
         in grammar
         and range_operator.get("tokens") == [[".."], ["..<"], ["..."]]
         and "rejected_reserved_spellings" not in range_operator
@@ -21115,21 +22487,21 @@ def main() -> int:
         and eq_entry.get("signatures")
         == ["public trait#operator Eq<Rhs> { +def equals.(borrow rhs: Rhs) -> Bool throws Never effects {}; }"]
         and ord_entry.get("signatures")
-        == ["public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws Never effects {}\n}"]
+        == ["public trait#operator Ord<Rhs>\nderives Eq<Rhs> {\n    +def compare.(borrow rhs: Rhs) -> Int throws AllocationError effects allocate\n}"]
         and unary_plus_entry.get("signatures")
-        == ["public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"]
+        == ["public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws AllocationError effects allocate; }"]
         and unary_minus_entry.get("signatures")
-        == ["public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"]
+        == ["public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws AllocationError effects allocate; }"]
         and add_entry.get("signatures")
-        == ["public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws AllocationError effects allocate; }"]
         and subtract_entry.get("signatures")
-        == ["public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws AllocationError effects allocate; }"]
         and multiply_entry.get("signatures")
-        == ["public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws AllocationError effects allocate; }"]
         and divide_entry.get("signatures")
-        == ["public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws AllocationError effects allocate; }"]
         and remainder_entry.get("signatures")
-        == ["public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"]
+        == ["public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws AllocationError effects allocate; }"]
         and all(
             entry.get("kind") == "trait"
             and entry.get("status") == "stable_design"

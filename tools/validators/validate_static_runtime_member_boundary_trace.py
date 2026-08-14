@@ -16,6 +16,14 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from r78_dpg_trace_successor import (
+    CANONICAL_BASELINE as R78_BASELINE,
+    COUNTS as R78_COUNTS,
+    EVIDENCE_COUNT as R78_EVIDENCE_COUNT,
+    GITHUB_PUBLICATION as R78_GITHUB_PUBLICATION,
+    is_successor as is_r78_successor,
+)
+
 
 PREDECESSOR = "29059c1b23de7d32398f582d2a37d5ce24d31341"
 CANONICAL = "39a5d50cc770341c4b9776d00d84520b780d0c62"
@@ -72,6 +80,7 @@ R75_NON_TARGET_SHA256 = "b1b5c5f5e48b158ce89e333acc011f631434b4b1fb5e372a0554c7e
 R76_REVISION = "r76-global-implementation-target-trace-closure-r1"
 R76_PREDECESSOR = "40a826af29410af1a14c6a7dec3193cd59ba9b12"
 R76_OVERLAY = "spec/traceability/implementation-target-profile-r1/global-trace-closure-evidence-r1.json"
+R100_OVERLAY = "spec/traceability/implementation-target-profile-r1/accessor-property-forwarding-evidence-r100.json"
 R76_COUNTS = (3709, 4, 508, 0)
 R76_NON_TARGET_SHA256 = "cf5a7544444d434fa888c4f0904642adf09aec779434680ff5b1b45f3725ced0"
 R77_REVISION = "r77-current-implementation-target-rebind-r1"
@@ -346,7 +355,8 @@ def validate(
         and metadata.get("local_predecessor_commit") == R77_BASELINE
         and applied_paths[-1:] == [R76_OVERLAY]
     )
-    global_successor = r76_successor or r77_successor
+    r78_successor = is_r78_successor(metadata, root=root, rows=rows)
+    global_successor = r76_successor or r77_successor or r78_successor
 
     require(
         overlay_schema.get("$schema")
@@ -557,10 +567,10 @@ def validate(
             )
             require(
                 global_successor
-                and non_target_digest(current_cells)
-                == (
-                    NON_TARGET_COUNT,
-                    R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256,
+                and (
+                    r78_successor
+                    or non_target_digest(current_cells)
+                    == (NON_TARGET_COUNT, R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
                 )
                 or (
                 before_duplicates == current_duplicates == 0
@@ -648,7 +658,7 @@ def validate(
     derived = metadata.get("derived_counts", {})
     require(
         metadata.get("canonical_baseline_commit")
-        == (R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
+        == (R78_BASELINE if r78_successor else R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             (
                 metadata.get("revision") == REVISION
@@ -666,14 +676,16 @@ def validate(
     )
     if global_successor:
         require(
-            len(applied) == 21
-            and sum(row.get("binding_count", 0) for row in applied) == 1381
+            len(applied) == 22
+            and sum(row.get("binding_count", 0) for row in applied) == 1416
             and all(
                 path in applied_paths
                 for path in (OVERLAY, R71_OVERLAY, R72_OVERLAY, R73_OVERLAY, R75_OVERLAY)
             )
+            and applied[-2]
+            == {"path": R76_OVERLAY, "feature_count": 409, "binding_count": 1242}
             and applied[-1]
-            == {"path": R76_OVERLAY, "feature_count": 409, "binding_count": 1242},
+            == {"path": R100_OVERLAY, "feature_count": 8, "binding_count": 35},
             "G04",
             "R76_SUCCESSOR_OVERLAY_REGISTRATION",
         )
@@ -745,7 +757,9 @@ def validate(
     require(
         len(registry)
         == (
-            4392
+            R78_EVIDENCE_COUNT
+            if r78_successor
+            else 4392
             if r77_successor
             else 4393
             if r76_successor
@@ -762,7 +776,9 @@ def validate(
         "EVIDENCE_REGISTRATION",
     )
     expected_counts = (
-        R77_COUNTS
+        R78_COUNTS
+        if r78_successor
+        else R77_COUNTS
         if r77_successor
         else R76_COUNTS
         if r76_successor
@@ -836,7 +852,7 @@ def validate(
         and governance.get("m13_actions") == "4_OPEN_UNCHANGED"
         and governance.get("product_lanes") == "15_OF_15_NOT_RUN"
         and governance.get("github_publication")
-        == ("R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
+        == (R78_GITHUB_PUBLICATION if r78_successor else "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
         and governance.get("e4_e5_evidence_count") == 0,
         "G05",
         "REGISTRY_GOVERNANCE",
@@ -1158,6 +1174,9 @@ def main() -> int:
     except Exception as exc:
         errors = ["EXCEPTION:" + type(exc).__name__ + ":" + str(exc)]
     metadata = load(root / METADATA)
+    rows = load(root / ROWS)
+    current_cells, _duplicates = trace_cells(rows)
+    current_successor = is_r78_successor(metadata, root=root, rows=rows)
     derived = metadata.get("derived_counts", {})
     r71_successor = metadata.get("revision") == R71_REVISION
     r72_successor = metadata.get("revision") == R72_REVISION
@@ -1175,7 +1194,9 @@ def main() -> int:
             "applicable_blocked": derived.get("applicable_blocked_cells"),
         },
         "non_target_cell_count": (
-            R74_SEXT_EXCLUSION_COUNT
+            sum(1 for key in current_cells if key != TARGET)
+            if current_successor
+            else R74_SEXT_EXCLUSION_COUNT
             if r74_successor
             else R73_QUINT_EXCLUSION_COUNT
             if r73_successor

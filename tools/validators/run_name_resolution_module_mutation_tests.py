@@ -498,14 +498,14 @@ def absorb_method_extension_winner(root: Path) -> None:
     write_json(root, relative, rows)
 
 
-def select_deferred_collision_candidate(root: Path) -> None:
+def break_closed_collision_selected_count(root: Path) -> None:
     fixture = read_json(root, FIXTURE_RELATIVE)
     row = next(
         case
         for case in fixture["cases"]
         if case["id"] == "IR-R4-RES041-POS"
     )
-    row["expected"]["selected_count_or_null"] = 1
+    row["expected"]["selected_count_or_null"] = 2
     write_json(root, FIXTURE_RELATIVE, fixture)
 
 
@@ -1337,19 +1337,19 @@ def run() -> int:
             break_stable_collision_alias,
         ),
         (
-            "callable_cluster_absorbed",
-            "R4_NRM_NEXT_CLUSTER_FENCE",
+            "ordinary_call_route_removed",
+            "R4_NRM_ORDINARY_CALL_SELECTION_BINDING",
             absorb_callable_overload_cluster,
         ),
         (
-            "method_extension_winner_absorbed",
-            "R4_NRM_COLLISION_SELECTION_DEFERRED",
+            "method_extension_selection_contract_drift",
+            "R4_NRM_COLLISION_SELECTION_CLOSED",
             absorb_method_extension_winner,
         ),
         (
-            "deferred_collision_candidate_selected",
-            "R4_NRM_COLLISION_SELECTION_DEFERRED",
-            select_deferred_collision_candidate,
+            "closed_collision_selected_count_drift",
+            "R4_NRM_COLLISION_SELECTION_CLOSED",
+            break_closed_collision_selected_count,
         ),
         (
             "common_visibility_replaced_by_package",

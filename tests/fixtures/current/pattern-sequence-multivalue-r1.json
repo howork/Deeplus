@@ -97,7 +97,7 @@
     {
       "fixture_id": "PSM-R1-POS-011",
       "fixture_class": "positive",
-      "surface": "if let #map{value: \"answer\", .._} = table { use(value) }",
+      "surface": "if let #map{value: \"answer\", *_} = table { use(value) }",
       "rule": "MAP_PATTERN_STABLE_KEY",
       "expected": "ADMIT",
       "assertions": ["key_kind=LITERAL", "provider_lookup_count=0"],

@@ -109,6 +109,16 @@ for item in items {
 }
 ```
 
+일반 `for`의 source는 정확히 한 번 평가된다. checker는 source 자체의
+direct `Iterator` witness를 먼저 찾고, 그것이 없을 때만 하나의
+`Sequence` witness를 통해 iterator를 한 번 얻는다. 두 route가 모두
+가능하면 direct Iterator가 이기며 source order나 runtime lookup으로
+선택하지 않는다. exact associated `Item` type과 acquisition/`next`/cleanup
+책임을 loop 진입 전에 고정한다. current `next`는 `Option<Item>`,
+`throws Never effects state`이고, `for#await`는 별도 async profile이다.
+`break`, `continue`, `return`, Error, Defect, cancellation 어느 경로에서도
+current item, iterator, source는 역순으로 한 번씩 정리된다.
+
 실패한 Option/Result pattern은 binding을 남기지 않는다. 반복의 `if`
 filter와 transfer guard도 반드시 `Bool`이다.
 

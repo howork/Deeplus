@@ -308,10 +308,10 @@ Trait       := [Visibility] 'trait' ['#' @TraitLanguageRole] Name [TypeParams]
 
 Enum        := [Visibility] 'enum' ['#' @EnumOrderRole] Name [TypeParams]
                NominalConform* EnumBody ;
-EnumBody    := '{' [admit<EnumBodyCommit>(EnumCommaCases | EnumLayout)] '}' ;
+EnumBody    := '{' admit<EnumBodyCommit>(EnumCommaCases | EnumLayout) '}' ;
 EnumCommaCases
             := list<EnumCase,2,yes> ;
-EnumLayout  := (EnumCase [END])* MemberSeq<enum> ;
+EnumLayout  := EnumCase [END] (EnumCase [END])* MemberSeq<enum> ;
 EnumCase    := Name ['(' [list<EnumCaseField,1,yes>] ')'] [EnumDisplay] ;
 EnumCaseField
             := Name TypeAnn | Type ;
@@ -508,7 +508,7 @@ AssigneeNominal
 
 MapPat      := '#' ~map '{'
                [entries<Pattern ':' (Literal | '^' StablePatternValue)
-                       | '..' (Name | '_')>]
+                       | '*' (Name | '_')>]
                '}' ;
 
 VariantPat  := (Type '::' | '::') Name
@@ -579,8 +579,11 @@ MatchSubject:= MATCH_SUBJECT_BY_INPUT_SUPPLY_POLICY ;
 MatchArms   := MatchArm (MatchSeparator MatchArm)* [MatchSeparator] ;
 MatchSeparator
             := MATCH_ARM_SEPARATOR_BY_CONTEXT ;
-MatchArm    := (BoundedBinder | Pattern | ~otherwise) [Guard] '=>'
-               MatchArmBody ;
+MatchArm    := PatternMatchArm | OtherwiseMatchArm ;
+PatternMatchArm
+            := (BoundedBinder | Pattern) [Guard] '=>' MatchArmBody ;
+OtherwiseMatchArm
+            := ~otherwise '=>' MatchArmBody ;
 MatchArmBody:= MATCH_ARM_BODY_BY_CONTEXT ;
 BoundedBinder
             := PatternBound @OrderedComparison Name @OrderedComparison PatternBound ;
@@ -752,7 +755,7 @@ InterpSelector
 
 ListLiteral := '[' [list<ListEntry,1,yes>] ']' ;
 ListEntry   := Expr | '*' Expr ;
-BoundedList := '[' StaticInt '..' StaticInt ':' [list<ListEntry,1,yes>] ']' ;
+BoundedList := '#' ~list '[' StaticInt '..' StaticInt ':' [list<ListEntry,1,yes>] ']' ;
 Comprehension
             := '[' Expr CompClause+ ']' ;
 CompClause  := 'for' Pattern 'in' Expr
@@ -765,10 +768,10 @@ Materialization
 MaterialEntry
             := Name | Name ':' Expr | String ':' Expr | '**' Expr ;
 
-MapEntry    := Expr ':' Expr | '**' Expr ;
+MapEntry    := Expr ':' Expr | '*' Expr ;
 MapLiteral  := '#' ~map '{' [entries<MapEntry>] '}' ;
 MapComprehension
-            := '#' ~map '{' MapEntry CompClause+ '}' ;
+            := '#' ~map '{' Expr ':' Expr CompClause+ '}' ;
 SetLiteral  := '#' ~set '{' [list<Expr,1,yes>] '}' ;
 SetComprehension
             := '#' ~set '{' Expr CompClause+ '}' ;

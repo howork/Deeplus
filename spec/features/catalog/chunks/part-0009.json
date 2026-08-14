@@ -60,13 +60,13 @@
       "labeled_aggregate_layout_separator",
       "map_literal_unfold"
     ],
-    "display_name": "`#map{ **base }` current map structural-unfold spelling",
-    "feature_id": "map_unfold_double_star_current",
+    "display_name": "`#map{ *base }` current runtime Map structural-unfold spelling",
+    "feature_id": "map_runtime_unfold_star_current",
     "feature_kind": "canonical_feature",
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "`#map{ **base }` contributes one runtime immutable-Map source to the enclosing MapLiteralPlan. The source evaluates once, must supply the plan's exact normalized K/V domains, preserves source order, and participates in later-key-wins and failure-atomic cleanup. Map shape never becomes a static-named call channel.",
+    "notes": "`#map{ *base }` contributes one runtime immutable-Map source to the enclosing MapLiteralPlan. The owning Map parser context seals MapUnfold before type checking. The source evaluates once, must supply the plan's exact normalized K/V domains, preserves source order, and participates in later-key-wins and failure-atomic cleanup. Map shape never becomes a static-named call channel.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -279,7 +279,8 @@
         "MATCH_NOT_EXHAUSTIVE"
       ],
       "predicates": [
-        "MatchExhaustive"
+        "MatchExhaustive",
+        "MatchFallbackAdmitted"
       ],
       "examples": [
         "EX-R49C-MATCH-001",
@@ -292,7 +293,13 @@
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/enum-match-boundary-v1.json",
+      "schemas/language/enum-match-boundary-decision-v1.schema.json",
+      "schemas/language/enum-match-boundary-v1.schema.json",
+      "schemas/language/enum-match-boundary-fixtures-v1.schema.json",
+      "tests/fixtures/current/enum-match-boundary-v1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -372,11 +379,14 @@
     "normative_trace_refs": {
       "diagnostics": [
         "LAMBDA_REQUIRES_FAT_ARROW",
+        "OTHERWISE_GUARD_FORBIDDEN",
         "OTHERWISE_DUPLICATE_CLAUSE",
         "OTHERWISE_MUST_BE_LAST",
         "OTHERWISE_UNREACHABLE"
       ],
-      "predicates": [],
+      "predicates": [
+        "MatchFallbackAdmitted"
+      ],
       "examples": [],
       "productions": [
         "MatchExpr",
@@ -384,7 +394,13 @@
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/enum-match-boundary-v1.json",
+      "schemas/language/enum-match-boundary-decision-v1.schema.json",
+      "schemas/language/enum-match-boundary-v1.schema.json",
+      "schemas/language/enum-match-boundary-fixtures-v1.schema.json",
+      "tests/fixtures/current/enum-match-boundary-v1.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -451,7 +467,7 @@
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [
       "linear_algebra_operator_token_guard",
-      "map_unfold_double_star_current",
+      "map_runtime_unfold_star_current",
       "numeric_array_elementwise_arithmetic_msp"
     ],
     "display_name": "Matrix multiplication operator `**` MSP",
@@ -719,7 +735,8 @@
     "trace_class": "library",
     "normative_trace_refs": {
       "diagnostics": [
-        "UNIT_MIDDLE_DOT_REMOVED_USE_STAR"
+        "UNIT_MIDDLE_DOT_REMOVED_USE_STAR",
+        "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS"
       ],
       "predicates": [
         "HasKnownUnitWitness"
@@ -733,7 +750,10 @@
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/measure-collection-bootstrap-r99.json",
+      "tests/fixtures/current/measure-collection-bootstrap-r99.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -939,7 +959,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Member forwarding. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 expands a finite explicit selector list into ordered resolved ForwardSlotId values, seals target identity and responsibility before HIR, evaluates the target once per operation, and forbids runtime reselection, wildcard, duplicate, collision, storage, witness, subtype, or hidden-closure synthesis. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -959,7 +979,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1020,7 +1043,8 @@
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [
-      "spec/contracts/member-visibility-trace-closure-r1.json"
+      "spec/contracts/member-visibility-trace-closure-r1.json",
+      "spec/contracts/member-visibility-omission-v1.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1040,7 +1064,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "The shared MemberVisibility token admits exactly +, -, and # on the 15 current MemberVisibility? owner productions. Omission remains the explicit OMITTED/null state and has no global member default.",
+    "notes": "The shared MemberVisibility token admits exactly +, -, and # on the 15 current MemberVisibility? owner productions. CST/AST preserve omission as OMITTED/null; the exact owner row resolves it to a non-null effective domain before canonical HIR, without one global member default.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1076,7 +1100,8 @@
     },
     "trace_class": "syntax",
     "artifact_trace_refs": [
-      "spec/contracts/member-visibility-trace-closure-r1.json"
+      "spec/contracts/member-visibility-trace-closure-r1.json",
+      "spec/contracts/member-visibility-omission-v1.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1096,7 +1121,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "A callable nested in a nominal type uses member visibility +, -, or #, while a nested local function has lexical visibility. Member omission stays OMITTED/null without a global default; top-level callable omission follows its separate visibility law.",
+    "notes": "A callable nested in a nominal type uses member visibility +, -, or #, while a nested local function has lexical visibility. Member omission stays OMITTED/null through AST, then the exact owner context defaults a new slot, inherits a selected slot/requirement, or derives actor transport before canonical HIR; top-level callable omission follows its separate visibility law.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1109,6 +1134,8 @@
     "normative_trace_refs": {
       "diagnostics": [
         "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN",
+        "MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID",
+        "MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING",
         "OVERRIDE_VISIBILITY_CANNOT_NARROW"
       ],
       "predicates": [
@@ -1137,7 +1164,8 @@
     },
     "trace_class": "semantic",
     "artifact_trace_refs": [
-      "spec/contracts/member-visibility-trace-closure-r1.json"
+      "spec/contracts/member-visibility-trace-closure-r1.json",
+      "spec/contracts/member-visibility-omission-v1.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -1730,59 +1758,5 @@
       "semantic_reference_productions": []
     },
     "artifact_trace_refs": []
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE / TYPE_SYSTEM",
-    "authority_set": [
-      "LANGUAGE",
-      "TYPE_SYSTEM"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [
-      "named_constructor_surface_msp"
-    ],
-    "display_name": "External named constructor call MSP",
-    "feature_id": "named_constructor_external_call_msp",
-    "feature_kind": "canonical_feature",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "Type!(...) calls def! new(...); Type!name(...) allocates fresh storage and enters the named constructor name.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "trace_class": "syntax",
-    "normative_trace_refs": {
-      "diagnostics": [
-        "NAMED_CONSTRUCTOR_NOT_FOUND",
-        "TYPE_BANG_REQUIRES_NEW_CONSTRUCTOR"
-      ],
-      "predicates": [
-        "ConstructorNamingAndEntrypointAdmitted"
-      ],
-      "examples": [
-        "EX-R48-011",
-        "EX-R48-045",
-        "EX-R48B-048",
-        "EX-R48B-064",
-        "EX-R49-009"
-      ],
-      "productions": [
-        "ConstructorDecl",
-        "ConstructorDelegationClause"
-      ],
-      "semantic_reference_productions": []
-    },
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
   }
 ]

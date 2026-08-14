@@ -265,8 +265,8 @@ def main() -> int:
     mir = (ROOT / "spec/mir/semantics.md").read_text(encoding="utf-8")
 
     rules = {row["rule_id"]: row["contract"] for row in contract["rules"]}
-    if list(rules) != [f"ACC-R{i:03d}" for i in range(1, 21)]:
-        fail("rule IDs are not the exact contiguous ACC-R001..020 set")
+    if list(rules) != [f"ACC-R{i:03d}" for i in range(1, 23)]:
+        fail("rule IDs are not the exact contiguous ACC-R001..022 set")
     r41 = rules["ACC-R019"]
     if (
         r41.get("binding_identity")
@@ -325,7 +325,7 @@ def main() -> int:
         fail("Defect cleanup/reply/root observation order drift")
 
     machine = contract["machine_acceptance"]
-    if machine.get("rule_count") != 20 or machine.get("gate_count") != 6:
+    if machine.get("rule_count") != 22 or machine.get("gate_count") != 6:
         fail("contract count closure drift")
     if machine.get("product_execution_receipt_count") != 0:
         fail("product execution overclaim")
@@ -462,7 +462,8 @@ def main() -> int:
             "managed_reference_memory_profile_phase1",
             "internal_runtime_abi_r1",
         ]
-        or feature.get("normative_trace_refs", {}).get("diagnostics") != []
+        or feature.get("normative_trace_refs", {}).get("diagnostics")
+        != ["ACTOR_SENDER_CONTEXT_UNAVAILABLE", "MIR_ACTOR_SENDER_IDENTITY_INVALID"]
         or feature.get("product_support") != "NOT_RUN"
         or "spec/contracts/actor-minimum-lifecycle-trace-r1.json"
         not in feature.get("artifact_trace_refs", [])
@@ -494,7 +495,7 @@ def main() -> int:
 
     print(
         "ACTOR_MINIMUM_LIFECYCLE_PASS: "
-        "rules=20 fixtures=10 admit=5 reject=5 guards=12 trace=complete "
+        "rules=22 fixtures=10 admit=5 reject=5 guards=12 trace=complete "
         "restart=0 interleaving=0 product=NOT_RUN"
     )
     return 0

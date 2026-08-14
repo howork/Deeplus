@@ -116,6 +116,35 @@ local, overload identity and public API/ABI identity. An optional following
 structural Pattern is checker-proven irrefutable and lowers only as body-entry
 decomposition; its child binders do not alter the call channel.
 
+The normative checker handoff for this domain is
+`spec/contracts/generic-applicability-variance-responsibility-r105.json`.
+`GenericApplicabilityV1` allocates fresh variables independently for each
+candidate, checks the closed kind family, solves only from explicit generic and
+value arguments, then evaluates normalized equality, conformance, effect-row
+and visibility constraints. Defaults fill only otherwise unconstrained
+variables after that solve. Expected results, runtime values, enumeration order
+and failed sibling probes contribute no constraints. Success seals one
+`GenericSubstitutionId` and `GenericApplicabilityProofId`; failure commits no
+binding, witness, loan, capture or HIR residue.
+
+`GenericVarianceV1` keeps Class, Enum and other nominal constructors invariant.
+Only Trait `type` parameters may declare `out` or `in`; `StaticInt`, `EffectRow`
+and `ErrorSet` use exact or row relations rather than variance markers. The
+position walk preserves polarity through results and `out`, flips it through
+ordinary inputs and `in`, and stops at invariant constructors, mutable/inout
+storage and every ownership-qualified type. Constructor subtyping requires the
+same constructor and arity plus a proof for every pointwise relation. There is
+no use-site variance or inferred variance.
+
+`FunctionResponsibilityCompatibilityV1` is the only higher-order compatibility
+judgment. Channel shape, labels, modes, ownership qualifiers, cancellation,
+suspension, isolation, authority, call-right, capture and cleanup are exact.
+Input types are contravariant and result types covariant under the admitted
+static subtype relation. The source callable's `ErrorSet` and `EffectRow` must
+be subsets of the target's permitted rows. A callback invocation must handle
+or propagate each error/effect before HIR sealing; it never receives a hidden
+wrapper, allocation, effect mask, error swallow or runtime compatibility test.
+
 Ordinary and message calls share one trailing-closure binding judgment. One
 trailing closure may be unlabeled or labeled; two or more are well formed only
 when every item has a unique label. Labeled items bind by the visible
@@ -198,7 +227,9 @@ Tuple products, exact/open Record and Map rows, closed List length/rest cells,
 transparent nominal products, exact ordered scalar intervals, and loop
 outcome. Record-family patterns are exact by default; `_**` ignores and
 `name**` captures an exact static named residual. Map patterns remain distinct:
-`.._` ignores and `..name` captures an exact keyed residual. A nominal type opens only through schema/data/value
+`*_` ignores and `*name` captures an exact keyed residual. The owner-bounded
+prefix `*` does not turn the residual into a positional pack and does not enter
+the static-named call channel. A nominal type opens only through schema/data/value
 identity or an explicit pattern-transparent descriptor. Sealed-Class closure
 does not expose private fields or create a constructor Pattern. Pin keys/bounds
 must be stable and use statically selected pure total equality/order. Float
@@ -223,14 +254,55 @@ opening and temporary-owner retention remain Preview.
 Bare comma return types/values/bindings and direct-local parallel assignment
 normalize to existing Tuple identities. They have arity at least two and one
 semantic result channel; Expr has no comma operator. Parallel assignment
-requires distinct mutable direct LocalPlaceIds, stages the complete RHS
-left-to-right exactly once, performs one failure-atomic logical group commit,
-and has result Unit. It promises no hardware/cross-thread atomicity. Resource,
-field/index/property/shared/actor/FFI targets remain Preview.
+and structural Pattern assignment use one `LocalPatternAssignmentV1` judgment.
+The complete assignee must be irrefutable for the exact RHS type; every
+non-wildcard leaf and rest capture must be a distinct existing mutable direct
+`LocalPlaceId`. Tuple, statically irrefutable List, Record,
+pattern-transparent nominal Record shape and bare-comma Tuple sugar are
+admitted. The RHS evaluates once, all projections stage left to right, and one
+infallible callback-free commit publishes the replacements before displaced
+owners clean in reverse target order. The result is Unit. No assignment target
+is declared, and member/index/property/shared/actor/FFI or overlapping targets
+are rejected. Resource/affine permutation remains Preview.
 
 ## 9. NumericArray, bitfield, and measures
 
-NumericArray typing preserves element, shape, rank, orientation, and typed coordinate domain. Each built-in default source-visible axis is exactly `1..dimension`, but it is not an ordinary Sequence witness. IndexSuffix supplies exactly one comma-separated axis per source rank. Each scalar axis is removed; all-scalar selection returns the element and mixed selection result rank equals the number of non-scalar axes. Multi-axis selection is Cartesian. A rank-one List does not reinterpret a comma list as gather, Tuple-as-gather is absent, and no implicit linear index exists. Coordinate type/count mismatch is static, and a dynamic coordinate outside the declared axis raises `IndexError::outOfLogicalDomain`. A NumericArray slice produces an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. Open slice ends use a boundary identity that can denote one-past-last without forming `last + 1`; an empty view retains owner, region, coordinate domain and insertion boundary. Bitfield uses unsigned strict layout and finite flags universe. Exact-ratio units are core; calendar units require the stdlib/provider profile.
+NumericArray typing preserves element, shape, rank, orientation, and typed coordinate domain. Each built-in default source-visible axis is exactly `1..dimension`, but it is not an ordinary Sequence witness. IndexSuffix supplies exactly one comma-separated axis per source rank. Each scalar axis is removed; all-scalar selection returns the element and mixed selection result rank equals the number of non-scalar axes. Multi-axis selection is Cartesian. A rank-one List does not reinterpret a comma list as gather, Tuple-as-gather is absent, and no implicit linear index exists. Coordinate type/count mismatch is static, and a dynamic coordinate outside the declared axis raises `IndexError::outOfLogicalDomain`. A NumericArray slice produces an owner-bounded `ReadonlyView` that preserves source coordinates and provenance. Open slice ends use a boundary identity that can denote one-past-last without forming `last + 1`; an empty view retains owner, region, coordinate domain and insertion boundary. Bitfield uses unsigned strict layout and finite flags universe.
+
+Exact-ratio units use one canonical conversion judgment. Every scale is a
+`ReducedPositiveRational`, every dimension has one canonical unit, and all
+catalog paths between a pair of units must reduce to the same ratio. The
+checker computes and seals `UnitConversionPlanV1`; the absorbed
+`static_exact_unit_conversion_msp` alias creates no second type, witness, plan,
+or runtime path. Approximate, affine, calendar, and provider-backed edges are
+not exact conversion rows. Affine point/delta units are target-excluded and
+current source rejects them with `AFFINE_UNIT_NOT_IN_PHASE_A`; calendar units
+require their separate stdlib/provider profile.
+
+The checker selects a known display witness only from the finite active catalog
+set and an explicit unit carrier or exactly one already sealed context anchor.
+Typed HIR retains `KnownUnitWitnessId`, `UnitCatalogId`, `UnitId`, `DimensionId`,
+and `RepTypeId`. A function boundary carrying only `Measure<Rep, Dim>` loses the
+display identity; no checker or runtime phase reconstructs it from a value.
+Every exact conversion also seals one `ScaleByReducedRatio<Rep>` plan. Rational
+admits every exact ratio. An integral representation admits only a fully reduced
+result with denominator one and a representable checked result. Float and other
+representations require an explicit deterministic rounding or exact scaling
+witness. Silent truncation, implicit representation promotion, and backend
+rounding selection are forbidden.
+
+A shaped generator plan has a finite static cardinality and an exact ordinary
+callable selected before construction. For nonzero cardinality, the generator
+expression evaluates once and the callable receives each one-based logical
+coordinate tuple exactly once in row-major order. For zero-cardinality shapes,
+the generator expression evaluation count is zero. Provider lookup, hidden
+clone, default synthesis, and dependency on
+`arbitrary_generator_stdlib_profile` are all zero. Allocation/storage
+reservation precedes calls; failure cleans the constructed prefix in reverse
+order and commits no result. The callable's sealed effects, ErrorSet, ownership,
+and cleanup remain visible. The normative contract and fixtures are
+`spec/contracts/measure-collection-bootstrap-r99.json` and
+`tests/fixtures/current/measure-collection-bootstrap-r99.json`.
 
 Current `Set<T>` is an immutable unique-element collection. Literal and
 comprehension elements require one exact normalized `T` plus admitted equality
@@ -247,6 +319,25 @@ nonconsuming, synchronous, `throws Never effects {}`, cancellation-forbidden,
 and authority-free. Entry expressions retain their own visible responsibility
 channels, and the plan's failure-atomic cleanup handles those channels without
 publishing a partial Map.
+
+`KeyableAdmissible` executes `KeyableSelectionV1`: after alias normalization it
+must select one direct-global strong `Eq<Self>` witness and one direct-global
+`Hash<Self>` witness belonging to the same registered Keyable family. It proves
+Eq equivalence and hash congruence under one `HashPolicyId`, then seals the
+Keyable/Eq/Hash/policy identities before any Map or Set plan exists. The
+operations borrow, do not consume or mutate, are synchronous and
+authority-free, and have `throws Never effects {}`. Float/Complex partial
+equality, mutable or lifecycle identity, provider lookup, reflection and
+per-instance hash policy are rejection cases.
+
+`ForSourceIterableAdmitted` executes `ForIteratorPlanV1`. It evaluates the
+source once and chooses `DIRECT_ITERATOR` before `SEQUENCE_ACQUIRE`, with no
+fallback based on source order or runtime values. The selected route seals the
+exact Sequence conformance when present, Iterator conformance and witness,
+associated `Item` type, Pattern policy and cleanup plan. Bare `for` requires an
+irrefutable Pattern; `for let` mismatch or a false pure Bool guard skips only
+the current candidate. Acquisition, `next` and cleanup responsibilities are
+checked before entry, and all exits reverse-clean item, iterator and source.
 
 ## 10. RCTS-V5 and MIR handoff
 
@@ -284,16 +375,24 @@ The implementation may choose internal Rust types, but it must preserve the foll
 
 Call checking performs these steps in order:
 
-1. resolve the callee domain and candidate set without using the result type as a tie-breaker;
-2. evaluate argument expressions in source order;
-3. bind fixed positional and fixed named parameters;
-4. bind the optional repeated positional channel `T..` into a finite nonescaping `PositionalPack<T>`;
-5. prove and expand each named unfold `**record` from a statically known Record label row;
-6. bind the optional static named-rest channel `NamedPack**` into a finite nonescaping `NamedPack<rho>` and verify its optional required-label clause;
-7. reject missing, duplicate, overlapping, indeterminate, or extra labels;
-8. check ownership, context, witness, effects, errors, isolation, and return compatibility;
-9. choose the unique most-specific candidate, preferring fixed arity, then repeated positional, then named rest;
-10. emit a normalized CallShape for Deeplus MIR.
+1. resolve and prepartition the finite callee domain into a `ResolvedOverloadSetRef` without using result, source, import, declaration, or provider order;
+2. normalize the call head and syntactically fixed argument channels, and build one nonexecuting static descriptor per explicit argument;
+3. reject globally invalid duplicate, overlapping, indeterminate, or extra static labels before candidate work;
+4. for every candidate independently, instantiate only its generic parameters and require one complete substitution from explicit generic/value arguments; defaults and expected result contribute no constraint;
+5. candidate-locally bind fixed positional/named parameters, optional repeated `T..`, and optional static named-rest `NamedPack**`, including its required-label clause;
+6. candidate-locally prove ownership/place, context/evidence, effect/error, isolation, and suspension obligations without committing place, capture, or binding state;
+7. apply the existing nominal-member versus active-extension collision fence to the independently applicable domains;
+8. order applicable candidates inside the sole surviving domain by channel generality `FIXED < REPEATED < NAMED_REST < REPEATED_AND_NAMED`;
+9. at equal channel rank, apply only the closed pointwise input-domain proofs: exact nominal subtype, concrete/constructed formal over a bare type parameter, or strict exact Trait-bound superset; treat every unproved relation as incomparable;
+10. require exactly one maximal candidate; expected/return type, ownership mode, effect/error row, defaults, refinement/`where` spelling, and all enumeration orders add zero preference;
+11. verify the fixed expected result against that winner without changing its identity;
+12. seal `OrdinaryCallSelectionV1` and emit the normalized `CallShape`/`CallPlan` for Deeplus MIR.
+
+Implicit-parameter lambda and trailing-closure bodies are not candidate probes.
+While multiple candidates remain they contribute only structural arity and
+label shape. The body is checked once after one expected callable type has
+been selected, and a failed probe cannot leak a binding, capture, loan, effect,
+or diagnostic state.
 
 The source parameter `options**` and the function-type item `NamedPack**` denote the same named-rest residue. The body binding is a `NamedPack<rho>`, not a Record or Map; its finite normalized row/witness digest remains public call identity. `*value` is the owner-bounded positional outward unfold and `**value` is the owner-bounded static-named outward unfold, not a parameter/type suffix. The lexical marker fixes the channel before overload selection; expected formals, results, selected overloads and runtime values cannot choose it.
 
@@ -364,9 +463,33 @@ MemberVisibilitySurface ::= EXPLICIT_MINUS | EXPLICIT_HASH | EXPLICIT_PLUS | OMI
 OMITTED                  ::= null
 ```
 
-`OMITTED` is not an element of the three-point order. R58 supplies no global
-default. The immediate parent-owner contract must preserve, resolve, or reject
-it before a judgment that needs a concrete member domain.
+`OMITTED` is not an element of the three-point order. R58 remains the immutable
+surface-preservation predecessor; `MemberVisibilityOmissionV1` closes
+`IR-VIS-P1-057` with the following owner-bound static judgment before typed HIR:
+
+```text
+ResolveMemberVisibility(owner, parent_context, surface, anchors)
+    -> EffectiveMemberDomain | diagnostic
+```
+
+New member slots owned by `ConstructorDecl`, `StoredParameter`, `FieldDecl`,
+`TypeSideFieldDecl`, each `AccessorDecl`, each generated `ForwardDecl` slot,
+`ExtensionSetFunctionDecl`, `BitfieldNamedSlot`, and `FlagNamedSlot` resolve an
+omission to `PRIVATE`. A new `MemberFunctionDecl`, nominal/extension
+`TypeSideMemberFunctionDecl`, or new `TraitMethodDecl` does the same. An
+override inherits the exact original slot and anchor; a conformance method
+inherits the exact selected Trait requirement; and an associated-function
+fulfillment inherits its Trait-associated requirement domain. A required
+anchor that is absent is an error, never permission to fall back to private.
+
+`ActorOnDecl` and `ActorRequestDecl` use the enclosing Actor transport domain.
+A standalone operation derives `ActorDecl.visibility`; a direct protocol
+fulfillment derives `meet(ActorDecl.visibility,
+ActorProtocolDecl.visibility)`. The transport lattice is
+`private < common < public` and remains distinct from `- < # < +`.
+Canonical HIR therefore contains one non-null effective domain plus its
+resolution provenance. Unresolved omission count in typed HIR and module API
+residue is exactly zero.
 
 For a concrete visibility `v`, static access is admitted exactly when both
 `OwnerReachable(owner, site)` and `MemberDomainAdmits(v, anchor, site)` hold.
@@ -388,12 +511,31 @@ witness does not satisfy the requirement.
 
 Primary diagnostics follow declaration admission order. On a member callable,
 the wrong word `public`, `common`, `private`, or `protected` emits
-`CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` before any slot comparison. With a
-valid sigil, override narrowing emits `OVERRIDE_VISIBILITY_CANNOT_NARROW`
-before a later Trait requirement visibility comparison. The visibility proof
-is compile-time metadata only: it introduces no runtime lookup, check, registry,
-MIR operation, xVM instruction, or backend instruction. A rejected declaration
-or access produces no HIR residue.
+`CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN` before any slot comparison. Invalid
+owner/context and missing-anchor failures then emit
+`MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID` and
+`MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING`. With a valid resolved owner,
+override narrowing emits `OVERRIDE_VISIBILITY_CANNOT_NARROW` before a later
+Trait requirement visibility comparison. The visibility proof is compile-time
+metadata only: it introduces no runtime lookup, check, registry, MIR operation,
+xVM instruction, or backend instruction. A rejected declaration or access
+produces no HIR residue.
+
+Accessor-property admission is a separate owner-bound judgment. The header has
+no member visibility; each accessor arm owns an explicit or omitted visibility
+surface. After omission resolution, an admitted property has exactly one
+`GetAccessorId`, at most one `SetAccessorId`, and satisfies
+`rank(set) <= rank(get)`. A `let` property requires `SetAccessorId = null`.
+Every Stable accessor arm has the responsibility row `throws Never effects {}`.
+The declared value type must be reusable, no-drop, lifecycle-free, and
+ownership-compatible for by-value observation. The resulting HIR contains no
+`FieldId`, storage/layout identity, or hidden cleanup owner.
+
+Property reads evaluate the receiver once and invoke the sealed getter once.
+Property writes evaluate receiver then value once each, left-to-right, before
+one sealed setter invocation. Extension properties follow the same judgment,
+add no storage, and cannot widen access to the extended nominal's private
+state. These rules are the exact `AccessorPropertyForwardingR100` contract.
 
 Conformance selection must produce a unique `WitnessId`. Extension-member selection must produce a unique `ExtensionMemberId` and activation origin. Source order is never coherence evidence. Dynamic Trait state and first-class/local Witness values remain nonactivatable until their scope, escape, coherence, cleanup, and ABI laws are closed.
 
@@ -422,10 +564,17 @@ An external record may retain `as name`, lowercase `via Provider`, a local
 `where` condition, and an explicit body. Lowercase `via` may have a body and
 does not denote a separate semantic conformance for the same normalized ground
 key. A bodyless direct record is admitted only when compatible defaults close
-every requirement. `supports auto` registers a closed synthesis policy on the
-Trait; bodyless `by auto` invokes only that exact policy. An unregistered,
-ambiguous, structural, extension-derived, provider-discovered, or runtime
-policy produces zero candidates.
+every requirement. `supports auto` only asserts that a core/Prelude-owned
+Trait has one exact `(TraitId, PolicyVersion)` row in
+`TraitAutoPolicyRegistryV1`; source declaration never creates a policy, and a
+user-owned Trait carrying the clause is rejected. Bodyless `by auto` invokes
+only that row. The current rows are `ShareableObservationSafe` for Shareable
+and `TransferableAcrossIsolation` for Transferable, both under the finite
+memoized `RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1` algorithm. A missing or
+digest-mismatched row, unknown/failed input proof, unbounded graph, direct
+witness, extension, provider, source/import order or runtime evidence produces
+zero candidates. Successful synthesis seals policy, conformance, witness,
+input-evidence and derivation identities before canonical HIR.
 
 A nominal `conform Trait { ... }` block groups witnesses for one matching
 header clause and is admitted only inside that Class or Enum body. Lexical
@@ -505,6 +654,16 @@ projects the sign of the same comparison result; no per-glyph order witness
 exists. `Ord<Rhs> derives Eq<Rhs>`, and comparison zero must be exactly the
 strong-equality relation.
 
+Strong comparison is homogeneous for user and language-derived evidence. After
+normalization, `Eq<Rhs>` and `Ord<Rhs>` require `Rhs == Self`
+(`NORMALIZED_RHS_MUST_EQUAL_SELF`). A heterogeneous row is admitted only as one
+compiler- or Prelude-sealed bilateral family
+(`SEALED_BILATERAL_FAMILY_ONLY`). Such a family owns the unordered normalized
+type pair, both oriented witnesses, one normalization domain, Eq symmetry, Ord
+sign reversal, and zero-to-Eq agreement. The current registry contains no such
+family. Independent left-owned rows, implicit conversion, or reverse-row
+inference cannot manufacture bilateral evidence.
+
 Intrinsic-reserved normalized operand pairs use `INTRINSIC_ONLY` and perform no
 conformance lookup. Every other admitted operand or pair must select exactly one
 left-nominal-owner `DIRECT_GLOBAL` conformance from
@@ -512,16 +671,33 @@ left-nominal-owner `DIRECT_GLOBAL` conformance from
 extension/local/case/provider/`via`/`VIA`/`AUTO`/specialization evidence,
 source/import order, runtime relookup, and fallback neither create nor rank a
 candidate. The selected conformance, witness, method, substitution, output type,
-and responsibility profile are static identity. Its method borrows both
-operands, is synchronous, non-consuming and non-mutating, and has
-`throws Never effects {}`. An admitted numeric operation may terminate through
-the closed nonrecoverable `ArithmeticDefect` profile before commit; that
-terminal is not an ErrorSet member.
+responsibility profile, and any sealed comparison family, reverse witness, and
+normalization domain are static identity. Its method borrows both
+operands, is synchronous, non-consuming and non-mutating, and has an exact
+normalized selected-witness responsibility. `Eq` has the closed empty
+envelope. `UnaryPlus`, `UnaryMinus`, `Add`, `Subtract`, `Multiply`, `Divide`,
+`Remainder`, and `Ord` admit only subsets of
+`throws AllocationError effects allocate`; no other Error, effect,
+suspension, cancellation, mutation, consumption, or authority is permitted.
+Concrete primitive, fixed-width, Complex, and Rational-Eq rows seal the empty
+subset. BigInt/Rational value-producing rows and Rational ordering seal the
+full allocation row. Generic code with only the Trait requirement uses its
+maximum row; an exact selected witness may prove a narrower row. An admitted
+numeric operation may also terminate through the closed nonrecoverable
+`ArithmeticDefect` profile before commit; that terminal is not an ErrorSet
+member.
 
 Compound `+=`, `-=`, `*=`, `/=`, and `%=` derive from the corresponding binary
 row plus exact assignment admissibility. They own no separate Trait, witness,
 or overload-resolution pass. The target place is evaluated once, the original
 value is read once, and a terminal before final write preserves it.
+
+Arbitrary-precision allocation follows
+`spec/contracts/exact-numeric-operator-allocation-r99.json`. Small-value or
+preallocated representations may optimize allocation but do not narrow a
+publicly sealed responsibility. On `AllocationError`, operands remain owned by
+the caller, unpublished intermediates are reverse-cleaned, result publication
+count is zero, and a derived compound assignment performs zero place writes.
 
 Rational supplies the full admitted arithmetic profile, strong Eq, and total
 Ord. Its remainder is `a - trunc(a / b) * b`, with quotient truncated toward
@@ -540,6 +716,12 @@ endpoint. Reverse traversal uses `downTo`; reversed endpoints, different Enum
 owners, unordered Enums, payload Enums, and generic Enums reject before range
 construction. This language-owned range rule creates no operator-conformance
 hook or implicit whole-Enum iteration.
+
+Every current Enum, ordered or unordered, seals a nonempty `VariantId` vector
+before member checking. The first body item is a case. Comma mode contains at
+least two cases and no members; layout mode contains at least one case followed
+by members. An empty or member-first body fails before nominal identity, derived
+witness, layout, API digest, or MIR residue is formed.
 
 Other glyph families remain intrinsic-only or excluded from conformance
 overloading. Power, strict/short-circuit logical, bitwise, range, and arbitrary
@@ -787,7 +969,9 @@ mutex handoff edge to the next successful lock. No type rule infers weaker
 ordering, poisoning, fairness, lock ordering, actor transferability, or hidden
 cleanup.
 
-Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the ordinary static channel matcher to the preserved ordered `CallArgument` list. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError>`. A request whose declared reply type is `T` checks immediately as `Result<Reply<T>, error ActorMessageError>`; `await` applies only after pattern-matching or otherwise extracting that `Reply<T>`. Each successfully admitted request carries a non-forgeable `ReplyResponsibility` descriptor in typed HIR, module API digest, and MIR. Its exact fields are normalized result type, handler ErrorSet, cancellation axis, isolation owner, `ReplyId`, request correlation identity, and terminal transport failure. Module API identity stores static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers, while each committed request keeps its concrete identities only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second `Reply` type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted reply and does not retroactively change the successful admission Result.
+Actor message typing has one closed admission family. It first resolves the preserved selector path in the actor or actor-protocol domain, with no ordinary-method fallback, and then applies the ordinary static channel matcher to the preserved ordered `CallArgument` list. A trailing closure that crosses actor isolation must independently satisfy transferable capture, suspension, effect, error, and cleanup requirements; trailing syntax supplies no such evidence. An actor with no `MailboxClause` has profile `logical_unbounded_v1`; a positive static `#mailbox(capacity: N)` has profile `bounded_reject_v1`. A one-way send checks as `Result<Unit, error ActorMessageError> throws AllocationError effects allocate`. A request whose declared reply type is `T` checks immediately as `Result<Reply<T>, error ActorMessageError> throws AllocationError effects allocate`; `await` applies only after pattern-matching or otherwise extracting that `Reply<T>`. `ActorMessageError` remains the normal value-level admission and receiver-lifecycle family. `AllocationError` is the independent dynamic failure of compiler/runtime-owned envelope, mailbox, Reply, and correlation storage and is never converted into that Result, Cancellation, or Defect. Each successfully admitted request carries a non-forgeable `ReplyResponsibility` descriptor in typed HIR, module API digest, and MIR. Its exact fields are normalized result type, handler ErrorSet, cancellation axis, isolation owner, `ReplyId`, request correlation identity, and terminal transport failure. Module API identity stores static `reply_id = per_value_non_forgeable` and `correlation_id = per_value_non_forgeable` policy markers, while each committed request keeps its concrete identities only in value-level typed HIR/MIR. Awaiting a handler declared `throws E` therefore exposes exactly `E | ActorMessageError::receiverClosedBeforeReply` without adding a visible second `Reply` type parameter. The exact admission error cases are `mailboxFull`, `receiverClosedBeforeAdmission`, and `receiverClosedBeforeReply`. The first two are precommit admission results. The third is a declared terminal failure axis of an already admitted reply and does not retroactively change the successful admission Result.
+
+Actor transport checks receiver closure and bounded capacity under one admission transaction before allocating. If admission remains possible, it prepares envelope storage, any required mailbox growth, and request-only Reply/correlation responsibility storage before the enqueue commit. Any failure propagates `AllocationError`, retains sender ownership, reverse-cleans staged resources, and publishes no message, sequence, identities, or Result. The single enqueue commit then publishes all prepared resources and ownership transfers atomically; required postcommit allocation is forbidden. `logical_unbounded_v1` therefore promises no language capacity rejection, not infinite storage.
 
 A one-way protocol `send` requirement and its bound `on` implementation must
 both normalize to the empty recoverable ErrorSet; omission and explicit
@@ -802,6 +986,19 @@ Structured concurrency uses a separate nominal `Run<T>` responsibility. `concur 
 `AsyncSequence<T, E: ErrorSet>` binds its source failure set instead of leaving a free terminal type. Its `next` operation throws `E`, while cancellation remains a distinct control outcome. For `AsyncCollector::list<T, U, ES, ET>`, the source is `AsyncSequence<T, ES>`, the named asynchronous transform throws `ET`, and the result throws exactly `normalize(ES | ET)`. Neither source nor transform errors may be erased or converted to cancellation.
 
 Before enqueue commit, all moved argument places remain live at the sender and a rejection allocates neither `MessageId` ownership nor `channel_sequence`. A successful commit consumes each moved sender place exactly once, installs exactly one actor-owned payload, and allocates the next strictly increasing sequence for the normalized `(SenderId, ReceiverActorId, MailboxProfileId)` key. Cancellation before commit aborts without transfer; cancellation after commit cannot restore the sender place or retract the message. Cancellation is a control axis and never a member of `ActorMessageError`.
+
+`ActorSenderIdentityAdmitted` seals the first component of that key. `SenderId` is a disjoint internal sum of `Actor(ActorInstanceId)` and `Execution(ExecutionId)`, never a source-constructible value. The actor variant is selected exactly when the current execution owns an active actor-turn authority; otherwise a current `ExecutionId` is required. Inline await preserves the current selection, structured spawn creates a distinct execution sender, actor suspension preserves its incarnation sender, and actor restart creates a distinct incarnation sender. The tagged identity is copied into committed transport residue and remains observable there after its origin terminates, without extending isolation or execution authority. No send operation allocates, hashes, truncates, serializes or re-derives this identity.
+
+`ScopeCancellationPlanAdmitted` is the closed admission judgment for `@scope`
+cancellation modifiers. The checker preserves the complete source modifier list
+and then applies this fixed precedence: duplicate modifier, same-scope
+`cancellable`/`shielded` conflict, explicit `cancellable` inside an active
+parent shield, and missing cancellation-aware execution context. Rejection
+creates no typed-HIR or MIR residue. Admission emits exactly one of `INHERIT`,
+`OBSERVE`, or `DEFER_TO_OUTERMOST_SHIELD_EXIT`, together with the resolved
+execution owner, optional parent-shield identity, exact-once cleanup fence, and
+failure-precedence plan. Source order cannot choose semantics. The normalized
+formatter order is `isolated` followed by `cancellable` or `shielded`.
 
 An assignment target is checked and evaluated as one place. Compound assignment reads that place once, checks one exact intrinsic operand domain, evaluates the right operand once, and commits at most one result. A precommit `ArithmeticDefect`, `IndexError`, or other failure leaves the prior owner and value unchanged. Assignment expressions have result type `Unit`. Every admitted slice result is a `ReadonlyView`, never an assignable place; its borrow cannot escape its owner, cross isolation, hide a copy, or be implicitly rebased.
 
@@ -899,6 +1096,30 @@ compatibility uses row subsumption under current variance. Stable promotion
 requires a deterministic migration of every affected inferred private/local
 signature and an explicit supersession of `private_error_set_inference`.
 
+The current `PrivateErrorInferenceV1` runs only for the closed lexical/private
+callable owner set in
+`spec/contracts/private-error-set-inference-v1.json`. Its input graph is
+available only after name resolution, ordinary-call selection, complete generic
+substitution and visibility normalization. For each strongly connected
+component it computes the finite least fixed point of normalized direct errors,
+propagated errors, declared callee rows and exact indirect-call function-type
+rows. Node and edge order is semantic-identity order; declaration order and
+expected result type cannot change the result. Effects are not inferred.
+Canonical HIR requires a sealed `ErrorSetId` and inference proof digest, and no
+inferred error may cross into an API visibility domain that cannot name it.
+Within an inferred recursive component, aliases and associated bindings are
+normalized before comparing the complete substitution vectors. Only an exact
+caller/callee vector match is admitted; a different or expansive vector requires
+an explicit `throws` row and creates no inferred HIR identity.
+
+`Callable<Sig>` is a transparent exact-signature facade. `Sig` must normalize
+to one function signature type and the facade then normalizes to precisely the
+same type identity. Consequently assignment, variance, invocation, overload
+participation and API digesting are exactly those of `Sig`. No erased or
+existential callable, hidden allocation, separate nominal identity, runtime
+dispatch, or responsibility-dropping conversion is introduced. Bare
+`Callable` and `Callable<T>` for non-function `T` are ill-formed.
+
 Errors, defects, and cancellation are distinct control outcomes. Propagation operators consume only their declared family. Cleanup executes under a deterministic budget before the outcome escapes. Async suspension preserves live-place and cleanup obligations, and cancellation cannot silently bypass a registered cleanup. Callable compatibility is contravariant/covariant only where the declared responsibility profile permits; default inference remains invariant and conservative.
 
 Checked integer overflow and integer division or remainder by zero produce
@@ -958,6 +1179,12 @@ substitute for absent constructor-pattern syntax. Clause functions and
 declarative clauses reuse the same partition engine while preserving their own
 input-supply, overlap, and return-totality rules.
 
+The fallback arm has a distinct static input shape with no guard slot. Surface
+admission first rejects a guarded `otherwise`, then duplicate `otherwise`, then
+non-final `otherwise`; only after those checks does usefulness select
+`OTHERWISE_UNREACHABLE` or exhaustiveness select the residual diagnostic. No
+recovery path converts a rejected fallback into a pattern arm.
+
 The flow-proof environment `Phi` records closed-union alternative identities, enum-case identities, admitted finite R0 refinement facts, and usable-place state without changing a declaration's normalized semantic type. Structural success narrows an arm to the intersection of `Phi` and its coverage cell. Join is set intersection across incoming paths. Assignment, aliasing mutation, exclusive borrow, escape or capture, consume, and calls whose responsibility summary may mutate the subject kill the affected facts.
 
 For a normalized closed Union only, `subject is Alternative` and the adjacent
@@ -978,6 +1205,27 @@ typed patterns own alternative binding.
 For a closed Union scrutinee only, a typed child binder naming exactly one declared alternative elaborates to `UnionAlternativeBindPattern`. Its test is the existing Union injection identity; it is not a subtype test or a refinement check. Union formation itself requires every normalized alternative pair to be proven disjoint by the finite R0 relation procedure. Equivalent or implying members are subsumed; overlap or an unknown relation rejects rather than choosing a runtime winner.
 
 Refinement admission at construction, typed-pattern, argument, return, and explicit cast boundaries is three-valued: `PROVED` admits, `DISPROVED` emits the exact literal/range contradiction, and `UNKNOWN` emits `REFINEMENT_PROOF_REQUIRED`. A silent conversion outside those boundaries emits `REFINEMENT_IMPLICIT_NARROWING_FORBIDDEN`. `as?`, `as!`, and `T::check` retain their distinct Option, defect, and Result outcomes.
+
+The three values above are computed only by `RefinementR0V1`, defined by
+`spec/contracts/refinement-r0-calculus-v1.json`. It validates one closed typed
+formula vocabulary, proves every term total over the declared normalized input
+domain, converts the formula to bounded negation-normal form and bounded DNF,
+then intersects typed interval, identity, exclusion, congruence, Bool, and
+IEEE-NaN cells. A cell is `SAT`, `UNSAT`, or `UNKNOWN`. `Phi` implies a target
+only when `Phi and not(target)` is `UNSAT`; it disproves the target only when
+`Phi and target` is `UNSAT`. All other cases, including proof-budget
+exhaustion, are `UNKNOWN`. Union formation admits only a proved `DISJOINT`
+pair; an equivalent or directed-implying member is subsumed, and `OVERLAPS` or
+`UNKNOWN` rejects.
+
+The R0 value domains are Bool, signed and unsigned exact integers,
+`StaticInt`, Float32, Float64, Rational, Char scalar, and ordered Enum. The only
+initial total projections are String scalar length, Bytes length, List length,
+and ReadonlyView length. User-selected operator conformances and ordinary
+calls cannot enter an R0 formula. Integer `/` and `%` require a static safe
+divisor; other checked integer arithmetic requires a closed no-overflow proof.
+Float arithmetic remains exact IEEE evaluation, but comparison complement is
+logical negation and never an inverse-operator rewrite that would discard NaN.
 
 `T where > bound` is syntax sugar only for `T where this > bound`. Its right
 side uses the bounded `RefinementComparisonOperand` parse goal—literal,
@@ -1011,6 +1259,13 @@ Stored Bool results, wrappers, indirect calls, invalid or stale summaries, and
 unstable actuals remain opaque. Existing mutation, aliasing, borrow, capture,
 consume, suspension, and may-mutate/may-consume-call rules kill such facts. A
 guarded arm never subtracts from exhaustiveness coverage.
+
+Each `GuardSummaryV1.normalized_formula` is the typed formula node from
+`RefinementR0V1` and carries its exact `formula_digest`. Formal `PARAMETER`
+terms are capture-free. Direct-call substitution replaces them with exact
+stable `PLACE` terms only in the branch-local fact; a stored summary itself may
+not contain a place identity. The formula digest participates in the summary
+and API digests, while no formula or proof object survives as runtime data.
 
 ## 18. MIR responsibility projection and evidence boundary
 
@@ -1093,13 +1348,14 @@ binding `self`. Missing, extra, stale, or graph-unbound pairs fail
 `DependencyInterfaceBindingClosed` before canonical HIR.
 
 The R4 seal may emit a closed noncall `ResolvedRef`, name/import traces, and a
-visibility proof. A callable candidate group is
-`ResolvedOverloadSetRef` in analysis HIR only. Selecting its function,
-completing generics, expected-type-directed choice, applicability/specificity
-ranking, row inference, and result-type-only choice are expressly outside this
-judgment and must be closed before canonical HIR-H1. This section preserves
-already admitted `EvidenceOriginId` values but neither creates nor replaces
-Trait witnesses.
+visibility proof. A callable candidate group is `ResolvedOverloadSetRef` in
+analysis HIR only. `OrdinaryCallSelectionV1` must consume it before canonical
+HIR-H1, preserving one selected declaration, callable implementation, complete
+substitution, canonical call shape, candidate-set and argument-descriptor
+digests, and specificity proof. Result-type-only selection is forbidden and a
+fixed expected result is a post-winner compatibility check. This section
+preserves already admitted `EvidenceOriginId` values but neither creates nor
+replaces Trait witnesses.
 
 Primary failure is the first failed stage in this exact order:
 package/module/source graph; module skeleton; dependency interface; resolver
@@ -1131,7 +1387,7 @@ Dynamic conversion admission is the conjunction `ProfileActive ∧ ProviderBound
 
 ## 22. Sugar-equivalence and quarantine judgments
 
-Field punning elaborates `label` to `label: label` before construction-row checking, without inserting clone, move, authority or lookup. Grouped forwarding elaborates to a finite ordered list of ordinary forwarding declarations and rejects duplicate or colliding names. Scoped import/use grouping pushes exactly one compile-time lexical frame for its `in` block and pops it on every exit. Enum comma lists, multiline indentation, and the single-guard law are parser/scanner obligations whose normalized HIR is identical to their unsugared forms.
+Field punning elaborates `label` to `label: label` before construction-row checking, without inserting clone, move, authority or lookup. Grouped forwarding elaborates to a finite ordered list of ordinary forwarding declarations and rejects duplicate or colliding names. Every elaborated slot seals a distinct `ForwardSlotId`, the selected target `MemberId`, normalized call shape, ownership row, ErrorSet, EffectRow, and result responsibility. Runtime lookup or reselection is forbidden. Each forwarded operation evaluates the forwarding owner receiver, then the target expression once, then arguments left-to-right; it preserves target failure, suspension, and cleanup without synthesizing storage, a witness, a subtype edge, or a hidden closure. Scoped import/use grouping pushes exactly one compile-time lexical frame for its `in` block and pops it on every exit. Enum comma lists, multiline indentation, and the single-guard law are parser/scanner obligations whose normalized HIR is identical to their unsugared forms.
 
 `if let`, `while let`, and `for let` use one transactional `PatternAttempt`
 judgment: evaluate once, acquire, compile and run a pure nonconsuming TestPlan,

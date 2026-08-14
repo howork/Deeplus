@@ -102,20 +102,20 @@
       "gap_id": "IR-RES-P0-041",
       "kind": "positive",
       "category": "MEMBER_EXTENSION_COLLISION",
-      "scenario": "Only the nominal member domain is nonempty. R4 records no member/extension collision and leaves any within-domain overload winner to the next cluster.",
+      "scenario": "Only the nominal member domain is applicable; the collision fence passes and OrdinaryCallSelectionV1 closes one within-domain winner.",
       "input": {
-        "description": "Only the nominal member domain is nonempty. R4 records no member/extension collision and leaves any within-domain overload winner to the next cluster.",
+        "description": "Only the nominal member domain is applicable; the collision fence passes and OrdinaryCallSelectionV1 closes one within-domain winner.",
         "artifact_refs": [
           "schemas/language/method-extension-resolution-trace-schema.json"
         ]
       },
       "expected": {
         "verdict": "ACCEPT",
-        "outcome": "ACCEPT_NO_CROSS_DOMAIN_COLLISION_SELECTION_DEFERRED",
+        "outcome": "ACCEPT_ORDINARY_CALL_SELECTION_V1",
         "primary_diagnostic_or_null": null,
         "primary_reason_or_null": null,
         "suppressed_diagnostics": [],
-        "selected_count_or_null": null,
+        "selected_count_or_null": 1,
         "invariants": {
           "source_order_winner_count": 0,
           "dependency_order_winner_count": 0,
@@ -131,20 +131,20 @@
       "gap_id": "IR-RES-P0-041",
       "kind": "boundary",
       "category": "MEMBER_EXTENSION_COLLISION",
-      "scenario": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; R4 bypasses only the cross-domain collision rule.",
+      "scenario": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; OrdinaryCallSelectionV1 closes one winner only inside that domain.",
       "input": {
-        "description": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; R4 bypasses only the cross-domain collision rule.",
+        "description": "An exact qualified extension selector restricts lookup to one extension domain despite a same-spelling nominal member; OrdinaryCallSelectionV1 closes one winner only inside that domain.",
         "artifact_refs": [
           "schemas/language/method-extension-resolution-trace-schema.json"
         ]
       },
       "expected": {
         "verdict": "ACCEPT",
-        "outcome": "ACCEPT_EXACT_EXTENSION_DOMAIN_SELECTION_DEFERRED",
+        "outcome": "ACCEPT_EXACT_EXTENSION_DOMAIN_ORDINARY_CALL_SELECTION_V1",
         "primary_diagnostic_or_null": null,
         "primary_reason_or_null": null,
         "suppressed_diagnostics": [],
-        "selected_count_or_null": null,
+        "selected_count_or_null": 1,
         "invariants": {
           "source_order_winner_count": 0,
           "dependency_order_winner_count": 0,

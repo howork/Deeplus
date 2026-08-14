@@ -1,0 +1,136 @@
+{
+  "schema": "deeplus.accessor-property-forwarding/r100",
+  "revision": "r100-accessor-property-forwarding-implementation-readiness-r1",
+  "status": "LOCAL_DESIGN_STATIC_CANDIDATE_NOT_PUBLISHED",
+  "baseline": {
+    "local_predecessor_commit": "9c5f25e9d1e518c75e594f46b2158c510008c379",
+    "observed_live_main": "10e64f492f0529610673846139afcf0d95175663",
+    "baseline_mix_forbidden": true
+  },
+  "feature_ids": [
+    "accessor_property_colon_equals_surface",
+    "accessor_visibility_restored_law",
+    "accessor_visibility_surface_phase_a",
+    "instance_extension_property",
+    "member_forwarding",
+    "property_default_accessor",
+    "property_value_admissibility",
+    "simplified_class_member_surface"
+  ],
+  "rules": [
+    {
+      "rule_id": "APMF-R001",
+      "title": "Accessor property surface",
+      "normative": "An accessor property is introduced by let or var, an identifier, an explicit type annotation, :=, and either one accessor arm or a braced nonempty accessor-arm sequence. The property header cannot carry member visibility."
+    },
+    {
+      "rule_id": "APMF-R002",
+      "title": "Accessor arm ownership and visibility",
+      "normative": "Each get or set arm owns its optional member-visibility sigil. Omission is preserved through CST and AST and resolves through MemberVisibilityOmissionV1; a newly declared accessor arm resolves to PRIVATE. The property header creates no separate visibility domain."
+    },
+    {
+      "rule_id": "APMF-R003",
+      "title": "Accessor cardinality and mutability",
+      "normative": "An admitted accessor property has exactly one getter and at most one setter. A let property forbids a setter. A var property may have one setter. Duplicate or missing getters and duplicate setters are rejected before HIR sealing."
+    },
+    {
+      "rule_id": "APMF-R004",
+      "title": "Accessor visibility ordering",
+      "normative": "When a setter exists, its effective visibility rank cannot exceed the getter rank under PRIVATE < HIERARCHY_PROTECTED < PUBLIC."
+    },
+    {
+      "rule_id": "APMF-R005",
+      "title": "Accessor responsibility profile",
+      "normative": "Accessor arms are synchronous and have the sealed responsibility row throws Never effects {}. The Stable accessor surface does not admit callable responsibility clauses; effectful or fallible access uses a named method."
+    },
+    {
+      "rule_id": "APMF-R006",
+      "title": "Property value admissibility",
+      "normative": "A getter result observed by value must be reusable, no-drop, lifecycle-free, and ownership-compatible with the declared property type. A resource or affine observation requires a named method, borrow, or with-style API and is rejected as a Stable property value."
+    },
+    {
+      "rule_id": "APMF-R007",
+      "title": "Accessor AST and HIR identity",
+      "normative": "AccessorPropertyDecl records mutability, name, declared type, exactly one GetAccessorId, an optional SetAccessorId, and each arm's resolved visibility. It owns no FieldId, backing-storage identity, layout slot, or hidden cleanup owner. Canonical HIR contains no omitted visibility."
+    },
+    {
+      "rule_id": "APMF-R008",
+      "title": "Property evaluation and failure",
+      "normative": "A read evaluates the receiver once and invokes the selected getter once. A write evaluates receiver then right-hand side once each, left-to-right, then invokes the selected setter once. Failure publishes no hidden property storage, rolls back no already observed external effect, and discharges each prepared temporary exactly once."
+    },
+    {
+      "rule_id": "APMF-R009",
+      "title": "Extension accessor property",
+      "normative": "An extension accessor property follows the same AST, HIR, responsibility, visibility, and evaluation contract. It creates no storage or layout, is available only under ordinary extension activation, and cannot widen access to private state of the extended nominal."
+    },
+    {
+      "rule_id": "APMF-R010",
+      "title": "Finite forwarding expansion",
+      "normative": "A forward declaration contains one identifier or a finite explicit identifier list. A group expands in source order to distinct generated ForwardSlotId values. Duplicate names, collisions with an existing owner slot, and wildcard forwarding are rejected before HIR sealing."
+    },
+    {
+      "rule_id": "APMF-R011",
+      "title": "Forwarding selection and execution",
+      "normative": "Each generated slot statically seals its target MemberId, normalized call shape, ownership, ErrorSet, EffectRow, and result responsibility. At each forwarded operation the forwarding owner receiver is evaluated first, the target expression once, then forwarded arguments left-to-right. Runtime lookup, reselection, hidden witness creation, subtype creation, storage synthesis, and hidden closure capture are forbidden."
+    },
+    {
+      "rule_id": "APMF-R012",
+      "title": "Forwarding failure and observation",
+      "normative": "Forwarding preserves the target expression and selected slot's failure, effect, ownership, suspension, and cleanup behavior. A failed preparation publishes no generated runtime member and cleanup is performed once in reverse preparation order."
+    },
+    {
+      "rule_id": "APMF-R013",
+      "title": "Diagnostic precedence",
+      "normative": "Parse ownership errors are diagnosed before accessor cardinality, then visibility ordering, property-value admissibility, forwarding duplicate/collision, and finally reference-site access. A rejected declaration produces no canonical HIR or API residue."
+    }
+  ],
+  "frontend_projection": {
+    "accessor_property_ast": {
+      "kind": "AccessorPropertyDecl",
+      "fields": ["mutability", "name", "declared_type", "get_accessor_id", "set_accessor_id_or_null", "get_visibility", "set_visibility_or_null"],
+      "forbidden_fields": ["field_id", "backing_storage_id", "layout_slot_id", "hidden_cleanup_owner"]
+    },
+    "forward_ast": {
+      "kind": "ForwardDecl",
+      "fields": ["declared_visibility_or_omitted", "ordered_selector_names", "target_expression"]
+    },
+    "forward_hir": {
+      "kind": "ResolvedForwardSlot",
+      "fields": ["forward_slot_id", "effective_visibility", "selected_member_id", "call_shape_id", "ownership_row_id", "error_set_id", "effect_row_id", "result_responsibility_id"],
+      "forbidden_fields": ["runtime_lookup_key", "runtime_reselection", "hidden_witness_id", "hidden_closure_id"]
+    }
+  },
+  "acceptance_bindings": {
+    "accessor_property_colon_equals_surface": {"POSITIVE": ["APMF-AC-001"], "BOUNDARY": ["APMF-AC-002"], "REJECT": ["APMF-AC-003"]},
+    "accessor_visibility_restored_law": {"POSITIVE": ["APMF-AC-004"], "BOUNDARY": ["APMF-AC-005"], "REJECT": ["APMF-AC-006"]},
+    "accessor_visibility_surface_phase_a": {"POSITIVE": ["APMF-AC-004"], "BOUNDARY": ["APMF-AC-005"], "REJECT": ["APMF-AC-007"]},
+    "instance_extension_property": {"POSITIVE": ["APMF-AC-008"], "BOUNDARY": ["APMF-AC-009"], "REJECT": ["APMF-AC-010"]},
+    "member_forwarding": {"POSITIVE": ["APMF-AC-011"], "BOUNDARY": ["APMF-AC-012"], "REJECT": ["APMF-AC-013", "APMF-AC-014"]},
+    "property_default_accessor": {"POSITIVE": ["APMF-AC-001"], "BOUNDARY": ["APMF-AC-015"], "REJECT": ["APMF-AC-016", "APMF-AC-017"]},
+    "property_value_admissibility": {"POSITIVE": ["APMF-AC-018"], "BOUNDARY": ["APMF-AC-019"], "REJECT": ["APMF-AC-020"]},
+    "simplified_class_member_surface": {"POSITIVE": ["APMF-AC-021"], "BOUNDARY": ["APMF-AC-022"], "REJECT": ["APMF-AC-023"]}
+  },
+  "diagnostic_order": [
+    "ACCESSOR_PROPERTY_HEADER_VISIBILITY_FORBIDDEN",
+    "ACCESSOR_PROPERTY_SEPARATOR_REQUIRED",
+    "ACCESSOR_PROPERTY_MULTIPLE_ACCESSORS_REQUIRE_BLOCK",
+    "ACCESSOR_PROPERTY_GETTER_REQUIRED",
+    "ACCESSOR_PROPERTY_DUPLICATE_GETTER",
+    "ACCESSOR_PROPERTY_DUPLICATE_SETTER",
+    "LET_PROPERTY_CANNOT_HAVE_SETTER",
+    "SETTER_VISIBILITY_CANNOT_EXCEED_GETTER",
+    "PROPERTY_VALUE_REQUIRES_REUSABLE_NODROP",
+    "FORWARD_GROUP_DUPLICATE_MEMBER",
+    "FORWARD_GROUP_COLLISION",
+    "FORWARD_GROUP_WILDCARD_NOT_CURRENT",
+    "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION"
+  ],
+  "guards": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_AUTHORIZED_NOT_PERFORMED",
+    "github_mutation": 0,
+    "canonical_publication": "NOT_PERFORMED"
+  }
+}

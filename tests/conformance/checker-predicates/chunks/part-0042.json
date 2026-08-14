@@ -1,0 +1,180 @@
+[
+  {
+    "fixture_id": "PF-ActorSenderIdentityAdmitted-ACTOR",
+    "predicate_id": "ActorSenderIdentityAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "context": "ACTOR_TURN",
+      "actor_turn_authority": true,
+      "actor_instance_available": true,
+      "execution_id_available": true,
+      "phase": "RESUMED",
+      "proposed_sender_kind": "ACTOR_INSTANCE",
+      "relation": "SAME_AS_PRE_SUSPEND",
+      "decision": "ADMIT_ACTOR",
+      "diagnostic_or_null": null,
+      "send_time_identity_allocation_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorSenderIdentityPlanV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "preserved",
+        "authorities": [
+          "ActorTransport"
+        ],
+        "suspends": false,
+        "isolation": "actor_boundary"
+      }
+    },
+    "admitted_condition": "active actor-turn authority selects the same ActorInstanceId sender across suspension",
+    "rule_seed": "R91 actor-incarnation sender positive fixture; product runtime NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ActorSenderIdentityAdmitted-EXECUTION",
+    "predicate_id": "ActorSenderIdentityAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "context": "STRUCTURED_CHILD_EXECUTION",
+      "actor_turn_authority": false,
+      "actor_instance_available": true,
+      "execution_id_available": true,
+      "phase": "INITIAL",
+      "proposed_sender_kind": "EXECUTION",
+      "relation": "DISTINCT_FROM_PARENT",
+      "decision": "ADMIT_EXECUTION",
+      "diagnostic_or_null": null,
+      "send_time_identity_allocation_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorSenderIdentityPlanV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "preserved",
+        "authorities": [
+          "ActorTransport"
+        ],
+        "suspends": false,
+        "isolation": "task_local"
+      }
+    },
+    "admitted_condition": "structured child lacks actor-turn authority and uses its distinct ExecutionId sender",
+    "rule_seed": "R91 structured-child sender positive fixture; product runtime NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ActorSenderIdentityAdmitted-NEG-CONTEXT",
+    "predicate_id": "ActorSenderIdentityAdmitted",
+    "fixture_kind": "negative",
+    "expected": "rejected",
+    "descriptor": {
+      "context": "NO_EXECUTION_CONTEXT",
+      "actor_turn_authority": false,
+      "actor_instance_available": false,
+      "execution_id_available": false,
+      "phase": "INITIAL",
+      "proposed_sender_kind": "NONE",
+      "relation": "NOT_APPLICABLE",
+      "decision": "REJECT_STATIC",
+      "diagnostic_or_null": "ACTOR_SENDER_CONTEXT_UNAVAILABLE",
+      "send_time_identity_allocation_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorSenderIdentityPlanV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "preserved",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "none"
+      }
+    },
+    "violated_condition": "no current actor instance or execution identity exists",
+    "expected_diagnostic": "ACTOR_SENDER_CONTEXT_UNAVAILABLE",
+    "rule_seed": "R91 missing sender context rejection fixture.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ActorSenderIdentityAdmitted-NEG-MIR",
+    "predicate_id": "ActorSenderIdentityAdmitted",
+    "fixture_kind": "negative",
+    "expected": "rejected",
+    "descriptor": {
+      "context": "EXECUTION",
+      "actor_turn_authority": false,
+      "actor_instance_available": false,
+      "execution_id_available": true,
+      "phase": "INITIAL",
+      "proposed_sender_kind": "PER_SEND",
+      "relation": "NOT_APPLICABLE",
+      "decision": "REJECT_MIR",
+      "diagnostic_or_null": "MIR_ACTOR_SENDER_IDENTITY_INVALID",
+      "send_time_identity_allocation_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorSenderIdentityPlanV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [
+          "allocate"
+        ],
+        "errors": [],
+        "cancellation": "preserved",
+        "authorities": [
+          "ActorTransport"
+        ],
+        "suspends": false,
+        "isolation": "task_local"
+      }
+    },
+    "violated_condition": "MIR invented a per-send sender identity",
+    "expected_diagnostic": "MIR_ACTOR_SENDER_IDENTITY_INVALID",
+    "rule_seed": "R91 per-send identity invention rejection fixture.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "internal verifier diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

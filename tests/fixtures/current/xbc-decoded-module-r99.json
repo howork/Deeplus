@@ -1,0 +1,307 @@
+{
+  "schema": "deeplus.xbc-decoded-module-fixture/r99",
+  "typed_payload_registry": "spec/contracts/xbc-typed-payload-registry-r99.json",
+  "typed_payload_registry_digest": "256558848433edda683f8d6c5d8630e2f6a68aa0e3b3fb0909ea667acf33a196",
+  "module_schema": "schemas/language/xvm-xbc-module-r1.schema.json",
+  "module_schema_digest": "62ca7cc71306401eb41fcb479df999d19e09752a2b6a14b6151a1ec923799729",
+  "projection_contract": "spec/contracts/xvm-xbc-projection-r1.json",
+  "source_mir_fixture": {
+    "schema": "deeplus.mir/r1",
+    "body_id": "BodyId:r99-fixture",
+    "blocks": [
+      {
+        "block_id": "BlockId:r99-fixture-entry",
+        "operations": [
+          {
+            "kind": "BUILDER_STAGE",
+            "construction_id": "ConstructionId:fixture/r99",
+            "stage_index": 0
+          },
+          {
+            "kind": "FRAME_RESUME_COMMIT",
+            "continuation_interface_identity": "ContinuationInterfaceId:fixture/r99",
+            "continuation_frame_plan_id": "ContinuationFramePlanId:fixture/r99",
+            "frame_id": "ContinuationFrameSlotId:fixture/r99",
+            "winner_witness_or_null": "RESUME_WON",
+            "hir_provenance": "HirOriginId:fixture/r99"
+          }
+        ],
+        "terminator": {
+          "kind": "COMPLETE",
+          "completion_kind": "RETURN"
+        }
+      }
+    ]
+  },
+  "source_mir_semantic_digest": "f72048515c80bbbbf3eacacfd1760737cd3b63e13d2b014aeedfd5ed49a3e234",
+  "decoded_module": {
+    "schema": "deeplus.xvm-xbc-module/r1",
+    "header": {
+      "magic_hex": "4450584243000d0a",
+      "major": 1,
+      "minor": 0,
+      "flags": 0,
+      "section_count": 10,
+      "directory_bytes": 560,
+      "payload_bytes": 3561,
+      "source_mir_semantic_digest": "f72048515c80bbbbf3eacacfd1760737cd3b63e13d2b014aeedfd5ed49a3e234",
+      "xbc_logical_digest": "a849a11be2809e175f149a5793895aab7b081a97a0f223b89b4c9e38988def95",
+      "contract_digest": "256558848433edda683f8d6c5d8630e2f6a68aa0e3b3fb0909ea667acf33a196"
+    },
+    "directory": [
+      {
+        "kind": "MODULE_DESCRIPTOR",
+        "ordinal": 0,
+        "flags": 0,
+        "offset": 688,
+        "length": 871,
+        "payload_sha256": "bc3ad68fd6ddceae5d79348df8063f1a36ee3a6b10c7eb19619c9eb70622679b"
+      },
+      {
+        "kind": "TYPE_TABLE",
+        "ordinal": 1,
+        "flags": 0,
+        "offset": 1559,
+        "length": 1,
+        "payload_sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71"
+      },
+      {
+        "kind": "STATIC_IDENTITY_TABLE",
+        "ordinal": 2,
+        "flags": 0,
+        "offset": 1560,
+        "length": 487,
+        "payload_sha256": "1b5bd5842f81bbfdd8d7adc83664d9947ef1cadd869b6834c4b98542019b7e74"
+      },
+      {
+        "kind": "RESPONSIBILITY_EVIDENCE_TABLE",
+        "ordinal": 3,
+        "flags": 0,
+        "offset": 2047,
+        "length": 1,
+        "payload_sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71"
+      },
+      {
+        "kind": "CONSTANT_TABLE",
+        "ordinal": 4,
+        "flags": 0,
+        "offset": 2048,
+        "length": 1,
+        "payload_sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71"
+      },
+      {
+        "kind": "CLOSURE_ENVIRONMENT_PLAN_TABLE",
+        "ordinal": 5,
+        "flags": 0,
+        "offset": 2049,
+        "length": 1,
+        "payload_sha256": "76be8b528d0075f7aae98d6fa57a6d3c83ae480a8469e668d7b0af968995ac71"
+      },
+      {
+        "kind": "BODY_TABLE",
+        "ordinal": 6,
+        "flags": 0,
+        "offset": 2050,
+        "length": 1978,
+        "payload_sha256": "758a404aee22341f232e83a5b7523d38502af9856dc3665ea0fc9d9507ecdee9"
+      },
+      {
+        "kind": "MANAGED_MEMORY_PLAN",
+        "ordinal": 7,
+        "flags": 0,
+        "offset": 4028,
+        "length": 44,
+        "payload_sha256": "ac74e5bb7c43889a1f26eee88835b9593adf779f68c091cd8cd79891ef8c714a"
+      },
+      {
+        "kind": "CONTINUATION_INTERFACE",
+        "ordinal": 8,
+        "flags": 0,
+        "offset": 4072,
+        "length": 44,
+        "payload_sha256": "ac74e5bb7c43889a1f26eee88835b9593adf779f68c091cd8cd79891ef8c714a"
+      },
+      {
+        "kind": "DEBUG_PROVENANCE",
+        "ordinal": 9,
+        "flags": 0,
+        "offset": 4116,
+        "length": 133,
+        "payload_sha256": "018a87e78481a1f04dd9c82a960b9ffcb4e3cae7d35820bda45749f2e2398b99"
+      }
+    ],
+    "module_descriptor": {
+      "mir_schema_id": "deeplus.mir/r1",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
+      "mir_machine_registry_id": "deeplus.mir-machine-registry/r1",
+      "mir_machine_registry_digest": "6dd062aae31dc05bfc7bec04a347bf51b0e8f7bc4b9fb61d40c57ce1cc986b77",
+      "source_mir_semantic_digest": "f72048515c80bbbbf3eacacfd1760737cd3b63e13d2b014aeedfd5ed49a3e234",
+      "feature_profile_id": "FeatureProfileId:r99-fixture",
+      "feature_profile_digest": "7e67936046db38d1f217ec1121b91f00ea794f7b9df02ec7c11c509746cd617b",
+      "runtime_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+      "runtime_abi_digest": "2a903b8ff61349ef775d81dbd9dd5a28a5b075ba7f543fdcae533c24f0fd283f",
+      "runtime_projection_digest": "098b628bb1ec974588a84682c32dec50ea028e7a1ced2b3827433d11216b7910",
+      "managed_memory_plan_digest_or_null": null,
+      "continuation_interface_digest_or_null": null,
+      "projection_capability_id": "PROJ-CAP-XVM-CANONICAL-XBC-R1"
+    },
+    "type_table": [],
+    "static_identity_table": [
+      {
+        "ordinal": 0,
+        "source_id": "ContinuationInterfaceId:fixture/r99",
+        "entry_digest": "7af567db1b46e6c015701f8f43c291e7ab453864f6b71cae88f4b871ab19272c",
+        "payload": {
+          "kind": "CONTINUATION_INTERFACE"
+        }
+      },
+      {
+        "ordinal": 1,
+        "source_id": "ContinuationFramePlanId:fixture/r99",
+        "entry_digest": "e864777987d3c35af06b6053911aa9cd2141442d81332393d0cd3c2facd49878",
+        "payload": {
+          "kind": "FRAME_PLAN"
+        }
+      },
+      {
+        "ordinal": 2,
+        "source_id": "HirOriginId:fixture/r99",
+        "entry_digest": "cafffec07ae50e1a5d63aa31988a3a1b0672c13813830922b28e5a3396cf9f25",
+        "payload": {
+          "kind": "HIR_PROVENANCE"
+        }
+      }
+    ],
+    "responsibility_evidence_table": [],
+    "constant_table": [],
+    "closure_environment_plan_table": [],
+    "body_table": [
+      {
+        "ordinal": 0,
+        "source_body_id": "BodyId:r99-fixture",
+        "entry_block_ordinal": 0,
+        "value_slots": [],
+        "place_slots": [],
+        "linear_token_slots": [
+          {
+            "ordinal": 0,
+            "source_id": "ConstructionId:fixture/r99",
+            "entry_digest": "6577e2b1032fcd6d8ad3a526f65359d9e5b395c60ad73505a60ef4c47be06d8a",
+            "payload": {
+              "kind": "CONSTRUCTION_TOKEN"
+            }
+          }
+        ],
+        "continuation_frame_slots": [
+          {
+            "ordinal": 0,
+            "source_id": "ContinuationFrameSlotId:fixture/r99",
+            "entry_digest": "fd56ac2d9068ced8ea463f5d65541639238fc148bf410a1ee72072cdc5668741",
+            "payload": {
+              "kind": "FRAME_SLOT"
+            }
+          }
+        ],
+        "blocks": [
+          {
+            "ordinal": 0,
+            "source_block_id": "BlockId:r99-fixture-entry",
+            "parameter_slots": [],
+            "instructions": [
+              {
+                "ordinal": 0,
+                "opcode": 22,
+                "operation_kind": "BUILDER_STAGE",
+                "payload_contract_id": "XbcPayloadContractId:operation.BUILDER_STAGE/r99",
+                "inputs": [],
+                "outputs": [],
+                "payload": {
+                  "construction_id": {
+                    "namespace": "LINEAR_TOKEN",
+                    "ordinal": 0
+                  },
+                  "stage_index": 0
+                }
+              },
+              {
+                "ordinal": 1,
+                "opcode": 31,
+                "operation_kind": "FRAME_RESUME_COMMIT",
+                "payload_contract_id": "XbcPayloadContractId:operation.FRAME_RESUME_COMMIT/r99",
+                "inputs": [],
+                "outputs": [],
+                "payload": {
+                  "continuation_interface_identity": {
+                    "namespace": "STATIC_IDENTITY",
+                    "ordinal": 0
+                  },
+                  "continuation_interface_digest": "3a70bd3ea428de1ada3abe38d5f638abe58aeb538f3f7e7b18836badde38a023",
+                  "continuation_receipt_id_or_null": {
+                    "namespace": "LINEAR_TOKEN",
+                    "ordinal": 0
+                  },
+                  "continuation_frame_plan_id": {
+                    "namespace": "STATIC_IDENTITY",
+                    "ordinal": 1
+                  },
+                  "frame_id": {
+                    "namespace": "CONTINUATION_FRAME_SLOT",
+                    "ordinal": 0
+                  },
+                  "suspension_point_id_or_null": {
+                    "namespace": "LINEAR_TOKEN",
+                    "ordinal": 0
+                  },
+                  "epoch_id_or_null": {
+                    "namespace": "LINEAR_TOKEN",
+                    "ordinal": 0
+                  },
+                  "partition_digest": "4c7fa47f273141b9a65f50e5980dee395c97e55e02bb2be99174b2fe8fe83948",
+                  "cleanup_token_id_or_null": null,
+                  "terminal_state_or_null": null,
+                  "frame_state_before": "SUSPENDED",
+                  "frame_state_after": "RUNNING",
+                  "epoch_state_before_or_null": "COMMITTED",
+                  "epoch_state_after_or_null": "DISCHARGED",
+                  "winner_witness_or_null": "RESUME_WON",
+                  "hir_provenance": {
+                    "namespace": "STATIC_IDENTITY",
+                    "ordinal": 2
+                  }
+                }
+              }
+            ],
+            "terminator": {
+              "opcode": 32783,
+              "terminator_kind": "COMPLETE",
+              "payload_contract_id": "XbcPayloadContractId:terminator.COMPLETE/r99",
+              "inputs": [],
+              "successors": [],
+              "payload": {
+                "completion_kind": "RETURN"
+              }
+            }
+          }
+        ],
+        "body_projection_digest": "a6ce0e481ab69c7f2d8c1b8c11553f0bb848bc35dc174214611d7733a7f7a1b4"
+      }
+    ],
+    "managed_memory_plan": {
+      "present": false,
+      "semantic_digest_or_null": null,
+      "payload": null
+    },
+    "continuation_interface": {
+      "present": false,
+      "semantic_digest_or_null": null,
+      "payload": null
+    },
+    "debug_provenance": {
+      "source_origin_rows": [],
+      "path_is_semantic_identity": false,
+      "provenance_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "expected": "ADMIT_STATIC_DECODED_MODULE",
+  "product_execution": "NOT_RUN"
+}

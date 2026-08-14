@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.invalid/schemas/actor-transport-allocation-fixtures-v1.schema.json",
+  "title": "Actor Transport Allocation Fixtures V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "cases"],
+  "properties": {
+    "schema": {"const": "deeplus.actor-transport-allocation-fixtures/r1"},
+    "cases": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "class", "descriptor", "expected"],
+        "properties": {
+          "case_id": {"type": "string", "pattern": "^R90-ATA-(POS|BND|NEG)-[0-9]{3}$"},
+          "class": {"enum": ["normal", "boundary", "reject"]},
+          "descriptor": {"$ref": "actor-transport-allocation-decision-v1.schema.json"},
+          "expected": {"enum": ["ADMIT", "RESULT_RECEIVER_CLOSED", "RESULT_MAILBOX_FULL", "THROW_ALLOCATION_ERROR", "REJECT_STATIC", "REJECT_MIR"]}
+        }
+      }
+    }
+  }
+}

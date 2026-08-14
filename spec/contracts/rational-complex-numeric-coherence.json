@@ -622,7 +622,13 @@
       "VIA_AUTO_local_case_specialization_candidate_count": 0,
       "fallback_count": 0,
       "runtime_lookup_count": 0,
-      "responsibility_profile": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+      "responsibility_profile": "BORROWED_SELECTED_EXACT_SUBSET_OF_ALLOCATION_ENVELOPE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+      "responsibility_contract": "spec/contracts/exact-numeric-operator-allocation-r99.json",
+      "trait_requirement_envelopes": {
+        "Eq<Rhs>": "throws Never effects {}",
+        "other_eight_roots": "throws AllocationError effects allocate",
+        "selected_concrete_witness": "exact normalized subset"
+      },
       "derived_comparison_law": "!= shares Eq.equals; all order glyphs share Ord.compare; Ord zero equals Eq",
       "range_hook_count": 0,
       "compound_assignment_hook_count": 0
@@ -693,7 +699,13 @@
       "division": "exact normalized Rational; zero divisor terminates ArithmeticDefect::divisionByZero before commit",
       "remainder": "q = truncTowardZero(a / b); r = a - q * b; zero divisor terminates ArithmeticDefect::divisionByZero before commit",
       "equality": "strong Eq<Rational>",
-      "ordering": "total Ord<Rational> whose zero equals Eq"
+      "ordering": "total Ord<Rational> whose zero equals Eq",
+      "value_producing_responsibility": "throws AllocationError effects allocate",
+      "ordering_responsibility": "throws AllocationError effects allocate",
+      "identity_and_equality_responsibility": "throws Never effects {}",
+      "small_value_optimization_changes_responsibility": false,
+      "allocation_failure_publication_count": 0,
+      "hidden_oom_defect_count": 0
     },
     "Complex_semantics": {
       "arithmetic": ["UnaryPlus", "UnaryMinus", "BinaryAdd", "BinarySubtract", "BinaryMultiply", "BinaryDivide"],
@@ -934,6 +946,9 @@
         "substitution_id",
         "output_type_id",
         "responsibility_profile_id",
+        "strong_comparison_family_id_or_null",
+        "reverse_witness_id_or_null",
+        "normalization_domain_id_or_null",
         "dispatch_route"
       ],
       "implementation_or_execution_receipt_field_count": 0,
@@ -959,6 +974,7 @@
         "canonical Rational and BigInt TypeId",
         "normalized Complex TypeId and RepTypeId",
         "sealed fixed-operator ConformanceId and WitnessId",
+        "sealed strong-comparison family, reverse-witness and normalization-domain identities when present",
         "named capability identities",
         "numeric and branch profile IDs"
       ],

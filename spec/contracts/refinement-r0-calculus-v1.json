@@ -1,0 +1,158 @@
+{
+  "schema": "deeplus.refinement-r0-calculus/v1",
+  "revision": "preimpl-p1-refinement-r0-r1",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED",
+  "gap_id": "IR-REF-P1-056",
+  "formula_schema": "schemas/language/refinement-r0-formula-v1.schema.json",
+  "query_schema": "schemas/language/refinement-r0-query-v1.schema.json",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "observed_live_main": "10e64f492f0529610673846139afcf0d95175663",
+    "local_predecessor_commit": "1423d9a9cee637f496b3a948913d8de285bc15c3"
+  },
+  "source_profile": {
+    "new_surface_count": 0,
+    "roots": ["RefinementSuffix", "GuardClause", "def#guard"],
+    "boolean_source_operators": ["not", "and", "or", "and then", "otherwise"],
+    "comparison_source_operators": ["==", "!=", "<", "<=", ">", ">="],
+    "arithmetic_source_operators": ["+", "-", "*", "/", "%"],
+    "shorthand_normalization": {
+      "T where REL bound": "T where this REL bound",
+      "T in lower..upper": "T where lower <= this <= upper",
+      "T in lower..<upper": "T where lower <= this < upper"
+    },
+    "general_solver_or_reflection_count": 0
+  },
+  "value_domains": [
+    "BOOL", "SIGNED_INTEGER", "UNSIGNED_INTEGER", "STATIC_INT", "FLOAT32",
+    "FLOAT64", "RATIONAL", "CHAR_SCALAR", "ORDERED_ENUM"
+  ],
+  "closed_term_vocabulary": {
+    "term_kinds": ["PARAMETER", "PLACE", "STATIC_VALUE", "INTRINSIC", "UNARY", "BINARY"],
+    "summary_term_kinds": ["PARAMETER", "STATIC_VALUE", "INTRINSIC", "UNARY", "BINARY"],
+    "substituted_fact_extra_term_kind": "PLACE",
+    "intrinsics": ["STRING_SCALAR_LENGTH", "BYTES_LENGTH", "LIST_LENGTH", "READONLY_VIEW_LENGTH"],
+    "user_operator_or_method_dispatch_count": 0,
+    "dynamic_provider_or_reflection_count": 0,
+    "operator_resolution": "EXACT_SEALED_COMPILER_OR_PRELUDE_R0_ROW_ONLY"
+  },
+  "formula_normal_form": {
+    "node_kinds": ["TRUE", "FALSE", "ATOM", "NOT", "ALL", "ANY"],
+    "atom_kind": "COMPARE",
+    "negation_normal_form": true,
+    "not_child": "COMPARE_ATOM_ONLY",
+    "flatten_same_boolean_kind": true,
+    "constant_fold": true,
+    "duplicate_term_elimination": true,
+    "boolean_children_order": "ASCENDING_CANONICAL_CHILD_BYTES",
+    "arithmetic_operand_reassociation_count": 0,
+    "float_comparison_complement_rewrite_count": 0,
+    "float_not_semantics": "NOT_OF_IEEE_COMPARISON_INCLUDING_UNORDERED_NAN_CASE"
+  },
+  "totality": {
+    "required_before_formula_admission": true,
+    "proof_input": "DECLARED_NORMALIZED_PARAMETER_DOMAIN_ONLY",
+    "conjunct_or_short_circuit_fact_may_justify_failing_term": false,
+    "checked_integer_add_subtract_multiply_or_negate": "ADMIT_ONLY_IF_CLOSED_INTERVAL_PROVES_NO_OVERFLOW",
+    "integer_divide_or_remainder": "ADMIT_ONLY_WITH_STATIC_NONZERO_DIVISOR_AND_NO_SIGNED_MIN_DIV_NEGATIVE_ONE_CASE",
+    "rational_divide_or_remainder": "ADMIT_ONLY_WITH_STATIC_NONZERO_DIVISOR",
+    "ieee_arithmetic": "TOTAL_WITH_EXACT_FLOAT32_OR_FLOAT64_IEEE_RESULT_INCLUDING_NAN_AND_INFINITY",
+    "intrinsic_projection": "EXACT_REGISTERED_TOTAL_NONALLOCATING_VALUE_PROJECTION_ONLY",
+    "observable_allocation_count": 0,
+    "effects_errors_suspension_authority_mutation_consumption_count": 0,
+    "failed_totality": "NOT_ADMITTED_AS_R0"
+  },
+  "relation_procedure": {
+    "stages": [
+      "VALIDATE_TYPED_CLOSED_VOCABULARY_AND_PARAMETER_BINDINGS",
+      "PROVE_TERM_TOTALITY_OVER_DECLARED_INPUT_DOMAINS",
+      "NORMALIZE_TO_BOUNDED_NEGATION_NORMAL_FORM",
+      "EXPAND_TO_BOUNDED_DISJUNCTIVE_CELLS",
+      "INTERSECT_DOMAIN_INTERVAL_IDENTITY_EXCLUSION_AND_CONGRUENCE_FACTS",
+      "CLASSIFY_EACH_CELL_AS_SAT_UNSAT_OR_UNKNOWN",
+      "COMPUTE_DIRECTED_IMPLICATION_DISJOINTNESS_AND_OVERLAP",
+      "RETURN_DETERMINISTIC_RELATION_OR_UNKNOWN"
+    ],
+    "cell_domains": {
+      "exact_integer_static_int_rational_char_and_ordered_enum": "closed lower/upper bounds, equality exclusions and one-variable constant-modulus congruence",
+      "float32_float64": "exact IEEE comparison partition with a separate NaN-admissible bit and signed-zero equality",
+      "bool": "finite true/false set",
+      "opaque_but_safe_atom": "canonical atom identity and exact logical complement only"
+    },
+    "formula_satisfiability": ["SAT", "UNSAT", "UNKNOWN"],
+    "directed_relation_order": ["EQUIVALENT", "DISJOINT", "LEFT_IMPLIES_RIGHT", "RIGHT_IMPLIES_LEFT", "OVERLAPS", "UNKNOWN"],
+    "boundary_proof": {
+      "PROVED": "Phi and not(target) is UNSAT",
+      "DISPROVED": "Phi and target is UNSAT",
+      "UNKNOWN": "neither proof is established within the closed procedure and budget"
+    },
+    "union_pair_admission": "DISJOINT_ONLY; EQUIVALENT_OR_DIRECTED_IMPLIES_SUBSUMES; OVERLAPS_OR_UNKNOWN_REJECTS",
+    "proof_budget_exhaustion": "UNKNOWN_NOT_PASS"
+  },
+  "resource_limits": {
+    "parameter_count_max": 32,
+    "formula_node_count_max": 256,
+    "formula_depth_max": 32,
+    "boolean_children_per_node_max": 64,
+    "term_node_count_max": 256,
+    "term_depth_max": 24,
+    "exact_integer_bits_max": 4096,
+    "dnf_cell_count_max": 256,
+    "cell_atom_count_max": 128,
+    "proof_step_count_max": 100000,
+    "admission_limit_exceeded": "REJECT_NOT_R0",
+    "relation_limit_exceeded": "RETURN_UNKNOWN"
+  },
+  "canonical_bytes": {
+    "encoding": "UTF-8",
+    "container": "CANONICAL_JSON_NO_WHITESPACE",
+    "object_key_order": "UNICODE_SCALAR_LEXICOGRAPHIC",
+    "numeric_payload_rule": "EXACT_NUMBERS_ARE_CANONICAL_STRINGS_OR_FIXED_WIDTH_HEX_BITS; JSON_NUMBER_IS_NOT_A_SEMANTIC_NUMBER",
+    "string_normalization": "IDENTIFIERS_AND_TYPE_IDS_ALREADY_NORMALIZED_BY_OWNER_REGISTRY",
+    "formula_digest": "SHA-256(canonical normalized formula bytes)",
+    "summary_digest": "SHA-256(profile_version, CallableImplementationId, normalized parameter TypeIds, formula_digest, body_digest)",
+    "host_float_or_host_integer_serialization_count": 0
+  },
+  "flow_integration": {
+    "compile_time_only_formula": true,
+    "runtime_proof_object_count": 0,
+    "guard_runtime_evaluation_count": 1,
+    "second_predicate_evaluation_count": 0,
+    "true_edge": "SUBSTITUTE_STABLE_PLACES_INTO_P_AND_ADD_P_TO_PHI",
+    "false_edge": "ADD_EXACT_NNF_COMPLEMENT_NOT_P_TO_PHI",
+    "stored_or_indirect_bool_fact_count": 0,
+    "canonical_hir": "SEALS_ONLY_SELECTED_BOUNDARY_OUTCOME_AND_FORMULA_DIGEST_WHEN_STATIC_PROVENANCE_IS_REQUIRED; NO_OPEN_SOLVER_OR_FORMULA_EVALUATOR",
+    "mir": "LOWERS_THE_ALREADY_SELECTED_RUNTIME_PREDICATE_OR_OMITS_A_PROVEN_REDUNDANT_CHECK; NO_PROOF_SEARCH_OR_PROOF_OBJECT",
+    "backend": "NO_REINTERPRETATION_OR_HOST_SOLVER"
+  },
+  "diagnostic_precedence": [
+    {"rank": 1, "condition": "SOURCE_NODE_OR_OPERATOR_OUTSIDE_CLOSED_R0_VOCABULARY", "diagnostic": "REFINEMENT_R0_PREDICATE_NOT_ADMITTED"},
+    {"rank": 2, "condition": "TERM_NOT_TOTAL_OR_HAS_FORBIDDEN_RESPONSIBILITY", "diagnostic": "R0_GUARD_NOT_GUARD_SAFE"},
+    {"rank": 3, "condition": "GUARD_SUMMARY_CANNOT_NORMALIZE_TO_TYPED_R0", "diagnostic": "GUARD_REFINEMENT_SUMMARY_NOT_R0"},
+    {"rank": 4, "condition": "GUARD_SUMMARY_IDENTITY_OR_DIGEST_MISMATCH", "diagnostic": "GUARD_REFINEMENT_SUMMARY_IDENTITY_MISMATCH"},
+    {"rank": 5, "condition": "EXPLICIT_REFINEMENT_BOUNDARY_IS_DISPROVED", "diagnostic": "REFINEMENT_LITERAL_OUT_OF_RANGE"},
+    {"rank": 6, "condition": "EXPLICIT_REFINEMENT_BOUNDARY_REMAINS_UNKNOWN", "diagnostic": "REFINEMENT_PROOF_REQUIRED"},
+    {"rank": 7, "condition": "UNION_PAIR_IS_OVERLAPPING_OR_UNKNOWN", "diagnostic": "UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT"}
+  ],
+  "acceptance": {
+    "typed_formula_schema_count": 1,
+    "string_formula_field_count": 0,
+    "admitted_domain_count": 9,
+    "term_kind_count": 6,
+    "formula_node_kind_count": 6,
+    "relation_result_count": 6,
+    "positive_boundary_reject_fixture_minimum_each": 4,
+    "mutation_classes": [
+      "UNTYPED_STRING_FORMULA", "FLOAT_COMPLEMENT_ALGEBRAIC_INVERSION",
+      "DYNAMIC_ZERO_DIVISOR", "USER_OPERATOR_DISPATCH", "UNBOUNDED_FORMULA",
+      "PROOF_BUDGET_PASS", "NONCANONICAL_CHILD_ORDER", "PRODUCT_PASS_OVERCLAIM"
+    ]
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_publication": "NOT_PERFORMED"
+  }
+}

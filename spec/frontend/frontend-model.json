@@ -34,6 +34,36 @@
     "cranelift_object_aot": "NOT_RUN",
     "cranelift_jit": "NOT_RUN"
   },
+  "keyable_iteration_pattern_assignment_r106": {
+    "contract": "spec/contracts/keyable-iteration-pattern-assignment-r106.json",
+    "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF",
+    "algorithms": [
+      "KeyableSelectionV1",
+      "ForIteratorPlanV1",
+      "LocalPatternAssignmentV1"
+    ],
+    "canonical_hir_residue": {
+      "keyable": [
+        "KeyableWitnessId",
+        "EqWitnessId",
+        "HashWitnessId",
+        "HashPolicyId"
+      ],
+      "iteration": [
+        "ForIteratorPlanId",
+        "IteratorWitnessId",
+        "ItemTypeId",
+        "CleanupPlanId"
+      ],
+      "assignment": [
+        "PatternAssignmentPlanId",
+        "PatternAssignmentCommitId",
+        "CleanupPlanId"
+      ]
+    },
+    "unresolved_runtime_or_provider_lookup_count": 0,
+    "product_support": "NOT_RUN"
+  },
   "keyword_model": {
     "hard_reserved": [
       "and",
@@ -122,6 +152,7 @@
       "isolated",
       "law",
       "lazy",
+      "list",
       "lsb0",
       "mailbox",
       "map",
@@ -183,6 +214,7 @@
       "flags",
       "guard",
       "lazy",
+      "list",
       "mailbox",
       "map",
       "mut",
@@ -422,7 +454,7 @@
     },
     {
       "surface": "...",
-      "lexer": "ELLIPSIS",
+      "lexer": "DOT_DOT_DOT",
       "cst_roles": [
         "OneSidedRangeMarker"
       ],
@@ -436,13 +468,11 @@
       "cst_roles": [
         "NamedRestSuffixMarker",
         "NamedUnfoldPrefixMarker",
-        "MapUnfoldPrefixMarker",
         "InfixOperator"
       ],
       "ast_roles": [
         "NamedRestParameterOrPatternOrTypeResidue",
         "NamedUnfold",
-        "MapUnfold",
         "LinearProduct"
       ]
     },
@@ -745,7 +775,9 @@
       "id": "STRUCTURAL_UNFOLD_BY_OWNER",
       "surfaces": {
         "positional": "*Expr",
-        "static_named": "**Expr"
+        "static_named": "**Expr",
+        "runtime_map": "*Expr",
+        "map_pattern_remainder": "*RestBinder"
       },
       "trivia": "NO_TRIVIA_BETWEEN_MARKER_AND_OPERAND",
       "owners": {
@@ -757,12 +789,17 @@
         ],
         "static_named": [
           "call_argument",
-          "record_materialization_entry",
-          "map_entry"
+          "record_materialization_entry"
+        ],
+        "runtime_map": [
+          "map_literal_entry"
+        ],
+        "map_pattern_remainder": [
+          "map_pattern_entry"
         ]
       },
       "general_expression_prefix_parselet": false,
-      "ast": "PositionalUnfold for *Expr or NamedUnfold for **Expr; no unsealed channel variant exists",
+      "ast": "PositionalUnfold for positional *Expr, NamedUnfold for static-named **Expr, MapUnfold for Map-literal *Expr, or MapRestPattern for Map-pattern *RestBinder; the parser owner seals one exact node and no unsealed channel variant exists",
       "seal_before": "the lexical marker fixes the channel before formal binding and overload candidate selection",
       "runtime_shape_selection": false
     },
@@ -1481,8 +1518,15 @@
       "omission": {
         "syntax_state": "OMITTED",
         "semantic_value": null,
-        "r58_global_default": null,
-        "default_application_count": 0
+        "r58_predecessor_global_default": null,
+        "global_default": null,
+        "owner_resolution_contract": "spec/contracts/member-visibility-omission-v1.json",
+        "resolution_descriptor_schema": "schemas/language/member-visibility-resolution-v1.schema.json",
+        "resolved_after_owner_and_slot_binding": true,
+        "resolved_before_canonical_hir": true,
+        "canonical_hir_unresolved_count": 0,
+        "module_api_unresolved_count": 0,
+        "audit_gap": "IR-VIS-P1-057"
       },
       "semantic_lattice_narrow_to_wide": [
         "-",
@@ -1898,7 +1942,7 @@
           ],
           "rbp": 159,
           "assoc": "right",
-          "semantic_boundary": "language-reserved numeric sign; never a conformance lookup"
+          "semantic_boundary": "NumericSignExpr is syntax; intrinsic-reserved operands use the intrinsic implementation and all other admitted operands require one exact left-owner DIRECT_GLOBAL UnaryPlus or UnaryMinus witness"
         },
         {
           "id": "prefix",
@@ -2105,8 +2149,49 @@
         "NON_FUNCTION_TYPE",
         "UNIT"
       ],
-      "dispatch_key": "parse_goal + exact attached token sequence or structured lookahead signature",
-      "unknown_or_disabled": "R15_UNKNOWN_PARSELET_FOR_GOAL",
+    "dispatch_key": "parse_goal + exact attached token sequence or structured lookahead signature",
+    "unknown_or_disabled": "R15_UNKNOWN_PARSELET_FOR_GOAL",
+    "measure_literal_primary": {
+      "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL immediately followed by attached [",
+      "success": "MeasureLiteralExpr",
+      "failed_probe": "zero token consumption, zero diagnostic, ordinary literal/index dispatch resumes",
+      "separated_measure_lookahead": {
+        "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL followed by nonempty trivia and then [",
+        "probe": "transactionally parse one complete UnitExpr followed by ] without type information",
+        "success_diagnostic": "UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED",
+        "success_recovery": "consume through the matched ], retain one CST error node, and emit zero canonical MeasureLiteralExpr or IndexExpr AST nodes",
+        "failure": "zero bracket/trivia token consumption, zero diagnostic, ordinary IndexExpr dispatch resumes",
+        "non_unit_examples": [
+          "13[0]",
+          "13 [0]"
+        ]
+      },
+      "type_information_used": false
+    },
+    "range_parselet": {
+      "cores": [
+        "..",
+        "..<",
+        "..."
+      ],
+      "rhs": "required, required, absent respectively",
+      "optional_step": ": Expr owned by the committed Range parselet"
+    },
+    "bracket_primary_commitment": {
+      "initial_token": "[",
+      "probe": "transactionally scan one balanced CaptureList candidate without consuming tokens or emitting diagnostics",
+      "closure_commit_markers": ["attached HashTag cluster followed by {", "attached {"],
+      "generator_commit_markers": ["attached @ for", "attached @ while", "attached @ repeat"],
+      "collection_fallback": "if no exact post-] owner marker follows, consume zero tokens from the probe and parse ListLiteral or ComprehensionExpr",
+      "post_marker_failure": "after an exact owner marker is seen, commit to that owner and emit one owner-specific recovery diagnostic without collection fallback",
+      "semantic_lookup_count": 0
+    },
+    "bounded_list_primary": {
+      "trigger": "attached # list [",
+      "surface": "#list[StaticInt..StaticInt: ListEntry*]",
+      "contextual_word_outside_sigil_role": "ordinary identifier",
+      "ordinary_list_range_boundary": "a stepped Range in first list position is parenthesized; the removed unprefixed bounded spelling is rejected before AST"
+    },
       "message_led": {
         "~": {
           "mode": "Message",
@@ -2130,8 +2215,8 @@
     "differential_contract": "spec/contracts/parser-grammar-differential-r1.json",
     "legacy_surface_census": "spec/grammar/deeplus.ebnf",
     "legacy_surface_census_is_exact_grammar": false,
-    "rule_family_count": 280,
-    "context_specialized_clause_count": 301,
+    "rule_family_count": 282,
+    "context_specialized_clause_count": 303,
     "architecture": "scanner + DPG + ParserContext/Pratt + lossless CST/recovery + AST/checker",
     "handwritten_parser": true,
     "standard_ebnf_required": false,
@@ -2269,7 +2354,8 @@
         "mode": "INTERPOLATION_CODE",
         "start": "colon after the braced interpolation expression",
         "termination": "matching interpolation close",
-        "semantic_owner": "formatter and rendering contract"
+        "semantic_owner": "StringInterpolationFormatSpecAdmitted checker and string-interpolation-format-spec-core-r1 contract",
+        "inner_grammar_owner": "checker; scanner preserves one opaque token and DPG does not expand Align? Width"
       },
       "ScannerInterpolatedStringEnd": {
         "token": "STRING_END",
@@ -2345,9 +2431,11 @@
       "schema": "deeplus.complete-token-lexical-goal-contract/r1",
       "scanner_mode_count": 6,
       "lexical_goal_count": 10,
-      "syntax_terminal_count": 200,
+      "syntax_terminal_count": 201,
       "atomic_token_count": 22,
       "trivia_kind_count": 8,
+      "parser_terminal_adapter": "spec/contracts/complete-token-lexical-goal-contract-r1.json#/parser_terminal_adapter_registry",
+      "aggregate_match_additional_token_count": 0,
       "token_probe": "complete-checkpoint transaction; failed probe consumes zero bytes/tokens and emits zero diagnostics",
       "rational_probe": "expression prefix only in NORMAL or INTERPOLATION_CODE",
       "multiline_rebind": "MULTILINE_ATOMIC owns MultilineStringTokenPayloadV1",
@@ -2417,6 +2505,24 @@
       "branch": "main",
       "commit": "39a5d50cc770341c4b9776d00d84520b780d0c62",
       "tree": "b19b2a86c0f29c1f73763c8526a3a7bde23d530a"
+    },
+    "parser_authority_rebase": {
+      "gap_id": "IR-FE-P1-063",
+      "baseline_main": "10e64f492f0529610673846139afcf0d95175663",
+      "authority_contract": "spec/contracts/parser-authority-traceability-r1.json",
+      "authority_axes": [
+        "STRUCTURAL_DPG",
+        "PARSER_CONTEXT",
+        "PRATT",
+        "SCANNER"
+      ],
+      "snapshot_component": "ParserAuthorityDigestSetR1",
+      "surface_census_semantic_authority": false,
+      "structural_cst_owner_identity": "CstStructuralOwnerId",
+      "source_root_reparse_on_authority_change": true,
+      "old_handle_reuse_on_authority_change": 0,
+      "ebnf_only_admission_count": 0,
+      "tooling_parser_semantic_reselection_count": 0
     },
     "grammar_production_count": 656,
     "grammar_production_count_role": "LEGACY_SURFACE_CENSUS_FORMATTING_DISPOSITION",
@@ -2547,15 +2653,16 @@
         "recovery_binding",
         "runtime_relookup_residue"
       ],
-      "deferred_to_generic_and_ordinary_overload_cluster": [
-        "OVERLOAD_WINNER_FUNCTION_ID",
-        "COMPLETE_GENERIC_SUBSTITUTION",
-        "EXPECTED_TYPE_DIRECTED_WINNER",
-        "APPLICABILITY_RANK",
-        "SPECIFICITY_WINNER",
-        "ROW_INFERENCE_RESULT",
-        "RETURN_TYPE_ONLY_WINNER"
-      ],
+      "closed_by_ordinary_call_selection_v1": {
+        "contract": "spec/contracts/ordinary-call-selection-v1.json",
+        "analysis_input": "ResolvedOverloadSetRef",
+        "canonical_output": "OrdinaryCallSelectionV1",
+        "candidate_local_generic_substitution": true,
+        "applicability_and_specificity_closed": true,
+        "expected_type_directed_winner": false,
+        "return_type_only_winner": false,
+        "analysis_overload_set_in_canonical_hir": false
+      },
       "trait_witness_selection_or_materialization_added": false,
       "mir_repeats_name_resolution": false,
       "module_artifact_identity": {
@@ -2789,7 +2896,7 @@
     "DelimitedSequence engine",
     "Range parselet with owned :step suffix",
     "IndexSuffix comma-axis and open-slice owner",
-    "PositionalUnfold *Expr and NamedUnfold **Expr closed-owner dispatchers",
+    "Owner-bounded *Expr dispatch to PositionalUnfold or MapUnfold, Map-pattern *RestBinder dispatch to MapRestPattern, and **Expr dispatch to NamedUnfold",
     "NamedRestParameter and NamedRestRequirementClause",
     "MutableListStructuralEditStmt",
     "TraitLanguageRole attached annotation",
@@ -3085,10 +3192,28 @@
     "automatic_synthesis": {
       "trait_opt_in_surface": "supports auto",
       "use_surface": "by auto",
+      "registry_identity": "TraitAutoPolicyRegistryV1",
+      "registry_owner": "CORE_OR_PRELUDE_ONLY",
+      "registry_key": ["TraitId", "PolicyVersion"],
+      "current_policy_trait_ids": ["TraitId:core::Shareable", "TraitId:core::Transferable"],
+      "user_trait_declaration_creates_policy": false,
       "closed_registered_policy_required": true,
       "unregistered_policy_candidate_count": 0,
       "extension_shape_creates_policy": false,
-      "runtime_search_count": 0
+      "provider_search_count": 0,
+      "runtime_search_count": 0,
+      "hir_exact_fields": [
+        "TraitAutoPolicyId",
+        "PolicyVersion",
+        "PolicyDigest",
+        "TraitId",
+        "TargetTypeId",
+        "InputPredicateId",
+        "InputEvidenceIds",
+        "ConformanceId",
+        "TraitWitnessIds",
+        "DerivationDigest"
+      ]
     },
     "language_role_registry": {
       "identity_domain": "TraitLanguageRoleId distinct from TraitId",
@@ -3173,6 +3298,7 @@
     "preserved_identity_fields": [
       "TraitId",
       "TraitLanguageRoleId",
+      "TraitAutoPolicyId",
       "ConformanceId",
       "TraitWitnessId",
       "RequirementId",
@@ -3187,6 +3313,25 @@
       "BEHAVIOR",
       "BINARY_ABI"
     ],
+    "implementation_handoff": {
+      "contract": "spec/contracts/trait-conformance-implementation-handoff-r107.json",
+      "algorithm": "TraitConformanceSealV1",
+      "ordered_phase_count": 7,
+      "diagnostic_rank_count": 10,
+      "canonical_hir_requires_complete_identity": true,
+      "mir_runtime_relookup_count": 0,
+      "action_ids": [
+        "TCC-P1-002",
+        "TCC-P1-003",
+        "TCC-P1-004",
+        "TCC-P1-005",
+        "TCC-P1-006",
+        "TCC-P1-007",
+        "TCC-P1-008"
+      ],
+      "execution_receipts": "OPEN_NOT_RUN",
+      "product_support": "NOT_RUN"
+    },
     "diagnostics": [
       "CONFORMANCE_OLD_DECLARATION_INTRODUCER_REMOVED",
       "CLASS_COLON_INHERITANCE_REMOVED",
@@ -3194,7 +3339,9 @@
       "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
       "CONFORMANCE_AUTO_BODY_FORBIDDEN",
       "CONFORMANCE_LOCAL_SCOPE_FORBIDDEN",
-      "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP"
+      "CONFORMANCE_TRAIT_QUALIFICATION_REDUNDANT_IN_GROUP",
+      "TRAIT_CONDITIONAL_PROOF_NOT_WELL_FOUNDED",
+      "TRAIT_MIR_EVIDENCE_INCOMPLETE"
     ]
   },
   "source_roots": {
@@ -3396,7 +3543,13 @@
       "wrapper_or_stored_bool_adds_fact": false,
       "inline_r0_guard_may_add_fact": true,
       "summary_contract": "spec/contracts/guard-refinement-summary.json",
-      "summary_schema": "schemas/language/guard-summary-v1.schema.json"
+      "summary_schema": "schemas/language/guard-summary-v1.schema.json",
+      "refinement_r0_contract": "spec/contracts/refinement-r0-calculus-v1.json",
+      "refinement_r0_formula_schema": "schemas/language/refinement-r0-formula-v1.schema.json",
+      "refinement_r0_formula_representation": "CLOSED_TYPED_AST_NEVER_SOURCE_TEXT",
+      "refinement_r0_relation_results": ["EQUIVALENT", "DISJOINT", "LEFT_IMPLIES_RIGHT", "RIGHT_IMPLIES_LEFT", "OVERLAPS", "UNKNOWN"],
+      "proof_budget_exhaustion": "UNKNOWN_NOT_PASS",
+      "float_complement_rewrite_count": 0
     },
     "context_policy_authority": "spec/patterns/pattern-context-policies.json",
     "lowering_authority": "spec/patterns/pattern-lowering.json",
@@ -3519,7 +3672,7 @@
     "record_field_direction_current": "label: Pattern for Record, nominal named-payload, and variant named-payload owners",
     "record_rest_current": "exact by default; _** open-ignore; name** exact static-named residual",
     "map_pattern_current": "exact/open over literal or pinned stable keys and a pure total closed descriptor",
-    "map_entry_direction_current": "destination Pattern: literal-or-pinned-key; dynamic remainder remains .._ or ..name",
+    "map_entry_direction_current": "destination Pattern: literal-or-pinned-key; owner-bounded dynamic remainder is *_ or *name",
     "list_rest_current": "exact or exactly one attached suffix binder name../_.. at the beginning, middle, or end",
     "list_rest_result": {
       "borrowed_type": "ListRestView<T>",
@@ -3685,6 +3838,37 @@
       "product_support": "NOT_RUN"
     }
   },
+  "ordinary_call_selection_contract": {
+    "contract": "spec/contracts/ordinary-call-selection-v1.json",
+    "gap_id": "IR-CALL-P1-055",
+    "analysis_input": "ResolvedOverloadSetRef",
+    "included_call_modes": ["Ordinary", "Message"],
+    "excluded_call_mode": "ActorMessage",
+    "candidate_local_phase_a": {
+      "fresh_variables_per_candidate": true,
+      "cross_candidate_constraint_flow": false,
+      "defaults_contribute_constraints": false,
+      "expected_result_contributes_constraints": false,
+      "required_substitution_cardinality": 1
+    },
+    "context_dependent_arguments": {
+      "implicit_lambda_or_trailing_closure_before_winner": "STRUCTURAL_SHAPE_ONLY",
+      "candidate_body_probe_count": 0,
+      "body_check_count_after_unique_expected_callable": 1
+    },
+    "applicability_order": ["STATIC_CALL_SHAPE", "GENERIC_SUBSTITUTION", "WHERE_AND_CONFORMANCE", "OWNERSHIP_AND_PLACE", "EFFECT_AND_ERROR_CONTEXT", "ISOLATION_AND_SUSPENSION", "CONTEXT_AND_EVIDENCE"],
+    "specificity": {
+      "relation": "STRICT_PARTIAL_ORDER",
+      "channel_generality": ["FIXED", "REPEATED", "NAMED_REST", "REPEATED_AND_NAMED"],
+      "same_rank_proofs": ["EXACT_NOMINAL_SUBTYPE", "CONCRETE_OR_CONSTRUCTED_OVER_BARE_TYPE_PARAMETER", "STRICT_TRAIT_BOUND_SUPERSET"],
+      "unknown_relation": "INCOMPARABLE",
+      "winner": "EXACTLY_ONE_MAXIMAL_APPLICABLE_CANDIDATE"
+    },
+    "forbidden_preference_axes": ["EXPECTED_RESULT_TYPE", "RETURN_TYPE", "SOURCE_ORDER", "DECLARATION_ORDER", "IMPORT_ORDER", "PROVIDER_ORDER", "RUNTIME_VALUE"],
+    "canonical_output": "OrdinaryCallSelectionV1",
+    "runtime_or_mir_ranking_count": 0,
+    "product_support": "NOT_RUN"
+  },
   "integrated_collect_unfold_frontend_contract": {
     "decision": "DSGN-CURRENT-INTEGRATED-SURFACE-ATOMIC-CUTOVER-R77-R1",
     "positional_parameter": "name..: T",
@@ -3697,11 +3881,13 @@
     "callable_requires_owner_preserved": "RequiresClause ::= requires PredicateExpr",
     "binder_order": "explicit labels, fixed positional suffix from right, fixed positional prefix from left, residual to rest",
     "fixed_suffix_default_after_rest": "REJECT",
-    "structural_unfold_surface": "*Expr positional / **Expr static-named",
+    "structural_unfold_surface": "*Expr positional or runtime-Map by owner / **Expr static-named",
     "positional_unfold_surface": "*Expr",
     "named_unfold_surface": "**Expr",
+    "map_unfold_surface": "*Expr in MapLiteral only",
+    "map_pattern_remainder_surface": "*RestBinder in MapPattern only",
     "structural_unfold_general_prefix": false,
-    "structural_unfold_owner_count": 6,
+    "structural_unfold_owner_count": 8,
     "comprehension_surface": "for Pattern in *Expr",
     "runtime_shape_selection": false,
     "expected_type_or_overload_selects_shape": false,
@@ -3798,7 +3984,10 @@
         "trait_id": "UnaryPlus",
         "method_id": "UnaryPlus.positive",
         "output_projection": "UnaryPlus::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "UnaryMinus",
@@ -3807,7 +3996,10 @@
         "trait_id": "UnaryMinus",
         "method_id": "UnaryMinus.negate",
         "output_projection": "UnaryMinus::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryAdd",
@@ -3816,7 +4008,10 @@
         "trait_id": "Add<Rhs>",
         "method_id": "Add.add",
         "output_projection": "Add<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinarySubtract",
@@ -3825,7 +4020,10 @@
         "trait_id": "Subtract<Rhs>",
         "method_id": "Subtract.subtract",
         "output_projection": "Subtract<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryMultiply",
@@ -3834,7 +4032,10 @@
         "trait_id": "Multiply<Rhs>",
         "method_id": "Multiply.multiply",
         "output_projection": "Multiply<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryDivide",
@@ -3843,7 +4044,10 @@
         "trait_id": "Divide<Rhs>",
         "method_id": "Divide.divide",
         "output_projection": "Divide<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryRemainder",
@@ -3852,7 +4056,10 @@
         "trait_id": "Remainder<Rhs>",
         "method_id": "Remainder.remainder",
         "output_projection": "Remainder<Rhs>::Output",
-        "responsibility_profile_id": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+          "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+        ]
       },
       {
         "operator_id": "BinaryEqual",
@@ -3873,40 +4080,52 @@
         "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
       },
       {
-        "operator_id": "BinaryLessThan",
+      "operator_id": "BinaryLessThan",
         "glyph": "<",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_lt_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       },
       {
-        "operator_id": "BinaryLessThanOrEqual",
+      "operator_id": "BinaryLessThanOrEqual",
         "glyph": "<=",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_le_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       },
       {
-        "operator_id": "BinaryGreaterThan",
+      "operator_id": "BinaryGreaterThan",
         "glyph": ">",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_gt_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       },
       {
-        "operator_id": "BinaryGreaterThanOrEqual",
+      "operator_id": "BinaryGreaterThanOrEqual",
         "glyph": ">=",
         "fixity": "binary_infix",
         "trait_id": "Ord<Rhs>",
         "method_id": "Ord.compare",
         "output_projection": "compare_sign_ge_zero",
-        "responsibility_profile_id": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+        "responsibility_profile_id_domain": [
+          "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+          "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+        ]
       }
     ],
     "trait_roots": [
@@ -3940,6 +4159,32 @@
       "order_tie_break_count": 0,
       "runtime_lookup_or_fallback_count": 0
     },
+    "trait_requirement_envelopes": {
+      "Eq<Rhs>": {
+        "throws": "Never",
+        "effects": []
+      },
+      "all_other_fixed_operator_roots": {
+        "throws_maximum": ["AllocationError"],
+        "effects_maximum": ["allocate"],
+        "selected_witness_may_seal_exact_subset": true
+      },
+      "responsibility_is_selection_key": false,
+      "rows_differing_only_by_responsibility": "REJECT_COHERENCE"
+    },
+    "strong_comparison_coherence": {
+      "user_or_language_derived_rhs_policy": "NORMALIZED_RHS_MUST_EQUAL_SELF",
+      "heterogeneous_policy": "SEALED_BILATERAL_FAMILY_ONLY",
+      "current_sealed_bilateral_family_count": 0,
+      "family_identity": "unordered normalized type pair plus two oriented witnesses and one normalization domain",
+      "required_laws": [
+        "Eq symmetry",
+        "Ord reverse sign",
+        "Ord zero iff the same Eq relation"
+      ],
+      "independent_reverse_row_synthesis_count": 0,
+      "runtime_lookup_count": 0
+    },
     "typed_hir_residue": {
       "node": "FixedOperatorConformanceCall",
       "required_fields": [
@@ -3952,7 +4197,10 @@
         "method_id",
         "substitution",
         "output_type_id",
-        "responsibility_profile_id"
+        "responsibility_profile_id",
+        "strong_comparison_family_id_or_null",
+        "reverse_witness_id_or_null",
+        "normalization_domain_id_or_null"
       ],
       "operand_evaluation_order": "unary operand once; binary left then right once each; chained comparison retains each middle operand once and the chain alone owns later-operand short circuit",
       "selected_identity_erased_before_mir": false
@@ -3960,14 +4208,18 @@
     "responsibility_profile": {
       "left": "borrow",
       "right": "borrow_or_absent_for_unary",
-      "throws": "Never",
-      "effects": [],
+      "throws": "SELECTED_EXACT_SUBSET_OF_ALLOCATIONERROR_OR_NEVER",
+      "effects": "SELECTED_EXACT_SUBSET_OF_ALLOCATE_OR_EMPTY",
+      "exact_binding": "responsibility_profile_id selects one descriptor from spec/contracts/exact-numeric-operator-allocation-r99.json",
       "suspension": "forbidden",
       "consume": false,
       "mutation": false,
       "authority": [],
       "arithmetic_terminal": "ArithmeticDefect before enclosing place commit when the selected numeric law detects overflow or a zero divisor",
-      "comparison_terminal": "none"
+      "comparison_terminal": "none",
+      "allocation_failure": "AllocationError before publication; operands retained, staged storage reverse-cleaned, and compound assignment performs zero writes",
+      "hidden_oom_defect_count": 0,
+      "contract": "spec/contracts/exact-numeric-operator-allocation-r99.json"
     },
     "derived_projection_laws": {
       "BinaryNotEqual": "negate the BinaryEqual Eq.equals result; no independent witness",
@@ -4141,6 +4393,35 @@
     },
     "product_lanes": "15/15_NOT_RUN"
   },
+  "generic_applicability_variance_responsibility_r105": {
+    "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF",
+    "current_binding": false,
+    "contract": "spec/contracts/generic-applicability-variance-responsibility-r105.json",
+    "generic_applicability": {
+      "algorithm": "GenericApplicabilityV1",
+      "fresh_environment_per_candidate": true,
+      "complete_unique_substitution_required": true,
+      "expected_result_constraint_count": 0,
+      "failed_candidate_residue_count": 0,
+      "hir_identity": ["GenericSubstitutionId", "GenericApplicabilityProofId"]
+    },
+    "variance": {
+      "algorithm": "GenericVarianceV1",
+      "class_enum_declared_variance": "FORBIDDEN",
+      "trait_type_parameter_variance": ["INVARIANT", "IN", "OUT"],
+      "use_site_variance": false,
+      "ownership_qualified_type_variance": "INVARIANT"
+    },
+    "higher_order": {
+      "algorithm": "FunctionResponsibilityCompatibilityV1",
+      "channel_and_responsibility_axes": "EXACT_EXCEPT_INPUT_RESULT_AND_ERROR_EFFECT_SUBSUMPTION",
+      "input_relation": "CONTRAVARIANT_STATIC_SUBTYPE",
+      "result_relation": "COVARIANT_STATIC_SUBTYPE",
+      "error_effect_relation": "SOURCE_SUBSET_OF_TARGET",
+      "runtime_adaptation_count": 0
+    },
+    "product_support": "NOT_RUN"
+  },
   "callable_responsibility_clause_contract": {
     "status": "STABLE_DESIGN",
     "current_binding": false,
@@ -4207,6 +4488,36 @@
       "deterministic private/local source inventory and migration",
       "parser/checker/formatter/API digest evidence"
     ],
+    "product_support": "NOT_RUN"
+  },
+  "private_error_set_inference_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "contract": "spec/contracts/private-error-set-inference-v1.json",
+    "eligible_omission_owner_count": 4,
+    "preconditions": [
+      "name resolution complete",
+      "ordinary call selection complete",
+      "generic substitution complete",
+      "callable visibility normalized"
+    ],
+    "analysis": "finite SCC least fixed point over exact ErrorId rows; a recursive inferred edge is admitted only when caller and callee normalized substitution vectors are exactly equal",
+    "expansive_generic_recursion": "reject with ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH and require explicit throws before HIR",
+    "source_order_semantic": false,
+    "effect_inference": false,
+    "hir": "sealed ErrorSetId plus call_graph_digest, scc_id and inference_proof_digest",
+    "mir_reinference": false,
+    "product_support": "NOT_RUN"
+  },
+  "callable_exact_signature_facade_frontend_contract": {
+    "status": "STABLE_DESIGN",
+    "contract": "spec/contracts/callable-exact-signature-facade-v1.json",
+    "surface": "Callable<Sig>",
+    "grammar": "existing QualifiedType plus TypeArgs; no new production",
+    "type_argument_count": 1,
+    "argument_requirement": "normalizes to exact function signature",
+    "normalization": "Callable<Sig> == Sig",
+    "distinct_ast_hir_mir_runtime_identity": false,
+    "bare_or_erased_callable_admitted": false,
     "product_support": "NOT_RUN"
   },
   "nonescaping_lexical_access_frontend_contract": {
@@ -4412,12 +4723,14 @@
       "ActorProtocolConformanceId",
       "ActorProtocolRequirementId",
       "ActorProtocolBindingId",
-      "ActorProtocolBindingTableId"
+      "ActorProtocolBindingTableId",
+      "ActorSenderIdentityPlanId"
     ],
     "mir_runtime_only_identities": [
       "ActorInstanceId",
       "ActorRuntimeRootOwnerId",
       "ActorTurnId",
+      "SenderId",
       "DefectId"
     ],
     "mir_projection": "schemas/language/mir-responsibility.schema.json",
@@ -4529,7 +4842,14 @@
     },
     "enqueue_commit_contract": {
       "precommit_owner": "sender",
+      "transport_allocation_plan": "ActorTransportAllocationPlanV1",
+      "transport_error_set": ["AllocationError"],
+      "transport_effect_row": ["allocate"],
+      "admission_precedence": ["receiver_closed", "bounded_capacity_full", "allocation"],
+      "precommit_allocation_stages": ["envelope_storage", "mailbox_storage_if_required", "request_responsibility_storage_if_request"],
+      "allocation_failure_publication_count": 0,
       "commit_count": "exactly_one_on_success",
+      "postcommit_allocation_count": 0,
       "rejected_channel_sequence": null,
       "successful_fifo_key": [
         "SenderId",
@@ -4537,6 +4857,18 @@
         "MailboxProfileId"
       ],
       "successful_channel_sequence": "strictly_increasing_per_fifo_key"
+    },
+    "sender_identity_contract": {
+      "contract": "spec/contracts/actor-sender-identity-v1.json",
+      "hir_plan": "ActorSenderIdentityPlanV1",
+      "sender_variants": ["Actor(ActorInstanceId)", "Execution(ExecutionId)"],
+      "selection_precedence": ["ACTIVE_ACTOR_TURN_USES_ACTOR_INSTANCE", "OTHERWISE_CURRENT_EXECUTION"],
+      "structured_child_inherits_actor_turn": false,
+      "suspend_resume_preserves_identity": true,
+      "restart_or_child_spawn_reuses_identity": false,
+      "send_time_identity_allocation_count": 0,
+      "runtime_search_count": 0,
+      "source_constructor_count": 0
     },
     "cancellation_phase_split": {
       "before_commit": "abort, sender retains owners, no channel_sequence, Cancellation is not ActorMessageError",
@@ -4713,6 +5045,35 @@
       "target": "fresh Identifier only",
       "chaining": false,
       "patterns_places_members_indexes": false
+    },
+    {
+      "id": "SOURCE_ITEM_CONTEXTUAL_DECLARATION",
+      "owner": "role-selected source item parser",
+      "registry": "SourceItemCommitmentV1",
+      "contract": "spec/contracts/source-item-commitment-v1.json",
+      "row_count": 13,
+      "checkpoint": "one lossless token checkpoint before optional visibility and contextual starter",
+      "pre_marker_failure": "rollback zero tokens; only a script root may then parse a statement",
+      "post_marker_failure": "retain declaration owner and emit SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+      "declaration_precedence_after_marker": true,
+      "contextual_name_call_escape": "parenthesize the first argument",
+      "semantic_lookup_count": 0,
+      "normalized_ast_commitment_node_count": 0,
+      "product_support": "NOT_RUN"
+    },
+    {
+      "id": "ENUM_BODY_AND_MATCH_FALLBACK_BOUNDARY",
+      "owner": "EnumBodyCommitmentV1 and MatchFallbackBoundaryV1",
+      "contract": "spec/contracts/enum-match-boundary-v1.json",
+      "enum_case_vector": "NonEmptyVector<EnumCase>",
+      "enum_modes": ["COMMA_CASES", "LAYOUT_CASES_THEN_MEMBERS"],
+      "empty_enum_profile": "NOT_CURRENT",
+      "match_arm_partition": ["PatternMatchArm", "OtherwiseMatchArm"],
+      "otherwise_guard_slot_count": 0,
+      "otherwise_maximum_count": 1,
+      "otherwise_must_be_final": true,
+      "rejected_ast_hir_mir_residue_count": 0,
+      "product_support": "NOT_RUN"
     }
   ],
   "stable_design_surfaces_current": {
@@ -4755,6 +5116,10 @@
       "status": "STABLE_DESIGN",
       "represented_in": "spec/contracts/guard-refinement-summary.json",
       "summary_schema": "schemas/language/guard-summary-v1.schema.json",
+      "refinement_r0_contract": "spec/contracts/refinement-r0-calculus-v1.json",
+      "refinement_r0_formula_schema": "schemas/language/refinement-r0-formula-v1.schema.json",
+      "refinement_r0_query_schema": "schemas/language/refinement-r0-query-v1.schema.json",
+      "formula_representation": "CLOSED_TYPED_AST_NEVER_SOURCE_TEXT",
       "opaque_fallback": false,
       "product_support": "NOT_RUN"
     },
@@ -5037,7 +5402,8 @@
         "DirectDecl(DeclId)"
       ],
       "analysis_hir_callable_projection": "ResolvedOverloadSetRef",
-      "canonical_hir_callable_projection_before_next_cluster": "FORBIDDEN"
+      "canonical_hir_callable_projection": "OrdinaryCallSelectionV1",
+      "canonical_hir_callable_projection_without_selection": "FORBIDDEN"
     },
     "member_extension_collision": {
       "ordinary_selector_both_domains_nonempty": "REJECT",
@@ -5282,6 +5648,40 @@
     },
     "grammar_change": false,
     "wrapper_unlock_excluded_from_payload_predicate": true,
+    "product_support": "NOT_RUN"
+  },
+  "scope_modifier_contract": {
+    "status": "STABLE_DESIGN_PRODUCT_NOT_RUN",
+    "contract": "spec/contracts/scope-shielded-cancellation-semantics-r1.json",
+    "source_modifiers": [
+      "isolated",
+      "cancellable",
+      "shielded"
+    ],
+    "cst_preserves_source_order_and_trivia": true,
+    "ast_cancellation_modes": [
+      "INHERIT",
+      "OBSERVE",
+      "DEFER_TO_OUTERMOST_SHIELD_EXIT"
+    ],
+    "ast_fields": [
+      "normalized_modifiers",
+      "cancellation_mode",
+      "execution_context_id_or_null",
+      "parent_shield_scope_id_or_null"
+    ],
+    "admission_predicate": "ScopeCancellationPlanAdmitted",
+    "duplicate_modifier": "REJECT",
+    "cancellable_with_shielded": "REJECT",
+    "cancellable_inside_active_shield": "REJECT",
+    "cancellation_modifier_without_cancellation_axis": "REJECT",
+    "isolated_is_orthogonal": true,
+    "source_order_selects_semantics": false,
+    "formatter_order": [
+      "isolated",
+      "cancellable_or_shielded"
+    ],
+    "rejected_hir_residue_count": 0,
     "product_support": "NOT_RUN"
   },
   "hir_mir_machine_contract": {

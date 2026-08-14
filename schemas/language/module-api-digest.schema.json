@@ -215,6 +215,12 @@
               }
             ]
           },
+          "trait_auto_policy_residue": {
+            "oneOf": [
+              {"$ref": "#/$defs/traitAutoPolicyResidue"},
+              {"type": "null"}
+            ]
+          },
           "error_set": {
             "type": "array",
             "items": {
@@ -893,6 +899,59 @@
         }
       }
     },
+    "traitAutoPolicyResidue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode", "policy_id", "policy_version", "policy_digest", "trait_id",
+        "target_type_id_or_null", "input_predicate_id", "input_evidence_ids",
+        "conformance_id_or_null", "trait_witness_ids", "derivation_digest_or_null"
+      ],
+      "properties": {
+        "mode": {"enum": ["POLICY_DECLARATION", "SYNTHESIZED_CONFORMANCE"]},
+        "policy_id": {"type": "string", "pattern": "^TraitAutoPolicyId:[^\\s]+$"},
+        "policy_version": {"type": "integer", "minimum": 1},
+        "policy_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "trait_id": {"type": "string", "pattern": "^TraitId:[^\\s]+$"},
+        "target_type_id_or_null": {"type": ["string", "null"]},
+        "input_predicate_id": {"type": "string", "minLength": 1},
+        "input_evidence_ids": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "conformance_id_or_null": {"type": ["string", "null"]},
+        "trait_witness_ids": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "derivation_digest_or_null": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"mode": {"const": "POLICY_DECLARATION"}}, "required": ["mode"]},
+          "then": {
+            "properties": {
+              "target_type_id_or_null": {"const": null},
+              "input_evidence_ids": {"const": []},
+              "conformance_id_or_null": {"const": null},
+              "trait_witness_ids": {"const": []},
+              "derivation_digest_or_null": {"const": null}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"mode": {"const": "SYNTHESIZED_CONFORMANCE"}}, "required": ["mode"]},
+          "then": {
+            "properties": {
+              "target_type_id_or_null": {"type": "string", "minLength": 1},
+              "conformance_id_or_null": {"type": "string", "minLength": 1},
+              "trait_witness_ids": {"minItems": 1},
+              "derivation_digest_or_null": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            }
+          }
+        }
+      ]
+    },
     "r4ModuleInterfaceEnvelope": {
       "type": "object",
       "additionalProperties": false,
@@ -1062,6 +1121,9 @@
         "substitution_id",
         "output_type_id",
         "responsibility_profile_id",
+        "strong_comparison_family_id",
+        "reverse_witness_id",
+        "normalization_domain_id",
         "dispatch_route",
         "runtime_relookup_count",
         "fallback_count"
@@ -1122,7 +1184,33 @@
           "minLength": 1
         },
         "responsibility_profile_id": {
-          "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+          "enum": [
+            "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+            "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT",
+            "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+            "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+          ]
+        },
+        "strong_comparison_family_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "reverse_witness_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "normalization_domain_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
         },
         "dispatch_route": {
           "const": "DIRECT_GLOBAL"
@@ -1158,7 +1246,10 @@
                 "const": "UnaryPlus.positive"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+                "enum": [
+                  "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+                  "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+                ]
               }
             }
           }
@@ -1186,7 +1277,10 @@
                 "const": "UnaryMinus.negate"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+                "enum": [
+                  "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+                  "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+                ]
               }
             }
           }
@@ -1215,7 +1309,10 @@
                 "const": "Add.add"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+                "enum": [
+                  "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+                  "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+                ]
               }
             }
           }
@@ -1244,7 +1341,10 @@
                 "const": "Subtract.subtract"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+                "enum": [
+                  "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+                  "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+                ]
               }
             }
           }
@@ -1273,7 +1373,10 @@
                 "const": "Multiply.multiply"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+                "enum": [
+                  "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+                  "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+                ]
               }
             }
           }
@@ -1302,7 +1405,10 @@
                 "const": "Divide.divide"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+                "enum": [
+                  "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+                  "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+                ]
               }
             }
           }
@@ -1331,7 +1437,10 @@
                 "const": "Remainder.remainder"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT"
+                "enum": [
+                  "BORROWED_PURE_SYNCHRONOUS_NONCONSUMING_ARITHMETIC_DEFECT_PRECOMMIT",
+                  "BORROWED_ALLOCATING_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR_ARITHMETIC_DEFECT_PRECOMMIT"
+                ]
               }
             }
           }
@@ -1427,7 +1536,10 @@
                 "const": "Bool"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+                "enum": [
+                  "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+                  "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+                ]
               }
             }
           }
@@ -1459,7 +1571,10 @@
                 "const": "Bool"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+                "enum": [
+                  "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+                  "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+                ]
               }
             }
           }
@@ -1491,7 +1606,10 @@
                 "const": "Bool"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+                "enum": [
+                  "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+                  "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+                ]
               }
             }
           }
@@ -1523,7 +1641,10 @@
                 "const": "Bool"
               },
               "responsibility_profile_id": {
-                "const": "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING"
+                "enum": [
+                  "BORROWED_PURE_TOTAL_SYNCHRONOUS_NONCONSUMING",
+                  "BORROWED_ALLOCATING_TOTAL_SYNCHRONOUS_NONCONSUMING_ALLOCATIONERROR"
+                ]
               }
             }
           }
@@ -2231,7 +2352,10 @@
       "method_id": "method_id",
       "substitution": "substitution_id",
       "output_type_id": "output_type_id",
-      "responsibility_profile_id": "responsibility_profile_id"
+      "responsibility_profile_id": "responsibility_profile_id",
+      "strong_comparison_family_id_or_null": "strong_comparison_family_id",
+      "reverse_witness_id_or_null": "reverse_witness_id",
+      "normalization_domain_id_or_null": "normalization_domain_id"
     },
     "schema_stage_constant_fields": {
       "dispatch_route": "DIRECT_GLOBAL",
@@ -2294,6 +2418,18 @@
     "selection_rule": "Export only the stable normalized type-level policy and exact selected Trait witness/error/effect residue; runtime or backend relookup is forbidden",
     "product_support": "NOT_RUN"
   },
+  "x-deeplus-trait-auto-policy-contract": {
+    "registry": "TraitAutoPolicyRegistryV1",
+    "registry_owner": "CORE_OR_PRELUDE_ONLY",
+    "policy_key": ["TraitId", "PolicyVersion"],
+    "current_policy_count": 2,
+    "policy_declaration_rule": "a supports auto Trait symbol carries POLICY_DECLARATION residue and source never creates a row",
+    "synthesis_rule": "a by auto conformance symbol carries SYNTHESIZED_CONFORMANCE residue with exact target, input evidence, conformance, witnesses and derivation digest",
+    "api_breaking_fields": ["policy_id", "policy_version", "policy_digest", "trait_id", "input_predicate_id"],
+    "sorted_unique_fields": ["input_evidence_ids", "trait_witness_ids"],
+    "runtime_lookup_count": 0,
+    "product_support": "NOT_RUN"
+  },
   "x-deeplus-canonical-byte-algorithm": {
     "algorithm_id": "DEEPLUS_CANONICAL_JSON_UTF8_SHA256_V1",
     "hash_algorithm": "SHA-256",
@@ -2311,6 +2447,8 @@
       "function_static_activation.used_witness_ids",
       "function_static_activation.used_conformance_ids",
       "function_static_activation.helper_dependencies",
+      "symbols.trait_auto_policy_residue.input_evidence_ids",
+      "symbols.trait_auto_policy_residue.trait_witness_ids",
       "r4_interface_envelope.public_export_rows",
       "r4_interface_envelope.public_activation_reexport_rows",
       "r4_interface_envelope.opaque_facade_rows",

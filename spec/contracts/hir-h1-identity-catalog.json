@@ -2509,7 +2509,7 @@
           "cardinality": "N1_PER_DIRECT_SEGMENT"
         },
         {
-          "slot": "segments_in_source_order[DISPLAY_HOLE].display_evidence_id",
+          "slot": "segments_in_source_order[DISPLAY_HOLE].render_route[DISPLAY].display_evidence_id",
           "reference_domain": "RESOLVED_EVIDENCE_ID",
           "cardinality": "N1_PER_DISPLAY_HOLE"
         },
@@ -2707,6 +2707,7 @@
         "scope_id",
         "parent_scope_id_or_null",
         "cleanup_budget_id",
+        "scope_cancellation_plan",
         "registrations_in_source_order"
       ],
       "owning_reference_slots": [
@@ -2831,6 +2832,9 @@
         }
       ],
       "cross_field_rules": [
+        "scope_cancellation_plan is always present; ordinary scopes use INHERIT while cancellable or shielded scopes require one exact cancellation-aware ExecutionContextId",
+        "normalized_modifiers are a duplicate-free semantic set in formatter order; cancellable and shielded never coexist, isolated is orthogonal, and source order never selects meaning",
+        "a shield plan records only static parent and exit policy; runtime CancellationId, request presence, and shield depth never become HIR constants",
         "registrations remain in exact source order and their source_registration_ordinal values are contiguous from zero",
         "each registration and nested plan agree on registration ordinal and cleanup scope identity",
         "the selected call is fixed before evaluation; explicit dynamic operands remain in source order, defaults follow ordinary selected-default order, and static evidence has evaluation_count zero",
@@ -3329,6 +3333,7 @@
         "scope_id",
         "parent_scope_id_or_null",
         "cleanup_budget_id",
+        "scope_cancellation_plan",
         "registrations_in_source_order"
       ],
       "owning_reference_slots": [
@@ -3394,6 +3399,9 @@
         }
       ],
       "cross_field_rules": [
+        "scope_cancellation_plan is always present; ordinary scopes use INHERIT while cancellable or shielded scopes require one exact cancellation-aware ExecutionContextId",
+        "normalized_modifiers are a duplicate-free semantic set in formatter order; cancellable and shielded never coexist, isolated is orthogonal, and source order never selects meaning",
+        "a shield plan records only static parent and exit policy; runtime CancellationId, request presence, and shield depth never become HIR constants",
         "registrations and their preparations remain in exact source order",
         "each disposition is exactly STACK_OWNED or SEALED_TO_OWNER"
       ]

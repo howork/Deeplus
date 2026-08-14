@@ -1,0 +1,79 @@
+{
+  "schema": "deeplus.strong-comparison-coherence-fixtures/v1",
+  "contract": "spec/contracts/strong-comparison-coherence-v1.json",
+  "cases": [
+    {
+      "case_id": "SCC-N-001",
+      "class": "normal",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"EQ","left_type_id":"Money","right_type_id":"Money","strong_profile_eligible":true,"evidence_origin":"USER_LEFT_OWNER","declaring_owner_type_id_or_null":"Money","family_id_or_null":null,"reverse_witness_id_or_null":null,"normalization_domain_id_or_null":null,"laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"ADMIT_SELF_DOMAIN","diagnostic_or_null":null}
+    },
+    {
+      "case_id": "SCC-N-002",
+      "class": "normal",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"ORD","left_type_id":"Version","right_type_id":"Version","strong_profile_eligible":true,"evidence_origin":"USER_LEFT_OWNER","declaring_owner_type_id_or_null":"Version","family_id_or_null":null,"reverse_witness_id_or_null":null,"normalization_domain_id_or_null":null,"laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"ADMIT_SELF_DOMAIN","diagnostic_or_null":null}
+    },
+    {
+      "case_id": "SCC-N-003",
+      "class": "normal",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"ORD","left_type_id":"Priority","right_type_id":"Priority","strong_profile_eligible":true,"evidence_origin":"LANGUAGE_DERIVED_SELF","declaring_owner_type_id_or_null":"Priority","family_id_or_null":null,"reverse_witness_id_or_null":null,"normalization_domain_id_or_null":null,"laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"ADMIT_SELF_DOMAIN","diagnostic_or_null":null}
+    },
+    {
+      "case_id": "SCC-B-001",
+      "class": "boundary",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"EQ","left_type_id":"Int","right_type_id":"UInt","strong_profile_eligible":false,"evidence_origin":"INTRINSIC_RESERVED","declaring_owner_type_id_or_null":null,"family_id_or_null":null,"reverse_witness_id_or_null":null,"normalization_domain_id_or_null":null,"laws":{"reflexive":false,"symmetric":false,"transitive":false,"total":false,"reverse_sign":false,"zero_iff_eq":false}},
+      "expected": {"outcome":"BYPASS_CONFORMANCE","diagnostic_or_null":null}
+    },
+    {
+      "case_id": "SCC-B-002",
+      "class": "boundary",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"EQ","left_type_id":"Meters","right_type_id":"Centimeters","strong_profile_eligible":true,"evidence_origin":"PRELUDE_SEALED_FAMILY","declaring_owner_type_id_or_null":null,"family_id_or_null":"LengthEqFamily/v1","reverse_witness_id_or_null":"EqCentimetersMeters","normalization_domain_id_or_null":"ExactLengthBaseUnit","laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"ADMIT_SEALED_BILATERAL_FAMILY","diagnostic_or_null":null}
+    },
+    {
+      "case_id": "SCC-B-003",
+      "class": "boundary",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"EQ","left_type_id":"Centimeters","right_type_id":"Meters","strong_profile_eligible":true,"evidence_origin":"PRELUDE_SEALED_FAMILY","declaring_owner_type_id_or_null":null,"family_id_or_null":"LengthEqFamily/v1","reverse_witness_id_or_null":"EqMetersCentimeters","normalization_domain_id_or_null":"ExactLengthBaseUnit","laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"ADMIT_SEALED_BILATERAL_FAMILY","diagnostic_or_null":null}
+    },
+    {
+      "case_id": "SCC-B-004",
+      "class": "boundary",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"ORD","left_type_id":"Meters","right_type_id":"Centimeters","strong_profile_eligible":true,"evidence_origin":"PRELUDE_SEALED_FAMILY","declaring_owner_type_id_or_null":null,"family_id_or_null":"LengthOrdFamily/v1","reverse_witness_id_or_null":"OrdCentimetersMeters","normalization_domain_id_or_null":"ExactLengthBaseUnit","laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"ADMIT_SEALED_BILATERAL_FAMILY","diagnostic_or_null":null}
+    },
+    {
+      "case_id": "SCC-R-001",
+      "class": "reject",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"EQ","left_type_id":"Meters","right_type_id":"Centimeters","strong_profile_eligible":true,"evidence_origin":"USER_LEFT_OWNER","declaring_owner_type_id_or_null":"Meters","family_id_or_null":null,"reverse_witness_id_or_null":null,"normalization_domain_id_or_null":null,"laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"REJECT","diagnostic_or_null":"STRONG_COMPARISON_RHS_NOT_ADMITTED"}
+    },
+    {
+      "case_id": "SCC-R-002",
+      "class": "reject",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"ORD","left_type_id":"Meters","right_type_id":"Centimeters","strong_profile_eligible":true,"evidence_origin":"USER_LEFT_OWNER","declaring_owner_type_id_or_null":"Meters","family_id_or_null":null,"reverse_witness_id_or_null":null,"normalization_domain_id_or_null":null,"laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"REJECT","diagnostic_or_null":"STRONG_COMPARISON_RHS_NOT_ADMITTED"}
+    },
+    {
+      "case_id": "SCC-R-003",
+      "class": "reject",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"EQ","left_type_id":"Meters","right_type_id":"Centimeters","strong_profile_eligible":true,"evidence_origin":"PRELUDE_SEALED_FAMILY","declaring_owner_type_id_or_null":null,"family_id_or_null":"LengthEqFamily/v1","reverse_witness_id_or_null":null,"normalization_domain_id_or_null":"ExactLengthBaseUnit","laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"REJECT","diagnostic_or_null":"STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"}
+    },
+    {
+      "case_id": "SCC-R-004",
+      "class": "reject",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"ORD","left_type_id":"Meters","right_type_id":"Centimeters","strong_profile_eligible":true,"evidence_origin":"PRELUDE_SEALED_FAMILY","declaring_owner_type_id_or_null":null,"family_id_or_null":"LengthOrdFamily/v1","reverse_witness_id_or_null":"OrdCentimetersMeters","normalization_domain_id_or_null":"ExactLengthBaseUnit","laws":{"reflexive":true,"symmetric":true,"transitive":true,"total":true,"reverse_sign":false,"zero_iff_eq":true}},
+      "expected": {"outcome":"REJECT","diagnostic_or_null":"STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"}
+    },
+    {
+      "case_id": "SCC-R-005",
+      "class": "reject",
+      "descriptor": {"schema":"deeplus.strong-comparison-decision/v1","trait_role":"EQ","left_type_id":"Complex<Float64>","right_type_id":"Complex<Float64>","strong_profile_eligible":false,"evidence_origin":"USER_LEFT_OWNER","declaring_owner_type_id_or_null":"Complex<Float64>","family_id_or_null":null,"reverse_witness_id_or_null":null,"normalization_domain_id_or_null":null,"laws":{"reflexive":false,"symmetric":true,"transitive":false,"total":true,"reverse_sign":true,"zero_iff_eq":true}},
+      "expected": {"outcome":"REJECT","diagnostic_or_null":"STRONG_COMPARISON_RHS_NOT_ADMITTED"}
+    }
+  ],
+  "governance": {"semantic_p0":0,"feature_p1":"22_OPEN_UNCHANGED","product_lanes":"15_OF_15_NOT_RUN","github_publication":"NOT_PERFORMED"}
+}

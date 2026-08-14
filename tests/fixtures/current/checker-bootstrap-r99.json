@@ -1,0 +1,24 @@
+{
+  "schema": "deeplus.checker-bootstrap-r99-fixtures/r1",
+  "revision": "r99-checker-bootstrap-closure-r1",
+  "cases": [
+    {"id": "R99-ERR-POS-001", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "positive", "input": "private acyclic leaf and caller", "expected": "EXACT_SORTED_UNION"},
+    {"id": "R99-ERR-POS-002", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "positive", "input": "private recursive caller and callee use the same normalized substitution vector", "expected": "ADMIT_FINITE_SAME_SUBSTITUTION_SCC"},
+    {"id": "R99-ERR-BOUND-001", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "boundary", "input": "mutually recursive private SCC in two declaration orders", "expected": "IDENTICAL_LEAST_FIXED_POINT"},
+    {"id": "R99-ERR-BOUND-002", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "boundary", "input": "recursive generic aliases normalize to the same complete substitution vector", "expected": "NORMALIZE_THEN_ADMIT_SAME_VECTOR"},
+    {"id": "R99-ERR-REJECT-001", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "reject", "input": "public callable omits throws while body exposes Error", "expected": "ERROR_ROW_PRIVATE_INFERENCE_NOT_ADMITTED"},
+    {"id": "R99-ERR-REJECT-002", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "reject", "input": "inference graph contains an unsealed call edge", "expected": "ERROR_ROW_PRIVATE_INFERENCE_UNSEALED_CALL"},
+    {"id": "R99-ERR-REJECT-003", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "reject", "input": "inferred private ErrorId reaches wider API", "expected": "ERROR_ROW_PRIVATE_TYPE_LEAK"},
+    {"id": "R99-ERR-REJECT-004", "cluster": "PRIVATE_ERROR_INFERENCE", "category": "reject", "input": "private def f<T>() recursively calls f<List<T>>() while omitting throws", "expected": "ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH"},
+    {"id": "R99-CALL-POS-001", "cluster": "CALLABLE_EXACT_FACADE", "category": "positive", "input": "Callable<(Int) -> String throws IOError>", "expected": "NORMALIZE_TO_EXACT_SIGNATURE"},
+    {"id": "R99-CALL-BOUND-001", "cluster": "CALLABLE_EXACT_FACADE", "category": "boundary", "input": "Callable<Alias> where Alias resolves to an exact signature", "expected": "NORMALIZE_ALIAS_THEN_ADMIT"},
+    {"id": "R99-CALL-REJECT-001", "cluster": "CALLABLE_EXACT_FACADE", "category": "reject", "input": "Callable", "expected": "CALLABLE_EXACT_SIGNATURE_FACADE_REQUIRED"},
+    {"id": "R99-CALL-REJECT-002", "cluster": "CALLABLE_EXACT_FACADE", "category": "reject", "input": "Callable<Int>", "expected": "CALLABLE_EXACT_SIGNATURE_FACADE_REQUIRED"},
+    {"id": "R99-CALL-REJECT-003", "cluster": "CALLABLE_EXACT_FACADE", "category": "reject", "input": "facade conversion drops ErrorSet or call-right", "expected": "CALLABLE_EXACT_SIGNATURE_FACADE_REQUIRED"}
+  ],
+  "governance": {
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "product_execution": "NOT_RUN"
+  }
+}

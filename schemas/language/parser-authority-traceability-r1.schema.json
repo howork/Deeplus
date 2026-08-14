@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/current/parser-authority-traceability-r1.schema.json",
+  "title": "Deeplus parser authority traceability R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "baseline", "authority_ensemble", "surface_census", "binding_law", "governance"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/parser-authority-traceability-r1.schema.json"},
+    "schema": {"const": "deeplus.parser-authority-traceability/r1"},
+    "revision": {"const": "r78-dpg-implementation-target-traceability-closure-r1"},
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "branch", "canonical_commit", "local_predecessor_commit"],
+      "properties": {
+        "repository": {"const": "howork/Deeplus"},
+        "branch": {"const": "main"},
+        "canonical_commit": {"const": "10e64f492f0529610673846139afcf0d95175663"},
+        "local_predecessor_commit": {"const": "7d4e6c48b9374bec34a60b970530174dd9b4e145"}
+      }
+    },
+    "authority_ensemble": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["structural_grammar", "parser_context", "pratt", "scanner"],
+      "properties": {
+        "structural_grammar": {"$ref": "#/$defs/evidence", "properties": {"class": {"const": "DPG_RULE_FAMILY_ID"}, "path": {"const": "spec/grammar/deeplus.dpg"}, "locator": {"const": "Deeplus"}}},
+        "parser_context": {"$ref": "#/$defs/evidence", "properties": {"class": {"const": "PARSER_CONTEXT_REGISTRY"}, "path": {"const": "spec/grammar/deeplus.parser-contexts.json"}, "locator": {"const": "/dpg_metamodel"}}},
+        "pratt": {"$ref": "#/$defs/evidence", "properties": {"class": {"const": "PRATT_PARSE_GOAL_CONTRACT"}, "path": {"const": "spec/contracts/closed-pratt-parse-goal-contract-r1.json"}, "locator": {"const": "/dispatch_law"}}},
+        "scanner": {"$ref": "#/$defs/evidence", "properties": {"class": {"const": "SCANNER_LEXICAL_GOAL_CONTRACT"}, "path": {"const": "spec/contracts/complete-token-lexical-goal-contract-r1.json"}, "locator": {"const": "/lexical_goals"}}}
+      }
+    },
+    "surface_census": {"type": "object"},
+    "binding_law": {"type": "object"},
+    "governance": {"type": "object"}
+  },
+  "$defs": {
+    "evidence": {
+      "type": "object",
+      "required": ["class", "path", "locator_kind", "locator", "stage_role"],
+      "properties": {
+        "class": {"type": "string"},
+        "path": {"type": "string"},
+        "locator_kind": {"enum": ["FILE", "JSON_POINTER", "REGISTRY_ID"]},
+        "locator": {"type": "string"},
+        "stage_role": {"type": "string"}
+      }
+    }
+  }
+}

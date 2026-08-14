@@ -1,0 +1,23 @@
+{
+  "$schema": "../../../schemas/language/enum-match-boundary-fixtures-v1.schema.json",
+  "schema": "deeplus.enum-match-boundary-fixtures/v1",
+  "contract": "spec/contracts/enum-match-boundary-v1.json",
+  "cases": [
+    {"domain":"ENUM_BODY","input":"enum One { only }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"ENUM_BODY","input":"enum Color { red; green; +def label(self) -> String }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"ENUM_BODY","input":"enum Flag { off, on }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"MATCH_FALLBACK","input":"@match x { ::some(v) => v; otherwise => 0 }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"MATCH_FALLBACK","input":"@match flag { ::off => 0; ::on => 1 }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"ENUM_BODY","input":"enum One { only; }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"ENUM_BODY","input":"enum Flag { off, on, }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"ENUM_BODY","input":"enum Result { ok(value: Int); error(message: String); +def isOk(self) -> Bool }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"MATCH_FALLBACK","input":"@match x { ::some(v) if v > 0 => v; ::some(v) => 0; ::none => 0 }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"MATCH_FALLBACK","input":"@match score { 0 <= value <= 100 => value; otherwise => 0 }","decision":"ADMIT","diagnostic_or_null":null,"ast_residue_count":1},
+    {"domain":"ENUM_BODY","input":"enum Empty {}","decision":"REJECT","diagnostic_or_null":"ENUM_BODY_REQUIRES_CASE","ast_residue_count":0},
+    {"domain":"ENUM_BODY","input":"enum MemberOnly { +def value(self) -> Int }","decision":"REJECT","diagnostic_or_null":"ENUM_BODY_REQUIRES_CASE","ast_residue_count":0},
+    {"domain":"ENUM_BODY","input":"enum Bad { only, }","decision":"REJECT","diagnostic_or_null":"ENUM_COMMA_MODE_REQUIRES_TWO_CASES","ast_residue_count":0},
+    {"domain":"MATCH_FALLBACK","input":"@match x { otherwise if ready => 1 }","decision":"REJECT","diagnostic_or_null":"OTHERWISE_GUARD_FORBIDDEN","ast_residue_count":0},
+    {"domain":"MATCH_FALLBACK","input":"@match x { otherwise => 0; otherwise => 1 }","decision":"REJECT","diagnostic_or_null":"OTHERWISE_DUPLICATE_CLAUSE","ast_residue_count":0},
+    {"domain":"MATCH_FALLBACK","input":"@match x { otherwise => 0; ::some(v) => v }","decision":"REJECT","diagnostic_or_null":"OTHERWISE_MUST_BE_LAST","ast_residue_count":0}
+  ]
+}

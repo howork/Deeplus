@@ -21,21 +21,21 @@ SCHEMA_REL = "schemas/language/current-contract-authority-status-r1.schema.json"
 CURRENT_MAIN = "39a5d50cc770341c4b9776d00d84520b780d0c62"
 EXPECTED = {
     "spec/contracts/continuation-interface-r1.json": {
-        "sha256": "31da8a3207c287a03ec3cf2633f2ca9d6c759d502d271f0e3ee34c863d3e944c",
+        "sha256": "07e0ab81e3a29286f65b04bb0e1c49752cda674ceeda19231b7e8744b3a9218f",
         "gap": "IR-OWN-P0-017",
         "semantic": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
         "closure": "ab7fb2fd356262eeaf0b0bbdeb4d81e4d63d84e5",
         "receipt": "release/evidence/r46-managed-root-runtime-fusion-publication-closure-receipt.json",
     },
     "spec/contracts/suspension-frame-responsibility-r1.json": {
-        "sha256": "77a151bda5ec46873f1d20c89b4d96c7d3af7dc99334f8999c54a4805171adc5",
+        "sha256": "8f5b8e5d106de8edf9517929d9f34cff9550a10fa35b0e10df094fbd4d356f11",
         "gap": "IR-OWN-P0-017",
         "semantic": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
         "closure": "ab7fb2fd356262eeaf0b0bbdeb4d81e4d63d84e5",
         "receipt": "release/evidence/r46-managed-root-runtime-fusion-publication-closure-receipt.json",
     },
     "spec/contracts/managed-reference-memory-profile-r1.json": {
-        "sha256": "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7",
+        "sha256": "2274caed9a6fefb3f2169d6136617b7971efa0e2bf5aeacef861cab4a956ce73",
         "gap": "IR-OWN-P1-025",
         "semantic": "82cdf6aa6b1527af3b5b06157a3fd745ee33e5b0",
         "closure": "ab7fb2fd356262eeaf0b0bbdeb4d81e4d63d84e5",
@@ -49,7 +49,7 @@ EXPECTED = {
         "receipt": "release/evidence/r47-ownership-contract-fusion-publication-closure-receipt.json",
     },
     "spec/contracts/frontend-primary-diagnostic-identity-r1.json": {
-        "sha256": "050c8b2e92134a6017c4ec4401a6757488e8989aaf9150a43d162d127973ddd1",
+        "sha256": "fd8605532a4678eedf0eff3a4343028308ae8217d6561dfb91ea26e1fb0e0ec9",
         "gap": "IR-FE-P1-035",
         "semantic": "2feba9e077ffdf35403c3b8467c17ddcfcf142f6",
         "closure": "4a38cdfaee6bb76b6e21fba59eef4b4b870a5a44",

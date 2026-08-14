@@ -74,14 +74,18 @@
     "implicit_retry": false,
     "one_way_result": "Result<Unit, error ActorMessageError>",
     "request_result": "Result<Reply<T>, error ActorMessageError>",
+    "transport_throws": ["AllocationError"],
+    "transport_effects": ["allocate"],
     "reply_wait": "extract the Reply, then use one-shot explicit await",
     "request_responsibility": "ReplyResponsibility preserves normalized result type, exact handler ErrorSet, Cancellation, isolation owner, per-value reply identity, per-value correlation identity, and ActorMessageError::receiverClosedBeforeReply",
     "run_reply_split": "spawn returns owner-bound Run<T>; actor request admission returns correlation-bound Reply<T>; no implicit conversion or shared responsibility descriptor exists",
     "same_selector_shape_kind_collision": "reject at declaration, protocol composition, or link validation",
     "deferred_cleanup_actor_call": "REJECT",
-    "envelope": "compiler-internal after exact resolution, binding, transfer, and isolation proof",
-    "precommit_failure": "publishes no envelope or sequence and retains every sender owner",
-    "successful_commit": "publishes one envelope and transfers every moved owner exactly once"
+    "envelope": "compiler-internal and fully allocated after exact resolution, binding, transfer and isolation proof but before enqueue commit",
+    "allocation_order": ["receiver_closed", "bounded_capacity_full", "envelope_storage", "mailbox_storage_if_required", "request_responsibility_storage_if_request", "enqueue_commit"],
+    "precommit_failure": "AllocationError publishes no Result, envelope, sequence, ReplyId or CorrelationId, retains every sender owner, and reverse-cleans staged resources",
+    "successful_commit": "publishes one prepared envelope and transfers every moved owner exactly once",
+    "postcommit_allocation_count": 0
   },
   "migration": {
     "actor_tilde": "diagnose and replace ~ with :~ only when actor-operation resolution is exact",
@@ -108,7 +112,12 @@
     "canonical_hir_call_identity_count": 1,
     "canonical_hir_argument_family_count": 7,
     "canonical_hir_trailing_closure_array_count": 0,
-    "current_mode_target_pair_count": 10
+    "current_mode_target_pair_count": 10,
+    "actor_transport_allocation_plan_count": 1,
+    "actor_transport_postcommit_allocation_count": 0,
+    "actor_sender_identity_plan_count": 1,
+    "actor_sender_identity_variant_count": 2,
+    "actor_sender_identity_send_time_allocation_count": 0
   },
   "canonical_hir_projection": {
     "schema": "deeplus.canonical-hir-h1/r1",
@@ -137,6 +146,14 @@
       "MESSAGE::RESERVED_OPERATION",
       "ACTOR_MESSAGE::ACTOR_TRANSPORT"
     ],
-    "valid_mode_target_pair_count": 10
+    "valid_mode_target_pair_count": 10,
+    "actor_sender_identity": {
+      "plan": "ActorSenderIdentityPlanV1",
+      "plan_id_field": "sender_identity_plan_id",
+      "runtime_domain": ["Actor(ActorInstanceId)", "Execution(ExecutionId)"],
+      "selection": "active actor turn, otherwise current execution",
+      "send_time_identity_allocation_count": 0,
+      "runtime_search_count": 0
+    }
   }
 }

@@ -653,7 +653,7 @@
       "the Record field domain or Map lookup domain is known",
       "the Pattern has at most one terminal open or residual marker"
     ],
-    "normalization": "normalize ${sourceField:target, rest**} and #map{valuePattern:key, ..rest} to distinct explicit destination-source rows",
+    "normalization": "normalize ${sourceField:target, rest**} and #map{valuePattern:key, *rest} to distinct explicit destination-source rows",
     "decision_procedure": [
       "validate unique source fields or keys",
       "require parentheses around typed or nested Record targets",
@@ -1015,7 +1015,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "LocalGroupAssignmentAdmitted",
     "source_name": "Local group Tuple assignment admission",
-    "summary": "Admit exact-arity assignment to distinct direct mutable Plain locals with staged right-hand values and one infallible logical commit.",
+    "summary": "R106 admits irrefutable structural assignment and bare Tuple sugar to distinct existing direct mutable locals through one staged failure-atomic commit.",
     "input_descriptor": "RCTSDescriptorV5",
     "feature_refs": [
       "local_group_tuple_assignment"
@@ -1036,13 +1036,13 @@
       "all left-hand targets resolve to existing direct mutable Plain locals",
       "the right-hand side has one fixed Tuple arity"
     ],
-    "normalization": "normalize the right-hand side to staged temporaries and the left-hand side to a distinct ordered local-place set",
+    "normalization": "normalize PatternAssignmentStmt and ParallelAssignmentStmt to one structural PatternAssignmentPlan and a distinct ordered direct-local place set",
     "decision_procedure": [
-      "resolve every target and require an existing var local",
-      "require exact Tuple arity and an irrefutable target shape",
+      "resolve every non-wildcard structural leaf and rest capture and require an existing var local",
+      "require the whole Tuple, List, Record or pattern-transparent nominal assignee to be irrefutable for the exact RHS type",
       "reject duplicate, overlapping, member, index, property, shared, actor and FFI places",
-      "evaluate all right-hand items left to right into temporaries",
-      "reserve an infallible replacement for every target and commit as one logical group"
+      "evaluate the RHS exactly once and stage projected values left to right without target writes",
+      "reserve an infallible callback-free replacement for every target, cross one PatternAssignmentCommitId, then reverse-clean displaced owners"
     ],
     "requires": [
       "existing direct mutable Plain locals",
@@ -1072,7 +1072,7 @@
     ],
     "execution_receipt": null,
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/keyable-iteration-pattern-assignment-r106.json",
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true
   }

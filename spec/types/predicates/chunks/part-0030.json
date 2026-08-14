@@ -1,0 +1,90 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ActorSenderIdentityAdmitted",
+    "source_name": "ActorSenderIdentityAdmitted",
+    "summary": "Seal one tagged SenderId from the current actor incarnation or execution, with deterministic suspension, child-spawn, restart and queued-message lifetime laws; product checker/MIR/runtime NOT_RUN.",
+    "input_descriptor": "ActorSenderIdentityDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/actor-sender-identity-decision-v1.schema.json",
+    "descriptor_axes": [
+      "context",
+      "actor_turn_authority",
+      "actor_instance_available",
+      "execution_id_available",
+      "phase",
+      "proposed_sender_kind",
+      "relation",
+      "decision",
+      "diagnostic_or_null",
+      "send_time_identity_allocation_count"
+    ],
+    "rule_facets": [
+      "tagged_sender_domain",
+      "origin_precedence",
+      "suspension_preservation",
+      "restart_and_child_distinction",
+      "queued_residue_lifetime"
+    ],
+    "feature_refs": [
+      "actor_mailbox_capacity",
+      "actor_minimum_lifecycle_r1"
+    ],
+    "diagnostic_refs": [
+      "ACTOR_SENDER_CONTEXT_UNAVAILABLE",
+      "MIR_ACTOR_SENDER_IDENTITY_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "ActorSenderIdentityPlanV1 | reject(diagnostic_id)",
+    "requires": [
+      "an active actor-turn authority selects Actor(ActorInstanceId)",
+      "otherwise one current ExecutionId selects Execution(ExecutionId)",
+      "suspend/resume preserves identity while actor restart and structured child spawn replace the underlying origin",
+      "queued transport preserves the immutable tagged identity without extending authority",
+      "send-time allocation, runtime search, source construction, address/thread inference, serialization identity and untagged collision are forbidden"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/actor-sender-identity-v1.json",
+    "formal_judgment_id": "J-ActorSenderIdentityAdmitted",
+    "algorithm_owner": "actor_transport_type_checker_hir_seal_and_mir_verifier",
+    "preconditions": [
+      "one ActorTransport target is selected",
+      "the lexical/runtime context contract exposes current actor-turn authority and ExecutionId"
+    ],
+    "normalization": "one tagged SenderIdV1 origin and one ActorSenderIdentityPlanV1",
+    "decision_procedure": [
+      "if actor-turn authority is active require ActorInstanceId and select Actor",
+      "otherwise require current ExecutionId and select Execution",
+      "preserve the selected identity across suspension and in queued residue",
+      "require new ActorInstanceId after restart and new ExecutionId for a structured child",
+      "reject missing, per-send, static-ActorId, ActorTurnId, untagged or runtime-searched identities"
+    ],
+    "termination_metric": "one finite context descriptor and one two-variant selection",
+    "success_result": "ActorSenderIdentityPlanV1",
+    "active_primary_diagnostic": "ACTOR_SENDER_CONTEXT_UNAVAILABLE",
+    "secondary_diagnostics": [
+      "MIR_ACTOR_SENDER_IDENTITY_INVALID"
+    ],
+    "positive_fixture_ids": [
+      "PF-ActorSenderIdentityAdmitted-ACTOR",
+      "PF-ActorSenderIdentityAdmitted-EXECUTION"
+    ],
+    "negative_fixture_ids": [
+      "PF-ActorSenderIdentityAdmitted-NEG-CONTEXT",
+      "PF-ActorSenderIdentityAdmitted-NEG-MIR"
+    ],
+    "evaluation_order": "seal call target -> seal sender identity plan -> evaluate operands -> actor transport admission",
+    "dependency_predicates": [
+      "UnifiedCallModeAdmitted",
+      "ActorTransportAllocationAdmitted"
+    ],
+    "diagnostic_dispatch": {
+      "CONTEXT_UNAVAILABLE": "ACTOR_SENDER_CONTEXT_UNAVAILABLE"
+    },
+    "runtime_dispatch_count": 0,
+    "source_order_winner_count": 0,
+    "send_time_identity_allocation_count": 0
+  }
+]

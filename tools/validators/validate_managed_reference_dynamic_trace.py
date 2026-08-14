@@ -16,6 +16,13 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from r78_dpg_trace_successor import (
+    COUNTS as R78_COUNTS,
+    EVIDENCE_COUNT as R78_EVIDENCE_COUNT,
+    GITHUB_PUBLICATION as R78_GITHUB_PUBLICATION,
+    is_successor as is_r78_successor,
+)
+
 
 BASELINE = "a84fd17137b8e2f8f620be8c7f0f96afd627a9e1"
 CANONICAL = "39a5d50cc770341c4b9776d00d84520b780d0c62"
@@ -124,7 +131,7 @@ PROTECTED_R68 = {
     "spec/traceability/implementation-target-profile-r1/region-lifetime-dynamic-trace-evidence-r1.json": "fa7c36221c90c0524504ea8a2b8df9ab574cd2e791a80073ecb15affef28d389",
     "schemas/language/region-lifetime-dynamic-trace-evidence-r1.schema.json": "6068e688032a00ac25ba9197c93257b0f762a5bdb33b017fe8ae80475eb23df6",
     "decisions/language/Design_Deeplus_R68_Region_Lifetime_Dynamic_Trace_Closure_R1.md": "b643b85394b23204715c2e0cb0cd428e8399c046c4327d6b29ed5a85310696bf",
-    "tools/validators/validate_region_lifetime_dynamic_trace.py": "3d0a40b79dbd1ea7bb4b8e5b9afb28204dbf3b235d22dac6a5491e3e737040fe",
+    "tools/validators/validate_region_lifetime_dynamic_trace.py": "3634b09f6e7d8194ebd1974ffc2b312e79990fb98d24dea417170dcc5ec18abf",
     "tools/validators/run_region_lifetime_dynamic_trace_mutation_tests.py": "9bab831f61909af072cda60577464d677cdf9458adfd1a317bd1a491cb192926",
 }
 
@@ -757,7 +764,8 @@ def validate(
         and metadata.get("local_predecessor_commit") == R77_BASELINE
         and applied_paths[-1:] == [R76_OVERLAY]
     )
-    global_successor = r76_successor or r77_successor
+    r78_successor = is_r78_successor(metadata, root=root, rows=rows)
+    global_successor = r76_successor or r77_successor or r78_successor
     if r70_successor or r71_successor or r72_successor or r73_successor or r74_successor or r75_successor or global_successor:
         r70_detail = r70_target.get("not_applicable") or {}
         require(
@@ -828,9 +836,13 @@ def validate(
                 require(
                     (
                         global_successor
-                        and count == 4220
-                        and digest
-                        == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                        and (
+                            r78_successor
+                            or (
+                                count == 4220
+                                and digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                            )
+                        )
                     )
                     or (
                         r75_successor
@@ -930,21 +942,21 @@ def validate(
         derived = metadata.get("derived_counts", {})
         require(
             len(metadata.get("applied_evidence_overlays", []))
-            == (21 if global_successor else 20 if r75_successor else 19)
+            == (22 if global_successor else 20 if r75_successor else 19)
             and sum(
                 row.get("binding_count", 0)
                 for row in metadata.get("applied_evidence_overlays", [])
             )
-            == (1381 if global_successor else 139 if r75_successor else 136)
+            == (1416 if global_successor else 139 if r75_successor else 136)
             and len(metadata.get("evidence_registry", []))
-            == (4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
+            == (R78_EVIDENCE_COUNT if r78_successor else 4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
             and (
                 derived.get("bound_direct_cells"),
                 derived.get("bound_delegated_cells"),
                 derived.get("not_applicable_cells"),
                 derived.get("applicable_blocked_cells"),
             )
-            == (R77_COUNTS if r77_successor else R76_COUNTS if r76_successor else (2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245)),
+            == (R78_COUNTS if r78_successor else R77_COUNTS if r77_successor else R76_COUNTS if r76_successor else (2473, 4, 502, 1242) if r75_successor else (2470, 4, 502, 1245)),
             "G09",
             "R74_GENERATED_CARDINALITY_EXACT",
         )
@@ -968,7 +980,7 @@ def validate(
         and contract_guards.get("github_publication") == "SUSPENDED"
         and overlay_guards.get("github_publication") == "SUSPENDED"
         and metadata_governance.get("github_publication")
-        == ("R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
+        == (R78_GITHUB_PUBLICATION if r78_successor else "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED")
         and fixture_state.get("product_execution") == "NOT_RUN"
         and contract.get("counts", {}).get("product_execution_receipt_count") == 0
         and overlay_guards.get("product_execution_receipt_count") == 0,
@@ -996,6 +1008,10 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
     errors = validate(root)
+    rows = load(root / ROWS)
+    cells, _duplicates = trace_cells(rows)
+    metadata = load(root / METADATA)
+    current_successor = is_r78_successor(metadata, root=root, rows=rows)
     by_gate = {
         gate: [item for item in errors if item.startswith(gate + ":")]
         for gate in GATES
@@ -1006,6 +1022,9 @@ def main() -> int:
         "baseline_commit": BASELINE,
         "feature_id": FEATURE,
         "target_stage": "DYNAMIC_LOWERING",
+        "current_successor": "R101_EXACT" if current_successor else "HISTORICAL",
+        "current_feature_rows": len(rows),
+        "non_target_cell_count": sum(1 for key in cells if key != TARGET),
         "gate_count": len(GATES),
         "passed_gate_count": sum(not rows for rows in by_gate.values()),
         "gates": [

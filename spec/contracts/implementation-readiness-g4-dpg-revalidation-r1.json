@@ -1,0 +1,80 @@
+{
+  "$schema": "../../schemas/language/implementation-readiness-g4-dpg-revalidation-r1.schema.json",
+  "schema": "deeplus.implementation-readiness-g4-dpg-revalidation/r1",
+  "revision": "r78-dpg-implementation-target-traceability-closure-r1",
+  "historical_audit": {
+    "path": "spec/contracts/implementation-readiness-g4-audit-r1.json",
+    "preserved_immutable": true,
+    "interpretation": "HISTORICAL_SNAPSHOT_NOT_CURRENT_GRAMMAR_AUTHORITY"
+  },
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "main",
+    "canonical_commit": "10e64f492f0529610673846139afcf0d95175663",
+    "local_predecessor_commit": "7d4e6c48b9374bec34a60b970530174dd9b4e145"
+  },
+  "candidate_status": "LOCAL_REVALIDATED_NOT_INTEGRATED",
+  "verdict": "IMPLEMENTATION_TARGET_PROFILE_SPECIFICATION_READY_LOCAL_REVALIDATION",
+  "evidence_level": "E2_STRUCTURED_STATIC",
+  "parser_authority": {
+    "contract": "spec/contracts/parser-authority-traceability-r1.json",
+    "structural_grammar": "spec/grammar/deeplus.dpg",
+    "parser_context": "spec/grammar/deeplus.parser-contexts.json",
+    "pratt_contract": "spec/contracts/closed-pratt-parse-goal-contract-r1.json",
+    "scanner_contract": "spec/contracts/complete-token-lexical-goal-contract-r1.json",
+    "surface_census": "spec/grammar/deeplus.ebnf",
+    "surface_census_semantic_authority": false,
+    "legacy_ebnf_authority_evidence_count": 0,
+    "surface_census_locator_count": 297,
+    "direct_source_cell_count": 438
+  },
+  "traceability": {
+    "feature_rows": 469,
+    "stage_cells": 3283,
+    "conformance_outcome_cells": 1407,
+    "atomic_cells": 4221,
+    "bound_direct": 3714,
+    "bound_delegated": 4,
+    "not_applicable": 503,
+    "applicable_blocked": 0,
+    "missing": 0,
+    "conflicting": 0
+  },
+  "gates": [
+    {"id": "G0", "verdict": "PASS_E2"},
+    {"id": "G1", "verdict": "PASS_E2"},
+    {"id": "G2", "verdict": "PASS_E2"},
+    {"id": "G3", "verdict": "PASS_E2"},
+    {"id": "G4", "verdict": "PASS_E2"}
+  ],
+  "authority_fence": {
+    "semantic_p0": 0,
+    "target_profile_unresolved_p0": 0,
+    "target_profile_unresolved_p1": 0,
+    "feature_p1": "22_OPEN_OUTSIDE_TARGET_PROFILE",
+    "m13_actions": "4_OPEN_SEPARATE",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_PERFORMED",
+    "e4_e5_evidence_count": 0,
+    "language_semantic_change_count": 0,
+    "feature_status_change_count": 0
+  },
+  "conflict_register": [
+    {
+      "id": "G4-CONFLICT-001",
+      "disposition": "EXPLAINED_TYPED_HISTORICAL_PROMOTION_STATE",
+      "source_repair": "NOT_REQUIRED"
+    },
+    {
+      "id": "G4-CONFLICT-002",
+      "disposition": "CLOSED_IN_LOCAL_R78_BY_DPG_AUTHORITY_REBIND",
+      "source_repair": "PARSER_AUTHORITY_ENSEMBLE_AND_LOCATOR_ENFORCEMENT"
+    }
+  ],
+  "next_blocking_cluster": {
+    "gap_id": "PREIMPL-P0-003",
+    "name": "SFD-P1-009 impossible target-bound route",
+    "activated": false
+  },
+  "external_post_commit_receipt_required": true
+}

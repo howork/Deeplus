@@ -1,0 +1,184 @@
+[
+  {
+    "fixture_id": "PF-ActorTransportAllocationAdmitted-POS",
+    "predicate_id": "ActorTransportAllocationAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "profile": "bounded_reject_v1",
+      "operation": "REQUEST",
+      "receiver_state": "OPEN",
+      "capacity_state": "AVAILABLE",
+      "allocation_stage": "ALL_READY",
+      "decision": "ADMIT",
+      "diagnostic_or_null": null,
+      "published_residue_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorTransportAllocationPlanV1"
+      },
+      "responsibility": {
+        "ownership": "affine",
+        "cleanup": "reverse_precommit",
+        "effects": [
+          "allocate"
+        ],
+        "errors": [
+          "AllocationError"
+        ],
+        "cancellation": "preserved",
+        "authorities": [
+          "ActorTransport"
+        ],
+        "suspends": false,
+        "isolation": "actor_boundary"
+      }
+    },
+    "admitted_condition": "all request transport storage is prepared before one enqueue commit",
+    "rule_seed": "R90 actor transport allocation positive fixture; product checker/MIR/runtime NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ActorTransportAllocationAdmitted-BOUNDARY",
+    "predicate_id": "ActorTransportAllocationAdmitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "profile": "logical_unbounded_v1",
+      "operation": "SEND",
+      "receiver_state": "OPEN",
+      "capacity_state": "NOT_APPLICABLE",
+      "allocation_stage": "MAILBOX_STORAGE",
+      "decision": "THROW_ALLOCATION_ERROR",
+      "diagnostic_or_null": null,
+      "published_residue_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorTransportAllocationPlanV1"
+      },
+      "responsibility": {
+        "ownership": "affine",
+        "cleanup": "reverse_precommit",
+        "effects": [
+          "allocate"
+        ],
+        "errors": [
+          "AllocationError"
+        ],
+        "cancellation": "preserved",
+        "authorities": [
+          "ActorTransport"
+        ],
+        "suspends": false,
+        "isolation": "actor_boundary"
+      }
+    },
+    "admitted_condition": "logical-unbounded storage exhaustion propagates AllocationError with zero publication",
+    "rule_seed": "R90 logical-unbounded allocation boundary fixture; product runtime NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no source diagnostic; dynamic AllocationError",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ActorTransportAllocationAdmitted-NEG-DROPPED",
+    "predicate_id": "ActorTransportAllocationAdmitted",
+    "fixture_kind": "negative",
+    "expected": "rejected",
+    "descriptor": {
+      "profile": "bounded_reject_v1",
+      "operation": "SEND",
+      "receiver_state": "OPEN",
+      "capacity_state": "AVAILABLE",
+      "allocation_stage": "ENVELOPE_STORAGE",
+      "decision": "REJECT_STATIC",
+      "diagnostic_or_null": "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+      "published_residue_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorTransportAllocationPlanV1"
+      },
+      "responsibility": {
+        "ownership": "affine",
+        "cleanup": "reverse_precommit",
+        "effects": [],
+        "errors": [],
+        "cancellation": "preserved",
+        "authorities": [
+          "ActorTransport"
+        ],
+        "suspends": false,
+        "isolation": "actor_boundary"
+      }
+    },
+    "violated_condition": "CallPlan erased AllocationError and allocate",
+    "expected_diagnostic": "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+    "rule_seed": "R90 dropped responsibility rejection fixture.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-ActorTransportAllocationAdmitted-NEG-POSTCOMMIT",
+    "predicate_id": "ActorTransportAllocationAdmitted",
+    "fixture_kind": "negative",
+    "expected": "rejected",
+    "descriptor": {
+      "profile": "bounded_reject_v1",
+      "operation": "REQUEST",
+      "receiver_state": "OPEN",
+      "capacity_state": "AVAILABLE",
+      "allocation_stage": "POSTCOMMIT",
+      "decision": "REJECT_MIR",
+      "diagnostic_or_null": "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN",
+      "published_residue_count": 1
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "ActorTransportAllocationPlanV1"
+      },
+      "responsibility": {
+        "ownership": "affine",
+        "cleanup": "reverse_precommit",
+        "effects": [
+          "allocate"
+        ],
+        "errors": [
+          "AllocationError"
+        ],
+        "cancellation": "preserved",
+        "authorities": [
+          "ActorTransport"
+        ],
+        "suspends": false,
+        "isolation": "actor_boundary"
+      }
+    },
+    "violated_condition": "request responsibility storage was deferred until after enqueue commit",
+    "expected_diagnostic": "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN",
+    "rule_seed": "R90 postcommit allocation verifier rejection fixture.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active verifier secondary",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

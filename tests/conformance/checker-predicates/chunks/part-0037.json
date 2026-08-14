@@ -66,24 +66,29 @@
     "fixture_kind": "concrete_positive",
     "expected": "admitted",
     "descriptor": {
-      "schema": "deeplus.r58-member-visibility-predicate-fixture/r1",
+      "schema": "deeplus.member-visibility-resolution/v1",
       "test_class": "boundary",
-      "member_owner_production": "StoredParameter",
+      "owner_production": "StoredParameter",
+      "parent_context": "NEW_MEMBER",
       "source": "let value: Int",
-      "member_visibility_surface": null,
-      "omission_state": "OMITTED",
-      "semantic_value": null,
-      "r58_global_default": null,
-      "default_application_count": 0,
-      "declaring_nominal_id": "Cell",
-      "expected_outcome": "ADMIT_OMITTED_MEMBER_VISIBILITY_WITHOUT_DEFAULT"
+      "surface_state": "OMITTED",
+      "explicit_visibility_or_null": null,
+      "original_slot_anchor_id_or_null": null,
+      "original_slot_visibility_or_null": null,
+      "requirement_id_or_null": null,
+      "requirement_visibility_or_null": null,
+      "actor_visibility_or_null": null,
+      "actor_protocol_visibility_or_null": null,
+      "expected_resolution_kind": "DEFAULT_PRIVATE",
+      "expected_effective_domain": "PRIVATE",
+      "expected_outcome": "ADMIT_MEMBER_VISIBILITY_FACT"
     },
     "descriptor_v5": {
       "schema": "deeplus.rcts-v5/descriptor",
       "variant": "responsibility_core",
       "semantic_type": {
         "kind": "nominal",
-        "type_id": "R58MemberVisibilityDescriptor"
+        "type_id": "MemberVisibilityResolutionV1"
       },
       "responsibility": {
         "ownership": "reusable",
@@ -96,8 +101,8 @@
         "isolation": "local"
       }
     },
-    "admitted_condition": "omission remains OMITTED with normalized visibility null and no global member default",
-    "rule_seed": "R58 member-visibility omission boundary fixture; product checker NOT_RUN.",
+    "admitted_condition": "StoredParameter omission is preserved through AST and owner-resolved to a PRIVATE generated member before canonical HIR",
+    "rule_seed": "MemberVisibilityOmissionV1 owner-bound default-private boundary fixture; product checker NOT_RUN.",
     "execution_status": "DESIGN_STATIC_NOT_RUN",
     "diagnostic_disposition": "no diagnostic",
     "baseline": "0.1.2-baseline.r51f3",

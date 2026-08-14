@@ -279,6 +279,34 @@
     "emission_domain": "historical"
   },
   {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "INTERPOLATION_FORMAT_SPEC_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "string_interpolation_format_spec_core"
+    ],
+    "fixit_hint": "use <, > or ^ followed by a canonical width from 1 through 1000000",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "replace only the format text; preserve the braced expression",
+    "message": "Interpolation format must be Align? Width with optional <, > or ^ and canonical decimal width 1 through 1000000.",
+    "notes": "Reason order is EMPTY_FORMAT, INVALID_GRAMMAR, WIDTH_LEADING_ZERO, WIDTH_OUT_OF_RANGE; rejection occurs before HIR and product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/string-interpolation-format-spec-core-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
     "diagnostic_id": "INTERPOLATION_INDEX_OUT_OF_DOMAIN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
@@ -687,24 +715,24 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
-      "source_truth_projection_unification"
+      "iterator_protocol_core"
     ],
     "fixit_hint": "none",
     "fixit_kind": "none",
     "fixit_policy": "none",
     "message": "Iterator cleanup effects are not accounted for on loop exit.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
+    "notes": "R106 current design-static diagnostic; product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",

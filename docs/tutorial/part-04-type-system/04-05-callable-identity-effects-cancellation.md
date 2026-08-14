@@ -47,6 +47,12 @@ callable identity는 모든 responsibility-bearing 차이를 보존한다.
   아니다.
 - suspension과 cancellation responsibility를 effect row 안에 숨기지
   않는다.
+- parameter type은 반공변, result type은 공변으로 비교하되 channel,
+  label, rest shape, parameter mode와 ownership은 정확히 같아야 한다.
+- 실제 callable의 ErrorSet과 EffectRow는 대상 callable이 허용한 집합의
+  부분집합이어야 한다.
+- cancellation, suspension, isolation, authority, call-right, capture와
+  cleanup 책임은 자동 wrapper로 약화하거나 감추지 않는다.
 
 ## 6. 단계별 예제
 
@@ -89,6 +95,27 @@ private def load(path: String, context fileIO: FileIO) -> Bytes
 
 `effects io`가 권한 값을 만들어 주지 않고, `FileIO` context를 가졌다는
 사실만으로 실제 effect가 발생했다고 간주하지도 않는다.
+
+고차 함수는 callback의 error와 effect를 처리하거나 자기 서명으로
+전달해야 한다. row 변수가 있다면 generic substitution이 완전히 닫힌
+뒤에만 HIR을 만든다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
+```deeplus
+public def mapChecked<T, U, E: ErrorSet, ρ: EffectRow>(
+    value: T,
+    transform: (T) -> U throws E effects ρ,
+) -> U
+    throws E
+    effects ρ
+= {
+    return transform(value)
+}
+```
+
+`mapChecked`는 callback 책임을 숨기지 않는다. 반대로 `throws Never
+effects {}`로 선언한 고차 함수가 throwing/effectful callback을 받아
+그 책임을 버리는 것은 거부된다.
 
 ### 판정 trace, 미니 사례와 흔한 오해
 

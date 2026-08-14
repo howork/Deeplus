@@ -35,23 +35,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable BinarySubtract evidence for an admitted non-intrinsic operand pair under the borrowed, pure, synchronous, non-consuming fixed-glyph profile with only a declared precommit ArithmeticDefect terminal",
-    "notes": "Selection requires one left-owner DIRECT_GLOBAL conformance and cannot override an intrinsic-reserved domain or use conversion, alternate evidence routes, ordering, fallback, or runtime lookup; ArithmeticDefect is nonrecoverable and not a throws member; product support NOT_RUN.",
+    "responsibility": "Stable BinarySubtract evidence under the borrowed synchronous non-consuming fixed-glyph profile; the selected witness seals an exact subset of AllocationError/allocate",
+    "notes": "Primitive and fixed-width witnesses may seal Never/{}; BigInt/Rational value-producing rows seal AllocationError/allocate. Selection remains unique left-owner DIRECT_GLOBAL; ArithmeticDefect is distinct; product support NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Subtract<Rhs> { type Output; +def subtract.(borrow rhs: Rhs) -> <Self as Subtract<Rhs>>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "14abf3ce361fcb499ee245b0e3236c78ddf17d40cdb86c9a7c5c8294fe5bb6c6"
+    "normalized_contract_sha256": "ac191211ce15f44768e3c38686421a601f9c9948a43b5282bb33cc4ceaa0d173"
   },
   {
     "entry_id": "divide_rhs",
@@ -62,23 +62,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable BinaryDivide evidence for one admitted non-intrinsic operand pair; both operands are borrowed and any zero-divisor terminal is the nonrecoverable ArithmeticDefect before enclosing place commit",
-    "notes": "Output is derived only after one left-owner DIRECT_GLOBAL witness is selected. Intrinsic-reserved domains take priority. Conversion, result-directed selection, alternate evidence, fallback, runtime lookup and recoverable hidden throws are forbidden; named recoverable division APIs remain available.",
+    "responsibility": "Stable BinaryDivide evidence; operands are borrowed, the selected witness seals an exact subset of AllocationError/allocate, and a zero divisor remains nonrecoverable ArithmeticDefect before commit",
+    "notes": "BigInt/Rational value-producing rows seal AllocationError/allocate; fixed-width rows may seal Never/{}. Selection is unique before evaluation; hidden failures and runtime fallback are forbidden; named recoverable division APIs remain available.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Divide<Rhs> { type Output; +def divide.(borrow rhs: Rhs) -> <Self as Divide<Rhs>>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "27cb941ebc38512f6ae3c59ee730865071e5df00ee8f83fee99fab9104378930"
+    "normalized_contract_sha256": "d397a05400b9cf8ecd62d1d873fe0f4d1238986d3c6eae823fbc15d33eaee8f7"
   },
   {
     "entry_id": "eq_rhs",
@@ -116,23 +116,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable BinaryRemainder evidence for one admitted non-intrinsic operand pair; both operands are borrowed and any zero-divisor terminal is the nonrecoverable ArithmeticDefect before enclosing place commit",
-    "notes": "Output is derived only after one left-owner DIRECT_GLOBAL witness is selected. A domain must publish its exact quotient/remainder law; intrinsic-reserved domains take priority and Complex has no Remainder row. Conversion, fallback, runtime lookup and recoverable hidden throws are forbidden.",
+    "responsibility": "Stable BinaryRemainder evidence; operands are borrowed, the selected witness seals an exact subset of AllocationError/allocate, and a zero divisor remains nonrecoverable ArithmeticDefect before commit",
+    "notes": "BigInt/Rational value-producing rows seal AllocationError/allocate; fixed-width rows may seal Never/{}. A domain publishes its quotient/remainder law; Complex has no row; hidden failures and runtime fallback are forbidden.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Remainder<Rhs> { type Output; +def remainder.(borrow rhs: Rhs) -> <Self as Remainder<Rhs>>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "3e711a96bc23f66e795d52205839226935ec79dcf5a00b73d3cc9c31c3e6cbe6"
+    "normalized_contract_sha256": "f01b6aa7c7ac740bed00210304a4d71de8f974e5c18b9b72faa9a7c6298ab61d"
   },
   {
     "entry_id": "unary_minus",
@@ -143,23 +143,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }"
+      "public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable prefix UnaryMinus evidence for one admitted non-intrinsic operand; the receiver is borrowed, Output is derived after selection and checked negation may terminate only through ArithmeticDefect before commit",
-    "notes": "Selection uses OperatorId plus the normalized operand type and one owner DIRECT_GLOBAL witness. Intrinsic-reserved domains, especially literal-prefix adaptation, take priority; conversion, fallback and runtime lookup are forbidden.",
+    "responsibility": "Stable prefix UnaryMinus evidence; the borrowed receiver selects one exact witness subset of AllocationError/allocate and checked negation may also terminate through ArithmeticDefect before commit",
+    "notes": "BigInt/Rational rows seal AllocationError/allocate while fixed-width rows may seal Never/{}. Selection uses OperatorId plus normalized operand type; conversion, fallback and runtime lookup are forbidden.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws Never effects {}; }",
+        "text": "public trait#operator UnaryMinus { type Output; +def negate.() -> <Self as UnaryMinus>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "27415c9a4a562546965e14b9fcabb3228d7d37c3c8a25e109517565cedea1d0b"
+    "normalized_contract_sha256": "6c1ef57f9ad4f5eb550dc18884e173d8029494ed5b48b707c7dfe3ce077f3d52"
   },
   {
     "entry_id": "unary_plus",
@@ -170,23 +170,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }"
+      "public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable prefix UnaryPlus evidence for one admitted non-intrinsic operand; the receiver is borrowed and Output is derived only after one owner DIRECT_GLOBAL witness is selected",
-    "notes": "Selection uses OperatorId plus the normalized operand type. Intrinsic-reserved domains and contextual numeric-literal adaptation take priority; conversion, result direction, fallback and runtime lookup are forbidden.",
+    "responsibility": "Stable prefix UnaryPlus evidence; the borrowed receiver selects one exact witness subset of AllocationError/allocate and Output is derived only after selection",
+    "notes": "Current immutable numeric rows may seal Never/{}; the Trait envelope still admits allocation-capable representations. Selection uses OperatorId plus normalized operand type; conversion, result direction, fallback and runtime lookup are forbidden.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws Never effects {}; }",
+        "text": "public trait#operator UnaryPlus { type Output; +def positive.() -> <Self as UnaryPlus>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "ad41d7699eb37fec739e8d3e5d200feea15709be2cd51f33fa5c5ca3db054bcf"
+    "normalized_contract_sha256": "7821bc29a0a2bc8ca53fcf9642a4abb09774dbd88df3cf51da873fd4d30f22a8"
   },
   {
     "entry_id": "run_t",

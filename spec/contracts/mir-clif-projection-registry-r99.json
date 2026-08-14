@@ -1,0 +1,1138 @@
+{
+  "schema": "deeplus.mir-clif-projection-registry/r99",
+  "revision": "r99-total-mir-clif-projection-closure-r1",
+  "status": "STABLE_DESIGN_LOCAL_CANDIDATE_PRODUCT_NOT_RUN",
+  "gap_id": "IR-BACKEND-P1-073",
+  "semantic_authority": "Verified<DeeplusMirR1>",
+  "operation_rows": [
+    {
+      "mir_kind": "CONST",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CONST/r99",
+      "clif_instruction_family": "TYPE_DIRECTED_ICONST_FCONST_OR_VCONST",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CONST",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "STATIC_REF",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:STATIC_REF/r99",
+      "clif_instruction_family": "GLOBAL_VALUE_OR_EXACT_IMPORT_REFERENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:STATIC_REF",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "PURE_INTRINSIC",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:PURE_INTRINSIC/r99",
+      "clif_instruction_family": "SEALED_INTRINSIC_TABLE_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:PURE_INTRINSIC",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "TOTAL_PROJECTION",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:TOTAL_PROJECTION/r99",
+      "clif_instruction_family": "TYPE_DIRECTED_EXTRACT_EXTEND_TRUNCATE_OR_BITCAST",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:TOTAL_PROJECTION",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CONTEXT_ADAPT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CONTEXT_ADAPT/r99",
+      "clif_instruction_family": "VERIFIED_ADAPTATION_PLAN_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CONTEXT_ADAPT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "AGGREGATE_INJECT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:AGGREGATE_INJECT/r99",
+      "clif_instruction_family": "ORDERED_AGGREGATE_SLOT_INITIALIZATION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:AGGREGATE_INJECT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "AGGREGATE_ASSEMBLE",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:AGGREGATE_ASSEMBLE/r99",
+      "clif_instruction_family": "ORDERED_AGGREGATE_SLOT_INITIALIZATION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:AGGREGATE_ASSEMBLE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "PLACE_LOAD",
+      "projection_class": "CLIF_MEMORY_TEMPLATE",
+      "template_id": "ClifTemplateId:PLACE_LOAD/r99",
+      "clif_instruction_family": "CLIF_LOAD_FROM_VERIFIED_PLACE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:PLACE_LOAD",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "PLACE_STORE_INIT",
+      "projection_class": "CLIF_MEMORY_TEMPLATE",
+      "template_id": "ClifTemplateId:PLACE_STORE_INIT/r99",
+      "clif_instruction_family": "CLIF_STORE_TO_UNINITIALIZED_VERIFIED_PLACE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:PLACE_STORE_INIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "PLACE_MOVE",
+      "projection_class": "CLIF_MEMORY_TEMPLATE",
+      "template_id": "ClifTemplateId:PLACE_MOVE/r99",
+      "clif_instruction_family": "CLIF_LOAD_THEN_MARK_SOURCE_UNINITIALIZED",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:PLACE_MOVE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "MOVE_RESERVE",
+      "projection_class": "VERIFIER_ONLY_NO_CLIF_EMISSION",
+      "template_id": "ClifTemplateId:MOVE_RESERVE/r99",
+      "clif_instruction_family": "VERIFIER_STATE_ONLY_NO_CLIF_INSTRUCTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "MOVE_CANCEL",
+      "projection_class": "VERIFIER_ONLY_NO_CLIF_EMISSION",
+      "template_id": "ClifTemplateId:MOVE_CANCEL/r99",
+      "clif_instruction_family": "VERIFIER_STATE_ONLY_NO_CLIF_INSTRUCTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "LOAN_BEGIN_SHARED",
+      "projection_class": "VERIFIER_ONLY_NO_CLIF_EMISSION",
+      "template_id": "ClifTemplateId:LOAN_BEGIN_SHARED/r99",
+      "clif_instruction_family": "VERIFIER_STATE_ONLY_NO_CLIF_INSTRUCTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "LOAN_BEGIN_EXCLUSIVE",
+      "projection_class": "VERIFIER_ONLY_NO_CLIF_EMISSION",
+      "template_id": "ClifTemplateId:LOAN_BEGIN_EXCLUSIVE/r99",
+      "clif_instruction_family": "VERIFIER_STATE_ONLY_NO_CLIF_INSTRUCTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "LOAN_BEGIN_REBORROW",
+      "projection_class": "VERIFIER_ONLY_NO_CLIF_EMISSION",
+      "template_id": "ClifTemplateId:LOAN_BEGIN_REBORROW/r99",
+      "clif_instruction_family": "VERIFIER_STATE_ONLY_NO_CLIF_INSTRUCTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "LOAN_END",
+      "projection_class": "VERIFIER_ONLY_NO_CLIF_EMISSION",
+      "template_id": "ClifTemplateId:LOAN_END/r99",
+      "clif_instruction_family": "VERIFIER_STATE_ONLY_NO_CLIF_INSTRUCTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CLEANUP_REGION_ENTER",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CLEANUP_REGION_ENTER/r99",
+      "clif_instruction_family": "CLEANUP_LADDER_STATE_ENTER",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CLEANUP_REGION_ENTER",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CLEANUP_REGISTER",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CLEANUP_REGISTER/r99",
+      "clif_instruction_family": "CLEANUP_LADDER_REGISTER_ACTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CLEANUP_REGISTER",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CLEANUP_PIN",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CLEANUP_PIN/r99",
+      "clif_instruction_family": "CLEANUP_LADDER_PIN_ACTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CLEANUP_PIN",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CLEANUP_SEAL",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CLEANUP_SEAL/r99",
+      "clif_instruction_family": "CLEANUP_LADDER_SEAL_ACTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CLEANUP_SEAL",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CLEANUP_DISARM",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CLEANUP_DISARM/r99",
+      "clif_instruction_family": "CLEANUP_LADDER_DISARM_ACTION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CLEANUP_DISARM",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "BUILDER_BEGIN",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:BUILDER_BEGIN/r99",
+      "clif_instruction_family": "STAGED_RESULT_STORAGE_BEGIN",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:BUILDER_BEGIN",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "BUILDER_STAGE",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:BUILDER_STAGE/r99",
+      "clif_instruction_family": "STAGED_RESULT_STORAGE_WRITE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:BUILDER_STAGE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "BUILDER_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:BUILDER_COMMIT/r99",
+      "clif_instruction_family": "STAGED_RESULT_SINGLE_PUBLICATION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:BUILDER_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "PATTERN_PROBE",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:PATTERN_PROBE/r99",
+      "clif_instruction_family": "NONCOMMITTING_COMPARE_AND_PROJECTION_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:PATTERN_PROBE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "BINDING_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:BINDING_COMMIT/r99",
+      "clif_instruction_family": "ORDERED_BINDING_SINGLE_COMMIT",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:BINDING_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CLOSURE_MAKE",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CLOSURE_MAKE/r99",
+      "clif_instruction_family": "SEALED_ENVIRONMENT_PLAN_MATERIALIZATION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CLOSURE_MAKE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CONCUR_ENTER",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CONCUR_ENTER/r99",
+      "clif_instruction_family": "SEALED_CONCUR_REGION_ENTRY_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CONCUR_ENTER",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "ACTOR_ENVELOPE_PREPARE",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:ACTOR_ENVELOPE_PREPARE/r99",
+      "clif_instruction_family": "PRECOMMIT_ACTOR_ENVELOPE_MATERIALIZATION",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:ACTOR_ENVELOPE_PREPARE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "FRAME_CREATE",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:FRAME_CREATE/r99",
+      "clif_instruction_family": "CONTINUATION_FRAME_RUNTIME_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:FRAME_CREATE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "FRAME_SUSPEND_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:FRAME_SUSPEND_COMMIT/r99",
+      "clif_instruction_family": "CONTINUATION_FRAME_RUNTIME_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:FRAME_SUSPEND_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "FRAME_RESUME_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:FRAME_RESUME_COMMIT/r99",
+      "clif_instruction_family": "CONTINUATION_FRAME_RUNTIME_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:FRAME_RESUME_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "FRAME_CANCEL_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:FRAME_CANCEL_COMMIT/r99",
+      "clif_instruction_family": "CONTINUATION_FRAME_RUNTIME_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:FRAME_CANCEL_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "FRAME_CLEANUP_STEP",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:FRAME_CLEANUP_STEP/r99",
+      "clif_instruction_family": "CONTINUATION_FRAME_RUNTIME_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:FRAME_CLEANUP_STEP",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "FRAME_TERMINATE",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:FRAME_TERMINATE/r99",
+      "clif_instruction_family": "CONTINUATION_FRAME_RUNTIME_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:FRAME_TERMINATE",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_CONSTRUCTION_BEGIN",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_CONSTRUCTION_BEGIN/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_CONSTRUCTION_BEGIN",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "BASE_SEGMENT_BEGIN",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:BASE_SEGMENT_BEGIN/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:BASE_SEGMENT_BEGIN",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "BASE_SEGMENT_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:BASE_SEGMENT_COMMIT/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:BASE_SEGMENT_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "FIELD_INIT_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:FIELD_INIT_COMMIT/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:FIELD_INIT_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CONSTRUCTION_FIELD_MOVE_TRANSFER",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CONSTRUCTION_FIELD_MOVE_TRANSFER/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CONSTRUCTION_FIELD_MOVE_TRANSFER",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CONSTRUCTION_POST_INIT_GUARD",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:CONSTRUCTION_POST_INIT_GUARD/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:CONSTRUCTION_POST_INIT_GUARD",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_CONSTRUCTION_COMMIT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_CONSTRUCTION_COMMIT/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_CONSTRUCTION_COMMIT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_CONSTRUCTION_ABORT",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_CONSTRUCTION_ABORT/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_CONSTRUCTION_ABORT",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_CLEANUP_BEGIN",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_CLEANUP_BEGIN/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_CLEANUP_BEGIN",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_CLEANUP_HOOK",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_CLEANUP_HOOK/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_CLEANUP_HOOK",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_FIELD_CLEANUP",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_FIELD_CLEANUP/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_FIELD_CLEANUP",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_BASE_CLEANUP",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_BASE_CLEANUP/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_BASE_CLEANUP",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "OBJECT_CLEANUP_END",
+      "projection_class": "CLIF_SEALED_TEMPLATE",
+      "template_id": "ClifTemplateId:OBJECT_CLEANUP_END/r99",
+      "clif_instruction_family": "OBJECT_CONSTRUCTION_MASK_AND_CLEANUP_LADDER_SEQUENCE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TEMPLATE:OBJECT_CLEANUP_END",
+        "BIND_OUTPUTS_ONCE_IN_MIR_ORDER",
+        "PRESERVE_EXPLICIT_OUTCOME_CLEANUP_AND_ROOT_EDGES"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    }
+  ],
+  "terminator_rows": [
+    {
+      "mir_kind": "BR",
+      "projection_class": "CLIF_CONTROL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.BR/r99",
+      "clif_instruction_family": "CLIF_JUMP",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:BR",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "COND_BR",
+      "projection_class": "CLIF_CONTROL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.COND_BR/r99",
+      "clif_instruction_family": "CLIF_BRIF",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:COND_BR",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "SWITCH_ENUM",
+      "projection_class": "CLIF_CONTROL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.SWITCH_ENUM/r99",
+      "clif_instruction_family": "CLIF_BR_TABLE_FROM_SEALED_VARIANT_DISCRIMINANT",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:SWITCH_ENUM",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "SWITCH_INT",
+      "projection_class": "CLIF_CONTROL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.SWITCH_INT/r99",
+      "clif_instruction_family": "CLIF_BR_TABLE_OR_ORDERED_COMPARE_TREE",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:SWITCH_INT",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "INVOKE",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.INVOKE/r99",
+      "clif_instruction_family": "CLIF_CALL_OR_CALL_INDIRECT_THEN_EXPLICIT_OUTCOME_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:INVOKE",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CHECKED",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.CHECKED/r99",
+      "clif_instruction_family": "CHECKED_VALUE_OR_PRESELECTED_DEFECT_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:CHECKED",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "PLACE_REPLACE",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.PLACE_REPLACE/r99",
+      "clif_instruction_family": "STAGED_PLACE_REPLACE_SINGLE_COMMIT_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:PLACE_REPLACE",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "LEAVE",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.LEAVE/r99",
+      "clif_instruction_family": "CLEANUP_LADDER_THEN_JUMP",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:LEAVE",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "SUSPEND",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.SUSPEND/r99",
+      "clif_instruction_family": "RUNTIME_HELPER_CALL_THEN_PARKED_OR_OUTCOME_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "CALL_HELPER:RuntimeHelperId:suspension.park",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": "RuntimeHelperId:suspension.park",
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "CANCEL_CHECK",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.CANCEL_CHECK/r99",
+      "clif_instruction_family": "RUNTIME_HELPER_CALL_THEN_CANCELLATION_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "CALL_HELPER:RuntimeHelperId:cancellation.check",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": "RuntimeHelperId:cancellation.check",
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "RUN_OP",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.RUN_OP/r99",
+      "clif_instruction_family": "SEALED_RUNTIME_HELPER_CALL_THEN_COMPLETION_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "SELECT_HELPER_FROM_EXACT_RUN_OP_PAYLOAD_MAP_THEN_CALL",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [
+        {
+          "payload_operation": "AWAIT",
+          "runtime_helper_id": "RuntimeHelperId:run.await",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.await/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:run.await.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:run.await.result/r1",
+          "effective_signature_digest": "8b2e31a152e8b76d831654adeefce1b6f460eb7e1dbf89ce5417b3dc1431a148"
+        },
+        {
+          "payload_operation": "CANCEL_THEN_JOIN",
+          "runtime_helper_id": "RuntimeHelperId:run.cancel_then_join",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.cancel_then_join/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:run.cancel_then_join.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:run.cancel_then_join.result/r1",
+          "effective_signature_digest": "790e89d6ddc8099a50d880254fb3de692247f3b2b9a4886bb715d122bd570585"
+        },
+        {
+          "payload_operation": "EXIT",
+          "runtime_helper_id": "RuntimeHelperId:run.exit",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.exit/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:run.exit.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:run.exit.result/r1",
+          "effective_signature_digest": "d67e481eaf849a0cd33936a5bb87d5f2880f0a4502cc2ed54f31bbf00611f177"
+        },
+        {
+          "payload_operation": "JOIN",
+          "runtime_helper_id": "RuntimeHelperId:run.join",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.join/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:run.join.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:run.join.result/r1",
+          "effective_signature_digest": "35c44dba5d06a21f514e9a22bdaa64072cb87985b906368e20c68cb36bd0d9cf"
+        },
+        {
+          "payload_operation": "SPAWN",
+          "runtime_helper_id": "RuntimeHelperId:run.spawn",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:run.spawn/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:run.spawn.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:run.spawn.result/r1",
+          "effective_signature_digest": "163dd6a8388baa188d8e2db8a4f0e49fa9fbacf589c41355cf0cce3b21c69a81"
+        }
+      ],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "ACTOR_OP",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.ACTOR_OP/r99",
+      "clif_instruction_family": "SEALED_RUNTIME_HELPER_CALL_THEN_COMPLETION_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "SELECT_HELPER_FROM_EXACT_ACTOR_OP_PAYLOAD_MAP_THEN_CALL",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [
+        {
+          "payload_operation": "AWAIT_REPLY",
+          "runtime_helper_id": "RuntimeHelperId:actor.await_reply",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.await_reply/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:actor.await_reply.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:actor.await_reply.result/r1",
+          "effective_signature_digest": "8d50bd4c77cf19a314aa8b46c9885fc38e87743eb860f1de5902455a29a4c41a"
+        },
+        {
+          "payload_operation": "DEQUEUE",
+          "runtime_helper_id": "RuntimeHelperId:actor.dequeue",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.dequeue/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:actor.dequeue.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:actor.dequeue.result/r1",
+          "effective_signature_digest": "4d08273cc1f6624c2d77d09436b9403a82608a09af39c0522c4790ad4d9f323e"
+        },
+        {
+          "payload_operation": "REPLY",
+          "runtime_helper_id": "RuntimeHelperId:actor.reply",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.reply/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:actor.reply.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:actor.reply.result/r1",
+          "effective_signature_digest": "454f7c74ea98e047ff91d460283c9c7e642f01a184c5c5aa1f3ec7d13cc5f2b1"
+        },
+        {
+          "payload_operation": "REQUEST",
+          "runtime_helper_id": "RuntimeHelperId:actor.request",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.request/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:actor.request.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:actor.request.result/r1",
+          "effective_signature_digest": "42f6823865f17f10360dfe5b975d7a1a75392c5e3b2526f0b8adc7d932d508fe"
+        },
+        {
+          "payload_operation": "SEND",
+          "runtime_helper_id": "RuntimeHelperId:actor.send",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.send/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:actor.send.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:actor.send.result/r1",
+          "effective_signature_digest": "e0890acfeafb327c3c1dc274768c4a7ce100629dacf60987a67acd19e24c0200"
+        },
+        {
+          "payload_operation": "TURN_BEGIN",
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_begin",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.turn_begin/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:actor.turn_begin.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:actor.turn_begin.result/r1",
+          "effective_signature_digest": "d20ad0bb02383e2704db06ae26c1ed3f86808028beb53340dd33320f9fde4f18"
+        },
+        {
+          "payload_operation": "TURN_END",
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_end",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:actor.turn_end/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:actor.turn_end.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:actor.turn_end.result/r1",
+          "effective_signature_digest": "85a67a367ba09a29a7c45f46edec2e708d6c0ff08231ac7e5cec62b49927a02c"
+        }
+      ],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "PROVIDER_OP",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.PROVIDER_OP/r99",
+      "clif_instruction_family": "SEALED_RUNTIME_HELPER_CALL_THEN_COMPLETION_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "CALL_HELPER:RuntimeHelperId:provider.dispatch",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": "RuntimeHelperId:provider.dispatch",
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "ONCE_OP",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.ONCE_OP/r99",
+      "clif_instruction_family": "SEALED_RUNTIME_HELPER_CALL_THEN_COMPLETION_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "SELECT_HELPER_FROM_EXACT_ONCE_OP_PAYLOAD_MAP_THEN_CALL",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [
+        {
+          "payload_operation": "FUNCTION_STATIC_ENSURE",
+          "runtime_helper_id": "RuntimeHelperId:once.function_static_ensure",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:once.function_static_ensure/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:once.function_static_ensure.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:once.function_static_ensure.result/r1",
+          "effective_signature_digest": "ba8355989882f6bf86040982567e0e4daa2a875132daa5c2f921829c94372130"
+        },
+        {
+          "payload_operation": "LAZY_FORCE",
+          "runtime_helper_id": "RuntimeHelperId:once.lazy_force",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:once.lazy_force/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:once.lazy_force.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:once.lazy_force.result/r1",
+          "effective_signature_digest": "69da576a94e7ad90be04aced286f1f1311cee841c46d748b5388e127568d1a89"
+        }
+      ],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "SYNC_OP",
+      "projection_class": "CLIF_RUNTIME_OR_CALL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.SYNC_OP/r99",
+      "clif_instruction_family": "SEALED_RUNTIME_HELPER_CALL_THEN_COMPLETION_BRANCH",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "SELECT_HELPER_FROM_EXACT_SYNC_OP_PAYLOAD_MAP_THEN_CALL",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [
+        {
+          "payload_operation": "LOCK_ACQUIRE",
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_acquire",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.lock_acquire/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:sync.lock_acquire.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:sync.lock_acquire.result/r1",
+          "effective_signature_digest": "9fbe51c8e400542c6ed0df28b904b159a9bd9816d186f76e7b244b2c596e2b9c"
+        },
+        {
+          "payload_operation": "LOCK_RELEASE",
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_release",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.lock_release/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:sync.lock_release.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:sync.lock_release.result/r1",
+          "effective_signature_digest": "f060ec6b68f4fbea990e2195f8d687c6ca00cf2b0b20596b63a5ed3940e78263"
+        },
+        {
+          "payload_operation": "OBSERVE_BEGIN",
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_begin",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.observe_begin/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:sync.observe_begin.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:sync.observe_begin.result/r1",
+          "effective_signature_digest": "04bdc69ce6e1030b533cb458da98e3cd9a58ec3aa338f65f0ecdfc34cf77f355"
+        },
+        {
+          "payload_operation": "OBSERVE_END",
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_end",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.observe_end/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:sync.observe_end.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:sync.observe_end.result/r1",
+          "effective_signature_digest": "a46f0a7d732dbf2a5666e8f0c6abb440c066c95be155b8f9b84b3e7d77b93cb7"
+        },
+        {
+          "payload_operation": "REPLACE_COMMIT",
+          "runtime_helper_id": "RuntimeHelperId:sync.replace_commit",
+          "runtime_helper_signature_id": "RuntimeHelperSignatureId:sync.replace_commit/r1",
+          "arguments_record_id": "RuntimeAbiRecordId:sync.replace_commit.args/r1",
+          "result_record_id": "RuntimeAbiRecordId:sync.replace_commit.result/r1",
+          "effective_signature_digest": "32925b2b88f3c5b375149292ff8caae788b2ad862f80a36fe31b8c50b0d177ac"
+        }
+      ],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "COMPLETE",
+      "projection_class": "CLIF_CONTROL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.COMPLETE/r99",
+      "clif_instruction_family": "RETURN_EXACT_OUTCOME_TAG_AND_SELECTED_PAYLOAD",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:COMPLETE",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    },
+    {
+      "mir_kind": "UNREACHABLE_PROVEN",
+      "projection_class": "CLIF_CONTROL_TEMPLATE",
+      "template_id": "ClifTemplateId:terminator.UNREACHABLE_PROVEN/r99",
+      "clif_instruction_family": "TRAP_ONLY_WITH_VERIFIED_PROOF_ID",
+      "ordered_steps": [
+        "VERIFY_EXACT_TYPED_PAYLOAD_AND_SUCCESSOR_ARITY",
+        "READ_INPUTS_ONCE_IN_MIR_ORDER",
+        "EMIT_TERMINATOR_TEMPLATE:UNREACHABLE_PROVEN",
+        "COMMIT_EXACTLY_ONE_SEALED_SUCCESSOR_OR_TERMINAL_OUTCOME"
+      ],
+      "runtime_helper_selector_or_null": null,
+      "runtime_helper_dispatch_rows": [],
+      "missing_capability": "REJECT_BEFORE_CLIF_EMISSION"
+    }
+  ],
+  "global_invariants": {
+    "operation_row_count": 48,
+    "terminator_row_count": 17,
+    "missing_or_duplicate_row_count": 0,
+    "semantic_reselection_count": 0,
+    "host_unwind_as_outcome_count": 0,
+    "trap_substitution_for_error_or_cancellation_count": 0,
+    "object_aot_and_jit_share_registry": true,
+    "clif_or_address_is_semantic_identity": false,
+    "grouped_runtime_helper_dispatch_count": 19,
+    "runtime_helper_placeholder_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "registry_digest": "d986fafbf73296dc51062542bc38c73a7f38b21fcf6c3a7747bf5e8e0b4e46ca"
+}

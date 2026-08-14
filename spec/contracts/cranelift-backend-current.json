@@ -15,7 +15,7 @@
       "ordinal": 1,
       "id": "xvm_interpreter",
       "role": "initial development, validation and REPL",
-      "projection": "verified MIR to xVM bytecode",
+      "projection": "Verified<DeeplusMirR1> to canonical XBC R1 under spec/contracts/xvm-xbc-projection-r1.json",
       "status": "NOT_RUN"
     },
     {
@@ -33,6 +33,17 @@
       "status": "NOT_RUN"
     }
   ],
+  "xvm_xbc_projection_guard": {
+    "contract": "spec/contracts/xvm-xbc-projection-r1.json",
+    "schema": "schemas/language/xvm-xbc-module-r1.schema.json",
+    "receipt_schema": "schemas/language/xvm-xbc-projection-receipt-r1.schema.json",
+    "projection_capability_id": "PROJ-CAP-XVM-CANONICAL-XBC-R1",
+    "mir_is_semantic_authority": true,
+    "xvm_only_architecture": false,
+    "backend_semantic_reselection_count": 0,
+    "cross_path_observable_parity_required": true,
+    "product_execution": "NOT_RUN"
+  },
   "toolchain_guard": {
     "rust_toolchain": "1.85.0",
     "selected_cranelift_family": "0.121.2",
@@ -58,7 +69,12 @@
     "clif_is_semantic_authority": false,
     "object_and_jit_share_lowering": true,
     "module_local_id_selects_semantics": false,
-    "symbol_or_link_order_selects_semantics": false
+    "symbol_or_link_order_selects_semantics": false,
+    "total_projection_registry": "spec/contracts/mir-clif-projection-registry-r99.json",
+    "total_projection_registry_status": "REQUIRED_FOR_R99_IMPLEMENTATION_TARGET",
+    "operation_row_count": 48,
+    "terminator_row_count": 17,
+    "missing_or_duplicate_projection_row_count": 0
   },
   "required_receipt_inputs": [
     "mir_semantic_digest",
@@ -99,6 +115,8 @@
   "internal_runtime_abi_guard": {
     "contract": "spec/contracts/internal-runtime-abi-r1.json",
     "helper_registry": "spec/contracts/runtime-helper-registry-r1.json",
+    "record_registry": "spec/contracts/runtime-abi-record-registry-r99.json",
+    "target_mapping_registry": "spec/contracts/runtime-target-mapping-registry-r99.json",
     "manifest_schema": "deeplus.internal-runtime-abi-manifest/r1",
     "target_projection_schema": "deeplus.internal-runtime-abi-target-projection/r1",
     "artifact_binding_receipt_schema": "deeplus.internal-runtime-abi-artifact-binding-receipt/r1",
@@ -126,8 +144,8 @@
     "exact_digest_compatibility_only": true,
     "runtime_to_generated_callback_admitted": false,
     "external_ffi_included": false,
-    "managed_reference_profile_digest_or_null": "c7edbfe73ce68116525bc430de9b009e3b563f0bb8fa6d7a787a35f558927287",
-    "continuation_interface_digest_or_null": "52eff7187a3fd4abfd9f8dad38c6b6592f9d75ed1596121463c018be92aebb53",
+    "managed_reference_profile_digest_or_null": "bbae0e7dde1d80a404bf392a780fe3a52897e6b1eddb1d12877689f8e2f192f7",
+    "continuation_interface_digest_or_null": "6dcb8964c1d8fb788e7946f8cdaa54f2d31d6d003fdece7161a8713c1e858d50",
     "canonical_promotion_ready": true,
     "active_conditional_managed_helper_count": 3,
     "dependency_binding_status": "EXACT_LOCAL_FUSION_BOUND"
@@ -161,6 +179,7 @@
     "managed_memory_plan_schema": "deeplus.managed-memory-plan/r1",
     "managed_root_receipt_schema": "deeplus.managed-reference-runtime-root-receipt/r1",
     "dynamic_projection_contract": "spec/contracts/managed-reference-dynamic-projection-r1.json",
+    "native_abi_handoff_contract": "spec/contracts/runtime-managed-projection-handoff-r108.json",
     "static_plan_contains_runtime_generation_or_receipt_lifecycle": false,
     "managed_safepoint_enter_leave_are_target_projection_steps": true,
     "managed_allocate_slow_mir_terminator": "INVOKE",
@@ -197,12 +216,16 @@
     "receipt_schema": "schemas/language/actor-cranelift-projection-receipt-r1.schema.json",
     "binding_descriptor": "spec/contracts/actor-protocol-binding-descriptor.json",
     "lifecycle_contract": "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
+    "sender_identity_contract": "spec/contracts/actor-sender-identity-v1.json",
     "semantic_authority": "Deeplus MIR",
     "external_executable_binding_projection_required": true,
     "exact_lease_event_replay_required": true,
     "aggregate_owner_counter_only_receipt_admitted": false,
     "runtime_selector_lookup_count": 0,
     "backend_binding_reselection_count": 0,
+    "sender_identity_reselection_count": 0,
+    "sender_identity_address_or_thread_derivation_count": 0,
+    "sender_identity_tag_erasure_count": 0,
     "product_execution": "NOT_RUN"
   },
   "debug_guard": {

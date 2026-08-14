@@ -909,7 +909,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "UnitCatalogExactRatioAdmitted",
     "source_name": "UnitCatalogExactRatioAdmitted",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Admits a closed exact-ratio UnitCatalog whose scale graph has one path-independent reduced result; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -935,9 +935,9 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "catalog symbols unique",
-      "conversion graph deterministic",
-      "catalog authority explicit"
+      "catalog symbols and UnitId values are unique",
+      "each DimensionId has exactly one canonical unit",
+      "every edge is a reduced positive exact ratio and every cycle reduces to 1/1"
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
@@ -958,18 +958,20 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "catalog symbols unique",
-      "conversion graph deterministic",
-      "catalog authority explicit"
+      "catalog authority and source role are explicit",
+      "all referenced UnitId and DimensionId values resolve",
+      "no approximate, affine, calendar or provider edge is present"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "sort rows by UnitId, reduce each positive rational, then compute canonical-unit ratios over the finite catalog graph",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record UnitCatalogExactRatioAdmitted requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "reject duplicate symbols, UnitId values or canonical units",
+      "reject a zero, negative, non-rational, approximate, affine, calendar or provider edge",
+      "traverse each finite component from its unique canonical unit in UnitId order",
+      "reduce every composed path ratio",
+      "reject when two paths to one UnitId disagree or any cycle product is not 1/1",
+      "seal the normalized catalog digest independently of declaration order"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "termination_metric": "finite UnitId row and edge counts; each row and edge is visited a bounded number of times",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED",
     "secondary_diagnostics": [],
@@ -982,9 +984,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "5a9606476f031da4e491760be90067c829846bcb8fa653e9c651246179fdc426",

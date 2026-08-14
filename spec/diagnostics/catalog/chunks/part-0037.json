@@ -1,0 +1,88 @@
+[
+  {
+    "authority": "LANGUAGE / PARSER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ENUM_BODY_REQUIRES_CASE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "enum_bare_case_declaration_canonical"
+    ],
+    "fixit_hint": "declare at least one bare Enum case before any member",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Do not synthesize an empty, bottom-like or placeholder case.",
+    "message": "A current Enum body must begin with at least one case declaration.",
+    "notes": "Empty and member-only Enum bodies are not current; production parser execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/enum-match-boundary-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ENUM_COMMA_MODE_REQUIRES_TWO_CASES",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "enum_bare_case_declaration_canonical"
+    ],
+    "fixit_hint": "remove the comma for a one-case layout body or add a second case",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Preserve case identity and never invent a second case.",
+    "message": "A comma after the first Enum case commits to a case-only list containing at least two cases.",
+    "notes": "The comma marker is a terminal EnumBodyCommitmentV1 mode choice; production parser execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/enum-match-boundary-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / PARSER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "OTHERWISE_GUARD_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "match_otherwise_default_arm"
+    ],
+    "fixit_hint": "move the condition to a preceding explicit pattern arm and keep a final unguarded otherwise arm",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "Never erase the condition or reinterpret otherwise as a wildcard pattern.",
+    "message": "The final `otherwise` fallback has no guard; write an explicit guarded pattern arm before it.",
+    "notes": "No guarded-fallback AST is formed; production parser execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/enum-match-boundary-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "match_exhaustiveness_phase_a"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

@@ -1,0 +1,182 @@
+{
+  "$schema": "../../schemas/language/generic-applicability-variance-responsibility-r105.schema.json",
+  "schema": "deeplus.generic-applicability-variance-responsibility/r105",
+  "revision": "r105-closed-generic-and-higher-order-responsibility",
+  "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "codex/preimpl-p0-r80-authority-projection-parity",
+    "predecessor_commit": "615f7822b6a81f3e7869bb596d1d4fe09388ea02",
+    "current_binding": false
+  },
+  "scope": {
+    "existing_surface_only": true,
+    "new_syntax_count": 0,
+    "generic_parameter_kinds": ["TYPE", "STATIC_INT", "EFFECT_ROW", "ERROR_SET"],
+    "algorithms": [
+      "GenericApplicabilityV1",
+      "GenericVarianceV1",
+      "FunctionResponsibilityCompatibilityV1"
+    ],
+    "predicate_ids": [
+      "GenericConstraintSatisfied",
+      "GenericConstructorVariance",
+      "GenericInvarianceAdmitted",
+      "GenericVarianceDescriptorAdmitted",
+      "TraitVariancePositionAdmitted",
+      "ResponsibilitySubsumes",
+      "EffectRowForwardingAdmitted",
+      "ErrorRowForwardingAdmitted"
+    ]
+  },
+  "generic_applicability": {
+    "algorithm_id": "GenericApplicabilityV1",
+    "input": {
+      "candidate_identity": "CallableImplementationId",
+      "parameter_vector": "ordered GenericParameterId, kind, default-or-null and declared constraints",
+      "explicit_argument_vector": "ordered source TypeArgument values",
+      "value_argument_descriptors": "nonexecuting normalized descriptors from OrdinaryCallSelectionV1",
+      "environment": "finite visible TypeId, TraitId, EffectId, ErrorId and evidence registry"
+    },
+    "normalization": [
+      "expand transparent aliases before kind or relation comparison",
+      "allocate fresh inference variables per candidate and never share them with sibling candidates",
+      "canonicalize StaticInt as exact mathematical integer, EffectRow and ErrorSet as duplicate-free identity-sorted sets",
+      "normalize every type and conformance argument before occurs, equality, subtype or evidence checks"
+    ],
+    "ordered_steps": [
+      "reject too many explicit generic arguments",
+      "bind each explicit argument to the same-position parameter and require exact kind agreement",
+      "collect equations and lower-bound constraints only from explicit value-argument descriptors",
+      "perform kind checks and the occurs check before solving",
+      "require one unique complete substitution; defaults fill only variables unconstrained after explicit argument solving",
+      "evaluate where predicates in source order for diagnostics but as a normalized set for semantic identity",
+      "seal GenericSubstitutionId and GenericApplicabilityProofId only after every constraint succeeds"
+    ],
+    "where_predicates": {
+      "type_equality": "both normalized TypeIds are exactly equal",
+      "trait_conformance": "one static ConformanceId and TraitWitnessId is selected without runtime or provider lookup",
+      "effect_row_relation": "the normalized left EffectRow is a subset of the normalized right EffectRow",
+      "visibility": "a public signature cannot expose a type, effect or error identity outside its visibility domain"
+    },
+    "forbidden_solver_inputs": [
+      "expected result type",
+      "return type preference",
+      "source, declaration, import or provider order",
+      "runtime values",
+      "anonymous Union synthesis",
+      "failed sibling-candidate bindings",
+      "implicit responsibility evidence"
+    ],
+    "failure_atomicity": "a failed candidate emits no substitution, binding, loan, capture, witness or HIR residue"
+  },
+  "generic_variance": {
+    "algorithm_id": "GenericVarianceV1",
+    "owner_matrix": [
+      {"owner": "CLASS", "declared_variance": "FORBIDDEN", "parameter_relation": "INVARIANT"},
+      {"owner": "ENUM", "declared_variance": "FORBIDDEN", "parameter_relation": "INVARIANT"},
+      {"owner": "RECORD_OR_OTHER_NOMINAL", "declared_variance": "FORBIDDEN", "parameter_relation": "INVARIANT"},
+      {"owner": "TRAIT", "declared_variance": "IN_OR_OUT_TYPE_PARAMETERS_ONLY", "parameter_relation": "DECLARED_POINTWISE"},
+      {"owner": "FUNCTION_TYPE", "declared_variance": "BUILTIN_NOT_SOURCE_DECLARED", "parameter_relation": "FUNCTION_RESPONSIBILITY_COMPATIBILITY_V1"}
+    ],
+    "kind_matrix": [
+      {"kind": "TYPE", "unmarked": "INVARIANT", "declared_in_out": "TRAIT_ONLY"},
+      {"kind": "STATIC_INT", "unmarked": "EXACT_EQUAL", "declared_in_out": "FORBIDDEN"},
+      {"kind": "EFFECT_ROW", "unmarked": "ROW_RELATION_ONLY", "declared_in_out": "FORBIDDEN"},
+      {"kind": "ERROR_SET", "unmarked": "ROW_RELATION_ONLY", "declared_in_out": "FORBIDDEN"}
+    ],
+    "position_calculus": {
+      "root": "COVARIANT",
+      "ordinary_parameter": "flip",
+      "result": "preserve",
+      "invariant_constructor_argument": "INVARIANT",
+      "out_trait_argument": "preserve",
+      "in_trait_argument": "flip",
+      "mutable_or_inout_storage": "INVARIANT",
+      "owned_borrowed_mut_inout_qualified_type": "INVARIANT",
+      "intersection_or_union_member": "preserve after normalized constituent validation"
+    },
+    "admission": "a declared out parameter occurs only covariantly, a declared in parameter only contravariantly, and an unmarked parameter is invariant after alias expansion",
+    "constructor_subtyping": "same GenericConstructorId and arity are required; every argument relation must satisfy its descriptor and all ownership, mutation, cleanup and region gates",
+    "forbidden": [
+      "use-site variance",
+      "Class or Enum variance",
+      "variance inference",
+      "source-order winner",
+      "implicit qualifier variance",
+      "row-kind variance markers"
+    ]
+  },
+  "higher_order_responsibility": {
+    "algorithm_id": "FunctionResponsibilityCompatibilityV1",
+    "identity_axes": [
+      "ordered channel kinds and external labels",
+      "fixed, repeated and NamedPack rest shape",
+      "parameter mode and type ownership qualifier",
+      "parameter and result types",
+      "normalized ErrorSet and EffectRow",
+      "cancellation, suspension and isolation",
+      "authority, call-right, capture and cleanup profile"
+    ],
+    "compatibility": {
+      "channel_shape": "exact",
+      "parameter_mode_and_ownership": "exact",
+      "parameter_type": "contravariant under the admitted static subtype relation",
+      "result_type": "covariant under the admitted static subtype relation",
+      "source_error_set": "subset of target permitted ErrorSet",
+      "source_effect_row": "subset of target permitted EffectRow",
+      "cancellation_suspension_isolation": "exact",
+      "authority_call_right_capture_cleanup": "exact and never dropped",
+      "context_and_witness_channels": "exact and never synthesized"
+    },
+    "forwarding": {
+      "callback_errors": "an invocation owner either handles every callback ErrorId or includes it in its declared ErrorSet",
+      "callback_effects": "an invocation owner either discharges every callback EffectId through an admitted handler or includes it in its declared EffectRow",
+      "row_variables": "must be bound by the complete generic substitution before HIR sealing",
+      "private_identity_leak": "rejected before API digest or HIR sealing"
+    },
+    "no_hidden_adaptation": [
+      "no wrapper allocation",
+      "no error swallowing",
+      "no effect masking",
+      "no ownership or authority weakening",
+      "no sync/async or ordinary/message mode conversion",
+      "no runtime compatibility test"
+    ]
+  },
+  "diagnostic_precedence": [
+    "GENERIC_PARAM_KIND_MISMATCH",
+    "ORDINARY_CALL_NO_APPLICABLE_CANDIDATE",
+    "GENERIC_CONSTRAINT_UNSATISFIED",
+    "WHERE_CLAUSE_PRIVATE_TYPE_LEAK",
+    "VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER",
+    "TRAIT_VARIANCE_POSITION_VIOLATION",
+    "GENERIC_TYPE_CONSTRUCTOR_INVARIANT_BY_DEFAULT",
+    "CONTEXT_FUNCTION_TYPE_MISMATCH",
+    "RCTS_RESPONSIBILITY_AXIS_DROPPED",
+    "CALLBACK_THROWS_NOT_PROPAGATED",
+    "CALLBACK_EFFECT_NOT_PROPAGATED",
+    "ERROR_ROW_PRIVATE_TYPE_LEAK",
+    "EFFECT_ROW_VARIABLE_UNBOUND"
+  ],
+  "hir_residue": {
+    "generic": ["GenericSubstitutionId", "GenericApplicabilityProofId", "ordered GenericArgumentValue"],
+    "variance": ["GenericVarianceDescriptorId", "pointwise relation proof ids"],
+    "function": ["FunctionTypeId", "ResponsibilityProfileId", "ErrorSetId", "EffectRowId", "compatibility proof digest"],
+    "unresolved_variable_count": 0,
+    "runtime_generic_or_variance_lookup_count": 0
+  },
+  "acceptance": {
+    "fixture_path": "tests/fixtures/current/generic-applicability-variance-responsibility-r105.json",
+    "case_count": 22,
+    "positive_count": 8,
+    "boundary_count": 5,
+    "reject_count": 9,
+    "required_mutation_count": 12,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_checker": "NOT_RUN",
+    "github_mutation": 0
+  }
+}

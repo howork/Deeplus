@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.invalid/schemas/language/sfd-p1-009-execution-identity-r1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "canonical_baseline_commit",
+    "local_predecessor_commit",
+    "candidate_status",
+    "identity_domains",
+    "execution_gate",
+    "receipt_binding",
+    "closure_fence",
+    "acceptance_cases",
+    "governance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/sfd-p1-009-execution-identity-r1.schema.json"},
+    "schema": {"const": "deeplus.sfd-p1-009-execution-identity/r1"},
+    "revision": {"const": "r79-sfd-p1-009-execution-identity-route-repair-r1"},
+    "canonical_baseline_commit": {"const": "10e64f492f0529610673846139afcf0d95175663"},
+    "local_predecessor_commit": {"const": "2180213dffaf546b5cbe7cdf1d1f295f76f6202b"},
+    "candidate_status": {"const": "LOCAL_EXECUTABLE_ROUTE_REPAIRED_SFD_P1_OPEN"},
+    "identity_domains": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["historical_provenance", "execution_target"],
+      "properties": {
+        "historical_provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["commit", "role", "executable_route_present"],
+          "properties": {
+            "commit": {"const": "f509fce5df6c16b77d3accdccde4c640b093da0a"},
+            "role": {"const": "IMMUTABLE_DESIGN_PROVENANCE_ONLY"},
+            "executable_route_present": {"const": false}
+          }
+        },
+        "execution_target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["binding", "approval_binding", "self_reference"],
+          "properties": {
+            "binding": {"const": "OBSERVED_CLEAN_CHECKOUT_HEAD"},
+            "approval_binding": {"const": "EXTERNAL_POST_COMMIT_EXECUTION_RECEIPT"},
+            "self_reference": {"const": false}
+          }
+        }
+      }
+    },
+    "execution_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["full_commit_sha", "tracked_tree_clean", "required_paths_owned_by_head", "untracked_output_allowed", "historical_commit_as_target_rejected"],
+      "properties": {
+        "full_commit_sha": {"const": true},
+        "tracked_tree_clean": {"const": true},
+        "required_paths_owned_by_head": {"const": true},
+        "untracked_output_allowed": {"const": true},
+        "historical_commit_as_target_rejected": {"const": true}
+      }
+    },
+    "receipt_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline_commit", "historical_provenance_commit", "current_pointer_digest", "implementation_digest", "compiler_binary_digest", "environment_digest"],
+      "properties": {
+        "baseline_commit": {"const": "OBSERVED_EXECUTION_TARGET_COMMIT"},
+        "historical_provenance_commit": {"const": "RUN_SUMMARY_ONLY"},
+        "current_pointer_digest": {"const": "BOUND_AT_EXECUTION"},
+        "implementation_digest": {"const": "BOUND_AT_EXECUTION"},
+        "compiler_binary_digest": {"const": "BOUND_AT_EXECUTION"},
+        "environment_digest": {"const": "BOUND_AT_EXECUTION"}
+      }
+    },
+    "closure_fence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "status", "route_blocker", "closure_requires", "execution_receipt_count"],
+      "properties": {
+        "action": {"const": "SFD-P1-009"},
+        "status": {"const": "OPEN"},
+        "route_blocker": {"const": "RESOLVED_BY_IDENTITY_DOMAIN_SEPARATION"},
+        "closure_requires": {"const": "EXACT_TARGET_BOUND_POSITIVE_BOUNDARY_REJECT_RECEIPTS_AND_CODEX_DESIGN_DECISION"},
+        "execution_receipt_count": {"const": 0}
+      }
+    },
+    "acceptance_cases": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "expected"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^R79-AT-00[1-7]$"},
+          "kind": {"enum": ["positive", "boundary", "reject", "governance"]},
+          "expected": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes", "github_publication", "production_implementation"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "github_publication": {"const": "NOT_PERFORMED_FOR_R79"},
+        "production_implementation": {"const": "NOT_AUTHORIZED_OR_PERFORMED"}
+      }
+    }
+  }
+}

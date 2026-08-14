@@ -1,5 +1,61 @@
 [
   {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ERROR_ROW_PRIVATE_INFERENCE_NOT_ADMITTED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "private_error_set_inference"
+    ],
+    "fixit_hint": "declare the exact throws clauses or make the callable an admitted lexical/private inference owner",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "do not widen visibility or hide an error responsibility",
+    "message": "Omitted throws inference is admitted only for the closed lexical/private callable owner set.",
+    "notes": "Current source diagnostic contract; product checker emission receipt remains NOT_RUN.",
+    "primary_source": "spec/contracts/private-error-set-inference-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ERROR_ROW_PRIVATE_INFERENCE_UNSEALED_CALL",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "private_error_set_inference"
+    ],
+    "fixit_hint": "resolve the call to one selected callable or declare an exact throws row",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "do not guess an overload, substitution, dynamic target, or ErrorSet",
+    "message": "Private ErrorSet inference requires every call edge to have a selected callable or an exact function-type ErrorSet.",
+    "notes": "Current source diagnostic contract; product checker emission receipt remains NOT_RUN.",
+    "primary_source": "spec/contracts/private-error-set-inference-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
     "authority": "LANGUAGE / OFFICIAL_TOOLING",
     "authority_set": [
       "LANGUAGE",
@@ -12,9 +68,9 @@
     "feature_refs": [
       "numeric_array_context_anchor_polarity_law"
     ],
-    "fixit_hint": "for map unfold use `**base`; for call spread use an explicit API because spread is not current source",
+    "fixit_hint": "for runtime Map unfold use owner-bounded `*base`; for call spread use an explicit API because Map spread is not current source",
     "fixit_kind": "suggestion",
-    "fixit_policy": "for map unfold use `**base`; for call spread use an explicit API because spread is not current source",
+    "fixit_policy": "for runtime Map unfold use owner-bounded `*base`; for call spread use an explicit API because Map spread is not current source",
     "message": "The `...` token is not a generic spread placeholder. In R49 it remains valid only for its explicitly admitted contexts such as range tail or gated comprehension unfold; map unfold uses `**expr`.",
     "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
@@ -390,24 +446,24 @@
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "diagnostic_id": "ERROR_ROW_PRIVATE_TYPE_LEAK",
-    "diagnostic_maturity": "seed",
-    "diagnostic_status": "seed",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
     "feature_refs": [
       "private_error_set_inference"
     ],
-    "fixit_hint": "none",
-    "fixit_kind": "none",
-    "fixit_policy": "none",
+    "fixit_hint": "declare a visible public error type or handle the private error before the wider boundary",
+    "fixit_kind": "suggestion",
+    "fixit_policy": "do not expose a private ErrorId through a wider callable API",
     "message": "Error row inference leaks a private error type into a public signature.",
-    "notes": "Design-time diagnostic seed; not emitted by current Deeplus. Product execution remains NOT_RUN.",
-    "primary_source": "spec/language.md",
+    "notes": "Current source diagnostic contract; product checker emission receipt remains NOT_RUN.",
+    "primary_source": "spec/contracts/private-error-set-inference-v1.json",
     "product_support": "NOT_RUN",
     "related_feature_refs": [],
     "row_schema_version": "deeplus.diagnostic-row/r51f3",
     "severity": "error",
     "stage": "checker",
-    "diagnostic_class": "historical_or_design",
-    "emission_domain": "design_only"
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   },
   {
     "authority": "LANGUAGE / TYPE_SYSTEM",

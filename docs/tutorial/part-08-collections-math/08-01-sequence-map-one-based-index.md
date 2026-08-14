@@ -101,10 +101,15 @@ let last = names[names.length]
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
-let bounded = [3..5: 10, 20, 30]
+let bounded = #list[3..5: 10, 20, 30]
 let declaredFirst = bounded[3]
 let declaredLast = bounded[5]
 ```
+
+`#list`는 선언된 논리 좌표를 갖는 bounded List만의 명시적 소유자다.
+`list`는 그 밖의 위치에서는 일반 식별자다. 한 개의 stepped Range를
+일반 List 원소로 넣으려면 `[(1..10:2)]`처럼 괄호로 감싸며,
+옛 `[L..U: elements]` 표기는 사용하지 않는다.
 
 storage에 세 element가 있어도 logical domain은 `3..5`다. `bounded[1]`로
 자동 rebase하지 않는다.
@@ -122,6 +127,14 @@ let secure = ports["https"]
 
 Map lookup은 `String` key identity를 사용한다. 없는 key를 `Option`이나
 0-based index로 바꾸지 않는다.
+
+Map/Set의 key에는 하나의 coherent Keyable family가 필요하다. 이 family는
+strong `Eq<Self>`, stable `Hash<Self>`, `Keyable`, `HashPolicyId`를 함께
+고정한다. 같은 key라면 같은 policy에서 같은 hash를 내야 하며, equality와
+hash는 borrow-only, nonconsuming, synchronous, `throws Never effects {}`다.
+그래서 NaN을 포함하는 `Float64`나 floating `Complex`, mutable/lifecycle
+identity는 암시적으로 key가 되지 않는다. compiler는 runtime에 가서 hash
+policy나 provider를 다시 고르지 않는다.
 
 ### 6.4 Pattern rest도 coordinate를 보존한다
 
@@ -206,7 +219,7 @@ items[2] = replacement
 - slice 결과는 `ReadonlyView`이며 source coordinate를 보존한다.
 - Pattern remainder는 `ListRestView`이며 source owner와 coordinate를
   보존한다.
-- Map의 `**base` unfold와 call-site static-named `**record` unfold는
+- Map의 owner-bounded `*base` unfold와 call-site static-named `**record` unfold는
   같은 표지를 쓰지만 owner와 source shape가 서로 다르다.
 - String index는 byte나 grapheme가 아니라 Unicode scalar `Char`다.
 
@@ -220,7 +233,7 @@ items[2] = replacement
 ## 10. 연습 문제
 
 1. **복사:** 네 도시 List에서 `cities[1]`과 마지막 값을 읽어라.
-2. **빈칸 완성:** `[10..12: a, b, c]`에서 유효 domain `___..___`와
+2. **빈칸 완성:** `#list[10..12: a, b, c]`에서 유효 domain `___..___`와
    `values[___] == b`의 세 빈칸을 채워라.
 3. **설계:** sparse sensor ID를 List와 Map 중 어디에 둘지 logical
    coordinate, missing key, ordering을 기준으로 결정하라.

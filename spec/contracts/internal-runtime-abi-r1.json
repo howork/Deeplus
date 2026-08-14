@@ -26,9 +26,9 @@
     "mir_schema_digest_required": true,
     "mir_machine_registry_digest_required": true,
     "managed_reference_profile_gap": "IR-OWN-P1-025",
-    "managed_reference_profile_digest_or_null": "c7edbfe73ce68116525bc430de9b009e3b563f0bb8fa6d7a787a35f558927287",
+    "managed_reference_profile_digest_or_null": "bbae0e7dde1d80a404bf392a780fe3a52897e6b1eddb1d12877689f8e2f192f7",
     "continuation_interface_gap": "IR-OWN-P0-017",
-    "continuation_interface_digest_or_null": "52eff7187a3fd4abfd9f8dad38c6b6592f9d75ed1596121463c018be92aebb53",
+    "continuation_interface_digest_or_null": "6dcb8964c1d8fb788e7946f8cdaa54f2d31d6d003fdece7161a8713c1e858d50",
     "dependency_binding_status": "EXACT_LOCAL_FUSION_BOUND",
     "canonical_promotion_ready": true
   },
@@ -231,7 +231,7 @@
     "bounded_continuation_dispatch": {
       "profile_count": 1,
       "continuation_interface_id": "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1",
-      "continuation_interface_digest": "52eff7187a3fd4abfd9f8dad38c6b6592f9d75ed1596121463c018be92aebb53",
+      "continuation_interface_digest": "6dcb8964c1d8fb788e7946f8cdaa54f2d31d6d003fdece7161a8713c1e858d50",
       "operation_allowlist": [
         "RESUME",
         "CANCEL"
@@ -340,7 +340,12 @@
     "allowlist_digest_required": true,
     "duplicate_missing_or_signature_mismatch": "TERMINAL_BEFORE_EXECUTION",
     "symbol_spelling_is_helper_identity": false,
-    "unlisted_helper_fallback": false
+    "unlisted_helper_fallback": false,
+    "record_registry": "spec/contracts/runtime-abi-record-registry-r99.json",
+    "record_registry_status": "REQUIRED_FOR_R99_IMPLEMENTATION_TARGET",
+    "effective_signature_includes_argument_and_result_record_digests": true,
+    "legacy_signature_digest_role": "PREDECESSOR_STRUCTURAL_EVIDENCE_NOT_R99_EFFECTIVE_SIGNATURE",
+    "r99_effective_signature_authority": "runtime-abi-record-registry-r99.helper_bindings[].effective_signature_digest"
   },
   "managed_address_fence": {
     "opaque_managed_handle_is_raw_address": false,
@@ -382,7 +387,13 @@
     ],
     "target_location_is_semantic_identity": false,
     "missing_field_uses_host_default": false,
-    "exact_runtime_abi_digest_required": true
+    "exact_runtime_abi_digest_required": true,
+    "mapping_preimage_registry": "spec/contracts/runtime-target-mapping-registry-r99.json",
+    "mapping_preimage_registry_status": "REQUIRED_FOR_R99_IMPLEMENTATION_TARGET",
+    "full_projection_handoff": "spec/contracts/runtime-managed-projection-handoff-r108.json",
+    "full_projection_handoff_status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF_COMPLETE_PRODUCT_NOT_RUN",
+    "opaque_or_placeholder_mapping_digest_admitted": false,
+    "legacy_projection_instances_role": "PREDECESSOR_EVIDENCE_REQUIRING_R99_MAPPING_PREIMAGE_REBIND"
   },
   "backend_mappings": {
     "Xvm": {

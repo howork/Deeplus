@@ -1,0 +1,187 @@
+{
+  "schema": "deeplus.trait-auto-policy-fixtures/v1",
+  "decision_schema": "schemas/language/trait-auto-policy-decision-v1.schema.json",
+  "contract": "spec/contracts/trait-auto-policy-registry-v1.json",
+  "evidence_level": "E2_DESIGN_STATIC_PRODUCT_NOT_RUN",
+  "cases": [
+    {
+      "case_id": "R87-AUTO-N-001", "class": "normal",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "TRAIT_OPT_IN",
+        "trait_id": "TraitId:core::Shareable", "declaration_owner": "PRELUDE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+        "target_type_id_or_null": null, "target_kind_or_null": null,
+        "input_predicate_id_or_null": "ShareableObservationSafe", "input_graph_finite": true,
+        "component_evidence_ids": [], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "ADMIT_POLICY_BINDING", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R87-AUTO-N-002", "class": "normal",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Shareable", "declaration_owner": "PRELUDE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+        "target_type_id_or_null": "TypeId:Snapshot", "target_kind_or_null": "data_class",
+        "input_predicate_id_or_null": "ShareableObservationSafe", "input_graph_finite": true,
+        "component_evidence_ids": ["EvidenceId:Shareable:String", "EvidenceId:Shareable:UInt"], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "SYNTHESIZE_STATIC_WITNESS", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R87-AUTO-N-003", "class": "normal",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "TRAIT_OPT_IN",
+        "trait_id": "TraitId:core::Transferable", "declaration_owner": "CORE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Transferable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "7212175f023a09bf73b3ce2a4393b33c40847d243ae6853b2c9380952b990faa",
+        "target_type_id_or_null": null, "target_kind_or_null": null,
+        "input_predicate_id_or_null": "TransferableAcrossIsolation", "input_graph_finite": true,
+        "component_evidence_ids": [], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "ADMIT_POLICY_BINDING", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R87-AUTO-N-004", "class": "normal",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Transferable", "declaration_owner": "CORE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Transferable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "7212175f023a09bf73b3ce2a4393b33c40847d243ae6853b2c9380952b990faa",
+        "target_type_id_or_null": "TypeId:OwnedMessage", "target_kind_or_null": "resource_class",
+        "input_predicate_id_or_null": "TransferableAcrossIsolation", "input_graph_finite": true,
+        "component_evidence_ids": ["EvidenceId:Transferable:String"], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "SYNTHESIZE_STATIC_WITNESS", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R87-AUTO-B-001", "class": "boundary",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Shareable", "declaration_owner": "PRELUDE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+        "target_type_id_or_null": "TypeId:EmptySignal", "target_kind_or_null": "enum",
+        "input_predicate_id_or_null": "ShareableObservationSafe", "input_graph_finite": true,
+        "component_evidence_ids": [], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "SYNTHESIZE_STATIC_WITNESS", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R87-AUTO-B-002", "class": "boundary",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Transferable", "declaration_owner": "PRELUDE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Transferable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "7212175f023a09bf73b3ce2a4393b33c40847d243ae6853b2c9380952b990faa",
+        "target_type_id_or_null": "TypeId:Ticket", "target_kind_or_null": "value_class",
+        "input_predicate_id_or_null": "TransferableAcrossIsolation", "input_graph_finite": true,
+        "component_evidence_ids": ["EvidenceId:Transferable:UInt"], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "SYNTHESIZE_STATIC_WITNESS", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R87-AUTO-B-003", "class": "boundary",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Shareable", "declaration_owner": "CORE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+        "target_type_id_or_null": "TypeId:Pair", "target_kind_or_null": "ordinary_class",
+        "input_predicate_id_or_null": "ShareableObservationSafe", "input_graph_finite": true,
+        "component_evidence_ids": ["EvidenceId:Shareable:A", "EvidenceId:Shareable:B"], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "SYNTHESIZE_STATIC_WITNESS", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R87-AUTO-R-001", "class": "reject",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "TRAIT_OPT_IN",
+        "trait_id": "TraitId:user::AutoIdentity", "declaration_owner": "USER",
+        "policy_id_or_null": null, "policy_version_or_null": null, "policy_digest_or_null": null,
+        "target_type_id_or_null": null, "target_kind_or_null": null, "input_predicate_id_or_null": null,
+        "input_graph_finite": true, "component_evidence_ids": [], "policy_input_satisfied": false,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "REJECT", "diagnostic_or_null": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN"}
+    },
+    {
+      "case_id": "R87-AUTO-R-002", "class": "reject",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Eq", "declaration_owner": "CORE",
+        "policy_id_or_null": null, "policy_version_or_null": null, "policy_digest_or_null": null,
+        "target_type_id_or_null": "TypeId:Point", "target_kind_or_null": "data_class", "input_predicate_id_or_null": null,
+        "input_graph_finite": true, "component_evidence_ids": [], "policy_input_satisfied": false,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "REJECT", "diagnostic_or_null": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED"}
+    },
+    {
+      "case_id": "R87-AUTO-R-003", "class": "reject",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Shareable", "declaration_owner": "PRELUDE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "0000000000000000000000000000000000000000000000000000000000000000",
+        "target_type_id_or_null": "TypeId:Snapshot", "target_kind_or_null": "data_class",
+        "input_predicate_id_or_null": "ShareableObservationSafe", "input_graph_finite": true,
+        "component_evidence_ids": [], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "REJECT", "diagnostic_or_null": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED"}
+    },
+    {
+      "case_id": "R87-AUTO-R-004", "class": "reject",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Shareable", "declaration_owner": "CORE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+        "target_type_id_or_null": "TypeId:UnsafeCell", "target_kind_or_null": "ordinary_class",
+        "input_predicate_id_or_null": "ShareableObservationSafe", "input_graph_finite": true,
+        "component_evidence_ids": [], "policy_input_satisfied": false,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "REJECT", "diagnostic_or_null": "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"}
+    },
+    {
+      "case_id": "R87-AUTO-R-005", "class": "reject",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Transferable", "declaration_owner": "PRELUDE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Transferable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "7212175f023a09bf73b3ce2a4393b33c40847d243ae6853b2c9380952b990faa",
+        "target_type_id_or_null": "TypeId:OpaqueGraph", "target_kind_or_null": "resource_class",
+        "input_predicate_id_or_null": "TransferableAcrossIsolation", "input_graph_finite": false,
+        "component_evidence_ids": [], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 0, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "REJECT", "diagnostic_or_null": "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"}
+    },
+    {
+      "case_id": "R87-AUTO-R-006", "class": "reject",
+      "descriptor": {
+        "schema": "deeplus.trait-auto-policy-decision/v1", "action": "BY_AUTO_REQUEST",
+        "trait_id": "TraitId:core::Shareable", "declaration_owner": "CORE",
+        "policy_id_or_null": "TraitAutoPolicyId:core::Shareable::structural/v1", "policy_version_or_null": 1,
+        "policy_digest_or_null": "79550e2ea55bbc63b11c38a9794077a1106c94432ea6c0ee4f1cdfb37e536bf3",
+        "target_type_id_or_null": "TypeId:ProviderBacked", "target_kind_or_null": "ordinary_class",
+        "input_predicate_id_or_null": "ShareableObservationSafe", "input_graph_finite": true,
+        "component_evidence_ids": [], "policy_input_satisfied": true,
+        "direct_user_witness_count": 0, "extension_evidence_count": 0, "provider_search_count": 1, "runtime_lookup_count": 0
+      },
+      "expected": {"outcome": "REJECT", "diagnostic_or_null": "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"}
+    }
+  ],
+  "counts": {"normal": 4, "boundary": 3, "reject": 6, "total": 13, "executed_product": 0}
+}

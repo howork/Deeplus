@@ -1,0 +1,139 @@
+{
+  "schema": "deeplus.parser-scanner-pratt-authority-r99/r1",
+  "revision": "r99-parser-scanner-pratt-authority-repair-r1",
+  "candidate_status": "LOCAL_DESIGN_STATIC_REPAIR_NOT_PRODUCT_EXECUTION",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "live_main": "10e64f492f0529610673846139afcf0d95175663",
+    "local_predecessor": "9c5f25e9d1e518c75e594f46b2158c510008c379",
+    "local_predecessor_tree": "1d1e436bb8e38cb09421435d94d64158f83b630d"
+  },
+  "gap_dispositions": [
+    {
+      "gap_id": "R99-PARSER-P0-001",
+      "subject": "stable semicolon scanner terminal",
+      "disposition": "CLOSED_BY_EXACT_SCANNER_ROW_AND_TOTALITY_MUTATION"
+    },
+    {
+      "gap_id": "R99-PARSER-P1-001",
+      "subject": "DPG aggregate scanner outcome adapter",
+      "disposition": "CLOSED_BY_NONEMITTING_PARSER_TERMINAL_ADAPTER"
+    },
+    {
+      "gap_id": "R99-PARSER-P0-002",
+      "subject": "bounded, one-sided and stepped Range Pratt authority",
+      "disposition": "CLOSED_BY_EXACT_RANGE_PARSELET"
+    },
+    {
+      "gap_id": "R99-PARSER-P0-003",
+      "subject": "Measure literal versus Index commitment",
+      "disposition": "CLOSED_BY_TRANSACTIONAL_ATTACHED_AND_SEPARATED_UNITEXPR_PROBES"
+    },
+    {
+      "gap_id": "R99-PARSER-P0-004",
+      "subject": "unary sign intrinsic versus fixed-conformance selection",
+      "disposition": "CLOSED_BY_PARSE_THEN_STATIC_SELECTION_BOUNDARY"
+    }
+  ],
+  "scanner_contract": {
+    "terminal_count": 201,
+    "semicolon": {
+      "spelling": ";",
+      "scanner_kind": "SEMICOLON",
+      "physical_token_count": 1
+    },
+    "aggregate_terminal_rows": [
+      "NUMERIC_LITERAL",
+      "DECIMAL_INTEGER",
+      "HARD_KEYWORD",
+      "EOF_TOKEN",
+      "SHEBANG"
+    ],
+    "aggregate_match_additional_physical_token_count": 0,
+    "dpg_scanner_outcome_without_passthrough_or_adapter_count": 0
+  },
+  "range_contract": {
+    "operator_rows": [
+      {
+        "surface": "..",
+        "end": "REQUIRED",
+        "result": "BOUNDED_INCLUSIVE"
+      },
+      {
+        "surface": "..<",
+        "end": "REQUIRED",
+        "result": "BOUNDED_EXCLUSIVE"
+      },
+      {
+        "surface": "...",
+        "end": "ABSENT",
+        "result": "ONE_SIDED"
+      }
+    ],
+    "optional_step": ": Expr",
+    "step_owner": "RangeExpr",
+    "evaluation_order": [
+      "start",
+      "end_if_present",
+      "step_if_present"
+    ],
+    "one_sided_trailing_expression": "REJECT",
+    "zero_step": "PARSE_THEN_STATIC_REJECT_RANGE_STEP_ZERO"
+  },
+  "measure_contract": {
+    "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL immediately followed by attached [",
+    "commit_target": "MeasureLiteralExpr",
+    "probe_order": "BEFORE_ORDINARY_LITERAL_AND_INDEX_DISPATCH",
+    "failed_probe_token_consumption": 0,
+    "failed_probe_diagnostic_count": 0,
+    "separated_measure_lookahead": {
+      "trigger": "one physical INTEGER_LITERAL or FLOAT_LITERAL followed by nonempty trivia and then [",
+      "probe": "transactionally parse one complete UnitExpr followed by ] without type information",
+      "success_diagnostic": "UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED",
+      "success_recovery_cst_error_node_count": 1,
+      "success_canonical_ast_count": 0,
+      "failure_bracket_or_trivia_token_consumption": 0,
+      "failure_diagnostic_count": 0,
+      "failure_owner": "IndexExpr",
+      "non_unit_examples": [
+        "13[0]",
+        "13 [0]"
+      ]
+    },
+    "ordinary_non_numeric_bracket_owner": "IndexExpr",
+    "type_information_used_for_dispatch": false
+  },
+  "unary_sign_contract": {
+    "ast": "NumericSignExpr",
+    "intrinsic_reserved_operand_lookup_count": 0,
+    "nonintrinsic_admission": "EXACTLY_ONE_LEFT_OWNER_DIRECT_GLOBAL_UNARYPLUS_OR_UNARYMINUS_WITNESS",
+    "result_context_selects_witness": false,
+    "runtime_lookup_count": 0,
+    "precedence_examples": {
+      "-2 ^ 2": "NumericSignExpr(PowerExpr(2,2))",
+      "2 ^ -3": "PowerExpr(2,NumericSignExpr(3))"
+    }
+  },
+  "acceptance_fixture": "tests/fixtures/current/parser-scanner-pratt-authority-r99.json",
+  "mutation_ids": [
+    "R99-MUT-SEMICOLON-MISSING",
+    "R99-MUT-ADAPTER-DUPLICATE-EMISSION",
+    "R99-MUT-ADAPTER-OUTCOME-MISSING",
+    "R99-MUT-RANGE-ELLIPSIS-MISSING",
+    "R99-MUT-RANGE-ELLIPSIS-HAS-RHS",
+    "R99-MUT-RANGE-STEP-OWNER-MISSING",
+    "R99-MUT-MEASURE-AFTER-LITERAL",
+    "R99-MUT-MEASURE-SEPARATED-PROBE-MISSING",
+    "R99-MUT-SEMICOLON-FIXTURE-ORACLE",
+    "R99-MUT-UNARY-INTRINSIC-ONLY"
+  ],
+  "authority_fence": {
+    "parser_cluster_candidate_p0_after_local_repair": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "m13_actions": "4_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_parser_execution": "NOT_RUN",
+    "canonical_publication": "NOT_PERFORMED",
+    "github_mutation": 0
+  }
+}

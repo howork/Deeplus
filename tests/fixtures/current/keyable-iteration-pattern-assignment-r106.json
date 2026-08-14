@@ -1,0 +1,32 @@
+{
+  "$schema": "../../../schemas/language/keyable-iteration-pattern-assignment-fixtures-r106.schema.json",
+  "schema": "deeplus.keyable-iteration-pattern-assignment-fixtures/r106",
+  "contract": "spec/contracts/keyable-iteration-pattern-assignment-r106.json",
+  "cases": [
+    {"id":"R106-KEY-P-001","algorithm":"KeyableSelectionV1","class":"positive","expected":"ADMIT","oracle":"Int seals one Eq, Hash, Keyable family"},
+    {"id":"R106-KEY-P-002","algorithm":"KeyableSelectionV1","class":"positive","expected":"ADMIT","oracle":"normalized Rational seals canonical-form hash"},
+    {"id":"R106-KEY-P-003","algorithm":"KeyableSelectionV1","class":"positive","expected":"ADMIT","oracle":"registered immutable nominal family seals four identities"},
+    {"id":"R106-KEY-B-001","algorithm":"KeyableSelectionV1","class":"boundary","expected":"ADMIT","oracle":"transparent alias normalizes before selection"},
+    {"id":"R106-KEY-B-002","algorithm":"KeyableSelectionV1","class":"boundary","expected":"ADMIT","oracle":"equal Rational spellings have equal hash under one policy"},
+    {"id":"R106-KEY-N-001","algorithm":"KeyableSelectionV1","class":"reject","expected":"TYPE_KEY_REQUIRES_KEYABLE","oracle":"Float64 NaN domain has no strong Eq"},
+    {"id":"R106-KEY-N-002","algorithm":"KeyableSelectionV1","class":"reject","expected":"TYPE_KEY_REQUIRES_KEYABLE","oracle":"Complex has partial equality only"},
+    {"id":"R106-KEY-N-003","algorithm":"KeyableSelectionV1","class":"reject","expected":"KEYABLE_REQUIRES_PLAIN_STABLE_HASH","oracle":"mutable lifecycle-bearing key rejected"},
+    {"id":"R106-FOR-P-001","algorithm":"ForIteratorPlanV1","class":"positive","expected":"ADMIT","oracle":"direct Iterator route seals Item and cleanup"},
+    {"id":"R106-FOR-P-002","algorithm":"ForIteratorPlanV1","class":"positive","expected":"ADMIT","oracle":"Sequence acquisition route calls iterator once"},
+    {"id":"R106-FOR-P-003","algorithm":"ForIteratorPlanV1","class":"positive","expected":"ADMIT","oracle":"for let mismatch skips candidate with zero binding residue"},
+    {"id":"R106-FOR-B-001","algorithm":"ForIteratorPlanV1","class":"boundary","expected":"ADMIT","oracle":"type conforming to both roots uses direct Iterator route"},
+    {"id":"R106-FOR-B-002","algorithm":"ForIteratorPlanV1","class":"boundary","expected":"ADMIT","oracle":"empty iterator exits without PatternAttempt"},
+    {"id":"R106-FOR-B-003","algorithm":"ForIteratorPlanV1","class":"boundary","expected":"ADMIT","oracle":"break cleans item iterator and source once"},
+    {"id":"R106-FOR-N-001","algorithm":"ForIteratorPlanV1","class":"reject","expected":"FOR_SOURCE_NOT_ITERABLE","oracle":"no admitted role witness and no runtime fallback"},
+    {"id":"R106-FOR-N-002","algorithm":"ForIteratorPlanV1","class":"reject","expected":"ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED","oracle":"cleanup responsibility not representable in loop context"},
+    {"id":"R106-FOR-N-003","algorithm":"ForIteratorPlanV1","class":"reject","expected":"REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT","oracle":"bare for pattern is refutable"},
+    {"id":"R106-ASG-P-001","algorithm":"LocalPatternAssignmentV1","class":"positive","expected":"ADMIT","oracle":"bare Tuple stages once and commits once"},
+    {"id":"R106-ASG-P-002","algorithm":"LocalPatternAssignmentV1","class":"positive","expected":"ADMIT","oracle":"Record assignee writes distinct existing locals"},
+    {"id":"R106-ASG-B-001","algorithm":"LocalPatternAssignmentV1","class":"boundary","expected":"ADMIT","oracle":"wildcard creates no target place"},
+    {"id":"R106-ASG-B-002","algorithm":"LocalPatternAssignmentV1","class":"boundary","expected":"ADMIT","oracle":"provably irrefutable List rest stages exact residual"},
+    {"id":"R106-ASG-N-001","algorithm":"LocalPatternAssignmentV1","class":"reject","expected":"PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR","oracle":"assignment never declares a binder"},
+    {"id":"R106-ASG-N-002","algorithm":"LocalPatternAssignmentV1","class":"reject","expected":"PATTERN_ASSIGNMENT_TARGET_OVERLAP","oracle":"duplicate LocalPlaceId rejected before RHS"},
+    {"id":"R106-ASG-N-003","algorithm":"LocalPatternAssignmentV1","class":"reject","expected":"PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL","oracle":"fallible replacement cannot enter commit plan"}
+  ],
+  "governance": {"semantic_p0":0,"feature_p1":"22_OPEN_UNCHANGED","product_lanes":"15_OF_15_NOT_RUN","production_execution":"NOT_RUN"}
+}

@@ -85,5 +85,363 @@
     "predicate_maturity": "design_algorithm",
     "emission_eligible": true,
     "predecessor_identity": null
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "StringInterpolationFormatSpecAdmitted",
+    "source_name": "String interpolation format spec admission",
+    "summary": "Parse the bounded Align? Width language and seal one deterministic interpolation padding plan before HIR.",
+    "input_descriptor": "StringInterpolationFormatTextV1",
+    "input_descriptor_schema": "schemas/language/string-interpolation-format-spec-core-r1.schema.json",
+    "descriptor_axes": [
+      "raw_format_text",
+      "alignment",
+      "minimum_width",
+      "width_unit",
+      "overflow_policy"
+    ],
+    "feature_refs": [
+      "string_interpolation_format_spec_core"
+    ],
+    "diagnostic_refs": [
+      "INTERPOLATION_FORMAT_SPEC_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(InterpolationFormatPlan) | reject(INTERPOLATION_FORMAT_SPEC_INVALID, reason)",
+    "requires": [
+      "the scanner has isolated one braced INTERPOLATION_FORMAT_TEXT token",
+      "the raw token matches optional < > ^ followed by canonical decimal width 1 through 1000000"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/language.md#string-interpolation",
+    "rule_facets": [
+      "format_grammar",
+      "width_domain",
+      "alignment",
+      "hir_plan",
+      "diagnostic_precedence"
+    ],
+    "formal_judgment_id": "J-StringInterpolationFormatSpecAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "require braced interpolation before invoking this predicate",
+      "preserve the raw token without whitespace normalization"
+    ],
+    "normalization": "map omitted alignment to LEFT, < to LEFT, > to RIGHT and ^ to CENTER; parse width as canonical base-10 integer",
+    "decision_procedure": [
+      "reject an empty token with EMPTY_FORMAT",
+      "reject characters outside optional < > ^ and ASCII decimal digits with INVALID_GRAMMAR",
+      "reject a multi-digit width beginning with zero with WIDTH_LEADING_ZERO",
+      "reject width outside 1 through 1000000 with WIDTH_OUT_OF_RANGE",
+      "emit FORMAT_SPEC_V1 with U+0020 fill, Unicode-scalar minimum width, no truncation and extra center remainder on the right"
+    ],
+    "termination_metric": "one finite scanner token and one bounded decimal parse",
+    "success_result": "one canonical InterpolationFormatPlan",
+    "active_primary_diagnostic": "INTERPOLATION_FORMAT_SPEC_INVALID",
+    "secondary_diagnostics": [],
+    "positive_fixture_ids": [
+      "R80-FMT-POS-001",
+      "R80-FMT-POS-002",
+      "R80-FMT-POS-003",
+      "R80-FMT-POS-004",
+      "R80-FMT-BOUND-001",
+      "R80-FMT-BOUND-002",
+      "R80-FMT-BOUND-003"
+    ],
+    "negative_fixture_ids": [
+      "R80-FMT-REJ-001",
+      "R80-FMT-REJ-002",
+      "R80-FMT-REJ-003",
+      "R80-FMT-REJ-004"
+    ],
+    "evaluation_order": "braced parser gate -> empty -> grammar -> leading zero -> range -> HIR plan",
+    "dependency_predicates": [],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "disposition": "supersedes_deferred_product_handoff_without_product_execution"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ScopeCancellationPlanAdmitted",
+    "source_name": "Scope cancellation-plan admission",
+    "summary": "Normalize one @scope modifier set and seal its cancellation-observation plan before typed HIR.",
+    "input_descriptor": "RCTSDescriptorV5",
+    "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
+    "descriptor_axes": [
+      "modifiers",
+      "cancellation_context",
+      "parent_shield",
+      "cleanup",
+      "failure_precedence"
+    ],
+    "feature_refs": [
+      "async_concur_control"
+    ],
+    "diagnostic_refs": [
+      "SCOPE_MODIFIER_DUPLICATE",
+      "SCOPE_CANCELLATION_MODE_CONFLICT",
+      "SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN",
+      "SCOPE_CANCELLATION_CONTEXT_REQUIRED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(ScopeCancellationPlan) | reject(diagnostic_id)",
+    "requires": [
+      "preserve the complete CST modifier list including duplicates",
+      "resolve the nearest cancellation-aware execution context",
+      "resolve whether an active parent shield exists"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/actor-concurrency-coherence.json#ACC-R013",
+    "rule_facets": [
+      "parser",
+      "control",
+      "cancellation",
+      "cleanup",
+      "diagnostic"
+    ],
+    "formal_judgment_id": "J-ScopeCancellationPlanAdmitted",
+    "algorithm_owner": "integrated_checker",
+    "preconditions": [
+      "parse a root-connected @scope expression",
+      "preserve source-order modifiers before normalization"
+    ],
+    "normalization": "emit modifiers in isolated then cancellable-or-shielded order; omitted cancellation mode becomes INHERIT",
+    "decision_procedure": [
+      "reject the first duplicate modifier in source order",
+      "reject cancellable together with shielded on one scope",
+      "reject explicit cancellable inside an active parent shield",
+      "reject cancellable or shielded without a cancellation-aware execution context",
+      "emit INHERIT, OBSERVE, or DEFER_TO_OUTERMOST_SHIELD_EXIT with exact cleanup and failure-precedence laws"
+    ],
+    "termination_metric": "one finite modifier list plus one finite lexical parent chain",
+    "success_result": "one canonical ScopeCancellationPlan",
+    "active_primary_diagnostic": "SCOPE_MODIFIER_DUPLICATE",
+    "secondary_diagnostics": [
+      "SCOPE_CANCELLATION_MODE_CONFLICT",
+      "SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN",
+      "SCOPE_CANCELLATION_CONTEXT_REQUIRED"
+    ],
+    "positive_fixture_ids": [
+      "R81-SHIELD-POS-001",
+      "R81-SHIELD-POS-002",
+      "R81-SHIELD-POS-003",
+      "R81-SHIELD-BOUND-001",
+      "R81-SHIELD-BOUND-002",
+      "R81-SHIELD-BOUND-003",
+      "R81-SHIELD-BOUND-004"
+    ],
+    "negative_fixture_ids": [
+      "R81-SHIELD-REJ-001",
+      "R81-SHIELD-REJ-002",
+      "R81-SHIELD-REJ-003",
+      "R81-SHIELD-REJ-004"
+    ],
+    "evaluation_order": "parse -> duplicate -> same-scope conflict -> parent-shield conflict -> context -> plan",
+    "dependency_predicates": [
+      "AsyncSurfaceGateAdmitted"
+    ],
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
+    "predecessor_identity": {
+      "disposition": "closes_the_previous_negative_only_shielded_contract_without_product_execution"
+    }
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "StrongComparisonConformanceAdmitted",
+    "source_name": "StrongComparisonConformanceAdmitted",
+    "summary": "Admit strong Eq/Ord only for one homogeneous Self domain or one compiler/Prelude-sealed bilateral family; product checker NOT_RUN.",
+    "input_descriptor": "StrongComparisonDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/strong-comparison-decision-v1.schema.json",
+    "descriptor_axes": [
+      "trait_role",
+      "left_type_id",
+      "right_type_id",
+      "strong_profile_eligible",
+      "evidence_origin",
+      "declaring_owner_type_id_or_null",
+      "family_id_or_null",
+      "reverse_witness_id_or_null",
+      "normalization_domain_id_or_null",
+      "laws"
+    ],
+    "rule_facets": [
+      "trait_role",
+      "normalized_left_type",
+      "normalized_right_type",
+      "strong_profile_eligible",
+      "evidence_origin",
+      "bilateral_family_identity",
+      "law_domain"
+    ],
+    "feature_refs": [
+      "fixed_operator_conformance_overloading"
+    ],
+    "diagnostic_refs": [
+      "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+      "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(SelfStrongComparison | SealedBilateralStrongComparison) | bypass(INTRINSIC_RESERVED) | reject(diagnostic_id)",
+    "requires": [
+      "Eq denotes strong reflexive symmetric transitive equality and Ord denotes a total order whose zero agrees with Eq",
+      "intrinsic-reserved normalized pairs bypass conformance lookup",
+      "a user or language-derived strong comparison normalizes Rhs to exact Self",
+      "a heterogeneous family is compiler/Prelude sealed and owns both oriented witnesses plus one normalization domain",
+      "Ord bilateral rows prove reverse-sign and zero/equality agreement",
+      "selection remains left-owner DIRECT_GLOBAL with zero conversion, fallback or runtime lookup"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/strong-comparison-coherence-v1.json",
+    "formal_judgment_id": "J-StrongComparisonConformanceAdmitted",
+    "algorithm_owner": "integrated_checker_before_conformance_selection_and_hir_seal",
+    "preconditions": [
+      "Trait and normalized operand types are resolved",
+      "intrinsic reservation is known",
+      "the declaring owner or sealed family evidence is bound"
+    ],
+    "normalization": "normalize aliases and type arguments, preserve nominal identity, form the ordered operand key and, only for a sealed family, the sorted unordered pair key",
+    "decision_procedure": [
+      "if the normalized pair is intrinsic-reserved return BYPASS_CONFORMANCE",
+      "reject a noneligible strong comparison profile",
+      "for user or language-derived evidence require normalized Rhs == Self and, for user evidence, the declaring owner == Self",
+      "for heterogeneous evidence require compiler/Prelude authority, a family ID, both oriented witnesses and one normalization-domain ID",
+      "require Eq total Boolean reflexivity, symmetry and transitivity",
+      "for Ord additionally require totality, trichotomy, transitivity, antisymmetry, reverse-sign and zero iff Eq",
+      "seal the witness and optional family identity before canonical HIR; runtime relookup count remains zero"
+    ],
+    "termination_metric": "one normalized pair, one finite family row and a closed Boolean law vector",
+    "success_result": "StrongComparisonFact",
+    "active_primary_diagnostic": "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+    "secondary_diagnostics": [
+      "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"
+    ],
+    "positive_fixture_ids": [
+      "PF-StrongComparisonConformanceAdmitted-POS",
+      "PF-StrongComparisonConformanceAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-StrongComparisonConformanceAdmitted-NEG-RHS",
+      "PF-StrongComparisonConformanceAdmitted-NEG-FAMILY"
+    ],
+    "evaluation_order": "malformed or unresolved Trait head -> intrinsic reservation -> strong-profile and Self-domain admission -> bilateral family closure -> ordinary locality/overlap/witness selection",
+    "dependency_predicates": [],
+    "diagnostic_dispatch": {
+      "RHS_NOT_SELF_OR_SEALED_FAMILY": "STRONG_COMPARISON_RHS_NOT_ADMITTED",
+      "BILATERAL_FAMILY_INVALID": "STRONG_COMPARISON_BILATERAL_FAMILY_INVALID"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
+  },
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "TraitAutoPolicyAdmitted",
+    "source_name": "TraitAutoPolicyAdmitted",
+    "summary": "Bind supports auto/by auto to one exact core or Prelude policy row and finite input proof before canonical HIR; product checker NOT_RUN.",
+    "input_descriptor": "TraitAutoPolicyDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/trait-auto-policy-decision-v1.schema.json",
+    "descriptor_axes": [
+      "action",
+      "trait_id",
+      "declaration_owner",
+      "policy_identity",
+      "target_identity",
+      "input_predicate",
+      "finite_component_evidence",
+      "noncanonical_evidence_counts"
+    ],
+    "rule_facets": [
+      "registry_owner",
+      "policy_identity",
+      "policy_digest",
+      "termination",
+      "input_evidence",
+      "synthesized_conformance_identity"
+    ],
+    "feature_refs": [
+      "trait_witness_coherence_phase_a"
+    ],
+    "diagnostic_refs": [
+      "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+      "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "admit(TraitAutoPolicyBinding) | synthesize(ConformanceId,TraitWitnessIds,DerivationDigest) | reject(diagnostic_id)",
+    "requires": [
+      "supports auto is an assertion on a core or Prelude Trait and does not create a policy",
+      "one exact registry row exists for normalized TraitId and PolicyVersion",
+      "policy ID, digest, input predicate and algorithm identity match the row",
+      "the normalized component graph is finite and evaluated with memoized identity-subject pairs and cycle detection",
+      "extensions, providers, source/import order and runtime state contribute zero evidence",
+      "successful synthesis seals policy, conformance, witness and derivation identities before canonical HIR"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/trait-auto-policy-registry-v1.json",
+    "formal_judgment_id": "J-TraitAutoPolicyAdmitted",
+    "algorithm_owner": "integrated_checker_before_conformance_candidate_construction_and_hir_seal",
+    "preconditions": [
+      "TraitId and target TypeId are normalized",
+      "declaration authority and PolicyVersion are known",
+      "ResponsibilityIdentityInputR1 component descriptors are closed"
+    ],
+    "normalization": "sort unique component evidence IDs by Unicode scalar order and key the registry only by normalized TraitId plus PolicyVersion",
+    "decision_procedure": [
+      "reject a user-owned Trait supports auto clause",
+      "select one exact row or emit CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "require policy ID, digest and input predicate equality",
+      "for a Trait opt-in seal the registry binding without a target witness",
+      "for by auto require an admitted source target kind and finite component graph",
+      "run only the row's registered input predicate; unknown or disproved input rejects",
+      "reject any direct witness, extension, provider or runtime contribution",
+      "seal deterministic conformance, witness and derivation identities"
+    ],
+    "termination_metric": "finite registry of two rows plus unvisited (TypeId,ResponsibilityRuleId) pairs in one finite nominal graph",
+    "success_result": "TraitAutoPolicyFact",
+    "active_primary_diagnostic": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+    "secondary_diagnostics": [
+      "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"
+    ],
+    "positive_fixture_ids": [
+      "PF-TraitAutoPolicyAdmitted-POS",
+      "PF-TraitAutoPolicyAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-TraitAutoPolicyAdmitted-NEG-OWNER",
+      "PF-TraitAutoPolicyAdmitted-NEG-INPUT"
+    ],
+    "evaluation_order": "owner -> exact registry row -> digest/predicate identity -> finite graph -> registered predicate -> noncanonical evidence fence -> HIR seal",
+    "dependency_predicates": [
+      "ShareableObservationSafe",
+      "TransferableAcrossIsolation"
+    ],
+    "diagnostic_dispatch": {
+      "USER_TRAIT_POLICY_OWNER": "CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN",
+      "REGISTRY_ROW_MISSING_OR_MISMATCHED": "CONFORMANCE_AUTO_POLICY_NOT_REGISTERED",
+      "INPUT_EVIDENCE_UNSATISFIED": "CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED"
+    },
+    "execution_receipt": null,
+    "diagnostic_disposition": "active_primary_and_secondary_design_algorithm_product_not_run",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true
   }
 ]

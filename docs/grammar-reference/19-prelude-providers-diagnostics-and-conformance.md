@@ -2159,9 +2159,9 @@ receipt는 null이다.
 설계 정적 계약과
 제품 실행 evidence를 정확히 분리해야 한다.
 R4 closure도 22 OPEN feature P1을 닫지 않으며 15/15 product lane은
-계속 `NOT_RUN`이다. `ResolvedOverloadSetRef`에서 exact winner를 고르는
-generic/ordinary-overload cluster와 Trait witness materialization은 이
-장 보충의 실행 권위가 아니다.
+계속 `NOT_RUN`이다. `ResolvedOverloadSetRef`의 exact winner는
+`OrdinaryCallSelectionV1`이 정적으로 닫는다. Trait witness discovery와
+materialization은 그 선택 계약과 이 장 보충의 실행 권위가 아니다.
 
 ## 32. 검토 체크리스트
 

@@ -63,23 +63,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable BinaryAdd evidence for an admitted non-intrinsic operand pair; the implicit left receiver and rhs are borrowed, evaluation is strict and left-to-right, Output is derived only after one left-owner DIRECT_GLOBAL conformance is selected, and any declared numeric overflow terminates as ArithmeticDefect before enclosing place commit",
-    "notes": "Intrinsic-reserved domains never consult this Trait. Expected result, conversion, source/import order, via/VIA/AUTO, local/case, extension/provider, specialization, fallback, and runtime relookup are forbidden; ArithmeticDefect is nonrecoverable and does not enter throws; product support NOT_RUN.",
+    "responsibility": "Stable BinaryAdd evidence; operands are borrowed and evaluated left-to-right, the Trait requirement bounds implementations by AllocationError/allocate, and the exact selected witness subset is expression responsibility",
+    "notes": "Primitive and fixed-width witnesses may seal Never/{}; BigInt/Rational value-producing rows seal AllocationError/allocate independent of small-value optimization. Selection remains unique left-owner DIRECT_GLOBAL; ArithmeticDefect is nonrecoverable and distinct; product support NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Add<Rhs> { type Output; +def add.(borrow rhs: Rhs) -> <Self as Add<Rhs>>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "0f022c27c66f0b63242ad396a38c2579484fb65dbe58ba9da355cbcc0765ac07"
+    "normalized_contract_sha256": "3235a5da64446f4a8b8fe28f2eb725d2f4fd69ca8d2f99dab2b1ab7bf644f35e"
   },
   {
     "entry_id": "arithmetic_defect",
@@ -464,7 +464,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "e5f8391c66b8a207c8756570549943ee2cf2ac5d0995ac7db84b4fbb5daa5fac"
+    "normalized_contract_sha256": "c89a6e7e0e2b173f81a5f35847959d6c40c6af41ccb589bd512d1961bb2fcb93"
   },
   {
     "entry_id": "failable",
@@ -492,7 +492,7 @@
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "77497834bfaefa6425d7abeed6a16f791c190ebd23a55f268c2e5c3e1be5c854"
+    "normalized_contract_sha256": "8bd58af304c11de0d1fe5c88209d00dc1c6cd12cba31813b22629ff63d73e9f6"
   },
   {
     "entry_id": "display",
@@ -1162,7 +1162,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "9b1b1b12e91e404df1af642a771bf643edbd26bf906ce5b5d50deebdd288bc9f"
+    "normalized_contract_sha256": "51d7cdcc9eb8612049287f675a2e5252a1dd74be4ae5d5b884e1ee2a0820e503"
   },
   {
     "entry_id": "positional_pack_t",
@@ -1189,7 +1189,7 @@
         "schema": "deeplus.prelude-intrinsic-signature/r51f3"
       }
     ],
-    "normalized_contract_sha256": "c29a15544b40656baf9097b66f03c0ba9a6c7dd9de63cdb2a14d578b681cf443"
+    "normalized_contract_sha256": "a659027fdbce7fbb2b2609d965d580de7081243d49a70391dd0477f45da4ad29"
   },
   {
     "entry_id": "mutable_list_t",
@@ -1336,23 +1336,23 @@
       "fixed_operator_conformance_overloading"
     ],
     "signatures": [
-      "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }"
+      "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws AllocationError effects allocate; }"
     ],
-    "responsibility": "Stable BinaryMultiply evidence for an admitted non-intrinsic operand pair under the borrowed, pure, synchronous, non-consuming fixed-glyph profile with only a declared precommit ArithmeticDefect terminal",
-    "notes": "Selection requires one left-owner DIRECT_GLOBAL conformance and cannot override an intrinsic-reserved domain or use conversion, alternate evidence routes, ordering, fallback, or runtime lookup; ArithmeticDefect is nonrecoverable and not a throws member; product support NOT_RUN.",
+    "responsibility": "Stable BinaryMultiply evidence under the borrowed synchronous non-consuming fixed-glyph profile; the selected witness seals an exact subset of AllocationError/allocate",
+    "notes": "Primitive and fixed-width witnesses may seal Never/{}; BigInt/Rational value-producing rows seal AllocationError/allocate. Selection remains unique left-owner DIRECT_GLOBAL; ArithmeticDefect is distinct; product support NOT_RUN.",
     "product_support": "NOT_RUN",
     "baseline": "0.1.2-baseline.r51f3",
     "row_schema_version": "deeplus.prelude-signature-row/r51f3",
     "primary_source": "library/prelude/prelude.md",
     "signature_records": [
       {
-        "text": "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws Never effects {}; }",
+        "text": "public trait#operator Multiply<Rhs> { type Output; +def multiply.(borrow rhs: Rhs) -> <Self as Multiply<Rhs>>::Output throws AllocationError effects allocate; }",
         "dialect": "deeplus_source",
         "grammar_root": "TopLevelDecl",
         "schema": null
       }
     ],
-    "normalized_contract_sha256": "c261f0a33edbf4703302ab0ba62477fa662aca05b5cb17c252bea9b659803496"
+    "normalized_contract_sha256": "7fac30c58a17d017bb46762f149d43d25de4c395616d9a87c385052653b5f8ff"
   },
   {
     "entry_id": "numeric_array",

@@ -13,7 +13,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Accessor property := surface. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 closes the := accessor-property parse and admission surface: header visibility is forbidden, one getter is required, an optional setter belongs only to var, and no backing-storage identity is synthesized. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -33,7 +33,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -52,7 +55,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Accessor visibility restored law. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 binds effective get/set visibility to each accessor arm, resolves omission through MemberVisibilityOmissionV1, and requires setter visibility not to exceed getter visibility. The rule is static-only and product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -72,7 +75,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "semantic",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -91,7 +97,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Current trace-bounded responsibility for Accessor visibility surface phase a. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "notes": "R100 preserves explicit or omitted visibility on each get/set arm and forbids visibility on the accessor-property header; OMITTED is eliminated before canonical HIR. Product execution remains NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -111,7 +117,10 @@
       "semantic_reference_productions": []
     },
     "trace_class": "syntax",
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/accessor-property-forwarding-r100.json",
+      "tests/fixtures/current/accessor-property-forwarding-r100.json"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -184,7 +193,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Absent clause selects logical_unbounded_v1. Positive static #mailbox(capacity: N) selects bounded_reject_v1 with immediate ActorMessageError and no block/retry/suspend/drop. N is a manual choice. Product NOT_RUN.",
+    "notes": "Absent clause selects logical_unbounded_v1: no language-level capacity rejection, not infinite storage. Positive static #mailbox(capacity: N) selects bounded_reject_v1 with immediate ActorMessageError and no block/retry/suspend/drop. Both preserve the independent precommit AllocationError effects allocate transport responsibility and the exact tagged SenderId origin. N is a manual choice. Product NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -197,9 +206,16 @@
     "trace_class": "semantic",
     "normative_trace_refs": {
       "diagnostics": [
-        "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT"
+        "ACTOR_MAILBOX_CAPACITY_REQUIRES_STATIC_INT",
+        "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+        "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN",
+        "ACTOR_SENDER_CONTEXT_UNAVAILABLE",
+        "MIR_ACTOR_SENDER_IDENTITY_INVALID"
       ],
-      "predicates": [],
+      "predicates": [
+        "ActorTransportAllocationAdmitted",
+        "ActorSenderIdentityAdmitted"
+      ],
       "examples": [
         "EX-R51f3-COH-008",
         "EX-R51f3-COH-009",
@@ -212,6 +228,11 @@
     },
     "artifact_trace_refs": [
       "spec/contracts/actor-concurrency-coherence.json",
+      "spec/contracts/actor-transport-allocation-v1.json",
+      "spec/contracts/actor-sender-identity-v1.json",
+      "schemas/language/actor-transport-allocation-v1.schema.json",
+      "schemas/language/actor-sender-identity-v1.schema.json",
+      "tests/fixtures/current/actor-transport-allocation-v1.json",
       "tests/fixtures/current/actor-concurrency-coherence-r1.json",
       "library/prelude/signatures/chunks/part-0001.json"
     ],
@@ -314,7 +335,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "An actor :~ request immediately returns Result<Reply<T>, error ActorMessageError>; source extracts the one-shot Reply<T> before explicit await, and receiver closure before reply terminates that correlated reply through its declared failure axis. Reply<T> is not a structured-concurrency Run<T>, and :~ itself never suspends or retries.",
+    "notes": "An actor :~ request has value carrier Result<Reply<T>, error ActorMessageError> plus independent throws AllocationError effects allocate. All Reply/correlation storage is prepared before the atomic enqueue commit; source extracts the one-shot Reply<T> before explicit await, and receiver closure before reply terminates that correlated reply through its declared failure axis. Reply<T> is not Run<T>, and :~ itself never suspends or retries.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -328,10 +349,13 @@
     "normative_trace_refs": {
       "diagnostics": [
         "ACTOR_OPERATION_KIND_COLLISION",
-        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER"
+        "ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER",
+        "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+        "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN"
       ],
       "predicates": [
-        "ActorProtocolGateAdmitted"
+        "ActorProtocolGateAdmitted",
+        "ActorTransportAllocationAdmitted"
       ],
       "examples": [
         "EX-R48E-019",
@@ -348,6 +372,9 @@
     },
     "artifact_trace_refs": [
       "spec/contracts/actor-concurrency-coherence.json",
+      "spec/contracts/actor-transport-allocation-v1.json",
+      "schemas/language/actor-transport-allocation-v1.schema.json",
+      "tests/fixtures/current/actor-transport-allocation-v1.json",
       "tests/fixtures/current/actor-concurrency-coherence-r1.json",
       "library/prelude/signatures/chunks/part-0001.json"
     ],
@@ -372,7 +399,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "Celsius/Fahrenheit point/delta separation is excluded from Phase A measure positive corpus. Current contract: Celsius/Fahrenheit style point/delta units are stdlib/profile law, not implicit core conversion.",
+    "notes": "Affine point/delta units are an explicitly deferred stdlib profile and are excluded from the first implementation target. Current source rejects them with AFFINE_UNIT_NOT_IN_PHASE_A until a separate surface and offset law are approved.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -391,7 +418,8 @@
       "semantic_reference_productions": []
     },
     "artifact_trace_refs": [
-      "library/prelude/prelude.md"
+      "library/prelude/prelude.md",
+      "spec/contracts/measure-collection-bootstrap-r99.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -684,7 +712,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stdlib profile",
-    "notes": "Current contract: stdlib generator profile seed is a stdlib/profile dependency for shaped generator initializers, not a language Preview gate.",
+    "notes": "Optional provider provenance only. It is explicitly excluded from the first implementation target and is never a normative dependency of shaped generator initialization.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -703,7 +731,8 @@
       "semantic_reference_productions": []
     },
     "artifact_trace_refs": [
-      "library/prelude/prelude.md"
+      "library/prelude/prelude.md",
+      "spec/contracts/measure-collection-bootstrap-r99.json"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -712,9 +741,13 @@
   },
   {
     "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM / MIR / OFFICIAL_TOOLING",
     "authority_set": [
-      "LANGUAGE"
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM",
+      "MIR",
+      "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
@@ -1216,9 +1249,13 @@
   },
   {
     "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE",
+    "authority": "LANGUAGE / PARSER / TYPE_SYSTEM / MIR / OFFICIAL_TOOLING",
     "authority_set": [
-      "LANGUAGE"
+      "LANGUAGE",
+      "PARSER",
+      "TYPE_SYSTEM",
+      "MIR",
+      "OFFICIAL_TOOLING"
     ],
     "baseline": "0.1.2-baseline.r51f3",
     "depends_on": [],
@@ -1228,7 +1265,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "Async suspension is explicit; concur owns the lexical structured-concurrency region, each spawn yields an owner-bound one-shot Run<T>, and actor requests independently yield Reply<T> after successful admission.",
+    "notes": "Async suspension is explicit; concur owns the lexical structured-concurrency region, each spawn yields an owner-bound one-shot Run<T>, and actor requests independently yield Reply<T> after successful admission. A shielded scope is a lexical cancellation-observation fence: it completes scope-local cleanup exactly once and observes and acknowledges pending cancellation only after the outermost shield exits.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -1241,24 +1278,42 @@
     "trace_class": "semantic",
     "normative_trace_refs": {
       "diagnostics": [
-        "ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN"
+        "ASYNC_CORE_PRODUCT_SUPPORT_NOT_RUN",
+        "SCOPE_MODIFIER_DUPLICATE",
+        "SCOPE_CANCELLATION_MODE_CONFLICT",
+        "SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN",
+        "SCOPE_CANCELLATION_CONTEXT_REQUIRED"
       ],
       "predicates": [
         "AsyncActorCoreAdmitted",
-        "AsyncSurfaceGateAdmitted"
+        "AsyncSurfaceGateAdmitted",
+        "ScopeCancellationPlanAdmitted"
       ],
       "examples": [
         "EX-R48E-017",
         "EX-R48F-027",
-        "EX-R51c-016"
+        "EX-R51c-016",
+        "EX-R81-SHIELD-P-001",
+        "EX-R81-SHIELD-BOUND-001",
+        "EX-R81-SHIELD-NG-001"
       ],
       "productions": [
         "ConcurExpr",
-        "SpawnExpr"
+        "SpawnExpr",
+        "AtControlExpr",
+        "AtScopeExpr",
+        "ScopeModifier"
       ],
       "semantic_reference_productions": []
     },
-    "artifact_trace_refs": [],
+    "artifact_trace_refs": [
+      "spec/contracts/scope-shielded-cancellation-semantics-r1.json",
+      "decisions/language/Design_Deeplus_Scope_Shielded_Cancellation_Semantics_R1.md",
+      "tests/fixtures/current/scope-shielded-cancellation-semantics-r1.json",
+      "schemas/language/canonical-hir-h1.schema.json#/$defs/ScopeCancellationPlan",
+      "schemas/language/mir-responsibility.schema.json#/$defs/scopeCancellationEvent",
+      "spec/contracts/hir-mir-lowering-registry.json#HM-LR-TOP-021"
+    ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
@@ -1633,109 +1688,5 @@
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
     "independent_conformance": "NOT_RUN"
-  },
-  {
-    "actual_user_team_study": "NOT_RUN",
-    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
-    "authority_set": [
-      "LANGUAGE",
-      "TYPE_SYSTEM",
-      "CHECKER"
-    ],
-    "baseline": "0.1.2-baseline.r51f3",
-    "depends_on": [
-      "index_operator"
-    ],
-    "display_name": "Basic index operator",
-    "feature_id": "basic_index_operator",
-    "feature_kind": "canonical_feature",
-    "formatter_lsp": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "language_status": "Stable design",
-    "notes": "IndexSuffix needs at least one comma-separated axis. Closed intrinsic carriers admit read-only selection and owner-bounded open slices; conformance cannot activate brackets and ordinary brackets never yield a place. MutableList structural-edit statements are a separate closed parser owner that lowers to exact Prelude calls and does not activate ordinary MutableList bracket replacement. Product checker NOT_RUN.",
-    "primary_source": "spec/language.md",
-    "product_support": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "runtime_xvm": "NOT_RUN",
-    "source_activation": "none",
-    "status_display": "Stable design",
-    "status_enum": "STABLE_DESIGN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "normative_trace_refs": {
-      "diagnostics": [
-        "BASIC_INDEX_OPERATOR_STABLE_LAW",
-        "INDEX_SUFFIX_REQUIRES_AXIS",
-        "LOGICAL_INDEX_DOMAIN_MISMATCH"
-      ],
-      "predicates": [
-        "BasicIndexOperatorAdmitted",
-        "LogicalIndexDomainAdmitted"
-      ],
-      "examples": [],
-      "productions": [
-        "IndexSuffix"
-      ],
-      "semantic_reference_productions": []
-    },
-    "trace_class": "syntax",
-    "artifact_trace_refs": [],
-    "production_lexer": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "independent_conformance": "NOT_RUN"
-  },
-  {
-    "feature_id": "bitfield_checked_raw_codec_msp",
-    "display_name": "Checked bitfield raw and byte codec",
-    "baseline": "0.1.2-baseline.r51f3",
-    "feature_kind": "canonical_feature",
-    "authority_set": [
-      "LANGUAGE",
-      "TYPE_SYSTEM",
-      "CHECKER",
-      "RUNTIME",
-      "STDLIB"
-    ],
-    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER / RUNTIME / STDLIB",
-    "primary_source": "spec/language.md",
-    "trace_class": "semantic",
-    "depends_on": [
-      "bitfield_unsigned_strict_layout_msp"
-    ],
-    "artifact_trace_refs": [],
-    "normative_trace_refs": {
-      "productions": [],
-      "semantic_reference_productions": [],
-      "diagnostics": [
-        "BITFIELD_C_ABI_NOT_IMPLIED",
-        "BITFIELD_ENDIANNESS_REQUIRED",
-        "BITFIELD_IMPLICIT_RAW_CONVERSION_FORBIDDEN",
-        "BITFIELD_RESERVED_BITS_NONZERO"
-      ],
-      "predicates": [
-        "BitfieldRawAdmitted",
-        "BitfieldDerivationAdmitted"
-      ],
-      "examples": [
-        "EX-R51a1-BITFIELD-NG-002",
-        "EX-R51a1-BITFIELD-P-003"
-      ]
-    },
-    "row_schema_version": "deeplus.feature-row/r51f3",
-    "product_support": "NOT_RUN",
-    "production_lexer": "NOT_RUN",
-    "production_parser": "NOT_RUN",
-    "integrated_checker": "NOT_RUN",
-    "formatter_lsp": "NOT_RUN",
-    "runtime_xvm": "NOT_RUN",
-    "stdlib_provider_runner": "NOT_RUN",
-    "uml_exporter_provider_runner": "NOT_RUN",
-    "actual_user_team_study": "NOT_RUN",
-    "independent_conformance": "NOT_RUN",
-    "status_enum": "STDLIB_PROFILE",
-    "status_display": "Stdlib profile",
-    "language_status": "Stdlib profile",
-    "source_activation": "stdlib",
-    "notes": "Stable-layout stdlib profile for explicit .raw, checked fromRaw and explicit-endian byte codecs; no implicit conversion or C ABI equivalence. Product runtime NOT_RUN."
   }
 ]

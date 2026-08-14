@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.invalid/schemas/language/string-interpolation-format-spec-core-r1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema", "schema", "revision", "canonical_baseline_commit",
+    "local_predecessor_commit", "candidate_status", "feature_id",
+    "surface_contract", "static_admission", "hir_contract",
+    "dynamic_semantics", "tooling_obligations", "acceptance", "governance"
+  ],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/string-interpolation-format-spec-core-r1.schema.json"},
+    "schema": {"const": "deeplus.string-interpolation-format-spec-core/r1"},
+    "revision": {"const": "r80-string-interpolation-format-spec-core-closure-r1"},
+    "canonical_baseline_commit": {"const": "10e64f492f0529610673846139afcf0d95175663"},
+    "local_predecessor_commit": {"const": "79da7863a61d3018215c06d463e15e9d6375357c"},
+    "candidate_status": {"const": "LOCAL_STABLE_DESIGN_CLOSURE_NOT_PUBLISHED"},
+    "feature_id": {"const": "string_interpolation_format_spec_core"},
+    "surface_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outer_form", "scanner_token", "inner_grammar", "align_tokens", "default_alignment", "width_decimal_min", "width_decimal_max", "width_leading_zero_allowed", "sign_allowed", "underscore_allowed", "whitespace_allowed", "arbitrary_fill_allowed"],
+      "properties": {
+        "outer_form": {"const": "${expr:format}"},
+        "scanner_token": {"const": "INTERPOLATION_FORMAT_TEXT"},
+        "inner_grammar": {"const": "Align? Width"},
+        "align_tokens": {"prefixItems": [{"const": "<"}, {"const": ">"}, {"const": "^"}], "minItems": 3, "maxItems": 3},
+        "default_alignment": {"const": "LEFT"},
+        "width_decimal_min": {"const": 1},
+        "width_decimal_max": {"const": 1000000},
+        "width_leading_zero_allowed": {"const": false},
+        "sign_allowed": {"const": false},
+        "underscore_allowed": {"const": false},
+        "whitespace_allowed": {"const": false},
+        "arbitrary_fill_allowed": {"const": false}
+      }
+    },
+    "static_admission": {
+      "type": "object", "additionalProperties": false,
+      "required": ["predicate_id", "unbraced_diagnostic", "invalid_spec_diagnostic", "reason_precedence", "invalid_spec_hir_residue_count", "invalid_spec_mir_residue_count"],
+      "properties": {
+        "predicate_id": {"const": "StringInterpolationFormatSpecAdmitted"},
+        "unbraced_diagnostic": {"const": "INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM"},
+        "invalid_spec_diagnostic": {"const": "INTERPOLATION_FORMAT_SPEC_INVALID"},
+        "reason_precedence": {"prefixItems": [{"const": "EMPTY_FORMAT"}, {"const": "INVALID_GRAMMAR"}, {"const": "WIDTH_LEADING_ZERO"}, {"const": "WIDTH_OUT_OF_RANGE"}], "minItems": 4, "maxItems": 4},
+        "invalid_spec_hir_residue_count": {"const": 0},
+        "invalid_spec_mir_residue_count": {"const": 0}
+      }
+    },
+    "hir_contract": {"type": "object"},
+    "dynamic_semantics": {"type": "object"},
+    "tooling_obligations": {"type": "object"},
+    "acceptance": {"type": "object"},
+    "governance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes", "production_implementation", "github_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "production_implementation": {"const": "NOT_RUN"},
+        "github_publication": {"const": "NOT_PERFORMED_FOR_R80"}
+      }
+    }
+  }
+}

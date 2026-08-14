@@ -1,0 +1,79 @@
+{
+  "$schema": "../../schemas/language/trait-conformance-implementation-handoff-r107.schema.json",
+  "schema": "deeplus.trait-conformance-implementation-handoff/r107",
+  "revision": "r107-trait-conformance-action-complete-handoff",
+  "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF",
+  "decision_report": "decisions/language/Design_Deeplus_Trait_Conformance_Implementation_Handoff_R107.md",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "codex/preimpl-p0-r80-authority-projection-parity",
+    "predecessor_commit": "750885a2e0b552d7efdd58ef4ee996ad3d02bc48",
+    "current_binding": false
+  },
+  "scope": {
+    "new_syntax_count": 0,
+    "tc_rule_ids": ["TC-R001", "TC-R002", "TC-R003", "TC-R004", "TC-R005", "TC-R006", "TC-R007", "TC-R008", "TC-R009", "TC-R010", "TC-R011", "TC-R012", "TC-R013", "TC-R014", "TC-R015", "TC-R016"],
+    "action_ids": ["TCC-P1-002", "TCC-P1-003", "TCC-P1-004", "TCC-P1-005", "TCC-P1-006", "TCC-P1-007", "TCC-P1-008"],
+    "current_routes": ["DIRECT_GLOBAL", "LOWERCASE_VIA", "REGISTERED_BODYLESS_BY_AUTO"],
+    "forbidden_routes": ["LOCAL", "STRUCTURAL", "RUNTIME", "UPPERCASE_VIA", "UPPERCASE_AUTO", "SPECIALIZATION", "CHILD_LOCAL_PARENT_REPLACEMENT"]
+  },
+  "pipeline": {
+    "algorithm_id": "TraitConformanceSealV1",
+    "ordered_phases": [
+      {"phase": 1, "id": "SOURCE_COMMIT", "rule": "commit one root-connected current route and preserve rejected spelling only in recovery CST"},
+      {"phase": 2, "id": "NORMALIZE_IDENTITY", "rule": "normalize target, instantiated Trait, binders, substitutions and RequirementId slot keys"},
+      {"phase": 3, "id": "COHERENCE", "rule": "intern one ground ConformanceId and enforce locality, overlap, substitution stability and registered strict-decrease termination"},
+      {"phase": 4, "id": "BIND_REQUIREMENTS", "rule": "bind one compatible implementation and associated binding per RequirementId; intern one parent evidence record and close visibility"},
+      {"phase": 5, "id": "ADMIT_ROUTE", "rule": "admit direct, lowercase via, or exact TraitAutoPolicyRegistryV1 row; no fallback or source-order winner"},
+      {"phase": 6, "id": "SEAL_HIR", "rule": "emit canonical typed HIR only after every identity and responsibility field is non-null and verifier-recomputable"},
+      {"phase": 7, "id": "PROJECT_MIR", "rule": "project selected evidence only; provider, registry, specialization, fallback and runtime relookup counts are zero"}
+    ],
+    "hir_residue": ["ConformanceId", "TraitWitnessId", "RequirementId", "ImplementationId", "SubstitutionId", "ResponsibilityId", "AuthorityId", "SupertraitLinkIds", "AssociatedBindingIds", "TraitAutoPolicyId-or-null", "PolicyDigest-or-null", "DerivationDigest"],
+    "canonical_hir_requires_complete_identity": true,
+    "mir_runtime_relookup_count": 0,
+    "source_import_order_winner_count": 0,
+    "fallback_count": 0
+  },
+  "diagnostic_order": [
+    {"rank": 1, "diagnostic_id": "CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD", "failure": "malformed or unadmitted surface, or unresolved canonical identity"},
+    {"rank": 2, "diagnostic_id": "TRAIT_METHOD_DUPLICATE_SLOT", "failure": "duplicate requirement or return/profile-only overload"},
+    {"rank": 3, "diagnostic_id": "WITNESS_ORPHAN_RULE_VIOLATION", "failure": "locality or orphan violation"},
+    {"rank": 4, "diagnostic_id": "TRAIT_OVERLAPPING_WITNESS", "failure": "duplicate or overlapping conformance head"},
+    {"rank": 5, "diagnostic_id": "TRAIT_CONDITIONAL_PROOF_NOT_WELL_FOUNDED", "failure": "non-well-founded conditional proof"},
+    {"rank": 6, "diagnostic_id": "TRAIT_SUPER_WITNESS_MISSING", "failure": "supertrait evidence or inherited-binding conflict"},
+    {"rank": 7, "diagnostic_id": "TRAIT_REQUIREMENT_VISIBILITY_MISMATCH", "failure": "visibility or export failure"},
+    {"rank": 8, "diagnostic_id": "TRAIT_MISSING_WITNESS", "failure": "missing, ambiguous or incompatible witness"},
+    {"rank": 9, "diagnostic_id": "TRAIT_ASSOCIATED_REQUIREMENT_MISSING", "failure": "associated-binding failure"},
+    {"rank": 10, "diagnostic_id": "TRAIT_MIR_EVIDENCE_INCOMPLETE", "failure": "unresolved MIR evidence closure"}
+  ],
+  "actions": [
+    {"action_id":"TCC-P1-002","algorithm":"ConformanceSurfaceCommitV1","dependencies":[],"obligation":"root-connected current surface, lossless CST owner and deterministic recovery; removed/future forms create no AST/HIR","canonical_output":["ConformanceDeclAst","NominalConformanceClauseAst","ConformBlockAst"],"acceptance_ids":["R107-TCC002-P","R107-TCC002-B","R107-TCC002-N"]},
+    {"action_id":"TCC-P1-003","algorithm":"ConformanceCoherenceSealV1","dependencies":["TCC-P1-002"],"obligation":"deterministic requirement, ground conformance, locality, overlap, termination, parent and associated-binding identity","canonical_output":["ConformanceId","RequirementId","SupertraitLinkIds","AssociatedBindingIds"],"acceptance_ids":["R107-TCC003-P","R107-TCC003-B","R107-TCC003-N"]},
+    {"action_id":"TCC-P1-004","algorithm":"ConformanceDiagnosticOrderV1","dependencies":["TCC-P1-002","TCC-P1-003"],"obligation":"TC-R016 rank 1..10, stable primary span and canonical note order with marker parity","canonical_output":["DiagnosticId","DiagnosticRank","PrimarySpan","OrderedSemanticNotes"],"acceptance_ids":["R107-TCC004-P","R107-TCC004-B","R107-TCC004-N"]},
+    {"action_id":"TCC-P1-005","algorithm":"ConformanceRouteAdmissionV1","dependencies":["TCC-P1-002"],"obligation":"direct, lowercase via and registered bodyless by auto only; all future, local and dynamic routes unconstructible","canonical_output":["EvidenceOrigin","TraitAutoPolicyId-or-null","PolicyDigest-or-null"],"acceptance_ids":["R107-TCC005-P","R107-TCC005-B","R107-TCC005-N"]},
+    {"action_id":"TCC-P1-006","algorithm":"ConformanceIdentityProjectionV1","dependencies":["TCC-P1-003","TCC-P1-004","TCC-P1-005"],"obligation":"checker-to-HIR-to-MIR identity parity, deterministic API digest and zero provider/runtime relookup","canonical_output":["TraitWitnessId","ImplementationId","SubstitutionId","ResponsibilityId","AuthorityId","DerivationDigest"],"acceptance_ids":["R107-TCC006-P","R107-TCC006-B","R107-TCC006-N"]},
+    {"action_id":"TCC-P1-007","algorithm":"ConformanceCorpusReceiptV1","dependencies":["TCC-P1-002","TCC-P1-003","TCC-P1-004","TCC-P1-005","TCC-P1-006"],"obligation":"manifest-bound positive, boundary, reject and mutation corpus on one exact target; R107 specifies but does not fabricate execution","canonical_output":["CorpusManifestDigest","TargetIdentity","ExecutionReceipt-or-null"],"acceptance_ids":["R107-TCC007-P","R107-TCC007-B","R107-TCC007-N"]},
+    {"action_id":"TCC-P1-008","algorithm":"ConformanceToolingContractV1","dependencies":["TCC-P1-002","TCC-P1-004","TCC-P1-006","TCC-P1-007"],"obligation":"parse-preserving formatter, profile-aware diagnostics, identity navigation and package/API residue; product execution remains separate","canonical_output":["FormatterContractId","DiagnosticStageMapId","NavigationIdentityDomain","ApiResidueDigest"],"acceptance_ids":["R107-TCC008-P","R107-TCC008-B","R107-TCC008-N"]}
+  ],
+  "tooling": {
+    "formatter": "preserve current route, marker attachment, physical relation lines, trivia and semantic identity; idempotence required",
+    "lsp": "navigate by TraitId, ConformanceId, RequirementId and TraitWitnessId, never spelling or source-order winner",
+    "diagnostics": "emit one TC-R016 primary family and canonically ordered semantic notes",
+    "package_api": "serialize complete visible conformance summaries and verify digests independent of package/import/link order",
+    "production_execution": "NOT_RUN"
+  },
+  "acceptance": {
+    "fixture_path": "tests/fixtures/current/trait-conformance-implementation-handoff-r107.json",
+    "case_count": 21,
+    "positive_count": 7,
+    "boundary_count": 7,
+    "reject_count": 7,
+    "required_mutation_count": 14,
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "trait_feature_p1": "7_OPEN_EXECUTION_NOT_RUN",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_parser_checker_mir_tooling": "NOT_RUN",
+    "github_mutation": 0
+  }
+}

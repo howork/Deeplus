@@ -318,8 +318,9 @@ def main(root: Path = ROOT) -> None:
         in (
             [f"ACC-R{i:03d}" for i in range(1, 20)],
             [f"ACC-R{i:03d}" for i in range(1, 21)],
+            [f"ACC-R{i:03d}" for i in range(1, 23)],
         ),
-        "actor rule set must be exact R41 or R41+R22",
+        "actor rule set must be an exact contiguous supported revision",
     )
     passed.append("actor coherence binding")
 

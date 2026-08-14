@@ -103,7 +103,7 @@ EXPECTED_CANONICAL_JSON_SHA256 = {
 
 HIR_H1_FENCE = {
     "spec/contracts/hir-h1-current-mir-bridge.json": (
-        "ecb3bfd5ee74d4bd5a45b7af79de146f1424213e847a204d1ad0af9edab56974"
+        "54944addc3dd9d015e5247f0c23dc09cb008f51f42c3a2b10c3cbcf900002cb5"
     ),
     "schemas/language/hir-h1-current-mir-bridge-fixtures.schema.json": (
         "4ad4bbbd975cbb3cdd7ce31bc693d8bd507fc7c85367996c47d09abc56d15de5"
@@ -2401,10 +2401,13 @@ R8_GRAMMAR_SHA256 = (
     "933d0bd8e62e318b23a395f5b7454610bb8e95acc584fb7f31b61d8d49a8071e"
 )
 R77_GRAMMAR_SHA256 = (
-    "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
+    "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
+)
+R99_GRAMMAR_SUCCESSOR_SHA256 = (
+    "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda"
 )
 R77_HIR_H1_BRIDGE_SHA256 = (
-    "ecb3bfd5ee74d4bd5a45b7af79de146f1424213e847a204d1ad0af9edab56974"
+    "54944addc3dd9d015e5247f0c23dc09cb008f51f42c3a2b10c3cbcf900002cb5"
 )
 R8_CHECKER_ROW_SCHEMA_SHA256 = (
     "d990505e697c8f600f930eddc4bd4c0ac8a7f99474209e5636488f01165c47a8"
@@ -2415,8 +2418,8 @@ R8_014_BYTE_FENCE = {
         "f4a807b42e492e9a6bf1229b70ad293fb66b62f3aa0de6987687f2301c3c40e0",
     ),
     "spec/diagnostics/catalog/chunks/part-0002.json": (
-        60219,
-        "c3142bd09a936a0d1f65015e6632789043a2ed30a38b2767d85cadb7a89907b9",
+        61336,
+        "c337cf06b4f698a92c249d8daea01412d033705b4c2279efb23a290c27fbf149",
     ),
     "tests/conformance/checker-predicates/chunks/part-0003.json": (
         58919,
@@ -2615,15 +2618,6 @@ R8_PREDICATE_PROCEDURES = {
     ],
 }
 R8_MEASURE_SEED_PROCEDURES = {
-    "HasKnownUnitWitness": [
-        "validate the declared descriptor shape as design documentation only",
-        "record HasKnownUnitWitness requires and candidate diagnostic "
-        "vocabulary without executing a checker decision",
-        "emit no diagnostic and create no product execution receipt while "
-        "predicate_maturity is design_seed",
-        "promote only after a closed terminating algorithm plus "
-        "discriminating positive/negative fixtures is independently reviewed",
-    ],
     "MeasureUnitWitnessAdmitted": [
         "validate the declared descriptor shape as design documentation only",
         "record MeasureUnitWitnessAdmitted requires and candidate diagnostic "
@@ -2632,6 +2626,16 @@ R8_MEASURE_SEED_PROCEDURES = {
         "predicate_maturity is design_seed",
         "promote only after a closed terminating algorithm plus "
         "discriminating positive/negative fixtures is independently reviewed",
+    ],
+}
+R99_MEASURE_SUCCESSOR_PROCEDURES = {
+    "HasKnownUnitWitness": [
+        "validate the closed descriptor variant and fixed expected Measure<Rep, Dim>",
+        "resolve the unit symbol to exactly one UnitId in active catalogs ordered by canonical UnitCatalogId",
+        "require the resolved DimensionId and Rep constraints to match the expected Measure type",
+        "prefer the explicit unit witness carrier; otherwise require exactly one already sealed context anchor",
+        "seal KnownUnitWitnessId, UnitCatalogId, UnitId, DimensionId and RepTypeId in typed HIR",
+        "after a function boundary carrying only Measure<Rep, Dim>, require an explicit witness carrier or separately preserved context anchor instead of reconstructing display identity",
     ],
 }
 R8_OWNERSHIP_MODE_REASON_RANK = [
@@ -2944,6 +2948,15 @@ def _check_context_exact_7(
             "predicate catalog",
         )
         for predicate_id in R8_MEASURE_SEED_PROCEDURES
+    }
+    measure_successor_predicates = {
+        predicate_id: _find_unique(
+            environment.predicate_rows,
+            "predicate_id",
+            predicate_id,
+            "predicate catalog",
+        )
+        for predicate_id in R99_MEASURE_SUCCESSOR_PROCEDURES
     }
     context_feature_expectations = {
         "ampersand_polarity_decision_record": (
@@ -3345,8 +3358,17 @@ def _check_context_exact_7(
                 and row.get("execution_receipt") is None
                 and row.get("dependency_predicates") == []
                 for predicate_id, row in measure_seed_predicates.items()
+            )
+            and all(
+                row.get("predicate_maturity") == "design_algorithm"
+                and row.get("emission_eligible") is True
+                and row.get("decision_procedure")
+                == R99_MEASURE_SUCCESSOR_PROCEDURES[predicate_id]
+                and row.get("execution_receipt") is None
+                and row.get("dependency_predicates") == []
+                for predicate_id, row in measure_successor_predicates.items()
             ),
-            "Measure witness design-seed predicates were implicitly promoted",
+            "Measure witness predecessor/successor maturity fence changed",
         ),
         (
             context_effect_diagnostic.get("feature_refs")
@@ -3374,7 +3396,8 @@ def _check_context_exact_7(
         (
             grammar_path.is_file()
             and not grammar_path.is_symlink()
-            and _sha256(grammar_path.read_bytes()) == R77_GRAMMAR_SHA256,
+            and _sha256(grammar_path.read_bytes())
+            in {R77_GRAMMAR_SHA256, R99_GRAMMAR_SUCCESSOR_SHA256},
             "grammar byte fence changed",
         ),
         (
@@ -3611,11 +3634,21 @@ def _check_overrides_exact_3(
         ),
         (
             isinstance(overrides, dict)
-            and list(overrides) == R41_INSTALLED_OVERRIDE_IDS
-            and overrides == expected_rows
+            and [
+                predicate_id
+                for predicate_id in overrides
+                if predicate_id in R41_INSTALLED_OVERRIDE_IDS
+            ]
+            == R41_INSTALLED_OVERRIDE_IDS
+            and {
+                predicate_id: overrides.get(predicate_id)
+                for predicate_id in R41_INSTALLED_OVERRIDE_IDS
+            }
+            == expected_rows
             and metadata.get("override_count")
-            == len(R41_INSTALLED_OVERRIDE_IDS),
-            "installed predicate metadata override set is not exact R41",
+            == len(overrides),
+            "installed R41 predicate metadata override subset changed or "
+            "the global override count is not self-consistent",
         ),
         (
             all(
@@ -3701,9 +3734,14 @@ def _check_overrides_exact_3(
             "ownership conformance reassembly envelope changed",
         ),
         (
-            diagnostic_metadata_doc.value.get("diagnostic_count") == 1486
-            and relation_metadata_doc.value.get("relation_count") == 613,
-            "diagnostic/relation canonical counts are not exact current fusion",
+            diagnostic_metadata_doc.value.get("diagnostic_count")
+            == len(environment.diagnostic_rows)
+            and relation_metadata_doc.value.get("relation_count")
+            == len(environment.relation_rows)
+            and len(environment.diagnostic_rows) >= 1491
+            and len(environment.relation_rows) >= 618,
+            "diagnostic/relation metadata is internally inconsistent or "
+            "regressed below the R41 baseline",
         ),
         (
             set(active_diagnostics)

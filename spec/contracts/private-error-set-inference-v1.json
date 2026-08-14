@@ -1,0 +1,114 @@
+{
+  "schema": "deeplus.private-error-set-inference/v1",
+  "revision": "r99-private-error-inference-closure-r1",
+  "gap_id": "IR-ERR-P1-067",
+  "feature_id": "private_error_set_inference",
+  "status": "STABLE_DESIGN_LOCAL_CANDIDATE_PRODUCT_NOT_RUN",
+  "admitted_omission_owners": [
+    {
+      "owner": "NestedLocalFunction",
+      "effective_visibility": "LEXICAL",
+      "omitted_throws": "INFER_PRIVATE_ERROR_SET_V1"
+    },
+    {
+      "owner": "TopLevelCallable",
+      "effective_visibility": "private",
+      "omitted_throws": "INFER_PRIVATE_ERROR_SET_V1"
+    },
+    {
+      "owner": "NominalMemberCallable",
+      "effective_visibility": "-",
+      "omitted_throws": "INFER_PRIVATE_ERROR_SET_V1"
+    },
+    {
+      "owner": "ExtensionMemberCallable",
+      "effective_visibility": "-",
+      "omitted_throws": "INFER_PRIVATE_ERROR_SET_V1"
+    }
+  ],
+  "excluded_owners": [
+    "public_or_common_top_level_callable",
+    "public_or_protected_nominal_member",
+    "TraitRequirement",
+    "TraitWitness",
+    "ActorProtocolRequirement",
+    "ActorHandler",
+    "Constructor",
+    "CleanupHook",
+    "Accessor",
+    "ClosureExpr",
+    "callable_with_explicit_throws"
+  ],
+  "sealed_input": {
+    "required_predecessors": [
+      "name_resolution_complete",
+      "ordinary_call_selection_complete",
+      "generic_substitution_complete",
+      "callable_visibility_normalized"
+    ],
+    "node_identity": "CallableImplementationId plus complete SubstitutionId",
+    "direct_error_sources": [
+      "throw expression ErrorId",
+      "propagation operator consumed ErrorSet",
+      "exact declared ErrorSet of a non-inferred callee",
+      "exact function-type ErrorSet of an indirect call"
+    ],
+    "recursive_substitution_law": {
+      "comparison_key": "the complete SubstitutionId normalized after alias expansion and associated-binding normalization",
+      "inferred_scc_edge_admitted": "caller and callee have exactly the same normalized substitution vector",
+      "different_or_expansive_vector_admitted": false,
+      "required_repair": "declare an explicit throws row on the recursive callable boundary",
+      "rejection_diagnostic": "ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH"
+    },
+    "unresolved_or_ambiguous_call_admitted": false,
+    "effect_inference_performed": false
+  },
+  "algorithm": {
+    "name": "PrivateErrorInferenceV1",
+    "steps": [
+      "build the finite directed graph of admitted inferred callable instances",
+      "before adding a recursive inferred edge, require exact equality of caller and callee normalized substitution vectors; reject every different or expansive vector and require explicit throws",
+      "sort nodes and edges by stable semantic identity, never source order",
+      "compute strongly connected components",
+      "initialize each component with all normalized direct and explicit-callee ErrorIds",
+      "process the component DAG in reverse topological order and union successor rows",
+      "iterate union inside each component to the finite least fixed point",
+      "validate every inferred ErrorId against the effective visibility of every exposed caller",
+      "seal one normalized ErrorSetId and inference proof digest per callable instance"
+    ],
+    "termination_measure": "finite callable declarations times one normalized substitution vector per admitted recursive inferred SCC times the finite normalized ErrorId universe",
+    "source_order_affects_result": false,
+    "expected_result_type_affects_result": false,
+    "runtime_execution": false
+  },
+  "normalization": {
+    "row": "sorted unique ErrorId set",
+    "empty_row": "Never",
+    "hir_fields": [
+      "ErrorSetId",
+      "INFERRED_PRIVATE_V1",
+      "call_graph_digest",
+      "scc_id",
+      "inference_proof_digest"
+    ],
+    "api_rule": "no inferred ErrorId may escape a visibility domain that cannot name it",
+    "mir_rule": "consume the sealed HIR ErrorSetId; never rerun inference"
+  },
+  "diagnostic_precedence": [
+    "existing resolver or ordinary-call-selection diagnostic",
+    "ERROR_ROW_PRIVATE_INFERENCE_NOT_ADMITTED",
+    "ERROR_ROW_PRIVATE_INFERENCE_UNSEALED_CALL",
+    "ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH",
+    "ERROR_ROW_PRIVATE_TYPE_LEAK"
+  ],
+  "acceptance": {
+    "positive": "an acyclic private caller or same-substitution recursive caller receives the exact union of its direct and callee ErrorIds",
+    "boundary": "aliases normalize before comparing recursive substitution vectors, so an equal-vector mutually recursive private SCC has one source-order-independent finite union",
+    "reject": "a non-admitted omission, unsealed call edge, different or expansive recursive substitution vector, or private ErrorId leak emits one primary diagnostic and seals no canonical HIR callable"
+  },
+  "authority_fence": {
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_checker_execution": "NOT_RUN"
+  }
+}

@@ -253,12 +253,51 @@
           "Int"
         ],
         "normalized_formula": {
-          "kind": "AND",
+          "kind": "ALL",
           "terms": [
-            "p0 >= 1",
-            "p0 <= 65535"
+            {
+              "kind": "ATOM",
+              "atom": {
+                "kind": "COMPARE",
+                "operator": "GE",
+                "left": {
+                  "kind": "PARAMETER",
+                  "type_id": "Int",
+                  "parameter_index": 0
+                },
+                "right": {
+                  "kind": "STATIC_VALUE",
+                  "type_id": "Int",
+                  "value": {
+                    "kind": "SIGNED_INTEGER",
+                    "decimal": "1"
+                  }
+                }
+              }
+            },
+            {
+              "kind": "ATOM",
+              "atom": {
+                "kind": "COMPARE",
+                "operator": "LE",
+                "left": {
+                  "kind": "PARAMETER",
+                  "type_id": "Int",
+                  "parameter_index": 0
+                },
+                "right": {
+                  "kind": "STATIC_VALUE",
+                  "type_id": "Int",
+                  "value": {
+                    "kind": "SIGNED_INTEGER",
+                    "decimal": "65535"
+                  }
+                }
+              }
+            }
           ]
         },
+        "formula_digest": "ce02def065ef954347d80848d59e6a581e907690ff9563c33bd16c3c085ffd30",
         "body_digest": "0000000000000000000000000000000000000000000000000000000000000000",
         "summary_digest": "1111111111111111111111111111111111111111111111111111111111111111",
         "profile_version": "deeplus.guard-refinement.r0/v1"
@@ -354,10 +393,26 @@
           "Int"
         ],
         "normalized_formula": {
-          "kind": "GT",
-          "parameter": 0,
-          "constant": 0
+          "kind": "ATOM",
+          "atom": {
+            "kind": "COMPARE",
+            "operator": "GT",
+            "left": {
+              "kind": "PARAMETER",
+              "type_id": "Int",
+              "parameter_index": 0
+            },
+            "right": {
+              "kind": "STATIC_VALUE",
+              "type_id": "Int",
+              "value": {
+                "kind": "SIGNED_INTEGER",
+                "decimal": "0"
+              }
+            }
+          }
         },
+        "formula_digest": "59fde539dc09e0103f2a64118efd742269cf51979504e8eb087198fb5debb06e",
         "body_digest": "2222222222222222222222222222222222222222222222222222222222222222",
         "summary_digest": "3333333333333333333333333333333333333333333333333333333333333333",
         "profile_version": "deeplus.guard-refinement.r0/v1"
@@ -366,7 +421,26 @@
       "selected_call_kind": "EXACT_DIRECT",
       "actual_place_stability": "STABLE",
       "edge": "TRUE",
-      "substituted_formula_or_null": "x > 0",
+      "substituted_formula_or_null": {
+        "kind": "ATOM",
+        "atom": {
+          "kind": "COMPARE",
+          "operator": "GT",
+          "left": {
+            "kind": "PLACE",
+            "type_id": "Int",
+            "place_id": "local:x"
+          },
+          "right": {
+            "kind": "STATIC_VALUE",
+            "type_id": "Int",
+            "value": {
+              "kind": "SIGNED_INTEGER",
+              "decimal": "0"
+            }
+          }
+        }
+      },
       "body_digest_matches": true,
       "api_digest_matches": true
     },

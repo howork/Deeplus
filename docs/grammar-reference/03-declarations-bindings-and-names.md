@@ -351,10 +351,32 @@ def incrementCount() -> Int = {
   resolved target과 `SourceOriginId`는 trace content다.
 - canonical HIR에는 analysis-HIR의 unresolved name이나
   `ResolvedOverloadSetRef`를 남기지 않는다. exact callable winner는
-  다음 generic/ordinary-overload cluster의 책임이다.
+  `OrdinaryCallSelectionV1`이 candidate-local inference와 specificity를
+  닫은 뒤 sealed call plan으로 넘긴다.
 - 멤버 가시성과 class dispatch marker는 서로 다른 축이다. 예를 들어
   `+def render.()`의 `+`는 가시성이고 `.`은 final dispatch slot이다.
 - `#lazy`의 `#`는 member visibility가 아니라 선언 profile role이다.
+
+### 멤버 가시성 생략의 owner별 해석
+
+문법의 `MemberVisibility?`는 생략을 허용하지만, 생략 자체가 하나의
+가시성 값은 아니다. CST와 AST는 `OMITTED/null`을 보존하고, 이름 해석과
+slot binding이 정확한 owner를 찾은 뒤 `MemberVisibilityOmissionV1`이
+effective domain을 결정한다(`IR-VIS-P1-057`).
+
+- 새 field, constructor, accessor, forwarding slot, extension member,
+  bitfield/flag slot과 새 method는 생략 시 private member가 된다.
+- override는 원래 slot의 가시성과 access anchor를 그대로 상속한다.
+- Trait conformance method와 associated function은 선택된 requirement의
+  domain을 상속한다. requirement를 찾지 못하면 private로 추측하지 않고
+  거부한다.
+- actor의 `on`/`request`는 독립 member visibility를 만들지 않는다.
+  standalone operation은 Actor 가시성을 따르고, protocol fulfillment는
+  Actor와 ActorProtocol 가시성의 더 좁은 transport domain을 따른다.
+
+따라서 typed HIR과 module API에 결정되지 않은 `OMITTED/null`은 남지
+않는다. 이 규칙은 새 표면을 추가하지 않으며 제품 parser/checker 실행은
+계속 `NOT_RUN`이다.
 
 ## 정본 근거
 
@@ -367,5 +389,7 @@ def incrementCount() -> Int = {
   [`spec/contracts/type-flow-callable-coherence.json`](../../spec/contracts/type-flow-callable-coherence.json)
 - 기능 registry:
   [`spec/features/catalog`](../../spec/features/catalog)
+- 멤버 가시성 생략 계약:
+  [`spec/contracts/member-visibility-omission-v1.json`](../../spec/contracts/member-visibility-omission-v1.json)
 - 예제 원본:
   [`examples/guide/review-corpus.md`](../../examples/guide/review-corpus.md)

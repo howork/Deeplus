@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r92/xvm-xbc-projection-receipt-r1.schema.json",
+  "title": "Deeplus xVM XBC projection artifact receipt R1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "receipt_id",
+    "projection_capability_id",
+    "contract_digest",
+    "xbc_schema_digest",
+    "source_mir_semantic_digest",
+    "mir_schema_digest",
+    "mir_machine_registry_digest",
+    "runtime_abi_digest",
+    "runtime_projection_digest",
+    "managed_memory_plan_digest_or_null",
+    "continuation_interface_digest_or_null",
+    "xbc_logical_digest",
+    "encoded_bytes_sha256",
+    "verification_status",
+    "product_execution"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.xvm-xbc-projection-receipt/r1"},
+    "receipt_id": {"type": "string", "pattern": "^XbcProjectionReceiptId:[A-Za-z0-9_.:/-]+$"},
+    "projection_capability_id": {"const": "PROJ-CAP-XVM-CANONICAL-XBC-R1"},
+    "contract_digest": {"$ref": "#/$defs/sha256"},
+    "xbc_schema_digest": {"$ref": "#/$defs/sha256"},
+    "source_mir_semantic_digest": {"$ref": "#/$defs/sha256"},
+    "mir_schema_digest": {"$ref": "#/$defs/sha256"},
+    "mir_machine_registry_digest": {"$ref": "#/$defs/sha256"},
+    "runtime_abi_digest": {"$ref": "#/$defs/sha256"},
+    "runtime_projection_digest": {"$ref": "#/$defs/sha256"},
+    "managed_memory_plan_digest_or_null": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "continuation_interface_digest_or_null": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+    "xbc_logical_digest": {"$ref": "#/$defs/sha256"},
+    "encoded_bytes_sha256": {"$ref": "#/$defs/sha256"},
+    "verification_status": {"const": "VERIFIED_BEFORE_EXECUTION"},
+    "product_execution": {"const": "NOT_RUN"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

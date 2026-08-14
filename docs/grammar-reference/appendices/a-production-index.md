@@ -273,9 +273,9 @@
 | `ExtensionPackBody` | `"{" UseExportDecl* "}"` | 529 |
 | `EnumDecl` | `TopLevelVisibility? "enum" EnumOrderRole? Identifier TypeParameterList? NominalConformanceClause* EnumBody` | 533 |
 | `EnumOrderRole` | `"#" ("increasing" \| "decreasing")` | 535 |
-| `EnumBody` | `"{" (EnumCommaCaseSequence \| EnumLayoutBody)? "}"` | 536 |
+| `EnumBody` | `"{" (EnumCommaCaseSequence \| EnumLayoutBody) "}"` | 536 |
 | `EnumCommaCaseSequence` | `EnumCaseCore ("," EnumCaseCore)+ ","?` | 537 |
-| `EnumLayoutBody` | `EnumCaseDecl* EnumMemberDecl*` | 538 |
+| `EnumLayoutBody` | `EnumCaseDecl+ EnumMemberDecl*` | 538 |
 | `EnumCaseDecl` | `EnumCaseCore StatementBoundary?` | 539 |
 | `EnumCaseCore` | `Identifier EnumCasePayload? EnumCaseDisplayMapping?` | 540 |
 | `EnumCasePayload` | `"(" EnumCaseFieldList? ")"` | 541 |
@@ -397,7 +397,7 @@
 | `MapPatternEntry` | `MapDestination ":" MapKeyPattern \| MapRestPattern` | 802 |
 | `MapDestination` | `Pattern` | 803 |
 | `MapKeyPattern` | `Literal \| PinPattern` | 804 |
-| `MapRestPattern` | `".." RestBinder` | 805 |
+| `MapRestPattern` | `"*" RestBinder` | 805 |
 | `PatternEntrySeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 806 |
 | `ListPattern` | `"[" ListPatternBody? "]"` | 810 |
 | `ListPatternBody` | `IgnoredAllListRest \| ExactListPattern \| PrefixRestListPattern \| SuffixRestListPattern \| MiddleRestListPattern` | 811 |
@@ -618,58 +618,58 @@
 | `InterpolationPathRoot` | `Identifier \| "@"` | 1284 |
 | `InterpolationPathSelector` | `"." Identifier \| "." StaticIntLiteral \| "[" InterpolationIndex "]"` | 1285 |
 | `InterpolationIndex` | `StaticIntLiteral \| Identifier` | 1288 |
-| `ListLiteral` | `"[" ListEntryList? "]"` | 1293 |
-| `ListEntryList` | `ListEntry ("," ListEntry)* ","?` | 1294 |
-| `ListEntry` | `Expr \| PositionalUnfoldArgument` | 1295 |
-| `BoundedListLiteral` | `"[" StaticIntLiteral ".." StaticIntLiteral ":" ListEntryList? "]"` | 1296 |
-| `ComprehensionExpr` | `"[" Expr ComprehensionClause+ "]"` | 1298 |
-| `TypedMaterializationExpr` | `TypeRef MaterializationBody` | 1301 |
-| `MaterializationBody` | `"${" MaterializationEntryList? "}"` | 1302 |
-| `MaterializationEntryList` | `MaterializationEntry (MaterializationSeparator MaterializationEntry)* MaterializationSeparator?` | 1303 |
-| `MaterializationEntry` | `Identifier \| Identifier ":" Expr \| StringLiteralExpr ":" Expr \| NamedUnfoldArgument` | 1304 |
-| `MaterializationSeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 1308 |
-| `MapLiteral` | `"#" "map" "{" MapEntryList? "}"` | 1311 |
-| `MapEntryList` | `MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator?` | 1312 |
-| `MapEntry` | `Expr ":" Expr \| NamedUnfoldArgument` | 1313 |
-| `SetLiteral` | `"#" "set" "{" ExpressionList? "}"` | 1314 |
-| `MutListLiteral` | `"#" "mut" "[" ExpressionList? "]"` | 1315 |
-| `MapComprehensionExpr` | `"#" "map" "{" MapEntry ComprehensionClause+ "}"` | 1316 |
-| `SetComprehensionExpr` | `"#" "set" "{" Expr ComprehensionClause+ "}"` | 1317 |
-| `ComprehensionClause` | `ForClause \| PositiveGuard \| IfLetClause \| UnfoldClause` | 1319 |
-| `ForClause` | `"for" Pattern "in" Expr` | 1320 |
-| `IfLetClause` | `"if" "let" Pattern "=" Expr` | 1321 |
-| `UnfoldClause` | `"for" Pattern "in" "*" Expr` | 1322 |
-| `NumericArrayLiteral` | `ShapeInferredArrayLiteral \| ShapeInferredColumnVectorLiteral \| ExactShapeArrayLiteral` | 1325 |
-| `ShapeInferredArrayLiteral` | `"#" "[" Expr ("," Expr)* ","? "]"` | 1328 |
-| `ShapeInferredColumnVectorLiteral` | `"#" "[" Expr (";" Expr)+ "]"` | 1329 |
-| `ExactShapeArrayLiteral` | `"#" StaticDimensionList "[" ArrayInitializer? "]"` | 1330 |
-| `ArrayInitializer` | `ShapedRepeatInitializer \| ShapedGeneratorInitializer \| ShapedElementSequence` | 1331 |
-| `ShapedRepeatInitializer` | `"repeat" ":" Expr` | 1334 |
-| `ShapedGeneratorInitializer` | `"generate" ":" Expr` | 1335 |
-| `ShapedElementSequence` | `Expr (ShapedElementSeparator Expr)* ShapedElementSeparator?` | 1336 |
-| `ShapedElementSeparator` | `"," \| ShapedAxisBoundary` | 1337 |
-| `ShapedAxisBoundary` | `";" ";"*` | 1338 |
-| `MeasureLiteralExpr` | `NumericLiteral "[" UnitExpr "]"` | 1341 |
-| `UnitExpr` | `PrattUnitExpr` | 1342 |
-| `UnitPrimary` | `Identifier \| QualifiedPath \| "(" UnitExpr ")"` | 1343 |
-| `UnitPostfixParselet` | `"^" SignedStaticInt` | 1344 |
-| `UnitInfixOperator` | `"*" \| "/"` | 1345 |
-| `PrattUnitExpr` | `UNIT_PRATT_ENTRY` | 1346 |
+| `ListLiteral` | `"[" ListEntryList? "]"` | 1295 |
+| `ListEntryList` | `ListEntry ("," ListEntry)* ","?` | 1296 |
+| `ListEntry` | `Expr \| PositionalUnfoldArgument` | 1297 |
+| `BoundedListLiteral` | `"#" "list" "[" StaticIntLiteral ".." StaticIntLiteral ":" ListEntryList? "]"` | 1298 |
+| `ComprehensionExpr` | `"[" Expr ComprehensionClause+ "]"` | 1300 |
+| `TypedMaterializationExpr` | `TypeRef MaterializationBody` | 1303 |
+| `MaterializationBody` | `"${" MaterializationEntryList? "}"` | 1304 |
+| `MaterializationEntryList` | `MaterializationEntry (MaterializationSeparator MaterializationEntry)* MaterializationSeparator?` | 1305 |
+| `MaterializationEntry` | `Identifier \| Identifier ":" Expr \| StringLiteralExpr ":" Expr \| NamedUnfoldArgument` | 1306 |
+| `MaterializationSeparator` | `"," LineBreakBoundary? \| LineBreakBoundary` | 1310 |
+| `MapLiteral` | `"#" "map" "{" MapEntryList? "}"` | 1313 |
+| `MapEntryList` | `MapEntry (MaterializationSeparator MapEntry)* MaterializationSeparator?` | 1314 |
+| `MapEntry` | `Expr ":" Expr \| "*" Expr` | 1315 |
+| `SetLiteral` | `"#" "set" "{" ExpressionList? "}"` | 1316 |
+| `MutListLiteral` | `"#" "mut" "[" ExpressionList? "]"` | 1317 |
+| `MapComprehensionExpr` | `"#" "map" "{" Expr ":" Expr ComprehensionClause+ "}"` | 1318 |
+| `SetComprehensionExpr` | `"#" "set" "{" Expr ComprehensionClause+ "}"` | 1319 |
+| `ComprehensionClause` | `ForClause \| PositiveGuard \| IfLetClause \| UnfoldClause` | 1321 |
+| `ForClause` | `"for" Pattern "in" Expr` | 1322 |
+| `IfLetClause` | `"if" "let" Pattern "=" Expr` | 1323 |
+| `UnfoldClause` | `"for" Pattern "in" "*" Expr` | 1324 |
+| `NumericArrayLiteral` | `ShapeInferredArrayLiteral \| ShapeInferredColumnVectorLiteral \| ExactShapeArrayLiteral` | 1327 |
+| `ShapeInferredArrayLiteral` | `"#" "[" Expr ("," Expr)* ","? "]"` | 1330 |
+| `ShapeInferredColumnVectorLiteral` | `"#" "[" Expr (";" Expr)+ "]"` | 1331 |
+| `ExactShapeArrayLiteral` | `"#" StaticDimensionList "[" ArrayInitializer? "]"` | 1332 |
+| `ArrayInitializer` | `ShapedRepeatInitializer \| ShapedGeneratorInitializer \| ShapedElementSequence` | 1333 |
+| `ShapedRepeatInitializer` | `"repeat" ":" Expr` | 1336 |
+| `ShapedGeneratorInitializer` | `"generate" ":" Expr` | 1337 |
+| `ShapedElementSequence` | `Expr (ShapedElementSeparator Expr)* ShapedElementSeparator?` | 1338 |
+| `ShapedElementSeparator` | `"," \| ShapedAxisBoundary` | 1339 |
+| `ShapedAxisBoundary` | `";" ";"*` | 1340 |
+| `MeasureLiteralExpr` | `NumericLiteral "[" UnitExpr "]"` | 1343 |
+| `UnitExpr` | `PrattUnitExpr` | 1344 |
+| `UnitPrimary` | `Identifier \| QualifiedPath \| "(" UnitExpr ")"` | 1345 |
+| `UnitPostfixParselet` | `"^" SignedStaticInt` | 1346 |
+| `UnitInfixOperator` | `"*" \| "/"` | 1347 |
+| `PrattUnitExpr` | `UNIT_PRATT_ENTRY` | 1348 |
 
 ## `PREVIEW` 프로파일 — 13개
 
 | 문법 production | 정확한 EBNF 오른쪽 항 | 원천 줄 |
 |---|---|---:|
-| `DeeplusPreview` | `PreviewLibrarySourceFile \| PreviewExecutableSourceFile \| PreviewScriptSourceFile` | 1355 |
-| `PreviewLibrarySourceFile` | `PreviewGate ModuleDecl? PreviewLibraryItem* EOF_TOKEN` | 1356 |
-| `PreviewExecutableSourceFile` | `PreviewGate ModuleDecl? PreviewExecutableItem* EOF_TOKEN` | 1357 |
-| `PreviewScriptSourceFile` | `Shebang? PreviewGate ModuleDecl? PreviewScriptItem* EOF_TOKEN` | 1358 |
-| `PreviewLibraryItem` | `LibrarySourceItem \| PreviewFfiDecl` | 1360 |
-| `PreviewExecutableItem` | `ExecutableSourceItem \| PreviewFfiDecl` | 1361 |
-| `PreviewScriptItem` | `ScriptSourceItem \| PreviewFfiDecl` | 1362 |
-| `PreviewGate` | `"#" "preview" "(" PreviewFeatureList ")" LineBreakBoundary` | 1364 |
-| `PreviewFeatureList` | `Identifier ("," Identifier)*` | 1365 |
-| `PreviewFfiDecl` | `PreviewFfiFunctionDecl \| PreviewFfiBlockDecl` | 1368 |
-| `PreviewFfiFunctionDecl` | `"extern" "#" "C" "def" "#" "unsafe" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1369 |
-| `PreviewFfiBlockDecl` | `"extern" "c" "(" PLAIN_STRING_LITERAL ")" "{" PreviewFfiBlockMember* "}"` | 1371 |
-| `PreviewFfiBlockMember` | `"unsafe" "def" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1373 |
+| `DeeplusPreview` | `PreviewLibrarySourceFile \| PreviewExecutableSourceFile \| PreviewScriptSourceFile` | 1357 |
+| `PreviewLibrarySourceFile` | `PreviewGate ModuleDecl? PreviewLibraryItem* EOF_TOKEN` | 1358 |
+| `PreviewExecutableSourceFile` | `PreviewGate ModuleDecl? PreviewExecutableItem* EOF_TOKEN` | 1359 |
+| `PreviewScriptSourceFile` | `Shebang? PreviewGate ModuleDecl? PreviewScriptItem* EOF_TOKEN` | 1360 |
+| `PreviewLibraryItem` | `LibrarySourceItem \| PreviewFfiDecl` | 1362 |
+| `PreviewExecutableItem` | `ExecutableSourceItem \| PreviewFfiDecl` | 1363 |
+| `PreviewScriptItem` | `ScriptSourceItem \| PreviewFfiDecl` | 1364 |
+| `PreviewGate` | `"#" "preview" "(" PreviewFeatureList ")" LineBreakBoundary` | 1366 |
+| `PreviewFeatureList` | `Identifier ("," Identifier)*` | 1367 |
+| `PreviewFfiDecl` | `PreviewFfiFunctionDecl \| PreviewFfiBlockDecl` | 1370 |
+| `PreviewFfiFunctionDecl` | `"extern" "#" "C" "def" "#" "unsafe" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1371 |
+| `PreviewFfiBlockDecl` | `"extern" "c" "(" PLAIN_STRING_LITERAL ")" "{" PreviewFfiBlockMember* "}"` | 1373 |
+| `PreviewFfiBlockMember` | `"unsafe" "def" Identifier ParameterList ReturnClause? ThrowsClause* EffectsClause* StatementBoundary` | 1375 |

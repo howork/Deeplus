@@ -13,6 +13,7 @@ mailbox와 request responsibility의 current static contract를 설명한다.
 - enqueue precommit failure와 postcommit reply failure를 나눈다.
 - one-way와 request expression의 정확한 Result shape을 읽는다.
 - actor crossing의 ownership/isolation 조건을 적용한다.
+- actor incarnation과 task execution의 `SenderId` lifetime을 구분한다.
 
 ## 3. 선수 지식
 
@@ -31,12 +32,18 @@ retry safety를 판단할 수 없다.
 - `#mailbox(capacity: N)`: `bounded_reject_v1`; N은 positive StaticInt.
 - one-way result: `Result<Unit,error ActorMessageError>`.
 - request immediate result: `Result<Reply<T>,error ActorMessageError>`.
+- transport dynamic responsibility: `throws AllocationError effects allocate`.
+- `logical_unbounded_v1`은 capacity rejection이 없을 뿐 무한 storage를
+  보장하지 않는다.
 - admission errors: `mailboxFull`, `receiverClosedBeforeAdmission`.
 - admitted reply terminal transport error:
   `receiverClosedBeforeReply`.
 - each successful request creates one non-forgeable `ReplyId` and one request
   correlation identity; module API records only their
   `per_value_non_forgeable` policy markers.
+- sender key는 `Actor(ActorInstanceId)` 또는 `Execution(ExecutionId)`의
+  태그된 내부 identity다. actor suspend/resume은 같은 key를 유지하고,
+  actor restart와 structured child spawn은 새 key를 만든다.
 
 Cancellation은 이 family에 들어가지 않는다.
 
@@ -56,7 +63,8 @@ admission Result를 먼저 푼 뒤 reply를 await한다.
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->
 ```deeplus
 def#async inspect(directory: Directory, id: Int) -> Status
-    throws ActorMessageError throws LookupError
+    throws ActorMessageError throws LookupError throws AllocationError
+    effects allocate
 = {
     let Result::ok(reply) = directory :~ find id: id
     else Result::err(admissionError) => throw admissionError
@@ -75,6 +83,7 @@ def#async inspect(directory: Directory, id: Int) -> Status
 ```deeplus
 def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
+    throws AllocationError effects allocate
 = {
     return worker :~ run move job
 }
@@ -109,9 +118,16 @@ mailbox sequence가 생기고 owner가 이동한다. request라면 같은 commit
 reply correlation과 `Reply<T>` 책임이 생기며, 이후 handler Error와
 `receiverClosedBeforeReply`는 reply terminal에서 관찰한다.
 
+send가 `SenderId`를 새로 할당하는 것은 아니다. actor turn 안에서는 이미
+존재하는 `ActorInstanceId`, 일반/root/child execution에서는 이미 존재하는
+`ExecutionId`를 `ActorSenderIdentityPlanV1`이 선택한다. actor handler가
+spawn한 child는 lexical 위치와 무관하게 actor-turn authority를 상속하지
+않으므로 child의 execution sender를 사용한다.
+
 | 단계 | one-way 관찰 | request 관찰 |
 |---|---|---|
-| precommit 거부 | `Result::err(ActorMessageError)`와 sender owner 유지 | 같은 admission error, reply/correlation 없음 |
+| precommit admission 거부 | `Result::err(ActorMessageError)`와 sender owner 유지 | 같은 admission error, reply/correlation 없음 |
+| precommit allocation 실패 | `AllocationError`, sender owner 유지, Result 없음 | `AllocationError`, reply/correlation 없음 |
 | enqueue commit | `Result::ok(Unit)`과 owner 이동 | `Result::ok(Reply<T>)`와 correlation 생성 |
 | postcommit terminal | 별도 reply 없음 | value, handler Error, reply transport failure 또는 Cancellation |
 

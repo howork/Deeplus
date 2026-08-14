@@ -1,0 +1,301 @@
+[
+  {
+    "fixture_id": "PF-OrdinaryCallSelectionClosed-POS",
+    "predicate_id": "OrdinaryCallSelectionClosed",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.ordinary-call-selection-input/v1",
+      "scenario": "an exact Int input domain and a bare generic input domain are independently applicable",
+      "candidate_domain_count": 1,
+      "applicable_candidate_count": 2,
+      "specificity_proof": "CONCRETE_OR_CONSTRUCTED_OVER_BARE_TYPE_PARAMETER",
+      "selected_callable_declaration_id": "FunctionId:choose-int",
+      "selected_count": 1,
+      "unresolved_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "OrdinaryCallSelectionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "one candidate is the unique maximal applicable element under a closed input-domain proof",
+    "rule_seed": "IR-CALL-P1-055 exact-over-generic selection fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OrdinaryCallSelectionClosed-BOUNDARY",
+    "predicate_id": "OrdinaryCallSelectionClosed",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.ordinary-call-selection-input/v1",
+      "scenario": "one generic candidate obtains a unique substitution from explicit arguments and the fixed expected result verifies afterward",
+      "candidate_domain_count": 1,
+      "candidate_local_substitution_count": 1,
+      "expected_result_constraint_count": 0,
+      "post_winner_result_verification": "VERIFIED",
+      "selected_count": 1,
+      "runtime_evaluation_before_selection_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "OrdinaryCallSelectionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the substitution is complete before the expected-result verification and the winner identity does not change",
+    "rule_seed": "IR-CALL-P1-055 post-winner result boundary fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-OrdinaryCallSelectionClosed-NEG",
+    "predicate_id": "OrdinaryCallSelectionClosed",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.ordinary-call-selection-input/v1",
+      "scenario": "two independently applicable candidates remain equal maximal and differ only by result type or declaration order",
+      "candidate_domain_count": 1,
+      "maximal_candidate_count": 2,
+      "expected_result_winner_count": 0,
+      "source_order_winner_count": 0,
+      "selected_count": 0,
+      "unresolved_runtime_residue_count": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "OrdinaryCallSelectionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "ORDINARY_CALL_OVERLOAD_AMBIGUOUS",
+    "violated_condition": "OTHER_MULTIPLE_MAXIMA",
+    "rule_seed": "IR-CALL-P1-055 result/order-only ambiguity fixture; product checker NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-SourceItemOwnerCommitted-POS",
+    "predicate_id": "SourceItemOwnerCommitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.source-item-commitment-decision/v1",
+      "source_role": "script",
+      "activation_profile": "stable",
+      "annotation_prefix": false,
+      "visibility_prefix_or_null": null,
+      "contextual_starter": "actor",
+      "declaration_family_or_null": "ACTOR",
+      "commit_marker_reached": true,
+      "declaration_parse_succeeds": true,
+      "statement_parse_succeeds": true,
+      "semantic_lookup_count": 0,
+      "committed_token_count_before_marker": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "SourceItemCommitmentDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "the actor row reaches Name and commits Actor without consulting a binding named actor",
+    "rule_seed": "R88 SourceItemCommitmentV1 declaration precedence fixture; product parser NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-SourceItemOwnerCommitted-BOUNDARY",
+    "predicate_id": "SourceItemOwnerCommitted",
+    "fixture_kind": "concrete_positive",
+    "expected": "admitted",
+    "descriptor": {
+      "schema": "deeplus.source-item-commitment-decision/v1",
+      "source_role": "script",
+      "activation_profile": "stable",
+      "annotation_prefix": false,
+      "visibility_prefix_or_null": null,
+      "contextual_starter": "actor",
+      "declaration_family_or_null": null,
+      "commit_marker_reached": false,
+      "declaration_parse_succeeds": false,
+      "statement_parse_succeeds": true,
+      "semantic_lookup_count": 0,
+      "committed_token_count_before_marker": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "SourceItemCommitmentDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "admitted_condition": "actor(Worker) does not reach the actor declaration row and rolls back to one script statement",
+    "rule_seed": "R88 parenthesized contextual-name call boundary fixture; product parser NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "no diagnostic",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-SourceItemOwnerCommitted-NEG-COMMITTED",
+    "predicate_id": "SourceItemOwnerCommitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.source-item-commitment-decision/v1",
+      "source_role": "script",
+      "activation_profile": "stable",
+      "annotation_prefix": false,
+      "visibility_prefix_or_null": null,
+      "contextual_starter": "actor",
+      "declaration_family_or_null": "ACTOR",
+      "commit_marker_reached": true,
+      "declaration_parse_succeeds": false,
+      "statement_parse_succeeds": true,
+      "semantic_lookup_count": 0,
+      "committed_token_count_before_marker": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "SourceItemCommitmentDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE",
+    "violated_condition": "COMMITTED_DECLARATION_INCOMPLETE",
+    "rule_seed": "R88 no post-marker call fallback fixture; product parser NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active primary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  },
+  {
+    "fixture_id": "PF-SourceItemOwnerCommitted-NEG-ROLE",
+    "predicate_id": "SourceItemOwnerCommitted",
+    "fixture_kind": "concrete_negative",
+    "expected": "rejected",
+    "descriptor": {
+      "schema": "deeplus.source-item-commitment-decision/v1",
+      "source_role": "library",
+      "activation_profile": "stable",
+      "annotation_prefix": false,
+      "visibility_prefix_or_null": null,
+      "contextual_starter": "actor",
+      "declaration_family_or_null": null,
+      "commit_marker_reached": false,
+      "declaration_parse_succeeds": false,
+      "statement_parse_succeeds": true,
+      "semantic_lookup_count": 0,
+      "committed_token_count_before_marker": 0
+    },
+    "descriptor_v5": {
+      "schema": "deeplus.rcts-v5/descriptor",
+      "variant": "responsibility_core",
+      "semantic_type": {
+        "kind": "nominal",
+        "type_id": "SourceItemCommitmentDecisionV1"
+      },
+      "responsibility": {
+        "ownership": "reusable",
+        "cleanup": "none",
+        "effects": [],
+        "errors": [],
+        "cancellation": "forbidden",
+        "authorities": [],
+        "suspends": false,
+        "isolation": "local"
+      }
+    },
+    "expected_primary_diagnostic": "TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT",
+    "violated_condition": "TOP_LEVEL_STATEMENT_ROLE_FORBIDDEN",
+    "rule_seed": "R88 zero-token rollback preserves the existing library role rejection; product parser NOT_RUN.",
+    "execution_status": "DESIGN_STATIC_NOT_RUN",
+    "diagnostic_disposition": "active secondary design algorithm; product NOT_RUN",
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate-fixture/r51f3"
+  }
+]

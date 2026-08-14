@@ -1,0 +1,237 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://howork.github.io/Deeplus/schemas/language/implementation-target-feature-local-acceptance-r102.schema.json",
+  "title": "Deeplus R102 feature-local implementation acceptance handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "revision",
+    "status",
+    "controlling_r101",
+    "summary",
+    "evidence_profiles",
+    "actions",
+    "acceptance_locator_index",
+    "governance"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "schema": {
+      "const": "deeplus.implementation-target-feature-local-acceptance/r102"
+    },
+    "revision": {
+      "const": "r102-feature-local-implementation-acceptance-handoff"
+    },
+    "status": { "const": "LOCAL_DESIGN_STATIC_HANDOFF_SPECIFICATION" },
+    "controlling_r101": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "included_action_count"],
+      "properties": {
+        "path": {
+          "const": "spec/contracts/implementation-target-feature-p1-disposition-r101.json"
+        },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "included_action_count": { "const": 8 }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_action_count",
+        "trait_action_count",
+        "sfd_action_count",
+        "exact_stage_count_per_action",
+        "exact_outcome_count_per_action",
+        "handoff_specification_closed_count",
+        "execution_open_not_run_count",
+        "product_lanes"
+      ],
+      "properties": {
+        "exact_action_count": { "const": 8 },
+        "trait_action_count": { "const": 7 },
+        "sfd_action_count": { "const": 1 },
+        "exact_stage_count_per_action": { "const": 6 },
+        "exact_outcome_count_per_action": { "const": 3 },
+        "handoff_specification_closed_count": { "const": 8 },
+        "execution_open_not_run_count": { "const": 8 },
+        "product_lanes": { "const": "15_OF_15_NOT_RUN" }
+      }
+    },
+    "evidence_profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/evidenceProfile" }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": { "$ref": "#/$defs/action" }
+    },
+    "acceptance_locator_index": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "schema", "exact_action_count"],
+      "properties": {
+        "path": {
+          "const": "tests/fixtures/current/implementation-target-feature-local-acceptance-r102.json"
+        },
+        "schema": {
+          "const": "deeplus.implementation-target-feature-local-acceptance-index/r102"
+        },
+        "exact_action_count": { "const": 8 }
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "semantic_p0",
+        "feature_p1",
+        "tcc_execution",
+        "sfd_execution",
+        "product_lanes",
+        "product_support",
+        "closure_scope"
+      ],
+      "properties": {
+        "semantic_p0": { "const": 0 },
+        "feature_p1": { "const": "22_OPEN_UNCHANGED" },
+        "tcc_execution": { "const": "OPEN_NOT_RUN" },
+        "sfd_execution": { "const": "OPEN_NOT_RUN" },
+        "product_lanes": { "const": "15_OF_15_NOT_RUN" },
+        "product_support": { "const": "NOT_RUN" },
+        "closure_scope": {
+          "const": "HANDOFF_SPECIFICATION_ONLY_NOT_EXECUTION_OR_PRODUCT"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "locator_kind", "locator"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "locator_kind": {
+          "enum": ["JSON_POINTER", "TEXT_ANCHOR", "REGISTRY_ID", "GRAMMAR_RULE", "DPG_RULE"]
+        },
+        "locator": { "type": "string", "minLength": 1 }
+      }
+    },
+    "notApplicable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reason_code", "authority_boundary", "rationale"],
+      "properties": {
+        "reason_code": { "const": "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR" },
+        "authority_boundary": { "const": "MIR_RUNTIME_AUTHORITY" },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    },
+    "evidenceProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_id", "stage", "disposition", "locators", "not_applicable"],
+      "properties": {
+        "profile_id": { "type": "string", "pattern": "^R102-[A-Z0-9-]+$" },
+        "stage": {
+          "enum": [
+            "SOURCE_OR_NON_GRAMMAR_AUTHORITY",
+            "AST_FRONTEND",
+            "STATIC_SEMANTICS",
+            "DYNAMIC_MIR",
+            "PRIMARY_DIAGNOSTIC",
+            "TOOLING_OBLIGATION"
+          ]
+        },
+        "disposition": {
+          "enum": ["CONCRETE_FEATURE_LOCAL_EVIDENCE", "EXACT_NOT_APPLICABLE"]
+        },
+        "locators": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/locator" }
+        },
+        "not_applicable": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/notApplicable" }
+          ]
+        }
+      }
+    },
+    "stageBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "evidence_profile_id"],
+      "properties": {
+        "stage": {
+          "enum": [
+            "SOURCE_OR_NON_GRAMMAR_AUTHORITY",
+            "AST_FRONTEND",
+            "STATIC_SEMANTICS",
+            "DYNAMIC_MIR",
+            "PRIMARY_DIAGNOSTIC",
+            "TOOLING_OBLIGATION"
+          ]
+        },
+        "evidence_profile_id": { "type": "string", "pattern": "^R102-[A-Z0-9-]+$" }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_id",
+        "retained_target_feature_ids",
+        "dependencies",
+        "stage_bindings",
+        "acceptance_profile_id",
+        "validator_commands",
+        "handoff_specification_gate",
+        "execution_receipt_gate",
+        "product_execution"
+      ],
+      "properties": {
+        "action_id": {
+          "pattern": "^(TCC-P1-00[2-8]|SFD-P1-009)$"
+        },
+        "retained_target_feature_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "pattern": "^(TCC-P1-00[2-8]|SFD-P1-009)$" }
+        },
+        "stage_bindings": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": { "$ref": "#/$defs/stageBinding" }
+        },
+        "acceptance_profile_id": { "pattern": "^R102-(TCC-P1-00[2-8]|SFD-P1-009)$" },
+        "validator_commands": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "handoff_specification_gate": {
+          "const": "CLOSED_FEATURE_LOCAL_SPECIFICATION"
+        },
+        "execution_receipt_gate": { "const": "OPEN_NOT_RUN" },
+        "product_execution": { "const": "NOT_RUN" }
+      }
+    }
+  }
+}

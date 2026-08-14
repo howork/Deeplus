@@ -126,14 +126,37 @@ let packet: Bytes = "DP"
 드러내야 한다. interpolation shorthand 뒤에 call-like `(`를 이어
 복잡한 식을 만들지 말고 `${...}`를 사용한다.
 
-## 8. 다른 기능과의 연결
+## 8. 보간 결과의 최소 폭 맞추기
+
+braced hole의 colon 뒤에는 작은 Stable format을 쓸 수 있다. `<`, `>`,
+`^`는 각각 왼쪽·오른쪽·가운데 정렬이고, 뒤의 수는 Unicode scalar로 센
+최소 폭이다. 정렬을 생략하면 왼쪽 정렬이다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: ACCEPT -->
+```deeplus
+let left = "${name:<12}"
+let right = "${name:>12}"
+let center = "${name:^12}"
+let defaultLeft = "${name:12}"
+```
+
+부족한 칸은 U+0020 SPACE로 채운다. 결과가 이미 폭보다 길면 자르지 않는다.
+가운데 정렬에서 부족한 SPACE가 홀수이면 오른쪽에 하나 더 둔다. String
+hole은 그대로 쓰고 다른 타입만 정적으로 선택된 `Display`를 한 번 호출한
+뒤 padding한다. 따라서 format은 locale이나 printf style type code가 아니다.
+
+`012`, `+12`, `1_000`, `1000001`, arbitrary fill 또는 precision은 현재
+문법이 아니다. checker는 이를 `INTERPOLATION_FORMAT_SPEC_INVALID`로
+HIR 전에 거부한다.
+
+## 9. 다른 기능과의 연결
 
 interpolation hole은 source order로 한 번씩 평가되고 각 expression의
 effect/error/suspension을 그대로 보존한다. `String::render`는 명시적
 renderer helper이지 interpolation의 hidden hook가 아니다. raw String은
 HIR `ConstString`으로 내려가며 `$`에 별도 의미가 없다.
 
-## 9. Deeplus다운 작성 관례
+## 10. Deeplus다운 작성 관례
 
 - text와 protocol bytes를 타입으로 구분한다.
 - 단순 경로는 shorthand, 복잡한 식은 `${...}`를 쓴다.
@@ -141,7 +164,7 @@ HIR `ConstString`으로 내려가며 `$`에 별도 의미가 없다.
 - byte decoding 정책을 암시하지 않는다.
 - Unicode scalar와 사용자가 보는 grapheme를 같은 것으로 설명하지 않는다.
 
-## 10. 연습 문제
+## 11. 연습 문제
 
 1. **따라 하기:** 이름과 점수를 보간한 String, `$`를 그대로 가진 raw
    String, 두 byte를 가진 Bytes를 각각 선언한다.
@@ -150,19 +173,21 @@ HIR `ConstString`으로 내려가며 `$`에 별도 의미가 없다.
 3. **스스로 설계하기:** 파일 경로, 사용자 표시 이름, wire header를 각각
    어떤 타입과 literal로 표현할지 정하고 변환이 필요한 경계를 설명한다.
 
-## 11. 빠른 복습
+## 12. 빠른 복습
 
 - Char는 scalar 하나, String은 Unicode text, Bytes는 byte sequence다.
 - `#raw"..."`에서는 escape와 interpolation이 없다.
 - `$name`은 shorthand, `${expr}`는 일반 expression hole이다.
+- `${expr:<12}`의 폭은 Unicode scalar 기준 최소 폭이며 truncation이 아니다.
 - text/bytes 암시 변환은 없다.
 - interpolation evaluation은 원래 effect와 순서를 숨기지 않는다.
 
-## 12. 정본 근거와 다음 장
+## 13. 정본 근거와 다음 장
 
 - [문자열 lexical DPG](../../../spec/grammar/deeplus.dpg)
 - [어휘 구조](../../grammar-reference/01-lexical-structure.md)
 - [String evaluation](../../grammar-reference/18-evaluation-ownership-mir-and-backends.md)
+- [format-spec core](../../../spec/contracts/string-interpolation-format-spec-core-r1.json)
 - [value/operator contract](../../../spec/contracts/value-operator-indexing-coherence.json)
 
 다음은 [연산자, power와 Bool](02-04-operators-power-boolean.md)을 배운다.

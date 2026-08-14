@@ -3,6 +3,27 @@
 <!-- deeplus-reference: narrative; authority: documentation-projection -->
 <!-- deeplus-grammar-reference-status: CURRENT_CANONICAL_DOCUMENTATION_PROJECTION -->
 
+## `otherwise`는 guard 없는 최종 fallback이다
+
+pattern arm에는 guard를 붙일 수 있지만 `otherwise`는 pattern이 아니다.
+`otherwise => body`는 남은 partition 전체를 받는 별도 arm owner이며 guard
+field가 없다. 한 match에 최대 한 번, 마지막에만 쓴다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-match-boundary-v1.json -->
+```deeplus
+public def describe(value: Option<Int>) -> String = {
+    return @match value {
+        ::some(number) if number > 0 => "positive"
+        ::some(_) => "non-positive"
+        otherwise => "missing"
+    }
+}
+```
+
+`otherwise if ready => ...`는 guard가 false일 때의 residual 의미를 다시
+만들기 때문에 허용하지 않는다. 조건부 동작이 필요하면 명시적인 pattern
+arm에 guard를 두고, 마지막 `otherwise`를 별도로 둔다.
+
 ## 상태
 
 Pattern은 `match`에만 붙는 보조 문법이 아니다. Deeplus에서는 지역
@@ -135,11 +156,11 @@ MapPattern ::= "#" "map" "{" MapPatternEntries? "}"
 MapPatternEntry ::= MapValueTarget ":" MapKeyPattern
                   | MapRestPattern
 MapKeyPattern ::= Literal | PinPattern
-MapRestPattern ::= ".." ("_" | Identifier)
+MapRestPattern ::= "*" ("_" | Identifier)
 ```
 
 Map도 exact-by-default지만 keyed orientation은 Record-family의 label-first
-방향과 다르다. Map은 기존 `destination: key`와 `..rest`/`.._`를 그대로
+방향과 다르다. Map은 `destination: key`와 owner-bounded `*rest`/`*_`를
 유지하며 static named residual이나 `NamedPack`을 만들지 않는다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
@@ -147,7 +168,7 @@ Map도 exact-by-default지만 keyed orientation은 Record-family의 label-first
 if let #map{
     userId: "id"
     displayName: "name"
-    ..rest
+    *rest
 } = payload {
     publish(userId, displayName)
 }
@@ -361,23 +382,29 @@ catch error: IOError {
 catch guard도 pure Bool, nonthrowing, nonsuspending이며 probe binder를
 소비하거나 escape시키지 않는다.
 
-### 지역 병렬 대입
+### 지역 구조 Pattern 대입
 
-bare comma product와 Tuple Pattern assignment는 하나의 Tuple plan으로
-정규화된다.
+bare comma product와 구조 Pattern assignment는 하나의
+`LocalPatternAssignmentV1` plan으로 정규화된다.
 
 <!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/pattern-sequence-multivalue-r1.json -->
 ```deeplus
 left, right = right, left
 (x, y) = nextPair
+${name: userName, age: userAge} = profile
 ```
 
-Stable target은 서로 겹치지 않는 direct local mutable Plain place와
-`_`뿐이다. target을 왼쪽부터 한 번 resolve하고 RHS를 한 번 평가한 뒤,
-모든 type·ownership·overlap 검사가 성공해야 하나의 logical commit을
-수행한다. 이는 CPU multiword atomic instruction이나 actor isolation
-bypass를 뜻하지 않는다. member/index/shared/actor target은 Preview 또는
-별도 synchronized authority가 필요하다.
+전체 assignee는 exact RHS type에 대해 irrefutable해야 한다. 각
+non-wildcard leaf와 rest capture는 이미 존재하는 서로 다른 direct local
+mutable `LocalPlaceId`여야 하며, 이 대입은 새 binder를 선언하지 않는다.
+Tuple, 정적으로 irrefutable한 List, Record, pattern-transparent nominal
+Record shape와 bare comma Tuple sugar가 Stable 범위다. 모든 target을 먼저
+resolve하고 RHS를 정확히 한 번 평가하여 projection을 왼쪽부터 stage한
+뒤, 모든 replacement가 infallible·callback-free임을 증명해야 하나의
+`PatternAssignmentCommitId`를 넘는다. commit 전 target write는 0이고,
+성공 뒤 기존 owner는 target의 역순으로 cleanup된다. 이는 CPU multiword
+atomic instruction이나 actor isolation bypass를 뜻하지 않는다.
+member/index/property/shared/actor/FFI 또는 겹치는 target은 거부된다.
 
 ## 문맥별 refutability
 
@@ -481,7 +508,7 @@ let ${x, y} = exactPoint
 let ${x, y, _**} = extensiblePoint
 let ${x: horizontal, y: vertical, rest**} = extensiblePoint
 
-if let #map{id: "id", .._} = payload {
+if let #map{id: "id", *_} = payload {
     consume(id)
 }
 ```

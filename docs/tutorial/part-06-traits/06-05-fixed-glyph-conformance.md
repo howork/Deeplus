@@ -190,6 +190,14 @@ let supported = minimum <= current < nextBreaking
 contractual하다. `minimum`, `current`, `nextBreaking`은 chain에서 각각
 한 번만 평가된다.
 
+이 예제의 `Rhs`가 `Version`인 것은 우연이 아니다. 사용자 strong
+`Eq<Rhs>`와 `Ord<Rhs>`는 정규화 뒤 `Rhs == Self`인 경우에만 허용된다.
+한쪽에서 `Version conforms Eq<Text>`를 선언해도 반대 방향 비교나 대칭 법칙이
+생기지 않으므로 거부된다. 이종 strong 비교는 compiler/Prelude가 두 방향
+witness와 공통 정규화 법칙을 하나의 sealed bilateral family로 제공할 때만
+가능하며, 현행 Deeplus에는 등록된 family가 없다. 서로 다른 domain의 비교가
+필요하면 먼저 명시적 변환이나 이름 있는 비교 API로 책임을 드러낸다.
+
 ### 6.5 ordered Enum 비교와 range
 
 <!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN -->

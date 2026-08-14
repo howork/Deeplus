@@ -15,6 +15,14 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
+from r78_dpg_trace_successor import (
+    CANONICAL_BASELINE as R78_BASELINE,
+    COUNTS as R78_COUNTS,
+    EVIDENCE_COUNT as R78_EVIDENCE_COUNT,
+    GITHUB_PUBLICATION as R78_GITHUB_PUBLICATION,
+    is_successor as is_r78_successor,
+)
+
 
 CANONICAL = "39a5d50cc770341c4b9776d00d84520b780d0c62"
 PREDECESSOR = "ab1ffd86db91d2b3b93e7c15e43829a7aa4704d3"
@@ -351,16 +359,21 @@ def validate(
         and applied[-1]
         == {"path": R76_OVERLAY, "feature_count": 409, "binding_count": 1242}
     )
-    global_successor = r76_successor or r77_successor
+    r78_successor = is_r78_successor(metadata, root=root, rows=rows)
+    global_successor = r76_successor or r77_successor or r78_successor
     r74_target = current_cells.get(R74_TARGET, {})
     require(
         current_duplicates == 0
         and (
             (
                 global_successor
-                and current_count == NON_TARGET_COUNT
-                and current_digest
-                == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                and (
+                    r78_successor
+                    or (
+                        current_count == NON_TARGET_COUNT
+                        and current_digest == (R77_NON_TARGET_SHA256 if r77_successor else R76_NON_TARGET_SHA256)
+                    )
+                )
             )
             or (
                 r75_successor
@@ -380,19 +393,19 @@ def validate(
         )
         and (metadata.get("revision") == REVISION or r74_successor or r75_successor or global_successor)
         and metadata.get("canonical_baseline_commit")
-        == (R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
+        == (R78_BASELINE if r78_successor else R77_BASELINE if r77_successor else R76_PREDECESSOR if r76_successor else R75_PREDECESSOR if r75_successor else CANONICAL)
         and (
             metadata.get("local_predecessor_commit") == PREDECESSOR
             or r74_successor
             or r75_successor
             or global_successor
         )
-        and len(applied) == (21 if global_successor else 20 if r75_successor else 19)
+        and len(applied) == (22 if global_successor else 20 if r75_successor else 19)
         and {"path": OVERLAY, "feature_count": 1, "binding_count": 2}
         in applied
         and sum(row.get("binding_count", 0) for row in applied)
-        == (1381 if global_successor else 139 if r75_successor else 136)
-        and len(registry) == (4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
+        == (1416 if global_successor else 139 if r75_successor else 136)
+        and len(registry) == (R78_EVIDENCE_COUNT if r78_successor else 4392 if r77_successor else 4393 if r76_successor else 3151 if r75_successor else 3148)
         and {BOUNDARY_EVIDENCE_ID, REJECT_EVIDENCE_ID}
         <= {row.get("evidence_id") for row in registry},
         "G03",
@@ -416,7 +429,9 @@ def validate(
             derived.get("applicable_blocked_cells"),
         )
         == (
-            R77_COUNTS
+            R78_COUNTS
+            if r78_successor
+            else R77_COUNTS
             if r77_successor
             else R76_COUNTS
             if r76_successor
@@ -587,7 +602,7 @@ def validate(
         and guards.get("implementation_claim") == "NONE"
         and governance.get("product_lanes") == "15_OF_15_NOT_RUN"
         and governance.get("github_publication")
-        == ("R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED"),
+        == (R78_GITHUB_PUBLICATION if r78_successor else "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN" if r77_successor else "NOT_YET_PUBLISHED" if r76_successor else "SUSPENDED"),
         "G06",
         "GOVERNANCE_AND_PRODUCT_FENCE",
     )
@@ -603,6 +618,11 @@ def main() -> int:
         errors = validate(root)
     except (FileNotFoundError, json.JSONDecodeError, subprocess.CalledProcessError) as exc:
         errors = ["INPUT:" + str(exc)]
+    metadata = load(root / METADATA)
+    rows = load(root / ROWS)
+    current_cells, _duplicates = trace_cells(rows)
+    current_successor = is_r78_successor(metadata, root=root, rows=rows)
+    derived = metadata.get("derived_counts", {})
     receipt = {
         "schema": "deeplus.r73-member-extension-collision-conformance-trace-validation-receipt/r1",
         "result": "PASS" if not errors else "FAIL",
@@ -611,16 +631,18 @@ def main() -> int:
         "outcomes": ["BOUNDARY", "REJECT"],
         "disposition": "BOUND_DIRECT",
         "projected_counts": {
-            "bound_direct": load(root / METADATA).get("derived_counts", {}).get("bound_direct_cells"),
-            "bound_delegated": load(root / METADATA).get("derived_counts", {}).get("bound_delegated_cells"),
-            "not_applicable": load(root / METADATA).get("derived_counts", {}).get("not_applicable_cells"),
-            "applicable_blocked": load(root / METADATA).get("derived_counts", {}).get("applicable_blocked_cells"),
+            "bound_direct": derived.get("bound_direct_cells"),
+            "bound_delegated": derived.get("bound_delegated_cells"),
+            "not_applicable": derived.get("not_applicable_cells"),
+            "applicable_blocked": derived.get("applicable_blocked_cells"),
         },
         "non_target_cell_count": (
-            R75_NON_TARGET_COUNT
-            if load(root / METADATA).get("revision") == R75_REVISION
+            sum(1 for key in current_cells if key not in TARGETS)
+            if current_successor
+            else R75_NON_TARGET_COUNT
+            if metadata.get("revision") == R75_REVISION
             else R74_TRIPLE_EXCLUSION_COUNT
-            if load(root / METADATA).get("revision") == R74_REVISION
+            if metadata.get("revision") == R74_REVISION
             else NON_TARGET_COUNT
         ),
         "product_execution": "15_OF_15_NOT_RUN",

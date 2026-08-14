@@ -49,6 +49,12 @@ Trait obligation을 사용한다.
 - associated projection은 `<I as Iterator>::Item`처럼 Trait 문맥을
   명시한다.
 
+호출 후보마다 generic substitution을 따로 계산한다. 명시한 generic
+인수와 값 인수에서 얻은 제약만 사용하고, 모든 변수의 kind와 occurs
+check를 통과한 유일한 완전 substitution이 있을 때만 후보가 적용
+가능하다. 기대 반환 타입이나 선언 순서는 후보를 억지로 승자로 만들지
+않는다. 기본 generic 인수는 값 인수로 정해지지 않은 변수에만 채운다.
+
 ## 6. 단계별 예제
 
 generic function이 사용하는 능력을 `where`에 적는다.
@@ -93,6 +99,27 @@ public trait Sink<in T> {
 
 Source는 T를 생산하고 Sink는 T를 소비한다. 실제 member 전체가 선언
 방향과 일치해야 한다.
+
+Class와 Enum은 항상 invariant다. Trait의 `out T`는 반환값처럼 T를
+생산하는 위치에만, `in T`는 매개변수처럼 소비하는 위치에만 나타날 수
+있다. mutable field, `inout` 또는 ownership qualifier를 통과하는 위치는
+양방향 책임을 가지므로 invariant로 판정한다. `StaticInt`는 같은 값끼리,
+effect/error row는 각자의 포함 관계로 비교하며 `out`/`in` 표지를 붙이지
+않는다.
+
+<!-- deeplus-example: illustrative; surface: CURRENT; product: NOT_RUN; expected: REJECT; diagnostic-family: GENERIC_PARAM_* -->
+```deeplus
+public def choose<T>(left: T, right: T) -> T
+    throws Never
+    effects {}
+= {
+    return left
+}
+
+let value = choose<Int>(left: 1, right: 2)
+let invalid = choose<Int>(left: 1, right: "two")
+// 두 번째 호출은 실패한 후보의 substitution을 남기지 않는다.
+```
 
 ### 판정 trace, 미니 사례와 흔한 오해
 

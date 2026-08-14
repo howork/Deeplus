@@ -139,6 +139,16 @@ let servesTls = 443 in ports
 암시적 `Keyable` evidence가 없으므로 별도 key policy 없이
 `Set<Float64>`의 literal 원소 domain이 될 수 없다.
 
+R106의 `KeyableSelectionV1`은 “hash 함수를 하나 찾았다”는 뜻보다
+강하다. 같은 direct-global family에 속한 strong `Eq<Self>`, stable
+`Hash<Self>`, `Keyable`과 하나의 `HashPolicyId`를 함께 선택한다. Eq는
+동치관계여야 하고 `a == b`이면 같은 policy에서 hash도 같아야 한다.
+두 연산은 borrow-only, nonconsuming, synchronous, `throws Never effects {}`
+이며 authority와 allocation을 만들지 않는다. 따라서 Float/Complex의
+partial equality, mutable identity, lifecycle identity와 runtime/provider
+lookup은 Map/Set key evidence가 되지 않는다. 제품 checker 실행은 아직
+`NOT_RUN`이다.
+
 ### 닫힌 대괄호 carrier 행렬
 
 | carrier | index domain | 결과 |
@@ -257,7 +267,7 @@ collection literal의 element와 Map key/value는 owner sequence에 따라
 재해석하지 않는다.
 
 Map literal은 먼저 하나의 `MapLiteralPlan`을 만든다. direct entry와
-`**base` Map unfold를 source order로 각각 한 번 평가하고, 같은 key가
+owner-bounded `*base` Map unfold를 source order로 각각 한 번 평가하고, 같은 key가
 다시 나오면 나중 값이 이기며 대체된 owner는 정확히 한 번 cleanup한다.
 전체 plan이 끝나기 전 key/value 평가, unfold, equality/keyability,
 Error, Defect 또는 Cancellation이 발생하면 partial Map은 publish되지
@@ -337,9 +347,14 @@ List를 publish하지 않고 이미 만든 temporary를 역순 cleanup한다. �
 ```deeplus
 let ordinary = [10, 20, 30]
 let first = ordinary[1]
-let bounded = [3..5: 10, 20, 30]
+let bounded = #list[3..5: 10, 20, 30]
 let declaredFirst = bounded[3]
 ```
+
+`#list[L..U: elements]`에서 `#list`는 bounded logical-domain List의
+명시적 parser owner다. `list`는 이 attached sigil 위치를 벗어나면 일반
+식별자다. `[(1..10:2)]`는 stepped Range 하나를 담는 ordinary List이고,
+제거된 `[L..U: elements]` 표면과 혼동하지 않는다.
 
 `ordinary`는 coordinate `1..3`을 가지므로 `first`의 타입은 `Int`, 값은
 `10`이다. bounded List는 저장 offset과 별개로 선언 coordinate `3..5`를

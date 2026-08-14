@@ -1,0 +1,817 @@
+{
+  "schema": "deeplus.runtime-target-mapping-registry/r99",
+  "revision": "r99-runtime-target-preimage-closure-r1",
+  "status": "STABLE_DESIGN_LOCAL_CANDIDATE_PRODUCT_NOT_RUN",
+  "gap_binding": "IR-OWN-P1-026_TARGET_MAPPING_SUBCONDITION",
+  "predecessor_projection_schema": "schemas/language/internal-runtime-target-projection-r1.schema.json",
+  "target_mappings": [
+    {
+      "projection_id": "RuntimeTargetMappingId:Xvm/r99",
+      "module_kind": "Xvm",
+      "target_triple": "deeplus-xvm-portable-r1",
+      "pointer_width": 64,
+      "endianness": "LITTLE",
+      "calling_convention": "DEEPLUS_XVM_LOGICAL_R1",
+      "scalar_mapping_rows": [
+        {
+          "logical_value_kind": "UNIT",
+          "target_carrier": "NO_VALUE"
+        },
+        {
+          "logical_value_kind": "BOOL",
+          "target_carrier": "XBC_SLOT_BOOL"
+        },
+        {
+          "logical_value_kind": "I8",
+          "target_carrier": "XBC_SLOT_I8"
+        },
+        {
+          "logical_value_kind": "I16",
+          "target_carrier": "XBC_SLOT_I16"
+        },
+        {
+          "logical_value_kind": "I32",
+          "target_carrier": "XBC_SLOT_I32"
+        },
+        {
+          "logical_value_kind": "I64",
+          "target_carrier": "XBC_SLOT_I64"
+        },
+        {
+          "logical_value_kind": "I128",
+          "target_carrier": "XBC_SLOT_I128"
+        },
+        {
+          "logical_value_kind": "U8",
+          "target_carrier": "XBC_SLOT_U8"
+        },
+        {
+          "logical_value_kind": "U16",
+          "target_carrier": "XBC_SLOT_U16"
+        },
+        {
+          "logical_value_kind": "U32",
+          "target_carrier": "XBC_SLOT_U32"
+        },
+        {
+          "logical_value_kind": "U64",
+          "target_carrier": "XBC_SLOT_U64"
+        },
+        {
+          "logical_value_kind": "U128",
+          "target_carrier": "XBC_SLOT_U128"
+        },
+        {
+          "logical_value_kind": "ISIZE",
+          "target_carrier": "XBC_SLOT_ISIZE"
+        },
+        {
+          "logical_value_kind": "USIZE",
+          "target_carrier": "XBC_SLOT_USIZE"
+        },
+        {
+          "logical_value_kind": "F32",
+          "target_carrier": "XBC_SLOT_F32"
+        },
+        {
+          "logical_value_kind": "F64",
+          "target_carrier": "XBC_SLOT_F64"
+        },
+        {
+          "logical_value_kind": "MANAGED_HANDLE",
+          "target_carrier": "XBC_SLOT_MANAGED_HANDLE"
+        },
+        {
+          "logical_value_kind": "AGGREGATE_SLOT",
+          "target_carrier": "XBC_SLOT_AGGREGATE_SLOT"
+        },
+        {
+          "logical_value_kind": "TYPE_ID",
+          "target_carrier": "XBC_SLOT_TYPE_ID"
+        },
+        {
+          "logical_value_kind": "OPAQUE_RUNTIME_TOKEN",
+          "target_carrier": "XBC_SLOT_OPAQUE_RUNTIME_TOKEN"
+        }
+      ],
+      "indirect_slot_mapping": {
+        "argument": "CALL_BOUNDED_ADDRESS_TO_CALLER_STORAGE",
+        "result": "CALLER_ALLOCATED_SRET_SLOT",
+        "callee_retention": "FORBIDDEN_AFTER_RETURN_OR_PARK_TRANSFER"
+      },
+      "outcome_mapping_rows": [
+        {
+          "ordinal": 0,
+          "name": "NORMAL",
+          "payload_slot": "NORMAL_SLOT"
+        },
+        {
+          "ordinal": 1,
+          "name": "ERROR",
+          "payload_slot": "ERROR_SLOT"
+        },
+        {
+          "ordinal": 2,
+          "name": "DEFECT",
+          "payload_slot": "DEFECT_SLOT"
+        },
+        {
+          "ordinal": 3,
+          "name": "CANCELLATION",
+          "payload_slot": "CANCELLATION_SLOT"
+        }
+      ],
+      "helper_mapping_rows": [
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.await_reply",
+          "table_ordinal": 0,
+          "effective_signature_digest": "8d50bd4c77cf19a314aa8b46c9885fc38e87743eb860f1de5902455a29a4c41a"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.dequeue",
+          "table_ordinal": 1,
+          "effective_signature_digest": "4d08273cc1f6624c2d77d09436b9403a82608a09af39c0522c4790ad4d9f323e"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.reply",
+          "table_ordinal": 2,
+          "effective_signature_digest": "454f7c74ea98e047ff91d460283c9c7e642f01a184c5c5aa1f3ec7d13cc5f2b1"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.request",
+          "table_ordinal": 3,
+          "effective_signature_digest": "42f6823865f17f10360dfe5b975d7a1a75392c5e3b2526f0b8adc7d932d508fe"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.send",
+          "table_ordinal": 4,
+          "effective_signature_digest": "e0890acfeafb327c3c1dc274768c4a7ce100629dacf60987a67acd19e24c0200"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_begin",
+          "table_ordinal": 5,
+          "effective_signature_digest": "d20ad0bb02383e2704db06ae26c1ed3f86808028beb53340dd33320f9fde4f18"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_end",
+          "table_ordinal": 6,
+          "effective_signature_digest": "85a67a367ba09a29a7c45f46edec2e708d6c0ff08231ac7e5cec62b49927a02c"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:cancellation.check",
+          "table_ordinal": 7,
+          "effective_signature_digest": "d7d75e11a7ce683e6e54a24888a94671da886764ea5be350ccce5c8fda75d124"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:once.function_static_ensure",
+          "table_ordinal": 8,
+          "effective_signature_digest": "ba8355989882f6bf86040982567e0e4daa2a875132daa5c2f921829c94372130"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:once.lazy_force",
+          "table_ordinal": 9,
+          "effective_signature_digest": "69da576a94e7ad90be04aced286f1f1311cee841c46d748b5388e127568d1a89"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:provider.dispatch",
+          "table_ordinal": 10,
+          "effective_signature_digest": "6f7a984c145633f4b7e9c471a36ddf8580e152fb56dfe65e45c4d936c3585229"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.await",
+          "table_ordinal": 11,
+          "effective_signature_digest": "8b2e31a152e8b76d831654adeefce1b6f460eb7e1dbf89ce5417b3dc1431a148"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.cancel_then_join",
+          "table_ordinal": 12,
+          "effective_signature_digest": "790e89d6ddc8099a50d880254fb3de692247f3b2b9a4886bb715d122bd570585"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.exit",
+          "table_ordinal": 13,
+          "effective_signature_digest": "d67e481eaf849a0cd33936a5bb87d5f2880f0a4502cc2ed54f31bbf00611f177"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.join",
+          "table_ordinal": 14,
+          "effective_signature_digest": "35c44dba5d06a21f514e9a22bdaa64072cb87985b906368e20c68cb36bd0d9cf"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.spawn",
+          "table_ordinal": 15,
+          "effective_signature_digest": "163dd6a8388baa188d8e2db8a4f0e49fa9fbacf589c41355cf0cce3b21c69a81"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:suspension.park",
+          "table_ordinal": 16,
+          "effective_signature_digest": "02332e2c2f74378432a63a65cf8d178f5146a87c30e6e34a5d2bde4d465a05a8"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_acquire",
+          "table_ordinal": 17,
+          "effective_signature_digest": "9fbe51c8e400542c6ed0df28b904b159a9bd9816d186f76e7b244b2c596e2b9c"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_release",
+          "table_ordinal": 18,
+          "effective_signature_digest": "f060ec6b68f4fbea990e2195f8d687c6ca00cf2b0b20596b63a5ed3940e78263"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_begin",
+          "table_ordinal": 19,
+          "effective_signature_digest": "04bdc69ce6e1030b533cb458da98e3cd9a58ec3aa338f65f0ecdfc34cf77f355"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_end",
+          "table_ordinal": 20,
+          "effective_signature_digest": "a46f0a7d732dbf2a5666e8f0c6abb440c066c95be155b8f9b84b3e7d77b93cb7"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.replace_commit",
+          "table_ordinal": 21,
+          "effective_signature_digest": "32925b2b88f3c5b375149292ff8caae788b2ad862f80a36fe31b8c50b0d177ac"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.allocate_slow",
+          "table_ordinal": 22,
+          "effective_signature_digest": "57bb7b0f805538da7e174fb447eaf4fddbf15104f7a1c6e3b206c3aa4fb938df"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.safepoint_enter",
+          "table_ordinal": 23,
+          "effective_signature_digest": "891c2e52ed4257f22f6f56fe2fe036f96f81553116cb1588beac3d65c0b23351"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.safepoint_leave",
+          "table_ordinal": 24,
+          "effective_signature_digest": "7c0e9dc27d8c3498e2beef5fa1a352233dcd56fad5214b18195a05aad1c60afe"
+        }
+      ],
+      "host_default_count": 0,
+      "target_location_is_semantic_identity": false,
+      "mapping_digest": "6be36e91f0e14248673210fd418259d0e8407a0c187e3f185b766085033453ae"
+    },
+    {
+      "projection_id": "RuntimeTargetMappingId:ObjectAot/r99",
+      "module_kind": "ObjectAot",
+      "target_triple": "x86_64-pc-windows-msvc",
+      "pointer_width": 64,
+      "endianness": "LITTLE",
+      "calling_convention": "DEEPLUS_INTERNAL_WINDOWS_X64_R1",
+      "scalar_mapping_rows": [
+        {
+          "logical_value_kind": "UNIT",
+          "target_carrier": "NO_VALUE"
+        },
+        {
+          "logical_value_kind": "BOOL",
+          "target_carrier": "CLIF_I8"
+        },
+        {
+          "logical_value_kind": "I8",
+          "target_carrier": "CLIF_I8"
+        },
+        {
+          "logical_value_kind": "I16",
+          "target_carrier": "CLIF_I16"
+        },
+        {
+          "logical_value_kind": "I32",
+          "target_carrier": "CLIF_I32"
+        },
+        {
+          "logical_value_kind": "I64",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "I128",
+          "target_carrier": "CLIF_I64_PAIR_LOW_HIGH"
+        },
+        {
+          "logical_value_kind": "U8",
+          "target_carrier": "CLIF_I8"
+        },
+        {
+          "logical_value_kind": "U16",
+          "target_carrier": "CLIF_I16"
+        },
+        {
+          "logical_value_kind": "U32",
+          "target_carrier": "CLIF_I32"
+        },
+        {
+          "logical_value_kind": "U64",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "U128",
+          "target_carrier": "CLIF_I64_PAIR_LOW_HIGH"
+        },
+        {
+          "logical_value_kind": "ISIZE",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "USIZE",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "F32",
+          "target_carrier": "CLIF_F32"
+        },
+        {
+          "logical_value_kind": "F64",
+          "target_carrier": "CLIF_F64"
+        },
+        {
+          "logical_value_kind": "MANAGED_HANDLE",
+          "target_carrier": "CLIF_I64_OPAQUE_HANDLE"
+        },
+        {
+          "logical_value_kind": "AGGREGATE_SLOT",
+          "target_carrier": "CLIF_I64_CALL_BOUNDED_ADDRESS"
+        },
+        {
+          "logical_value_kind": "TYPE_ID",
+          "target_carrier": "CLIF_I64_OPAQUE_ID"
+        },
+        {
+          "logical_value_kind": "OPAQUE_RUNTIME_TOKEN",
+          "target_carrier": "CLIF_I64_OPAQUE_TOKEN"
+        }
+      ],
+      "indirect_slot_mapping": {
+        "argument": "CALL_BOUNDED_ADDRESS_TO_CALLER_STORAGE",
+        "result": "CALLER_ALLOCATED_SRET_SLOT",
+        "callee_retention": "FORBIDDEN_AFTER_RETURN_OR_PARK_TRANSFER"
+      },
+      "outcome_mapping_rows": [
+        {
+          "ordinal": 0,
+          "name": "NORMAL",
+          "payload_slot": "NORMAL_SLOT"
+        },
+        {
+          "ordinal": 1,
+          "name": "ERROR",
+          "payload_slot": "ERROR_SLOT"
+        },
+        {
+          "ordinal": 2,
+          "name": "DEFECT",
+          "payload_slot": "DEFECT_SLOT"
+        },
+        {
+          "ordinal": 3,
+          "name": "CANCELLATION",
+          "payload_slot": "CANCELLATION_SLOT"
+        }
+      ],
+      "helper_mapping_rows": [
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.await_reply",
+          "symbol": "__deeplus_rt_actor_await_reply_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "8d50bd4c77cf19a314aa8b46c9885fc38e87743eb860f1de5902455a29a4c41a"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.dequeue",
+          "symbol": "__deeplus_rt_actor_dequeue_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "4d08273cc1f6624c2d77d09436b9403a82608a09af39c0522c4790ad4d9f323e"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.reply",
+          "symbol": "__deeplus_rt_actor_reply_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "454f7c74ea98e047ff91d460283c9c7e642f01a184c5c5aa1f3ec7d13cc5f2b1"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.request",
+          "symbol": "__deeplus_rt_actor_request_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "42f6823865f17f10360dfe5b975d7a1a75392c5e3b2526f0b8adc7d932d508fe"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.send",
+          "symbol": "__deeplus_rt_actor_send_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "e0890acfeafb327c3c1dc274768c4a7ce100629dacf60987a67acd19e24c0200"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_begin",
+          "symbol": "__deeplus_rt_actor_turn_begin_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "d20ad0bb02383e2704db06ae26c1ed3f86808028beb53340dd33320f9fde4f18"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_end",
+          "symbol": "__deeplus_rt_actor_turn_end_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "85a67a367ba09a29a7c45f46edec2e708d6c0ff08231ac7e5cec62b49927a02c"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:cancellation.check",
+          "symbol": "__deeplus_rt_cancellation_check_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "d7d75e11a7ce683e6e54a24888a94671da886764ea5be350ccce5c8fda75d124"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:once.function_static_ensure",
+          "symbol": "__deeplus_rt_once_function_static_ensure_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "ba8355989882f6bf86040982567e0e4daa2a875132daa5c2f921829c94372130"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:once.lazy_force",
+          "symbol": "__deeplus_rt_once_lazy_force_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "69da576a94e7ad90be04aced286f1f1311cee841c46d748b5388e127568d1a89"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:provider.dispatch",
+          "symbol": "__deeplus_rt_provider_dispatch_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "6f7a984c145633f4b7e9c471a36ddf8580e152fb56dfe65e45c4d936c3585229"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.await",
+          "symbol": "__deeplus_rt_run_await_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "8b2e31a152e8b76d831654adeefce1b6f460eb7e1dbf89ce5417b3dc1431a148"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.cancel_then_join",
+          "symbol": "__deeplus_rt_run_cancel_then_join_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "790e89d6ddc8099a50d880254fb3de692247f3b2b9a4886bb715d122bd570585"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.exit",
+          "symbol": "__deeplus_rt_run_exit_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "d67e481eaf849a0cd33936a5bb87d5f2880f0a4502cc2ed54f31bbf00611f177"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.join",
+          "symbol": "__deeplus_rt_run_join_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "35c44dba5d06a21f514e9a22bdaa64072cb87985b906368e20c68cb36bd0d9cf"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.spawn",
+          "symbol": "__deeplus_rt_run_spawn_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "163dd6a8388baa188d8e2db8a4f0e49fa9fbacf589c41355cf0cce3b21c69a81"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:suspension.park",
+          "symbol": "__deeplus_rt_suspension_park_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "02332e2c2f74378432a63a65cf8d178f5146a87c30e6e34a5d2bde4d465a05a8"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_acquire",
+          "symbol": "__deeplus_rt_sync_lock_acquire_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "9fbe51c8e400542c6ed0df28b904b159a9bd9816d186f76e7b244b2c596e2b9c"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_release",
+          "symbol": "__deeplus_rt_sync_lock_release_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "f060ec6b68f4fbea990e2195f8d687c6ca00cf2b0b20596b63a5ed3940e78263"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_begin",
+          "symbol": "__deeplus_rt_sync_observe_begin_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "04bdc69ce6e1030b533cb458da98e3cd9a58ec3aa338f65f0ecdfc34cf77f355"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_end",
+          "symbol": "__deeplus_rt_sync_observe_end_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "a46f0a7d732dbf2a5666e8f0c6abb440c066c95be155b8f9b84b3e7d77b93cb7"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.replace_commit",
+          "symbol": "__deeplus_rt_sync_replace_commit_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "32925b2b88f3c5b375149292ff8caae788b2ad862f80a36fe31b8c50b0d177ac"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.allocate_slow",
+          "symbol": "__deeplus_rt_managed_allocate_slow_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "57bb7b0f805538da7e174fb447eaf4fddbf15104f7a1c6e3b206c3aa4fb938df"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.safepoint_enter",
+          "symbol": "__deeplus_rt_managed_safepoint_enter_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "891c2e52ed4257f22f6f56fe2fe036f96f81553116cb1588beac3d65c0b23351"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.safepoint_leave",
+          "symbol": "__deeplus_rt_managed_safepoint_leave_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "7c0e9dc27d8c3498e2beef5fa1a352233dcd56fad5214b18195a05aad1c60afe"
+        }
+      ],
+      "host_default_count": 0,
+      "target_location_is_semantic_identity": false,
+      "mapping_digest": "88518804d54c5da2287bf74002da7a1fd5afbb2eb5147058a46cff1b033d0f8b"
+    },
+    {
+      "projection_id": "RuntimeTargetMappingId:InMemoryJit/r99",
+      "module_kind": "InMemoryJit",
+      "target_triple": "x86_64-pc-windows-msvc",
+      "pointer_width": 64,
+      "endianness": "LITTLE",
+      "calling_convention": "DEEPLUS_INTERNAL_WINDOWS_X64_R1",
+      "scalar_mapping_rows": [
+        {
+          "logical_value_kind": "UNIT",
+          "target_carrier": "NO_VALUE"
+        },
+        {
+          "logical_value_kind": "BOOL",
+          "target_carrier": "CLIF_I8"
+        },
+        {
+          "logical_value_kind": "I8",
+          "target_carrier": "CLIF_I8"
+        },
+        {
+          "logical_value_kind": "I16",
+          "target_carrier": "CLIF_I16"
+        },
+        {
+          "logical_value_kind": "I32",
+          "target_carrier": "CLIF_I32"
+        },
+        {
+          "logical_value_kind": "I64",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "I128",
+          "target_carrier": "CLIF_I64_PAIR_LOW_HIGH"
+        },
+        {
+          "logical_value_kind": "U8",
+          "target_carrier": "CLIF_I8"
+        },
+        {
+          "logical_value_kind": "U16",
+          "target_carrier": "CLIF_I16"
+        },
+        {
+          "logical_value_kind": "U32",
+          "target_carrier": "CLIF_I32"
+        },
+        {
+          "logical_value_kind": "U64",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "U128",
+          "target_carrier": "CLIF_I64_PAIR_LOW_HIGH"
+        },
+        {
+          "logical_value_kind": "ISIZE",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "USIZE",
+          "target_carrier": "CLIF_I64"
+        },
+        {
+          "logical_value_kind": "F32",
+          "target_carrier": "CLIF_F32"
+        },
+        {
+          "logical_value_kind": "F64",
+          "target_carrier": "CLIF_F64"
+        },
+        {
+          "logical_value_kind": "MANAGED_HANDLE",
+          "target_carrier": "CLIF_I64_OPAQUE_HANDLE"
+        },
+        {
+          "logical_value_kind": "AGGREGATE_SLOT",
+          "target_carrier": "CLIF_I64_CALL_BOUNDED_ADDRESS"
+        },
+        {
+          "logical_value_kind": "TYPE_ID",
+          "target_carrier": "CLIF_I64_OPAQUE_ID"
+        },
+        {
+          "logical_value_kind": "OPAQUE_RUNTIME_TOKEN",
+          "target_carrier": "CLIF_I64_OPAQUE_TOKEN"
+        }
+      ],
+      "indirect_slot_mapping": {
+        "argument": "CALL_BOUNDED_ADDRESS_TO_CALLER_STORAGE",
+        "result": "CALLER_ALLOCATED_SRET_SLOT",
+        "callee_retention": "FORBIDDEN_AFTER_RETURN_OR_PARK_TRANSFER"
+      },
+      "outcome_mapping_rows": [
+        {
+          "ordinal": 0,
+          "name": "NORMAL",
+          "payload_slot": "NORMAL_SLOT"
+        },
+        {
+          "ordinal": 1,
+          "name": "ERROR",
+          "payload_slot": "ERROR_SLOT"
+        },
+        {
+          "ordinal": 2,
+          "name": "DEFECT",
+          "payload_slot": "DEFECT_SLOT"
+        },
+        {
+          "ordinal": 3,
+          "name": "CANCELLATION",
+          "payload_slot": "CANCELLATION_SLOT"
+        }
+      ],
+      "helper_mapping_rows": [
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.await_reply",
+          "symbol": "__deeplus_rt_actor_await_reply_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "8d50bd4c77cf19a314aa8b46c9885fc38e87743eb860f1de5902455a29a4c41a"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.dequeue",
+          "symbol": "__deeplus_rt_actor_dequeue_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "4d08273cc1f6624c2d77d09436b9403a82608a09af39c0522c4790ad4d9f323e"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.reply",
+          "symbol": "__deeplus_rt_actor_reply_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "454f7c74ea98e047ff91d460283c9c7e642f01a184c5c5aa1f3ec7d13cc5f2b1"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.request",
+          "symbol": "__deeplus_rt_actor_request_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "42f6823865f17f10360dfe5b975d7a1a75392c5e3b2526f0b8adc7d932d508fe"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.send",
+          "symbol": "__deeplus_rt_actor_send_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "e0890acfeafb327c3c1dc274768c4a7ce100629dacf60987a67acd19e24c0200"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_begin",
+          "symbol": "__deeplus_rt_actor_turn_begin_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "d20ad0bb02383e2704db06ae26c1ed3f86808028beb53340dd33320f9fde4f18"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:actor.turn_end",
+          "symbol": "__deeplus_rt_actor_turn_end_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "85a67a367ba09a29a7c45f46edec2e708d6c0ff08231ac7e5cec62b49927a02c"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:cancellation.check",
+          "symbol": "__deeplus_rt_cancellation_check_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "d7d75e11a7ce683e6e54a24888a94671da886764ea5be350ccce5c8fda75d124"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:once.function_static_ensure",
+          "symbol": "__deeplus_rt_once_function_static_ensure_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "ba8355989882f6bf86040982567e0e4daa2a875132daa5c2f921829c94372130"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:once.lazy_force",
+          "symbol": "__deeplus_rt_once_lazy_force_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "69da576a94e7ad90be04aced286f1f1311cee841c46d748b5388e127568d1a89"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:provider.dispatch",
+          "symbol": "__deeplus_rt_provider_dispatch_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "6f7a984c145633f4b7e9c471a36ddf8580e152fb56dfe65e45c4d936c3585229"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.await",
+          "symbol": "__deeplus_rt_run_await_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "8b2e31a152e8b76d831654adeefce1b6f460eb7e1dbf89ce5417b3dc1431a148"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.cancel_then_join",
+          "symbol": "__deeplus_rt_run_cancel_then_join_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "790e89d6ddc8099a50d880254fb3de692247f3b2b9a4886bb715d122bd570585"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.exit",
+          "symbol": "__deeplus_rt_run_exit_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "d67e481eaf849a0cd33936a5bb87d5f2880f0a4502cc2ed54f31bbf00611f177"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.join",
+          "symbol": "__deeplus_rt_run_join_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "35c44dba5d06a21f514e9a22bdaa64072cb87985b906368e20c68cb36bd0d9cf"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:run.spawn",
+          "symbol": "__deeplus_rt_run_spawn_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "163dd6a8388baa188d8e2db8a4f0e49fa9fbacf589c41355cf0cce3b21c69a81"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:suspension.park",
+          "symbol": "__deeplus_rt_suspension_park_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "02332e2c2f74378432a63a65cf8d178f5146a87c30e6e34a5d2bde4d465a05a8"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_acquire",
+          "symbol": "__deeplus_rt_sync_lock_acquire_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "9fbe51c8e400542c6ed0df28b904b159a9bd9816d186f76e7b244b2c596e2b9c"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.lock_release",
+          "symbol": "__deeplus_rt_sync_lock_release_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "f060ec6b68f4fbea990e2195f8d687c6ca00cf2b0b20596b63a5ed3940e78263"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_begin",
+          "symbol": "__deeplus_rt_sync_observe_begin_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "04bdc69ce6e1030b533cb458da98e3cd9a58ec3aa338f65f0ecdfc34cf77f355"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.observe_end",
+          "symbol": "__deeplus_rt_sync_observe_end_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "a46f0a7d732dbf2a5666e8f0c6abb440c066c95be155b8f9b84b3e7d77b93cb7"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:sync.replace_commit",
+          "symbol": "__deeplus_rt_sync_replace_commit_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "32925b2b88f3c5b375149292ff8caae788b2ad862f80a36fe31b8c50b0d177ac"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.allocate_slow",
+          "symbol": "__deeplus_rt_managed_allocate_slow_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "57bb7b0f805538da7e174fb447eaf4fddbf15104f7a1c6e3b206c3aa4fb938df"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.safepoint_enter",
+          "symbol": "__deeplus_rt_managed_safepoint_enter_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "891c2e52ed4257f22f6f56fe2fe036f96f81553116cb1588beac3d65c0b23351"
+        },
+        {
+          "runtime_helper_id": "RuntimeHelperId:managed.safepoint_leave",
+          "symbol": "__deeplus_rt_managed_safepoint_leave_v1",
+          "linkage": "IMPORT_EXACT",
+          "effective_signature_digest": "7c0e9dc27d8c3498e2beef5fa1a352233dcd56fad5214b18195a05aad1c60afe"
+        }
+      ],
+      "host_default_count": 0,
+      "target_location_is_semantic_identity": false,
+      "mapping_digest": "1657df4ee39f86c7cbd3879e0b76923fb6841fdc740a327c923661e5bb8e0823"
+    }
+  ],
+  "toolchain_lock": {
+    "rust_version": "1.85.0",
+    "cargo_lock_sha256": "21a9a9aeefb89131915c31b3b0f6603f038bce6b28ef17166df3a2cf30d9b79e",
+    "cranelift_dependency_connected": false,
+    "required_before_native_product_execution": true,
+    "product_execution": "NOT_RUN"
+  },
+  "invariants": {
+    "mapping_count": 3,
+    "logical_value_kind_count_per_mapping": 20,
+    "helper_mapping_count_per_mapping": 25,
+    "active_helper_exact_set_bound": true,
+    "aot_jit_logical_mapping_equal": true,
+    "mapping_digest_has_local_preimage": true,
+    "placeholder_digest_count": 0
+  },
+  "registry_digest": "098b628bb1ec974588a84682c32dec50ea028e7a1ced2b3827433d11216b7910"
+}

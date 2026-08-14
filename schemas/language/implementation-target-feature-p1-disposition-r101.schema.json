@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://howork.github.io/Deeplus/schemas/language/implementation-target-feature-p1-disposition-r101.schema.json",
+  "title": "Deeplus R101 implementation-target feature P1 disposition",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "status", "baseline", "authority_model", "summary", "actions", "governance"],
+  "properties": {
+    "$schema": {"const": "../../schemas/language/implementation-target-feature-p1-disposition-r101.schema.json"},
+    "schema": {"const": "deeplus.implementation-target-feature-p1-disposition/r101"},
+    "revision": {"const": "r101-implementation-target-feature-p1-disposition"},
+    "status": {"const": "LOCAL_DESIGN_STATIC_TARGET_DISPOSITION"},
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "branch", "observed_commit", "local_predecessor_commit", "current_binding"],
+      "properties": {
+        "repository": {"const": "howork/Deeplus"},
+        "branch": {"const": "main"},
+        "observed_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "local_predecessor_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "current_binding": {"const": false}
+      }
+    },
+    "authority_model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["successor_to", "design_disposition_authority", "execution_closure_authority", "evidence_separation"],
+      "properties": {
+        "successor_to": {"const": "spec/contracts/implementation-readiness-r99-audit-closure.json"},
+        "design_disposition_authority": {"const": "Codex Design_"},
+        "execution_closure_authority": {"const": "TARGET_BOUND_EXECUTION_RECEIPT_PLUS_CODEX_DESIGN"},
+        "evidence_separation": {"const": "DESIGN_STATIC_IS_NOT_PRODUCT_EXECUTION"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exact_action_count", "class_action_count", "enum_action_count", "trait_action_count", "sfd_action_count", "first_target_design_open_action_count", "open_execution_receipt_count", "excluded_successor_action_count", "included_implementation_acceptance_count"],
+      "properties": {
+        "exact_action_count": {"const": 22},
+        "class_action_count": {"const": 6},
+        "enum_action_count": {"const": 8},
+        "trait_action_count": {"const": 7},
+        "sfd_action_count": {"const": 1},
+        "first_target_design_open_action_count": {"const": 0},
+        "open_execution_receipt_count": {"const": 22},
+        "excluded_successor_action_count": {"const": 14},
+        "included_implementation_acceptance_count": {"const": 8}
+      }
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 22,
+      "maxItems": 22,
+      "items": {"$ref": "#/$defs/action"}
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "open_feature_p1_count", "product_lanes", "production_implementation", "github_mutation", "canonical_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "open_feature_p1_count": {"const": 22},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "production_implementation": {"const": "NOT_RUN"},
+        "github_mutation": {"const": 0},
+        "canonical_publication": {"const": "NOT_PERFORMED"}
+      }
+    }
+  },
+  "$defs": {
+    "identifierList": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "domain", "action_status", "design_handoff_gate", "disposition", "execution_receipt_gate", "retained_feature_ids", "excluded_target_feature_ids", "dependencies", "authority_anchors", "acceptance_summary", "product_execution"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^(CE-C-P1-00[1-6]|CE-E-P1-00[1-8]|TCC-P1-00[2-8]|SFD-P1-009)$"},
+        "domain": {"enum": ["CLASS", "ENUMERATION", "TRAIT_CONFORMANCE", "STATIC_FIRST_DYNAMIC"]},
+        "action_status": {"const": "OPEN"},
+        "design_handoff_gate": {"enum": ["EXPLICITLY_DEFERRED_OUTSIDE_FIRST_TARGET", "CLOSED_DESIGN_STATIC"]},
+        "disposition": {"enum": ["EXCLUDED_SUCCESSOR_SCOPE_RETAIN_CLOSED_BASE", "INCLUDED_IMPLEMENTATION_ACCEPTANCE"]},
+        "execution_receipt_gate": {"const": "OPEN_NOT_RUN"},
+        "retained_feature_ids": {"allOf": [{"$ref": "#/$defs/identifierList"}, {"minItems": 1}]},
+        "excluded_target_feature_ids": {"$ref": "#/$defs/identifierList"},
+        "dependencies": {"$ref": "#/$defs/identifierList"},
+        "authority_anchors": {"allOf": [{"$ref": "#/$defs/identifierList"}, {"minItems": 2}]},
+        "acceptance_summary": {"type": "string", "minLength": 1},
+        "product_execution": {"const": "NOT_RUN"}
+      }
+    }
+  }
+}

@@ -8,6 +8,9 @@
 | `ABSTRACT_CLASS_INSTANTIATION_FORBIDDEN` | `checker` | `error` | `active` | An abstract class cannot be instantiated. |
 | `ACCEPTED_NAMED_FUNCTION_BLOCK_REQUIRES_RETURN` | `checker` | `error` | `active` | Accepted ordinary named function blocks that produce a value must use explicit return; lambda/@match local results use ret. |
 | `ACCEPT_WITH_GATE_REQUIRES_PREVIEW_FEATURE` | `checker` | `error` | `active` | An accept_with_gate example must reference at least one PREVIEW feature with explicit_feature_gate source activation. |
+| `ACCESSOR_PROPERTY_DUPLICATE_GETTER` | `checker` | `error` | `active` | An accessor property cannot declare more than one getter. |
+| `ACCESSOR_PROPERTY_DUPLICATE_SETTER` | `checker` | `error` | `active` | An accessor property cannot declare more than one setter. |
+| `ACCESSOR_PROPERTY_GETTER_REQUIRED` | `checker` | `error` | `active` | An accessor property requires exactly one getter. |
 | `ACCESSOR_PROPERTY_HEADER_VISIBILITY_FORBIDDEN` | `checker` | `error` | `active` | Accessor property header must not carry member visibility; accessor visibility belongs on get/set. |
 | `ACCESSOR_PROPERTY_MULTIPLE_ACCESSORS_REQUIRE_BLOCK` | `checker` | `error` | `active` | Multiple accessors require an accessor block after :=. |
 | `ACCESSOR_PROPERTY_SEPARATOR_REQUIRED` | `checker` | `error` | `active` | Accessor property must use := between property header and accessor specification. |
@@ -24,10 +27,13 @@
 | `ACTOR_PROTOCOL_SEND_THROWS_FORBIDDEN` | `checker` | `error` | `active` | A one-way send/on operation cannot declare a recoverable ErrorSet; use request returning Unit for an acknowledged fallible command. |
 | `ACTOR_PROTOCOL_SIGNATURE_MISMATCH` | `checker` | `error` | `active` | The Actor protocol implementation is incompatible with the requirement's normalized channels, result, ErrorSet, or EffectRow. |
 | `ACTOR_PROTOCOL_TARGET_KIND_MISMATCH` | `checker` | `error` | `active` | An Actor protocol conformance target must resolve to an Actor Protocol. |
+| `ACTOR_SENDER_CONTEXT_UNAVAILABLE` | `checker` | `error` | `active` | Actor transport requires one exact current actor-incarnation or execution sender context. |
 | `ACTOR_TILDE_CALL_REQUIRES_COLON_TILDE` | `checker` | `error` | `active` | Actor transport uses :~; ~ is the ordinary message-call mode. |
+| `ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED` | `checker` | `error` | `active` | Actor transport requires the independent \`AllocationError\` and \`allocate\` responsibility. |
 | `ACTOR_TRANSPORT_FORBIDDEN_IN_DEFER` | `parser` | `error` | `active` | An actor :~ admission result cannot be silently discarded by defer. |
+| `ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN` | `verifier` | `error` | `active` | Verified actor transport may not allocate required admission storage after enqueue commit. |
 | `ACTOR_TURN_SELF_OR_CYCLIC_AWAIT_FORBIDDEN` | `checker` | `error` | `active` | An active actor turn cannot await a request whose statically proven dependency cycle requires the same actor turn to progress. |
-| `AFFINE_UNIT_NOT_IN_PHASE_A` | `checker` | `error` | `active` | Affine units such as degrees Celsius are not part of the current profile measure profile. |
+| `AFFINE_UNIT_NOT_IN_PHASE_A` | `checker` | `error` | `active` | Affine point/delta units are excluded from the current source profile and first implementation target. |
 | `ALIASABLE_REJECTS_LIFECYCLE_OWNER` | `checker` | `error` | `active` | Aliasable is removed and lifecycle owners cannot be hidden behind alias vocabulary. |
 | `ALIASABLE_REMOVED` | `checker` | `error` | `active` | Aliasable is removed from current source vocabulary. |
 | `ALIASABLE_REMOVED_USE_SHARED_OR_PLAIN` | `checker` | `error` | `active` | Aliasable is not current-canonical public vocabulary. Use Plain for authority-free plain values, Shared<T> for alias creation, Shareable for observation safety, or explicit move/clone. |
@@ -103,6 +109,7 @@
 | `BORROW_ESCAPE_OWNER_REGION` | `checker` | `error` | `active` | Borrowed view escapes the owner region. |
 | `BOUNDED_INDEX_LENGTH_MISMATCH` | `checker` | `error` | `active` | The bounded list element count must equal the asserted closed logical-domain cardinality. |
 | `BOUNDED_LIST_CALL_ARGUMENT_FORBIDDEN` | `parser` | `error` | `active` | A bounded list contains expressions only; call labels, evidence arguments and unfolding are forbidden. |
+| `BOUNDED_LIST_EXPLICIT_SIGIL_REQUIRED` | `parser` | `error` | `active` | A bounded logical-domain List uses #list[L..U: elements]; parenthesize a leading stepped Range in an ordinary List. |
 | `BOUND_LITERAL_LENGTH_MISMATCH` | `checker` | `error` | `active` | The number of elements does not equal the declared closed logical-domain cardinality. |
 | `BOX_OWNERSHIP_VIOLATION` | `checker` | `error` | `active` | Box is a unique owner; use-after-move, duplicate ownership, escaping borrow, or missing cleanup is forbidden. |
 | `BREAK_TARGET_NOT_IN_SCOPE` | `checker` | `error` | `active` | Break/continue target does not refer to an enclosing loop scope. |
@@ -121,6 +128,7 @@
 | `CALLABLE_BODY_EFFECT_ROW_EXCEEDS_DECLARATION` | `checker` | `error` | `seed` | The callable body performs an effect outside the normalized declared EffectRow. |
 | `CALLABLE_BODY_ERROR_SET_EXCEEDS_DECLARATION` | `checker` | `error` | `seed` | The callable body exposes an Error outside the normalized declared ErrorSet. |
 | `CALLABLE_EFFECTS_CLAUSE_REPETITION_REQUIRED` | `parser` | `error` | `active` | Callable effect responsibilities use one repeated \`effects EffectTerm\` clause per term; only \`effects {}\` spells the empty row. |
+| `CALLABLE_EXACT_SIGNATURE_FACADE_REQUIRED` | `checker` | `error` | `active` | Callable requires exactly one type argument that normalizes to an exact function signature; bare, non-function, erased, or responsibility-dropping forms are forbidden. |
 | `CALLABLE_PROFILE_COMBINATION_NOT_ADMITTED` | `parser` | `error` | `active` | The callable profile combination is outside the closed Phase-A compatibility table. |
 | `CALLABLE_PROFILE_DUPLICATE` | `parser` | `error` | `active` | A callable profile may occur at most once in a cluster. |
 | `CALLABLE_PROFILE_LITERAL_ATTACHMENT_REQUIRED` | `lexer` | `error` | `active` | The final callable profile and literal { must be adjacent. |
@@ -206,7 +214,9 @@
 | `CONCUR_LOCAL_ASYNC_LAMBDA_REQUIRES_OWNER` | `checker` | `error` | `active` | A bounded concur-local #async callable literal requires one immediately enclosing concur owner. |
 | `CONDITION_HAS_EFFECTFUL_OPERAND` | `checker` | `error` | `active` | A condition operand has effects; use explicit sequencing or a pure guard. |
 | `CONFORMANCE_AUTO_BODY_FORBIDDEN` | `parser` | `error` | `active` | A \`by auto\` conformance is bodyless. |
+| `CONFORMANCE_AUTO_POLICY_INPUT_EVIDENCE_UNSATISFIED` | `checker` | `error` | `active` | The registered auto policy cannot prove its complete finite input-evidence graph. |
 | `CONFORMANCE_AUTO_POLICY_NOT_REGISTERED` | `checker` | `error` | `active` | \`by auto\` requires one closed synthesis policy registered by a Trait that declares \`supports auto\`. |
+| `CONFORMANCE_AUTO_POLICY_OWNER_FORBIDDEN` | `checker` | `error` | `active` | \`supports auto\` is restricted to a core/Prelude-owned Trait bound to TraitAutoPolicyRegistryV1. |
 | `CONFORMANCE_DECLARATION_REQUIRES_CONFORMS_KEYWORD` | `parser` | `error` | `active` | Conformance declarations use \`type Target conforms Trait\`; a type alias instead uses \`type Name = Type\`. |
 | `CONFORMANCE_EVIDENCE_ORIGIN_NOT_UNIQUE` | `checker` | `error` | `active` | A root conformance evidence selector must resolve to exactly one visible coherent nominal conformance. |
 | `CONFORMANCE_EXTENSION_DELEGATION_MUST_BE_EXPLICIT` | `checker` | `error` | `active` | Delegation from a conformance requirement to an extension selector must be explicit and fully identified. |
@@ -325,6 +335,7 @@
 | `ENTRY_DECL_DUPLICATE` | `checker` | `error` | `active` | An executable target has more than one explicit entry declaration. |
 | `ENTRY_NOT_ALLOWED_IN_LIBRARY_SOURCE` | `parser` | `error` | `active` | A library source file cannot contain an entry declaration, including through an annotation attachment. |
 | `ENTRY_SIGNATURE_NOT_ADMITTED` | `checker` | `error` | `active` | An entry function must have () or (Sequence<String>) parameters and return Unit or ExitCode. |
+| `ENUM_BODY_REQUIRES_CASE` | `parser` | `error` | `active` | A current Enum body must begin with at least one case declaration. |
 | `ENUM_CASE_COMMA_REQUIRES_SINGLE_LINE` | `parser` | `error` | `active` | Comma-separated enum cases must form one physical-line case-only list. |
 | `ENUM_CASE_CONFLICTS_WITH_TYPE_SIDE_MEMBER` | `checker` | `error` | `active` | Enum case names share the enum type static case namespace and cannot conflict with type-side members. |
 | `ENUM_CASE_EXPRESSION_PAYLOAD_MUST_NOT_USE_DECLARATION_PAYLOAD` | `checker` | `error` | `active` | Enum case expression payload uses expression arguments, not enum case declaration field syntax. |
@@ -332,6 +343,7 @@
 | `ENUM_CASE_PATTERN_PAYLOAD_MUST_NOT_USE_DECLARATION_PAYLOAD` | `checker` | `error` | `active` | Enum case pattern payload uses pattern payload syntax, not enum case declaration field syntax. |
 | `ENUM_CASE_PATTERN_USES_COLON_COLON` | `checker` | `error` | `active` | Enum case patterns use \`::case\` or \`EnumType::case\`, not \`.case\`. |
 | `ENUM_CASE_SEPARATOR_MIXED` | `parser` | `error` | `active` | An enum body may not mix comma-list and layout separators for cases. |
+| `ENUM_COMMA_MODE_REQUIRES_TWO_CASES` | `parser` | `error` | `active` | A comma after the first Enum case commits to a case-only list containing at least two cases. |
 | `ENUM_DISPLAY_MAPPING_INCOMPLETE` | `checker` | `error` | `active` | If one inhabitable Enum case has a display mapping, every inhabitable case must have exactly one mapping. |
 | `ENUM_DISPLAY_MAPPING_NOT_GUARD_SAFE` | `checker` | `error` | `active` | An Enum display template must be pure, synchronous, read-only, total, and use only preselected Display evidence. |
 | `ENUM_MEMBER_KIND_NOT_ADMITTED` | `parser` | `error` | `active` | An enum body may contain cases followed by methods, accessors, and type-side members; stored fields, constructors, and lifecycle cleanup declarations are not admitted. |
@@ -341,7 +353,10 @@
 | `ENUM_VARIANT_SUBSET_OWNER_MISMATCH` | `checker` | `error` | `active` | Every member of an exact Enum variant subset must belong to the declaring Enum owner. |
 | `ENUM_VARIANT_SUBSET_PAYLOAD_FORBIDDEN` | `checker` | `error` | `active` | An exact Enum variant subset may contain only payload-free variants. |
 | `ERRORVALUE_REQUIRED_FOR_ERRORSET_PAYLOAD` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
-| `ERROR_ROW_PRIVATE_TYPE_LEAK` | `checker` | `error` | `seed` | Error row inference leaks a private error type into a public signature. |
+| `ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH` | `checker` | `error` | `active` | Private ErrorSet inference admits recursive edges only when caller and callee have the same normalized substitution vector. |
+| `ERROR_ROW_PRIVATE_INFERENCE_NOT_ADMITTED` | `checker` | `error` | `active` | Omitted throws inference is admitted only for the closed lexical/private callable owner set. |
+| `ERROR_ROW_PRIVATE_INFERENCE_UNSEALED_CALL` | `checker` | `error` | `active` | Private ErrorSet inference requires every call edge to have a selected callable or an exact function-type ErrorSet. |
+| `ERROR_ROW_PRIVATE_TYPE_LEAK` | `checker` | `error` | `active` | Error row inference leaks a private error type into a public signature. |
 | `ESCAPED_MEMBER_ADJACENCY_REQUIRED` | `parser` | `error` | `active` | A member escape must be written as attached .\\\\name with no intervening trivia. |
 | `ESCAPED_MEMBER_CONTEXT_ONLY` | `checker` | `error` | `active` | Backslash identifier escape is permitted only in a member-access suffix. |
 | `ESCAPING_LEXICAL_DEPENDENCY_REQUIRES_CAPTURE` | `checker` | `error` | `active` | A callable that may escape its declaring region cannot retain a lexical dependency; use an explicit admitted capture or parameter. |
@@ -430,7 +445,7 @@
 | `FORWARD_GROUP_DUPLICATE_MEMBER` | `checker` | `error` | `active` | A grouped forwarding list names the same member more than once. |
 | `FORWARD_GROUP_WILDCARD_NOT_CURRENT` | `parser` | `error` | `active` | Grouped forwarding requires an explicit finite member list; wildcard forwarding is not current. |
 | `FOR_LET_FILTER_GUARD_NOT_BOOL` | `checker` | `error` | `active` | The optional \`for let\` GuardClause must have type Bool. |
-| `FOR_SOURCE_NOT_ITERABLE` | `checker` | `error` | `seed` | for-source expression does not satisfy the Iterator/Iterable protocol profile. |
+| `FOR_SOURCE_NOT_ITERABLE` | `checker` | `error` | `active` | for-source expression provides neither one admitted Iterator witness nor one admitted Sequence-to-Iterator acquisition route. |
 | `FULL_ENUM_CASE_USES_COLON_COLON` | `checker` | `error` | `active` | Fully qualified enum cases use \`::\`. Expected-type shorthand also uses leading \`::case\`; dot-prefixed \`.case\` is not current Deeplus. |
 | `FUNCTION_BODY_REQUIRES_BLOCK_RETURN_OR_CLAUSE` | `parser` | `error` | `active` | A named function body must be a block, explicit \`= return Expr\` shorthand, or declarative clause body; bare \`= Expr\` is not current. |
 | `FUNCTION_EXPRESSION_BODY_REQUIRES_RETURN` | `parser` | `error` | `active` | One-line named function body must use = return expr, not = expr. |
@@ -541,6 +556,7 @@
 | `INTERPOLATION_BOUNDARY_OUTSIDE_PATH` | `lexer` | `error` | `active` | A backtick is a no-output boundary only immediately after a shorthand interpolation path in interpolated-string mode. |
 | `INTERPOLATION_COMPLEX_EXPRESSION_REQUIRES_BRACES` | `parser` | `error` | `active` | Complex interpolation expression requires ${...}. |
 | `INTERPOLATION_FORMAT_REQUIRES_BRACED_FORM` | `parser` | `error` | `active` | Interpolation format spec is admitted only in braced form ${expr:format}. |
+| `INTERPOLATION_FORMAT_SPEC_INVALID` | `checker` | `error` | `active` | Interpolation format must be Align? Width with optional <, > or ^ and canonical decimal width 1 through 1000000. |
 | `INTERPOLATION_INDEX_OUT_OF_DOMAIN` | `checker` | `error` | `active` | The interpolation selector index is outside the value's logical index domain. |
 | `INTERPOLATION_MEMBER_NOT_FOUND` | `checker` | `error` | `active` | The selected interpolation member does not exist on the statically known value type. |
 | `INTERPOLATION_SECRET_REQUIRES_EXPLICIT_REDACTION` | `checker` | `error` | `active` | Secret/Redacted values require explicit redaction before interpolation. |
@@ -552,7 +568,7 @@
 | `INVALID_DIGIT_FOR_NUMERIC_RADIX` | `lexer` | `error` | `active` | A digit is not valid for this numeric radix. |
 | `ITERABLE_REMOVED_CHOOSE_TRAVERSAL_ROLE` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `ITERABLE_REMOVED_USE_TRAVERSAL_PROFILE` | `checker` | `error` | `active` | Iterable catch-all vocabulary is removed; use Iterator, Sequence, View, Stream, or Collection. |
-| `ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED` | `checker` | `error` | `seed` | Iterator cleanup effects are not accounted for on loop exit. |
+| `ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED` | `checker` | `error` | `active` | Iterator cleanup effects are not accounted for on loop exit. |
 | `KEYABLE_REQUIRES_PLAIN_STABLE_HASH` | `checker` | `error` | `active` | Map/Set key must be Plain/stable-hash admissible or an explicitly approved key wrapper. |
 | `LAMBDA_BLOCK_REQUIRES_RET` | `checker` | `error` | `active` | Block lambda requires explicit ret on value paths. |
 | `LAMBDA_PARAM_LIST_PARENS_NOT_CURRENT` | `parser` | `error` | `active` | Lambda parameters are written directly before \`=>\`; write \`{ x: T => ... }\`. |
@@ -632,9 +648,9 @@
 | `MAP_NAMED_ARGUMENT_UNFOLD_REJECTED` | `checker` | `error` | `active` | Map values cannot be expanded into named arguments. Use a Record \`${...}\` for \`**record\`, or pass explicit named arguments. |
 | `MAP_NAMED_REST_UNFOLD_NOT_ALLOWED` | `checker` | `error` | `active` | Map values cannot feed named rest or named argument spread; use a Record with static labels. |
 | `MAP_PERCENT_LITERAL_REMOVED_USE_HASH_MAP` | `checker` | `error` | `active` | %{...} map literal is removed; use #map{...}. |
-| `MAP_UNFOLD_ELLIPSIS_NOT_CURRENT` | `checker` | `error` | `active` | \`...expr\` is not a current map unfold entry. Use \`**expr\` inside #map{...}. |
-| `MAP_UNFOLD_ONLY_IN_MAP_LITERAL` | `checker` | `error` | `active` | Map unfold \`**expr\` is allowed inside \`#map{...}\` but Map values cannot be spread as call named arguments. Record named-argument spread is a separate argument-list feature. |
-| `MAP_UNFOLD_SPELLING_AMBIGUOUS` | `parser` | `error` | `active` | Map unfold spelling is \`**expr\` in admitted \`#map{...}\` unfold positions; \`...expr\` map unfold is not current source in the current profile. |
+| `MAP_UNFOLD_ELLIPSIS_NOT_CURRENT` | `checker` | `error` | `active` | \`...expr\` is not a current Map unfold entry. Use owner-bounded \`*expr\` inside #map{...}. |
+| `MAP_UNFOLD_ONLY_IN_MAP_LITERAL` | `checker` | `error` | `active` | Runtime Map unfold \`*expr\` is allowed only as a \`#map{...}\` literal entry. Map values cannot feed the static-named call channel; \`**record\` is a separate static-label feature. |
+| `MAP_UNFOLD_SPELLING_AMBIGUOUS` | `parser` | `error` | `active` | Map structural spelling is owner-bounded \`*\`: \`*expr\` in a Map literal and \`*name\` or \`*_\` in a Map Pattern. Map \`**expr\`, \`..name\`, \`.._\`, and \`...expr\` are not current; \`**\` remains static-named Record/NamedPack unfold. |
 | `MAP_WILDCARD_KEY_REQUIRES_STRING_LITERAL` | `checker` | `error` | `seed` | Map wildcard key requires string literal |
 | `MATCH_ARM_SINGLE_GUARD_ONLY` | `parser` | `error` | `active` | A match arm admits at most one \`if\` or attached \`!if\` guard. |
 | `MATCH_ARM_UNREACHABLE` | `checker` | `error` | `active` | This match arm is unreachable because its structural coverage is empty after restriction to the subject domain and earlier unguarded coverage. |
@@ -659,6 +675,9 @@
 | `MEMBER_DISPATCH_MARKER_ORDER_INVALID` | `checker` | `error` | `active` | Member dispatch markers must be ordered as *+. |
 | `MEMBER_EXTENSION_COLLISION` | `checker` | `error` | `active` | A member slot and an active extension candidate both apply to the same message call shape. |
 | `MEMBER_NOT_FOUND` | `checker` | `error` | `active` | No member, extension, or witness selector is available in the active lookup domain. |
+| `MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING` | `checker` | `error` | `active` | The omitted member visibility requires a resolution anchor that was not bound. |
+| `MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID` | `checker` | `error` | `active` | The member visibility omission is not admitted for this declaration owner and parent context. |
+| `MIR_ACTOR_SENDER_IDENTITY_INVALID` | `verifier` | `error` | `active` | Verified actor transport contains an invalid sender identity origin, tag, or lifetime transition. |
 | `MIR_LOAN_UNBALANCED` | `checker` | `error` | `active` | A MIR loan activation is not closed exactly once on every reachable path. |
 | `MISSING_EXPLICIT_RETURN` | `checker` | `error` | `active` | A normal non-Unit named-function path must return a value explicitly; Unit fallthrough is canonical. |
 | `MIXED_STRICT_AND_SEQUENTIAL_BOOLEAN_REQUIRES_PARENTHESES` | `parser` | `error` | `active` | Mixing \`and\` with \`and then\` requires parentheses. |
@@ -752,13 +771,15 @@
 | `OLD_DOTTED_BITWISE_OPERATOR_REMOVED` | `parser` | `error` | `active` | Old dotted bitwise operators .&. .\|. .^. .~. are not current source; use && \|\| ^^ ~~. |
 | `OPAQUE_RESULT_CONCRETE_TYPE_MISMATCH` | `checker` | `error` | `active` | some Trait function must return one hidden concrete type on all success paths. |
 | `OPEN_MEMBER_REQUIRES_INHERITABLE_TYPE` | `checker` | `error` | `active` | Open member requires an open, sealed, or abstract containing type. |
+| `OPERATOR_ALLOCATE_EFFECT_NOT_DECLARED` | `checker` | `error` | `active` | The selected or generic fixed-operator plan may allocate, but the enclosing callable does not declare the allocate effect. |
+| `OPERATOR_ALLOCATION_ERROR_NOT_PROPAGATED` | `checker` | `error` | `active` | The selected or generic fixed-operator plan can fail with AllocationError, but the enclosing callable does not propagate that error. |
 | `OPERATOR_CONFORMANCE_AMBIGUOUS` | `checker` | `error` | `active` | More than one admitted direct-global conformance matches the normalized fixed-operator key. |
 | `OPERATOR_CONFORMANCE_EVIDENCE_ROUTE_NOT_ADMITTED` | `checker` | `error` | `active` | Fixed-operator conformance accepts only left-owner DIRECT_GLOBAL evidence. |
 | `OPERATOR_CONFORMANCE_INTRINSIC_DOMAIN_RESERVED` | `checker` | `error` | `active` | This normalized operand pair is reserved to intrinsic dispatch and cannot declare a user operator conformance. |
 | `OPERATOR_CONFORMANCE_LEFT_OWNER_REQUIRED` | `checker` | `error` | `active` | A fixed-operator conformance must be declared by the package defining the normalized left nominal operand type. |
 | `OPERATOR_CONFORMANCE_MISSING` | `checker` | `error` | `active` | No admitted direct-global conformance exists for this non-intrinsic fixed-operator operand pair. |
 | `OPERATOR_CONFORMANCE_REQUIRES_EXPLICIT_CONVERSION` | `checker` | `error` | `active` | Fixed-operator selection never inserts an implicit operand conversion. |
-| `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` | `checker` | `error` | `active` | The selected fixed-operator witness violates the borrowed, pure, synchronous, throws-Never responsibility profile or introduces a terminal other than the admitted precommit ArithmeticDefect. |
+| `OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH` | `checker` | `error` | `active` | The selected fixed-operator witness violates its closed borrowed synchronous responsibility envelope, exceeds AllocationError/allocate where admitted, or introduces a terminal other than the admitted precommit ArithmeticDefect. |
 | `OPERATOR_NOT_CONFORMANCE_OVERLOADABLE` | `checker` | `error` | `active` | Fixed-glyph conformance overloading admits only the exact 13 unary, arithmetic, equality, and total-order roles. |
 | `OPERATOR_PRECEDENCE_TABLE_REQUIRED` | `checker` | `error` | `active` | Operator parsing requires the current profile operator precedence table. |
 | `OPTIONAL_BINDING_SOURCE_NOT_CURRENT` | `parser` | `error` | `active` | Only the else-required consuming local \`let?\` Failable binding is current; use an explicit Option::some pattern for if/while conditions. |
@@ -781,8 +802,12 @@
 | `OPTION_IMPLICIT_LIFT_NOT_ALLOWED` | `checker` | `error` | `active` | T is not a subtype of Option<T>. Exactly one top-level \`some\` insertion is admitted only after an explicit local Option target is fixed; call arguments, returns, lambda results, collection elements, generic-driving inference, and nested lifts never insert it. |
 | `OPTION_NONE_REQUIRES_EXPECTED_TYPE` | `checker` | `error` | `active` | \`::none\` requires an expected Option<T> / T? type; otherwise use \`Option<T>::none\`. |
 | `OPTION_SOME_PAYLOAD_TYPE_MISMATCH` | `checker` | `error` | `active` | \`::some\` payload does not match the expected Option element type. |
+| `ORDINARY_CALL_NO_APPLICABLE_CANDIDATE` | `checker` | `error` | `active` | No ordinary-call candidate independently satisfies the complete call contract. |
+| `ORDINARY_CALL_OVERLOAD_AMBIGUOUS` | `checker` | `error` | `active` | More than one ordinary-call candidate is maximal under the closed specificity relation. |
+| `ORDINARY_CALL_RESULT_CONTEXT_MISMATCH` | `checker` | `error` | `active` | The selected ordinary-call result is incompatible with the fixed expected type. |
 | `OR_PATTERN_BINDINGS_INCONSISTENT` | `checker` | `error` | `active` | All alternatives of an or-pattern must bind the same names with identical canonical types, modes, mutability, usable lifetimes, and capabilities. |
 | `OTHERWISE_DUPLICATE_CLAUSE` | `checker` | `error` | `active` | A clause block or match may contain at most one \`otherwise\` arm. |
+| `OTHERWISE_GUARD_FORBIDDEN` | `parser` | `error` | `active` | The final \`otherwise\` fallback has no guard; write an explicit guarded pattern arm before it. |
 | `OTHERWISE_MUST_BE_LAST` | `checker` | `error` | `active` | \`otherwise\` must be the last clause or match arm. |
 | `OTHERWISE_UNREACHABLE` | `checker` | `error` | `active` | The \`otherwise\` arm is unreachable because previous clauses already cover all cases. |
 | `OUTER_MOVE_REQUIRES_EXPLICIT_CAPTURE` | `checker` | `error` | `active` | Moving or consuming an ancestor place requires an explicit move or once capture, parameter, or owner-transfer carrier. |
@@ -797,11 +822,11 @@
 | `PACKAGE_MODULE_SOURCE_GRAPH_INVALID` | `checker` | `error` | `active` | The package, target, module, or source-contribution graph is not one closed deterministic graph. |
 | `PARALLEL_ASSIGNMENT_ARITY_MISMATCH` | `checker` | `error` | `active` | A local group assignment requires the exact same Tuple arity on its target and value sides. |
 | `PATTERN_ANALYSIS_RESOURCE_LIMIT` | `checker` | `error` | `active` | Pattern analysis reached its deterministic resource limit before proving admission or exhaustiveness. |
-| `PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL` | `checker` | `error` | `active` | A group assignment is rejected when all target replacements cannot be reserved for one infallible logical commit. |
-| `PATTERN_ASSIGNMENT_REFUTABLE` | `checker` | `error` | `active` | Stable local group assignment admits only an exact irrefutable Tuple of direct local places. |
-| `PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR` | `checker` | `error` | `active` | Every Stable group-assignment target must resolve to an existing direct mutable local. |
+| `PATTERN_ASSIGNMENT_COMMIT_MAY_FAIL` | `checker` | `error` | `active` | Pattern assignment is rejected when all target replacements cannot be reserved for one infallible logical commit. |
+| `PATTERN_ASSIGNMENT_REFUTABLE` | `checker` | `error` | `active` | Stable local pattern assignment requires an assignee proven irrefutable for the exact right-hand type. |
+| `PATTERN_ASSIGNMENT_REQUIRES_EXISTING_VAR` | `checker` | `error` | `active` | Every Stable pattern-assignment target must resolve to an existing direct mutable local. |
 | `PATTERN_ASSIGNMENT_SHARED_TARGET` | `checker` | `error` | `active` | Shared, actor, FFI, property, member, and index targets are outside Stable local group assignment. |
-| `PATTERN_ASSIGNMENT_TARGET_OVERLAP` | `checker` | `error` | `active` | Group-assignment targets must have pairwise distinct direct LocalPlaceIds. |
+| `PATTERN_ASSIGNMENT_TARGET_OVERLAP` | `checker` | `error` | `active` | Pattern-assignment targets must have pairwise distinct direct LocalPlaceIds. |
 | `PATTERN_BORROWED_MATCH_CANNOT_MOVE_PAYLOAD` | `checker` | `error` | `active` | Borrowed match arm cannot move a payload out of the borrowed subject. |
 | `PATTERN_CONDITION_CHAIN_TERM_NOT_BOOL` | `checker` | `error` | `active` | Every nonbinding term in a Pattern condition chain must have exact type Bool. |
 | `PATTERN_CONTROL_PARTIAL_BINDING_FORBIDDEN` | `checker` | `error` | `active` | Pattern-control failure must commit no partial binding or move. |
@@ -1028,6 +1053,10 @@
 | `SCOPED_EXTENSION_USE_ORDER_IS_NOT_PRIORITY` | `checker` | `error` | `active` | Scoped extension activation is lexical; use order is not a priority or tie-breaker. |
 | `SCOPED_IMPORT_BLOCK_IS_STATEMENT_ONLY` | `parser` | `error` | `active` | A scoped import block is a statement and cannot produce a value. |
 | `SCOPED_USE_BLOCK_IS_STATEMENT_ONLY` | `parser` | `error` | `active` | A scoped use block is a statement and cannot produce a value. |
+| `SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN` | `checker` | `error` | `active` | An explicit cancellable scope is not admitted inside an active shielded scope. |
+| `SCOPE_CANCELLATION_CONTEXT_REQUIRED` | `checker` | `error` | `active` | The cancellable and shielded modifiers require a cancellation-aware execution context. |
+| `SCOPE_CANCELLATION_MODE_CONFLICT` | `checker` | `error` | `active` | A @scope cannot be both cancellable and shielded. |
+| `SCOPE_MODIFIER_DUPLICATE` | `parser` | `error` | `active` | A @scope modifier may occur at most once. |
 | `SCRIPT_FILE_IS_NOT_LIBRARY_IMPORT` | `checker` | `error` | `active` | A selected script unit is not an importable library computation; move reusable declarations to a library source. |
 | `SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT` | `parser` | `error` | `active` | A script source file cannot contain an explicit entry declaration; choose the executable root for an explicit entry. |
 | `SEALED_DIRECT_SUBCLASS_DISPOSITION_REQUIRED` | `checker` | `error` | `active` | A direct subclass of a sealed root must explicitly choose final, open, or sealed class. |
@@ -1073,6 +1102,7 @@
 | `SMOKE_CORPUS_EXPECTATION_MISMATCH` | `design_static` | `error` | `active` | SMOKE_CORPUS_EXPECTATION_MISMATCH: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `SMOKE_EXPECTED_OUTCOME_REQUIRED` | `design_static` | `error` | `active` | SMOKE_EXPECTED_OUTCOME_REQUIRED: the current corpus, lifecycle, grammar, and machine authorities must agree. |
 | `SOFT_UNION_INFERENCE_FORBIDDEN` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
+| `SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE` | `parser` | `error` | `active` | The source item reached a contextual declaration commitment marker but did not complete that declaration. |
 | `SOURCE_LEVEL_CONTEXT_ROLE_FORBIDDEN` | `checker` | `error` | `active` | ContextRole is checker-internal evidence, not a source trait. |
 | `SOURCE_LEVEL_UNIT_WITNESS_FORBIDDEN` | `checker` | `error` | `active` | UnitWitness is checker-internal evidence, not a user-implementable source trait. |
 | `SOURCE_ROLE_CARRIER_CONFLICT` | `parser` | `error` | `active` | A normalized project-relative path occurs more than once, or the manifest and external carrier assign different source roles to one file. |
@@ -1114,6 +1144,8 @@
 | `STRING_NORMALIZATION_IS_EXPLICIT` | `checker` | `note` | `seed` | 현행 규범 위반에 대한 seed diagnostic. |
 | `STRING_NOT_IMPLICITLY_CONVERTIBLE_TO_BYTES` | `checker` | `error` | `active` | String is not implicitly convertible to Bytes. |
 | `STRING_RENDERER_MUST_RETURN_STRING` | `checker` | `error` | `active` | String::render requires its trailing renderer closure to return String. |
+| `STRONG_COMPARISON_BILATERAL_FAMILY_INVALID` | `checker` | `error` | `active` | The heterogeneous strong comparison family is not bilaterally closed. |
+| `STRONG_COMPARISON_RHS_NOT_ADMITTED` | `checker` | `error` | `active` | Strong Eq/Ord conformance requires Rhs to normalize to Self unless one sealed bilateral comparison family owns both orientations. |
 | `STRUCTURAL_CONFORMANCE_FORBIDDEN` | `checker` | `error` | `active` | Structural method matching does not create conformance. |
 | `STRUCTURAL_CONFORMANCE_NOT_CURRENT` | `checker` | `error` | `active` | The surface \`structural conformance\` is recognized but is not current Deeplus. |
 | `STRUCTURAL_DUCK_TYPING_CONFORMANCE_FORBIDDEN` | `checker` | `error` | `active` | Structural shape coincidence does not form stable conformance. |
@@ -1158,6 +1190,7 @@
 | `TRAIT_ASSOCIATED_STATIC_RUNTIME_LOOKUP_FORBIDDEN` | `verifier` | `error` | `active` | Trait-associated static selection is resolved before execution and cannot perform runtime lookup or fallback. |
 | `TRAIT_ASSOCIATED_TYPE_CONSTRAINT_UNSATISFIED` | `checker` | `error` | `active` | Associated type equality constraint is not satisfied by the selected witness. |
 | `TRAIT_ASSOCIATED_TYPE_CYCLE` | `checker` | `error` | `active` | Associated type binding forms a cycle. |
+| `TRAIT_CONDITIONAL_PROOF_NOT_WELL_FOUNDED` | `checker` | `error` | `active` | Conditional Trait evidence contains a cycle without a registered machine-checkable strict decrease. |
 | `TRAIT_FINAL_SLOT_CANNOT_BE_OVERRIDDEN` | `checker` | `error` | `active` | A final trait witness slot cannot be overridden by a child trait or conformance. |
 | `TRAIT_FINAL_SLOT_CONFLICT` | `checker` | `error` | `active` | Distinct inherited final trait witness slots conflict in the same conformance surface. |
 | `TRAIT_FINAL_WITNESS_NOT_EFFECTIVELY_FINAL` | `checker` | `error` | `active` | A final trait witness requirement must be satisfied by an effectively final concrete witness. |
@@ -1174,6 +1207,7 @@
 | `TRAIT_METHOD_RECEIVER_MODE_MISMATCH` | `checker` | `error` | `active` | Witness method receiver mode is incompatible with the trait requirement. |
 | `TRAIT_METHOD_SUSPENSION_MISMATCH` | `checker` | `error` | `active` | Witness method suspension responsibility does not match the trait requirement. |
 | `TRAIT_METHOD_VIEW_ESCAPES_OWNER` | `checker` | `error` | `active` | Witness method returns a view that can escape the owner region without the required region exposure. |
+| `TRAIT_MIR_EVIDENCE_INCOMPLETE` | `checker` | `error` | `active` | Trait evidence is not complete and verifier-recomputable at the typed-HIR to MIR boundary. |
 | `TRAIT_MISSING_WITNESS` | `checker` | `error` | `active` | cannot prove \`{type} conforms {trait}\`. |
 | `TRAIT_NOT_EXISTENTIAL_SAFE` | `checker` | `error` | `active` | Trait is not safe for any Trait existential packaging under the current bindings. |
 | `TRAIT_OPEN_DEFAULT_CONFLICT_REQUIRES_EXPLICIT_OVERRIDE` | `checker` | `error` | `active` | Inherited open default trait witness slots conflict; add an explicit \`*+\` or \`*.\` override. |
@@ -1254,6 +1288,8 @@
 | `UNIT_CONVERSION_APPROXIMATE_REQUIRES_POLICY` | `checker` | `error` | `active` | Approximate unit conversion requires an explicit approximation policy. |
 | `UNIT_CONVERSION_EXACT_RATIO_FORM_REQUIRED` | `checker` | `error` | `active` | Exact conversion must use an exact ratio form. |
 | `UNIT_CONVERSION_GRAPH_NOT_CLOSED` | `checker` | `error` | `active` | Unit conversion graph must be deterministic and closed for admitted static conversions. |
+| `UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED` | `checker` | `error` | `active` | An integral Measure representation admits exact-ratio conversion only when the reduced result denominator is one. |
+| `UNIT_CONVERSION_SCALAR_PLAN_REQUIRED` | `checker` | `error` | `active` | Exact-ratio conversion requires one sealed ScaleByReducedRatio<Rep> plan. |
 | `UNIT_DECLARATION_DIMENSION_MISMATCH` | `checker` | `error` | `active` | Unit declaration conversion target has a dimension mismatch. |
 | `UNIT_DIMENSION_CANONICALIZATION_FAILED` | `checker` | `error` | `active` | The unit expression cannot be normalized to an exact dimension vector and rational scale under the Stable unit core. |
 | `UNIT_EXPONENT_REQUIRES_STATIC_INT` | `parser` | `error` | `active` | A unit exponent must be a signed decimal StaticInt literal; a runtime expression, radix literal, decimal point, or exponent-form number is not admitted. A removed numeric type suffix candidate is rejected earlier with NUMERIC_TYPE_SUFFIX_REMOVED. |
@@ -1293,6 +1329,12 @@
 | `WORD_COMMENT_NOT_CALL_LABEL` | `lexer` | `error` | `active` | A word comment is lossless trivia, not a named argument label or overload selector. |
 | `WORD_COMMENT_OPENER_PRIORITY_REQUIRED` | `design_static` | `note` | `seed` | The lexer recognizes a backtick word-comment opener at its declared priority; \`///\` is an ordinary \`//\` line comment. |
 | `WORD_COMMENT_WHITESPACE_FORBIDDEN_AFTER_BACKTICK` | `lexer` | `error` | `active` | Whitespace is not allowed immediately after a backtick word comment opener. |
+| `XBC_ARTIFACT_DIGEST_MISMATCH` | `verifier` | `error` | `active` | The XBC logical digest or complete encoded-byte digest does not match its artifact receipt. |
+| `XBC_CONTAINER_INVALID` | `verifier` | `error` | `active` | The XBC container header, bounds, reserved fields, or full layout is invalid. |
+| `XBC_INSTRUCTION_OR_CFG_INVALID` | `verifier` | `error` | `active` | An XBC opcode, typed slot reference, block edge, SSA relation, or terminator is invalid. |
+| `XBC_RESPONSIBILITY_OR_ROOT_INVALID` | `verifier` | `error` | `active` | The XBC ownership, cleanup, managed-root, continuation, or outcome projection is invalid. |
+| `XBC_SECTION_CANONICALITY_INVALID` | `verifier` | `error` | `active` | The XBC section universe, order, extent, digest, or deterministic-CBOR encoding is invalid. |
+| `XBC_VERSION_OR_BINDING_UNSUPPORTED` | `verifier` | `error` | `active` | The XBC version or one of its exact semantic/runtime bindings is unsupported. |
 | `YIELD_RESPONSE_BINDING_NOT_ALLOWED_IN_GENERATOR` | `checker` | `error` | `active` | Yield guard and response binding are not both allowed in the same yield form. |
 | `ZERO_BASED_INDEX_NOT_CURRENT` | `checker` | `error` | `active` | Index zero is outside a built-in default one-based sequence or NumericArray axis; use logical coordinate 1 for its first element. |
 | `ZERO_TO_ZERO_POWER_USES_COMPUTATIONAL_CONVENTION` | `checker` | `warning` | `active` | Infix zero to the zero power evaluates to one; use powChecked for an analytic indeterminate outcome. |
@@ -1302,6 +1344,8 @@
 | 술어 ID | 원천 이름 | 요약 | 증거 |
 |---|---|---|---|
 | `ActorProtocolGateAdmitted` | Actor Protocol direct conformance | Admit one explicit direct Actor-to-ActorProtocol relation and bind every exact requirement origin to exactly one compatible block-local on/request implementation without structural or order-based fallback. | `DESIGN_STATIC_NOT_RUN` |
+| `ActorSenderIdentityAdmitted` | ActorSenderIdentityAdmitted | Seal one tagged SenderId from the current actor incarnation or execution, with deterministic suspension, child-spawn, restart and queued-message lifetime laws; product checker/MIR/runtime NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ActorTransportAllocationAdmitted` | ActorTransportAllocationAdmitted | Seal one precommit actor transport allocation transaction with AllocationError/allocate responsibility and zero postcommit allocation; product checker/MIR/runtime NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AllNamedArgumentLayoutOnlyAllNamed` | AllNamedArgumentLayoutOnlyAllNamed | the layout has at least two arguments; every argument is named or named-unfold; no positional, context, or witness argument occurs | `DESIGN_STATIC_NOT_RUN` |
 | `ApiContractDigestProjection` | ApiContractDigestProjection | Project normalized public type and responsibility data into a deterministic API digest. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `AsQueryReturnsOption` | AsQueryReturnsOption | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1373,19 +1417,20 @@
 | `DisplayUnitDecisionVisible` | DisplayUnitDecisionVisible | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `DynamicUnitConversionProfileAdmitted` | DynamicUnitConversionProfileAdmitted | Separate stdlib profile activation, provider presence and conversion policy completeness; no source current gate is consulted. | `DESIGN_STATIC_NOT_RUN` |
 | `EffectErrorRowPolymorphismAdmitted` | EffectErrorRowPolymorphismAdmitted | R9 closed typed decision procedure; static reference validator PASS; integrated product checker NOT_RUN. | `STATIC_REFERENCE_VALIDATOR_PASS` |
-| `EffectRowForwardingAdmitted` | higher-order effect forwarding | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `EffectRowForwardingAdmitted` | higher-order effect forwarding | R105 closes higher-order EffectRow propagation and discharge under exact callable responsibility compatibility; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EffectRowSubsumes` | EffectRowSubsumes | R9 closed typed decision procedure; static reference validator PASS; integrated product checker NOT_RUN. | `STATIC_REFERENCE_VALIDATOR_PASS` |
 | `EntrySignatureAdmitted` | EntrySignatureAdmitted | source_kind is FunctionType, source_role is executable, and entry_kind is exactly sync or async; the exact (parameters, result) pair is one of ([], Unit), ([Sequence<String>], Unit), ([], ExitCode), or ([Sequence<String>], ExitCode); generic and receiver are false and context_parameters, witness_parameters, rest_parameters, and default_parameters are all zero; error_set normalizes to the empty set (spelled throws Never when written); effect_row is a closed normalized row and does not alter signature-shape admission; call_shape.selected_entry_target_count is present and EntryTargetUnique admits the same descriptor before local signature admission succeeds | `DESIGN_STATIC_NOT_RUN` |
 | `EntryTargetUnique` | EntryTargetUnique | call_shape.selected_entry_target_count is a nonnegative integer; an executable root is admitted exactly when selected_entry_target_count equals one; a zero count emits NO_EXECUTABLE_ENTRY and a count greater than one emits ENTRY_DECL_DUPLICATE; a library root with a nonzero selected count emits ENTRY_NOT_ALLOWED_IN_LIBRARY_SOURCE and a script root with a nonzero selected count emits SCRIPT_ROOT_AND_ENTRY_DECL_CONFLICT; library and script roots are admitted exactly when selected_entry_target_count equals zero | `DESIGN_STATIC_NOT_RUN` |
+| `EnumBodyCommitted` | EnumBodyCommitted | Commit one nonempty Enum case vector and exactly one comma or layout body mode before nominal identity; product parser/checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `EnumCaseCommaListAdmitted` | EnumCaseCommaListAdmitted | R51f3 owner-specific static design seed for enum_case_comma_list; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EnumCaseDisplayMappingAdmitted` | EnumCaseDisplayMappingAdmitted | Admit one complete all-or-none enum-owned display mapping and synthesize at most one whole-Enum Display witness. | `` |
 | `EnumCaseDoubleColonAdmitted` | Enum case double-colon injection | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EnumDeclarationOrderWitnessAdmitted` | EnumDeclarationOrderWitnessAdmitted | Admit the stable enum#increasing or enum#decreasing minimum profile and synthesize at most one whole-Enum Eq/Ord pair plus semantic-ascending explicit range authority. | `` |
 | `EnumPayloadPlaneSeparated` | EnumPayloadPlaneSeparated | Enum declaration, expression, and pattern payload planes are separated. | `DESIGN_STATIC_NOT_RUN` |
 | `EnumVariantSubsetAliasAdmitted` | EnumVariantSubsetAliasAdmitted | Admit one explicit associated exact-variant subset alias over a finite payload-free same-owner VariantId set. | `` |
-| `ErrorRowForwardingAdmitted` | higher-order error forwarding | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ErrorRowForwardingAdmitted` | higher-order error forwarding | R105 closes higher-order ErrorSet propagation and handling under exact callable responsibility compatibility; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `EscapedMemberSuffixAdmitted` | Escaped member suffix | R51c current design predicate; integrated product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `ExactRatioUnitConversionAdmitted` | ExactRatioUnitConversionAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ExactRatioUnitConversionAdmitted` | ExactRatioUnitConversionAdmitted | Admits one same-dimension exact-ratio conversion under the closed R99 unit conversion plan; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ExistentialSafety` | ExistentialSafety | any Trait requires existential-safe trait and associated binding when required | `DESIGN_STATIC_NOT_RUN` |
 | `ExplicitWitnessArgumentAdmitted` | ExplicitWitnessArgumentAdmitted | source_kind is exactly WitnessArgument; formal_parameter_surface independently parses as \`using formal_parameter_identity: witness formal_parameter_trait\` and the parsed identity/trait equal those descriptor fields; if evidence_origin is forwarded_parameter, argument_surface is exactly \`using \` plus argument_identifier, argument_identifier equals evidence_binding_identity, and evidence_binding_surface independently passes ExplicitWitnessParameterAdmitted; if evidence_origin is coherent_conformance, argument_surface is exactly \`using conformance(Type conforms Trait)\`, no ordinary evidence binding is created, and ConformanceEvidenceOriginAdmitted selects exactly one visible nominal conformance; the forwarded declared trait or root selector trait, resolved_evidence_trait, and formal_parameter_trait are exactly equal; escapes is false and ownership is borrowed; ExplicitWitnessParameterAdmitted is applied to the callee formal and, only for forwarding, separately to the caller evidence binding before WitnessCoherent | `DESIGN_STATIC_NOT_RUN` |
 | `ExplicitWitnessParameterAdmitted` | ExplicitWitnessParameterAdmitted | source_kind is exactly WitnessParameter; formal_parameter_surface parses exactly as \`using formal_parameter_identity: witness formal_parameter_trait\`; the parsed Identifier and normalized TraitRef must equal those two descriptor fields; parameter_kind is explicit_witness; witness_use_context is explicit_parameter_declaration and evidence_origin is parameter_declaration; escapes is false and ownership is borrowed | `DESIGN_STATIC_NOT_RUN` |
@@ -1402,32 +1447,32 @@
 | `FlagsOperationAdmitted` | FlagsOperationAdmitted | Admit same-type finite-universe flags bitwise operations and mask the result. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `FlowBindingLocalAdmitted` | FlowBindingLocalAdmitted | Compatibility identity absorbed by RightwardLocalBindingNormalizesToOrdinaryBinding and OrdinaryLocalBindingAdmitted. | `DESIGN_STATIC_NOT_RUN` |
 | `FlowDollarBindingAdmitted` | FlowDollarBindingAdmitted | Non-emitting predecessor predicate identity for statement-only \`$\`/\`$$\` fresh local flow binding; the current executable contract is FlowBindingLocalAdmitted. | `DESIGN_STATIC_NOT_RUN` |
-| `ForSourceIterableAdmitted` | for source iterable profile | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ForSourceIterableAdmitted` | for source iterable profile | R106 closes synchronous for-source route selection, associated Item identity, responsibility accounting and deterministic cleanup; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionCompatibility` | FunctionCompatibility | Compare call shape, parameter variance, result, failure, effect, authority, suspension and ownership residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `FunctionProfileIntroducerAdmitted` | FunctionProfileIntroducerAdmitted | Admits exactly the owner-specific closed declaration-profile table; the removed tail-recursion kind is never admitted. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionRestResiduePreserved` | FunctionRestResiduePreserved | Function types and public API digests preserve each positional \`T..\` and static-named \`NamedPack**\` residue exactly; Sequence, Record, Map, count, and omission erasure are rejected. | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionReturnAndLambdaRetAdmitted` | FunctionReturnAndLambdaRetAdmitted | ordered branch 1: return in a lambda emits RETURN_NOT_ALLOWED_IN_LAMBDA and ret in a named function emits RET_OUTSIDE_LAMBDA; ordered branch 2: a non-Unit lambda block path without ret emits LAMBDA_BLOCK_REQUIRES_RET; ordered branch 3: a non-Unit named-function block path without return emits MISSING_EXPLICIT_RETURN; ordered branch 4: a terminal valueless return in a Unit named function is admitted and emits only the REDUNDANT_FINAL_VALUELESS_RETURN lint; Unit fallthrough and early valueless return are admitted without that lint; an ordinary named \`= expr\` body has no current AST route and is rejected earlier by the parser with FUNCTION_EXPRESSION_BODY_REQUIRES_RETURN | `DESIGN_STATIC_NOT_RUN` |
 | `FunctionStaticNamespacePreviewAdmitted` | Function-static immutable namespace Preview admission | Specify explicit immutable function-static slots, closed lookup, ordered staging, and atomic publication without activating source. | `DESIGN_STATIC_NOT_RUN` |
 | `GeneratedDataMaterializationAdmitted` | GeneratedDataMaterializationAdmitted | parsing DataClassDecl deterministically normalizes class_kind=data and class_disposition=final; this implicit final disposition forbids subclasses and requires no source \`final\` token; every promoted stored field is let and there is no mutable stored field; custom_root_constructor, resource_semantics, effectful_default, throwing_default, hidden_invariant, and nontrivial_super_initialization are all false; the compiler generates exactly one ConstructionRow from visible promoted fields in declaration order; no ProjectionRow is generated automatically and named unfolding remains unavailable without an explicit ProjectionRow | `DESIGN_STATIC_NOT_RUN` |
-| `GenericConstraintSatisfied` | generic/where clause | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `GenericConstructorVariance` | GenericConstructorVariance | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `GenericInvarianceAdmitted` | GenericInvarianceAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `GenericVarianceDescriptorAdmitted` | GenericVarianceDescriptorAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `GenericConstraintSatisfied` | generic/where clause | R105 closes kind-safe candidate-local substitution and exact where-clause evaluation; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `GenericConstructorVariance` | GenericConstructorVariance | R105 closes the owner/kind/position matrix for generic constructor variance; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `GenericInvarianceAdmitted` | GenericInvarianceAdmitted | R105 makes invariant generic argument equality the default and forbids hidden widening; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `GenericVarianceDescriptorAdmitted` | GenericVarianceDescriptorAdmitted | R105 closes finite variance descriptor construction for Trait type parameters and invariant non-Trait owners; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `GroupedMemberForwardingAdmitted` | GroupedMemberForwardingAdmitted | R51f3 owner-specific static design seed for grouped_member_forwarding_sugar; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `GuardCallRefinementApplied` | GuardCallRefinementApplied | Apply a validated GuardSummaryV1 only at an exact direct def#guard call over stable actual places and transfer P or not(P) to Phi. | `` |
 | `GuardCallableAdmitted` | GuardCallableAdmitted | apply PureCallableAdmitted; require exact Bool result; reject consume, mutation, external control transfer, and spawned/resource obligations | `DESIGN_STATIC_NOT_RUN` |
 | `GuardPredicateAdmitted` | GuardPredicateAdmitted | A guard is exact Bool, pure, no-throw, nonsuspending, authority-free and cannot transfer control. | `DESIGN_STATIC_NOT_RUN` |
-| `GuardRefinementSummaryAdmitted` | GuardRefinementSummaryAdmitted | Admit exactly one fresh identity-bound GuardSummaryV1 whose normalized formula is in the finite R0 reflection calculus. | `` |
+| `GuardRefinementSummaryAdmitted` | GuardRefinementSummaryAdmitted | Admit exactly one fresh identity-bound GuardSummaryV1 whose normalized formula is a canonical typed RefinementR0V1 tree with an exact formula digest. | `` |
 | `GuardedBindingCommitAdmitted` | GuardedBindingCommitAdmitted | Commit guarded-let bindings only after one successful pattern and one direct unconditional failure exit are proven. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `GuardedLetResidualExitAdmitted` | GuardedLetResidualExitAdmitted | Computes the residual closed domain after the success pattern and requires one irrefutable failure pattern plus one terminating exit. | `DESIGN_STATIC_NOT_RUN` |
 | `GuardedTransferEvaluationAdmitted` | GuardedTransferEvaluationAdmitted | evaluate guards left-to-right once each; perform no ownership commit before all guards succeed; a false guard evaluates no payload or payload-created obligation | `DESIGN_STATIC_NOT_RUN` |
-| `HasKnownUnitWitness` | HasKnownUnitWitness | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `HasKnownUnitWitness` | HasKnownUnitWitness | Selects and seals one finite known unit witness from active catalogs or an explicit carrier; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `IdentityNominalityAdmitted` | IdentityNominalityAdmitted | classify nominality and identity independently; permit identity operations only when identity-bearing is true; never infer Plain/Copy/shareable from identityless value-class status | `DESIGN_STATIC_NOT_RUN` |
 | `ImplicitAtLambdaAdmitted` | implicit @ lambda | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ImplicitLambdaOverloadStagingAdmitted` | ImplicitLambdaOverloadStagingAdmitted | filter overloads by call shape and non-lambda arguments; require exactly one expected callable; check the implicit @ body once only after selection | `DESIGN_STATIC_NOT_RUN` |
 | `InterpolationPathAdmitted` | InterpolationPathAdmitted | Resolve a gated read-only interpolation path and erase only its terminal boundary from semantic output. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `IrrefutableParameterEntryAdmitted` | Irrefutable parameter-entry Pattern admission | Admit an identifier channel followed by irrefutable structural entry decomposition without changing callable identity. | `` |
-| `KeyableAdmissible` | Keyable | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `KeyableAdmissible` | Keyable | R106 closes one coherent strong-Eq/stable-Hash Keyable family with responsibility-free borrowed operations; product checker remains NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `KindSeparationAdmitted` | KindSeparationAdmitted | require exactly one responsibility_kind_candidates entry; require that candidate to equal responsibility_kind; reject every nonempty kind_axis_conflicts list while preserving independent identity, ownership, copy, sharing, effect, and representation axes | `DESIGN_STATIC_NOT_RUN` |
 | `LayoutEntrySepAdmitted` | LayoutEntrySepAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `LazyForceAdmitted` | LazyForceAdmitted | Admit pure synchronous call-by-need forcing with deterministic cycle rejection and exactly one published commit. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1436,20 +1481,21 @@
 | `LinearAlgebraOperatorAdmitted` | LinearAlgebraOperatorAdmitted | LinearProductExpr folds \`**\` and \`*+\` strictly left-to-right in source order and validates each intermediate result before the next step; for \`**\`, both operands are rank-2; a rank failure emits MATRIX_PRODUCT_REQUIRES_RANK2_MATRICES and an inner-dimension mismatch emits MATRIX_PRODUCT_DIMENSION_MISMATCH; for \`*+\`, both operands are rank-1 vectors of equal static or checker-proven length; any rank/length failure emits DOT_PRODUCT_REQUIRES_RANK1_VECTORS; mixed operator chains are not rejected for associativity alone; the first fold step whose current lhs/rhs ranks or shapes violate its operator emits that operator's exact diagnostic | `DESIGN_STATIC_NOT_RUN` |
 | `LinearProductLeftFoldAdmitted` | LinearProductLeftFoldAdmitted | R51c current design predicate for LinearProductLeftFoldAdmitted; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ListLiteralElementJoinAdmitted` | ListLiteralElementJoinAdmitted | Checks ordinary List elements against one homogeneous defaulted type or one exact declared target, including an explicit closed union; direct suffix-free atomic numeric literals may adopt an exact numeric target, and the predicate never synthesizes a Union. | `DESIGN_STATIC_NOT_RUN` |
-| `LocalGroupAssignmentAdmitted` | Local group Tuple assignment admission | Admit exact-arity assignment to distinct direct mutable Plain locals with staged right-hand values and one infallible logical commit. | `` |
+| `LocalGroupAssignmentAdmitted` | Local group Tuple assignment admission | R106 admits irrefutable structural assignment and bare Tuple sugar to distinct existing direct mutable locals through one staged failure-atomic commit. | `` |
 | `LocalValueBodyAdmitted` | LocalValueBodyAdmitted | a value-producing @if has an else branch; exactly one expression is admitted directly; otherwise every reachable normal path ends in local ret; return is an enclosing-function transfer and finally never creates the local value | `DESIGN_STATIC_NOT_RUN` |
 | `LogicalIndexDomainAdmitted` | LogicalIndexDomainAdmitted | one closed intrinsic logical domain: List/String/Bytes and default NumericArray axes are one-based, bounded owners retain L..U, Map uses exact K, and ReadonlyView preserves its source owner's domain | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `LoopOutcomeExhaustive` | LoopOutcomeExhaustive | ordered branch 1: a value-carrying break without an immediately following outcome match emits BREAK_VALUE_REQUIRES_LOOP_OUTCOME_MATCH; ordered branch 2: a present outcome match using a pattern other than the admitted outcome cases emits LOOP_OUTCOME_MATCH_REQUIRES_OUTCOME_CASE; ordered branch 3: a present correctly spelled match that omits any reachable outcome emits LOOP_OUTCOME_MATCH_NON_EXHAUSTIVE; only a present, correctly spelled, exhaustive outcome match admits the value-carrying loop result | `DESIGN_STATIC_NOT_RUN` |
 | `LoopOutcomeHandlerAdmitted` | LoopOutcomeHandlerAdmitted | normalize loop and optional handler to one node; run intermediate cleanup/finally while skipping intermediate handlers; only the final break target handler observes ::break and a terminal continue observes none | `DESIGN_STATIC_NOT_RUN` |
-| `MapUnfoldEntryAdmitted` | MapUnfoldEntryAdmitted | Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and owner-bounded **Map unfolds. | `DESIGN_STATIC_NOT_RUN` |
+| `MapUnfoldEntryAdmitted` | MapUnfoldEntryAdmitted | Validate one exact-K/V, source-ordered, failure-atomic MapLiteralPlan for direct entries and owner-bounded *Map unfolds. | `DESIGN_STATIC_NOT_RUN` |
 | `MatchExhaustive` | match exhaustiveness and usefulness | Compute match-arm usefulness and final exhaustiveness over one normalized structural partition, including symbolic complement cells for admitted open scalar domains. | `DESIGN_STATIC_NOT_RUN` |
+| `MatchFallbackAdmitted` | MatchFallbackAdmitted | Admit at most one final unguarded otherwise arm and reject a guarded fallback before AST emission; product parser/checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `MatchGuardPurityAdmitted` | match arm guard purity | Apply the ordinary guard profile, then forbid consuming or escaping probe bindings before atomic commit. | `DESIGN_STATIC_NOT_RUN` |
 | `MaterializationFieldPunAdmitted` | MaterializationFieldPunAdmitted | R51f3 owner-specific static design seed for materialization_derivation_field_punning; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MatrixProductAdmitted` | Matrix product | both operands are rank-2; the left inner dimension equals the right inner dimension; \`**\` participates in the left-to-right LinearProductExpr fold and this predicate is applied independently at the current fold step | `DESIGN_STATIC_NOT_RUN` |
 | `MeasureUnitWitnessAdmitted` | MeasureUnitWitnessAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MemberExtensionCollisionPolicyAdmitted` | MemberExtensionCollisionPolicyAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `MemberExtensionCollisionRejected` | MemberExtensionCollisionRejected | Reject ordinary member/extension collisions before within-domain ranking. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `MemberVisibilityAdmitted` | MemberVisibilityAdmitted | R58 exact member-visibility surface, omission, lattice, and original-slot override admission; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `MemberVisibilityAdmitted` | MemberVisibilityAdmitted | Owner-bound resolution of the exact member-visibility surface and OMITTED AST state before canonical HIR; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `MethodExtensionResolutionAdmitted` | method/extension message resolution | Preserve method/extension domains and defer selection. | `DESIGN_STATIC_NOT_RUN` |
 | `ModuleInterfaceDigestVerified` | module interface and dependency-receipt digest verification | Verify that each dependency receipt binds the exact normalized provider module interface without treating private implementation bytes as interface identity. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ModuleItemSkeletonSetAdmitted` | module item-skeleton merge | Merge all source contributions of one ModuleId into one conflict-free declaration skeleton set. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1482,6 +1528,7 @@
 | `OptionLocalTargetInsertionAdmitted` | OptionLocalTargetInsertionAdmitted | an explicit local binding or field target was independently fixed to exactly Option<T>; the insertion depth is exactly one; the context is not call, return, lambda, collection, generic-driving, or nested | `DESIGN_STATIC_NOT_RUN` |
 | `OptionSurfaceCanonicalAdmitted` | OptionSurfaceCanonicalAdmitted | Option cases use ::some/::none and no bare or dot-case alias is present | `DESIGN_STATIC_NOT_RUN` |
 | `OptionalSuffixSingleLayerAdmitted` | Single compact optional suffix | normalize one attached question mark to exactly Option<T>; reject a second compact attached question mark; express nested absence explicitly as Option<T?> | `DESIGN_STATIC_NOT_RUN` |
+| `OrdinaryCallSelectionClosed` | candidate-local ordinary-call selection | Consume one finite ResolvedOverloadSetRef through candidate-local inference, applicability, closed specificity, and a unique-maximal winner before canonical HIR. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `OrdinaryLocalBindingAdmitted` | OrdinaryLocalBindingAdmitted | Shared local binding checker for direct let/var and normalized rightward surfaces. | `DESIGN_STATIC_NOT_RUN` |
 | `OwnedDowncastAdmitted` | OwnedDowncastAdmitted | attempt dynamic type test without consuming into an unrecoverable state; return matched Target or unmatched original Source exactly once | `DESIGN_STATIC_NOT_RUN` |
 | `OwnershipModeAdmitted` | OwnershipModeAdmitted | ordinary mut acquires one argument into a callee-owned mutable local with no caller alias/writeback and retains the caller owner on precommit failure; borrow is a nonescaping shared region; inout is one exclusive caller-place borrow whose successful writes are visible to the caller; move transfers ownership once; cleanup remains with the current owner | `DESIGN_STATIC_NOT_RUN` |
@@ -1500,19 +1547,19 @@
 | `QualifiedExtensionSelectorAdmitted` | QualifiedExtensionSelectorAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `QualifiedExtensionSelectorAdmitted_R48_60` | QualifiedExtensionSelectorCurrentAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `QuarantineScopeDesignAdmitted` | QuarantineScopeDesignAdmitted | R51e design-static admission rule for dynamic_unsafe_quarantine_scope_msp; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
-| `R0GuardSafe` | R0GuardSafe | Admit only a finite total, exact-Bool, responsibility-free R0 expression. | `DESIGN_STATIC_NOT_RUN` |
+| `R0GuardSafe` | R0GuardSafe | Admit only one typed canonical RefinementR0V1 formula whose selected rows are sealed and whose terms are total, exact-Bool, and responsibility-free. | `DESIGN_STATIC_NOT_RUN` |
 | `RationalLiteralAdmitted` | Rational compound literal | Admit one expression-prefix transactional <p/q> literal and normalize it to an exact BigInt pair. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ReadonlyViewAdmitted` | ReadonlyViewAdmitted | require nonowning nonmutating access with exact provenance; bound the view by owner lifetime and move/drop; reject suspension/concur-run/actor/isolation transfer without shareability proof | `DESIGN_STATIC_NOT_RUN` |
 | `ReceiverOwnerResultAdmitted` | ReceiverOwnerResultAdmitted | Admit exactly one explicit Self-compatible owner result from a consuming receiver. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `RecordNamedArgumentSpreadAdmitted` | Record named argument spread | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ReferenceCandidateSetResolved` | reference candidate collection | Collect the exact candidate set for one source reference in one namespace before visibility filtering or winner selection. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ReferenceVisibilityActivationAdmitted` | reference visibility, activation and evidence-origin filter | Filter a collected candidate set by lexical visibility, extension activation, exact member visibility access proof, and witness evidence origin. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `RefinementCheckBoundaryAdmitted` | RefinementCheckBoundaryAdmitted | Apply three-valued proof at explicit refinement boundaries. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `RefinementR0PredicateAdmitted` | RefinementR0PredicateAdmitted | the predicate syntax belongs to the finite R0 operator/name whitelist; effect_row and authority are empty and suspension is none; the predicate is total for every value in the normalized input domain and cannot throw, allocate observable identity, mutate, perform I/O, query a provider, reflect, or search with a solver; evaluation occurs only at the declared construction, cast, argument, return, or pattern boundary | `DESIGN_STATIC_NOT_RUN` |
+| `RefinementCheckBoundaryAdmitted` | RefinementCheckBoundaryAdmitted | Apply the closed RefinementR0V1 three-valued relation procedure at one explicit refinement boundary. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `RefinementR0PredicateAdmitted` | RefinementR0PredicateAdmitted | admit one canonical typed RefinementR0V1 formula only when every term is total, every selected operation row is sealed R0 authority, all responsibilities are empty, and all resource bounds are satisfied | `DESIGN_STATIC_NOT_RUN` |
 | `RefutableCatchPatternAdmitted` | Refutable catch Pattern admission | Admit source-ordered refutable catch Patterns with pure guards and propagation of unmatched recoverable errors. | `` |
 | `RepeatedParameterOrderAndElementType` | RepeatedParameterOrderAndElementType | R51a1 closed design algorithm for RepeatedParameterOrderAndElementType; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResolveIntersectionEvidenceBundle` | ResolveIntersectionEvidenceBundle | Resolve a coherent evidence bundle for all intersection contracts. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
-| `ResolvedNoncallReferenceSelected` | deterministic noncall reference selection | Select one deterministic noncall reference while leaving callable overload sets to the next cluster. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `ResolvedNoncallReferenceSelected` | deterministic noncall reference selection | Select one deterministic noncall reference while routing callable overload sets to OrdinaryCallSelectionClosed. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResolverHirSealAdmitted` | resolver-to-canonical-HIR seal | Admit canonical HIR-H1 only when every noncall reference is fully resolved and no runtime relookup residue remains. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResolverScopeTreeAdmitted` | resolver lexical-frame tree | Admit deterministic lexical name frames while keeping name, extension-activation and witness-visibility environments separate. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ResponsibilitySubsumes` | ResponsibilitySubsumes | Compare ownership, effect, failure, authority, isolation and cleanup axes independently. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
@@ -1520,6 +1567,7 @@
 | `ResultThrowsOverlapForbidden` | Result/throws duplicate channel checker | collect recoverable error-family identities from the normalized \`Result<T, error E>\` value channel in source order; collect recoverable error-family identities from the normalized throws ErrorSet in source order; admit exactly when the two identity sets are disjoint; the first Result-family identity also present in throws emits RESULT_THROWS_CHANNEL_OVERLAP | `DESIGN_STATIC_NOT_RUN` |
 | `RightwardLocalBindingNormalizesToOrdinaryBinding` | RightwardLocalBindingNormalizesToOrdinaryBinding | Classify \`$\`/\`$$\`, preserve CST, and normalize to ordinary immutable/mutable local binding before semantic checking. | `DESIGN_STATIC_NOT_RUN` |
 | `SatisfiesConformance` | SatisfiesConformance | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `ScopeCancellationPlanAdmitted` | Scope cancellation-plan admission | Normalize one @scope modifier set and seal its cancellation-observation plan before typed HIR. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `ScopedActivationGroupAdmitted` | ScopedActivationGroupAdmitted | R51f3 owner-specific static design seed for scoped_import_use_grouping; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `ScopedCallableAdmitted` | ScopedCallableAdmitted | assign the receiver invocation region; require callable and borrowed captures not to outlive it; reject storage, return, continuation, concur-run, actor, and isolation escape | `DESIGN_STATIC_NOT_RUN` |
 | `ScopedImportBlockAdmitted` | ScopedImportBlockAdmitted | Admits a current statement-only import environment frame with compile-time body scope. | `DESIGN_STATIC_NOT_RUN` |
@@ -1536,6 +1584,7 @@
 | `SliceLogicalDomainPreserved` | SliceLogicalDomainPreserved | Preserves the selected source logical coordinate interval in every view/copy slice. | `DESIGN_STATIC_NOT_RUN` |
 | `SliceRangeAdmitted` | inclusive slice range | bounded or owner-open .. / ..< slice; static diagnostics and dynamic IndexError precede provenance-bound view creation | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SliceViewLifetimeAdmitted` | readonly slice carrier view | a slice result is a readonly view tied to one live owner and retains the selected source logical coordinates; hidden copy, rebase, mutation, escape, and isolation crossing are forbidden | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `SourceItemOwnerCommitted` | SourceItemOwnerCommitted | Select one contextual declaration or statement owner at a source-item boundary without semantic lookup or post-marker fallback; product parser NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `SourceRoleAdmitted` | SourceRoleAdmitted | ordered branch 1: normalize every manifest path before parsing and reject the first repeated key with SOURCE_ROLE_CARRIER_CONFLICT; ordered branch 2: require source_role to be exactly library/executable/script and equal to the authoritative manifest or external carrier role; ordered branch 3: require activation_profile to be exactly stable/preview and equal between target and source rows, otherwise emit PACKAGE_MODULE_SOURCE_GRAPH_INVALID; the two axes select exactly one of six roots before parsing, stable normalizes to HIR CURRENT and preview to EXPLICIT_PREVIEW, and no gate may rewrite either axis; ordered later branches preserve the existing library/executable/script top-level and entry-count rules; trying roots to infer role or profile is forbidden | `DESIGN_STATIC_NOT_RUN` |
 | `StableComprehensionScopedUseMembershipAdmitted` | Stable comprehension, scoped-use, and membership family | Design-static checker seed for comprehension, scoped activation and membership; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `StableOnlyGrammarProfileClosed` | stable-only grammar profile | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
@@ -1550,7 +1599,9 @@
 | `StaticNamedEvidenceSelectorAdmitted` | StaticNamedEvidenceSelectorAdmitted | Admits one visible named conformance selected only in the explicit using evidence channel. | `DESIGN_STATIC_NOT_RUN` |
 | `StrictSequentialBooleanAdmitted` | StrictSequentialBooleanAdmitted | strict Bool operands; sequential right operand is conditionally evaluated; product checker NOT_RUN | `DESIGN_STATIC_NOT_RUN` |
 | `StringCharBytesBoundaryAdmitted` | StringCharBytesBoundaryAdmitted | Design seed for text/binary/display boundary. | `DESIGN_STATIC_NOT_RUN` |
+| `StringInterpolationFormatSpecAdmitted` | String interpolation format spec admission | Parse the bounded Align? Width language and seal one deterministic interpolation padding plan before HIR. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `StringRenderAdmitted` | StringRenderAdmitted | Type and lower String::render as single evaluation plus one nonescaping renderer invocation. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `StrongComparisonConformanceAdmitted` | StrongComparisonConformanceAdmitted | Admit strong Eq/Ord only for one homogeneous Self domain or one compiler/Prelude-sealed bilateral family; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `StructuredControlTargetResolved` | StructuredControlTargetResolved | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `StructuredRecordMapPatternAdmitted` | Record and Map structural Pattern admission | Admit label-first Record-family exact/static-named-residual patterns and keyed Map patterns without conflating their directions or rest markers. | `` |
 | `TerminalUnitReturnAdmitted` | TerminalUnitReturnAdmitted | a non-Unit named-function path that reaches the end without an explicit value return emits MISSING_EXPLICIT_RETURN; a terminal valueless return in a Unit function is semantically admitted but emits REDUNDANT_FINAL_VALUELESS_RETURN as a lint; Unit fallthrough is canonical and an early valueless return remains admitted control flow without the terminal-return lint | `DESIGN_STATIC_NOT_RUN` |
@@ -1560,6 +1611,7 @@
 | `TrailingClosureCardinalityAdmitted` | TrailingClosureCardinalityAdmitted | one trailing closure may be unlabeled or labeled; two or more require every item to have a unique label | `DESIGN_STATIC_NOT_RUN` |
 | `TrailingClosureSuffixAdmitted` | TrailingClosureSuffixAdmitted | a shared ordinary-or-message trailing-closure group is admitted only when every item binds to an exact closure/function-typed formal; without such a formal the suffix emits TRAILING_CLOSURE_REQUIRES_FUNCTION_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
 | `TraitAssociatedStaticSelectionAdmitted` | Trait-qualified associated static selection | Resolve <T as Trait>::item through exactly one static conformance and preserve all identity and responsibility residue. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
+| `TraitAutoPolicyAdmitted` | TraitAutoPolicyAdmitted | Bind supports auto/by auto to one exact core or Prelude policy row and finite input proof before canonical HIR; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TraitVariancePositionAdmitted` | TraitVariancePositionAdmitted | a variance marker is admitted only on a trait type parameter in the current Stable profile; an \`out\` parameter occurs only in producer/covariant positions and an \`in\` parameter only in consumer/contravariant positions after alias expansion; unmarked parameters are invariant; any declaration-role or use-position violation emits VARIANCE_ONLY_ALLOWED_ON_TRAIT_TYPE_PARAMETER | `DESIGN_STATIC_NOT_RUN` |
 | `TransferableAcrossIsolation` | Transferable | R30 closed deterministic admission algorithm for Transferable; production checker remains NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `TransparentNominalPatternAdmitted` | Transparent nominal and named Enum Pattern admission | Open only explicitly Pattern-transparent products and match named Enum payloads by their declared labels. | `` |
@@ -1573,7 +1625,7 @@
 | `TypeofStaticSampleAdmitted` | TypeofStaticSampleAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `UnifiedCallModeAdmitted` | UnifiedCallModeAdmitted | R57 deterministic CallExpr mode, call-shape, candidate-domain and responsibility admission; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `UnitCanonicalizationAdmitted` | UnitCanonicalizationAdmitted | every base unit resolves to a declared dimension vector and exact rational scale; multiplication adds vectors and multiplies scales; division subtracts vectors and divides scales; only StaticInt powers are admitted and multiply dimension exponents while raising the exact scale; zero exponents are removed and dimension entries are sorted by canonical dimension identity; type equality compares the normalized vector and exact scale only; display aliases are excluded | `DESIGN_STATIC_NOT_RUN` |
-| `UnitCatalogExactRatioAdmitted` | UnitCatalogExactRatioAdmitted | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
+| `UnitCatalogExactRatioAdmitted` | UnitCatalogExactRatioAdmitted | Admits a closed exact-ratio UnitCatalog whose scale graph has one path-independent reduced result; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `UnitOperationPolicyCoreAdmitted` | UnitOperationPolicyCoreAdmitted | R51a1 closed design algorithm for UnitOperationPolicyCoreAdmitted; product checker NOT_RUN. | `DESIGN_ALGORITHM_STATIC_NOT_RUN` |
 | `UnsafeAxisSeparated` | UnsafeAxisSeparated | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |
 | `UnsafeBoundaryAdmitted` | unsafe boundary | R51a1 checker-predicate design seed; product checker NOT_RUN. | `DESIGN_STATIC_NOT_RUN` |

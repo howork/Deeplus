@@ -782,14 +782,14 @@
       "require explicit expected union",
       "flatten nested unions"
     ],
-    "normalization": "require an explicit expected union context",
+    "normalization": "require an explicit expected union context, normalize each refinement alternative to RefinementR0V1, and preserve nominal identity outside the formula relation",
     "decision_procedure": [
       "require explicit expected union; flatten and deduplicate",
-      "classify every canonical pair by nominal identity then finite R0 relation",
+      "classify every canonical pair by nominal identity then one RefinementR0QueryV1 RELATION query under spec/contracts/refinement-r0-calculus-v1.json",
       "EQUIVALENT or IMPLIES means subsumed; OVERLAPS or UNKNOWN means not proven disjoint",
       "admit only DISJOINT pairs and sort by canonical identity"
     ],
-    "termination_metric": "finite descriptor/tree size and finite candidate set",
+    "termination_metric": "finite alternative pairs and the exact RefinementR0V1 formula/cell/proof-step limits for each relation query",
     "success_result": "admit with normalized output",
     "active_primary_diagnostic": "UNION_MEMBER_SUBSUMED",
     "secondary_diagnostics": [

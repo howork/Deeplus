@@ -1,0 +1,54 @@
+{
+  "schema": "deeplus.actor-transport-allocation/r1",
+  "status": "LOCAL_STABLE_DESIGN_CANDIDATE_NOT_INTEGRATED",
+  "gap_id": "IR-ACTOR-P1-060",
+  "surface_responsibility": {
+    "one_way_value_type": "Result<Unit, error ActorMessageError>",
+    "request_value_type": "Result<Reply<T>, error ActorMessageError>",
+    "throws": ["AllocationError"],
+    "effects": ["allocate"],
+    "actor_message_error_cases": ["mailboxFull", "receiverClosedBeforeAdmission", "receiverClosedBeforeReply"]
+  },
+  "profiles": {
+    "logical_unbounded_v1": "NO_LANGUAGE_CAPACITY_REJECTION_FINITE_STORAGE_ALLOCATION_ERROR_VISIBLE",
+    "bounded_reject_v1": "RECEIVER_CLOSED_THEN_CAPACITY_CHECK_THEN_PRECOMMIT_ALLOCATION"
+  },
+  "transaction": {
+    "order": ["STATIC_SELECT", "EVALUATE_OPERANDS", "LOCK_ADMISSION", "CHECK_RECEIVER_OPEN", "CHECK_BOUNDED_CAPACITY", "STAGE_ALL_ALLOCATIONS", "ENQUEUE_COMMIT"],
+    "allocation_stages": ["ENVELOPE_STORAGE", "MAILBOX_STORAGE_IF_REQUIRED", "REQUEST_RESPONSIBILITY_STORAGE_IF_REQUEST"],
+    "failure": {
+      "outcome": "THROW_ALLOCATION_ERROR",
+      "owner": "SENDER",
+      "reverse_cleanup": true,
+      "message_publish_count": 0,
+      "channel_sequence_count": 0,
+      "reply_id_publish_count": 0,
+      "correlation_id_publish_count": 0,
+      "ownership_commit_count": 0
+    },
+    "commit": {
+      "atomic": true,
+      "message_publish_count": 1,
+      "channel_sequence_count": 1,
+      "ownership_commit_count": 1,
+      "request_identity_publish_count_if_request": 2,
+      "postcommit_allocation_count": 0
+    }
+  },
+  "hir_contract": {
+    "plan": "ActorTransportAllocationPlanV1",
+    "error_set": ["AllocationError"],
+    "effect_row": ["allocate"],
+    "publish_phase": "ENQUEUE_COMMIT",
+    "postcommit_allocation_count": 0
+  },
+  "mir_contract": {
+    "allocation_reject_phase": "allocation_rejected",
+    "error_successor": "ERROR",
+    "allocation_error": "AllocationError",
+    "allocation_effect": "allocate",
+    "postcommit_allocation_count": 0
+  },
+  "no_go": ["ALLOCATION_TO_MAILBOX_FULL", "ALLOCATION_TO_CANCELLATION", "ALLOCATION_TO_DEFECT", "POSTCOMMIT_ALLOCATION", "IMPLICIT_RETRY", "IMPLICIT_BLOCK", "IMPLICIT_SUSPEND", "SILENT_DROP"],
+  "governance": {"semantic_p0": 0, "feature_p1": "22_OPEN_UNCHANGED", "product_lanes": "15_OF_15_NOT_RUN", "github_mutation": "NOT_PERFORMED"}
+}

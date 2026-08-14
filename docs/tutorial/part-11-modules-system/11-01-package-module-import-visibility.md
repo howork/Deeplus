@@ -207,11 +207,35 @@ module 이름은 domain namespace를 표현하고 directory convention은 build
 - import/use는 compile-time scope다.
 - public API는 narrower visibility identity를 노출하지 않는다.
 
+### 멤버 sigil을 생략하면 어떻게 되는가
+
+멤버의 `+`, `-`, `#`를 생략했다고 해서 parser가 곧바로 하나의 전역
+기본값을 붙이지는 않는다. AST는 생략을 보존하고 owner가 결정된 뒤 다음
+규칙을 적용한다(`IR-VIS-P1-057`).
+
+```deeplus
+public class Counter {
+    let value: Int = 0          // 새 field: private
+    def current() -> Int = {    // 새 method: private
+        return value
+    }
+}
+```
+
+반면 override나 Trait fulfillment는 새 private slot이 아니다. sigil을
+생략하면 이미 선택된 원 slot 또는 requirement의 가시성을 상속한다.
+필요한 slot/requirement를 찾지 못하면 compiler는 private로 추측하지 않고
+`MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING`으로 거부한다. Actor의
+`on`/`request`도 독립 sigil 기본값 대신 Actor/ActorProtocol transport
+domain을 따른다. 이 구분 덕분에 간결한 fulfillment와 API 책임을 함께
+보존할 수 있다.
+
 ## 12. 정본 근거와 다음 장
 
 - [program/module/import reference](../../grammar-reference/02-programs-modules-and-imports.md)
 - [source roles contract](../../../spec/contracts/source-roles.json)
 - [frontend source roots](../../../spec/frontend/frontend-model.json)
+- [member visibility omission contract](../../../spec/contracts/member-visibility-omission-v1.json)
 
 다음 장은 module boundary에 남는 schema, API digest와 serialization을
 분리한다.

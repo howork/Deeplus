@@ -840,6 +840,18 @@
     "relation": "primary"
   },
   {
+    "violation_id": null,
+    "predicate_id": "ExactRatioUnitConversionAdmitted",
+    "diagnostic_id": "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ExactRatioUnitConversionAdmitted",
+    "diagnostic_id": "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED",
+    "relation": "secondary"
+  },
+  {
     "violation_id": "ExistentialSafety:default",
     "predicate_id": "ExistentialSafety",
     "diagnostic_id": "EXISTENTIAL_ASSOC_TYPE_UNBOUND",
@@ -1022,8 +1034,26 @@
   {
     "violation_id": "ForSourceIterableAdmitted:default",
     "predicate_id": "ForSourceIterableAdmitted",
-    "diagnostic_id": "RCTS_V5_VARIANT_MISMATCH",
+    "diagnostic_id": "FOR_SOURCE_NOT_ITERABLE",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ForSourceIterableAdmitted",
+    "diagnostic_id": "FOR_LET_FILTER_GUARD_NOT_BOOL",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ForSourceIterableAdmitted",
+    "diagnostic_id": "ITERATOR_CLEANUP_EFFECT_NOT_ACCOUNTED",
+    "relation": "secondary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "ForSourceIterableAdmitted",
+    "diagnostic_id": "REFUTABLE_PATTERN_IN_IRREFUTABLE_CONTEXT",
+    "relation": "secondary"
   },
   {
     "violation_id": "FunctionCompatibility:default",
@@ -1256,8 +1286,14 @@
   {
     "violation_id": "KeyableAdmissible:default",
     "predicate_id": "KeyableAdmissible",
-    "diagnostic_id": "RCTS_V5_VARIANT_MISMATCH",
+    "diagnostic_id": "TYPE_KEY_REQUIRES_KEYABLE",
     "relation": "primary"
+  },
+  {
+    "violation_id": null,
+    "predicate_id": "KeyableAdmissible",
+    "diagnostic_id": "KEYABLE_REQUIRES_PLAIN_STABLE_HASH",
+    "relation": "secondary"
   },
   {
     "violation_id": "KindSeparationAdmitted:default",
@@ -1888,42 +1924,6 @@
     "violation_id": null,
     "predicate_id": "OptionCoalescingAdmitted",
     "diagnostic_id": "OPTION_COALESCE_FALLBACK_TYPE_MISMATCH",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "OptionCoalescingAdmitted",
-    "diagnostic_id": "OPTION_COALESCE_DOES_NOT_APPLY_TO_RESULT",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "OptionCoalescingAdmitted",
-    "diagnostic_id": "OPTION_COALESCE_AFFINE_LHS_REQUIRES_MOVE",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "OptionCoalescingAdmitted",
-    "diagnostic_id": "OPTION_COALESCE_BORROWED_AFFINE_EXTRACTION",
-    "relation": "secondary"
-  },
-  {
-    "violation_id": "OptionLocalTargetInsertionAdmitted:default",
-    "predicate_id": "OptionLocalTargetInsertionAdmitted",
-    "diagnostic_id": "OPTION_IMPLICIT_LIFT_NOT_ALLOWED",
-    "relation": "primary"
-  },
-  {
-    "violation_id": "OptionSurfaceCanonicalAdmitted:default",
-    "predicate_id": "OptionSurfaceCanonicalAdmitted",
-    "diagnostic_id": "OPTION_BARE_NONE_REMOVED",
-    "relation": "primary"
-  },
-  {
-    "violation_id": null,
-    "predicate_id": "OptionSurfaceCanonicalAdmitted",
-    "diagnostic_id": "OPTION_BARE_SOME_REMOVED",
     "relation": "secondary"
   }
 ]

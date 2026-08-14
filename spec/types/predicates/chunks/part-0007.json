@@ -233,7 +233,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "HasKnownUnitWitness",
     "source_name": "HasKnownUnitWitness",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "Selects and seals one finite known unit witness from active catalogs or an explicit carrier; product checker NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -256,9 +256,11 @@
     ],
     "output": "admit | reject(diagnostic_id)",
     "requires": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "finite active UnitCatalogId set",
+      "resolved UnitId, DimensionId and RepTypeId",
+      "an explicit unit witness carrier or exactly one in-scope context anchor"
     ],
-    "evidence_status": "DESIGN_STATIC_NOT_RUN",
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
     "predecessor_contract": null,
     "rule_facets": [
@@ -275,21 +277,26 @@
     "algorithm_owner": "integrated_checker",
     "input_descriptor_schema": "schemas/language/rcts-v5-descriptor.schema.json",
     "preconditions": [
-      "RCTSDescriptorV5 fields required by the referenced feature laws"
+      "active catalogs and unit rows are finite",
+      "UnitId resolution has no provider fallback",
+      "the expected Measure<Rep, Dim> is independently fixed"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "sort active catalogs by canonical UnitCatalogId; normalize UnitId, DimensionId, RepTypeId and any explicit/context witness identity",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record HasKnownUnitWitness requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "validate the closed descriptor variant and fixed expected Measure<Rep, Dim>",
+      "resolve the unit symbol to exactly one UnitId in active catalogs ordered by canonical UnitCatalogId",
+      "require the resolved DimensionId and Rep constraints to match the expected Measure type",
+      "prefer the explicit unit witness carrier; otherwise require exactly one already sealed context anchor",
+      "seal KnownUnitWitnessId, UnitCatalogId, UnitId, DimensionId and RepTypeId in typed HIR",
+      "after a function boundary carrying only Measure<Rep, Dim>, require an explicit witness carrier or separately preserved context anchor instead of reconstructing display identity"
     ],
-    "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
+    "termination_metric": "finite active catalog count plus finite unit row count plus at most one explicit/context anchor",
     "success_result": "admit | reject(diagnostic_id)",
     "active_primary_diagnostic": "UNIT_CONTEXT_ANCHOR_REQUIRES_KNOWN_UNIT_WITNESS",
     "secondary_diagnostics": [],
     "positive_fixture_ids": [
-      "PF-HasKnownUnitWitness-POS"
+      "PF-HasKnownUnitWitness-POS",
+      "PF-HasKnownUnitWitness-BOUNDARY"
     ],
     "negative_fixture_ids": [
       "PF-HasKnownUnitWitness-NEG"
@@ -297,9 +304,9 @@
     "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "35ae21108b3cbabefd1913987db00136dba26d52b35574885a4c8e59d76c954d",
@@ -613,7 +620,7 @@
     "row_schema_version": "deeplus.checker-predicate/r51f3",
     "predicate_id": "KeyableAdmissible",
     "source_name": "Keyable",
-    "summary": "R51a1 checker-predicate design seed; product checker NOT_RUN.",
+    "summary": "R106 closes one coherent strong-Eq/stable-Hash Keyable family with responsibility-free borrowed operations; product checker remains NOT_RUN.",
     "input_descriptor": "RCTSDescriptorV5",
     "descriptor_axes": [
       "source_kind",
@@ -625,7 +632,8 @@
       "keyable_key_admissibility_v2"
     ],
     "diagnostic_refs": [
-      "RCTS_V5_VARIANT_MISMATCH"
+      "TYPE_KEY_REQUIRES_KEYABLE",
+      "KEYABLE_REQUIRES_PLAIN_STABLE_HASH"
     ],
     "design_seed_diagnostic_refs": [],
     "output": "admit | reject(diagnostic_id)",
@@ -636,7 +644,7 @@
     ],
     "evidence_status": "DESIGN_STATIC_NOT_RUN",
     "product_support": "NOT_RUN",
-    "predecessor_contract": null,
+    "predecessor_contract": "spec/contracts/keyable-iteration-pattern-assignment-r106.json",
     "rule_facets": [
       "source_kind",
       "normalized_type",
@@ -651,29 +659,32 @@
       "no lifecycle dependency",
       "no hidden alias mutation"
     ],
-    "normalization": "normalize aliases, ownership regions, rows, labels, and witness identities before decision",
+    "normalization": "normalize aliases and require one same-family strong Eq<Self>, Hash<Self>, Keyable and HashPolicy identity",
     "decision_procedure": [
-      "validate the declared descriptor shape as design documentation only",
-      "record KeyableAdmissible requires and candidate diagnostic vocabulary without executing a checker decision",
-      "emit no diagnostic and create no product execution receipt while predicate_maturity is design_seed",
-      "promote only after a closed terminating algorithm plus discriminating positive/negative fixtures is independently reviewed"
+      "require a stable semantic value identity and reject partial-equality or lifecycle-bearing domains",
+      "select exactly one direct-global strong Eq<Self> and one direct-global Hash<Self> witness in one registered Keyable family",
+      "prove Eq equivalence laws and hash congruence under the sealed HashPolicyId",
+      "require borrowed nonconsuming synchronous authority-free operations with throws Never and effects {}",
+      "seal KeyableWitnessId, EqWitnessId, HashWitnessId and HashPolicyId before collection planning"
     ],
     "termination_metric": "finite descriptor size plus strictly decreasing dependency DAG rank",
     "success_result": "admit | reject(diagnostic_id)",
-    "active_primary_diagnostic": "RCTS_V5_VARIANT_MISMATCH",
-    "secondary_diagnostics": [],
+    "active_primary_diagnostic": "TYPE_KEY_REQUIRES_KEYABLE",
+    "secondary_diagnostics": [
+      "KEYABLE_REQUIRES_PLAIN_STABLE_HASH"
+    ],
     "positive_fixture_ids": [
       "PF-KeyableAdmissible-POS"
     ],
     "negative_fixture_ids": [
       "PF-KeyableAdmissible-NEG"
     ],
-    "evaluation_order": "preconditions -> normalization -> dependencies -> local rule -> diagnostic",
+    "evaluation_order": "type identity -> Eq -> Hash -> law and responsibility -> Keyable seal",
     "dependency_predicates": [],
     "execution_receipt": null,
-    "diagnostic_disposition": "design_seed_nonemitting_candidate_vocabulary_only",
-    "predicate_maturity": "design_seed",
-    "emission_eligible": false,
+    "diagnostic_disposition": "active_primary",
+    "predicate_maturity": "design_algorithm",
+    "emission_eligible": true,
     "predecessor_identity": {
       "baseline": "0.1.2-baseline.r50",
       "sha256": "b1386d86a95c9e35051630fa4eb0ef051caa0a0898435168d5c41ecc05fbd4b8",

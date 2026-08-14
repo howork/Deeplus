@@ -26,5 +26,113 @@
     "stage": "design_static",
     "diagnostic_class": "release_verifier",
     "emission_domain": "release_verifier"
+  },
+  {
+    "authority": "LANGUAGE / PARSER / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "SCOPE_MODIFIER_DUPLICATE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "async_concur_control"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No automatic rewrite; remove the duplicate after confirming the intended cancellation mode.",
+    "message": "A @scope modifier may occur at most once.",
+    "notes": "Highest-precedence R81 scope-modifier admission diagnostic.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "parser",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "SCOPE_CANCELLATION_MODE_CONFLICT",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "async_concur_control"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No automatic choice between observation and shielding.",
+    "message": "A @scope cannot be both cancellable and shielded.",
+    "notes": "The two modifiers select mutually exclusive cancellation-observation modes.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "SCOPE_CANCELLABLE_INSIDE_SHIELD_FORBIDDEN",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "async_concur_control"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No automatic rewrite; a child scope cannot pierce the active parent shield.",
+    "message": "An explicit cancellable scope is not admitted inside an active shielded scope.",
+    "notes": "Observation remains deferred until the outermost shield exits after cleanup.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / OFFICIAL_TOOLING",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "OFFICIAL_TOOLING"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "SCOPE_CANCELLATION_CONTEXT_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "async_concur_control"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No automatic insertion of an async or concur execution owner.",
+    "message": "The cancellable and shielded modifiers require a cancellation-aware execution context.",
+    "notes": "Rejected input creates no HIR or MIR cancellation residue.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
   }
 ]

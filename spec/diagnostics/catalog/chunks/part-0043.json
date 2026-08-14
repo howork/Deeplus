@@ -1,0 +1,153 @@
+[
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "ERROR_ROW_PRIVATE_INFERENCE_NONFINITE_INSTANCE_GRAPH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "private_error_set_inference"
+    ],
+    "fixit_hint": "declare the exact throws row on the recursive callable boundary",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not bound, truncate, or source-order an expansive generic recursion graph",
+    "message": "Private ErrorSet inference admits recursive edges only when caller and callee have the same normalized substitution vector.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/private-error-set-inference-v1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "TYPE_SYSTEM / CHECKER / STDLIB",
+    "authority_set": [
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "STDLIB"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "UNIT_CONVERSION_SCALAR_PLAN_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "exact_ratio_unit_conversion_msp",
+      "unit_operation_policy_msp"
+    ],
+    "fixit_hint": "use Rational, prove an integral result, or provide one explicit rounding witness for the selected Rep",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "never silently truncate, promote, or select a rounding policy",
+    "message": "Exact-ratio conversion requires one sealed ScaleByReducedRatio<Rep> plan.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/measure-collection-bootstrap-r99.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "measure_semantic_core"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "TYPE_SYSTEM / CHECKER / STDLIB",
+    "authority_set": [
+      "TYPE_SYSTEM",
+      "CHECKER",
+      "STDLIB"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "UNIT_CONVERSION_INTEGRAL_RESULT_REQUIRED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "exact_ratio_unit_conversion_msp"
+    ],
+    "fixit_hint": "use Rational or choose units whose reduced result has denominator 1",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not truncate or insert a hidden Rational-to-integral conversion",
+    "message": "An integral Measure representation admits exact-ratio conversion only when the reduced result denominator is one.",
+    "notes": "Current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/measure-collection-bootstrap-r99.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "measure_semantic_core"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / TYPE_SYSTEM / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "TRAIT_CONDITIONAL_PROOF_NOT_WELL_FOUNDED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "trait_witness_coherence_phase_a"
+    ],
+    "fixit_hint": "make every recursive evidence edge use a registered strict-decrease measure or write a finite nonrecursive conformance",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not bound search by source order, recursion depth or runtime fallback",
+    "message": "Conditional Trait evidence contains a cycle without a registered machine-checkable strict decrease.",
+    "notes": "TC-R016 rank 5 current source diagnostic contract; product checker emission remains NOT_RUN.",
+    "primary_source": "spec/contracts/trait-conformance-implementation-handoff-r107.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "trait_witness_resolution_phase_a"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  },
+  {
+    "authority": "LANGUAGE / HIR / MIR / CHECKER",
+    "authority_set": [
+      "LANGUAGE",
+      "HIR",
+      "MIR",
+      "CHECKER"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "TRAIT_MIR_EVIDENCE_INCOMPLETE",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "trait_source_internal_descriptor_split_law",
+      "trait_witness_resolution_phase_a"
+    ],
+    "fixit_hint": "repair the unresolved requirement, associated binding, parent evidence or conformance identity before lowering",
+    "fixit_kind": "manual_review",
+    "fixit_policy": "do not emit partial HIR or reconstruct Trait evidence during MIR or runtime lowering",
+    "message": "Trait evidence is not complete and verifier-recomputable at the typed-HIR to MIR boundary.",
+    "notes": "TC-R016 rank 10 current source diagnostic contract; product checker and MIR emission remain NOT_RUN.",
+    "primary_source": "spec/contracts/trait-conformance-implementation-handoff-r107.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "checker",
+    "diagnostic_class": "current_source",
+    "emission_domain": "source"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "schema": "deeplus.string-interpolation-format-spec-core-fixtures/r1",
+  "revision": "r80-string-interpolation-format-spec-core-closure-r1",
+  "cases": [
+    {"id": "R80-FMT-POS-001", "class": "positive", "source": "\"${name:<12}\"", "format_text": "<12", "expected": {"alignment": "LEFT", "minimum_width": 12}},
+    {"id": "R80-FMT-POS-002", "class": "positive", "source": "\"${name:>12}\"", "format_text": ">12", "expected": {"alignment": "RIGHT", "minimum_width": 12}},
+    {"id": "R80-FMT-POS-003", "class": "positive", "source": "\"${name:^12}\"", "format_text": "^12", "expected": {"alignment": "CENTER", "minimum_width": 12}},
+    {"id": "R80-FMT-POS-004", "class": "positive", "source": "\"${name:12}\"", "format_text": "12", "expected": {"alignment": "LEFT", "minimum_width": 12}},
+    {"id": "R80-FMT-BOUND-001", "class": "boundary", "source": "\"${name:1}\"", "format_text": "1", "expected": {"alignment": "LEFT", "minimum_width": 1, "longer_value": "UNCHANGED_NO_TRUNCATION"}},
+    {"id": "R80-FMT-BOUND-002", "class": "boundary", "source": "\"${name:1000000}\"", "format_text": "1000000", "expected": {"alignment": "LEFT", "minimum_width": 1000000}},
+    {"id": "R80-FMT-BOUND-003", "class": "boundary", "source": "\"${name:^4}\"", "format_text": "^4", "expected": {"alignment": "CENTER", "minimum_width": 4, "odd_deficit": "EXTRA_PAD_RIGHT"}},
+    {"id": "R80-FMT-REJ-001", "class": "reject", "source": "\"${name:}\"", "format_text": "", "diagnostic": "INTERPOLATION_FORMAT_SPEC_INVALID", "reason": "EMPTY_FORMAT"},
+    {"id": "R80-FMT-REJ-002", "class": "reject", "source": "\"${name:012}\"", "format_text": "012", "diagnostic": "INTERPOLATION_FORMAT_SPEC_INVALID", "reason": "WIDTH_LEADING_ZERO"},
+    {"id": "R80-FMT-REJ-003", "class": "reject", "source": "\"${name:1000001}\"", "format_text": "1000001", "diagnostic": "INTERPOLATION_FORMAT_SPEC_INVALID", "reason": "WIDTH_OUT_OF_RANGE"},
+    {"id": "R80-FMT-REJ-004", "class": "reject", "source": "\"${name:=12}\"", "format_text": "=12", "diagnostic": "INTERPOLATION_FORMAT_SPEC_INVALID", "reason": "INVALID_GRAMMAR"}
+  ],
+  "expected_counts": {"cases": 11, "positive": 4, "boundary": 3, "reject": 4, "semantic_p0": 0, "feature_p1": 22, "product_lanes": 15, "product_executed": 0}
+}

@@ -17,6 +17,10 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "spec/traceability/implementation-target-profile-r1"
 CHUNKS = OUT / "chunks"
+PARSER_AUTHORITY_CONTRACT = ROOT / "spec/contracts/parser-authority-traceability-r1.json"
+R101_FEATURE_P1_CONTRACT = ROOT / "spec/contracts/implementation-target-feature-p1-disposition-r101.json"
+R102_FEATURE_LOCAL_ACCEPTANCE = ROOT / "spec/contracts/implementation-target-feature-local-acceptance-r102.json"
+R104_FEATURE_P1_CONTRACT = ROOT / "spec/contracts/implementation-target-feature-p1-disposition-r104.json"
 OVERLAYS = [
     OUT / "scalar-numeric-fixed-operator-evidence-r1.json",
     OUT / "lexical-trivia-source-root-evidence-r1.json",
@@ -39,6 +43,7 @@ OVERLAYS = [
     OUT / "member-extension-collision-conformance-evidence-r1.json",
     OUT / "actor-cranelift-projection-dynamic-evidence-r1.json",
     OUT / "global-trace-closure-evidence-r1.json",
+    OUT / "accessor-property-forwarding-evidence-r100.json",
 ]
 BASE_STATUSES = {"STABLE_DESIGN", "STDLIB_PROFILE"}
 DEPENDENCY_ADDITIONS = {
@@ -53,19 +58,65 @@ DEPENDENCY_ADDITIONS = {
 # lexer must reject it before any canonical residue is admitted.  It therefore
 # stays in the profile by an explicit negative-compatibility rule, not by a
 # stale Stable status in the feature catalog.
-NEGATIVE_COMPATIBILITY_ADDITIONS = {"numeric_literal_suffix"}
+NEGATIVE_COMPATIBILITY_ADDITIONS = {
+    "numeric_literal_suffix",
+    # The duplicate conversion identity is not an independently implementable
+    # feature.  Keep one target row as a negative identity obligation so an
+    # implementation must reject a second conversion algorithm/registry owner.
+    "static_exact_unit_conversion_msp",
+}
 # `trait_binding_failable_v1` is a reachable Stable-group surface, but its
 # checker predicate and complete P/B/R corpus are intentionally deferred to
 # R77-A006.  Keep that exclusion explicit so the first implementation target
 # cannot silently claim its vertical slice is closed.
 EXCLUDED_CURRENT_FEATURE_REASONS = {
+    "affine_unit_profile_msp": {
+        "status": "EXPLICITLY_DEFERRED_TARGET_EXCLUDED",
+        "action_id": "IR-MEASURE-P1-069",
+        "reason": "The current UnitCatalog source surface has no point/delta or affine-offset declaration. Current source remains rejected until a separate surface and law are approved.",
+    },
+    "arbitrary_generator_stdlib_profile": {
+        "status": "EXPLICITLY_DEFERRED_TARGET_EXCLUDED_OPTIONAL_PROVIDER",
+        "action_id": "IR-COLL-P1-070",
+        "reason": "This optional provider profile is not a normative dependency of shaped-generator admission and has no bootstrap carrier/API contract.",
+    },
     "trait_binding_failable_v1": {
         "status": "EXCLUDED_PENDING_BOUNDARY_CLOSURE",
         "action_id": "R77-A006",
         "reason": "The static Failable contract is current, but its target-bound checker and full positive/boundary/reject corpus remain a separately tracked P1 before the Failable vertical slice.",
-    }
+    },
+    "enum_declaration_order_ord_preview_design": {
+        "status": "EXCLUDED_BY_R101_FEATURE_P1_DISPOSITION",
+        "action_id": "CE-E-P1-007",
+        "action_ids": ["CE-E-P1-007", "CE-E-P1-008"],
+        "reason": "The Stable design remains referenced by the Enum actions, but execution evidence is open and the derived-Ord vertical slice is excluded from the first implementation target.",
+    },
+    "enum_case_display_mapping_preview_design": {
+        "status": "EXCLUDED_BY_R101_FEATURE_P1_DISPOSITION",
+        "action_id": "CE-E-P1-007",
+        "action_ids": ["CE-E-P1-007", "CE-E-P1-008"],
+        "reason": "The Stable design remains referenced by the Enum actions, but execution evidence is open and the derived-Display vertical slice is excluded from the first implementation target.",
+    },
+    "enum_exact_variant_subset_alias_preview_design": {
+        "status": "EXCLUDED_BY_R101_FEATURE_P1_DISPOSITION",
+        "action_id": "CE-E-P1-004",
+        "action_ids": ["CE-E-P1-004", "CE-E-P1-008"],
+        "reason": "The Stable design remains referenced by the Enum actions, but execution evidence is open and the exact-subset alias vertical slice is excluded from the first implementation target.",
+    },
 }
 TARGET_ADDITIONS = DEPENDENCY_ADDITIONS | NEGATIVE_COMPATIBILITY_ADDITIONS
+ABSORBED_ALIAS_TARGETS = {"static_exact_unit_conversion_msp"}
+# These rows own parser/checker boundaries only. Their R89 contract artifacts
+# make the static trace explicit but intentionally add no distinct MIR/runtime
+# behavior; preserve the predecessor dynamic-stage non-applicability instead of
+# treating the mere presence of a contract path as a runtime gap.
+STATIC_ONLY_DYNAMIC_NA_FEATURES = {
+    "source_role_contract",
+    "member_visibility_sigil_surface_phase_a",
+    "enum_bare_case_declaration_canonical",
+    "match_otherwise_default_arm",
+    "match_exhaustiveness_phase_a",
+}
 STAGES = [
     "SOURCE_GRAMMAR",
     "AST_FRONTEND",
@@ -80,6 +131,197 @@ OUTCOMES = ["POSITIVE", "BOUNDARY", "REJECT"]
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def r101_feature_p1_projection(
+    contract: dict[str, Any], catalog_ids: set[str], target_ids: list[str]
+) -> dict[str, Any]:
+    expected_action_ids = [
+        *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+        *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+        *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
+        "SFD-P1-009",
+    ]
+    actions = contract.get("actions", [])
+    if not isinstance(actions, list):
+        raise ValueError("R101_ACTIONS_NOT_ARRAY")
+    by_id = {row.get("id"): row for row in actions if isinstance(row, dict)}
+    if len(actions) != 22 or sorted(by_id) != sorted(expected_action_ids):
+        raise ValueError("R101_ACTION_IDENTITY_NOT_EXACT_22")
+    if any(str(row.get("design_handoff_gate", "")).startswith("OPEN") for row in actions):
+        raise ValueError("R101_DESIGN_GATE_STILL_OPEN_IN_TARGET")
+    if sum(str(row.get("execution_receipt_gate", "")).startswith("OPEN") for row in actions) != 22:
+        raise ValueError("R101_EXECUTION_OPEN_NOT_EXACT_22")
+    if any(row.get("product_execution") != "NOT_RUN" for row in actions):
+        raise ValueError("R101_PRODUCT_EXECUTION_NOT_NOT_RUN")
+    for row in actions:
+        action_id = row.get("id", "")
+        if action_id.startswith("CE-C-"):
+            expected_domain = "CLASS"
+        elif action_id.startswith("CE-E-"):
+            expected_domain = "ENUMERATION"
+        elif action_id.startswith("TCC-"):
+            expected_domain = "TRAIT_CONFORMANCE"
+        else:
+            expected_domain = "STATIC_FIRST_DYNAMIC"
+        excluded_scope = action_id.startswith("CE-")
+        if (
+            row.get("domain") != expected_domain
+            or row.get("action_status") != "OPEN"
+            or row.get("design_handoff_gate")
+            != (
+                "EXPLICITLY_DEFERRED_OUTSIDE_FIRST_TARGET"
+                if excluded_scope
+                else "CLOSED_DESIGN_STATIC"
+            )
+            or row.get("disposition")
+            != (
+                "EXCLUDED_SUCCESSOR_SCOPE_RETAIN_CLOSED_BASE"
+                if excluded_scope
+                else "INCLUDED_IMPLEMENTATION_ACCEPTANCE"
+            )
+        ):
+            raise ValueError(f"R101_ACTION_PARTITION_MISMATCH:{action_id}")
+
+    excluded_mapping: dict[str, list[str]] = {}
+    retained_ids: set[str] = set()
+    tcc_sfd_retained_ids: set[str] = set()
+    for row in actions:
+        action_id = row["id"]
+        retained = row.get("retained_feature_ids", [])
+        excluded = row.get("excluded_target_feature_ids", [])
+        if not isinstance(retained, list) or not isinstance(excluded, list):
+            raise ValueError(f"R101_FEATURE_MAPPING_NOT_ARRAY:{action_id}")
+        if not retained:
+            raise ValueError(f"R101_RETAINED_FEATURE_EMPTY:{action_id}")
+        retained_ids.update(retained)
+        if action_id.startswith("TCC-") or action_id == "SFD-P1-009":
+            tcc_sfd_retained_ids.update(retained)
+        for feature_id in excluded:
+            excluded_mapping.setdefault(feature_id, []).append(action_id)
+    excluded_mapping = {
+        feature_id: sorted(action_ids)
+        for feature_id, action_ids in sorted(excluded_mapping.items())
+    }
+    expected_mapping = {
+        feature_id: sorted(reason["action_ids"])
+        for feature_id, reason in EXCLUDED_CURRENT_FEATURE_REASONS.items()
+        if reason.get("status") == "EXCLUDED_BY_R101_FEATURE_P1_DISPOSITION"
+    }
+    if excluded_mapping != expected_mapping:
+        raise ValueError("R101_EXCLUDED_FEATURE_MAPPING_MISMATCH")
+    missing_retained = sorted(retained_ids - catalog_ids)
+    if missing_retained:
+        raise ValueError(f"R101_RETAINED_FEATURE_NOT_IN_CATALOG:{missing_retained}")
+    missing_tcc_sfd = sorted(tcc_sfd_retained_ids - set(target_ids))
+    if missing_tcc_sfd:
+        raise ValueError(f"R101_TCC_SFD_FEATURE_NOT_IN_TARGET:{missing_tcc_sfd}")
+    return {
+        "contract_path": R101_FEATURE_P1_CONTRACT.relative_to(ROOT).as_posix(),
+        "contract_sha256": file_sha256(R101_FEATURE_P1_CONTRACT),
+        "exact_action_ids": expected_action_ids,
+        "action_count": 22,
+        "design_open_in_target_count": 0,
+        "execution_open_action_count": 22,
+        "excluded_target_feature_mapping": excluded_mapping,
+        "retained_feature_ids": sorted(retained_ids),
+        "retained_feature_id_list_sha256": digest_ids(sorted(retained_ids)),
+        "tcc_sfd_retained_feature_ids": sorted(tcc_sfd_retained_ids),
+        "tcc_sfd_retained_feature_id_list_sha256": digest_ids(
+            sorted(tcc_sfd_retained_ids)
+        ),
+    }
+
+
+def r104_feature_p1_projection(
+    contract: dict[str, Any],
+    r101: dict[str, Any],
+    r102: dict[str, Any],
+    target_ids: list[str],
+) -> dict[str, Any]:
+    expected_action_ids = [
+        *(f"CE-C-P1-{index:03d}" for index in range(1, 7)),
+        *(f"CE-E-P1-{index:03d}" for index in range(1, 9)),
+        *(f"TCC-P1-{index:03d}" for index in range(2, 9)),
+        "SFD-P1-009",
+    ]
+    if contract.get("schema") != "deeplus.implementation-target-feature-p1-disposition/r104":
+        raise ValueError("R104_CONTRACT_IDENTITY")
+    predecessors = contract.get("predecessors", {})
+    for key, path in (
+        ("r101", R101_FEATURE_P1_CONTRACT),
+        ("r102", R102_FEATURE_LOCAL_ACCEPTANCE),
+    ):
+        row = predecessors.get(key, {})
+        if row.get("path") != path.relative_to(ROOT).as_posix() or row.get("sha256") != file_sha256(path):
+            raise ValueError(f"R104_PREDECESSOR_BINDING:{key}")
+    obligations = contract.get("obligations", [])
+    if [row.get("action_id") for row in obligations] != expected_action_ids:
+        raise ValueError("R104_ACTION_ORDER_OR_COVERAGE")
+    if len({row.get("obligation_id") for row in obligations}) != 22:
+        raise ValueError("R104_OBLIGATION_ID_UNIQUE")
+    r101_actions = r101.get("actions", [])
+    r102_by_id = {row.get("action_id"): row for row in r102.get("actions", [])}
+    target_set = set(target_ids)
+    excluded_ids: set[str] = set()
+    retained_ids: set[str] = set()
+    for index, (row, predecessor) in enumerate(zip(obligations, r101_actions)):
+        action_id = expected_action_ids[index]
+        excluded = action_id.startswith("CE-")
+        if (
+            predecessor.get("id") != action_id
+            or row.get("obligation_id") != f"ImplementationObligationId:{action_id}/r104"
+            or row.get("predecessor_pointer") != f"/actions/{index}"
+            or row.get("closure_source_pointer") != f"current/current-pointer.json#/open_actions/{index + 5}"
+            or row.get("execution_receipt_gate") != "OPEN_NOT_RUN"
+            or row.get("first_target_disposition")
+            != (
+                "EXCLUDE_SUCCESSOR_OBLIGATION_RETAIN_CURRENT_BASE"
+                if excluded
+                else "INCLUDE_FEATURE_LOCAL_ACCEPTANCE"
+            )
+        ):
+            raise ValueError(f"R104_OBLIGATION_ROW:{action_id}")
+        retained = set(predecessor.get("retained_feature_ids", []))
+        excluded_features = set(predecessor.get("excluded_target_feature_ids", []))
+        if not retained or retained - target_set or excluded_features & target_set:
+            raise ValueError(f"R104_TARGET_PARTITION:{action_id}")
+        retained_ids.update(retained)
+        excluded_ids.update(excluded_features)
+        if excluded:
+            if row.get("acceptance_pointer_or_null") is not None:
+                raise ValueError(f"R104_EXCLUDED_ACCEPTANCE_POINTER:{action_id}")
+        else:
+            expected_pointer = (
+                "spec/contracts/implementation-target-feature-local-acceptance-r102.json"
+                f"#/actions/{index - 14}"
+            )
+            acceptance = r102_by_id.get(action_id, {})
+            if (
+                row.get("acceptance_pointer_or_null") != expected_pointer
+                or set(acceptance.get("retained_target_feature_ids", [])) != retained
+                or acceptance.get("execution_receipt_gate") != "OPEN_NOT_RUN"
+            ):
+                raise ValueError(f"R104_INCLUDED_ACCEPTANCE:{action_id}")
+    return {
+        "contract_path": R104_FEATURE_P1_CONTRACT.relative_to(ROOT).as_posix(),
+        "contract_sha256": file_sha256(R104_FEATURE_P1_CONTRACT),
+        "exact_action_ids": expected_action_ids,
+        "implementation_obligation_ids": [row["obligation_id"] for row in obligations],
+        "action_count": 22,
+        "excluded_successor_obligation_count": 14,
+        "included_acceptance_obligation_count": 8,
+        "design_partition_open_count": 0,
+        "execution_open_action_count": 22,
+        "retained_target_feature_ids": sorted(retained_ids),
+        "retained_target_feature_id_list_sha256": digest_ids(sorted(retained_ids)),
+        "excluded_catalog_feature_ids": sorted(excluded_ids),
+        "excluded_catalog_feature_id_list_sha256": digest_ids(sorted(excluded_ids)),
+    }
 
 
 def write_json(path: Path, value: Any) -> None:
@@ -106,10 +348,30 @@ def evidence_id(evidence_class: str, path: str, locator_kind: str, locator: str,
 
 
 def main() -> None:
+    parser_authority = read_json(PARSER_AUTHORITY_CONTRACT)
+    if (
+        parser_authority.get("schema")
+        != "deeplus.parser-authority-traceability/r1"
+        or parser_authority.get("revision")
+        != "r78-dpg-implementation-target-traceability-closure-r1"
+    ):
+        raise ValueError("PARSER_AUTHORITY_CONTRACT_IDENTITY")
     overlays = [(path, read_json(path)) for path in OVERLAYS]
     overlay_evidence: dict[str, dict[str, Any]] = {}
     overlay_bindings: dict[tuple[str, str, str | None], dict[str, Any]] = {}
+    overlay_binding_sources: dict[tuple[str, str, str | None], str] = {}
     for path, overlay in overlays:
+        rel = path.relative_to(ROOT).as_posix()
+        supersession = overlay.get("supersedes_binding_cells")
+        declared_superseded: set[tuple[str, str, str | None]] = set()
+        predecessor_overlay_path: str | None = None
+        if supersession is not None:
+            predecessor_overlay_path = supersession["predecessor_overlay_path"]
+            declared_superseded = {
+                (item["feature_id"], item["stage"], item.get("outcome"))
+                for item in supersession["cells"]
+            }
+        observed_superseded: set[tuple[str, str, str | None]] = set()
         for item in overlay["evidence_entries"]:
             key = item["evidence_key"]
             if key in overlay_evidence:
@@ -118,8 +380,19 @@ def main() -> None:
         for item in overlay["bindings"]:
             cell = (item["feature_id"], item["stage"], item["outcome"])
             if cell in overlay_bindings:
-                raise ValueError(f"OVERLAY_BINDING_CELL_DUPLICATE:{path.name}:{cell}")
+                if (
+                    cell not in declared_superseded
+                    or overlay_binding_sources[cell] != predecessor_overlay_path
+                ):
+                    raise ValueError(f"OVERLAY_BINDING_CELL_DUPLICATE:{path.name}:{cell}")
+                observed_superseded.add(cell)
             overlay_bindings[cell] = item
+            overlay_binding_sources[cell] = rel
+        if observed_superseded != declared_superseded:
+            raise ValueError(
+                f"OVERLAY_SUPERSESSION_CELL_SET:{path.name}:"
+                f"declared={len(declared_superseded)}:observed={len(observed_superseded)}"
+            )
 
     feature_rows: list[dict[str, Any]] = []
     source_locations: dict[str, tuple[str, int]] = {}
@@ -133,9 +406,28 @@ def main() -> None:
     target_ids = sorted(
         row["feature_id"]
         for row in feature_rows
-        if row.get("status_enum") in BASE_STATUSES or row["feature_id"] in TARGET_ADDITIONS
+        if (
+            row.get("status_enum") in BASE_STATUSES
+            or row["feature_id"] in TARGET_ADDITIONS
+        )
+        and row["feature_id"] not in EXCLUDED_CURRENT_FEATURE_REASONS
     )
     excluded_ids = sorted(set(by_id) - set(target_ids), key=powershell_ordinal_key)
+    if not R101_FEATURE_P1_CONTRACT.is_file():
+        raise FileNotFoundError(
+            f"R101_FEATURE_P1_CONTRACT_MISSING:{R101_FEATURE_P1_CONTRACT}"
+        )
+    r101_projection = r101_feature_p1_projection(
+        read_json(R101_FEATURE_P1_CONTRACT), set(by_id), target_ids
+    )
+    if not R104_FEATURE_P1_CONTRACT.is_file() or not R102_FEATURE_LOCAL_ACCEPTANCE.is_file():
+        raise FileNotFoundError("R104_FEATURE_P1_PREDECESSOR_OR_CONTRACT_MISSING")
+    r104_projection = r104_feature_p1_projection(
+        read_json(R104_FEATURE_P1_CONTRACT),
+        read_json(R101_FEATURE_P1_CONTRACT),
+        read_json(R102_FEATURE_LOCAL_ACCEPTANCE),
+        target_ids,
+    )
 
     evidence: dict[str, dict[str, Any]] = {}
 
@@ -171,18 +463,33 @@ def main() -> None:
 
     def registry_evidence(kind: str, locator: str, stage: str) -> str:
         paths = {
-            "production": "spec/grammar/deeplus.ebnf",
+            "production": parser_authority["surface_census"]["path"],
             "predicate": "spec/types/predicates",
             "diagnostic": "spec/diagnostics/catalog",
             "example": "examples/guide/review-corpus.md",
         }
         classes = {
-            "production": "GRAMMAR_PRODUCTION_ID",
+            "production": "GRAMMAR_SURFACE_CENSUS_ID",
             "predicate": "CHECKER_PREDICATE_ID",
             "diagnostic": "DIAGNOSTIC_REGISTRY_ID",
             "example": "TEACHING_EXAMPLE_ID",
         }
         return add_evidence(classes[kind], paths[kind], "REGISTRY_ID", locator, stage)
+
+    def parser_authority_refs() -> list[str]:
+        refs = []
+        for axis in ("structural_grammar", "parser_context", "pratt", "scanner"):
+            item = parser_authority["authority_ensemble"][axis]
+            refs.append(
+                add_evidence(
+                    item["class"],
+                    item["path"],
+                    item["locator_kind"],
+                    item["locator"],
+                    item["stage_role"],
+                )
+            )
+        return refs
 
     def direct(refs: list[str]) -> dict[str, Any]:
         return {"disposition": "BOUND_DIRECT", "evidence_refs": sorted(set(refs)), "delegate_feature_id": None, "not_applicable": None, "blocked_gap_ids": []}
@@ -269,7 +576,15 @@ def main() -> None:
         feature_ref = row_evidence(feature_id, "CATALOG_BINDING")
         primary = row.get("primary_source", "spec/language.md")
         primary_ref = path_evidence(primary, "NORMATIVE_SOURCE")
-        production_refs = [registry_evidence("production", item, "SOURCE_GRAMMAR") for item in productions + semantic_productions]
+        production_refs = [
+            registry_evidence(
+                "production",
+                item,
+                parser_authority["surface_census"]["stage_role"],
+            )
+            for item in productions + semantic_productions
+        ]
+        source_authority_refs = parser_authority_refs()
         predicate_refs = [registry_evidence("predicate", item, "STATIC_SEMANTICS") for item in predicates]
         diagnostic_refs = [registry_evidence("diagnostic", item, "DIAGNOSTICS") for item in diagnostics]
         example_refs = [registry_evidence("example", item, "CONFORMANCE_TESTS") for item in examples]
@@ -282,16 +597,34 @@ def main() -> None:
         library_only = trace_class == "library" or row.get("status_enum") == "STDLIB_PROFILE"
 
         stages: list[dict[str, Any]] = []
-        if metadata_only and not productions and not semantic_productions:
+        if feature_id in ABSORBED_ALIAS_TARGETS:
+            value = not_applicable(
+                "NA_SOURCE_INTERNAL_NO_PROGRAMMER_FORM",
+                "GRAMMAR_AUTHORITY",
+                [feature_ref, primary_ref],
+                "The absorbed identity has no source spelling; the canonical conversion owner supplies the only active surface and semantics.",
+            )
+        elif metadata_only and not productions and not semantic_productions:
             value = not_applicable("NA_SOURCE_TOOLING_OR_PUBLICATION_METADATA_ONLY", "PUBLICATION_AUTHORITY", [feature_ref], "The target row is tooling/publication metadata and introduces no programmer source form.")
         elif library_only and not productions and not semantic_productions:
             value = not_applicable("NA_SOURCE_INTERNAL_NO_PROGRAMMER_FORM", "PRELUDE_PROVIDER_AUTHORITY", [feature_ref, primary_ref], "The library/provider profile introduces no core-language grammar production.")
         else:
-            value = direct([feature_ref, primary_ref] + production_refs)
+            value = direct(
+                [feature_ref, primary_ref]
+                + source_authority_refs
+                + production_refs
+            )
         value = apply_overlay(feature_id, "SOURCE_GRAMMAR", None, value)
         stages.append({"stage": "SOURCE_GRAMMAR", **value})
 
-        if feature_id == "member_visibility_hierarchy_protected":
+        if feature_id in ABSORBED_ALIAS_TARGETS:
+            value = not_applicable(
+                "NA_AST_NO_PROGRAMMER_VISIBLE_FORM",
+                "FRONTEND_AUTHORITY",
+                [feature_ref, primary_ref],
+                "The absorbed identity may not create an AST or HIR identity distinct from its canonical replacement.",
+            )
+        elif feature_id == "member_visibility_hierarchy_protected":
             value = not_applicable(
                 "NA_AST_NO_PROGRAMMER_VISIBLE_FORM",
                 "FRONTEND_AUTHORITY",
@@ -311,7 +644,14 @@ def main() -> None:
         value = apply_overlay(feature_id, "AST_FRONTEND", None, value)
         stages.append({"stage": "AST_FRONTEND", **value})
 
-        if predicates:
+        if feature_id in ABSORBED_ALIAS_TARGETS:
+            value = not_applicable(
+                "NA_STATIC_TOOLING_OR_PUBLICATION_METADATA_ONLY",
+                "TYPE_CHECKER_AUTHORITY",
+                [feature_ref, primary_ref],
+                "This row records absorbed provenance; the canonical replacement owns the only static conversion judgment.",
+            )
+        elif predicates:
             value = direct([feature_ref, primary_ref] + predicate_refs)
         elif library_only:
             value = direct([feature_ref, primary_ref])
@@ -326,7 +666,14 @@ def main() -> None:
         value = apply_overlay(feature_id, "STATIC_SEMANTICS", None, value)
         stages.append({"stage": "STATIC_SEMANTICS", **value})
 
-        if feature_id == "member_visibility_sigil_surface_phase_a":
+        if feature_id in ABSORBED_ALIAS_TARGETS:
+            value = not_applicable(
+                "NA_DYNAMIC_ALIAS_NORMALIZES_NO_DISTINCT_RUNTIME_IDENTITY",
+                "MIR_RUNTIME_AUTHORITY",
+                [feature_ref, primary_ref],
+                "The absorbed identity normalizes to the canonical exact-ratio conversion plan before lowering.",
+            )
+        elif feature_id in STATIC_ONLY_DYNAMIC_NA_FEATURES:
             value = not_applicable(
                 "NA_DYNAMIC_STATIC_ONLY_NO_RUNTIME_BEHAVIOR",
                 "MIR_RUNTIME_AUTHORITY",
@@ -357,7 +704,14 @@ def main() -> None:
         value = apply_overlay(feature_id, "DIAGNOSTICS", None, value)
         stages.append({"stage": "DIAGNOSTICS", **value})
 
-        if tooling_refs:
+        if feature_id in ABSORBED_ALIAS_TARGETS:
+            value = not_applicable(
+                "NA_TOOLING_NO_NEW_SOURCE_OR_OBSERVATION_OBLIGATION",
+                "TOOLING_AUTHORITY",
+                [feature_ref, primary_ref],
+                "The absorbed identity introduces no source spelling, formatting rule, completion item, or observation surface.",
+            )
+        elif tooling_refs:
             value = direct([feature_ref] + tooling_refs)
         elif metadata_only:
             value = direct([feature_ref, primary_ref] + artifact_refs)
@@ -426,9 +780,9 @@ def main() -> None:
     metadata = {
         "$schema": "../../../schemas/language/implementation-target-traceability-r1.schema.json",
         "schema": "deeplus.implementation-target-traceability/r1",
-        "revision": "r77-current-implementation-target-rebind-r1",
-        "canonical_baseline_commit": "da734c608c0d583a671c0da9e14da00bff42affd",
-        "local_predecessor_commit": "da734c608c0d583a671c0da9e14da00bff42affd",
+        "revision": "r78-dpg-implementation-target-traceability-closure-r1",
+        "canonical_baseline_commit": "10e64f492f0529610673846139afcf0d95175663",
+        "local_predecessor_commit": "7d4e6c48b9374bec34a60b970530174dd9b4e145",
         "external_post_commit_receipt_required": True,
         "catalog_feature_count": len(feature_rows),
         "base_statuses": sorted(BASE_STATUSES),
@@ -444,6 +798,14 @@ def main() -> None:
         "excluded_feature_id_list_sha256": digest_ids(excluded_ids),
         "stage_order": STAGES,
         "test_outcome_order": OUTCOMES,
+        "source_grammar_authority": {
+            "contract": PARSER_AUTHORITY_CONTRACT.relative_to(ROOT).as_posix(),
+            "authority_axes": list(parser_authority["authority_ensemble"]),
+            "surface_census_path": parser_authority["surface_census"]["path"],
+            "surface_census_semantic_authority": False,
+            "direct_cell_requires_all_authority_axes": True,
+            "ebnf_only_binding_rejected": True,
+        },
         "chunks": chunks,
         "applied_evidence_overlays": [{
             "path": path.relative_to(ROOT).as_posix(),
@@ -465,13 +827,15 @@ def main() -> None:
         },
         "governance": {
             "gap_id": "IR-XCUT-P1-054",
-            "gap_status": "INTEGRATED_UNVERIFIED_R77_CURRENT_REBIND",
+            "gap_status": "LOCAL_VERIFIED_CANDIDATE_NOT_INTEGRATED",
             "semantic_p0": 0,
             "feature_p1": "22_OPEN_UNCHANGED",
             "m13_actions": "4_OPEN_UNCHANGED",
             "product_lanes": "15_OF_15_NOT_RUN",
-            "github_publication": "R77_SEMANTIC_SURFACE_INTEGRATED_ON_MAIN",
+            "github_publication": "NOT_PERFORMED_FOR_DPG_TRACE_REPAIR",
             "e4_e5_evidence_count": 0,
+            "r101_feature_p1_disposition": r101_projection,
+            "r104_feature_p1_disposition": r104_projection,
         },
     }
     write_json(OUT / "catalog-metadata.json", metadata)

@@ -31,8 +31,14 @@ def main() -> int:
     direct["evidence_refs"] = []
     mutants.append(("DIRECT_EVIDENCE_EMPTY", metadata, value))
     value = copy.deepcopy(rows)
-    na = next(cell for row in value for stage in row["stages"] for cell in stage.get("outcomes", [stage]) if cell.get("disposition") == "NOT_APPLICABLE")
-    na["not_applicable"]["reason_code"] = "UNREGISTERED_REASON"
+    for cell in (
+        cell
+        for row in value
+        for stage in row["stages"]
+        for cell in stage.get("outcomes", [stage])
+        if cell.get("disposition") == "NOT_APPLICABLE"
+    ):
+        cell["not_applicable"]["reason_code"] = "UNREGISTERED_REASON"
     mutants.append(("NA_REASON", metadata, value))
     value = copy.deepcopy(rows)
     rebound = next(cell for row in value for stage in row["stages"] for cell in stage.get("outcomes", [stage]) if cell.get("disposition") == "BOUND_DIRECT")
@@ -101,6 +107,49 @@ def main() -> int:
         "not_applicable": None,
     })
     mutants.append(("R55_OVERLAY_CELL_REBLOCKED", metadata, value))
+
+    meta = copy.deepcopy(metadata)
+    dpg = next(
+        item
+        for item in meta["evidence_registry"]
+        if item.get("class") == "DPG_RULE_FAMILY_ID"
+    )
+    dpg["path"] = "spec/grammar/deeplus.ebnf"
+    mutants.append(("DPG_AUTHORITY_REPLACED_BY_EBNF", meta, rows))
+
+    value = copy.deepcopy(rows)
+    source_stage = next(
+        stage
+        for row in value
+        for stage in row["stages"]
+        if stage.get("stage") == "SOURCE_GRAMMAR"
+        and stage.get("disposition") == "BOUND_DIRECT"
+    )
+    context_ref = next(
+        ref
+        for ref in source_stage["evidence_refs"]
+        if next(
+            item
+            for item in metadata["evidence_registry"]
+            if item["evidence_id"] == ref
+        ).get("class")
+        == "PARSER_CONTEXT_REGISTRY"
+    )
+    source_stage["evidence_refs"].remove(context_ref)
+    mutants.append(("SOURCE_AUTHORITY_AXIS_REMOVED", metadata, value))
+
+    meta = copy.deepcopy(metadata)
+    census = next(
+        item
+        for item in meta["evidence_registry"]
+        if item.get("class") == "GRAMMAR_SURFACE_CENSUS_ID"
+    )
+    census["locator"] = "__MissingSurfaceCensusProduction__"
+    mutants.append(("SURFACE_CENSUS_LOCATOR_MISSING", meta, rows))
+
+    meta = copy.deepcopy(metadata)
+    meta["source_grammar_authority"]["surface_census_semantic_authority"] = True
+    mutants.append(("SURFACE_CENSUS_PROMOTED_TO_AUTHORITY", meta, rows))
 
     results = []
     for mutation_id, meta, candidate_rows in mutants:

@@ -1,0 +1,219 @@
+{
+  "schema": "deeplus.source-item-commitment-fixtures/v1",
+  "decision_schema": "schemas/language/source-item-commitment-decision-v1.schema.json",
+  "contract": "spec/contracts/source-item-commitment-v1.json",
+  "evidence_level": "E2_DESIGN_STATIC_PRODUCT_NOT_RUN",
+  "cases": [
+    {
+      "case_id": "R88-SIC-N-001",
+      "class": "normal",
+      "source": "actor Worker {}",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "script", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "actor", "declaration_family_or_null": "ACTOR",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": true, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "Actor", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-N-002",
+      "class": "normal",
+      "source": "schema Row { value: Int }",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "schema", "declaration_family_or_null": "SCHEMA",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": false, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "Schema", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-N-003",
+      "class": "normal",
+      "source": "extension Number as Math {}",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "extension", "declaration_family_or_null": "EXTENSION_SET",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": false, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "ExtensionSet", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-N-004",
+      "class": "normal",
+      "source": "value abstract sealed class Token {}",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "value", "declaration_family_or_null": "CONTEXTUAL_CLASS",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": false, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "Class", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-N-005",
+      "class": "normal",
+      "source": "unit catalog SI {}",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "unit", "declaration_family_or_null": "UNIT_CATALOG",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": false, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "UnitCatalog", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-B-001",
+      "class": "boundary",
+      "source": "actor(Worker) { => start() }",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "script", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "actor", "declaration_family_or_null": null,
+        "commit_marker_reached": false, "declaration_parse_succeeds": false,
+        "statement_parse_succeeds": true, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "ROLLBACK_AND_PARSE_STATEMENT", "owner_or_null": "Statement", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-B-002",
+      "class": "boundary",
+      "source": "public actor Worker {}",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "script", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": "public",
+        "contextual_starter": "actor", "declaration_family_or_null": "ACTOR",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": true, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "Actor", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-B-003",
+      "class": "boundary",
+      "source": "extension pack toolkit {}",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "extension", "declaration_family_or_null": "EXTENSION_PACK",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": false, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "ExtensionPack", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-B-004",
+      "class": "boundary",
+      "source": "extern c(\"sqlite3\") {}",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "script", "activation_profile": "preview",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "extern", "declaration_family_or_null": "PREVIEW_EXTERN_BLOCK",
+        "commit_marker_reached": true, "declaration_parse_succeeds": true,
+        "statement_parse_succeeds": true, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "COMMIT_DECLARATION", "owner_or_null": "PreviewFFI.Block", "diagnostic_or_null": null}
+    },
+    {
+      "case_id": "R88-SIC-R-001",
+      "class": "reject",
+      "source": "actor Worker { => start() }",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "script", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "actor", "declaration_family_or_null": "ACTOR",
+        "commit_marker_reached": true, "declaration_parse_succeeds": false,
+        "statement_parse_succeeds": true, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "REJECT", "owner_or_null": "Actor", "diagnostic_or_null": "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE"}
+    },
+    {
+      "case_id": "R88-SIC-R-002",
+      "class": "reject",
+      "source": "extension Number as Math",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "extension", "declaration_family_or_null": "EXTENSION_SET",
+        "commit_marker_reached": true, "declaration_parse_succeeds": false,
+        "statement_parse_succeeds": false, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "REJECT", "owner_or_null": "ExtensionSet", "diagnostic_or_null": "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE"}
+    },
+    {
+      "case_id": "R88-SIC-R-003",
+      "class": "reject",
+      "source": "actor(Worker) { => start() }",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "actor", "declaration_family_or_null": null,
+        "commit_marker_reached": false, "declaration_parse_succeeds": false,
+        "statement_parse_succeeds": true, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "REJECT", "owner_or_null": "Statement", "diagnostic_or_null": "TOP_LEVEL_STATEMENT_REQUIRES_SCRIPT_ROOT"}
+    },
+    {
+      "case_id": "R88-SIC-R-004",
+      "class": "reject",
+      "source": "@audit actor(Worker) { => start() }",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "script", "activation_profile": "stable",
+        "annotation_prefix": true, "visibility_prefix_or_null": null,
+        "contextual_starter": "actor", "declaration_family_or_null": null,
+        "commit_marker_reached": false, "declaration_parse_succeeds": false,
+        "statement_parse_succeeds": true, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "REJECT", "owner_or_null": null, "diagnostic_or_null": "ANNOTATION_TARGET_REQUIRED"}
+    },
+    {
+      "case_id": "R88-SIC-R-005",
+      "class": "reject",
+      "source": "unit catalog",
+      "descriptor": {
+        "schema": "deeplus.source-item-commitment-decision/v1",
+        "source_role": "library", "activation_profile": "stable",
+        "annotation_prefix": false, "visibility_prefix_or_null": null,
+        "contextual_starter": "unit", "declaration_family_or_null": "UNIT_CATALOG",
+        "commit_marker_reached": true, "declaration_parse_succeeds": false,
+        "statement_parse_succeeds": false, "semantic_lookup_count": 0,
+        "committed_token_count_before_marker": 0
+      },
+      "expected": {"outcome": "REJECT", "owner_or_null": "UnitCatalog", "diagnostic_or_null": "SOURCE_ITEM_CONTEXTUAL_DECLARATION_INCOMPLETE"}
+    }
+  ],
+  "counts": {"normal": 5, "boundary": 4, "reject": 5, "total": 14, "executed_product": 0}
+}

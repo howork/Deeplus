@@ -1,0 +1,159 @@
+[
+  {
+    "authority": "MIR / XVM / RUNTIME",
+    "authority_set": [
+      "MIR",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "XBC_CONTAINER_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "No source fix-it and no best-effort repair; reject before execution.",
+    "message": "The XBC container header, bounds, reserved fields, or full layout is invalid.",
+    "notes": "Internal xVM projection-verifier diagnostic; product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/xvm-xbc-projection-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  },
+  {
+    "authority": "MIR / XVM / RUNTIME",
+    "authority_set": [
+      "MIR",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "XBC_VERSION_OR_BINDING_UNSUPPORTED",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Use an emitter and runtime that advertise the exact XBC, MIR, registry and runtime-ABI binding.",
+    "message": "The XBC version or one of its exact semantic/runtime bindings is unsupported.",
+    "notes": "No ordinal coincidence or host default may substitute for an exact binding.",
+    "primary_source": "spec/contracts/xvm-xbc-projection-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  },
+  {
+    "authority": "MIR / XVM / RUNTIME",
+    "authority_set": [
+      "MIR",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "XBC_SECTION_CANONICALITY_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Regenerate the artifact from the exact verified MIR; do not reorder or patch sections manually.",
+    "message": "The XBC section universe, order, extent, digest, or deterministic-CBOR encoding is invalid.",
+    "notes": "Internal projection-verifier diagnostic; product execution remains NOT_RUN.",
+    "primary_source": "spec/contracts/xvm-xbc-projection-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  },
+  {
+    "authority": "MIR / XVM / RUNTIME",
+    "authority_set": [
+      "MIR",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "XBC_INSTRUCTION_OR_CFG_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Repair the emitter or source MIR projection; never execute an unknown opcode or malformed typed edge.",
+    "message": "An XBC opcode, typed slot reference, block edge, SSA relation, or terminator is invalid.",
+    "notes": "The verifier rejects the complete artifact before execution.",
+    "primary_source": "spec/contracts/xvm-xbc-projection-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  },
+  {
+    "authority": "MIR / XVM / RUNTIME",
+    "authority_set": [
+      "MIR",
+      "RUNTIME"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "XBC_RESPONSIBILITY_OR_ROOT_INVALID",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Restore the exact MIR ownership, cleanup, root and continuation projection; do not infer or merge responsibilities.",
+    "message": "The XBC ownership, cleanup, managed-root, continuation, or outcome projection is invalid.",
+    "notes": "Internal projection-verifier diagnostic; no runtime cleanup or allocation has started.",
+    "primary_source": "spec/contracts/xvm-xbc-projection-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  },
+  {
+    "authority": "MIR / XVM / RUNTIME / EVIDENCE",
+    "authority_set": [
+      "MIR",
+      "RUNTIME",
+      "EVIDENCE"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "diagnostic_id": "XBC_ARTIFACT_DIGEST_MISMATCH",
+    "diagnostic_maturity": "active",
+    "diagnostic_status": "active",
+    "feature_refs": [
+      "hir_h1_current_mir_bridge_design"
+    ],
+    "fixit_kind": "none",
+    "fixit_policy": "Re-emit and rebind the complete XBC artifact and receipt from the same verified MIR.",
+    "message": "The XBC logical digest or complete encoded-byte digest does not match its artifact receipt.",
+    "notes": "Artifact byte identity and MIR semantic identity remain separate digest domains.",
+    "primary_source": "spec/contracts/xvm-xbc-projection-r1.json",
+    "product_support": "NOT_RUN",
+    "related_feature_refs": [],
+    "row_schema_version": "deeplus.diagnostic-row/r51f3",
+    "severity": "error",
+    "stage": "verifier",
+    "diagnostic_class": "internal_invariant",
+    "emission_domain": "compiler_internal"
+  }
+]

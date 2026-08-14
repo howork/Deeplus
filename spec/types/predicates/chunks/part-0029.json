@@ -1,0 +1,88 @@
+[
+  {
+    "baseline": "0.1.2-baseline.r51f3",
+    "row_schema_version": "deeplus.checker-predicate/r51f3",
+    "predicate_id": "ActorTransportAllocationAdmitted",
+    "source_name": "ActorTransportAllocationAdmitted",
+    "summary": "Seal one precommit actor transport allocation transaction with AllocationError/allocate responsibility and zero postcommit allocation; product checker/MIR/runtime NOT_RUN.",
+    "input_descriptor": "ActorTransportAllocationDecisionV1",
+    "input_adapter": null,
+    "input_descriptor_schema": "schemas/language/actor-transport-allocation-decision-v1.schema.json",
+    "descriptor_axes": [
+      "profile",
+      "operation",
+      "receiver_state",
+      "capacity_state",
+      "allocation_stage",
+      "decision",
+      "diagnostic_or_null",
+      "published_residue_count"
+    ],
+    "rule_facets": [
+      "transport_allocation_error_set",
+      "transport_effect_row",
+      "precommit_allocation",
+      "atomic_enqueue_commit",
+      "postcommit_allocation_fence"
+    ],
+    "feature_refs": [
+      "actor_mailbox_capacity",
+      "actor_request_reply"
+    ],
+    "diagnostic_refs": [
+      "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+      "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN"
+    ],
+    "design_seed_diagnostic_refs": [],
+    "output": "ActorTransportAllocationPlanV1 | reject(diagnostic_id)",
+    "requires": [
+      "the selected ActorTransport CallPlan preserves throws AllocationError and effects allocate independently from its value Result",
+      "receiver closure precedes bounded capacity rejection and both precede allocation",
+      "envelope, required mailbox storage and request-only responsibility storage are all prepared before enqueue commit",
+      "allocation failure retains sender ownership, reverse-cleans staged resources and publishes no message, sequence, ReplyId or CorrelationId",
+      "enqueue commit publishes the prepared transaction once and postcommit allocation count is zero"
+    ],
+    "evidence_status": "DESIGN_ALGORITHM_STATIC_NOT_RUN",
+    "product_support": "NOT_RUN",
+    "predecessor_contract": "spec/contracts/actor-transport-allocation-v1.json",
+    "formal_judgment_id": "J-ActorTransportAllocationAdmitted",
+    "algorithm_owner": "actor_transport_type_checker_hir_seal_and_mir_verifier",
+    "preconditions": [
+      "one ActorTransport target and call shape are already selected",
+      "operand values remain sender-owned until commit"
+    ],
+    "normalization": "separate ActorMessageError Result values from the exact AllocationError/allocate dynamic responsibility and one precommit allocation plan",
+    "decision_procedure": [
+      "reject a CallPlan that omits AllocationError or allocate",
+      "return receiverClosedBeforeAdmission if the locked receiver is closed",
+      "for bounded_reject_v1 return mailboxFull if capacity is full",
+      "otherwise stage all required resources and propagate AllocationError on any failure with zero publication",
+      "commit message, sequence, moved owners and request identities atomically; reject verified MIR containing a required postcommit allocation"
+    ],
+    "termination_metric": "one finite CallPlan and three ordered allocation stages",
+    "success_result": "ActorTransportAllocationPlanV1",
+    "active_primary_diagnostic": "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED",
+    "secondary_diagnostics": [
+      "ACTOR_TRANSPORT_POSTCOMMIT_ALLOCATION_FORBIDDEN"
+    ],
+    "positive_fixture_ids": [
+      "PF-ActorTransportAllocationAdmitted-POS",
+      "PF-ActorTransportAllocationAdmitted-BOUNDARY"
+    ],
+    "negative_fixture_ids": [
+      "PF-ActorTransportAllocationAdmitted-NEG-DROPPED",
+      "PF-ActorTransportAllocationAdmitted-NEG-POSTCOMMIT"
+    ],
+    "evaluation_order": "static selection -> operands once -> locked receiver/capacity checks -> all allocations -> one enqueue commit",
+    "dependency_predicates": [
+      "UnifiedCallModeAdmitted",
+      "TransferableAcrossIsolation"
+    ],
+    "diagnostic_dispatch": {
+      "RESPONSIBILITY_DROPPED": "ACTOR_TRANSPORT_ALLOCATION_RESPONSIBILITY_DROPPED"
+    },
+    "runtime_dispatch_count": 0,
+    "source_order_winner_count": 0,
+    "postcommit_allocation_count": 0
+  }
+]

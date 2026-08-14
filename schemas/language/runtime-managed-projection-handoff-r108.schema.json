@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://howork.github.io/Deeplus/schemas/language/runtime-managed-projection-handoff-r108.schema.json",
+  "title": "Deeplus R108 runtime and managed-reference implementation handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "status", "baseline", "source_bindings", "managed_native_abi", "target_projections", "implementation_invariants", "acceptance", "governance"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "deeplus.runtime-managed-projection-handoff/r108"},
+    "revision": {"const": "r108-runtime-managed-projection-implementation-handoff"},
+    "status": {"const": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF_COMPLETE_PRODUCT_NOT_RUN"},
+    "baseline": {
+      "type": "object",
+      "required": ["repository", "branch", "commit", "tree"],
+      "properties": {
+        "repository": {"const": "howork/Deeplus"},
+        "branch": {"type": "string", "minLength": 1},
+        "commit": {"$ref": "#/$defs/gitSha"},
+        "tree": {"$ref": "#/$defs/gitSha"}
+      },
+      "additionalProperties": false
+    },
+    "source_bindings": {"type": "object", "minProperties": 6, "additionalProperties": {"type": "string", "minLength": 1}},
+    "managed_native_abi": {
+      "type": "object",
+      "required": ["managed_handle_abi", "managed_root_slot_abi", "shadow_root_frame_abi", "runtime_root_registry", "safepoint_helpers", "implicit_backend_safepoint_count"],
+      "properties": {
+        "managed_handle_abi": {"$ref": "#/$defs/abiRecord"},
+        "managed_root_slot_abi": {"$ref": "#/$defs/abiRecord"},
+        "shadow_root_frame_abi": {"type": "object", "required": ["abi_id", "header_size_bytes", "alignment_bytes", "fields", "digest"], "properties": {"abi_id": {"type": "string"}, "header_size_bytes": {"type": "integer", "minimum": 1}, "alignment_bytes": {"type": "integer", "minimum": 1}, "fields": {"type": "array", "minItems": 4}, "digest": {"$ref": "#/$defs/sha256"}}, "additionalProperties": true},
+        "runtime_root_registry": {"type": "object", "required": ["registry_id", "partitions", "equation", "digest"], "properties": {"registry_id": {"type": "string"}, "partitions": {"const": ["RUNNING", "FRAME", "RUNTIME"]}, "equation": {"type": "string"}, "digest": {"$ref": "#/$defs/sha256"}}, "additionalProperties": true},
+        "safepoint_helpers": {"const": ["RuntimeHelperId:managed.safepoint_enter", "RuntimeHelperId:managed.safepoint_leave"]},
+        "implicit_backend_safepoint_count": {"const": 0}
+      },
+      "additionalProperties": false
+    },
+    "target_projections": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"$ref": "#/$defs/targetProjection"}},
+    "implementation_invariants": {"type": "object", "required": ["target_projection_count", "module_kinds", "logical_value_kind_count_per_projection", "helper_mapping_count_per_projection", "host_default_count", "aot_jit_logical_mapping_equal", "implicit_backend_safepoint_count", "raw_address_semantic_identity_count"], "properties": {"target_projection_count": {"const": 3}, "module_kinds": {"const": ["Xvm", "ObjectAot", "InMemoryJit"]}, "logical_value_kind_count_per_projection": {"const": 20}, "helper_mapping_count_per_projection": {"const": 25}, "host_default_count": {"const": 0}, "aot_jit_logical_mapping_equal": {"const": true}, "implicit_backend_safepoint_count": {"const": 0}, "raw_address_semantic_identity_count": {"const": 0}}, "additionalProperties": false},
+    "acceptance": {"type": "object", "required": ["positive", "boundary", "reject", "mutation_count", "execution_state"], "properties": {"positive": {"const": 4}, "boundary": {"const": 4}, "reject": {"const": 8}, "mutation_count": {"const": 12}, "execution_state": {"const": "DESIGN_STATIC_NOT_RUN"}}, "additionalProperties": false},
+    "governance": {"type": "object", "required": ["semantic_p0", "feature_p1", "product_lanes", "production_execution", "current_binding", "github_mutation"], "properties": {"semantic_p0": {"const": 0}, "feature_p1": {"const": "22_OPEN_UNCHANGED"}, "product_lanes": {"const": "15_OF_15_NOT_RUN"}, "production_execution": {"const": "NOT_RUN"}, "current_binding": {"const": false}, "github_mutation": {"const": 0}}, "additionalProperties": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitSha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "abiRecord": {"type": "object", "required": ["abi_id", "size_bytes", "alignment_bytes", "fields", "digest"], "properties": {"abi_id": {"type": "string"}, "size_bytes": {"type": "integer", "minimum": 1}, "alignment_bytes": {"type": "integer", "minimum": 1}, "fields": {"type": "array", "minItems": 3}, "digest": {"$ref": "#/$defs/sha256"}}, "additionalProperties": true},
+    "targetProjection": {"type": "object", "required": ["schema", "projection_id", "runtime_abi_id", "runtime_abi_digest", "mir_schema_digest", "mir_machine_registry_digest", "target_triple", "pointer_width", "endianness", "stack_alignment_bytes", "calling_convention", "module_kind", "scalar_mapping_digest", "indirect_slot_mapping_digest", "outcome_mapping_digest", "helper_allowlist_digest", "helper_symbol_or_table_map_digest", "toolchain_digest", "managed_reference_profile_digest", "continuation_interface_digest", "managed_handle_abi_digest", "shadow_root_frame_abi_digest", "runtime_root_registry_digest", "mapping_preimage_digest", "target_location_is_semantic_identity", "toolchain_preimage", "helper_mapping_count", "logical_value_kind_count", "projection_digest", "product_execution"], "properties": {"schema": {"const": "deeplus.internal-runtime-abi-target-projection/r108"}, "projection_id": {"type": "string"}, "runtime_abi_id": {"const": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1"}, "runtime_abi_digest": {"$ref": "#/$defs/sha256"}, "mir_schema_digest": {"$ref": "#/$defs/sha256"}, "mir_machine_registry_digest": {"$ref": "#/$defs/sha256"}, "target_triple": {"type": "string"}, "pointer_width": {"const": 64}, "endianness": {"const": "LITTLE"}, "stack_alignment_bytes": {"enum": [8, 16]}, "calling_convention": {"type": "string"}, "module_kind": {"enum": ["Xvm", "ObjectAot", "InMemoryJit"]}, "scalar_mapping_digest": {"$ref": "#/$defs/sha256"}, "indirect_slot_mapping_digest": {"$ref": "#/$defs/sha256"}, "outcome_mapping_digest": {"$ref": "#/$defs/sha256"}, "helper_allowlist_digest": {"$ref": "#/$defs/sha256"}, "helper_symbol_or_table_map_digest": {"$ref": "#/$defs/sha256"}, "toolchain_digest": {"$ref": "#/$defs/sha256"}, "managed_reference_profile_digest": {"$ref": "#/$defs/sha256"}, "continuation_interface_digest": {"$ref": "#/$defs/sha256"}, "managed_handle_abi_digest": {"$ref": "#/$defs/sha256"}, "shadow_root_frame_abi_digest": {"$ref": "#/$defs/sha256"}, "runtime_root_registry_digest": {"$ref": "#/$defs/sha256"}, "mapping_preimage_digest": {"$ref": "#/$defs/sha256"}, "target_location_is_semantic_identity": {"const": false}, "toolchain_preimage": {"type": "object"}, "helper_mapping_count": {"const": 25}, "logical_value_kind_count": {"const": 20}, "projection_digest": {"$ref": "#/$defs/sha256"}, "product_execution": {"const": "NOT_RUN"}}, "additionalProperties": false}
+  }
+}

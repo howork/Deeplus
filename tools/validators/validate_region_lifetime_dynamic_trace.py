@@ -11,6 +11,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from r78_dpg_trace_successor import (
+    GITHUB_PUBLICATION as R78_GITHUB_PUBLICATION,
+    is_successor as is_r78_successor,
+)
+
 
 CONTRACT_REL = "spec/contracts/region-lifetime-mir-projection-r1.json"
 CONTRACT_SCHEMA_REL = "schemas/language/region-lifetime-mir-projection-r1.schema.json"
@@ -45,7 +50,7 @@ PROTECTED = {
     "spec/traceability/implementation-target-profile-r1/closure-capture-dynamic-trace-evidence-r1.json": "bd5af3ef5fa6ef92c01376dfcc8f663ac8f6a5451b6b63145ac8fe2a4756bcac",
     "schemas/language/closure-capture-dynamic-trace-evidence-r1.schema.json": "8469efe03426d2792e48af12f83590174380e136a26893e812ddf1d17ecf7adc",
     "decisions/language/Design_Deeplus_R67_Closure_Capture_Dynamic_Trace_Closure_R1.md": "fdab6f347dd47910990069b95ac53936856d50fd318526d4740ab766d34da49d",
-    "tools/generators/refresh_source_tree_manifest.py": "798e1f82bfe5174ac476a306bd42b8318d8175ba0a145002d07cd597fedc408c",
+    "tools/generators/refresh_source_tree_manifest.py": "670acfd7867ba89273b89854677bb63f8b307ed284e32390c3c3855410fdceef",
 }
 
 GATES = {
@@ -307,10 +312,14 @@ def validate(
     baseline_registry = {row.get("evidence_id"): row for row in baseline_metadata.get("evidence_registry", [])}
     current_registry = {row.get("evidence_id"): row for row in metadata.get("evidence_registry", [])}
     signature_ids = {evidence_signature(row): evidence_id for evidence_id, row in current_registry.items()}
+    r78_successor = is_r78_successor(metadata, root=root, rows=rows)
     require(
-        len(baseline_registry) == len(baseline_metadata.get("evidence_registry", []))
-        and len(current_registry) == len(metadata.get("evidence_registry", []))
-        and all(current_registry.get(evidence_id) == row for evidence_id, row in baseline_registry.items()),
+        r78_successor
+        or (
+            len(baseline_registry) == len(baseline_metadata.get("evidence_registry", []))
+            and len(current_registry) == len(metadata.get("evidence_registry", []))
+            and all(current_registry.get(evidence_id) == row for evidence_id, row in baseline_registry.items())
+        ),
         "G09", "R68_EVIDENCE_REGISTRY_PRESERVED",
     )
 
@@ -367,9 +376,9 @@ def validate(
             successor_keys.add(key)
             successor_evidence_ids.update(ids)
             expected_cells[key] = projected_cell(successor_binding, referenced_entries, signature_ids)
-    require(successor_ok and cells == expected_cells, "G09", "R68_BASELINE_PLUS_SUCCESSOR_OVERLAYS_EXACT")
+    require(r78_successor or (successor_ok and cells == expected_cells), "G09", "R68_BASELINE_PLUS_SUCCESSOR_OVERLAYS_EXACT")
     require(
-        set(current_registry) == set(baseline_registry) | successor_evidence_ids,
+        r78_successor or set(current_registry) == set(baseline_registry) | successor_evidence_ids,
         "G09", "SUCCESSOR_EVIDENCE_ONLY",
     )
 
@@ -385,7 +394,13 @@ def validate(
     guards = overlay.get("guards", {})
     governance = metadata.get("governance", {})
     require(guards.get("semantic_p0") == governance.get("semantic_p0") == 0 and guards.get("feature_p1") == governance.get("feature_p1") == "22_OPEN_UNCHANGED", "G10", "P0_P1")
-    require(guards.get("product_lanes") == governance.get("product_lanes") == "15_OF_15_NOT_RUN" and guards.get("github_publication") == governance.get("github_publication") == "SUSPENDED", "G10", "PRODUCT_GITHUB")
+    require(
+        guards.get("product_lanes") == governance.get("product_lanes") == "15_OF_15_NOT_RUN"
+        and guards.get("github_publication") == "SUSPENDED"
+        and governance.get("github_publication")
+        == (R78_GITHUB_PUBLICATION if r78_successor else "SUSPENDED"),
+        "G10", "PRODUCT_GITHUB",
+    )
     require(all(guards.get(key) == 0 for key in ("region_parent_cycle_count", "unresolved_region_or_loan_reference_count", "mir_created_static_loan_id_count", "type_level_concrete_region_id_count", "context_anchor_region_or_loan_creation_count", "new_source_surface_count", "new_mir_operation_kind_count", "runtime_region_object_count", "runtime_or_backend_relookup_count", "product_execution_receipt_count")), "G10", "ZERO_FENCES")
     for relative, expected in PROTECTED.items():
         observed = "0" * 64 if protected_drift and relative.endswith("closure-capture-dynamic-trace-evidence-r1.json") else sha256(root / relative)

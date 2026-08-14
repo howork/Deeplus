@@ -1,0 +1,84 @@
+{
+  "schema": "deeplus.exact-numeric-operator-allocation-fixtures/r99",
+  "contract": "spec/contracts/exact-numeric-operator-allocation-r99.json",
+  "evidence_level": "E2_DESIGN_STATIC",
+  "product_execution": "NOT_RUN",
+  "cases": [
+    {
+      "id": "ENO-P-001",
+      "kind": "POSITIVE",
+      "scenario": "primitive_add",
+      "selected_error_set": [],
+      "selected_effect_row": [],
+      "expected": "ADMIT"
+    },
+    {
+      "id": "ENO-P-002",
+      "kind": "POSITIVE",
+      "scenario": "rational_add_propagated",
+      "selected_error_set": ["AllocationError"],
+      "selected_effect_row": ["allocate"],
+      "expected": "ADMIT"
+    },
+    {
+      "id": "ENO-P-003",
+      "kind": "POSITIVE",
+      "scenario": "rational_equality_pure",
+      "selected_error_set": [],
+      "selected_effect_row": [],
+      "expected": "ADMIT_KEYABLE_COMPATIBLE"
+    },
+    {
+      "id": "ENO-B-001",
+      "kind": "BOUNDARY",
+      "scenario": "generic_add_bound_uses_maximum_envelope",
+      "selected_error_set": ["AllocationError"],
+      "selected_effect_row": ["allocate"],
+      "expected": "ADMIT_WITH_FULL_BOUND_RESPONSIBILITY"
+    },
+    {
+      "id": "ENO-B-002",
+      "kind": "BOUNDARY",
+      "scenario": "small_rational_optimization",
+      "selected_error_set": ["AllocationError"],
+      "selected_effect_row": ["allocate"],
+      "expected": "RESPONSIBILITY_UNCHANGED"
+    },
+    {
+      "id": "ENO-B-003",
+      "kind": "BOUNDARY",
+      "scenario": "allocation_failure_before_compound_assignment_commit",
+      "selected_error_set": ["AllocationError"],
+      "selected_effect_row": ["allocate"],
+      "expected": "PLACE_UNCHANGED_AND_NO_RESULT_PUBLISHED"
+    },
+    {
+      "id": "ENO-R-001",
+      "kind": "REJECT",
+      "scenario": "pure_callable_uses_generic_add_without_narrow_witness",
+      "diagnostic": "OPERATOR_ALLOCATION_ERROR_NOT_PROPAGATED",
+      "expected": "REJECT_BEFORE_HIR_COMMIT"
+    },
+    {
+      "id": "ENO-R-002",
+      "kind": "REJECT",
+      "scenario": "caller_omits_allocate_effect",
+      "diagnostic": "OPERATOR_ALLOCATE_EFFECT_NOT_DECLARED",
+      "expected": "REJECT_BEFORE_HIR_COMMIT"
+    },
+    {
+      "id": "ENO-R-003",
+      "kind": "REJECT",
+      "scenario": "operator_witness_declares_io_or_domain_error",
+      "diagnostic": "OPERATOR_CONFORMANCE_RESPONSIBILITY_MISMATCH",
+      "expected": "REJECT_CONFORMANCE"
+    },
+    {
+      "id": "ENO-R-004",
+      "kind": "REJECT",
+      "scenario": "runtime_converts_allocation_failure_to_oom_defect",
+      "diagnostic": "HIR_MIR_RESPONSIBILITY_PROJECTION_MISMATCH",
+      "expected": "REJECT_PROJECTION"
+    }
+  ]
+}

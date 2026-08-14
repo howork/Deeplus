@@ -18,6 +18,31 @@ measure/unit 표면을 설명한다.
 | measure literal, 단위 곱/몫/거듭제곱, exact-ratio catalog | `CURRENT` |
 | dynamic/calendar/market conversion | 명시적 `STDLIB_PROFILE`/provider만 |
 | Enum declaration-order `Ord`, case display mapping, exact-variant subset alias | `STABLE_DESIGN`, 제품 실행 `NOT_RUN` |
+
+### Enum body는 하나 이상의 case로 시작한다
+
+현행 Enum은 비어 있지 않은 nominal sum이다. 따라서 `{}`는 유효한 Enum
+선언이 아니며, body의 첫 항목을 메서드나 type-side member로 시작할 수도
+없다. 최소 한 case가 먼저 와야 한다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/enum-match-boundary-v1.json -->
+```deeplus
+public enum Result {
+    ok(value: Int)
+    error(message: String)
+
+    +def isOk(self) -> Bool = {
+        return @match self {
+            ::ok(_) => true
+            otherwise => false
+        }
+    }
+}
+```
+
+쉼표 mode는 같은 물리 행의 case-only 목록이며 최소 두 case가 필요하다.
+layout mode는 하나 이상의 case 뒤에 허용된 member를 둔다. 빈 Enum이나
+member-only Enum은 AST/HIR identity를 만들기 전에 거부된다.
 | successor uniform-within-case payload와 final-dot-only Enum member | `PREVIEW_DESIGN_NONACTIVATABLE` |
 | raw/ABI profile, external residual spelling, A3, empty Enum | `PREVIEW_DESIGN_NONACTIVATABLE` 또는 deferred |
 | 제품 parser/checker/MIR/runtime/formatter/LSP | `NOT_RUN` |
@@ -38,9 +63,9 @@ product support를 이 장이 변경하지 않으며 product lane은 정확히
 EnumDecl ::= TopLevelVisibility? "enum" Identifier
              TypeParameterList? EnumBody
 
-EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody)? "}"
+EnumBody ::= "{" (EnumCommaCaseSequence | EnumLayoutBody) "}"
 EnumCommaCaseSequence ::= EnumCaseCore ("," EnumCaseCore)+ ","?
-EnumLayoutBody ::= EnumCaseDecl* EnumMemberDecl*
+EnumLayoutBody ::= EnumCaseDecl+ EnumMemberDecl*
 
 EnumCaseDecl ::= EnumCaseCore StatementBoundary?
 EnumCaseCore ::= Identifier EnumCasePayload?
@@ -189,6 +214,19 @@ ExactRatioUnitConversionDecl ::= "unit" Identifier "equalsRatio"
 `m/s`, `m*s`, `m^2`는 unit 차원 연산이며 일반 collection indexing과
 다른 parser owner를 갖는다. 단위 symbol은 활성 unit catalog authority에서
 유일하게 resolve되어야 한다.
+
+Measure와 Index의 경계는 타입 정보를 조회하지 않고 다음처럼 정한다.
+
+| source | parser 결과 |
+|---|---|
+| `13[cm]` | 붙어 있는 `[`에서 `UnitExpr` 탐사가 성공하므로 `MeasureLiteralExpr`이다. |
+| `13 [cm]` | 공백 뒤의 완전한 `UnitExpr` 탐사가 성공하므로 `UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED`를 내고, 닫는 `]`까지 하나의 recovery CST 오류 노드로 보존한다. canonical Measure/Index AST는 만들지 않는다. |
+| `13[0]` | 붙어 있는 Measure 탐사가 실패한 뒤 토큰 소비나 진단 없이 일반 `IndexExpr`로 해석한다. |
+| `13 [0]` | 공백 뒤의 `UnitExpr` 탐사가 실패하므로 토큰 소비나 진단 없이 일반 `IndexExpr`로 해석한다. |
+
+따라서 공백만 보고 Measure와 Index를 고르지 않는다. parser는 대괄호
+내용이 완전한 `UnitExpr`인지 transactional하게 확인하고, 실패하면 입력과
+진단 상태를 원래 checkpoint로 되돌린다.
 
 core 변환은 exact ratio만 허용한다. calendar, currency 또는 관측 시점이
 필요한 동적 변환은 명시적 stdlib/provider API와 policy를 요구한다.

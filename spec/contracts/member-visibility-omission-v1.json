@@ -1,0 +1,224 @@
+{
+  "$schema": "../../schemas/language/member-visibility-omission-v1.schema.json",
+  "schema": "deeplus.member-visibility-omission/v1",
+  "revision": "preimpl-p1-member-visibility-omission-r1",
+  "status": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED",
+  "gap_id": "IR-VIS-P1-057",
+  "descriptor_schema": "schemas/language/member-visibility-resolution-v1.schema.json",
+  "predecessor_contract": "spec/contracts/member-visibility-trace-closure-r1.json",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "observed_live_main": "10e64f492f0529610673846139afcf0d95175663",
+    "local_predecessor_commit": "245c41be35869584657c9d20a660c58ccfd95794"
+  },
+  "surface_contract": {
+    "new_source_surface_count": 0,
+    "explicit_spellings": ["-", "#", "+"],
+    "surface_state_order": ["EXPLICIT_MINUS", "EXPLICIT_HASH", "EXPLICIT_PLUS", "OMITTED"],
+    "ast_preserves_omission": true,
+    "omitted_ast_value": null,
+    "global_default_count": 0,
+    "owner_specific_resolution_required": true,
+    "unresolved_omission_may_enter_canonical_hir": false,
+    "unresolved_omission_may_enter_module_api": false
+  },
+  "owner_rows": [
+    {
+      "ordinal": 1,
+      "owner_production": "MemberFunctionDecl",
+      "omitted_resolution": "INHERIT_ORIGINAL_SLOT_IF_OVERRIDE_ELSE_PRIVATE",
+      "admitted_parent_contexts": ["NEW_MEMBER", "OVERRIDE_SLOT"],
+      "missing_anchor_outcome": "OVERRIDE_SLOT_REJECT_MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING"
+    },
+    {
+      "ordinal": 2,
+      "owner_production": "TypeSideMemberFunctionDecl",
+      "omitted_resolution": "TRAIT_ASSOCIATED_REQUIREMENT_DOMAIN_IN_CONFORMANCE_ELSE_PRIVATE",
+      "admitted_parent_contexts": ["NOMINAL_TYPE_SIDE", "EXTENSION_SET_TYPE_SIDE", "CONFORMANCE_ASSOCIATED_FUNCTION"],
+      "missing_anchor_outcome": "CONFORMANCE_ASSOCIATED_FUNCTION_REJECT_MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING"
+    },
+    {
+      "ordinal": 3,
+      "owner_production": "ConstructorDecl",
+      "omitted_resolution": "PRIVATE",
+      "admitted_parent_contexts": ["NEW_MEMBER"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 4,
+      "owner_production": "StoredParameter",
+      "omitted_resolution": "PRIVATE",
+      "admitted_parent_contexts": ["NEW_MEMBER"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 5,
+      "owner_production": "FieldDecl",
+      "omitted_resolution": "PRIVATE",
+      "admitted_parent_contexts": ["NEW_MEMBER"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 6,
+      "owner_production": "TypeSideFieldDecl",
+      "omitted_resolution": "PRIVATE",
+      "admitted_parent_contexts": ["NEW_MEMBER"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 7,
+      "owner_production": "AccessorDecl",
+      "omitted_resolution": "PRIVATE_PER_GET_OR_SET_ACCESSOR",
+      "admitted_parent_contexts": ["NEW_MEMBER"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 8,
+      "owner_production": "ForwardDecl",
+      "omitted_resolution": "PRIVATE_FOR_EACH_GENERATED_FORWARD_SLOT",
+      "admitted_parent_contexts": ["NEW_MEMBER"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 9,
+      "owner_production": "TraitMethodDecl",
+      "omitted_resolution": "INHERIT_ORIGINAL_TRAIT_SLOT_IF_OVERRIDE_ELSE_PRIVATE",
+      "admitted_parent_contexts": ["TRAIT_NEW_MEMBER", "TRAIT_OVERRIDE_SLOT"],
+      "missing_anchor_outcome": "TRAIT_OVERRIDE_SLOT_REJECT_MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING"
+    },
+    {
+      "ordinal": 10,
+      "owner_production": "ConformanceMethodDecl",
+      "omitted_resolution": "INHERIT_EXACT_TRAIT_REQUIREMENT_VISIBILITY",
+      "admitted_parent_contexts": ["CONFORMANCE_REQUIREMENT"],
+      "missing_anchor_outcome": "REJECT_MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING"
+    },
+    {
+      "ordinal": 11,
+      "owner_production": "ExtensionSetFunctionDecl",
+      "omitted_resolution": "PRIVATE",
+      "admitted_parent_contexts": ["NEW_MEMBER"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 12,
+      "owner_production": "ActorOnDecl",
+      "omitted_resolution": "ACTOR_VISIBILITY_OR_ACTOR_PROTOCOL_EFFECTIVE_TRANSPORT_VISIBILITY",
+      "admitted_parent_contexts": ["ACTOR_STANDALONE_OPERATION", "ACTOR_PROTOCOL_CONFORMANCE_OPERATION"],
+      "missing_anchor_outcome": "REJECT_MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING"
+    },
+    {
+      "ordinal": 13,
+      "owner_production": "ActorRequestDecl",
+      "omitted_resolution": "ACTOR_VISIBILITY_OR_ACTOR_PROTOCOL_EFFECTIVE_TRANSPORT_VISIBILITY",
+      "admitted_parent_contexts": ["ACTOR_STANDALONE_OPERATION", "ACTOR_PROTOCOL_CONFORMANCE_OPERATION"],
+      "missing_anchor_outcome": "REJECT_MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING"
+    },
+    {
+      "ordinal": 14,
+      "owner_production": "BitfieldNamedSlot",
+      "omitted_resolution": "PRIVATE",
+      "admitted_parent_contexts": ["BITFIELD_LAYOUT"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    },
+    {
+      "ordinal": 15,
+      "owner_production": "FlagNamedSlot",
+      "omitted_resolution": "PRIVATE",
+      "admitted_parent_contexts": ["BITFIELD_LAYOUT"],
+      "missing_anchor_outcome": "NOT_APPLICABLE"
+    }
+  ],
+  "resolution_pipeline": [
+    "PRESERVE_EXACT_SURFACE_STATE_IN_CST_AND_AST",
+    "RESOLVE_EXACT_OWNER_PRODUCTION_AND_PARENT_CONTEXT",
+    "BIND_ORIGINAL_SLOT_TRAIT_REQUIREMENT_OR_TRANSPORT_OWNER_WHEN_REQUIRED",
+    "RESOLVE_OMISSION_BY_THE_EXACT_OWNER_ROW",
+    "APPLY_EXPLICIT_VISIBILITY_AND_SLOT_COMPATIBILITY_RULES",
+    "SEAL_ONE_EFFECTIVE_DOMAIN_AND_PROVENANCE_IN_TYPED_HIR",
+    "REJECT_IF_ANY_OMISSION_OR_REQUIRED_ANCHOR_REMAINS"
+  ],
+  "hir_seal": {
+    "required_fields": ["surface_state", "resolution_kind", "effective_domain", "resolution_anchor_id_or_null"],
+    "effective_domains": [
+      "PRIVATE",
+      "HIERARCHY_PROTECTED",
+      "PUBLIC",
+      "TRAIT_ASSOCIATED_REQUIREMENT_DOMAIN",
+      "TRANSPORT_PRIVATE",
+      "TRANSPORT_COMMON",
+      "TRANSPORT_PUBLIC"
+    ],
+    "omitted_or_null_effective_domain_count": 0,
+    "resolution_anchor_required_for": [
+      "OVERRIDE_SLOT",
+      "TRAIT_OVERRIDE_SLOT",
+      "CONFORMANCE_REQUIREMENT",
+      "CONFORMANCE_ASSOCIATED_FUNCTION",
+      "ACTOR_STANDALONE_OPERATION",
+      "ACTOR_PROTOCOL_CONFORMANCE_OPERATION"
+    ],
+    "actor_protocol_transport_rule": "meet(ActorDecl.visibility, ActorProtocolDecl.visibility)",
+    "actor_standalone_transport_rule": "ActorDecl.visibility",
+    "runtime_visibility_check_count": 0,
+    "new_mir_operation_kind_count": 0,
+    "backend_reinterpretation_count": 0
+  },
+  "diagnostic_precedence": [
+    {
+      "rank": 1,
+      "condition": "MEMBER_USES_TOP_LEVEL_VISIBILITY_WORD",
+      "diagnostic": "CALLABLE_VISIBILITY_KEYWORD_FORBIDDEN"
+    },
+    {
+      "rank": 2,
+      "condition": "OWNER_PRODUCTION_AND_PARENT_CONTEXT_PAIR_IS_NOT_ADMITTED",
+      "diagnostic": "MEMBER_VISIBILITY_OMISSION_OWNER_CONTEXT_INVALID"
+    },
+    {
+      "rank": 3,
+      "condition": "OMISSION_REQUIRES_AN_ORIGINAL_SLOT_REQUIREMENT_OR_TRANSPORT_OWNER_BUT_BINDING_IS_MISSING",
+      "diagnostic": "MEMBER_VISIBILITY_OMISSION_ANCHOR_MISSING"
+    },
+    {
+      "rank": 4,
+      "condition": "EXPLICIT_OVERRIDE_VISIBILITY_NARROWS_ORIGINAL_SLOT",
+      "diagnostic": "OVERRIDE_VISIBILITY_CANNOT_NARROW"
+    },
+    {
+      "rank": 5,
+      "condition": "EXPLICIT_CONFORMANCE_VISIBILITY_DOES_NOT_SATISFY_REQUIREMENT",
+      "diagnostic": "TRAIT_REQUIREMENT_VISIBILITY_MISMATCH"
+    },
+    {
+      "rank": 6,
+      "condition": "REFERENCE_SITE_IS_OUTSIDE_THE_RESOLVED_EFFECTIVE_DOMAIN",
+      "diagnostic": "REFERENCE_VISIBILITY_OR_ACTIVATION_VIOLATION"
+    }
+  ],
+  "acceptance": {
+    "owner_row_count": 15,
+    "owner_row_unique_count": 15,
+    "unresolved_omission_after_resolution_count": 0,
+    "normal_fixture_minimum": 15,
+    "boundary_fixture_minimum": 6,
+    "reject_fixture_minimum": 4,
+    "mutation_classes": [
+      "OWNER_ROW_REMOVED",
+      "DEFAULT_PUBLIC_WIDENING",
+      "CONFORMANCE_PRIVATE_DEFAULT",
+      "OVERRIDE_PRIVATE_DEFAULT",
+      "ACTOR_PROTOCOL_VISIBILITY_NOT_MET",
+      "UNRESOLVED_NULL_HIR",
+      "MISSING_ANCHOR_ADMITTED",
+      "PRODUCT_PASS_OVERCLAIM"
+    ]
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_publication": "NOT_PERFORMED"
+  }
+}

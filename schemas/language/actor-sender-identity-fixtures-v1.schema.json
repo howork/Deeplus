@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.invalid/schemas/actor-sender-identity-fixtures-v1.schema.json",
+  "title": "Actor Sender Identity Fixtures V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "cases"],
+  "properties": {
+    "schema": {"const": "deeplus.actor-sender-identity-fixtures/r1"},
+    "cases": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case_id", "class", "descriptor", "expected"],
+        "properties": {
+          "case_id": {"type": "string", "pattern": "^R91-ASI-(POS|BND|NEG)-[0-9]{3}$"},
+          "class": {"enum": ["normal", "boundary", "reject"]},
+          "descriptor": {"$ref": "actor-sender-identity-decision-v1.schema.json"},
+          "expected": {"enum": ["ADMIT_ACTOR", "ADMIT_EXECUTION", "PRESERVE_QUEUED", "REJECT_STATIC", "REJECT_MIR"]}
+        }
+      }
+    }
+  }
+}

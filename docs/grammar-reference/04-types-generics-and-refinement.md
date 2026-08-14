@@ -80,6 +80,22 @@ Trait 타입 매개변수 위치에서만 사용할 수 있으며, 생산/소비
 검사를 통과해야 한다. Class 소유자가 variance를 선언하는 표면은
 현행에 들어오지 않는다.
 
+generic 호출의 적용 가능성은 후보마다 독립적으로 판정한다. 명시한
+generic 인수와 값 인수에서만 후보 전용 제약을 만들고, kind 검사와
+occurs check를 거쳐 완전하고 유일한 substitution을 얻은 뒤 `where`
+의무를 확인한다. 기본 인수는 값 인수로 정해지지 않은 변수에만 채운다.
+반환 타입의 선호, 선언·import 순서, 런타임 값 또는 다른 후보에서 실패한
+binding은 substitution을 정하는 근거가 아니다. 실패한 후보는 witness,
+loan, capture 또는 HIR residue를 남기지 않는다.
+
+variance는 이름의 상속 관계가 아니라 owner와 모든 사용 위치가 함께
+증명하는 계약이다. Class, Enum과 그 밖의 nominal constructor는
+invariant이고, `out`/`in`은 Trait의 `type` kind 매개변수에만 허용된다.
+`StaticInt`는 exact equality, `EffectRow`와 `ErrorSet`은 각 row 관계를
+사용한다. mutable storage, `inout`과 ownership qualifier를 통과하는
+위치는 invariant로 닫는다. use-site variance와 variance inference는
+현행에 없다.
+
 ### tuple, parenthesized type와 함수 타입
 
 ```ebnf
@@ -95,6 +111,14 @@ FunctionTypeTail  ::= "->" NonFunctionTypeRef ThrowsClause* EffectsClause*
 - `T..`는 반복 positional residue이고 `NamedPack**`는 static named-rest
   residue이다. 둘은 public API identity에 남는다.
 - `NamedPack**`와 `Record` 또는 `Map`은 같은 호출 채널이 아니다.
+
+함수 타입 호환성은 channel shape, label, rest shape, parameter mode와
+ownership을 정확히 보존한다. 그 경계 안에서 parameter type은 반공변,
+result type은 공변이며, 실제 함수의 ErrorSet과 EffectRow는 대상 타입이
+허용한 집합의 부분집합이어야 한다. cancellation, suspension, isolation,
+authority, call-right, capture와 cleanup 책임은 정확히 같아야 하며 숨은
+wrapper, error swallowing, effect masking 또는 runtime compatibility test로
+차이를 메우지 않는다.
 
 ### 특수 타입 표면
 
@@ -282,6 +306,47 @@ base type identity를 명시하는 구간 refinement는
 않는다. bound는 literal, 정적 이름 또는 qualified static value이고
 source expression을 평가하거나 provider를 탐색하지 않는다.
 
+### RefinementR0V1의 실제 판정 범위
+
+위 표면은 문자열 조건으로 저장되지 않는다. checker는 조건을
+`RefinementR0V1`의 폐쇄형 typed AST로 정규화한다. 정본 계약은
+[`spec/contracts/refinement-r0-calculus-v1.json`](../../spec/contracts/refinement-r0-calculus-v1.json),
+formula schema는
+[`schemas/language/refinement-r0-formula-v1.schema.json`](../../schemas/language/refinement-r0-formula-v1.schema.json)이다.
+
+초기 R0는 다음 값을 다룬다.
+
+- `Bool`, signed/unsigned integer, `StaticInt`
+- `Float32`, `Float64`, `Rational`
+- `Char` scalar와 순서가 활성화된 Enum
+- 등록된 `String`, `Bytes`, `List`, `ReadonlyView`의 `length` projection
+
+연산자 모양만 맞는다고 R0가 되는 것은 아니다. compiler 또는 Prelude가
+등록한 exact R0 row가 선택되어야 하며 사용자 operator conformance,
+provider, reflection, 임의 함수 호출은 들어올 수 없다. checked integer
+연산은 선언된 입력 domain 전체에서 overflow가 없음을 증명해야 한다.
+정수 `/`, `%`와 Rational `/`, `%`는 정적으로 안전한 divisor가 필요하다.
+따라서 다음의 `% 2`는 total이지만 `1 / value`는 `value`가 0이 아님을 다른
+conjunct에 적었다는 이유만으로 total이 되지 않는다.
+
+<!-- deeplus-example: illustrative; status: CURRENT_EXPLANATORY; authority-source: spec/contracts/refinement-r0-calculus-v1.json -->
+```deeplus
+public type Even = Int where this % 2 == 0
+
+// R0로 거부: full Int domain에서 division이 total하지 않다.
+public type ReciprocalPositive = Int where 1 / this > 0
+```
+
+증명기는 `SAT`, `UNSAT`, `UNKNOWN`의 세 결과를 사용한다. 정해진 proof
+budget을 소진하면 `UNKNOWN`이며 PASS가 아니다. construction/argument/
+return/pattern boundary에서 target을 증명하지 못하면
+`REFINEMENT_PROOF_REQUIRED`, Union alternative의 disjointness를 증명하지
+못하면 `UNION_ALTERNATIVES_NOT_PROVEN_DISJOINT`가 선택된다.
+
+Float의 보수는 특히 주의한다. `not(x > 0.0)`은 NaN을 포함하지만
+`x <= 0.0`은 NaN을 포함하지 않는다. 따라서 checker는 전자를 후자로
+바꾸지 않고 negated IEEE comparison atom으로 보존한다.
+
 ## 허용과 정적 의미
 
 ### 정규화와 타입 identity
@@ -295,12 +360,15 @@ cancellation, measure와 witness identity를 정규화한다. 정규화는
 discriminant, ABI 및 backend layout과 별개이다. 추론은 bidirectional이고
 지역적이며 결과 타입이나 source order를 숨은 tie-breaker로 쓰지 않는다.
 
-Phase-A generic inference는 선택된 선언이 실제로 가진 parameter에만
-fresh variable을 만든다. 명시적 value argument를 왼쪽부터 읽어 constraint를
-모으고, 정규화·occurs check·kind check 뒤 정확히 하나의 substitution을
-요구한다. 이미 고정된 expected result type은 그 substitution을
-검증할 수 있지만 overload 선택이나 유일한 추론 근거가 될 수 없다.
-그 다음 `where` obligation과 explicit conformance evidence를 확인한다.
+Phase-A generic inference는 ordinary-call 후보마다 그 선언이 실제로 가진
+parameter에만 독립된 fresh variable을 만든다. 명시적 generic/value
+argument만 후보-local constraint를 만들며 sibling 후보, default와 expected
+result에서는 constraint를 가져오지 않는다. 정규화·occurs check·kind check
+뒤 각 applicable 후보는 정확히 하나의 complete substitution을 가져야 한다.
+이미 고정된 expected result type은 unique winner가 정해진 뒤 그
+substitution/result를 검증할 수 있지만 overload 선택이나 유일한 추론
+근거가 될 수 없다. 그 다음 후보-local `where` obligation과 explicit
+conformance evidence를 확인한다.
 
 `StaticInt`, `EffectRow`, `ErrorSet` kind도 ordinary type으로 뭉개지 않는다.
 argument constraint가 한 exact normalized 값을 정하지 못하면 해당

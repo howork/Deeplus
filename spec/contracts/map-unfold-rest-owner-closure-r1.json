@@ -1,0 +1,104 @@
+{
+  "$schema": "../../schemas/language/map-unfold-rest-owner-closure-r1.schema.json",
+  "schema": "deeplus.map-unfold-rest-owner-closure/r1",
+  "revision": "r82-map-unfold-rest-owner-closure-r1",
+  "decision_id": "DSGN-CURRENT-MAP-UNFOLD-REST-OWNER-CLOSURE-R1",
+  "canonical_baseline_commit": "10e64f492f0529610673846139afcf0d95175663",
+  "local_predecessor_commit": "6f91a01791d7e7c9431605b112b3cda282328ed6",
+  "candidate_status": "LOCAL_STABLE_DESIGN_CLOSURE_NOT_PUBLISHED",
+  "gap_id": "PREIMPL-P0-004C",
+  "owner_matrix": [
+    {
+      "channel": "POSITIONAL_RUNTIME",
+      "surface": "*Expr",
+      "owners": ["call_argument", "list_entry", "mutable_list_insertion_payload", "comprehension_source"],
+      "ast_kind": "PositionalUnfold",
+      "source_domain": "FINITE_RUNTIME_POSITIONAL_SEQUENCE"
+    },
+    {
+      "channel": "MAP_RUNTIME",
+      "surface": "*Expr",
+      "owners": ["map_literal_entry"],
+      "ast_kind": "MapUnfold",
+      "source_domain": "EXACT_IMMUTABLE_MAP_K_V"
+    },
+    {
+      "channel": "MAP_PATTERN_RESIDUAL",
+      "surface": "*RestBinder",
+      "owners": ["map_pattern_entry"],
+      "ast_kind": "MapRestPattern",
+      "source_domain": "EXACT_DYNAMIC_KEYED_RESIDUAL_MAP_K_V"
+    },
+    {
+      "channel": "STATIC_NAMED",
+      "surface": "**Expr",
+      "owners": ["call_argument", "record_materialization_entry"],
+      "ast_kind": "NamedUnfold",
+      "source_domain": "FINITE_STATIC_RECORD_OR_NAMED_PACK_ROW"
+    }
+  ],
+  "parser_contract": {
+    "map_literal_entry": "Expr ':' Expr | '*' Expr",
+    "map_pattern_entry": "Pattern ':' (Literal | '^' StablePatternValue) | '*' (Name | '_')",
+    "map_comprehension_head": "Expr ':' Expr",
+    "general_star_prefix_parselet": false,
+    "expected_type_selects_channel": false,
+    "overload_selects_channel": false,
+    "runtime_shape_selects_channel": false,
+    "legacy_alias_count": 0
+  },
+  "map_literal_semantics": {
+    "plan": "MapLiteralPlan",
+    "evaluation_order": "LEFT_TO_RIGHT_EXACTLY_ONCE",
+    "domain_law": "ONE_EXACT_NORMALIZED_K_V_PAIR",
+    "equal_key_policy": "LATER_OCCURRENCE_REPLACES",
+    "displaced_owner_cleanup": "EXACTLY_ONCE",
+    "publication": "COMMIT_AFTER_COMPLETE_SUCCESS",
+    "precommit_failure": "NO_PARTIAL_MAP_REVERSE_ACQUIRED_TEMPORARY_CLEANUP"
+  },
+  "map_pattern_semantics": {
+    "entry_orientation": "DESTINATION_PATTERN_THEN_LITERAL_OR_PINNED_KEY",
+    "default_shape": "EXACT",
+    "ignored_remainder": "*_",
+    "captured_remainder": "*name",
+    "remainder_cardinality": "ZERO_OR_ONE",
+    "remainder_type": "EXACT_MAP_K_V",
+    "publication": "WHOLE_PATTERN_DELAYED_COMMIT",
+    "failure_residual_publication_count": 0,
+    "named_pack_conversion_count": 0,
+    "positional_pack_conversion_count": 0
+  },
+  "rejected_surfaces": {
+    "map_literal": ["#map{**base}", "#map{...base}"],
+    "map_pattern": ["#map{value:key, ..rest}", "#map{value:key, .._}"],
+    "map_comprehension": ["#map{*base for item in source}", "#map{**base for item in source}"],
+    "outside_owner": ["*mapValue as a general prefix expression", "**mapValue as a named call channel"]
+  },
+  "diagnostics": {
+    "legacy_or_wrong_map_spelling": "MAP_UNFOLD_SPELLING_AMBIGUOUS",
+    "ellipsis_map_unfold": "MAP_UNFOLD_ELLIPSIS_NOT_CURRENT",
+    "map_unfold_wrong_owner": "MAP_UNFOLD_ONLY_IN_MAP_LITERAL",
+    "map_named_call_channel": "MAP_NAMED_ARGUMENT_SPREAD_NOT_ALLOWED"
+  },
+  "tooling": {
+    "formatter_emission": {"map_literal": "*Expr", "map_pattern": "*RestBinder", "static_named": "**Expr"},
+    "formatter_preserves_owner_kind": true,
+    "lsp_reports_owner_specific_diagnostic": true,
+    "recovery_admitted_ast_residue_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "acceptance": {
+    "fixture": "tests/fixtures/current/map-unfold-rest-owner-closure-r1.json",
+    "positive_count": 4,
+    "boundary_count": 4,
+    "reject_count": 4,
+    "mutation_count": 8
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_implementation": "NOT_RUN",
+    "github_publication": "NOT_PERFORMED_FOR_R82"
+  }
+}

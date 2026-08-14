@@ -135,7 +135,7 @@ closed input에는 exhaustive match를 선호한다. guard는 Bool이어야 하�
 | exact Record | `${x, y}` |
 | open/captured Record | `${x, y, _**}`, `${x, y, rest**}` |
 | Record rename | `${sourceLabel: destinationPattern, _**}` |
-| Map Pattern | `#map{destination: "key", .._}` |
+| Map Pattern | `#map{destination: "key", *_}` |
 | named Enum payload | `::case${field, _**}` |
 | pin/range | `^expected`, `0..<10`, `>= 10` |
 | assertive binding | `let! Pattern = value` |
@@ -143,7 +143,7 @@ closed input에는 exhaustive match를 선호한다. guard는 Bool이어야 하�
 | 지역 병렬 대입 | `left, right = right, left` |
 
 Record와 Map은 exact-by-default다. 추가 Record-family field에는 `_**`,
-추가 Map key에는 `.._`를 생략하지 않는다.
+추가 Map key에는 `*_`를 생략하지 않는다.
 
 ## 7. 컬렉션과 index
 

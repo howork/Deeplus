@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/member-visibility-omission-v1.schema.json",
+  "title": "Deeplus member visibility omission closure V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "revision",
+    "status",
+    "gap_id",
+    "descriptor_schema",
+    "predecessor_contract",
+    "baseline",
+    "surface_contract",
+    "owner_rows",
+    "resolution_pipeline",
+    "hir_seal",
+    "diagnostic_precedence",
+    "acceptance",
+    "governance"
+  ],
+  "properties": {
+    "schema": {"const": "deeplus.member-visibility-omission/v1"},
+    "revision": {"const": "preimpl-p1-member-visibility-omission-r1"},
+    "status": {"const": "CURRENT_NORMATIVE_DESIGN_CONTRACT_LOCAL_UNPUBLISHED"},
+    "gap_id": {"const": "IR-VIS-P1-057"},
+    "descriptor_schema": {"const": "schemas/language/member-visibility-resolution-v1.schema.json"},
+    "predecessor_contract": {"const": "spec/contracts/member-visibility-trace-closure-r1.json"},
+    "baseline": {"type": "object"},
+    "surface_contract": {"type": "object"},
+    "owner_rows": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["ordinal", "owner_production", "omitted_resolution", "admitted_parent_contexts", "missing_anchor_outcome"],
+        "properties": {
+          "ordinal": {"type": "integer", "minimum": 1, "maximum": 15},
+          "owner_production": {"type": "string", "minLength": 1},
+          "omitted_resolution": {"type": "string", "minLength": 1},
+          "admitted_parent_contexts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "missing_anchor_outcome": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "resolution_pipeline": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"type": "string"}},
+    "hir_seal": {"type": "object"},
+    "diagnostic_precedence": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rank", "condition", "diagnostic"],
+        "properties": {
+          "rank": {"type": "integer", "minimum": 1, "maximum": 6},
+          "condition": {"type": "string", "minLength": 1},
+          "diagnostic": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]+$"}
+        }
+      }
+    },
+    "acceptance": {"type": "object"},
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_p0", "feature_p1", "product_lanes", "production_implementation", "github_publication"],
+      "properties": {
+        "semantic_p0": {"const": 0},
+        "feature_p1": {"const": "22_OPEN_UNCHANGED"},
+        "product_lanes": {"const": "15_OF_15_NOT_RUN"},
+        "production_implementation": {"const": "NOT_RUN"},
+        "github_publication": {"const": "NOT_PERFORMED"}
+      }
+    }
+  }
+}

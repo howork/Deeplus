@@ -40,6 +40,21 @@ Measure는 값·표현·차원을 분리해 조기 오류를 만든다.
 - `13[cm]`: numeric value와 unit expression의 Measure
 - `m/s`, `m*s`, `m^2`: unit dimension algebra
 
+Measure의 대괄호는 숫자에 붙여 쓴다. 다만 parser는 공백 하나만으로
+Measure라고 단정하지 않고, 대괄호 안이 완전한 unit expression인지 먼저
+transactional하게 확인한다.
+
+| 입력 | 결과 |
+|---|---|
+| `13[cm]` | 올바른 `MeasureLiteralExpr` |
+| `13 [cm]` | `UNIT_LITERAL_BRACKET_MUST_BE_ATTACHED`; 닫는 `]`까지 recovery CST 오류 하나로 보존하며 Measure/Index AST는 만들지 않음 |
+| `13[0]` | 일반 `IndexExpr`로 parse한 뒤 1-based index domain 검사를 받음 |
+| `13 [0]` | 공백이 있어도 일반 `IndexExpr`; Measure 진단 없이 같은 domain 검사를 받음 |
+
+즉 `13 [cm]`은 잘못 띄어 쓴 Measure지만, `13 [0]`은 Index다. 실패한
+unit 탐사는 토큰을 소비하거나 진단을 남기지 않으므로 이후 Index 해석을
+방해하지 않는다.
+
 Rational/Complex 표준 arithmetic row는 sealed `DIRECT_GLOBAL` identity다.
 Rational과 Complex division은 `/`를 지원하고, 0 제수나 invalid domain은
 commit 전 `ArithmeticDefect`로 닫는다. Rational의 named `dividedBy`는

@@ -66,9 +66,13 @@
       ]
     },
     "substituted_formula_or_null": {
-      "type": [
-        "string",
-        "null"
+      "oneOf": [
+        {
+          "$ref": "./refinement-r0-formula-v1.schema.json#/$defs/formula"
+        },
+        {
+          "type": "null"
+        }
       ]
     },
     "body_digest_matches": {

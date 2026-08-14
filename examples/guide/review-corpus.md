@@ -201,9 +201,9 @@ let renamed = user!{
     name: "Lee"
 }
 ```
-## EX-R48-012 — Map unfold double star current
+## EX-R48-012 — Map runtime unfold star current
 
-- **source_feature_ids:** `map_unfold_double_star_current`
+- **source_feature_ids:** `map_runtime_unfold_star_current`
 - **checker_trace_ids:** `none`
 - **expected_outcome:** `accept`
 - **source_activation:** `none`
@@ -7186,7 +7186,7 @@ else ::err(error) => throw error
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let bad = [1..2: name: "A", name: "B"]
+let bad = #list[1..2: name: "A", name: "B"]
 // BOUNDED_LIST_CALL_ARGUMENT_FORBIDDEN
 ```
 ## EX-R51a1-BOUND-P-001 — Stable bounded one-based logical domain
@@ -7201,7 +7201,7 @@ let bad = [1..2: name: "A", name: "B"]
 - **parser_status / checker_status:** `not_run` / `not_run`
 
 ```deeplus
-let days = [1..3: "Mon", "Tue", "Wed"]
+let days = #list[1..3: "Mon", "Tue", "Wed"]
 assert(days[1] == "Mon")
 assert(days[3] == "Wed")
 ```
@@ -11450,7 +11450,7 @@ public actor #mailbox(capacity: 8) Counter {
     request current() -> Int = { return 0 }
 }
 public def#async observe(counter: Counter) -> Int
-    throws ActorMessageError
+    throws ActorMessageError throws AllocationError effects allocate
 = {
     let Result::ok(_) = counter :~ add value: 1
     else Result::err(error) => throw error
@@ -11541,6 +11541,7 @@ public actor Worker {
 }
 public def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
+    throws AllocationError effects allocate
 = {
     return worker :~ run move job
 }
@@ -11645,7 +11646,7 @@ let present: Option<Int> = ::some(42)
 ```deeplus
 let ordinary = [10, 20, 30]
 let first = ordinary[1]
-let bounded = [3..5: 10, 20, 30]
+let bounded = #list[3..5: 10, 20, 30]
 let declaredFirst = bounded[3]
 ```
 
@@ -12467,7 +12468,7 @@ let payload = #map{"id": 13, "name": "Ada", "active": true}
 if let #map{
     userId: "id"
     displayName: "name"
-    ..rest
+    *rest
 } = payload {
     consume(userId, displayName, rest)
 }
@@ -13257,7 +13258,7 @@ let ${id: userId, metadata**} = request
 
 if let #map{
     payloadId: "id"
-    ..rest
+    *rest
 } = payload {
     consume(payloadId, rest)
 }
@@ -13445,4 +13446,119 @@ let complex: Complex<Float32> = real + 4.0i
 ```deeplus
 let legacy = 255u8
 // NUMERIC_TYPE_SUFFIX_REMOVED
+```
+
+## EX-R80-FMT-P-001 — Closed interpolation alignment forms
+
+- **source_feature_ids:** `string_interpolation_format_spec_core`
+- **checker_trace_ids:** `StringInterpolationFormatSpecAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let left = "${name:<12}"
+let right = "${name:>12}"
+let center = "${name:^12}"
+let defaultLeft = "${name:12}"
+```
+
+## EX-R80-FMT-BOUND-001 — Width is a scalar minimum, never truncation
+
+- **source_feature_ids:** `string_interpolation_format_spec_core`
+- **checker_trace_ids:** `StringInterpolationFormatSpecAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let unchanged = "${longName:1}"
+let centered = "${name:^4}" // an odd deficit puts the extra SPACE on the right
+```
+
+## EX-R80-FMT-NG-001 — Noncanonical interpolation format is rejected
+
+- **source_feature_ids:** `string_interpolation_format_spec_core`
+- **checker_trace_ids:** `StringInterpolationFormatSpecAdmitted`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `INTERPOLATION_FORMAT_SPEC_INVALID`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+let invalid = "${name:012}"
+// INTERPOLATION_FORMAT_SPEC_INVALID (WIDTH_LEADING_ZERO)
+```
+
+## EX-R81-SHIELD-P-001 — Shield cleanup before cancellation observation
+
+- **source_feature_ids:** `async_concur_control`
+- **checker_trace_ids:** `ScopeCancellationPlanAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async persist() -> Unit = {
+    @scope isolated shielded {
+        defer { closeJournal() }
+        await writeJournal()
+    }
+}
+```
+
+## EX-R81-SHIELD-BOUND-001 — Nested shields observe only after outer cleanup
+
+- **source_feature_ids:** `async_concur_control`
+- **checker_trace_ids:** `ScopeCancellationPlanAdmitted`
+- **expected_outcome:** `accept`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async publish() -> Unit = {
+    @scope shielded {
+        defer { closeBatch() }
+        @scope shielded {
+            defer { closeEntry() }
+            await writeEntry()
+        }
+    }
+}
+```
+
+## EX-R81-SHIELD-NG-001 — Conflicting cancellation modes are rejected
+
+- **source_feature_ids:** `async_concur_control`
+- **checker_trace_ids:** `ScopeCancellationPlanAdmitted`
+- **expected_outcome:** `reject`
+- **primary_diagnostic:** `SCOPE_CANCELLATION_MODE_CONFLICT`
+- **source_activation:** `none`
+- **certification_status:** `design_static_product_not_run`
+- **source_role:** `script`
+- **source_root:** `ScriptSourceFile`
+- **parser_status / checker_status:** `not_run` / `not_run`
+
+```deeplus
+public def#async invalid() -> Unit = {
+    @scope cancellable shielded {
+        await work()
+    }
+}
+// SCOPE_CANCELLATION_MODE_CONFLICT
 ```

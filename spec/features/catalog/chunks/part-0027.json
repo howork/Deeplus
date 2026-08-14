@@ -53,11 +53,14 @@
       "decisions/language/Design_Deeplus_Internal_Runtime_ABI_R1.md",
       "spec/contracts/internal-runtime-abi-r1.json",
       "spec/contracts/runtime-helper-registry-r1.json",
+      "spec/contracts/runtime-abi-record-registry-r99.json",
+      "spec/contracts/runtime-target-mapping-registry-r99.json",
       "schemas/language/internal-runtime-abi-r1.schema.json",
       "schemas/language/runtime-helper-registry-r1.schema.json",
       "schemas/language/internal-runtime-target-projection-r1.schema.json",
       "schemas/language/internal-runtime-artifact-binding-receipt-r1.schema.json",
-      "tests/fixtures/current/internal-runtime-abi-r1.json"
+      "tests/fixtures/current/internal-runtime-abi-r1.json",
+      "tools/validators/validate_runtime_backend_projection_r99.py"
     ],
     "production_lexer": "NOT_RUN",
     "stdlib_provider_runner": "NOT_RUN",
@@ -83,7 +86,7 @@
     "formatter_lsp": "NOT_RUN",
     "integrated_checker": "NOT_RUN",
     "language_status": "Stable design",
-    "notes": "One root-owned Actor creation, normal-stop, suspended-turn and uncaught-Defect lifecycle contract with exact cleanup, reply-terminalization and termination order. R51 adds trace and guard evidence only; runtime, debugger and product execution remain NOT_RUN.",
+    "notes": "One root-owned Actor creation, normal-stop, suspended-turn and uncaught-Defect lifecycle contract with exact cleanup, reply-terminalization, termination order and tagged SenderId incarnation/execution lifetime. Runtime, debugger and product execution remain NOT_RUN.",
     "primary_source": "spec/language.md",
     "product_support": "NOT_RUN",
     "production_parser": "NOT_RUN",
@@ -95,8 +98,13 @@
     "uml_exporter_provider_runner": "NOT_RUN",
     "trace_class": "semantic",
     "normative_trace_refs": {
-      "diagnostics": [],
-      "predicates": [],
+      "diagnostics": [
+        "ACTOR_SENDER_CONTEXT_UNAVAILABLE",
+        "MIR_ACTOR_SENDER_IDENTITY_INVALID"
+      ],
+      "predicates": [
+        "ActorSenderIdentityAdmitted"
+      ],
       "examples": [],
       "productions": [],
       "semantic_reference_productions": [
@@ -108,6 +116,7 @@
     "artifact_trace_refs": [
       "spec/contracts/actor-concurrency-coherence.json",
       "spec/contracts/actor-minimum-lifecycle-trace-r1.json",
+      "spec/contracts/actor-sender-identity-v1.json",
       "spec/frontend/frontend-model.json",
       "schemas/language/mir-responsibility.schema.json",
       "tests/fixtures/current/actor-concurrency-coherence-r1.json",

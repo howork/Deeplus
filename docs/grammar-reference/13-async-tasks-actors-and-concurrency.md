@@ -185,8 +185,21 @@ ScopeModifier ::= "isolated" | "cancellable" | "shielded" ;
 ```
 
 이 modifier는 기존 경계를 보존할 뿐 숨은 권한을 만들지 않는다.
-`shielded`도 Cancellation을 버리거나 Error로 바꾸지 않고 정리를
-건너뛰지 않는다.
+`shielded`는 Cancellation을 잡거나 버리거나 Error로 바꾸는 장치가
+아니라, 관찰 시점만 미루는 어휘적 경계다. 요청이 진입 전에 이미
+대기 중이거나 body·cleanup 중에 도착해도 범위 내부에서는 관찰하거나
+acknowledge하지 않는다. 먼저 현재 범위의 cleanup을 정확히 한 번
+완료한다. 중첩된 경우에는 가장 바깥쪽 `shielded` 범위의 cleanup과
+exit가 끝난 뒤에만 pending Cancellation을 한 번 관찰하고 한 번
+acknowledge한다.
+
+`cancellable`과 `shielded`는 같은 범위에 함께 쓸 수 없다. 활성
+`shielded` 안의 자식이 명시적으로 `cancellable`을 사용해 바깥 fence를
+뚫는 것도 허용하지 않는다. 두 modifier는 cancellation-aware 실행
+문맥에서만 사용할 수 있다. `isolated`는 이 선택과 독립이며 formatter는
+`isolated` 다음에 `cancellable` 또는 `shielded`를 출력한다. 이미 선택된
+Error나 cleanup Defect가 있다면 그것이 우선하고 Cancellation을 Error로
+바꾸거나 거짓 terminal cancellation을 만들지 않는다.
 
 ## 허용과 정적 의미
 
@@ -302,6 +315,10 @@ mailbox clause가 없으면 `logical_unbounded_v1`이다. 이것은
 언어 수준의 capacity rejection이 없다는 뜻일 뿐, 구현 저장 공간이
 무한하다는 뜻이 아니다. 자원 고갈을
 `ActorMessageError::mailboxFull`로 바꾸지도 않는다.
+전송 envelope, mailbox storage와 request의 Reply/correlation storage를
+준비하다 자원이 부족하면 독립된 `AllocationError`가 발생하며, `:~`를
+포함한 callable은 `throws AllocationError effects allocate` 책임을
+보존해야 한다.
 
 `#mailbox(capacity: N)`이 있으면 `bounded_reject_v1`이다. `N`은 양의
 정적 정수이며, mailbox가 가득 찬 경우 enqueue commit 전에 즉시
@@ -321,13 +338,15 @@ Cancellation은 이 error family로 바뀌지 않는다.
 
 ### 단방향 전송과 요청
 
-one-way message expression의 정확한 형식은
+one-way message expression의 정확한 값 형식은
 `Result<Unit, error ActorMessageError>`이다. `Result::ok(Unit)`은 enqueue
 commit 뒤에만 생기며 reply channel은 없다.
 
-reply type이 `T`인 request expression의 즉시 형식은
+reply type이 `T`인 request expression의 즉시 값 형식은
 `Result<Reply<T>, error ActorMessageError>`이다. source는 먼저 admission
 `Result`에서 `Reply<T>`를 꺼낸 뒤 그 reply에 `await`를 적용해야 한다.
+두 값 형식은 모두 별도의 `throws AllocationError effects allocate` 책임을
+가진다. allocation failure는 `Result::err`로 정규화되지 않는다.
 request enqueue commit 뒤에 correlation identity가 한 번 만들어지며,
 reply, 선언된 failure, Cancellation 중 정확히 하나로 끝난다. request를
 ordinary method return처럼 취급하거나 암시적으로 기다리지 않는다.
@@ -393,7 +412,8 @@ actor Directory {
 }
 
 def#async inspect(directory: Directory, id: Int) -> Status
-    throws ActorMessageError throws LookupError = {
+    throws ActorMessageError throws LookupError throws AllocationError
+    effects allocate = {
     let? reply = directory :~ find id: id
     else admissionError => throw admissionError
 
@@ -418,6 +438,15 @@ handler spelling만으로 actor protocol conformance가 생기지 않는다.
 같은 key에서 성공적으로 commit된 메시지만 `channel_sequence`가
 엄격하게 증가하고 그 순서로 dequeue된다. 거부된 시도에는 sequence가
 없다.
+
+여기서 sender identity는 내부 태그 합
+`SenderId = Actor(ActorInstanceId) | Execution(ExecutionId)`이다. actor turn
+권한이 활성화된 실행은 현재 actor incarnation을, 그 밖의 실행은 현재
+`ExecutionId`를 사용한다. suspend/resume은 같은 identity를 유지하지만,
+actor restart와 structured child spawn은 각각 새 instance/execution
+identity를 얻는다. queued message는 origin 종료 뒤에도 그 값을 보존하되
+authority를 보존하지 않는다. `ActorId`, `ActorTurnId`, thread/address 값과
+send마다 새로 만든 ID는 sender identity가 아니다.
 
 언어가 보장하는 최소 happens-before edge는 다음과 같다.
 
@@ -571,7 +600,7 @@ public actor #mailbox(capacity: 8) Counter {
     request current() -> Int = { return 0 }
 }
 public def#async observe(counter: Counter) -> Int
-    throws ActorMessageError
+    throws ActorMessageError throws AllocationError effects allocate
 = {
     let Result::ok(_) = counter :~ add value: 1
     else Result::err(error) => throw error
@@ -625,6 +654,7 @@ public actor Worker {
 }
 public def dispatch(worker: Worker, move job: Job)
     -> Result<Unit, error ActorMessageError>
+    throws AllocationError effects allocate
 = {
     return worker :~ run move job
 }
@@ -755,8 +785,11 @@ PASS가 아니다. 이 장은 기존 feature P1을 닫거나 새 P1을 만들지
 - `spec/language.md`
   - 비동기 함수·run·suspension, actor와 message, Preview·비현행 경계.
 - `spec/contracts/actor-concurrency-coherence.json`
-  - `ACC-R001..R018`, mailbox profile, actor admission, structured run,
+  - `ACC-R001..R021`, mailbox profile, actor admission, structured run,
     Cancellation, ordering, MIR와 제품 증거 경계.
+- `spec/contracts/actor-transport-allocation-v1.json`
+  - precommit allocation staging, failure-atomic cleanup, enqueue commit와
+    `AllocationError effects allocate` 책임.
 - `spec/contracts/unified-call-actor-transport.json`
   - 통합 `CallExpr`, `~`/`:~`, argument channel과 actor result contract.
 - `spec/contracts/type-flow-callable-coherence.json`

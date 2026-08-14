@@ -1,0 +1,2805 @@
+{
+  "schema": "deeplus.xbc-typed-payload-registry/r99",
+  "revision": "r99-xbc-typed-payload-closure-r1",
+  "status": "STABLE_DESIGN_LOCAL_CANDIDATE_PRODUCT_NOT_RUN",
+  "gap_binding": "IR-XVM-P1-062_TYPED_PAYLOAD_SUBCONDITION",
+  "machine_registry": "spec/contracts/mir-machine-registry.json",
+  "field_domain_rows": [
+    {
+      "field_name": "actor_envelope_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "actor_operation",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "AWAIT_REPLY",
+        "DEQUEUE",
+        "REPLY",
+        "REQUEST",
+        "SEND",
+        "TURN_BEGIN",
+        "TURN_END"
+      ]
+    },
+    {
+      "field_name": "actor_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "aggregate_kind_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "base_id",
+      "domain": "BASE_KIND_DISCRIMINATED_PLACE_OR_VALUE_ORDINAL"
+    },
+    {
+      "field_name": "base_kind",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "PLACE",
+        "VALUE"
+      ]
+    },
+    {
+      "field_name": "call_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "cancellation_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "capture_field_ids_in_source_order",
+      "domain": "STATIC_IDENTITY_ORDINAL_LIST"
+    },
+    {
+      "field_name": "checked_semantic_operation_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "cleanup_region_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "cleanup_registration_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "cleanup_token_id_or_null",
+      "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+    },
+    {
+      "field_name": "closure_body_callable_id",
+      "domain": "BODY_ORDINAL"
+    },
+    {
+      "field_name": "closure_environment_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "closure_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "committed_construction_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "completion_kind",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "CANCELLATION",
+        "DEFECT",
+        "ERROR",
+        "RETURN"
+      ]
+    },
+    {
+      "field_name": "concur_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "condition_value_id",
+      "domain": "VALUE_ORDINAL"
+    },
+    {
+      "field_name": "constant_id",
+      "domain": "CONSTANT_ORDINAL"
+    },
+    {
+      "field_name": "construction_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "construction_session_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "consumed_cleanup_token_ids",
+      "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+    },
+    {
+      "field_name": "consumed_owner_ids",
+      "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+    },
+    {
+      "field_name": "context_adaptation_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "continuation_frame_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "continuation_interface_digest",
+      "domain": "SHA256_BYTES"
+    },
+    {
+      "field_name": "continuation_interface_identity",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "continuation_receipt_id_or_null",
+      "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+    },
+    {
+      "field_name": "destination_place_id",
+      "domain": "PLACE_ORDINAL"
+    },
+    {
+      "field_name": "discharge_kind",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "ACTION_COMPLETED",
+        "CONSTRUCTION_COMMITTED",
+        "RESPONSIBILITY_REHOMED"
+      ]
+    },
+    {
+      "field_name": "discriminant_value_id",
+      "domain": "VALUE_ORDINAL"
+    },
+    {
+      "field_name": "environment_value_id",
+      "domain": "VALUE_ORDINAL"
+    },
+    {
+      "field_name": "epoch_id_or_null",
+      "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+    },
+    {
+      "field_name": "epoch_state_after_or_null",
+      "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+      "closed_values": [
+        "CANCEL_WON",
+        "COMMITTED",
+        "DISCHARGED"
+      ]
+    },
+    {
+      "field_name": "epoch_state_before_or_null",
+      "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+      "closed_values": [
+        "CANCEL_WON",
+        "COMMITTED",
+        "PREPARING"
+      ]
+    },
+    {
+      "field_name": "frame_id",
+      "domain": "CONTINUATION_FRAME_SLOT_ORDINAL"
+    },
+    {
+      "field_name": "frame_state_after",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "CLEANING",
+        "RUNNING",
+        "SUSPENDED",
+        "TERMINAL_CANCELLED",
+        "TERMINAL_COMPLETED",
+        "TERMINAL_FAILED"
+      ]
+    },
+    {
+      "field_name": "frame_state_before",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "ABSENT",
+        "CLEANING",
+        "RUNNING",
+        "SUSPENDED"
+      ]
+    },
+    {
+      "field_name": "hir_provenance",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "intrinsic_identity_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "leave_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "loan_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "mask_digest_after",
+      "domain": "SHA256_BYTES"
+    },
+    {
+      "field_name": "mask_digest_before",
+      "domain": "SHA256_BYTES"
+    },
+    {
+      "field_name": "once_identity_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "once_operation",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "FUNCTION_STATIC_ENSURE",
+        "LAZY_FORCE"
+      ]
+    },
+    {
+      "field_name": "outcome_edge",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "CANCELLATION",
+        "DEFECT",
+        "ERROR",
+        "NORMAL"
+      ]
+    },
+    {
+      "field_name": "parent_loan_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "partition_digest",
+      "domain": "SHA256_BYTES"
+    },
+    {
+      "field_name": "pattern_attempt_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "phase_after",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "ALLOCATED",
+        "PRE_DELEGATION",
+        "BASE_INITIALIZING",
+        "BASE_INITIALIZED",
+        "STORAGE_INITIALIZING",
+        "POST_INIT",
+        "COMMIT_READY",
+        "LIVE",
+        "ABORTING",
+        "FAILED_UNPUBLISHED"
+      ]
+    },
+    {
+      "field_name": "phase_before",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "ALLOCATED",
+        "PRE_DELEGATION",
+        "BASE_INITIALIZING",
+        "BASE_INITIALIZED",
+        "STORAGE_INITIALIZING",
+        "POST_INIT",
+        "COMMIT_READY",
+        "LIVE",
+        "ABORTING",
+        "FAILED_UNPUBLISHED"
+      ]
+    },
+    {
+      "field_name": "place_id",
+      "domain": "PLACE_ORDINAL"
+    },
+    {
+      "field_name": "produced_cleanup_token_ids",
+      "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+    },
+    {
+      "field_name": "produced_owner_ids",
+      "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+    },
+    {
+      "field_name": "projection_identity_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "proof_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "provider_operation_identity_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "region_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "reservation_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "run_operation",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "AWAIT",
+        "CANCEL_THEN_JOIN",
+        "EXIT",
+        "JOIN",
+        "SPAWN"
+      ]
+    },
+    {
+      "field_name": "run_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "stage_index",
+      "domain": "U32"
+    },
+    {
+      "field_name": "static_identity_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "suspend_site_id",
+      "domain": "LINEAR_TOKEN_ORDINAL"
+    },
+    {
+      "field_name": "suspension_point_id_or_null",
+      "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+    },
+    {
+      "field_name": "sync_operation",
+      "domain": "CLOSED_ENUM_VALUE",
+      "closed_values": [
+        "LOCK_ACQUIRE",
+        "LOCK_RELEASE",
+        "OBSERVE_BEGIN",
+        "OBSERVE_END",
+        "REPLACE_COMMIT"
+      ]
+    },
+    {
+      "field_name": "sync_plan_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "terminal_state_or_null",
+      "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+      "closed_values": [
+        "TERMINAL_CANCELLED",
+        "TERMINAL_COMPLETED",
+        "TERMINAL_FAILED"
+      ]
+    },
+    {
+      "field_name": "variant_identity_id",
+      "domain": "STATIC_IDENTITY_ORDINAL"
+    },
+    {
+      "field_name": "winner_witness_or_null",
+      "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+      "closed_values": [
+        "CANCEL_WON",
+        "RESUME_WON"
+      ]
+    }
+  ],
+  "operation_rows": [
+    {
+      "opcode": 0,
+      "operation_kind": "CONST",
+      "payload_contract_id": "XbcPayloadContractId:operation.CONST/r99",
+      "required_fields": [
+        {
+          "field_name": "constant_id",
+          "domain": "CONSTANT_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 1,
+      "operation_kind": "STATIC_REF",
+      "payload_contract_id": "XbcPayloadContractId:operation.STATIC_REF/r99",
+      "required_fields": [
+        {
+          "field_name": "static_identity_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 2,
+      "operation_kind": "PURE_INTRINSIC",
+      "payload_contract_id": "XbcPayloadContractId:operation.PURE_INTRINSIC/r99",
+      "required_fields": [
+        {
+          "field_name": "intrinsic_identity_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 3,
+      "operation_kind": "TOTAL_PROJECTION",
+      "payload_contract_id": "XbcPayloadContractId:operation.TOTAL_PROJECTION/r99",
+      "required_fields": [
+        {
+          "field_name": "projection_identity_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 4,
+      "operation_kind": "CONTEXT_ADAPT",
+      "payload_contract_id": "XbcPayloadContractId:operation.CONTEXT_ADAPT/r99",
+      "required_fields": [
+        {
+          "field_name": "context_adaptation_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 5,
+      "operation_kind": "AGGREGATE_INJECT",
+      "payload_contract_id": "XbcPayloadContractId:operation.AGGREGATE_INJECT/r99",
+      "required_fields": [
+        {
+          "field_name": "aggregate_kind_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "variant_identity_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 6,
+      "operation_kind": "AGGREGATE_ASSEMBLE",
+      "payload_contract_id": "XbcPayloadContractId:operation.AGGREGATE_ASSEMBLE/r99",
+      "required_fields": [
+        {
+          "field_name": "aggregate_kind_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 7,
+      "operation_kind": "PLACE_LOAD",
+      "payload_contract_id": "XbcPayloadContractId:operation.PLACE_LOAD/r99",
+      "required_fields": [
+        {
+          "field_name": "place_id",
+          "domain": "PLACE_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 8,
+      "operation_kind": "PLACE_STORE_INIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.PLACE_STORE_INIT/r99",
+      "required_fields": [
+        {
+          "field_name": "place_id",
+          "domain": "PLACE_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 9,
+      "operation_kind": "PLACE_MOVE",
+      "payload_contract_id": "XbcPayloadContractId:operation.PLACE_MOVE/r99",
+      "required_fields": [
+        {
+          "field_name": "place_id",
+          "domain": "PLACE_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 10,
+      "operation_kind": "MOVE_RESERVE",
+      "payload_contract_id": "XbcPayloadContractId:operation.MOVE_RESERVE/r99",
+      "required_fields": [
+        {
+          "field_name": "reservation_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "place_id",
+          "domain": "PLACE_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 11,
+      "operation_kind": "MOVE_CANCEL",
+      "payload_contract_id": "XbcPayloadContractId:operation.MOVE_CANCEL/r99",
+      "required_fields": [
+        {
+          "field_name": "reservation_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 12,
+      "operation_kind": "LOAN_BEGIN_SHARED",
+      "payload_contract_id": "XbcPayloadContractId:operation.LOAN_BEGIN_SHARED/r99",
+      "required_fields": [
+        {
+          "field_name": "loan_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "base_kind",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "PLACE",
+            "VALUE"
+          ]
+        },
+        {
+          "field_name": "base_id",
+          "domain": "BASE_KIND_DISCRIMINATED_PLACE_OR_VALUE_ORDINAL"
+        },
+        {
+          "field_name": "region_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 13,
+      "operation_kind": "LOAN_BEGIN_EXCLUSIVE",
+      "payload_contract_id": "XbcPayloadContractId:operation.LOAN_BEGIN_EXCLUSIVE/r99",
+      "required_fields": [
+        {
+          "field_name": "loan_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "base_kind",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "PLACE",
+            "VALUE"
+          ]
+        },
+        {
+          "field_name": "base_id",
+          "domain": "BASE_KIND_DISCRIMINATED_PLACE_OR_VALUE_ORDINAL"
+        },
+        {
+          "field_name": "region_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 14,
+      "operation_kind": "LOAN_BEGIN_REBORROW",
+      "payload_contract_id": "XbcPayloadContractId:operation.LOAN_BEGIN_REBORROW/r99",
+      "required_fields": [
+        {
+          "field_name": "loan_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "parent_loan_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "region_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 15,
+      "operation_kind": "LOAN_END",
+      "payload_contract_id": "XbcPayloadContractId:operation.LOAN_END/r99",
+      "required_fields": [
+        {
+          "field_name": "loan_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 16,
+      "operation_kind": "CLEANUP_REGION_ENTER",
+      "payload_contract_id": "XbcPayloadContractId:operation.CLEANUP_REGION_ENTER/r99",
+      "required_fields": [
+        {
+          "field_name": "cleanup_region_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 17,
+      "operation_kind": "CLEANUP_REGISTER",
+      "payload_contract_id": "XbcPayloadContractId:operation.CLEANUP_REGISTER/r99",
+      "required_fields": [
+        {
+          "field_name": "cleanup_registration_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "cleanup_region_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 18,
+      "operation_kind": "CLEANUP_PIN",
+      "payload_contract_id": "XbcPayloadContractId:operation.CLEANUP_PIN/r99",
+      "required_fields": [
+        {
+          "field_name": "cleanup_registration_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 19,
+      "operation_kind": "CLEANUP_SEAL",
+      "payload_contract_id": "XbcPayloadContractId:operation.CLEANUP_SEAL/r99",
+      "required_fields": [
+        {
+          "field_name": "cleanup_registration_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 20,
+      "operation_kind": "CLEANUP_DISARM",
+      "payload_contract_id": "XbcPayloadContractId:operation.CLEANUP_DISARM/r99",
+      "required_fields": [
+        {
+          "field_name": "cleanup_registration_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "discharge_kind",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ACTION_COMPLETED",
+            "CONSTRUCTION_COMMITTED",
+            "RESPONSIBILITY_REHOMED"
+          ]
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 21,
+      "operation_kind": "BUILDER_BEGIN",
+      "payload_contract_id": "XbcPayloadContractId:operation.BUILDER_BEGIN/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 22,
+      "operation_kind": "BUILDER_STAGE",
+      "payload_contract_id": "XbcPayloadContractId:operation.BUILDER_STAGE/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "stage_index",
+          "domain": "U32"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 23,
+      "operation_kind": "BUILDER_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.BUILDER_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 24,
+      "operation_kind": "PATTERN_PROBE",
+      "payload_contract_id": "XbcPayloadContractId:operation.PATTERN_PROBE/r99",
+      "required_fields": [
+        {
+          "field_name": "pattern_attempt_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 25,
+      "operation_kind": "BINDING_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.BINDING_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "pattern_attempt_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 26,
+      "operation_kind": "CLOSURE_MAKE",
+      "payload_contract_id": "XbcPayloadContractId:operation.CLOSURE_MAKE/r99",
+      "required_fields": [
+        {
+          "field_name": "closure_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "closure_body_callable_id",
+          "domain": "BODY_ORDINAL"
+        },
+        {
+          "field_name": "closure_environment_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "committed_construction_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "environment_value_id",
+          "domain": "VALUE_ORDINAL"
+        },
+        {
+          "field_name": "capture_field_ids_in_source_order",
+          "domain": "STATIC_IDENTITY_ORDINAL_LIST"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 27,
+      "operation_kind": "CONCUR_ENTER",
+      "payload_contract_id": "XbcPayloadContractId:operation.CONCUR_ENTER/r99",
+      "required_fields": [
+        {
+          "field_name": "concur_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 28,
+      "operation_kind": "ACTOR_ENVELOPE_PREPARE",
+      "payload_contract_id": "XbcPayloadContractId:operation.ACTOR_ENVELOPE_PREPARE/r99",
+      "required_fields": [
+        {
+          "field_name": "actor_envelope_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 29,
+      "operation_kind": "FRAME_CREATE",
+      "payload_contract_id": "XbcPayloadContractId:operation.FRAME_CREATE/r99",
+      "required_fields": [
+        {
+          "field_name": "continuation_interface_identity",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "continuation_interface_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "continuation_receipt_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "continuation_frame_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "frame_id",
+          "domain": "CONTINUATION_FRAME_SLOT_ORDINAL"
+        },
+        {
+          "field_name": "suspension_point_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "epoch_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "partition_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "cleanup_token_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "terminal_state_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "frame_state_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ABSENT",
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "field_name": "frame_state_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED",
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "epoch_state_before_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "PREPARING"
+          ]
+        },
+        {
+          "field_name": "epoch_state_after_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "DISCHARGED"
+          ]
+        },
+        {
+          "field_name": "winner_witness_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "RESUME_WON"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 30,
+      "operation_kind": "FRAME_SUSPEND_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.FRAME_SUSPEND_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "continuation_interface_identity",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "continuation_interface_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "continuation_receipt_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "continuation_frame_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "frame_id",
+          "domain": "CONTINUATION_FRAME_SLOT_ORDINAL"
+        },
+        {
+          "field_name": "suspension_point_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "epoch_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "partition_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "cleanup_token_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "terminal_state_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "frame_state_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ABSENT",
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "field_name": "frame_state_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED",
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "epoch_state_before_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "PREPARING"
+          ]
+        },
+        {
+          "field_name": "epoch_state_after_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "DISCHARGED"
+          ]
+        },
+        {
+          "field_name": "winner_witness_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "RESUME_WON"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 31,
+      "operation_kind": "FRAME_RESUME_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.FRAME_RESUME_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "continuation_interface_identity",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "continuation_interface_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "continuation_receipt_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "continuation_frame_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "frame_id",
+          "domain": "CONTINUATION_FRAME_SLOT_ORDINAL"
+        },
+        {
+          "field_name": "suspension_point_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "epoch_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "partition_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "cleanup_token_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "terminal_state_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "frame_state_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ABSENT",
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "field_name": "frame_state_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED",
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "epoch_state_before_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "PREPARING"
+          ]
+        },
+        {
+          "field_name": "epoch_state_after_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "DISCHARGED"
+          ]
+        },
+        {
+          "field_name": "winner_witness_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "RESUME_WON"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32,
+      "operation_kind": "FRAME_CANCEL_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.FRAME_CANCEL_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "continuation_interface_identity",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "continuation_interface_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "continuation_receipt_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "continuation_frame_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "frame_id",
+          "domain": "CONTINUATION_FRAME_SLOT_ORDINAL"
+        },
+        {
+          "field_name": "suspension_point_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "epoch_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "partition_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "cleanup_token_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "terminal_state_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "frame_state_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ABSENT",
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "field_name": "frame_state_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED",
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "epoch_state_before_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "PREPARING"
+          ]
+        },
+        {
+          "field_name": "epoch_state_after_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "DISCHARGED"
+          ]
+        },
+        {
+          "field_name": "winner_witness_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "RESUME_WON"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 33,
+      "operation_kind": "FRAME_CLEANUP_STEP",
+      "payload_contract_id": "XbcPayloadContractId:operation.FRAME_CLEANUP_STEP/r99",
+      "required_fields": [
+        {
+          "field_name": "continuation_interface_identity",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "continuation_interface_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "continuation_receipt_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "continuation_frame_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "frame_id",
+          "domain": "CONTINUATION_FRAME_SLOT_ORDINAL"
+        },
+        {
+          "field_name": "suspension_point_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "epoch_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "partition_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "cleanup_token_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "terminal_state_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "frame_state_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ABSENT",
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "field_name": "frame_state_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED",
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "epoch_state_before_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "PREPARING"
+          ]
+        },
+        {
+          "field_name": "epoch_state_after_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "DISCHARGED"
+          ]
+        },
+        {
+          "field_name": "winner_witness_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "RESUME_WON"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 34,
+      "operation_kind": "FRAME_TERMINATE",
+      "payload_contract_id": "XbcPayloadContractId:operation.FRAME_TERMINATE/r99",
+      "required_fields": [
+        {
+          "field_name": "continuation_interface_identity",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "continuation_interface_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "continuation_receipt_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "continuation_frame_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        },
+        {
+          "field_name": "frame_id",
+          "domain": "CONTINUATION_FRAME_SLOT_ORDINAL"
+        },
+        {
+          "field_name": "suspension_point_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "epoch_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "partition_digest",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "cleanup_token_id_or_null",
+          "domain": "LINEAR_TOKEN_ORDINAL_OR_NULL"
+        },
+        {
+          "field_name": "terminal_state_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "frame_state_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ABSENT",
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED"
+          ]
+        },
+        {
+          "field_name": "frame_state_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CLEANING",
+            "RUNNING",
+            "SUSPENDED",
+            "TERMINAL_CANCELLED",
+            "TERMINAL_COMPLETED",
+            "TERMINAL_FAILED"
+          ]
+        },
+        {
+          "field_name": "epoch_state_before_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "PREPARING"
+          ]
+        },
+        {
+          "field_name": "epoch_state_after_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "COMMITTED",
+            "DISCHARGED"
+          ]
+        },
+        {
+          "field_name": "winner_witness_or_null",
+          "domain": "CLOSED_ENUM_VALUE_OR_NULL",
+          "closed_values": [
+            "CANCEL_WON",
+            "RESUME_WON"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 35,
+      "operation_kind": "OBJECT_CONSTRUCTION_BEGIN",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_CONSTRUCTION_BEGIN/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 36,
+      "operation_kind": "BASE_SEGMENT_BEGIN",
+      "payload_contract_id": "XbcPayloadContractId:operation.BASE_SEGMENT_BEGIN/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 37,
+      "operation_kind": "BASE_SEGMENT_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.BASE_SEGMENT_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 38,
+      "operation_kind": "FIELD_INIT_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.FIELD_INIT_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 39,
+      "operation_kind": "CONSTRUCTION_FIELD_MOVE_TRANSFER",
+      "payload_contract_id": "XbcPayloadContractId:operation.CONSTRUCTION_FIELD_MOVE_TRANSFER/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 40,
+      "operation_kind": "CONSTRUCTION_POST_INIT_GUARD",
+      "payload_contract_id": "XbcPayloadContractId:operation.CONSTRUCTION_POST_INIT_GUARD/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 41,
+      "operation_kind": "OBJECT_CONSTRUCTION_COMMIT",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_CONSTRUCTION_COMMIT/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 42,
+      "operation_kind": "OBJECT_CONSTRUCTION_ABORT",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_CONSTRUCTION_ABORT/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 43,
+      "operation_kind": "OBJECT_CLEANUP_BEGIN",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_CLEANUP_BEGIN/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 44,
+      "operation_kind": "OBJECT_CLEANUP_HOOK",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_CLEANUP_HOOK/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 45,
+      "operation_kind": "OBJECT_FIELD_CLEANUP",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_FIELD_CLEANUP/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 46,
+      "operation_kind": "OBJECT_BASE_CLEANUP",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_BASE_CLEANUP/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 47,
+      "operation_kind": "OBJECT_CLEANUP_END",
+      "payload_contract_id": "XbcPayloadContractId:operation.OBJECT_CLEANUP_END/r99",
+      "required_fields": [
+        {
+          "field_name": "construction_session_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        },
+        {
+          "field_name": "phase_before",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "phase_after",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "ALLOCATED",
+            "PRE_DELEGATION",
+            "BASE_INITIALIZING",
+            "BASE_INITIALIZED",
+            "STORAGE_INITIALIZING",
+            "POST_INIT",
+            "COMMIT_READY",
+            "LIVE",
+            "ABORTING",
+            "FAILED_UNPUBLISHED"
+          ]
+        },
+        {
+          "field_name": "mask_digest_before",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "mask_digest_after",
+          "domain": "SHA256_BYTES"
+        },
+        {
+          "field_name": "consumed_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_owner_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "consumed_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "produced_cleanup_token_ids",
+          "domain": "LINEAR_TOKEN_ORDINAL_LIST"
+        },
+        {
+          "field_name": "outcome_edge",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "NORMAL"
+          ]
+        },
+        {
+          "field_name": "hir_provenance",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    }
+  ],
+  "terminator_rows": [
+    {
+      "opcode": 32768,
+      "terminator_kind": "BR",
+      "payload_contract_id": "XbcPayloadContractId:terminator.BR/r99",
+      "required_fields": [],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32769,
+      "terminator_kind": "COND_BR",
+      "payload_contract_id": "XbcPayloadContractId:terminator.COND_BR/r99",
+      "required_fields": [
+        {
+          "field_name": "condition_value_id",
+          "domain": "VALUE_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32770,
+      "terminator_kind": "SWITCH_ENUM",
+      "payload_contract_id": "XbcPayloadContractId:terminator.SWITCH_ENUM/r99",
+      "required_fields": [
+        {
+          "field_name": "discriminant_value_id",
+          "domain": "VALUE_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32771,
+      "terminator_kind": "SWITCH_INT",
+      "payload_contract_id": "XbcPayloadContractId:terminator.SWITCH_INT/r99",
+      "required_fields": [
+        {
+          "field_name": "discriminant_value_id",
+          "domain": "VALUE_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32772,
+      "terminator_kind": "INVOKE",
+      "payload_contract_id": "XbcPayloadContractId:terminator.INVOKE/r99",
+      "required_fields": [
+        {
+          "field_name": "call_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32773,
+      "terminator_kind": "CHECKED",
+      "payload_contract_id": "XbcPayloadContractId:terminator.CHECKED/r99",
+      "required_fields": [
+        {
+          "field_name": "checked_semantic_operation_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32774,
+      "terminator_kind": "PLACE_REPLACE",
+      "payload_contract_id": "XbcPayloadContractId:terminator.PLACE_REPLACE/r99",
+      "required_fields": [
+        {
+          "field_name": "destination_place_id",
+          "domain": "PLACE_ORDINAL"
+        },
+        {
+          "field_name": "reservation_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32775,
+      "terminator_kind": "LEAVE",
+      "payload_contract_id": "XbcPayloadContractId:terminator.LEAVE/r99",
+      "required_fields": [
+        {
+          "field_name": "leave_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32776,
+      "terminator_kind": "SUSPEND",
+      "payload_contract_id": "XbcPayloadContractId:terminator.SUSPEND/r99",
+      "required_fields": [
+        {
+          "field_name": "suspend_site_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32777,
+      "terminator_kind": "CANCEL_CHECK",
+      "payload_contract_id": "XbcPayloadContractId:terminator.CANCEL_CHECK/r99",
+      "required_fields": [
+        {
+          "field_name": "cancellation_id",
+          "domain": "LINEAR_TOKEN_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32778,
+      "terminator_kind": "RUN_OP",
+      "payload_contract_id": "XbcPayloadContractId:terminator.RUN_OP/r99",
+      "required_fields": [
+        {
+          "field_name": "run_operation",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "AWAIT",
+            "CANCEL_THEN_JOIN",
+            "EXIT",
+            "JOIN",
+            "SPAWN"
+          ]
+        },
+        {
+          "field_name": "run_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32779,
+      "terminator_kind": "ACTOR_OP",
+      "payload_contract_id": "XbcPayloadContractId:terminator.ACTOR_OP/r99",
+      "required_fields": [
+        {
+          "field_name": "actor_operation",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "AWAIT_REPLY",
+            "DEQUEUE",
+            "REPLY",
+            "REQUEST",
+            "SEND",
+            "TURN_BEGIN",
+            "TURN_END"
+          ]
+        },
+        {
+          "field_name": "actor_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32780,
+      "terminator_kind": "PROVIDER_OP",
+      "payload_contract_id": "XbcPayloadContractId:terminator.PROVIDER_OP/r99",
+      "required_fields": [
+        {
+          "field_name": "provider_operation_identity_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32781,
+      "terminator_kind": "ONCE_OP",
+      "payload_contract_id": "XbcPayloadContractId:terminator.ONCE_OP/r99",
+      "required_fields": [
+        {
+          "field_name": "once_operation",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "FUNCTION_STATIC_ENSURE",
+            "LAZY_FORCE"
+          ]
+        },
+        {
+          "field_name": "once_identity_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32782,
+      "terminator_kind": "SYNC_OP",
+      "payload_contract_id": "XbcPayloadContractId:terminator.SYNC_OP/r99",
+      "required_fields": [
+        {
+          "field_name": "sync_operation",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "LOCK_ACQUIRE",
+            "LOCK_RELEASE",
+            "OBSERVE_BEGIN",
+            "OBSERVE_END",
+            "REPLACE_COMMIT"
+          ]
+        },
+        {
+          "field_name": "sync_plan_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32783,
+      "terminator_kind": "COMPLETE",
+      "payload_contract_id": "XbcPayloadContractId:terminator.COMPLETE/r99",
+      "required_fields": [
+        {
+          "field_name": "completion_kind",
+          "domain": "CLOSED_ENUM_VALUE",
+          "closed_values": [
+            "CANCELLATION",
+            "DEFECT",
+            "ERROR",
+            "RETURN"
+          ]
+        }
+      ],
+      "additional_fields": false
+    },
+    {
+      "opcode": 32784,
+      "terminator_kind": "UNREACHABLE_PROVEN",
+      "payload_contract_id": "XbcPayloadContractId:terminator.UNREACHABLE_PROVEN/r99",
+      "required_fields": [
+        {
+          "field_name": "proof_id",
+          "domain": "STATIC_IDENTITY_ORDINAL"
+        }
+      ],
+      "additional_fields": false
+    }
+  ],
+  "invariants": {
+    "field_domain_count": 73,
+    "operation_row_count": 48,
+    "terminator_row_count": 17,
+    "opcode_kind_bijection": true,
+    "wrong_kind_same_opcode_rejected": true,
+    "wrong_namespace_same_ordinal_rejected": true,
+    "ordinal_must_be_in_exact_namespace_bounds": true,
+    "closed_enum_membership_required": true,
+    "nonnull_mir_id_field_count": 15,
+    "payload_additional_field_count": 0,
+    "product_execution": "NOT_RUN"
+  },
+  "registry_digest": "256558848433edda683f8d6c5d8630e2f6a68aa0e3b3fb0909ea667acf33a196"
+}

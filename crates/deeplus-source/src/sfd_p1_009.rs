@@ -2,7 +2,12 @@
 
 use std::fmt;
 
-pub const REQUIRED_BASELINE: &str = "f509fce5df6c16b77d3accdccde4c640b093da0a";
+/// Immutable design provenance. This commit predates the executable SFD route
+/// and therefore must never be used as its execution-target gate.
+pub const HISTORICAL_PROVENANCE_BASELINE: &str = "f509fce5df6c16b77d3accdccde4c640b093da0a";
+/// The executable target is the observed clean-checkout HEAD recorded in each
+/// receipt. Its approval and closure binding are performed outside the binary.
+pub const EXECUTION_TARGET_BINDING: &str = "OBSERVED_CLEAN_CHECKOUT_HEAD";
 pub const PROFILE_ID: &str = "SFD_MINIMUM_SUCCESSOR_NONCANONICAL_NONACTIVATABLE";
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]

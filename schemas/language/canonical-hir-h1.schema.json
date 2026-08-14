@@ -2486,6 +2486,90 @@
         }
       ]
     },
+    "InterpolationFormatPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "alignment",
+        "minimum_width",
+        "fill_scalar",
+        "width_unit",
+        "overflow_policy",
+        "center_remainder_bias"
+      ],
+      "properties": {
+        "revision": {
+          "const": "FORMAT_SPEC_V1"
+        },
+        "alignment": {
+          "enum": [
+            "LEFT",
+            "RIGHT",
+            "CENTER"
+          ]
+        },
+        "minimum_width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000000
+        },
+        "fill_scalar": {
+          "const": "U+0020"
+        },
+        "width_unit": {
+          "const": "UNICODE_SCALAR_VALUE"
+        },
+        "overflow_policy": {
+          "const": "PRESERVE_NO_TRUNCATION"
+        },
+        "center_remainder_bias": {
+          "const": "EXTRA_PAD_RIGHT"
+        }
+      }
+    },
+    "InterpolationFormatPlanOrNull": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/InterpolationFormatPlan"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "InterpolationRenderRoute": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "DIRECT_STRING"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "display_evidence_id"
+          ],
+          "properties": {
+            "kind": {
+              "const": "DISPLAY"
+            },
+            "display_evidence_id": {
+              "$ref": "#/$defs/Id"
+            }
+          }
+        }
+      ]
+    },
     "InterpolationSegment": {
       "oneOf": [
         {
@@ -2510,8 +2594,9 @@
           "required": [
             "kind",
             "value_expr_id",
-            "display_evidence_id",
+            "render_route",
             "shorthand_projection_or_null",
+            "format_plan_or_null",
             "temporary_cleanup_ids"
           ],
           "properties": {
@@ -2522,11 +2607,14 @@
               "$ref": "#/$defs/Id",
               "x-deeplus-reference-role": "OWNING_CHILD_EXPR"
             },
-            "display_evidence_id": {
-              "$ref": "#/$defs/Id"
+            "render_route": {
+              "$ref": "#/$defs/InterpolationRenderRoute"
             },
             "shorthand_projection_or_null": {
               "$ref": "#/$defs/RootOnceProjectionOrNull"
+            },
+            "format_plan_or_null": {
+              "$ref": "#/$defs/InterpolationFormatPlanOrNull"
             },
             "temporary_cleanup_ids": {
               "type": "array",
@@ -3453,6 +3541,83 @@
         }
       }
     },
+    "ScopeCancellationPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "normalized_modifiers",
+        "cancellation_mode",
+        "execution_context_id_or_null",
+        "parent_shield_scope_id_or_null",
+        "exit_observation_policy",
+        "cleanup_fence",
+        "failure_precedence"
+      ],
+      "properties": {
+        "normalized_modifiers": {
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "isolated",
+              "cancellable",
+              "shielded"
+            ]
+          }
+        },
+        "cancellation_mode": {
+          "enum": [
+            "INHERIT",
+            "OBSERVE",
+            "DEFER_TO_OUTERMOST_SHIELD_EXIT"
+          ]
+        },
+        "execution_context_id_or_null": {
+          "$ref": "#/$defs/NullableId"
+        },
+        "parent_shield_scope_id_or_null": {
+          "$ref": "#/$defs/NullableId"
+        },
+        "exit_observation_policy": {
+          "enum": [
+            "INHERIT_PARENT_POLICY",
+            "OBSERVE_AT_ADMITTED_BOUNDARY_WHEN_SHIELD_DEPTH_ZERO",
+            "AFTER_SCOPE_CLEANUP_AT_OUTERMOST_SHIELD_EXIT"
+          ]
+        },
+        "cleanup_fence": {
+          "const": "SCOPE_LOCAL_CLEANUP_EXACTLY_ONCE_BEFORE_OUTERMOST_OBSERVATION"
+        },
+        "failure_precedence": {
+          "const": "SELECTED_ERROR_OR_DEFECT_PRECEDES_PENDING_CANCELLATION"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "cancellation_mode": {
+                "enum": [
+                  "OBSERVE",
+                  "DEFER_TO_OUTERMOST_SHIELD_EXIT"
+                ]
+              }
+            },
+            "required": [
+              "cancellation_mode"
+            ]
+          },
+          "then": {
+            "properties": {
+              "execution_context_id_or_null": {
+                "$ref": "#/$defs/Id"
+              }
+            }
+          }
+        }
+      ]
+    },
     "CleanupScopePlan": {
       "allOf": [
         {
@@ -3465,6 +3630,7 @@
             "scope_id",
             "parent_scope_id_or_null",
             "cleanup_budget_id",
+            "scope_cancellation_plan",
             "registrations_in_source_order"
           ],
           "properties": {
@@ -3483,6 +3649,9 @@
             },
             "cleanup_budget_id": {
               "$ref": "#/$defs/Id"
+            },
+            "scope_cancellation_plan": {
+              "$ref": "#/$defs/ScopeCancellationPlan"
             },
             "registrations_in_source_order": {
               "type": "array",
@@ -4754,6 +4923,46 @@
         }
       ]
     },
+    "OrdinaryCallSelectionV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "selection_version",
+        "selection_id",
+        "candidate_domain_id",
+        "candidate_set_digest",
+        "argument_descriptor_digest",
+        "selected_callable_declaration_id",
+        "selected_callable_implementation_id",
+        "substitution_id",
+        "canonical_call_shape_id",
+        "specificity_proof_id",
+        "applicable_candidate_count",
+        "selected_count",
+        "unresolved_count",
+        "result_context_verification",
+        "cross_domain_specificity_count",
+        "runtime_selection_count"
+      ],
+      "properties": {
+        "selection_version": { "const": "OrdinaryCallSelectionV1" },
+        "selection_id": { "$ref": "#/$defs/Id" },
+        "candidate_domain_id": { "$ref": "#/$defs/Id" },
+        "candidate_set_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "argument_descriptor_digest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "selected_callable_declaration_id": { "$ref": "#/$defs/Id" },
+        "selected_callable_implementation_id": { "$ref": "#/$defs/Id" },
+        "substitution_id": { "$ref": "#/$defs/Id" },
+        "canonical_call_shape_id": { "$ref": "#/$defs/Id" },
+        "specificity_proof_id": { "$ref": "#/$defs/Id" },
+        "applicable_candidate_count": { "type": "integer", "minimum": 1 },
+        "selected_count": { "const": 1 },
+        "unresolved_count": { "const": 0 },
+        "result_context_verification": { "enum": ["NOT_REQUIRED", "VERIFIED"] },
+        "cross_domain_specificity_count": { "const": 0 },
+        "runtime_selection_count": { "const": 0 }
+      }
+    },
     "CallPlan": {
       "type": "object",
       "additionalProperties": false,
@@ -4795,6 +5004,9 @@
         "outcome_responsibility_profile_id": {
           "$ref": "#/$defs/Id"
         },
+        "ordinary_call_selection": {
+          "$ref": "#/$defs/OrdinaryCallSelectionV1"
+        },
         "trait_associated_static_selection": {
           "$ref": "#/$defs/TraitAssociatedStaticSelection"
         },
@@ -4819,6 +5031,9 @@
         "mailbox_profile_id": {
           "$ref": "#/$defs/Id"
         },
+        "sender_identity_plan_id": {
+          "$ref": "#/$defs/Id"
+        },
         "argument_binding_plan": {
           "type": "array",
           "items": {
@@ -4837,6 +5052,29 @@
           "items": {
             "$ref": "#/$defs/Id"
           }
+        },
+        "transport_allocation_plan_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "transport_error_set": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "prefixItems": [{"const": "AllocationError"}],
+          "items": false
+        },
+        "transport_effect_row": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "prefixItems": [{"const": "allocate"}],
+          "items": false
+        },
+        "allocation_publish_phase": {
+          "const": "ENQUEUE_COMMIT"
+        },
+        "postcommit_allocation_count": {
+          "const": 0
         },
         "request_responsibility_or_null": {
           "anyOf": [
@@ -4862,6 +5100,31 @@
         }
       },
       "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode_target_pair": {
+                "enum": [
+                  "ORDINARY::DIRECT_IMPLEMENTATION",
+                  "ORDINARY::VIRTUAL_SLOT",
+                  "ORDINARY::TRAIT_WITNESS",
+                  "ORDINARY::EXTENSION_STATIC",
+                  "MESSAGE::DIRECT_IMPLEMENTATION",
+                  "MESSAGE::VIRTUAL_SLOT",
+                  "MESSAGE::TRAIT_WITNESS",
+                  "MESSAGE::EXTENSION_STATIC"
+                ]
+              }
+            },
+            "required": ["mode_target_pair"]
+          },
+          "then": {
+            "required": ["ordinary_call_selection"]
+          },
+          "else": {
+            "not": { "required": ["ordinary_call_selection"] }
+          }
+        },
         {
           "if": { "required": ["trait_associated_static_selection"] },
           "then": {
@@ -4900,9 +5163,15 @@
               "selector_id",
               "canonical_call_shape_id",
               "mailbox_profile_id",
+              "sender_identity_plan_id",
               "argument_binding_plan",
               "transfer_plan",
               "admission_error_set",
+              "transport_allocation_plan_id",
+              "transport_error_set",
+              "transport_effect_row",
+              "allocation_publish_phase",
+              "postcommit_allocation_count",
               "request_responsibility_or_null",
               "actor_protocol_conformance_id",
               "actor_protocol_requirement_id",
@@ -4945,6 +5214,11 @@
                 },
                 {
                   "required": [
+                    "sender_identity_plan_id"
+                  ]
+                },
+                {
+                  "required": [
                     "argument_binding_plan"
                   ]
                 },
@@ -4956,6 +5230,31 @@
                 {
                   "required": [
                     "admission_error_set"
+                  ]
+                },
+                {
+                  "required": [
+                    "transport_allocation_plan_id"
+                  ]
+                },
+                {
+                  "required": [
+                    "transport_error_set"
+                  ]
+                },
+                {
+                  "required": [
+                    "transport_effect_row"
+                  ]
+                },
+                {
+                  "required": [
+                    "allocation_publish_phase"
+                  ]
+                },
+                {
+                  "required": [
+                    "postcommit_allocation_count"
                   ]
                 },
                 {
@@ -6985,6 +7284,7 @@
       "Require every MutableList structural-edit surface to disappear into an existing CallExpr and closed CallPlan/CallableImplementationId; reject an edit-specific HIR or MIR opcode and require receiver, selector, and payload evaluation exactly once before one mutation commit.",
       "Reject every removed numeric type suffix before canonical CST/AST/HIR; one recovery diagnostic may exist outside this schema but no split numeric prefix or suffix identifier can validate.",
       "Require any repeated TraitAssociatedStaticSelection with the same selection_id in ResolvedRef, CallPlan, or MIR static identity residue to be byte-for-byte equal after canonical serialization; associated-type selections never occur as ResolvedRefExpr or ReferenceCapture values.",
+      "Require every ORDINARY or MESSAGE non-reserved CallPlan to carry exactly one OrdinaryCallSelectionV1 whose candidate-domain and argument-descriptor digests bind the consumed analysis-HIR ResolvedOverloadSetRef, whose selected declaration, implementation, substitution, call shape, and specificity proof are closed before operand evaluation, and whose selected_count is one with no runtime or backend relookup.",
       "Reject any reuse of callable ResponsibilityProfileId as ResponsibilityRuleId or ResponsibilityEvidenceId and forbid runtime or backend responsibility-evidence relookup.",
       "Require responsibility_evidence_descriptors to be strictly ordered by responsibility_evidence_id, unique by that ID, and fully reachable from the typed-HIR semantic facts that selected them.",
       "Allow only LOWER or NO_RUNTIME_EMISSION lowering rows. Capability insufficiency is not represented as a lowering row; preserve the verified HIR semantic digest exactly and do not create ExecutableHirH1.",

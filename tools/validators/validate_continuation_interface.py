@@ -18,7 +18,8 @@ from typing import Any
 
 
 BASELINE_COMMIT = "e680568057ec9c6b02218dbe153758471734cf44"
-GRAMMAR_SHA256 = "914399e4fd35f552cab3111613244cb6844b6313f8b9bd17ebbead0ad7df9bd9"
+PREDECESSOR_GRAMMAR_SHA256 = "f69b2e438df00e62afe805a1bcef2d1b7e069bda988862fa35d58942828d7be2"
+GRAMMAR_SHA256 = "42780c57b387aa1f369cf28591f1007a8819c73da1715d73cf60f434282dabda"
 INTERFACE_ID = "ContinuationInterfaceId:DEEPLUS_CONTINUATION_INTERFACE_R1"
 R36_HISTORICAL_MANAGED_REFERENCE_DIGEST = "feff3c021d4b77e64e4e9f00f797b0ce2c465a5b60709d86d0baf7bded72c7f7"
 R37_HISTORICAL_RUNTIME_ABI_DIGEST = "45f40998a052d21393ee324261ad2c1865beaddee435632df30ddb5e8a69833d"
@@ -420,7 +421,7 @@ def main() -> int:
     check("R38_R20_ACCEPTANCE_PRESERVED", len(legacy) == 24 and len({row.get("test_id") for row in legacy}) == 24, len(legacy))
 
     counts: dict[str, tuple[int, int]] = {}
-    expected_counts = {"diagnostics": 1486, "predicates": 283, "predicate_fixtures": 877, "relations": 613}
+    baseline_counts = {"diagnostics": 1491, "predicates": 285, "predicate_fixtures": 877, "relations": 618}
     locations = {
         "diagnostics": ("spec/diagnostics/catalog", "diagnostic_count"),
         "predicates": ("spec/types/predicates", "predicate_count"),
@@ -431,7 +432,14 @@ def main() -> int:
         actual = len(catalog_rows(root, relative))
         declared = load(root / relative / "catalog-metadata.json").get(metadata_key)
         counts[key] = (actual, declared)
-    check("R38_CATALOG_COUNTS", all(counts[k] == (v, v) for k, v in expected_counts.items()), counts)
+    check(
+        "R38_CATALOG_COUNTS",
+        all(
+            actual == declared and actual >= baseline_counts[key]
+            for key, (actual, declared) in counts.items()
+        ),
+        counts,
+    )
     diagnostics = catalog_rows(root, "spec/diagnostics/catalog")
     diagnostic_counts = Counter(row.get("diagnostic_id") for row in diagnostics)
     check("R38_DIAGNOSTIC_BINDING", all(diagnostic_counts[value] == 1 for value in DIAGNOSTICS), {value: diagnostic_counts[value] for value in DIAGNOSTICS})

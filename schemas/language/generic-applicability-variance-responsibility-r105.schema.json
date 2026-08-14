@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/language/generic-applicability-variance-responsibility-r105.schema.json",
+  "title": "Deeplus R105 generic applicability, variance, and responsibility contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "schema", "revision", "status", "baseline", "scope", "generic_applicability", "generic_variance", "higher_order_responsibility", "diagnostic_precedence", "hir_residue", "acceptance"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema": {"const": "deeplus.generic-applicability-variance-responsibility/r105"},
+    "revision": {"const": "r105-closed-generic-and-higher-order-responsibility"},
+    "status": {"const": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF"},
+    "baseline": {"type": "object"},
+    "scope": {"type": "object"},
+    "generic_applicability": {"type": "object"},
+    "generic_variance": {"type": "object"},
+    "higher_order_responsibility": {"type": "object"},
+    "diagnostic_precedence": {"type": "array", "minItems": 13, "maxItems": 13, "uniqueItems": true, "items": {"type": "string"}},
+    "hir_residue": {"type": "object"},
+    "acceptance": {"type": "object"}
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus-lang.org/schema/r87/trait-auto-policy-fixtures-v1.schema.json",
+  "title": "Deeplus Trait auto-policy fixture bundle V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "decision_schema", "contract", "evidence_level", "cases", "counts"],
+  "properties": {
+    "schema": {"const": "deeplus.trait-auto-policy-fixtures/v1"},
+    "decision_schema": {"const": "schemas/language/trait-auto-policy-decision-v1.schema.json"},
+    "contract": {"const": "spec/contracts/trait-auto-policy-registry-v1.json"},
+    "evidence_level": {"const": "E2_DESIGN_STATIC_PRODUCT_NOT_RUN"},
+    "cases": {
+      "type": "array", "minItems": 13, "maxItems": 13, "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["case_id", "class", "descriptor", "expected"],
+        "properties": {
+          "case_id": {"type": "string", "pattern": "^R87-AUTO-(?:N|B|R)-[0-9]{3}$"},
+          "class": {"enum": ["normal", "boundary", "reject"]},
+          "descriptor": {"$ref": "trait-auto-policy-decision-v1.schema.json"},
+          "expected": {
+            "type": "object", "additionalProperties": false,
+            "required": ["outcome", "diagnostic_or_null"],
+            "properties": {
+              "outcome": {"enum": ["ADMIT_POLICY_BINDING", "SYNTHESIZE_STATIC_WITNESS", "REJECT"]},
+              "diagnostic_or_null": {"type": ["string", "null"]}
+            }
+          }
+        }
+      }
+    },
+    "counts": {
+      "const": {"normal": 4, "boundary": 3, "reject": 6, "total": 13, "executed_product": 0}
+    }
+  }
+}

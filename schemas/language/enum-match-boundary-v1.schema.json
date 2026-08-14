@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deeplus.dev/schemas/enum-match-boundary-v1.schema.json",
+  "title": "Enum and match boundary contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "gap_id", "status", "baseline", "enum_body", "match_fallback", "diagnostic_precedence", "frontend_fence", "validation", "governance"],
+  "properties": {
+    "schema": {"const": "deeplus.enum-match-boundary/v1"},
+    "gap_id": {"const": "IR-PARSE-P1-059"},
+    "status": {"const": "CURRENT_STABLE_DESIGN_MACHINE_CONTRACT"},
+    "baseline": {"type": "object"},
+    "enum_body": {"type": "object"},
+    "match_fallback": {"type": "object"},
+    "diagnostic_precedence": {"type": "array", "minItems": 8, "uniqueItems": true, "items": {"type": "string"}},
+    "frontend_fence": {"type": "object"},
+    "validation": {"type": "object"},
+    "governance": {"type": "object"}
+  }
+}

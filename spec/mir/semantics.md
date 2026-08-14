@@ -2,6 +2,23 @@
 
 Deeplus MIR is the canonical semantic authority. Rust frontend structures, xVM bytecode, Cranelift IR (CLIF), AOT code, and Cranelift JITModule code are projections that must preserve MIR-observable behavior. Product execution is `NOT_RUN`.
 
+Member visibility is sealed before MIR. `MemberVisibilityOmissionV1` preserves
+an absent sigil only through CST and AST, resolves it after exact owner and slot
+binding, and requires a non-null effective domain in typed HIR. MIR receives no
+`OMITTED` state, performs no visibility lookup or runtime access check, and adds
+no operation for `IR-VIS-P1-057`. xVM and Cranelift may not reinterpret an
+owner default, inherited slot, Trait requirement, or actor transport domain.
+
+Source-item ownership is likewise sealed before HIR and MIR.
+`SourceItemCommitmentV1` preserves its row and marker span only in the lossless
+CST; normalized AST contains the selected declaration or statement owner, and
+MIR receives neither a commitment node nor a fallback branch. A contextual
+declaration that fails after its marker has no runtime meaning and never lowers.
+MIR, xVM and Cranelift perform zero contextual-word, symbol, type, overload or
+source-order lookup and cannot reinterpret `actor Worker { ... }` as a call.
+The parenthesized `actor(Worker) { ... }` form is already an ordinary call before
+lowering. Product frontend and backend execution remain `NOT_RUN`.
+
 ## 1. Machine state and observation
 
 A step state contains the current MIR frame, ordered operand stack, places and ownership states, cleanup-region stack, effect/error continuation, execution/concur/actor state, provider bindings, and source provenance. Observable events are ordered result/failure, I/O or authority events, message enqueue/dequeue, run spawn/join, suspension/resume, cancellation, cleanup and provider observation. Backend-private allocation and instruction selection are not observations.
@@ -58,6 +75,38 @@ conformance lookup. A non-intrinsic exact unary `+`/`-`, binary
 `OperatorId`, normalized left/right type IDs, `ConformanceId`, `WitnessId`,
 `MethodId`, normalized substitution, `OutputTypeId`, and
 `ResponsibilityProfileId` selected statically by the checker.
+
+For strong Eq/Ord, the checker also seals
+`StrongComparisonFamilyId?`, `ReverseWitnessId?`, and
+`NormalizationDomainId?`. All three are null for a homogeneous Self row. A
+heterogeneous row reaches MIR only when one compiler/Prelude-sealed bilateral
+family supplies all three identities and proves the paired law vector; the
+current family registry is empty. MIR cannot pair independent witness rows,
+infer a reverse relation, normalize through an implicit conversion, or repeat
+comparison selection at runtime.
+
+Automatic Trait synthesis also closes before MIR. `supports auto` binds only a
+core/Prelude-owned `(TraitId, PolicyVersion)` row in
+`TraitAutoPolicyRegistryV1`; it does not define an executable source policy.
+The only current rows are Shareable and Transferable under
+`RESPONSIBILITY_STRUCTURAL_FIXED_POINT_R1`. A successful bodyless `by auto`
+request seals `TraitAutoPolicyId`, policy digest, finite sorted input evidence,
+`ConformanceId`, emitted `TraitWitnessId` values and `DerivationDigest` in HIR
+and public conformance residue. MIR adds no auto-policy operation and performs
+zero extension, provider, registry, source-order or runtime relookup; later
+uses consume the already selected witness and existing responsibility residue.
+
+The R107 Trait Conformance handoff applies the same closure fence to every
+current conformance route. Typed HIR reaches MIR only with complete,
+verifier-recomputable `ConformanceId`, `TraitWitnessId`, `RequirementId`,
+`ImplementationId`, `SubstitutionId`, `ResponsibilityId`, `AuthorityId`, parent
+link and associated-binding residue. A registered automatic row additionally
+retains its policy and derivation digests. Any missing or mismatched field is
+`TRAIT_MIR_EVIDENCE_INCOMPLETE` and emits no MIR. MIR, xVM, runtime and
+Cranelift never reconstruct a witness, rerun coherence, consult a provider or
+registry, rank source/import order, specialize, fall back, or replace parent
+evidence. The static contract is implementation-ready; production lowering and
+product execution remain NOT_RUN.
 
 Both operands evaluate once, left-to-right, before the borrowed, pure, total,
 synchronous witness call. The node has no implicit conversion, expected-result
@@ -258,11 +307,26 @@ An ordinary local binding evaluates its initializer exactly once while the targe
 Plain and raw source strings lower to immutable `ConstString` payloads. The raw scanner supplies the exact body scalars; escape and interpolation machines are not invoked. xVM and both Cranelift backends observe the same String value.
 
 Interpolated strings lower to an ordered segment plan. Direct segments are
-constants; each hole retains one source evaluation and one preselected
-`Display` witness invocation. Shorthand projections are read-only and braced
+constants; each hole retains one source evaluation, a direct String route or
+one preselected `Display` witness invocation. Shorthand projections are read-only and braced
 expressions use ordinary MIR. The plan commits one final String only after all
 segments succeed, carries no locale/provider/serialization/redaction
 observation, and performs reverse temporary cleanup on an earlier failure.
+
+### 4.1 Stable interpolation format plan
+
+An admitted colon format lowers as the hole's immutable `FORMAT_SPEC_V1` plan:
+alignment is `LEFT`, `RIGHT`, or `CENTER`; minimum width is 1 through 1,000,000;
+fill is U+0020; and the width unit is Unicode scalar value. The ordered builder
+stage evaluates the hole value once, uses a String value directly or invokes
+the preselected `Display` evidence once for a non-String value, counts the
+resulting segment's scalars, applies only the missing padding,
+and stages that segment once. Center padding uses floor on the left and the
+remainder on the right. A segment already at or above the minimum is unchanged;
+there is no truncation operation or hidden call into a locale, provider,
+serialization or reflection service. Invalid format text is rejected before
+HIR and creates no MIR. Padding allocation and cleanup remain within the same
+interpolation builder transaction and introduce no new outcome family.
 
 MIR value identity records the semantic type and value, not a storage address, serialization tag, runtime discriminant, ABI, or backend layout. Unsuffixed `Int` constants inhabit the signed 64-bit mathematical domain. Explicit integer domains remain distinct. Integer arithmetic is checked: a dynamic overflow or division or remainder by zero emits deterministic `ArithmeticDefect` before any enclosing place commit; wrapping and saturation occur only through named calls. Integer division truncates toward zero, and remainder preserves `a == trunc(a / b) * b + r` with `r == 0` or the dividend sign and `|r| < |b|`; signed `MIN / -1` and `MIN % -1` take the overflow edge. Floating and Complex `%` have no MIR operation. A statically rejected failure creates no MIR.
 
@@ -291,6 +355,19 @@ foreign ABI follows from the semantic pair.
 ## 5. Failure and cleanup
 
 Errors, defects and cancellation are distinct. Cancellation progresses through request, observation, acknowledgement, cleanup barrier, and terminal outcome events; each event is monotonic and idempotent for one CancellationId. Primary/suppressed failure order is deterministic: at one `concur` terminal barrier, the failed run with the lowest lexical `spawn_index` becomes primary and the remaining run failures are appended in ascending `spawn_index`; scheduler completion order is not evidence. Cleanup executes exactly once in LIFO region order and cannot be skipped by return, throw, break, cancellation or suspension. Cleanup failures are then appended in their actual deterministic LIFO execution order according to the suppression law and never reorder an already selected primary outcome.
+
+### Scope cancellation plans
+
+`CleanupScopePlan.scope_cancellation_plan` lowers through `HM-LR-TOP-021` and
+threads one linear `CANCELLATION` state through the cleanup region. `INHERIT`
+adds no observation boundary, `OBSERVE` admits the ordinary cancellation point,
+and `DEFER_TO_OUTERMOST_SHIELD_EXIT` emits ordered `shield_enter`, optional
+`observation_deferred`, exact-once `scope_cleanup_complete`, and `shield_exit`
+events. An inner shield never observes while its parent remains active. After
+the outermost cleanup and exit, a still-selected cancellation emits exactly one
+`cancel_observe` followed by one `cancel_acknowledge`; a selected Error or
+Defect follows the bound failure-precedence plan instead. Lowering may neither
+reselect the source mode nor introduce a backend-specific shield operation.
 
 Cleanup-budget checking is completed before verified MIR. Canonical HIR binds
 each construction lifecycle plan to one `CleanupBudgetId`; the module table
@@ -352,20 +429,30 @@ or link order.
 
 Actor isolation is explicit. One ActorId owns one isolated StateRegionId and MailboxId; one admitted ActorTurnId has mutation authority at a time, including across its suspension. Suspend/resume preserves that same turn identity and does not release dequeue or mutation authority. A statically proven self/dependency-cycle request await is rejected before MIR rather than represented as implicit reentrancy. The exact FIFO key is `(SenderId, ReceiverActorId, MailboxProfileId)`; `ChannelId` is derived from that tuple rather than adding another ordering component. Each successful enqueue commit allocates the next strictly increasing `channel_sequence`, and dequeue preserves that order. No rejected attempt has a `channel_sequence`. No global order or fairness is implied.
 
+MIR represents `SenderId` as the exact tagged value `Actor(ActorInstanceId)` or `Execution(ExecutionId)`. The current actor-turn token selects the actor variant; without that token the current execution identity selects the execution variant. The token is absent in a structured child even when it was spawned lexically inside an actor handler. Suspension and resumption preserve the existing variant and underlying identity. Actor restart creates a new `ActorInstanceId`, and child spawn creates a new `ExecutionId`, so neither may reuse the predecessor sender key. Enqueue copies the already installed identity into the event and envelope; it performs no sender allocation, table search, address/thread inference or lossy hash. The identity may remain in queued/trace residue after origin termination but conveys no runtime authority.
+
 Actor transport is not a method call. The Stable `:~` surface selects one
 `ActorTransport` plan before MIR; it has no ordinary-message or method fallback.
 Prepare-send evaluates the receiver and every `CallArgument` left-to-right
 exactly once without transferring ownership, binds the selected formals, proves
-transfer/isolation, and stages one compiler-internal envelope. A trailing
+transfer/isolation, and seals one `ActorTransportAllocationPlanV1`. Under the
+mailbox admission lock it checks receiver closure and bounded capacity before
+allocating, then stages the envelope, any required mailbox growth, and
+request-only Reply/correlation responsibility storage. A trailing
 closure crossing actor isolation is admitted only when its capture environment
 independently satisfies transfer, suspension, effect, error, and cleanup rules.
 The absence of a mailbox clause binds `logical_unbounded_v1`; positive static
 `#mailbox(capacity: N)` binds `bounded_reject_v1`. The bounded profile never
-blocks, retries, suspends, or drops. All failures before commit retain every
-sender owner and allocate neither envelope nor sequence. Admission commits
-exactly one envelope, one ownership transition, and one sequence. A one-way
-commit returns `Result::ok(Unit)`; a request commit creates one CorrelationId and
-ReplyId and returns `Result::ok(Reply<T>)` plus its non-forgeable
+blocks, retries, suspends, or drops. Receiver-closed and bounded-full outcomes
+are normal `ActorMessageError` Result values and precede allocation. Failure of
+any required storage throws existing `AllocationError` with effect `allocate`,
+retains every sender owner, reverse-cleans staged resources, and publishes no
+envelope, sequence, ReplyId, CorrelationId, or Result. It is not converted into
+`mailboxFull`, Cancellation, or Defect. Admission commits exactly one prepared
+envelope, one ownership transition, and one sequence; required postcommit
+allocation count is zero. A one-way commit returns `Result::ok(Unit)`; a request
+transaction reserves one CorrelationId and ReplyId before commit, makes them
+observable only at commit, and returns `Result::ok(Reply<T>)` plus its non-forgeable
 `ReplyResponsibility` descriptor. The descriptor preserves normalized result
 type, handler ErrorSet, cancellation axis, isolation owner, ReplyId,
 CorrelationId, and terminal transport failure. `:~` itself never suspends or retries; source
@@ -578,12 +665,20 @@ remains required with binding `self`. A missing, extra, stale, or graph-unbound
 pair rejects before this seal and creates no provider lookup, event, or
 backend repair route.
 
-`ResolvedOverloadSetRef` is
-analysis-HIR-only and cannot enter `ExecutableHirH1` or MIR; an exact call
-winner and complete generic substitution belong to the subsequent generic and
-ordinary-overload cluster. MIR must not rank applicability or specificity,
-choose by expected/result type, infer a row, merge lexical overload sets, or
-perform name/member/extension/witness lookup.
+`ResolvedOverloadSetRef` is analysis-HIR-only and cannot enter
+`ExecutableHirH1` or MIR. `OrdinaryCallSelectionV1` seals one exact declaration,
+`CallableImplementationId`, complete `SubstitutionId`, canonical call shape,
+candidate-set/argument-descriptor digests, and specificity proof before HIR
+handoff. MIR must not rank applicability or specificity, choose by
+expected/result type, infer a row, merge lexical overload sets, or perform
+name/member/extension/witness lookup.
+
+Call selection is a static, nonexecuting proof. Runtime evaluates the selected
+callee or receiver and explicit arguments left-to-right only after the seal,
+then evaluates omitted defaults of the selected declaration in formal order.
+No unselected default, closure body, candidate body, or candidate-local
+temporary is evaluated. xVM and Cranelift consume the same sealed selection
+identity and have no fallback or re-ranking path.
 
 For an ordinary selector with a nonempty nominal set and a nonempty active
 extension set, the frontend emits `MEMBER_EXTENSION_COLLISION` and produces no
@@ -622,6 +717,46 @@ final value or failure, place/cleanup balance, provider replay identity,
 cancellation/suspension and actor/concur ordering. A design-static PASS in this
 package is not such a receipt.
 
+The xVM path consumes canonical XBC R1 under
+`spec/contracts/xvm-xbc-projection-r1.json`. XBC is a deterministic execution
+projection of one exact `Verified<DeeplusMirR1>`, never a second semantic IR.
+Its fixed 128-byte header binds version 1.0, the source MIR semantic digest, the
+XBC logical digest and the projection-contract digest. Ten fixed-order section
+payloads use RFC 8949 deterministic CBOR and are individually SHA-256 bound.
+The 48 current MIR operation kinds use opcodes `0x0000..0x002f` in exact
+machine-registry order; the 17 terminators use `0x8000..0x8010`. Every other
+opcode, registry-digest mismatch, noncanonical payload or unknown section is a
+pre-execution rejection, not a forward-compatible skip.
+
+For the R99 implementation target, opcode identity alone is insufficient. Each
+operation and terminator also binds the exact payload-contract identity in
+`spec/contracts/xbc-typed-payload-registry-r99.json`. Its 48 operation rows,
+17 terminator rows, and closed 73-field domain table decide whether each field
+is a value, place, token, frame, body, static-identity, constant or closed
+scalar reference. Equal numeric ordinals in different namespaces never
+interchange, and an opcode/kind/payload-contract mismatch is rejected before
+execution.
+
+XBC body slots are typed dense projection ordinals in disjoint value, place,
+linear-token, continuation-frame and static-table namespaces. They are not MIR
+identity, source serialization tag, ABI identity, byte offset, native address
+or register identity. Branches name block ordinals rather than byte offsets.
+The decoder reconstructs the logical MIR projection, verifies the exact source
+MIR digest, and reruns the applicable CFG, SSA, ownership, loan, cleanup,
+outcome, safepoint, root and continuation obligations before acquiring a
+runtime resource or executing an operation.
+
+Managed roots project bijectively to typed xVM locations while preserving the
+semantic `RootId`; static XBC contains no handle generation or referent address.
+Continuation slots bind the exact continuation-interface digest and preserve
+the owner/loan/cleanup/authority partition, root-rebind law and one
+resume-or-cancel winner. The module also binds the exact
+`deeplus-xvm-portable-r1` internal-runtime projection and typed helper table;
+host defaults and runtime semantic reselection are forbidden. The artifact
+receipt keeps MIR semantic identity, XBC logical identity and complete encoded
+byte identity in distinct digest domains. Emitter and interpreter product
+execution remain `NOT_RUN`.
+
 CLIF is backend-private. Its values, blocks, stack slots, signatures, function
 references, relocations, registers and native addresses never become HIR or MIR
 semantic identity. Module-local function/data IDs and symbol spellings are
@@ -636,6 +771,18 @@ mode additionally binds object bytes, object format, linker identity and final
 artifact. JIT mode binds the import allowlist, resolved import map, executable
 memory policy, finalized image and retirement lifetime. Host defaults cannot
 supply any omitted input.
+
+The implementation target additionally binds the 50 ordered argument/result
+records and 25 effective helper signatures (22 base plus 3 active conditional
+helpers) in
+`spec/contracts/runtime-abi-record-registry-r99.json`, the three complete
+target mapping preimages in
+`spec/contracts/runtime-target-mapping-registry-r99.json`, and the total
+48-operation/17-terminator lowering table in
+`spec/contracts/mir-clif-projection-registry-r99.json`. A digest without its
+local mapping preimage, a helper signature that omits either record digest, or
+a MIR kind without exactly one lowering row is a pre-emission rejection. These
+design-static registries do not claim that Cranelift is linked or executed.
 
 Error, Defect, Cancellation, suspension and cleanup remain explicit MIR
 outcomes and edges. They cannot be replaced by native exceptions, personality
@@ -689,7 +836,9 @@ storage-location `RootId` and trace-descriptor bindings, never a runtime handle
 generation or receipt lifecycle. At an executed safepoint the runtime receipt
 checks exact generations, is published before the may-collect entry, remains
 live through MIR outcome commit, and is then released. The current continuation
-interface digest is `2ccf2acd...c8b4`; predecessor `0dc489...1271` pointers do
+interface digest is
+`6dcb8964c1d8fb788e7946f8cdaa54f2d31d6d003fdece7161a8713c1e858d50`;
+predecessor pointers do
 not select successor semantics. `RegionId` and `LoanId` remain verifier
 identities: a managed root neither creates nor extends a loan.
 
@@ -811,6 +960,11 @@ static partition analysis, but their clause-owner overlap, input-supply, and
 return-totality obligations are discharged before an admitted ordered clause
 plan reaches lowering; no runtime clause search repairs a rejected partition.
 
+Enum body-mode commitment and match fallback-head commitment are likewise
+parser/checker-only. MIR receives a nonempty sealed Enum case vector and an
+already validated arm plan. There is no empty-Enum opcode, fallback-guard field,
+commitment opcode, runtime mode lookup, or recovery residue.
+
 Tuple Pattern lowering is an exact static product projection. Record/Map
 patterns first compare their exact or explicitly open row/key shapes; nominal
 patterns require one statically selected pattern-transparent descriptor. Pin,
@@ -836,11 +990,29 @@ Bare comma return type/value/binding surfaces disappear before MIR as the
 existing TupleType/TupleExpr/TuplePattern identity. They do not create a comma
 operator, ValuePack, Sequence return carrier or multiple-result ABI. A
 direct-local parallel or structural assignment resolves only static distinct
-mutable `LocalPlaceId`s, evaluates and stages the complete RHS left-to-right
-once, validates arity/ownership/overlap before any write, then emits exactly one
-`replace_group_commit` and returns Unit. A precommit failure emits zero target
-writes; this is failure-atomic logical publication, not hardware or
-cross-thread atomicity.
+mutable `LocalPlaceId`s and receives one sealed `PatternAssignmentPlanId`. It
+evaluates the complete RHS once, stages the ordered projections and replacement
+reservations with zero target writes, then crosses one infallible
+`PatternAssignmentCommitId` barrier and reverse-cleans displaced owners. A
+precommit failure cleans only new temporaries and preserves every old value;
+this is failure-atomic logical publication, not hardware or cross-thread
+atomicity.
+
+For lowering receives one sealed `ForIteratorPlanId`, never an unresolved
+overload set. MIR evaluates the source once, performs either the selected direct
+Iterator route or one selected Sequence acquisition, and records the exact
+Iterator witness, associated `Item` type and cleanup plan. Each `next` outcome
+is tested as `Option<Item>`; `none` exits and `some(item)` enters one admitted
+Pattern attempt. All `continue`, `break`, `return`, Error, Defect and
+cancellation edges close the current item, iterator and source exactly once in
+reverse ownership order. No runtime protocol search or provider fallback
+exists.
+
+Map and Set lowering receives sealed `KeyableWitnessId`, `EqWitnessId`,
+`HashWitnessId` and `HashPolicyId`. It may call only the responsibility-free
+borrowed Eq/Hash rows selected by `KeyableSelectionV1`; it cannot construct a
+witness, choose a policy per instance, or recover from a rejected partial-
+equality key domain.
 
 
 ## 12. Removed-surface MIR boundary
@@ -903,13 +1075,13 @@ This section classifies the frozen required 20-feature audit set without changin
 | `match_arm_guard_msp` | `GENERIC_LAW_PRESENT` | §§2 and 11 bind subject-once evaluation and atomic binding after static admission. |
 | `bytes_literal_hash_bytes_msp` | `LAW_PRESENT` | §4 binds raw byte values and forbids hidden text conversion without selecting storage. |
 | `string_interpolation_braced_expr_core` | `LAW_PRESENT` | §4 binds ordered single evaluation, preselected Display evidence, final publication and cleanup. |
-| `string_interpolation_format_spec_core` | `DEFERRED_PRODUCT_HANDOFF` | The exact format-text grammar, argument mapping, width unit, padding/truncation and invalid-format outcome are not yet closed; no backend may invent them. |
+| `string_interpolation_format_spec_core` | `LAW_PRESENT` | §4.1 binds `Align? Width`, Unicode-scalar minimum width, SPACE padding, no truncation, checker rejection and the ordered Display-then-padding builder plan. |
 | `string_interpolation_shorthand_factor_msp` | `LAW_PRESENT` | §4 binds one root evaluation and read-only projection before the same Display plan. |
 | `numeric_array_postfix_transpose_caret_msp` | `LAW_PRESENT` | §11 binds an owner-bounded readonly view, axis/orientation transform, lifetime, and the no-implicit-element-copy boundary without selecting backend storage. |
 
 The supplemental features `no_string_char_bytes_implicit_conversion_law` and `text_model_char_grapheme_current_law` are `LAW_PRESENT` under §4; they do not replace or enlarge the required 20-feature set.
 
-Exactly one required row remains `DEFERRED_PRODUCT_HANDOFF` in this 20-feature audit set: `string_interpolation_format_spec_core`. Braced-expression and shorthand-hole evaluation remain `LAW_PRESENT`, but a colon format text supplies no runtime formatting authority until its grammar, mapping, width/padding/truncation rules and invalid-format outcome are separately ratified. All product lanes remain `NOT_RUN`. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim. In particular, this static closure does not prove that xVM or either Cranelift backend implements ternary branching, interpolation planning, or transpose-view lowering.
+No required row remains `DEFERRED_PRODUCT_HANDOFF` in this 20-feature audit set. The interpolation format row is now `LAW_PRESENT` under §4.1. All product lanes remain `NOT_RUN`. A `LAW_PRESENT` row closes only the source-observable MIR contract written above; it is not a product execution receipt and selects no backend opcode, storage layout, ABI, or support claim. In particular, this static closure does not prove that xVM or either Cranelift backend implements ternary branching, interpolation planning, padding, or transpose-view lowering.
 
 ## 14.1 Closed-union, refinement, guard, and pattern-flow handoff
 
@@ -942,6 +1114,16 @@ or a may-mutate/may-consume call kills the durable fact. MIR does not materializ
 `Phi`, and these facts never change the declared semantic type.
 
 Refinement boundaries preserve their selected outcome: proven construction has no duplicate predicate call, `as?` retains Option success/failure, `as!` retains its declared defect edge, and `T::check` retains Result detail. For a direct truth test, checker/HIR may substitute facts from a verified finite `GuardSummaryV1` and omit a redundant later refinement check. No summary or proof value is carried into MIR or runtime; stored, indirect, wrapped, or invalidated guard results remain opaque.
+
+`RefinementR0V1` is exhausted before MIR. Canonical HIR may retain the selected
+boundary outcome and the exact formula digest needed for static provenance,
+but never an open solver, source-text predicate, or runtime proof plan. MIR
+either lowers the already selected predicate evaluation with its existing
+failure edge or omits a check proved redundant by the checker. It does not
+renormalize the formula, invert IEEE comparisons, repeat a guard call, search
+for a witness, or ask xVM/Cranelift/host code to decide implication or
+disjointness. The normative static contract is
+`spec/contracts/refinement-r0-calculus-v1.json`.
 
 ## 15. Post-PR16 nonactivatable Preview operational contracts
 
@@ -1189,7 +1371,7 @@ relookup, reselection, or inference of either identity is forbidden.
 
 The current Stable-design machine schema is `deeplus.mir/r1`, and deterministic
 lowering produces `Verified<DeeplusMirR1>`. The closed machine registry is
-`deeplus.mir-machine-registry/r1`: exactly 29 semantic operations, 17
+`deeplus.mir-machine-registry/r1`: exactly 48 semantic operations, 17
 terminators, 12 linear token kinds, 11 responsibility axes in their canonical
 order, and 26 design capabilities. These are backend-neutral identities; XBC,
 CLIF, registers, addresses, object layout, calling convention, and ABI remain

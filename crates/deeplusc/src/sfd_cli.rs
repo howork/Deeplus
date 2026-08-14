@@ -1,6 +1,5 @@
 //! Strict command grammar and atomic output publication for SFD-P1-009.
 
-use deeplus_source::sfd_p1_009::REQUIRED_BASELINE;
 use deeplus_testkit::sfd_p1_009::{
     ContractBundle, ContractError, ExecutionBindings, Selection, Value, canonical_line,
     canonical_ndjson, ensure_repo_relative, json, run_selection, sha256_hex,
@@ -72,7 +71,7 @@ struct Arguments {
 pub fn run(arguments: impl IntoIterator<Item = OsString>) -> Result<Value, ContractError> {
     let arguments = parse_arguments(arguments)?;
     let repository = repository_root()?;
-    baseline_gate(&repository)?;
+    let execution_target_commit = execution_target_gate(&repository)?;
 
     let expected_root = Path::new(CONTRACT_ROOT);
     if arguments.contract_root != expected_root {
@@ -93,7 +92,7 @@ pub fn run(arguments: impl IntoIterator<Item = OsString>) -> Result<Value, Contr
     }
 
     let bundle = ContractBundle::load(&contract_root)?;
-    let bindings = execution_bindings(&repository, &arguments.command)?;
+    let bindings = execution_bindings(&repository, &arguments.command, execution_target_commit)?;
     let artifacts = run_selection(&bundle, &arguments.selection, &bindings)?;
     publish(
         &output_dir,
@@ -168,26 +167,61 @@ fn repository_root() -> Result<PathBuf, ContractError> {
     Ok(PathBuf::from(root))
 }
 
-fn baseline_gate(repository: &Path) -> Result<(), ContractError> {
+fn execution_target_gate(repository: &Path) -> Result<String, ContractError> {
     let output = Command::new("git")
         .current_dir(repository)
-        .args(["rev-parse", "HEAD"])
+        .args(["rev-parse", "--verify", "HEAD"])
         .output()
-        .map_err(|error| io_error(format!("cannot invoke git baseline gate: {error}")))?;
+        .map_err(|error| io_error(format!("cannot identify execution target: {error}")))?;
     let head = std::str::from_utf8(&output.stdout)
         .map_err(|_| unsupported("git HEAD is not UTF-8"))?
         .trim();
-    if !output.status.success() || head != REQUIRED_BASELINE {
+    if !output.status.success()
+        || head.len() != 40
+        || !head
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase())
+    {
         return Err(unsupported(format!(
-            "baseline must be exactly {REQUIRED_BASELINE}; observed {head}"
+            "execution target must be a full lowercase Git commit SHA; observed {head}"
         )));
     }
-    Ok(())
+
+    let clean = Command::new("git")
+        .current_dir(repository)
+        .args(["diff-index", "--quiet", "HEAD", "--"])
+        .status()
+        .map_err(|error| {
+            io_error(format!(
+                "cannot verify execution target cleanliness: {error}"
+            ))
+        })?;
+    if !clean.success() {
+        return Err(unsupported(
+            "execution target has staged or tracked worktree changes",
+        ));
+    }
+
+    for relative in IMPLEMENTATION_PATHS {
+        let object = format!("{head}:{relative}");
+        let present = Command::new("git")
+            .current_dir(repository)
+            .args(["cat-file", "-e", &object])
+            .status()
+            .map_err(|error| io_error(format!("cannot inspect {object}: {error}")))?;
+        if !present.success() {
+            return Err(unsupported(format!(
+                "execution target does not own required implementation path {relative}"
+            )));
+        }
+    }
+    Ok(head.to_owned())
 }
 
 fn execution_bindings(
     repository: &Path,
     command: &str,
+    execution_target_commit: String,
 ) -> Result<ExecutionBindings, ContractError> {
     let rustc = Command::new("rustc")
         .arg("--version")
@@ -215,6 +249,7 @@ fn execution_bindings(
     );
     let environment_digest = environment_digest()?;
     Ok(ExecutionBindings {
+        execution_target_commit,
         current_pointer_digest,
         implementation_digest,
         rust_toolchain,

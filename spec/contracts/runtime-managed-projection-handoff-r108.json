@@ -1,0 +1,300 @@
+{
+  "$schema": "../../schemas/language/runtime-managed-projection-handoff-r108.schema.json",
+  "schema": "deeplus.runtime-managed-projection-handoff/r108",
+  "revision": "r108-runtime-managed-projection-implementation-handoff",
+  "status": "LOCAL_DESIGN_STATIC_IMPLEMENTATION_HANDOFF_COMPLETE_PRODUCT_NOT_RUN",
+  "baseline": {
+    "repository": "howork/Deeplus",
+    "branch": "codex/preimpl-p0-r80-authority-projection-parity",
+    "commit": "94bb739bc8d541c90ef88526f86075d1c9ef4e9f",
+    "tree": "9462517520544476b3d72f998c66dda50f70aa4a"
+  },
+  "source_bindings": {
+    "runtime_target_mapping_registry": "spec/contracts/runtime-target-mapping-registry-r99.json",
+    "runtime_helper_registry": "spec/contracts/runtime-helper-registry-r1.json",
+    "runtime_record_registry": "spec/contracts/runtime-abi-record-registry-r99.json",
+    "managed_reference_profile": "spec/contracts/managed-reference-memory-profile-r1.json",
+    "continuation_interface": "spec/contracts/continuation-interface-r1.json",
+    "mir_machine_registry": "spec/contracts/mir-machine-registry.json"
+  },
+  "managed_native_abi": {
+    "managed_handle_abi": {
+      "abi_id": "ManagedHandleAbiId:STABLE_HANDLE_R108",
+      "size_bytes": 40,
+      "alignment_bytes": 8,
+      "fields": [
+        {
+          "name": "generation",
+          "offset": 0,
+          "carrier": "U64",
+          "atomic_order": "ACQUIRE_RELEASE"
+        },
+        {
+          "name": "state",
+          "offset": 8,
+          "carrier": "U8",
+          "atomic_order": "ACQUIRE_RELEASE"
+        },
+        {
+          "name": "referent",
+          "offset": 16,
+          "carrier": "NONNULL_OR_NULL_POINTER64",
+          "atomic_order": "ACQUIRE_RELEASE"
+        },
+        {
+          "name": "trace_descriptor_id",
+          "offset": 24,
+          "carrier": "U64",
+          "atomic_order": "IMMUTABLE_WHILE_LIVE"
+        },
+        {
+          "name": "cleanup_state",
+          "offset": 32,
+          "carrier": "U8",
+          "atomic_order": "ACQUIRE_RELEASE"
+        }
+      ],
+      "state_order": [
+        "FREE",
+        "RESERVED",
+        "INITIALIZING",
+        "LIVE",
+        "RETIRED",
+        "FREE"
+      ],
+      "generation_rule": "increment before FREE slot reuse; U64 overflow permanently retires the slot",
+      "raw_address_is_semantic_identity": false,
+      "digest": "0e2d182664ef708e3ed767db913e325679dd21cb2a97b6db74044e2a480e6e89"
+    },
+    "managed_root_slot_abi": {
+      "abi_id": "ManagedRootSlotAbiId:R108",
+      "size_bytes": 24,
+      "alignment_bytes": 8,
+      "fields": [
+        {
+          "name": "root_id",
+          "offset": 0,
+          "carrier": "U64"
+        },
+        {
+          "name": "handle_slot_address",
+          "offset": 8,
+          "carrier": "POINTER64"
+        },
+        {
+          "name": "expected_generation",
+          "offset": 16,
+          "carrier": "U64"
+        }
+      ],
+      "digest": "039290bc3a7e077c6ac4f74f05d4b4c53db994ca787c3fa50334503689c151ef"
+    },
+    "shadow_root_frame_abi": {
+      "abi_id": "ShadowRootFrameAbiId:R108",
+      "header_size_bytes": 24,
+      "alignment_bytes": 8,
+      "fields": [
+        {
+          "name": "previous_frame",
+          "offset": 0,
+          "carrier": "NULLABLE_POINTER64"
+        },
+        {
+          "name": "slot_count",
+          "offset": 8,
+          "carrier": "U32"
+        },
+        {
+          "name": "frame_state",
+          "offset": 12,
+          "carrier": "U8"
+        },
+        {
+          "name": "activation_epoch",
+          "offset": 16,
+          "carrier": "U64"
+        }
+      ],
+      "trailing_slot_abi_id": "ManagedRootSlotAbiId:R108",
+      "frame_state_order": [
+        "DETACHED",
+        "ACTIVE",
+        "SUSPENDED",
+        "RETIRED"
+      ],
+      "push_pop_rule": "strict LIFO per runtime thread; unwind and cancellation pop exactly once",
+      "suspension_rule": "ACTIVE frame becomes SUSPENDED and transfers to the continuation receipt before thread detachment",
+      "digest": "3c4a848b40470392051adcecc3bd7f8704ba6fc5e465408d5f5104148b86ce66"
+    },
+    "runtime_root_registry": {
+      "registry_id": "RuntimeRootRegistryId:R108",
+      "partitions": [
+        "RUNNING",
+        "FRAME",
+        "RUNTIME"
+      ],
+      "equation": "sorted_unique(running_root_ids | frame_root_ids | runtime_root_ids)",
+      "duplicate_missing_unsorted_or_stale_generation": "REJECT_PROJECTION",
+      "scan_rule": "load state and generation with acquire semantics; trace only LIVE handles whose generation equals expected_generation",
+      "jit_lifetime_rule": "a finalized image remains live while any active call, suspended continuation, or root receipt references it",
+      "implicit_backend_root_count": 0,
+      "digest": "630fa9a7749dcca356ac5f9077be66811cdf60513c544735665ac7fd29fd1e12"
+    },
+    "safepoint_helpers": [
+      "RuntimeHelperId:managed.safepoint_enter",
+      "RuntimeHelperId:managed.safepoint_leave"
+    ],
+    "implicit_backend_safepoint_count": 0
+  },
+  "target_projections": [
+    {
+      "schema": "deeplus.internal-runtime-abi-target-projection/r108",
+      "projection_id": "RuntimeTargetMappingId:Xvm/r108",
+      "runtime_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+      "runtime_abi_digest": "f4d7059b5dc9cad59f175b9a70c901371a0d6706a3b863ed89135303379b7f2b",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
+      "mir_machine_registry_digest": "6dd062aae31dc05bfc7bec04a347bf51b0e8f7bc4b9fb61d40c57ce1cc986b77",
+      "target_triple": "deeplus-xvm-portable-r1",
+      "pointer_width": 64,
+      "endianness": "LITTLE",
+      "stack_alignment_bytes": 8,
+      "calling_convention": "DEEPLUS_XVM_LOGICAL_R1",
+      "module_kind": "Xvm",
+      "scalar_mapping_digest": "3657f98d8f01badcf3a05bf70a1596713f353b1e736eb3493538cd97d966ec8a",
+      "indirect_slot_mapping_digest": "0fb5e668e0e284c9ae210daee7bd07a8f063fc8eeba771b4b63478c0cce3e4fe",
+      "outcome_mapping_digest": "c0e544426798c3ae51b6c5b7e2b1ba252b4cde22891479bee77ff481282e1454",
+      "helper_allowlist_digest": "dc7464135774ebca4e9b449101ba8d6ecd68e011ef2a0a753949903a85f614a8",
+      "helper_symbol_or_table_map_digest": "4c3288b363721c275108936d15e15ee83d48c7eec91a31e6e647ae9aaae7c106",
+      "toolchain_digest": "0e25e30858ea1b0cf6843e585aa63428df0b1cf2a26673db425d45ebece370a7",
+      "managed_reference_profile_digest": "bbae0e7dde1d80a404bf392a780fe3a52897e6b1eddb1d12877689f8e2f192f7",
+      "continuation_interface_digest": "10b8fd6776e863ba1ed07a21c0ef84a0342b19cc711e64f2b1cc8c9e3f69dc4b",
+      "managed_handle_abi_digest": "0e2d182664ef708e3ed767db913e325679dd21cb2a97b6db74044e2a480e6e89",
+      "shadow_root_frame_abi_digest": "3c4a848b40470392051adcecc3bd7f8704ba6fc5e465408d5f5104148b86ce66",
+      "runtime_root_registry_digest": "630fa9a7749dcca356ac5f9077be66811cdf60513c544735665ac7fd29fd1e12",
+      "mapping_preimage_digest": "6be36e91f0e14248673210fd418259d0e8407a0c187e3f185b766085033453ae",
+      "target_location_is_semantic_identity": false,
+      "toolchain_preimage": {
+        "rust_version": "1.85.0",
+        "cargo_lock_sha256": "21a9a9aeefb89131915c31b3b0f6603f038bce6b28ef17166df3a2cf30d9b79e",
+        "module_kind": "Xvm",
+        "target_triple": "deeplus-xvm-portable-r1",
+        "cranelift_version_or_null": null,
+        "dependency_connected": false,
+        "product_execution": "NOT_RUN"
+      },
+      "helper_mapping_count": 25,
+      "logical_value_kind_count": 20,
+      "projection_digest": "23f6bb792e506e95c8b4845003195aa539ebcbbc9d6e7f05b88f1dcd4fb1a906",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "schema": "deeplus.internal-runtime-abi-target-projection/r108",
+      "projection_id": "RuntimeTargetMappingId:ObjectAot/r108",
+      "runtime_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+      "runtime_abi_digest": "f4d7059b5dc9cad59f175b9a70c901371a0d6706a3b863ed89135303379b7f2b",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
+      "mir_machine_registry_digest": "6dd062aae31dc05bfc7bec04a347bf51b0e8f7bc4b9fb61d40c57ce1cc986b77",
+      "target_triple": "x86_64-pc-windows-msvc",
+      "pointer_width": 64,
+      "endianness": "LITTLE",
+      "stack_alignment_bytes": 16,
+      "calling_convention": "DEEPLUS_INTERNAL_WINDOWS_X64_R1",
+      "module_kind": "ObjectAot",
+      "scalar_mapping_digest": "12e4ea46fe04c6b6a23a750d7efb767b02cc0c8e18d6aa04b646e08f680d3791",
+      "indirect_slot_mapping_digest": "0fb5e668e0e284c9ae210daee7bd07a8f063fc8eeba771b4b63478c0cce3e4fe",
+      "outcome_mapping_digest": "c0e544426798c3ae51b6c5b7e2b1ba252b4cde22891479bee77ff481282e1454",
+      "helper_allowlist_digest": "dc7464135774ebca4e9b449101ba8d6ecd68e011ef2a0a753949903a85f614a8",
+      "helper_symbol_or_table_map_digest": "db8ad9f09e24fb3bf3fe1cfdc239945e6a0f667cfb48907338272b7c7fa35cbf",
+      "toolchain_digest": "6f1283ec2de3cf27637f7785d9ed8e979413bc9b56b6a6498a717e9f255e2614",
+      "managed_reference_profile_digest": "bbae0e7dde1d80a404bf392a780fe3a52897e6b1eddb1d12877689f8e2f192f7",
+      "continuation_interface_digest": "10b8fd6776e863ba1ed07a21c0ef84a0342b19cc711e64f2b1cc8c9e3f69dc4b",
+      "managed_handle_abi_digest": "0e2d182664ef708e3ed767db913e325679dd21cb2a97b6db74044e2a480e6e89",
+      "shadow_root_frame_abi_digest": "3c4a848b40470392051adcecc3bd7f8704ba6fc5e465408d5f5104148b86ce66",
+      "runtime_root_registry_digest": "630fa9a7749dcca356ac5f9077be66811cdf60513c544735665ac7fd29fd1e12",
+      "mapping_preimage_digest": "88518804d54c5da2287bf74002da7a1fd5afbb2eb5147058a46cff1b033d0f8b",
+      "target_location_is_semantic_identity": false,
+      "toolchain_preimage": {
+        "rust_version": "1.85.0",
+        "cargo_lock_sha256": "21a9a9aeefb89131915c31b3b0f6603f038bce6b28ef17166df3a2cf30d9b79e",
+        "module_kind": "ObjectAot",
+        "target_triple": "x86_64-pc-windows-msvc",
+        "cranelift_version_or_null": "0.121.2",
+        "dependency_connected": false,
+        "product_execution": "NOT_RUN"
+      },
+      "helper_mapping_count": 25,
+      "logical_value_kind_count": 20,
+      "projection_digest": "a08514f65ddda5f6ecf488817781307d731c2faaa1366b8d5011c996afadda2e",
+      "product_execution": "NOT_RUN"
+    },
+    {
+      "schema": "deeplus.internal-runtime-abi-target-projection/r108",
+      "projection_id": "RuntimeTargetMappingId:InMemoryJit/r108",
+      "runtime_abi_id": "RuntimeAbiId:DEEPLUS_INTERNAL_RUNTIME_ABI_R1",
+      "runtime_abi_digest": "f4d7059b5dc9cad59f175b9a70c901371a0d6706a3b863ed89135303379b7f2b",
+      "mir_schema_digest": "8f03a61115e122673d7121a7b5e1fd2ada9a5005e94879ca2d73201d03e9894d",
+      "mir_machine_registry_digest": "6dd062aae31dc05bfc7bec04a347bf51b0e8f7bc4b9fb61d40c57ce1cc986b77",
+      "target_triple": "x86_64-pc-windows-msvc",
+      "pointer_width": 64,
+      "endianness": "LITTLE",
+      "stack_alignment_bytes": 16,
+      "calling_convention": "DEEPLUS_INTERNAL_WINDOWS_X64_R1",
+      "module_kind": "InMemoryJit",
+      "scalar_mapping_digest": "12e4ea46fe04c6b6a23a750d7efb767b02cc0c8e18d6aa04b646e08f680d3791",
+      "indirect_slot_mapping_digest": "0fb5e668e0e284c9ae210daee7bd07a8f063fc8eeba771b4b63478c0cce3e4fe",
+      "outcome_mapping_digest": "c0e544426798c3ae51b6c5b7e2b1ba252b4cde22891479bee77ff481282e1454",
+      "helper_allowlist_digest": "dc7464135774ebca4e9b449101ba8d6ecd68e011ef2a0a753949903a85f614a8",
+      "helper_symbol_or_table_map_digest": "db8ad9f09e24fb3bf3fe1cfdc239945e6a0f667cfb48907338272b7c7fa35cbf",
+      "toolchain_digest": "443decd03599d3e823ff1f9286ea0ade1c5c17ebffc6122085cb64ed71620c4c",
+      "managed_reference_profile_digest": "bbae0e7dde1d80a404bf392a780fe3a52897e6b1eddb1d12877689f8e2f192f7",
+      "continuation_interface_digest": "10b8fd6776e863ba1ed07a21c0ef84a0342b19cc711e64f2b1cc8c9e3f69dc4b",
+      "managed_handle_abi_digest": "0e2d182664ef708e3ed767db913e325679dd21cb2a97b6db74044e2a480e6e89",
+      "shadow_root_frame_abi_digest": "3c4a848b40470392051adcecc3bd7f8704ba6fc5e465408d5f5104148b86ce66",
+      "runtime_root_registry_digest": "630fa9a7749dcca356ac5f9077be66811cdf60513c544735665ac7fd29fd1e12",
+      "mapping_preimage_digest": "1657df4ee39f86c7cbd3879e0b76923fb6841fdc740a327c923661e5bb8e0823",
+      "target_location_is_semantic_identity": false,
+      "toolchain_preimage": {
+        "rust_version": "1.85.0",
+        "cargo_lock_sha256": "21a9a9aeefb89131915c31b3b0f6603f038bce6b28ef17166df3a2cf30d9b79e",
+        "module_kind": "InMemoryJit",
+        "target_triple": "x86_64-pc-windows-msvc",
+        "cranelift_version_or_null": "0.121.2",
+        "dependency_connected": false,
+        "product_execution": "NOT_RUN"
+      },
+      "helper_mapping_count": 25,
+      "logical_value_kind_count": 20,
+      "projection_digest": "80872cd3dd727269146f332092d8443be1188826371adc83647fc880eec72277",
+      "product_execution": "NOT_RUN"
+    }
+  ],
+  "implementation_invariants": {
+    "target_projection_count": 3,
+    "module_kinds": [
+      "Xvm",
+      "ObjectAot",
+      "InMemoryJit"
+    ],
+    "logical_value_kind_count_per_projection": 20,
+    "helper_mapping_count_per_projection": 25,
+    "host_default_count": 0,
+    "aot_jit_logical_mapping_equal": true,
+    "implicit_backend_safepoint_count": 0,
+    "raw_address_semantic_identity_count": 0
+  },
+  "acceptance": {
+    "positive": 4,
+    "boundary": 4,
+    "reject": 8,
+    "mutation_count": 12,
+    "execution_state": "DESIGN_STATIC_NOT_RUN"
+  },
+  "governance": {
+    "semantic_p0": 0,
+    "feature_p1": "22_OPEN_UNCHANGED",
+    "product_lanes": "15_OF_15_NOT_RUN",
+    "production_execution": "NOT_RUN",
+    "current_binding": false,
+    "github_mutation": 0
+  }
+}

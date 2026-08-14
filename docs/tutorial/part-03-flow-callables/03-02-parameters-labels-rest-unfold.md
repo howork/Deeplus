@@ -187,6 +187,21 @@ digest, trailing closure label, Trait conformance에 연결된다. repeated와
 named-rest를 함수 값에 저장할 때도 `(String, String.., NamedPack**) ->
 Record`처럼 residue를 보존한다.
 
+### 8.1 overload 선택을 읽는 법
+
+Deeplus는 여러 후보의 generic constraint를 한꺼번에 섞지 않는다. 각
+후보가 자기 generic parameter와 명시적 인수만으로 complete substitution과
+call responsibility를 독립적으로 증명한다. 그 뒤 fixed, repeated,
+named-rest 순으로 더 구체적인 channel을 우선하고, 같은 channel에서는
+닫힌 input-type specificity 증명으로 유일한 maximal 후보 하나를 요구한다.
+
+반환 타입이나 expected result, default 인수 개수, 선언·import 순서는
+winner를 만들지 않는다. 같은 input contract이고 반환 타입만 다른 두
+overload는 호출 문맥으로 고르는 대신 ambiguity다. implicit `@` lambda와
+trailing closure도 여러 후보의 body에 반복 적용하지 않는다. 먼저
+non-lambda 인수와 structural shape로 expected callable 하나를 확정한 뒤
+본문을 정확히 한 번 검사한다.
+
 ## 9. Deeplus다운 작성 관례
 
 - API의 필수 값은 고정 parameter, 여분의 위치 값은 `..`로 구분한다.

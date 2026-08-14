@@ -1,0 +1,97 @@
+[
+  {
+    "actual_user_team_study": "NOT_RUN",
+    "authority": "LANGUAGE / TYPE_SYSTEM",
+    "authority_set": [
+      "LANGUAGE",
+      "TYPE_SYSTEM"
+    ],
+    "baseline": "0.1.2-baseline.r51f3",
+    "depends_on": [],
+    "display_name": "Inline refinement type annotation",
+    "feature_id": "inline_refinement_type_annotation",
+    "feature_kind": "canonical_feature",
+    "formatter_lsp": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "language_status": "Stable design",
+    "notes": "Current trace-bounded responsibility for Inline refinement type annotation. No authority, ownership, effect, witness, or source activation is implied beyond the exact current references.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "runtime_xvm": "NOT_RUN",
+    "source_activation": "none",
+    "status_display": "Stable design",
+    "status_enum": "STABLE_DESIGN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "normative_trace_refs": {
+      "diagnostics": [],
+      "predicates": [],
+      "examples": [
+        "EX-R51a1-046"
+      ],
+      "productions": [
+        "Annotation",
+        "AnnotationAttachment"
+      ],
+      "semantic_reference_productions": []
+    },
+    "trace_class": "semantic",
+    "artifact_trace_refs": [],
+    "production_lexer": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "independent_conformance": "NOT_RUN"
+  },
+  {
+    "feature_id": "scoped_use_block_msp",
+    "baseline": "0.1.2-baseline.r51f3",
+    "status_enum": "STABLE_DESIGN",
+    "status_display": "Stable design",
+    "language_status": "Stable design",
+    "feature_kind": "canonical_feature",
+    "authority_set": [
+      "LANGUAGE",
+      "PARSER",
+      "CHECKER",
+      "LSP"
+    ],
+    "authority": "LANGUAGE / PARSER / CHECKER / LSP",
+    "source_activation": "none",
+    "depends_on": [
+      "block_local_use_activation_msp"
+    ],
+    "notes": "`use path { ... }` is a statement-only lexical activation frame. Nested depth is never a candidate priority.",
+    "primary_source": "spec/language.md",
+    "product_support": "NOT_RUN",
+    "production_lexer": "NOT_RUN",
+    "production_parser": "NOT_RUN",
+    "integrated_checker": "NOT_RUN",
+    "formatter_lsp": "NOT_RUN",
+    "runtime_xvm": "NOT_RUN",
+    "stdlib_provider_runner": "NOT_RUN",
+    "uml_exporter_provider_runner": "NOT_RUN",
+    "actual_user_team_study": "NOT_RUN",
+    "independent_conformance": "NOT_RUN",
+    "display_name": "Scoped use block",
+    "row_schema_version": "deeplus.feature-row/r51f3",
+    "trace_class": "syntax",
+    "normative_trace_refs": {
+      "diagnostics": [
+        "SCOPED_EXTENSION_ACTIVATION_AMBIGUOUS",
+        "SCOPED_USE_BLOCK_IS_STATEMENT_ONLY"
+      ],
+      "predicates": [
+        "ScopedUseBlockAdmitted"
+      ],
+      "examples": [
+        "EX-R51a1-USE-002",
+        "EX-R51a1-USE-NG-002"
+      ],
+      "productions": [
+        "ScopedUseStmt"
+      ],
+      "semantic_reference_productions": []
+    },
+    "artifact_trace_refs": []
+  }
+]
